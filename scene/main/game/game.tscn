@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bd6olk1dyr2q7"]
+[gd_scene load_steps=12 format=3 uid="uid://bd6olk1dyr2q7"]
 
 [ext_resource type="PackedScene" path="res://scene/object/background/background.tscn" id="1_background"]
 [ext_resource type="PackedScene" path="res://scene/object/enemy/enemy.tscn" id="2_enemy"]
@@ -6,8 +6,17 @@
 [ext_resource type="PackedScene" path="res://scene/object/character/character.tscn" id="6_character"]
 [ext_resource type="PackedScene" path="res://scene/ui/time_bar/time_bar.tscn" id="7_time_bar"]
 [ext_resource type="PackedScene" path="res://scene/ui/hp/hp.tscn" id="8_hp"]
-[ext_resource type="PackedScene" path="res://scene/ui/battle_button/battle_button.tscn" id="9_battle_button"]
+[ext_resource type="Texture2D" path="res://art/ui/button/ui_button_battle_demo_1000.png" id="9_button_texture"]
 [ext_resource type="FontFile" path="res://fonts/BestTen-DOT.otf" id="10_font"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button"]
+texture = ExtResource("9_button_texture")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_pressed"]
+texture = ExtResource("9_button_texture")
+modulate_color = Color(0.8, 0.8, 0.8, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 
@@ -44,62 +53,49 @@ offset_top = 531.0
 offset_right = 1095.0
 offset_bottom = 691.0
 
-[node name="TarnEndButton" parent="UI" unique_id=633329392 instance=ExtResource("9_battle_button")]
+[node name="TarnEndButton" type="Button" parent="UI" unique_id=633329392]
 offset_left = 4.0
 offset_top = 562.0
 offset_right = 236.0
 offset_bottom = 666.0
-
-[node name="SkillButton" parent="UI" unique_id=2116009755 instance=ExtResource("9_battle_button")]
-offset_left = 4.0
-offset_top = 456.0
-offset_right = 236.0
-offset_bottom = 560.0
-
-[node name="EatButton" parent="UI" unique_id=1566354871 instance=ExtResource("9_battle_button")]
-offset_top = 350.0
-offset_bottom = 454.0
-
-[node name="TarnEndLabel" type="Label" parent="UI"]
-offset_left = 4.0
-offset_top = 562.0
-offset_right = 236.0
-offset_bottom = 666.0
-mouse_filter = 2
 theme_override_fonts/font = ExtResource("10_font")
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxTexture_button")
+theme_override_styles/hover = SubResource("StyleBoxTexture_button")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_button_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "ターン終了"
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="SkillLabel" type="Label" parent="UI"]
+[node name="SkillButton" type="Button" parent="UI" unique_id=2116009755]
 offset_left = 4.0
 offset_top = 456.0
 offset_right = 236.0
 offset_bottom = 560.0
-mouse_filter = 2
 theme_override_fonts/font = ExtResource("10_font")
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxTexture_button")
+theme_override_styles/hover = SubResource("StyleBoxTexture_button")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_button_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "スキル"
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="EatLabel" type="Label" parent="UI"]
+[node name="EatButton" type="Button" parent="UI" unique_id=1566354871]
 offset_top = 350.0
 offset_right = 232.0
 offset_bottom = 454.0
-mouse_filter = 2
 theme_override_fonts/font = ExtResource("10_font")
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxTexture_button")
+theme_override_styles/hover = SubResource("StyleBoxTexture_button")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_button_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "食べる"
-horizontal_alignment = 1
-vertical_alignment = 1

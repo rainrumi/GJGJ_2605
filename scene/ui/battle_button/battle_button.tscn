@@ -3,11 +3,10 @@
 [ext_resource type="Texture2D" path="res://art/ui/button/ui_button_battle_demo_1000.png" id="1_button"]
 [ext_resource type="FontFile" path="res://fonts/BestTen-DOT.otf" id="2_font"]
 
-[node name="BattleButton" type="TextureRect"]
+[node name="BattleButton" type="TextureButton"]
 offset_right = 232.0
 offset_bottom = 104.0
-mouse_filter = 2
-texture = ExtResource("1_button")
+texture_normal = ExtResource("1_button")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
