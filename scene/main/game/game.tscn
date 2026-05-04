@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scene/ui/time_bar/time_bar.tscn" id="7_time_bar"]
 [ext_resource type="PackedScene" path="res://scene/ui/hp/hp.tscn" id="8_hp"]
 [ext_resource type="PackedScene" path="res://scene/ui/battle_button/battle_button.tscn" id="9_battle_button"]
+[ext_resource type="FontFile" path="res://fonts/BestTen-DOT.otf" id="10_font"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 
@@ -58,3 +59,47 @@ offset_bottom = 560.0
 [node name="EatButton" parent="UI" unique_id=1566354871 instance=ExtResource("9_battle_button")]
 offset_top = 350.0
 offset_bottom = 454.0
+
+[node name="TarnEndLabel" type="Label" parent="UI"]
+offset_left = 4.0
+offset_top = 562.0
+offset_right = 236.0
+offset_bottom = 666.0
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "ターン終了"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillLabel" type="Label" parent="UI"]
+offset_left = 4.0
+offset_top = 456.0
+offset_right = 236.0
+offset_bottom = 560.0
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "スキル"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EatLabel" type="Label" parent="UI"]
+offset_top = 350.0
+offset_right = 232.0
+offset_bottom = 454.0
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "食べる"
+horizontal_alignment = 1
+vertical_alignment = 1
