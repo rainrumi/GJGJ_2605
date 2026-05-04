@@ -1,9 +1,60 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://duqrptvdqkp7l"]
 
-[ext_resource type="Texture2D" path="res://art/title/tex_title_demo_1000.png" id="1_title"]
+[ext_resource type="Texture2D" uid="uid://ssogygtnvw4e" path="res://art/title/tex_title_demo_1000.png" id="1_title"]
+[ext_resource type="FontFile" uid="uid://b7dbkssqiuu4u" path="res://fonts/BestTen-DOT.otf" id="2_font"]
+[ext_resource type="Script" uid="uid://cmi8rdihucugk" path="res://scene/main/title/title.gd" id="3_script"]
 
-[node name="Title" type="Node2D"]
+[node name="Title" type="Node2D" unique_id=2003881678]
+script = ExtResource("3_script")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=1083138993]
 position = Vector2(640, 360)
 texture = ExtResource("1_title")
+
+[node name="Menu" type="Control" parent="." unique_id=1268464866]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 26.0
+offset_top = 307.0
+offset_right = 306.0
+offset_bottom = 611.0
+
+[node name="StartButton" type="Button" parent="Menu" unique_id=286137335]
+layout_mode = 0
+offset_right = 280.0
+offset_bottom = 58.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 32
+text = "最初から"
+
+[node name="ContinueButton" type="Button" parent="Menu" unique_id=1693844036]
+layout_mode = 0
+offset_top = 80.0
+offset_right = 280.0
+offset_bottom = 138.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 32
+text = "続きから"
+
+[node name="SettingsButton" type="Button" parent="Menu" unique_id=922349689]
+layout_mode = 0
+offset_top = 160.0
+offset_right = 280.0
+offset_bottom = 218.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 32
+text = "設定"
+
+[node name="QuitButton" type="Button" parent="Menu" unique_id=1448078595]
+layout_mode = 0
+offset_top = 240.0
+offset_right = 280.0
+offset_bottom = 298.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 32
+text = "終了"
+
+[connection signal="pressed" from="Menu/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="Menu/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="Menu/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="Menu/QuitButton" to="." method="_on_quit_button_pressed"]
