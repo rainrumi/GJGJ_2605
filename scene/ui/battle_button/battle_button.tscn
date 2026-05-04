@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://art/ui/button/ui_button_battle_demo_1000.png" id="1_button"]
+
+[node name="BattleButton" type="TextureRect"]
+offset_right = 232.0
+offset_bottom = 104.0
+mouse_filter = 2
+texture = ExtResource("1_button")
