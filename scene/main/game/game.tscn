@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://dkdbpqv3gnm6y" path="res://art/ui/button/ui_button_battle_demo_1000.png" id="9_button_texture"]
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="11_button"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
+[ext_resource type="FontFile" uid="uid://b7dbkssqiuu4u" path="res://fonts/BestTen-DOT.otf" id="13_font"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button"]
 texture = ExtResource("9_button_texture")
@@ -44,16 +45,87 @@ position = Vector2(728, 803)
 [node name="TimeBar" parent="UI" unique_id=1062829798 instance=ExtResource("7_time_bar")]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 110.0
-offset_top = 3.0
-offset_right = 1172.0
-offset_bottom = 81.0
+offset_left = 129.0
+offset_top = -37.0
+offset_right = 1191.0
+offset_bottom = 41.0
 
 [node name="HP" parent="UI" unique_id=386012380 instance=ExtResource("8_hp")]
 offset_left = 935.0
 offset_top = 531.0
 offset_right = 1095.0
 offset_bottom = 691.0
+
+[node name="StatusPanel" type="Control" parent="UI"]
+offset_left = 940.0
+offset_top = 90.0
+offset_right = 1270.0
+offset_bottom = 320.0
+
+[node name="TimeText" type="Label" parent="UI/StatusPanel"]
+layout_mode = 0
+offset_right = 330.0
+offset_bottom = 36.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "時刻 22:00"
+
+[node name="HPText" type="Label" parent="UI/StatusPanel"]
+layout_mode = 0
+offset_top = 38.0
+offset_right = 330.0
+offset_bottom = 74.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "体力 12/12"
+
+[node name="FullnessText" type="Label" parent="UI/StatusPanel"]
+layout_mode = 0
+offset_top = 76.0
+offset_right = 330.0
+offset_bottom = 112.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "満腹度 0/6"
+
+[node name="MessageText" type="Label" parent="UI/StatusPanel"]
+layout_mode = 0
+offset_top = 118.0
+offset_right = 330.0
+offset_bottom = 230.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 20
+autowrap_mode = 3
+text = "悪夢を食べて、朝までにすべて消化してください。"
+
+[node name="NightmarePanel" type="Control" parent="UI"]
+offset_left = 270.0
+offset_top = 510.0
+offset_right = 900.0
+offset_bottom = 700.0
+
+[node name="NightmareText" type="Label" parent="UI/NightmarePanel"]
+layout_mode = 0
+offset_right = 630.0
+offset_bottom = 190.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 20
+text = "大人に追われる悪夢  未食  残り3"
 
 [node name="TarnEndButton" parent="UI" unique_id=633329392 instance=ExtResource("11_button")]
 offset_left = 4.0
