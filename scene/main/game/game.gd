@@ -60,7 +60,7 @@ func start_battle() -> void:
 	for enemy_node in enemy_nodes:
 		enemy_node.visible = true
 	_set_action_buttons_enabled(true)
-	_update_ui("悪夢を食べて、朝までにすべて消化してください。")
+	_update_ui("６時までにすべての悪夢を消化しましょう")
 
 
 func _on_visibility_changed() -> void:
