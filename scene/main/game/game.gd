@@ -12,6 +12,7 @@ const MAX_FULLNESS := 6
 const DIGEST_DAMAGE := 200
 const STOMACH_COLUMNS := 4
 const STOMACH_ROWS := 5
+const STOMACH_GRID_EDGE_OVERLAP := 1.0
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
 	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
@@ -54,6 +55,7 @@ var original_enemy_positions: Array[Vector2] = []
 var battle_active := false
 var stomach_grid_origin := Vector2.ZERO
 var stomach_grid_cell_size := 0.0
+var stomach_grid_step := 0.0
 
 
 func _ready() -> void:
@@ -300,12 +302,13 @@ func _configure_stomach_grid() -> void:
 	var template_position := stomach_grid_frame.position
 	var template_size := stomach_grid_frame.size
 	stomach_grid_cell_size = minf(
-		template_size.x / float(STOMACH_COLUMNS),
-		template_size.y / float(STOMACH_ROWS)
+		(template_size.x + float(STOMACH_COLUMNS - 1) * STOMACH_GRID_EDGE_OVERLAP) / float(STOMACH_COLUMNS),
+		(template_size.y + float(STOMACH_ROWS - 1) * STOMACH_GRID_EDGE_OVERLAP) / float(STOMACH_ROWS)
 	)
+	stomach_grid_step = stomach_grid_cell_size - STOMACH_GRID_EDGE_OVERLAP
 	var grid_size := Vector2(
-		float(STOMACH_COLUMNS) * stomach_grid_cell_size,
-		float(STOMACH_ROWS) * stomach_grid_cell_size
+		float(STOMACH_COLUMNS) * stomach_grid_cell_size - float(STOMACH_COLUMNS - 1) * STOMACH_GRID_EDGE_OVERLAP,
+		float(STOMACH_ROWS) * stomach_grid_cell_size - float(STOMACH_ROWS - 1) * STOMACH_GRID_EDGE_OVERLAP
 	)
 	stomach_grid_origin = template_position + (template_size - grid_size) * 0.5
 	for child in stomach.get_children():
@@ -318,7 +321,7 @@ func _configure_stomach_grid() -> void:
 				cell = stomach_grid_frame.duplicate() as NinePatchRect
 				cell.name = "grid_frame_%d_%d" % [column, row]
 				stomach.add_child(cell)
-			cell.position = stomach_grid_origin + Vector2(column, row) * stomach_grid_cell_size
+			cell.position = stomach_grid_origin + Vector2(column, row) * stomach_grid_step
 			cell.size = Vector2(stomach_grid_cell_size, stomach_grid_cell_size)
 	stomach.move_child(stomach_frame, stomach.get_child_count() - 1)
 
@@ -350,8 +353,8 @@ func _get_stomach_rect() -> Rect2:
 
 func _get_stomach_cell_center(column: int, row: int) -> Vector2:
 	var local_position := stomach_grid_origin + Vector2(
-		(float(column) + 0.5) * stomach_grid_cell_size,
-		(float(row) + 0.5) * stomach_grid_cell_size
+		float(column) * stomach_grid_step + stomach_grid_cell_size * 0.5,
+		float(row) * stomach_grid_step + stomach_grid_cell_size * 0.5
 	)
 	return stomach.to_global(local_position)
 
