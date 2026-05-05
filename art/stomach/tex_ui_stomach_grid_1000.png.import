@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brbm0ft51k432"
-path="res://.godot/imported/tex_ui_stomach_1000.png-d41c8404fc78fa439936a7579552c773.ctex"
+uid="uid://be2133lwbvch7"
+path="res://.godot/imported/tex_ui_stomach_grid_1000.png-b1a86b32fbc27936bf919edd681537bd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/stomach/tex_ui_stomach_1000.png"
-dest_files=["res://.godot/imported/tex_ui_stomach_1000.png-d41c8404fc78fa439936a7579552c773.ctex"]
+source_file="res://art/stomach/tex_ui_stomach_grid_1000.png"
+dest_files=["res://.godot/imported/tex_ui_stomach_grid_1000.png-b1a86b32fbc27936bf919edd681537bd.ctex"]
 
 [params]
 
