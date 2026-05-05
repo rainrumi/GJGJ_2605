@@ -10,6 +10,8 @@ const MAX_HP := 100
 const REST_HP := 50
 const MAX_FULLNESS := 6
 const DIGEST_DAMAGE := 200
+const STOMACH_COLUMNS := 4
+const STOMACH_ROWS := 5
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
 	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
@@ -21,6 +23,11 @@ const ENEMY_START_POSITIONS: Array[Vector2] = [
 	Vector2(1000, 280),
 	Vector2(1150, 500),
 ]
+const ENEMY_STOMACH_CELLS: Array[Vector2i] = [
+	Vector2i(0, 1),
+	Vector2i(2, 2),
+	Vector2i(3, 3),
+]
 
 @onready var ui: CanvasLayer = $UI
 @onready var time_text: Label = $UI/TimeBar/TimeText
@@ -30,6 +37,8 @@ const ENEMY_START_POSITIONS: Array[Vector2] = [
 @onready var digestion_frame: TextureRect = $UI/DigestionFrame
 @onready var digestion_label: Label = $UI/DigestionFrame/DigestionLabel
 @onready var stomach: Node2D = $Stomach
+@onready var stomach_frame: NinePatchRect = $Stomach/frame
+@onready var stomach_grid_frame: NinePatchRect = $Stomach/grid_frame
 @onready var enemy_nodes: Array[Node2D] = [
 	$EnemyLeft as Node2D,
 	$EnemyCenter as Node2D,
@@ -43,11 +52,14 @@ var dragging_enemy_index := -1
 var drag_offset := Vector2.ZERO
 var original_enemy_positions: Array[Vector2] = []
 var battle_active := false
+var stomach_grid_origin := Vector2.ZERO
+var stomach_grid_cell_size := 0.0
 
 
 func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
 	_prepare_mouse_filters()
+	_configure_stomach_grid()
 	_sync_ui_visibility()
 	start_battle()
 
@@ -284,13 +296,36 @@ func _apply_enemy_textures() -> void:
 		sprite.texture = ENEMY_TEXTURES[i] as Texture2D
 
 
+func _configure_stomach_grid() -> void:
+	var template_position := stomach_grid_frame.position
+	var template_size := stomach_grid_frame.size
+	stomach_grid_cell_size = minf(
+		template_size.x / float(STOMACH_COLUMNS),
+		template_size.y / float(STOMACH_ROWS)
+	)
+	var grid_size := Vector2(
+		float(STOMACH_COLUMNS) * stomach_grid_cell_size,
+		float(STOMACH_ROWS) * stomach_grid_cell_size
+	)
+	stomach_grid_origin = template_position + (template_size - grid_size) * 0.5
+	for child in stomach.get_children():
+		if child is NinePatchRect and String(child.name).begins_with("grid_frame_"):
+			child.queue_free()
+	for row in range(STOMACH_ROWS):
+		for column in range(STOMACH_COLUMNS):
+			var cell := stomach_grid_frame
+			if row != 0 or column != 0:
+				cell = stomach_grid_frame.duplicate() as NinePatchRect
+				cell.name = "grid_frame_%d_%d" % [column, row]
+				stomach.add_child(cell)
+			cell.position = stomach_grid_origin + Vector2(column, row) * stomach_grid_cell_size
+			cell.size = Vector2(stomach_grid_cell_size, stomach_grid_cell_size)
+	stomach.move_child(stomach_frame, stomach.get_child_count() - 1)
+
+
 func _place_enemy_in_stomach(enemy_index: int) -> void:
-	var slots: Array[Vector2] = [
-		stomach.global_position + Vector2(-100, -90),
-		stomach.global_position + Vector2(0, -20),
-		stomach.global_position + Vector2(100, 50),
-	]
-	enemy_nodes[enemy_index].global_position = slots[enemy_index]
+	var cell := ENEMY_STOMACH_CELLS[enemy_index]
+	enemy_nodes[enemy_index].global_position = _get_stomach_cell_center(cell.x, cell.y)
 
 
 func _return_enemy_to_origin(enemy_index: int) -> void:
@@ -308,11 +343,17 @@ func _get_enemy_rect(enemy_index: int) -> Rect2:
 
 
 func _get_stomach_rect() -> Rect2:
-	var sprite := stomach.get_node_or_null("Frame") as Sprite2D
-	if sprite == null or sprite.texture == null:
+	if stomach_frame == null:
 		return Rect2(stomach.global_position - Vector2(188, 284), Vector2(376, 568))
-	var size := sprite.texture.get_size() * sprite.scale.abs()
-	return Rect2(sprite.global_position - size * 0.5, size)
+	return _get_global_rect(stomach_frame)
+
+
+func _get_stomach_cell_center(column: int, row: int) -> Vector2:
+	var local_position := stomach_grid_origin + Vector2(
+		(float(column) + 0.5) * stomach_grid_cell_size,
+		(float(row) + 0.5) * stomach_grid_cell_size
+	)
+	return stomach.to_global(local_position)
 
 
 func _get_global_rect(control: Control) -> Rect2:

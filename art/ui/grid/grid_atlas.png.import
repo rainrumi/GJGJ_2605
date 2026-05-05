@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brbm0ft51k432"
-path="res://.godot/imported/tex_ui_stomach_1000.png-d41c8404fc78fa439936a7579552c773.ctex"
+uid="uid://qnhr5hhcadyj"
+path="res://.godot/imported/grid_atlas.png-699ce2419427ea0f57d631d66ee9d2b0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/stomach/tex_ui_stomach_1000.png"
-dest_files=["res://.godot/imported/tex_ui_stomach_1000.png-d41c8404fc78fa439936a7579552c773.ctex"]
+source_file="res://art/ui/grid/grid_atlas.png"
+dest_files=["res://.godot/imported/grid_atlas.png-699ce2419427ea0f57d631d66ee9d2b0.ctex"]
 
 [params]
 
@@ -37,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

@@ -173,7 +173,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="StatusPanel" type="Control" parent="UI" unique_id=1605446388]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0
