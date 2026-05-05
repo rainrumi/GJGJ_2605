@@ -256,8 +256,6 @@ func _update_ui(message: String) -> void:
 	hp_text.text = "%d/%d" % [maxi(0, hp), MAX_HP]
 	if message_text != null:
 		message_text.text = message
-	if passive_guide_text != null:
-		passive_guide_text.text = "満腹度 %d/%d" % [_current_fullness(), MAX_FULLNESS]
 	_update_digestion_label()
 
 
