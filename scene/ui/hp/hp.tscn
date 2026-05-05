@@ -1,9 +1,9 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Texture2D" path="res://art/ui/hp/ui_hp_demo_1000.png" id="1_hp"]
+[ext_resource type="Texture2D" path="res://art/ui/hp/ui_hp_frame_1000.png" id="1_hp"]
 
 [node name="HP" type="TextureRect"]
-offset_right = 160.0
-offset_bottom = 160.0
+offset_right = 264.0
+offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("1_hp")

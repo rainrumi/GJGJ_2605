@@ -1,8 +1,12 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://cai1mrucqy6v5"]
 
-[ext_resource type="Texture2D" path="res://art/stomach/tex_ui_stomach_demo_1000.png" id="1_stomach"]
+[ext_resource type="Texture2D" uid="uid://bo0sd7hv5e8vw" path="res://art/stomach/tex_ui_stomach_1000.png" id="1_stomach"]
+[ext_resource type="Texture2D" uid="uid://i8f283fq31p" path="res://art/stomach/tex_ui_stomach_frame_1000.png" id="2_frame"]
 
-[node name="Stomach" type="Node2D"]
+[node name="Stomach" type="Node2D" unique_id=439071358]
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1886177164]
 texture = ExtResource("1_stomach")
+
+[node name="Frame" type="Sprite2D" parent="." unique_id=1104989992]
+texture = ExtResource("2_frame")

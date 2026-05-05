@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Texture2D" path="res://art/enemy/enemy_1000_No_100_demo.png" id="1_enemy"]
+[ext_resource type="Texture2D" path="res://art/enemy/tex_enemy_1000_No_100.png" id="1_enemy"]
 
 [node name="Enemy" type="Node2D"]
 

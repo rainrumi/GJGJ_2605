@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Texture2D" path="res://art/dreamseed/flower/tex_seed_2000_demo_1000.png" id="1_flower"]
+[ext_resource type="Texture2D" path="res://art/dreamseed/flower/tex_passive_flower_1000.png" id="1_flower"]
 
 [node name="Flower" type="Node2D"]
 

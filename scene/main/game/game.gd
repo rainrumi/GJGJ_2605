@@ -221,9 +221,9 @@ func _set_action_buttons_enabled(enabled: bool) -> void:
 
 
 func _update_ui(message: String) -> void:
-	time_text.text = "時刻 %s" % _format_time()
-	hp_text.text = "体力 %d/%d" % [maxi(0, hp), MAX_HP]
-	fullness_text.text = "満腹度 %d/%d" % [_current_fullness(), MAX_FULLNESS]
+	time_text.text = _format_time()
+	hp_text.text = "%d/%d" % [maxi(0, hp), MAX_HP]
+	fullness_text.text = "%d/%d" % [_current_fullness(), MAX_FULLNESS]
 	message_text.text = message
 	nightmare_text.text = _format_nightmare_list()
 	_update_time_graph()
@@ -244,12 +244,21 @@ func _format_nightmare_list() -> String:
 			state = "消化完了"
 		elif bool(nightmare["digesting"]):
 			state = "消化中"
-		lines.append("%s  %s  残り%d" % [
+		lines.append("%s  %s  残り%s" % [
 			nightmare["name"],
 			state,
-			int(nightmare["remaining"]),
+			_format_digest_time(int(nightmare["remaining"])),
 		])
 	return "\n".join(lines)
+
+
+func _format_digest_time(cost: int) -> String:
+	var speed: int = maxi(1, digest_speed)
+	var seconds: int = int(ceil(float(cost) / float(speed) * 30.0 * 60.0))
+	var hours: int = int(seconds / 3600)
+	var minutes_part: int = int((seconds % 3600) / 60)
+	var seconds_part: int = seconds % 60
+	return "%d:%02d:%02d" % [hours, minutes_part, seconds_part]
 
 
 func _update_time_graph() -> void:
