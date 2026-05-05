@@ -13,18 +13,18 @@ const MAX_FULLNESS := 6
 @onready var ui: CanvasLayer = $UI
 @onready var time_text: Label = $UI/TimeBar/TimeText
 @onready var hp_text: Label = $UI/HPBar/HPText
-@onready var fullness_text: Label = $UI/StatusPanel/FullnessText
-@onready var message_text: Label = $UI/StatusPanel/MessageText
-@onready var nightmare_text: Label = $UI/NightmarePanel/NightmareText
+@onready var fullness_text: Label = get_node_or_null("UI/StatusPanel/FullnessText") as Label
+@onready var message_text: Label = get_node_or_null("UI/StatusPanel/MessageText") as Label
+@onready var nightmare_text: Label = get_node_or_null("UI/NightmarePanel/NightmareText") as Label
 @onready var enemy_nodes: Array[Node2D] = [
 	$EnemyLeft as Node2D,
 	$EnemyCenter as Node2D,
 	$EnemyRight as Node2D,
 ]
-@onready var time_graph: TextureRect = $UI/TimeBar/Graph
-@onready var eat_button: Button = $UI/EatButton
-@onready var skill_button: Button = $UI/SkillButton
-@onready var turn_end_button: Button = $UI/TarnEndButton
+@onready var time_graph: TextureRect = get_node_or_null("UI/TimeBar/Graph") as TextureRect
+@onready var eat_button: Button = get_node_or_null("UI/EatButton") as Button
+@onready var skill_button: Button = get_node_or_null("UI/SkillButton") as Button
+@onready var turn_end_button: Button = get_node_or_null("UI/TarnEndButton") as Button
 
 var minutes: int = START_HOUR * 60
 var hp: int = MAX_HP
@@ -36,9 +36,12 @@ var digesting: Array[Dictionary] = []
 
 func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
-	eat_button.pressed.connect(_on_eat_button_pressed)
-	skill_button.pressed.connect(_on_skill_button_pressed)
-	turn_end_button.pressed.connect(_on_turn_end_button_pressed)
+	if eat_button != null:
+		eat_button.pressed.connect(_on_eat_button_pressed)
+	if skill_button != null:
+		skill_button.pressed.connect(_on_skill_button_pressed)
+	if turn_end_button != null:
+		turn_end_button.pressed.connect(_on_turn_end_button_pressed)
 	_sync_ui_visibility()
 	start_battle()
 
@@ -203,7 +206,10 @@ func _check_battle_end() -> void:
 		_set_action_buttons_enabled(false)
 		battle_finished.emit(false)
 		return
-	_update_ui(message_text.text)
+	var current_message := ""
+	if message_text != null:
+		current_message = message_text.text
+	_update_ui(current_message)
 
 
 func _all_nightmares_digested() -> bool:
@@ -215,17 +221,25 @@ func _all_nightmares_digested() -> bool:
 
 
 func _set_action_buttons_enabled(enabled: bool) -> void:
-	eat_button.disabled = not enabled
-	skill_button.disabled = not enabled
-	turn_end_button.disabled = not enabled
+	if eat_button != null:
+		eat_button.disabled = not enabled
+	if skill_button != null:
+		skill_button.disabled = not enabled
+	if turn_end_button != null:
+		turn_end_button.disabled = not enabled
 
 
 func _update_ui(message: String) -> void:
-	time_text.text = _format_time()
-	hp_text.text = "%d/%d" % [maxi(0, hp), MAX_HP]
-	fullness_text.text = "%d/%d" % [_current_fullness(), MAX_FULLNESS]
-	message_text.text = message
-	nightmare_text.text = _format_nightmare_list()
+	if time_text != null:
+		time_text.text = _format_time()
+	if hp_text != null:
+		hp_text.text = "%d/%d" % [maxi(0, hp), MAX_HP]
+	if fullness_text != null:
+		fullness_text.text = "%d/%d" % [_current_fullness(), MAX_FULLNESS]
+	if message_text != null:
+		message_text.text = message
+	if nightmare_text != null:
+		nightmare_text.text = _format_nightmare_list()
 	_update_time_graph()
 
 
@@ -262,6 +276,8 @@ func _format_digest_time(cost: int) -> String:
 
 
 func _update_time_graph() -> void:
+	if time_graph == null:
+		return
 	var total_minutes: int = (END_HOUR - START_HOUR) * 60
 	var elapsed: int = clampi(minutes - START_HOUR * 60, 0, total_minutes)
 	var progress: float = float(elapsed) / float(total_minutes)
