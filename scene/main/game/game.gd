@@ -9,44 +9,45 @@ const REST_MINUTES := 60
 const MAX_HP := 100
 const REST_HP := 50
 const MAX_FULLNESS := 6
+const DIGEST_DAMAGE := 200
+const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
 	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
 	preload("res://art/enemy/tex_enemy_1000_No_200.png"),
 	preload("res://art/enemy/tex_enemy_1000_No_300.png"),
 ]
+const ENEMY_START_POSITIONS: Array[Vector2] = [
+	Vector2(850, 500),
+	Vector2(1000, 280),
+	Vector2(1150, 500),
+]
 
 @onready var ui: CanvasLayer = $UI
 @onready var time_text: Label = $UI/TimeBar/TimeText
 @onready var hp_text: Label = $UI/HPBar/HPText
-@onready var fullness_text: Label = get_node_or_null("UI/StatusPanel/FullnessText") as Label
 @onready var message_text: Label = get_node_or_null("UI/StatusPanel/MessageText") as Label
-@onready var nightmare_text: Label = get_node_or_null("UI/NightmarePanel/NightmareText") as Label
+@onready var passive_guide_text: Label = get_node_or_null("UI/PassiveGuideFrame/PassiveGuideText") as Label
+@onready var digestion_frame: TextureRect = $UI/DigestionFrame
+@onready var digestion_label: Label = $UI/DigestionFrame/DigestionLabel
+@onready var stomach: Node2D = $Stomach
 @onready var enemy_nodes: Array[Node2D] = [
 	$EnemyLeft as Node2D,
 	$EnemyCenter as Node2D,
 	$EnemyRight as Node2D,
 ]
-@onready var time_graph: TextureRect = get_node_or_null("UI/TimeBar/Graph") as TextureRect
-@onready var eat_button: Button = get_node_or_null("UI/EatButton") as Button
-@onready var skill_button: Button = get_node_or_null("UI/SkillButton") as Button
-@onready var turn_end_button: Button = get_node_or_null("UI/TarnEndButton") as Button
 
 var minutes: int = START_HOUR * 60
 var hp: int = MAX_HP
-var digest_speed: int = 1
-var skill_active_turns: int = 0
-var nightmares: Array[Dictionary] = []
-var digesting: Array[Dictionary] = []
+var enemies: Array[Dictionary] = []
+var dragging_enemy_index := -1
+var drag_offset := Vector2.ZERO
+var original_enemy_positions: Array[Vector2] = []
+var battle_active := false
 
 
 func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
-	if eat_button != null:
-		eat_button.pressed.connect(_on_eat_button_pressed)
-	if skill_button != null:
-		skill_button.pressed.connect(_on_skill_button_pressed)
-	if turn_end_button != null:
-		turn_end_button.pressed.connect(_on_turn_end_button_pressed)
+	_prepare_mouse_filters()
 	_sync_ui_visibility()
 	start_battle()
 
@@ -54,19 +55,260 @@ func _ready() -> void:
 func start_battle() -> void:
 	minutes = START_HOUR * 60
 	hp = MAX_HP
-	digest_speed = 1
-	skill_active_turns = 0
-	digesting.clear()
-	_apply_enemy_textures()
-	nightmares = [
-		_create_nightmare("大人に追われる悪夢", 3, 2, 2),
-		_create_nightmare("落下する悪夢", 2, 1, 1),
-		_create_nightmare("仕事が終わらない悪夢", 4, 3, 2),
+	battle_active = true
+	dragging_enemy_index = -1
+	enemies = [
+		_create_enemy("大人に追われる悪夢", 1400, 2, 2),
+		_create_enemy("落下する悪夢", 1000, 1, 3),
+		_create_enemy("仕事が終わらない悪夢", 2000, 3, 5),
 	]
+	original_enemy_positions.clear()
+	for i in range(enemy_nodes.size()):
+		var start_position: Vector2 = ENEMY_START_POSITIONS[i] as Vector2
+		original_enemy_positions.append(start_position)
+		enemy_nodes[i].position = start_position
+		enemy_nodes[i].visible = true
+	_apply_enemy_textures()
+	_update_enemy_labels()
+	_update_ui(START_MESSAGE)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not battle_active:
+		return
+	if event is InputEventMouseButton:
+		var mouse_button: InputEventMouseButton = event as InputEventMouseButton
+		if mouse_button.button_index != MOUSE_BUTTON_LEFT:
+			return
+		if mouse_button.pressed:
+			_handle_press(mouse_button.position)
+		else:
+			_handle_release(mouse_button.position)
+	elif event is InputEventMouseMotion:
+		var mouse_motion: InputEventMouseMotion = event as InputEventMouseMotion
+		if dragging_enemy_index != -1:
+			enemy_nodes[dragging_enemy_index].global_position = mouse_motion.position + drag_offset
+
+
+func _handle_press(mouse_position: Vector2) -> void:
+	var digestion_rect := _get_global_rect(digestion_frame)
+	if digestion_rect.has_point(mouse_position):
+		_advance_digest_turn()
+		return
+	for i in range(enemy_nodes.size() - 1, -1, -1):
+		if not _can_drag_enemy(i):
+			continue
+		if _get_enemy_rect(i).has_point(mouse_position):
+			dragging_enemy_index = i
+			drag_offset = enemy_nodes[i].global_position - mouse_position
+			return
+
+
+func _handle_release(mouse_position: Vector2) -> void:
+	if dragging_enemy_index == -1:
+		return
+	var enemy_index := dragging_enemy_index
+	dragging_enemy_index = -1
+	if _get_stomach_rect().has_point(mouse_position):
+		_try_start_digesting(enemy_index)
+	else:
+		_return_enemy_to_origin(enemy_index)
+
+
+func _create_enemy(name: String, hp_value: int, size: int, damage: int) -> Dictionary:
+	return {
+		"name": name,
+		"max_hp": hp_value,
+		"remaining_hp": hp_value,
+		"size": size,
+		"damage": damage,
+		"digesting": false,
+		"digested": false,
+	}
+
+
+func _prepare_mouse_filters() -> void:
+	digestion_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	digestion_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for enemy_node in enemy_nodes:
-		enemy_node.visible = true
-	_set_action_buttons_enabled(true)
-	_update_ui("６時までにすべての悪夢を消化しましょう")
+		var label := enemy_node.get_node_or_null("HPText") as Label
+		if label != null:
+			label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+func _can_drag_enemy(enemy_index: int) -> bool:
+	var enemy := enemies[enemy_index]
+	return not bool(enemy["digesting"]) and not bool(enemy["digested"])
+
+
+func _try_start_digesting(enemy_index: int) -> void:
+	var enemy := enemies[enemy_index]
+	var next_fullness := _current_fullness() + int(enemy["size"])
+	if next_fullness > MAX_FULLNESS:
+		_return_enemy_to_origin(enemy_index)
+		_update_ui("胃袋がいっぱいです")
+		return
+	enemy["digesting"] = true
+	enemies[enemy_index] = enemy
+	_place_enemy_in_stomach(enemy_index)
+	_update_ui("%s の消化を開始しました" % String(enemy["name"]))
+
+
+func _advance_digest_turn() -> void:
+	if _active_digest_count() == 0:
+		_update_ui("消化中の悪夢がありません")
+		return
+	_digest_nightmares()
+	_apply_digest_damage()
+	_advance_time(STEP_MINUTES)
+	if hp <= 0:
+		hp = REST_HP
+		_advance_time(REST_MINUTES)
+		_update_ui("体力が尽きたため休憩しました")
+	else:
+		_update_ui("30分が経過しました")
+	_check_battle_end()
+
+
+func _digest_nightmares() -> void:
+	for i in range(enemies.size()):
+		var enemy := enemies[i]
+		if not bool(enemy["digesting"]) or bool(enemy["digested"]):
+			continue
+		enemy["remaining_hp"] = maxi(0, int(enemy["remaining_hp"]) - DIGEST_DAMAGE)
+		if int(enemy["remaining_hp"]) == 0:
+			enemy["digested"] = true
+			enemy["digesting"] = false
+			enemy_nodes[i].visible = false
+		enemies[i] = enemy
+	_update_enemy_labels()
+
+
+func _apply_digest_damage() -> void:
+	var damage := 0
+	for raw_enemy in enemies:
+		var enemy: Dictionary = raw_enemy
+		if bool(enemy["digesting"]) and not bool(enemy["digested"]):
+			damage += int(enemy["damage"])
+	hp -= damage
+
+
+func _check_battle_end() -> void:
+	if _all_enemies_digested():
+		battle_active = false
+		_update_ui("勝利。すべての悪夢を消化しました")
+		battle_finished.emit(true)
+		return
+	if minutes >= END_HOUR * 60:
+		battle_active = false
+		_update_ui("敗北。朝までに消化しきれませんでした")
+		battle_finished.emit(false)
+
+
+func _all_enemies_digested() -> bool:
+	for raw_enemy in enemies:
+		var enemy: Dictionary = raw_enemy
+		if not bool(enemy["digested"]):
+			return false
+	return true
+
+
+func _active_digest_count() -> int:
+	var count := 0
+	for raw_enemy in enemies:
+		var enemy: Dictionary = raw_enemy
+		if bool(enemy["digesting"]) and not bool(enemy["digested"]):
+			count += 1
+	return count
+
+
+func _current_fullness() -> int:
+	var fullness := 0
+	for raw_enemy in enemies:
+		var enemy: Dictionary = raw_enemy
+		if bool(enemy["digesting"]) and not bool(enemy["digested"]):
+			fullness += int(enemy["size"])
+	return fullness
+
+
+func _advance_time(amount_minutes: int) -> void:
+	minutes += amount_minutes
+
+
+func _update_ui(message: String) -> void:
+	time_text.text = _format_time()
+	hp_text.text = "%d/%d" % [maxi(0, hp), MAX_HP]
+	if message_text != null:
+		message_text.text = message
+	if passive_guide_text != null:
+		passive_guide_text.text = "満腹度 %d/%d" % [_current_fullness(), MAX_FULLNESS]
+	_update_digestion_label()
+
+
+func _update_digestion_label() -> void:
+	if _active_digest_count() == 0:
+		digestion_label.text = "消化開始！"
+	else:
+		digestion_label.text = "30分進める"
+
+
+func _update_enemy_labels() -> void:
+	for i in range(enemy_nodes.size()):
+		var label := enemy_nodes[i].get_node_or_null("HPText") as Label
+		if label == null or i >= enemies.size():
+			continue
+		label.text = str(int(enemies[i]["remaining_hp"]))
+
+
+func _apply_enemy_textures() -> void:
+	for i in range(enemy_nodes.size()):
+		if i >= ENEMY_TEXTURES.size():
+			return
+		var sprite := enemy_nodes[i].get_node_or_null("Sprite2D") as Sprite2D
+		if sprite == null:
+			continue
+		sprite.texture = ENEMY_TEXTURES[i] as Texture2D
+
+
+func _place_enemy_in_stomach(enemy_index: int) -> void:
+	var slots: Array[Vector2] = [
+		stomach.global_position + Vector2(-100, -90),
+		stomach.global_position + Vector2(0, -20),
+		stomach.global_position + Vector2(100, 50),
+	]
+	enemy_nodes[enemy_index].global_position = slots[enemy_index]
+
+
+func _return_enemy_to_origin(enemy_index: int) -> void:
+	if enemy_index >= original_enemy_positions.size():
+		return
+	enemy_nodes[enemy_index].position = original_enemy_positions[enemy_index]
+
+
+func _get_enemy_rect(enemy_index: int) -> Rect2:
+	var sprite := enemy_nodes[enemy_index].get_node_or_null("Sprite2D") as Sprite2D
+	if sprite == null or sprite.texture == null:
+		return Rect2(enemy_nodes[enemy_index].global_position - Vector2(50, 50), Vector2(100, 100))
+	var size := sprite.texture.get_size() * sprite.scale.abs()
+	return Rect2(sprite.global_position - size * 0.5, size)
+
+
+func _get_stomach_rect() -> Rect2:
+	var sprite := stomach.get_node_or_null("Frame") as Sprite2D
+	if sprite == null or sprite.texture == null:
+		return Rect2(stomach.global_position - Vector2(188, 284), Vector2(376, 568))
+	var size := sprite.texture.get_size() * sprite.scale.abs()
+	return Rect2(sprite.global_position - size * 0.5, size)
+
+
+func _get_global_rect(control: Control) -> Rect2:
+	return Rect2(control.global_position, control.size)
+
+
+func _format_time() -> String:
+	var hour := int(minutes / 60) % 24
+	var minute := minutes % 60
+	return "%02d:%02d" % [hour, minute]
 
 
 func _on_visibility_changed() -> void:
@@ -77,225 +319,3 @@ func _sync_ui_visibility() -> void:
 	if ui == null:
 		return
 	ui.visible = visible
-
-
-func _apply_enemy_textures() -> void:
-	for i in range(enemy_nodes.size()):
-		if i >= ENEMY_TEXTURES.size():
-			return
-		var sprite := enemy_nodes[i].get_node_or_null("Sprite2D") as Sprite2D
-		if sprite == null:
-			continue
-		sprite.texture = ENEMY_TEXTURES[i]
-
-
-func _create_nightmare(name: String, cost: int, size: int, attack: int) -> Dictionary:
-	return {
-		"name": name,
-		"cost": cost,
-		"remaining": cost,
-		"size": size,
-		"attack": attack,
-		"digesting": false,
-		"digested": false,
-	}
-
-
-func _on_eat_button_pressed() -> void:
-	var nightmare_index := _find_eatable_nightmare_index()
-	if nightmare_index == -1:
-		_update_ui("これ以上食べられる悪夢がありません。")
-		return
-	var nightmare: Dictionary = nightmares[nightmare_index]
-	nightmare["digesting"] = true
-	nightmares[nightmare_index] = nightmare
-	digesting.append(nightmare)
-	_update_ui("%s を食べました。" % nightmare["name"])
-
-
-func _on_skill_button_pressed() -> void:
-	if skill_active_turns > 0:
-		_update_ui("スキルはすでに発動中です。")
-		return
-	digest_speed = 2
-	skill_active_turns = 2
-	_update_ui("スキル発動。2ターンの間、消化速度が上がります。")
-
-
-func _on_turn_end_button_pressed() -> void:
-	_digest_nightmares()
-	_apply_enemy_attack()
-	_advance_time(STEP_MINUTES)
-	if hp <= 0:
-		hp = REST_HP
-		_advance_time(REST_MINUTES)
-		_update_ui("体力が尽きたため休憩しました。")
-	else:
-		_update_ui("30分が経過しました。")
-	_update_skill()
-	_update_enemy_visibility()
-	_check_battle_end()
-
-
-func _find_eatable_nightmare_index() -> int:
-	var current_fullness := _current_fullness()
-	for i in range(nightmares.size()):
-		var nightmare: Dictionary = nightmares[i]
-		if bool(nightmare["digesting"]) or bool(nightmare["digested"]):
-			continue
-		if current_fullness + int(nightmare["size"]) <= MAX_FULLNESS:
-			return i
-	return -1
-
-
-func _current_fullness() -> int:
-	var total := 0
-	for raw_nightmare in digesting:
-		var nightmare: Dictionary = raw_nightmare
-		if not bool(nightmare["digested"]):
-			total += int(nightmare["size"])
-	return total
-
-
-func _digest_nightmares() -> void:
-	for i in range(digesting.size()):
-		var nightmare: Dictionary = digesting[i]
-		if bool(nightmare["digested"]):
-			continue
-		nightmare["remaining"] = maxi(0, int(nightmare["remaining"]) - digest_speed)
-		if int(nightmare["remaining"]) == 0:
-			nightmare["digested"] = true
-			_mark_nightmare_digested(String(nightmare["name"]))
-		digesting[i] = nightmare
-
-
-func _mark_nightmare_digested(nightmare_name: String) -> void:
-	for i in range(nightmares.size()):
-		if String(nightmares[i]["name"]) != nightmare_name:
-			continue
-		var nightmare: Dictionary = nightmares[i]
-		nightmare["digested"] = true
-		nightmare["digesting"] = false
-		nightmare["remaining"] = 0
-		nightmares[i] = nightmare
-		return
-
-
-func _apply_enemy_attack() -> void:
-	var damage := 0
-	for raw_nightmare in nightmares:
-		var nightmare: Dictionary = raw_nightmare
-		if bool(nightmare["digesting"]) or bool(nightmare["digested"]):
-			continue
-		damage += int(nightmare["attack"])
-	hp -= damage
-
-
-func _advance_time(amount_minutes: int) -> void:
-	minutes += amount_minutes
-
-
-func _update_skill() -> void:
-	if skill_active_turns <= 0:
-		return
-	skill_active_turns -= 1
-	if skill_active_turns == 0:
-		digest_speed = 1
-
-
-func _update_enemy_visibility() -> void:
-	for i in range(enemy_nodes.size()):
-		if i >= nightmares.size():
-			enemy_nodes[i].visible = false
-			continue
-		enemy_nodes[i].visible = not bool(nightmares[i]["digested"])
-
-
-func _check_battle_end() -> void:
-	if _all_nightmares_digested():
-		_update_ui("勝利。朝までに悪夢をすべて消化しました。")
-		_set_action_buttons_enabled(false)
-		battle_finished.emit(true)
-		return
-	if minutes >= END_HOUR * 60:
-		_update_ui("敗北。悪夢を消化しきれないまま朝を迎えました。")
-		_set_action_buttons_enabled(false)
-		battle_finished.emit(false)
-		return
-	var current_message := ""
-	if message_text != null:
-		current_message = message_text.text
-	_update_ui(current_message)
-
-
-func _all_nightmares_digested() -> bool:
-	for raw_nightmare in nightmares:
-		var nightmare: Dictionary = raw_nightmare
-		if not bool(nightmare["digested"]):
-			return false
-	return true
-
-
-func _set_action_buttons_enabled(enabled: bool) -> void:
-	if eat_button != null:
-		eat_button.disabled = not enabled
-	if skill_button != null:
-		skill_button.disabled = not enabled
-	if turn_end_button != null:
-		turn_end_button.disabled = not enabled
-
-
-func _update_ui(message: String) -> void:
-	if time_text != null:
-		time_text.text = _format_time()
-	if hp_text != null:
-		hp_text.text = "%d/%d" % [maxi(0, hp), MAX_HP]
-	if fullness_text != null:
-		fullness_text.text = "%d/%d" % [_current_fullness(), MAX_FULLNESS]
-	if message_text != null:
-		message_text.text = message
-	if nightmare_text != null:
-		nightmare_text.text = _format_nightmare_list()
-	_update_time_graph()
-
-
-func _format_time() -> String:
-	var hour := int(minutes / 60) % 24
-	var minute := minutes % 60
-	return "%02d:%02d" % [hour, minute]
-
-
-func _format_nightmare_list() -> String:
-	var lines := PackedStringArray()
-	for raw_nightmare in nightmares:
-		var nightmare: Dictionary = raw_nightmare
-		var state: String = "未食"
-		if bool(nightmare["digested"]):
-			state = "消化完了"
-		elif bool(nightmare["digesting"]):
-			state = "消化中"
-		lines.append("%s  %s  残り%s" % [
-			nightmare["name"],
-			state,
-			_format_digest_time(int(nightmare["remaining"])),
-		])
-	return "\n".join(lines)
-
-
-func _format_digest_time(cost: int) -> String:
-	var speed: int = maxi(1, digest_speed)
-	var seconds: int = int(ceil(float(cost) / float(speed) * 30.0 * 60.0))
-	var hours: int = int(seconds / 3600)
-	var minutes_part: int = int((seconds % 3600) / 60)
-	var seconds_part: int = seconds % 60
-	return "%d:%02d:%02d" % [hours, minutes_part, seconds_part]
-
-
-func _update_time_graph() -> void:
-	if time_graph == null:
-		return
-	var total_minutes: int = (END_HOUR - START_HOUR) * 60
-	var elapsed: int = clampi(minutes - START_HOUR * 60, 0, total_minutes)
-	var progress: float = float(elapsed) / float(total_minutes)
-	time_graph.offset_left = 18.0 + 980.0 * progress
-	time_graph.offset_right = time_graph.offset_left + 32.0
