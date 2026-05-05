@@ -215,9 +215,10 @@ func _digest_nightmares() -> void:
 	var digested_this_turn := false
 	for i in range(enemies.size()):
 		var enemy := enemies[i]
-		if not _can_digest_enemy_this_turn(i):
+		var bottom_cell_count := _get_bottom_row_cell_count(i)
+		if bottom_cell_count == 0:
 			continue
-		enemy["remaining_hp"] = maxi(0, int(enemy["remaining_hp"]) - DIGEST_DAMAGE)
+		enemy["remaining_hp"] = maxi(0, int(enemy["remaining_hp"]) - DIGEST_DAMAGE * bottom_cell_count)
 		if int(enemy["remaining_hp"]) == 0:
 			enemy["digested"] = true
 			enemy["digesting"] = false
@@ -371,15 +372,16 @@ func _get_stomach_rect() -> Rect2:
 	return _get_global_rect(stomach_frame)
 
 
-func _can_digest_enemy_this_turn(enemy_index: int) -> bool:
+func _get_bottom_row_cell_count(enemy_index: int) -> int:
 	var enemy := enemies[enemy_index]
 	if not bool(enemy["digesting"]) or bool(enemy["digested"]):
-		return false
+		return 0
 	var top_left: Vector2i = enemy["stomach_cell"]
+	var count := 0
 	for cell in _get_enemy_occupied_cells(enemy_index, top_left):
 		if cell.y == STOMACH_ROWS - 1:
-			return true
-	return false
+			count += 1
+	return count
 
 
 func _apply_stomach_gravity() -> void:
