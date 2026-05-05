@@ -6,13 +6,13 @@ const START_HOUR := 23
 const END_HOUR := 30
 const STEP_MINUTES := 30
 const REST_MINUTES := 60
-const MAX_HP := 12
-const REST_HP := 6
+const MAX_HP := 100
+const REST_HP := 50
 const MAX_FULLNESS := 6
 
 @onready var ui: CanvasLayer = $UI
-@onready var time_text: Label = $UI/StatusPanel/TimeText
-@onready var hp_text: Label = $UI/StatusPanel/HPText
+@onready var time_text: Label = $UI/TimeBar/TimeText
+@onready var hp_text: Label = $UI/HPBar/HPText
 @onready var fullness_text: Label = $UI/StatusPanel/FullnessText
 @onready var message_text: Label = $UI/StatusPanel/MessageText
 @onready var nightmare_text: Label = $UI/NightmarePanel/NightmareText

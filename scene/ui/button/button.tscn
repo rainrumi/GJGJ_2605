@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dbl62dou6wdl6"]
 
-[ext_resource type="FontFile" path="res://resource/BestTen-CRT.otf" id="1_qdxw8"]
+[ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="1_qdxw8"]
 
 [node name="BattleButton" type="Button" unique_id=564553469]
 offset_right = 232.0
