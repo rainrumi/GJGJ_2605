@@ -2,7 +2,7 @@ extends Node2D
 
 signal battle_finished(won: bool)
 
-const START_HOUR := 22
+const START_HOUR := 23
 const END_HOUR := 30
 const STEP_MINUTES := 30
 const REST_MINUTES := 60

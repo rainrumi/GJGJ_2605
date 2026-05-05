@@ -8,6 +8,7 @@
 [ext_resource type="FontFile" uid="uid://b7dbkssqiuu4u" path="res://fonts/BestTen-DOT.otf" id="13_font"]
 [ext_resource type="Texture2D" uid="uid://dmwygbcsp6evw" path="res://art/dreamseed/flower/tex_passive_flower_1000.png" id="16_flower"]
 [ext_resource type="Texture2D" uid="uid://cno8kuv3l6jtg" path="res://art/stomach/tex_digestion_frame_1000.png" id="17_digestion"]
+[ext_resource type="Texture2D" uid="uid://djqhgj0uikma7" path="res://art/ui/time/ui_time_frame_1000.png" id="18_time_frame"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
@@ -35,6 +36,23 @@ position = Vector2(190, 420)
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]
 
+[node name="TimeBar" type="TextureRect" parent="UI" unique_id=414664386]
+offset_left = 997.0
+offset_top = 17.0
+offset_right = 1277.0
+offset_bottom = 121.0
+mouse_filter = 2
+texture = ExtResource("18_time_frame")
+
+[node name="Graph" type="TextureRect" parent="UI/TimeBar" unique_id=915653427]
+visible = false
+layout_mode = 0
+offset_left = 124.0
+offset_top = 36.0
+offset_right = 156.0
+offset_bottom = 68.0
+mouse_filter = 2
+
 [node name="DigestionFrame" type="TextureRect" parent="UI" unique_id=75896202]
 offset_left = 983.0
 offset_top = 642.0
@@ -43,18 +61,48 @@ offset_bottom = 730.0
 mouse_filter = 2
 texture = ExtResource("17_digestion")
 
+[node name="DigestionLabel" type="Label" parent="UI/DigestionFrame" unique_id=127424852]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 29.0
+offset_right = 258.0
+offset_bottom = 82.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 28
+text = "消化開始！"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="StatusPanel" type="Control" parent="UI" unique_id=1605446388]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 
+[node name="TimeText" type="Label" parent="UI/StatusPanel" unique_id=1349676453]
+layout_mode = 0
+offset_left = 1024.0
+offset_top = 36.0
+offset_right = 1252.0
+offset_bottom = 98.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 52
+text = "23:00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="MessageText" type="Label" parent="UI/StatusPanel" unique_id=196976463]
 layout_mode = 0
 offset_left = 869.0
-offset_top = 99.0
+offset_top = 117.0
 offset_right = 1275.0
-offset_bottom = 157.0
+offset_bottom = 175.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
@@ -63,3 +111,35 @@ theme_override_font_sizes/font_size = 20
 text = "６時までにすべての悪夢を消化しよう"
 horizontal_alignment = 2
 autowrap_mode = 3
+
+[node name="HPText" type="Label" parent="UI/StatusPanel" unique_id=1313500156]
+visible = false
+layout_mode = 0
+theme_override_fonts/font = ExtResource("13_font")
+text = "12/12"
+
+[node name="FullnessText" type="Label" parent="UI/StatusPanel" unique_id=1996171414]
+visible = false
+layout_mode = 0
+theme_override_fonts/font = ExtResource("13_font")
+text = "0/6"
+
+[node name="NightmarePanel" type="Control" parent="UI" unique_id=1220789213]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1.0
+offset_bottom = 1.0
+
+[node name="NightmareText" type="Label" parent="UI/NightmarePanel" unique_id=1675171175]
+layout_mode = 0
+theme_override_fonts/font = ExtResource("13_font")
+
+[node name="EatButton" type="Button" parent="UI" unique_id=833318588]
+visible = false
+
+[node name="SkillButton" type="Button" parent="UI" unique_id=1769908487]
+visible = false
+
+[node name="TarnEndButton" type="Button" parent="UI" unique_id=1073114042]
+visible = false
