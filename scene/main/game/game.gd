@@ -8,10 +8,10 @@ const STEP_MINUTES := 30
 const REST_MINUTES := 60
 const MAX_HP := 100
 const REST_HP := 50
-const MAX_FULLNESS := 6
 const DIGEST_DAMAGE := 200
 const STOMACH_COLUMNS := 4
 const STOMACH_ROWS := 5
+const MAX_FULLNESS := STOMACH_COLUMNS * STOMACH_ROWS
 const STOMACH_GRID_EDGE_OVERLAP := 1.0
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
@@ -24,10 +24,15 @@ const ENEMY_START_POSITIONS: Array[Vector2] = [
 	Vector2(1000, 280),
 	Vector2(1150, 500),
 ]
-const ENEMY_STOMACH_CELLS: Array[Vector2i] = [
-	Vector2i(0, 1),
-	Vector2i(2, 2),
+const ENEMY_STOMACH_TOP_LEFT_CELLS: Array[Vector2i] = [
+	Vector2i(0, 0),
+	Vector2i(1, 2),
+	Vector2i(2, 0),
+]
+const ENEMY_STOMACH_SIZES: Array[Vector2i] = [
+	Vector2i(2, 3),
 	Vector2i(3, 3),
+	Vector2i(2, 2),
 ]
 
 @onready var ui: CanvasLayer = $UI
@@ -72,8 +77,8 @@ func start_battle() -> void:
 	battle_active = true
 	dragging_enemy_index = -1
 	enemies = [
-		_create_enemy("大人に追われる悪夢", 1400, 2, 2),
-		_create_enemy("落下する悪夢", 1000, 1, 3),
+		_create_enemy("大人に追われる悪夢", 1400, 6, 2),
+		_create_enemy("落下する悪夢", 1000, 5, 3),
 		_create_enemy("仕事が終わらない悪夢", 2000, 3, 5),
 	]
 	original_enemy_positions.clear()
@@ -296,6 +301,7 @@ func _apply_enemy_textures() -> void:
 		if sprite == null:
 			continue
 		sprite.texture = ENEMY_TEXTURES[i] as Texture2D
+		_resize_enemy_to_stomach_grid(i, sprite)
 
 
 func _configure_stomach_grid() -> void:
@@ -327,8 +333,9 @@ func _configure_stomach_grid() -> void:
 
 
 func _place_enemy_in_stomach(enemy_index: int) -> void:
-	var cell := ENEMY_STOMACH_CELLS[enemy_index]
-	enemy_nodes[enemy_index].global_position = _get_stomach_cell_center(cell.x, cell.y)
+	var top_left := ENEMY_STOMACH_TOP_LEFT_CELLS[enemy_index]
+	var size := ENEMY_STOMACH_SIZES[enemy_index]
+	enemy_nodes[enemy_index].global_position = _get_stomach_area_center(top_left, size)
 
 
 func _return_enemy_to_origin(enemy_index: int) -> void:
@@ -351,12 +358,27 @@ func _get_stomach_rect() -> Rect2:
 	return _get_global_rect(stomach_frame)
 
 
-func _get_stomach_cell_center(column: int, row: int) -> Vector2:
+func _get_stomach_area_center(top_left: Vector2i, size: Vector2i) -> Vector2:
 	var local_position := stomach_grid_origin + Vector2(
-		float(column) * stomach_grid_step + stomach_grid_cell_size * 0.5,
-		float(row) * stomach_grid_step + stomach_grid_cell_size * 0.5
+		float(top_left.x) * stomach_grid_step + _get_stomach_span_size(size.x) * 0.5,
+		float(top_left.y) * stomach_grid_step + _get_stomach_span_size(size.y) * 0.5
 	)
 	return stomach.to_global(local_position)
+
+
+func _resize_enemy_to_stomach_grid(enemy_index: int, sprite: Sprite2D) -> void:
+	if enemy_index >= ENEMY_STOMACH_SIZES.size() or sprite.texture == null:
+		return
+	var size := ENEMY_STOMACH_SIZES[enemy_index]
+	var target_size := Vector2(
+		_get_stomach_span_size(size.x),
+		_get_stomach_span_size(size.y)
+	)
+	sprite.scale = target_size / sprite.texture.get_size()
+
+
+func _get_stomach_span_size(cell_count: int) -> float:
+	return float(cell_count) * stomach_grid_cell_size - float(cell_count - 1) * STOMACH_GRID_EDGE_OVERLAP
 
 
 func _get_global_rect(control: Control) -> Rect2:
