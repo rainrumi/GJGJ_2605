@@ -73,7 +73,7 @@ func start_battle() -> void:
 	_update_ui(START_MESSAGE)
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if not battle_active:
 		return
 	if event is InputEventMouseButton:
@@ -130,6 +130,22 @@ func _create_enemy(name: String, hp_value: int, size: int, damage: int) -> Dicti
 func _prepare_mouse_filters() -> void:
 	digestion_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	digestion_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if message_text != null:
+		message_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if passive_guide_text != null:
+		passive_guide_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var status_panel := get_node_or_null("UI/StatusPanel") as Control
+	if status_panel != null:
+		status_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var passive_guide_frame := get_node_or_null("UI/PassiveGuideFrame") as Control
+	if passive_guide_frame != null:
+		passive_guide_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var hp_bar := get_node_or_null("UI/HPBar") as Control
+	if hp_bar != null:
+		hp_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var time_bar := get_node_or_null("UI/TimeBar") as Control
+	if time_bar != null:
+		time_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for enemy_node in enemy_nodes:
 		var label := enemy_node.get_node_or_null("HPText") as Label
 		if label != null:
