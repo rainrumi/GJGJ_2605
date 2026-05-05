@@ -1,22 +1,24 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://b8plkl8xnuuao"]
 
-[ext_resource type="Texture2D" path="res://art/ui/time/ui_time_frame_1000.png" id="1_bar"]
+[ext_resource type="Texture2D" uid="uid://djqhgj0uikma7" path="res://art/ui/time/ui_time_frame_1000.png" id="1_bar"]
 
-[node name="TimeBar" type="Control"]
+[node name="TimeBar" type="Control" unique_id=1013623940]
+layout_mode = 3
+anchors_preset = 0
 offset_right = 280.0
 offset_bottom = 104.0
 mouse_filter = 2
 
-[node name="Frame" type="TextureRect" parent="."]
+[node name="Frame" type="TextureRect" parent="." unique_id=1833787077]
 layout_mode = 0
 offset_right = 280.0
 offset_bottom = 104.0
 mouse_filter = 2
 texture = ExtResource("1_bar")
 
-[node name="Graph" type="TextureRect" parent="."]
-layout_mode = 0
+[node name="Graph" type="TextureRect" parent="." unique_id=19062390]
 visible = false
+layout_mode = 0
 offset_left = 124.0
 offset_top = 36.0
 offset_right = 156.0

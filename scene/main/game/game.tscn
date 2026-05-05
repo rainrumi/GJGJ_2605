@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cai1mrucqy6v5" path="res://scene/object/stomach/stomach.tscn" id="5_stomach"]
 [ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
-[ext_resource type="FontFile" uid="uid://b7dbkssqiuu4u" path="res://fonts/BestTen-DOT.otf" id="13_font"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://resource/BestTen-CRT.otf" id="13_font"]
 [ext_resource type="Texture2D" uid="uid://dmwygbcsp6evw" path="res://art/dreamseed/flower/tex_passive_flower_1000.png" id="16_flower"]
 [ext_resource type="Texture2D" uid="uid://cno8kuv3l6jtg" path="res://art/stomach/tex_digestion_frame_1000.png" id="17_digestion"]
 [ext_resource type="Texture2D" uid="uid://djqhgj0uikma7" path="res://art/ui/time/ui_time_frame_1000.png" id="18_time_frame"]
@@ -46,15 +46,15 @@ texture = ExtResource("18_time_frame")
 
 [node name="TimeText" type="Label" parent="UI/TimeBar" unique_id=1349676453]
 layout_mode = 0
-offset_left = 27.0
-offset_top = 19.0
-offset_right = 255.0
-offset_bottom = 81.0
+offset_left = 28.0
+offset_top = 6.0
+offset_right = 256.0
+offset_bottom = 91.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 52
+theme_override_font_sizes/font_size = 76
 text = "23:00"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -73,11 +73,11 @@ offset_left = 18.0
 offset_top = 29.0
 offset_right = 258.0
 offset_bottom = 82.0
-theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_color = Color(0.033389993, 0.027299998, 0.21, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 36
 text = "消化開始！"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -90,15 +90,15 @@ offset_bottom = 720.0
 
 [node name="MessageText" type="Label" parent="UI/StatusPanel" unique_id=196976463]
 layout_mode = 0
-offset_left = 869.0
+offset_left = 792.0
 offset_top = 117.0
 offset_right = 1275.0
-offset_bottom = 175.0
+offset_bottom = 149.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 20
-text = "６時までにすべての悪夢を消化しよう"
+theme_override_font_sizes/font_size = 25
+text = "６時までにすべての悪夢を消化しましょう"
 horizontal_alignment = 2
 autowrap_mode = 3
