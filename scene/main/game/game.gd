@@ -9,6 +9,11 @@ const REST_MINUTES := 60
 const MAX_HP := 100
 const REST_HP := 50
 const MAX_FULLNESS := 6
+const ENEMY_TEXTURES: Array[Texture2D] = [
+	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
+	preload("res://art/enemy/tex_enemy_1000_No_200.png"),
+	preload("res://art/enemy/tex_enemy_1000_No_300.png"),
+]
 
 @onready var ui: CanvasLayer = $UI
 @onready var time_text: Label = $UI/TimeBar/TimeText
@@ -52,6 +57,7 @@ func start_battle() -> void:
 	digest_speed = 1
 	skill_active_turns = 0
 	digesting.clear()
+	_apply_enemy_textures()
 	nightmares = [
 		_create_nightmare("大人に追われる悪夢", 3, 2, 2),
 		_create_nightmare("落下する悪夢", 2, 1, 1),
@@ -71,6 +77,16 @@ func _sync_ui_visibility() -> void:
 	if ui == null:
 		return
 	ui.visible = visible
+
+
+func _apply_enemy_textures() -> void:
+	for i in range(enemy_nodes.size()):
+		if i >= ENEMY_TEXTURES.size():
+			return
+		var sprite := enemy_nodes[i].get_node_or_null("Sprite2D") as Sprite2D
+		if sprite == null:
+			continue
+		sprite.texture = ENEMY_TEXTURES[i]
 
 
 func _create_nightmare(name: String, cost: int, size: int, attack: int) -> Dictionary:
