@@ -34,6 +34,11 @@ const ENEMY_STOMACH_SIZES: Array[Vector2i] = [
 	Vector2i(3, 3),
 	Vector2i(2, 2),
 ]
+const ENEMY_STOMACH_SHAPES: Array[Array] = [
+	[Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2)],
+	[Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2)],
+	[Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+]
 
 @onready var ui: CanvasLayer = $UI
 @onready var time_text: Label = $UI/TimeBar/TimeText
@@ -143,6 +148,7 @@ func _create_enemy(name: String, hp_value: int, size: int, damage: int) -> Dicti
 		"damage": damage,
 		"digesting": false,
 		"digested": false,
+		"stomach_cell": Vector2i.ZERO,
 	}
 
 
@@ -206,16 +212,20 @@ func _advance_digest_turn() -> void:
 
 
 func _digest_nightmares() -> void:
+	var digested_this_turn := false
 	for i in range(enemies.size()):
 		var enemy := enemies[i]
-		if not bool(enemy["digesting"]) or bool(enemy["digested"]):
+		if not _can_digest_enemy_this_turn(i):
 			continue
 		enemy["remaining_hp"] = maxi(0, int(enemy["remaining_hp"]) - DIGEST_DAMAGE)
 		if int(enemy["remaining_hp"]) == 0:
 			enemy["digested"] = true
 			enemy["digesting"] = false
 			enemy_nodes[i].visible = false
+			digested_this_turn = true
 		enemies[i] = enemy
+	if digested_this_turn:
+		_apply_stomach_gravity()
 	_update_enemy_labels()
 
 
@@ -335,6 +345,9 @@ func _configure_stomach_grid() -> void:
 func _place_enemy_in_stomach(enemy_index: int) -> void:
 	var top_left := ENEMY_STOMACH_TOP_LEFT_CELLS[enemy_index]
 	var size := ENEMY_STOMACH_SIZES[enemy_index]
+	var enemy := enemies[enemy_index]
+	enemy["stomach_cell"] = top_left
+	enemies[enemy_index] = enemy
 	enemy_nodes[enemy_index].global_position = _get_stomach_area_center(top_left, size)
 
 
@@ -356,6 +369,82 @@ func _get_stomach_rect() -> Rect2:
 	if stomach_frame == null:
 		return Rect2(stomach.global_position - Vector2(188, 284), Vector2(376, 568))
 	return _get_global_rect(stomach_frame)
+
+
+func _can_digest_enemy_this_turn(enemy_index: int) -> bool:
+	var enemy := enemies[enemy_index]
+	if not bool(enemy["digesting"]) or bool(enemy["digested"]):
+		return false
+	var top_left: Vector2i = enemy["stomach_cell"]
+	for cell in _get_enemy_occupied_cells(enemy_index, top_left):
+		if cell.y == STOMACH_ROWS - 1:
+			return true
+	return false
+
+
+func _apply_stomach_gravity() -> void:
+	var moved := true
+	while moved:
+		moved = false
+		for i in _get_active_enemy_indices_bottom_first():
+			var enemy := enemies[i]
+			var current_cell: Vector2i = enemy["stomach_cell"]
+			var next_cell := current_cell + Vector2i(0, 1)
+			if not _can_place_enemy_at(i, next_cell):
+				continue
+			enemy["stomach_cell"] = next_cell
+			enemies[i] = enemy
+			enemy_nodes[i].global_position = _get_stomach_area_center(next_cell, ENEMY_STOMACH_SIZES[i])
+			moved = true
+
+
+func _get_active_enemy_indices_bottom_first() -> Array[int]:
+	var indices: Array[int] = []
+	for i in range(enemies.size()):
+		var enemy := enemies[i]
+		if bool(enemy["digesting"]) and not bool(enemy["digested"]):
+			indices.append(i)
+	indices.sort_custom(_sort_enemy_indices_by_bottom_row)
+	return indices
+
+
+func _sort_enemy_indices_by_bottom_row(a: int, b: int) -> bool:
+	return _get_enemy_bottom_row(a) > _get_enemy_bottom_row(b)
+
+
+func _get_enemy_bottom_row(enemy_index: int) -> int:
+	var enemy := enemies[enemy_index]
+	var top_left: Vector2i = enemy["stomach_cell"]
+	var bottom_row := 0
+	for cell in _get_enemy_occupied_cells(enemy_index, top_left):
+		bottom_row = maxi(bottom_row, cell.y)
+	return bottom_row
+
+
+func _can_place_enemy_at(enemy_index: int, top_left: Vector2i) -> bool:
+	var cells := _get_enemy_occupied_cells(enemy_index, top_left)
+	for cell in cells:
+		if cell.x < 0 or cell.x >= STOMACH_COLUMNS or cell.y < 0 or cell.y >= STOMACH_ROWS:
+			return false
+	for other_index in range(enemies.size()):
+		if other_index == enemy_index:
+			continue
+		var other := enemies[other_index]
+		if not bool(other["digesting"]) or bool(other["digested"]):
+			continue
+		var other_top_left: Vector2i = other["stomach_cell"]
+		for cell in cells:
+			if _get_enemy_occupied_cells(other_index, other_top_left).has(cell):
+				return false
+	return true
+
+
+func _get_enemy_occupied_cells(enemy_index: int, top_left: Vector2i) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	for offset in ENEMY_STOMACH_SHAPES[enemy_index]:
+		var offset_cell: Vector2i = offset
+		cells.append(top_left + offset_cell)
+	return cells
 
 
 func _get_stomach_area_center(top_left: Vector2i, size: Vector2i) -> Vector2:
