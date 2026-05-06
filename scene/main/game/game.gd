@@ -333,7 +333,7 @@ func _try_start_digesting(enemy_index: int, mouse_position: Vector2) -> void:
 	enemy["digesting"] = true
 	enemies[enemy_index] = enemy
 	_place_enemy_in_stomach(enemy_index, top_left)
-	_update_ui("%s の消化を開始しました" % String(enemy["name"]))
+	_update_ui("")
 
 
 func _advance_digest_turn() -> void:
