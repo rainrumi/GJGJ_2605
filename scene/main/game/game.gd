@@ -199,7 +199,7 @@ func _prepare_mouse_filters() -> void:
 	if time_bar != null:
 		time_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for enemy_node in enemy_nodes:
-		var label := enemy_node.get_node_or_null("HpText") as Label
+		var label := enemy_node.get_node_or_null("HPText") as Label
 		if label != null:
 			label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -456,7 +456,7 @@ func _update_digestion_label() -> void:
 
 func _update_enemy_labels() -> void:
 	for i in range(enemy_nodes.size()):
-		var label := enemy_nodes[i].get_node_or_null("HpText") as Label
+		var label := enemy_nodes[i].get_node_or_null("HPText") as Label
 		if label == null or i >= enemies.size():
 			continue
 		label.text = str(int(enemies[i]["remaining_hp"]))
@@ -520,6 +520,9 @@ func _update_stomach_preview(mouse_position: Vector2) -> void:
 		_hide_stomach_preview()
 		return
 	var top_left := _get_dragged_enemy_drop_cell(dragging_enemy_index, mouse_position)
+	if not _is_enemy_within_stomach_bounds(dragging_enemy_index, top_left):
+		_hide_stomach_preview()
+		return
 	stomach_preview_sprite.texture = source_sprite.texture
 	stomach_preview_sprite.scale = source_sprite.scale
 	stomach_preview_sprite.global_position = _get_stomach_area_center(top_left, ENEMY_STOMACH_SIZES[dragging_enemy_index])
@@ -716,9 +719,8 @@ func _get_enemy_bottom_row(enemy_index: int) -> int:
 
 func _can_place_enemy_at(enemy_index: int, top_left: Vector2i) -> bool:
 	var cells := _get_enemy_occupied_cells(enemy_index, top_left)
-	for cell in cells:
-		if cell.x < 0 or cell.x >= STOMACH_COLUMNS or cell.y < 0 or cell.y >= STOMACH_ROWS:
-			return false
+	if not _is_enemy_within_stomach_bounds(enemy_index, top_left):
+		return false
 	for other_index in range(enemies.size()):
 		if other_index == enemy_index:
 			continue
@@ -729,6 +731,13 @@ func _can_place_enemy_at(enemy_index: int, top_left: Vector2i) -> bool:
 		for cell in cells:
 			if _get_enemy_occupied_cells(other_index, other_top_left).has(cell):
 				return false
+	return true
+
+
+func _is_enemy_within_stomach_bounds(enemy_index: int, top_left: Vector2i) -> bool:
+	for cell in _get_enemy_occupied_cells(enemy_index, top_left):
+		if cell.x < 0 or cell.x >= STOMACH_COLUMNS or cell.y < 0 or cell.y >= STOMACH_ROWS:
+			return false
 	return true
 
 
