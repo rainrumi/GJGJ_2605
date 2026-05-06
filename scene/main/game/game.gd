@@ -15,6 +15,8 @@ const MAX_FULLNESS := STOMACH_COLUMNS * STOMACH_ROWS
 const STOMACH_GRID_EDGE_OVERLAP := 1.0
 const DIGEST_AUTO_INTERVAL := 0.8
 const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
+const HOVER_SCALE := 1.1
+const HOVER_TWEEN_DURATION := 0.1
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
 	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
@@ -75,11 +77,18 @@ var auto_digest_paused_for_drag := false
 var dragged_enemy_was_digesting := false
 var dragged_enemy_original_cell := Vector2i.ZERO
 var dragged_enemy_original_global_position := Vector2.ZERO
+var enemy_base_scales: Array[Vector2] = []
+var enemy_hover_tweens: Array = []
+var hovered_enemy_index := -1
+var digestion_button_base_scale := Vector2.ONE
+var digestion_button_tween: Tween
+var digestion_button_hovered := false
 
 
 func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
 	_prepare_mouse_filters()
+	_prepare_hover_effects()
 	_capture_hp_gauge_size()
 	_configure_stomach_grid()
 	_create_stomach_preview()
@@ -94,6 +103,8 @@ func start_battle() -> void:
 	hp = MAX_HP
 	battle_active = true
 	dragging_enemy_index = -1
+	_set_hovered_enemy(-1)
+	_set_digestion_button_hovered(false)
 	dragged_enemy_was_digesting = false
 	_hide_stomach_preview()
 	_hide_hp_damage_preview()
@@ -112,6 +123,16 @@ func start_battle() -> void:
 	_apply_enemy_textures()
 	_update_enemy_labels()
 	_update_ui(START_MESSAGE)
+
+
+func _process(_delta: float) -> void:
+	if not battle_active:
+		_set_hovered_enemy(-1)
+		_set_digestion_button_hovered(false)
+		return
+	var mouse_position := get_viewport().get_mouse_position()
+	_update_enemy_hover(mouse_position)
+	_update_digestion_button_hover(mouse_position)
 
 
 func _input(event: InputEvent) -> void:
@@ -208,12 +229,88 @@ func _capture_hp_gauge_size() -> void:
 	hp_gauge_full_width = hp_gauge.size.x
 
 
+func _prepare_hover_effects() -> void:
+	enemy_base_scales.clear()
+	enemy_hover_tweens.clear()
+	for enemy_node in enemy_nodes:
+		var sprite := enemy_node.get_node_or_null("Sprite2D") as Sprite2D
+		if sprite == null:
+			enemy_base_scales.append(Vector2.ONE)
+		else:
+			enemy_base_scales.append(sprite.scale)
+		enemy_hover_tweens.append(null)
+	digestion_button_base_scale = digestion_frame.scale
+	digestion_frame.pivot_offset = digestion_frame.size * 0.5
+
+
+func _update_enemy_hover(mouse_position: Vector2) -> void:
+	if dragging_enemy_index != -1:
+		_set_hovered_enemy(-1)
+		return
+	for i in range(enemy_nodes.size() - 1, -1, -1):
+		if not _can_drag_enemy(i) or not enemy_nodes[i].visible:
+			continue
+		if _get_enemy_rect(i).has_point(mouse_position):
+			_set_hovered_enemy(i)
+			return
+	_set_hovered_enemy(-1)
+
+
+func _set_hovered_enemy(enemy_index: int) -> void:
+	if hovered_enemy_index == enemy_index:
+		return
+	var previous_index := hovered_enemy_index
+	hovered_enemy_index = enemy_index
+	if previous_index != -1:
+		_tween_enemy_hover(previous_index, false)
+	if hovered_enemy_index != -1:
+		_tween_enemy_hover(hovered_enemy_index, true)
+
+
+func _tween_enemy_hover(enemy_index: int, hovered: bool) -> void:
+	var sprite := enemy_nodes[enemy_index].get_node_or_null("Sprite2D") as Sprite2D
+	if sprite == null:
+		return
+	var tween = enemy_hover_tweens[enemy_index]
+	if tween != null and tween.is_valid():
+		tween.kill()
+	var target_scale := enemy_base_scales[enemy_index]
+	if hovered:
+		target_scale *= HOVER_SCALE
+	tween = create_tween()
+	tween.set_trans(Tween.TRANS_QUAD)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_property(sprite, "scale", target_scale, HOVER_TWEEN_DURATION)
+	enemy_hover_tweens[enemy_index] = tween
+
+
+func _update_digestion_button_hover(mouse_position: Vector2) -> void:
+	var hovered := digestion_frame.visible and _get_global_rect(digestion_frame).has_point(mouse_position)
+	_set_digestion_button_hovered(hovered)
+
+
+func _set_digestion_button_hovered(hovered: bool) -> void:
+	if digestion_button_hovered == hovered:
+		return
+	digestion_button_hovered = hovered
+	if digestion_button_tween != null and digestion_button_tween.is_valid():
+		digestion_button_tween.kill()
+	var target_scale := digestion_button_base_scale
+	if digestion_button_hovered:
+		target_scale *= HOVER_SCALE
+	digestion_button_tween = create_tween()
+	digestion_button_tween.set_trans(Tween.TRANS_QUAD)
+	digestion_button_tween.set_ease(Tween.EASE_OUT)
+	digestion_button_tween.tween_property(digestion_frame, "scale", target_scale, HOVER_TWEEN_DURATION)
+
+
 func _can_drag_enemy(enemy_index: int) -> bool:
 	var enemy := enemies[enemy_index]
 	return not bool(enemy["digested"])
 
 
 func _start_enemy_drag(enemy_index: int) -> void:
+	_set_hovered_enemy(-1)
 	var enemy := enemies[enemy_index]
 	dragged_enemy_was_digesting = bool(enemy["digesting"])
 	dragged_enemy_original_cell = enemy["stomach_cell"]
@@ -770,6 +867,8 @@ func _resize_enemy_to_stomach_grid(enemy_index: int, sprite: Sprite2D) -> void:
 		_get_stomach_span_size(size.y)
 	)
 	sprite.scale = target_size / sprite.texture.get_size()
+	if enemy_index < enemy_base_scales.size():
+		enemy_base_scales[enemy_index] = sprite.scale
 
 
 func _get_stomach_span_size(cell_count: int) -> float:
