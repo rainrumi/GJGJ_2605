@@ -23,6 +23,8 @@ const TIME_PULSE_BASE_INTERVAL := 0.6
 const ENEMY_COST_PULSE_SCALE := 1.1
 const ENEMY_COST_PULSE_DURATION_AT_BASE_INTERVAL := 0.2
 const ENEMY_COST_PULSE_BASE_INTERVAL := 0.6
+const HP_GAUGE_TWEEN_DURATION_AT_BASE_INTERVAL := 0.2
+const HP_GAUGE_TWEEN_BASE_INTERVAL := 0.6
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
 	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
@@ -78,6 +80,7 @@ var stomach_preview_sprite: Sprite2D
 var digestion_timer: Timer
 var hp_damage_preview_label: Label
 var hp_gauge_full_width := 0.0
+var hp_gauge_tween: Tween
 var auto_digest_enabled := false
 var auto_digest_paused_for_drag := false
 var dragged_enemy_was_digesting := false
@@ -119,6 +122,7 @@ func start_battle() -> void:
 	_set_digestion_button_hovered(false)
 	_reset_time_text_pulse()
 	_reset_enemy_cost_pulses()
+	_reset_hp_gauge()
 	dragged_enemy_was_digesting = false
 	_hide_stomach_preview()
 	_hide_hp_damage_preview()
@@ -241,6 +245,13 @@ func _prepare_mouse_filters() -> void:
 
 func _capture_hp_gauge_size() -> void:
 	hp_gauge_full_width = hp_gauge.size.x
+
+
+func _reset_hp_gauge() -> void:
+	if hp_gauge_tween != null and hp_gauge_tween.is_valid():
+		hp_gauge_tween.kill()
+	hp_gauge.visible = hp > 0
+	hp_gauge.size = Vector2(hp_gauge_full_width * clampf(float(maxi(0, hp)) / float(MAX_HP), 0.0, 1.0), hp_gauge.size.y)
 
 
 func _prepare_hover_effects() -> void:
@@ -635,8 +646,21 @@ func _update_ui(message: String) -> void:
 
 func _update_hp_gauge() -> void:
 	var hp_ratio := clampf(float(maxi(0, hp)) / float(MAX_HP), 0.0, 1.0)
-	hp_gauge.visible = hp_ratio > 0.0
-	hp_gauge.size = Vector2(hp_gauge_full_width * hp_ratio, hp_gauge.size.y)
+	var target_size := Vector2(hp_gauge_full_width * hp_ratio, hp_gauge.size.y)
+	if hp_gauge_tween != null and hp_gauge_tween.is_valid():
+		hp_gauge_tween.kill()
+	if hp_ratio > 0.0:
+		hp_gauge.visible = true
+	hp_gauge_tween = create_tween()
+	hp_gauge_tween.set_trans(Tween.TRANS_QUAD)
+	hp_gauge_tween.set_ease(Tween.EASE_OUT)
+	hp_gauge_tween.tween_property(hp_gauge, "size", target_size, _get_hp_gauge_tween_duration())
+	if hp_ratio == 0.0:
+		hp_gauge_tween.tween_callback(func() -> void: hp_gauge.visible = false)
+
+
+func _get_hp_gauge_tween_duration() -> float:
+	return maxf(0.03, HP_GAUGE_TWEEN_DURATION_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / HP_GAUGE_TWEEN_BASE_INTERVAL)
 
 
 func _update_digestion_label() -> void:
