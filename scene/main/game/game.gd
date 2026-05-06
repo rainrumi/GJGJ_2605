@@ -27,6 +27,7 @@ const HP_GAUGE_TWEEN_DURATION_AT_BASE_INTERVAL := 0.2
 const HP_GAUGE_TWEEN_BASE_INTERVAL := 0.6
 const TIME_ELAPSED_FLOAT_DISTANCE := 10.0
 const TIME_ELAPSED_TWEEN_DURATION_AT_BASE_INTERVAL := 0.3
+const TIME_ELAPSED_HIDE_DELAY_AT_BASE_INTERVAL := 0.2
 const TIME_ELAPSED_TWEEN_BASE_INTERVAL := 0.6
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
@@ -686,6 +687,8 @@ func _show_time_elapsed(amount_minutes: int) -> void:
 		time_elapsed_label_base_position.y - TIME_ELAPSED_FLOAT_DISTANCE,
 		_get_time_elapsed_tween_duration()
 	)
+	time_elapsed_tween.chain().tween_interval(_get_time_elapsed_hide_delay())
+	time_elapsed_tween.chain().tween_callback(_hide_time_elapsed_after_delay)
 	_pulse_time_text()
 
 
@@ -698,8 +701,19 @@ func _hide_time_elapsed_label() -> void:
 		time_elapsed_label.modulate.a = 0.0
 
 
+func _hide_time_elapsed_after_delay() -> void:
+	if time_elapsed_label != null:
+		time_elapsed_label.visible = false
+		time_elapsed_label.position = time_elapsed_label_base_position
+		time_elapsed_label.modulate.a = 0.0
+
+
 func _get_time_elapsed_tween_duration() -> float:
 	return maxf(0.03, TIME_ELAPSED_TWEEN_DURATION_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / TIME_ELAPSED_TWEEN_BASE_INTERVAL)
+
+
+func _get_time_elapsed_hide_delay() -> float:
+	return maxf(0.03, TIME_ELAPSED_HIDE_DELAY_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / TIME_ELAPSED_TWEEN_BASE_INTERVAL)
 
 
 func _format_elapsed_time(amount_minutes: int) -> String:

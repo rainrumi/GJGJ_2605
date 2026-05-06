@@ -105,10 +105,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HpFrame" type="NinePatchRect" parent="UI" unique_id=756334925]
-offset_left = 71.0
-offset_top = 654.0
-offset_right = 327.0
-offset_bottom = 680.0
+offset_left = 64.0
+offset_top = 570.0
+offset_right = 320.0
+offset_bottom = 596.0
 texture = ExtResource("19_hp_frame")
 region_rect = Rect2(0, 0, 256, 26)
 patch_margin_left = 12
@@ -136,7 +136,7 @@ offset_right = 234.0
 offset_bottom = 30.0
 theme_override_colors/font_color = Color(0.03529412, 0.02745098, 0.21176471, 1)
 theme_override_colors/font_outline_color = Color(0.94, 0.88, 1, 1)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 10
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 20
 text = "100/100"
