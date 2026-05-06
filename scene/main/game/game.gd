@@ -48,6 +48,7 @@ const ENEMY_STOMACH_SHAPES: Array[Array] = [
 ]
 
 @onready var ui: CanvasLayer = $UI
+@onready var time_bar: TextureRect = $UI/TimeBar
 @onready var time_text: Label = $UI/TimeBar/TimeText
 @onready var hp_frame: NinePatchRect = $UI/HpFrame
 @onready var hp_gauge: NinePatchRect = $UI/HpFrame/HpGauge
@@ -79,6 +80,7 @@ var stomach_grid_step := 0.0
 var stomach_preview_sprite: Sprite2D
 var digestion_timer: Timer
 var hp_damage_preview_label: Label
+var time_elapsed_label: Label
 var hp_gauge_full_width := 0.0
 var hp_gauge_tween: Tween
 var auto_digest_enabled := false
@@ -109,6 +111,7 @@ func _ready() -> void:
 	_create_stomach_preview()
 	_create_digestion_timer()
 	_create_hp_damage_preview()
+	_create_time_elapsed_label()
 	_sync_ui_visibility()
 	start_battle()
 
@@ -126,6 +129,7 @@ func start_battle() -> void:
 	dragged_enemy_was_digesting = false
 	_hide_stomach_preview()
 	_hide_hp_damage_preview()
+	_hide_time_elapsed_label()
 	_reset_auto_digest()
 	enemies = [
 		_create_enemy("大人に追われる悪夢", 1400, 6, 2),
@@ -444,6 +448,25 @@ func _create_hp_damage_preview() -> void:
 	_position_hp_damage_preview()
 
 
+func _create_time_elapsed_label() -> void:
+	time_elapsed_label = Label.new()
+	time_elapsed_label.name = "TimeElapsedLabel"
+	time_elapsed_label.visible = false
+	time_elapsed_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	time_elapsed_label.size = Vector2(104.0, 36.0)
+	time_elapsed_label.position = time_bar.position + Vector2(-110.0, 42.0)
+	time_elapsed_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	time_elapsed_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	time_elapsed_label.add_theme_color_override("font_color", Color(0.94, 0.88, 1.0, 1.0))
+	time_elapsed_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	time_elapsed_label.add_theme_constant_override("outline_size", 4)
+	var elapsed_font := time_text.get_theme_font("font")
+	if elapsed_font != null:
+		time_elapsed_label.add_theme_font_override("font", elapsed_font)
+	time_elapsed_label.add_theme_font_size_override("font_size", 28)
+	ui.add_child(time_elapsed_label)
+
+
 func _update_auto_digest_timer() -> void:
 	if digestion_timer == null:
 		return
@@ -538,15 +561,18 @@ func _advance_digest_turn() -> void:
 		_reset_auto_digest()
 		_update_ui("消化中の悪夢がありません")
 		return
+	var elapsed_minutes := STEP_MINUTES
 	_digest_nightmares()
 	_apply_digest_damage()
 	_advance_time(STEP_MINUTES)
 	if hp <= 0:
 		hp = REST_HP
 		_advance_time(REST_MINUTES)
+		elapsed_minutes += REST_MINUTES
 		_update_ui("体力が尽きたため休憩しました")
 	else:
-		_update_ui("30分が経過しました")
+		_update_ui("")
+	_show_time_elapsed(elapsed_minutes)
 	_check_battle_end()
 	_update_auto_digest_timer()
 
@@ -631,8 +657,29 @@ func _current_fullness() -> int:
 
 func _advance_time(amount_minutes: int) -> void:
 	minutes += amount_minutes
-	if auto_digest_enabled:
-		_pulse_time_text()
+
+
+func _show_time_elapsed(amount_minutes: int) -> void:
+	if not auto_digest_enabled or time_elapsed_label == null:
+		return
+	time_elapsed_label.text = _format_elapsed_time(amount_minutes)
+	time_elapsed_label.visible = true
+	_pulse_time_text()
+
+
+func _hide_time_elapsed_label() -> void:
+	if time_elapsed_label != null:
+		time_elapsed_label.visible = false
+
+
+func _format_elapsed_time(amount_minutes: int) -> String:
+	var hours := int(amount_minutes / 60)
+	var minutes_only := amount_minutes % 60
+	if hours == 0:
+		return "+%02dm" % minutes_only
+	if minutes_only == 0:
+		return "+%dh" % hours
+	return "+%dh%02dm" % [hours, minutes_only]
 
 
 func _update_ui(message: String) -> void:
