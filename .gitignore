@@ -1,3 +1,5 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+sound/bgm/Night_Dance.mp3
+sound/bgm/Night_Dance.mp3.import

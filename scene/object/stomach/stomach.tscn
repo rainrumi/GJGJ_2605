@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://i8f283fq31p" path="res://art/stomach/tex_ui_stomach_frame_1000.png" id="2_frame"]
 [ext_resource type="Texture2D" uid="uid://qnhr5hhcadyj" path="res://art/ui/grid/grid_atlas.png" id="4_ogirn"]
+[ext_resource type="Texture2D" uid="uid://coh2vv1pametd" path="res://art/stomach/tex_ui_stomach_line_1000.png" id="5_line"]
 
 [node name="Stomach" type="Node2D" unique_id=439071358]
 
@@ -27,3 +28,9 @@ patch_margin_left = 84
 patch_margin_top = 56
 patch_margin_right = 40
 patch_margin_bottom = 208
+
+[node name="DigestionLine" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource("5_line")

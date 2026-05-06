@@ -58,12 +58,14 @@ const ENEMY_STOMACH_SHAPES: Array[Array] = [
 @onready var hp_gauge: NinePatchRect = $UI/HpFrame/HpGauge
 @onready var hp_text: Label = $UI/HpFrame/HpText
 @onready var message_text: Label = get_node_or_null("UI/StatusPanel/MessageText") as Label
+@onready var debug_message_button: Button = get_node_or_null("UI/StatusPanel/DebugMessageButton") as Button
 @onready var passive_guide_text: Label = get_node_or_null("UI/PassiveGuideFrame/PassiveGuideText") as Label
 @onready var digestion_frame: TextureRect = $UI/DigestionFrame
 @onready var digestion_label: Label = $UI/DigestionFrame/DigestionLabel
 @onready var stomach: Node2D = $Stomach
 @onready var stomach_frame: NinePatchRect = $Stomach/frame
 @onready var stomach_grid_frame: NinePatchRect = $Stomach/grid_frame
+@onready var digestion_line: TextureRect = get_node_or_null("Stomach/DigestionLine") as TextureRect
 @onready var enemy_nodes: Array[Node2D] = [
 	$EnemyLeft as Node2D,
 	$EnemyCenter as Node2D,
@@ -104,10 +106,12 @@ var time_text_base_scale := Vector2.ONE
 var time_text_pulse_tween: Tween
 var enemy_cost_base_scales: Array[Vector2] = []
 var enemy_cost_pulse_tweens: Array = []
+var debug_message := ""
 
 
 func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
+	_prepare_debug_message_button()
 	_prepare_mouse_filters()
 	_prepare_hover_effects()
 	_prepare_time_pulse()
@@ -151,6 +155,14 @@ func start_battle() -> void:
 	_apply_enemy_textures()
 	_update_enemy_labels()
 	_update_ui(START_MESSAGE)
+
+
+func _prepare_debug_message_button() -> void:
+	if message_text != null:
+		message_text.text = START_MESSAGE
+	if debug_message_button == null:
+		return
+	debug_message_button.pressed.connect(_on_debug_message_button_pressed)
 
 
 func _process(_delta: float) -> void:
@@ -233,11 +245,13 @@ func _prepare_mouse_filters() -> void:
 	digestion_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if message_text != null:
 		message_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if debug_message_button != null:
+		debug_message_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	if passive_guide_text != null:
 		passive_guide_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var status_panel := get_node_or_null("UI/StatusPanel") as Control
 	if status_panel != null:
-		status_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		status_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	var passive_guide_frame := get_node_or_null("UI/PassiveGuideFrame") as Control
 	if passive_guide_frame != null:
 		passive_guide_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -251,6 +265,8 @@ func _prepare_mouse_filters() -> void:
 		var label := enemy_node.get_node_or_null("HPText") as Label
 		if label != null:
 			label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if digestion_line != null:
+		digestion_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func _capture_hp_gauge_size() -> void:
@@ -730,9 +746,20 @@ func _update_ui(message: String) -> void:
 	time_text.text = _format_time()
 	hp_text.text = "%d/%d" % [maxi(0, hp), MAX_HP]
 	_update_hp_gauge()
+	if message != "" and message != START_MESSAGE:
+		debug_message = message
 	if message_text != null:
-		message_text.text = message
+		message_text.text = START_MESSAGE
 	_update_digestion_label()
+
+
+func _on_debug_message_button_pressed() -> void:
+	if message_text == null:
+		return
+	if debug_message == "":
+		message_text.text = START_MESSAGE
+		return
+	message_text.text = debug_message
 
 
 func _update_hp_gauge() -> void:
@@ -802,7 +829,17 @@ func _configure_stomach_grid() -> void:
 				stomach.add_child(cell)
 			cell.position = stomach_grid_origin + Vector2(column, row) * stomach_grid_step
 			cell.size = Vector2(stomach_grid_cell_size, stomach_grid_cell_size)
+	_position_digestion_line()
 	stomach.move_child(stomach_frame, stomach.get_child_count() - 1)
+
+
+func _position_digestion_line() -> void:
+	if digestion_line == null or stomach_frame == null:
+		return
+	digestion_line.position = Vector2(
+		stomach_frame.position.x + stomach_frame.size.x,
+		stomach_grid_origin.y + float(STOMACH_ROWS - 1) * stomach_grid_step
+	)
 
 
 func _create_stomach_preview() -> void:
