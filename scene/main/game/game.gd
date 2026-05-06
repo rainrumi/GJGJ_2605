@@ -238,6 +238,7 @@ func _start_auto_digest() -> void:
 	auto_digest_enabled = true
 	auto_digest_paused_for_drag = false
 	_update_digestion_button_visibility()
+	_prepare_stomach_for_digest()
 	_advance_digest_turn()
 
 
@@ -264,6 +265,11 @@ func _on_digestion_timer_timeout() -> void:
 		_update_auto_digest_timer()
 		return
 	_advance_digest_turn()
+
+
+func _prepare_stomach_for_digest() -> void:
+	if not _has_bottom_touching_nightmare():
+		_apply_stomach_gravity()
 
 
 func _try_start_digesting(enemy_index: int, mouse_position: Vector2) -> void:
@@ -543,6 +549,13 @@ func _get_bottom_row_cell_count(enemy_index: int) -> int:
 		if cell.y == STOMACH_ROWS - 1:
 			count += 1
 	return count
+
+
+func _has_bottom_touching_nightmare() -> bool:
+	for i in range(enemies.size()):
+		if _get_bottom_row_cell_count(i) > 0:
+			return true
+	return false
 
 
 func _apply_stomach_gravity() -> void:
