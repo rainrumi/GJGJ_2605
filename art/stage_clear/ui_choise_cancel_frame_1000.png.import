@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4jc6cf68qdw"
-path="res://.godot/imported/tex_effect_1000_No_100.png-556d32ed5073ca67fc50f4aa3682f0f5.ctex"
+uid="uid://bvewbj2k87hga"
+path="res://.godot/imported/ui_choise_cancel_frame_1000.png-69cccb4caaa31d8ee62d9c787b715069.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resource/tex_effect_1000_No_100.png"
-dest_files=["res://.godot/imported/tex_effect_1000_No_100.png-556d32ed5073ca67fc50f4aa3682f0f5.ctex"]
+source_file="res://art/stage_clear/ui_choise_cancel_frame_1000.png"
+dest_files=["res://.godot/imported/ui_choise_cancel_frame_1000.png-69cccb4caaa31d8ee62d9c787b715069.ctex"]
 
 [params]
 

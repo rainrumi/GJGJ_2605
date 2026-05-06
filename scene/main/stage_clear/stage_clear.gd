@@ -5,31 +5,31 @@ signal selection_finished(recovered_hp_rate: float)
 const HP_RECOVERY_RATE := 0.1
 const RARITY_NORMAL := "normal"
 const RARITY_HIGH := "high"
-const MAX_FLOWERS_BY_RARITY := {
-	RARITY_NORMAL: 2,
-	RARITY_HIGH: 1,
+const MAX_FLOWERS_BY_RARITY: Dictionary = {
+	"normal": 2,
+	"high": 1,
 }
 
-const SEED_OPTIONS := [
+const SEED_OPTIONS: Array[Dictionary] = [
 	{
 		"name": "カーネーション",
 		"rarity": RARITY_NORMAL,
 		"effect": "HP +40%",
-		"seed_texture": preload("res://resource/tex_seed_1000_No_100.png"),
+		"seed_texture": preload("res://art/stage_clear/tex_seed_1000_No_100.png"),
 		"flower_texture": preload("res://art/dreamseed/flower/tex_passive_flower_1000.png"),
 	},
 	{
 		"name": "カモミール",
 		"rarity": RARITY_NORMAL,
 		"effect": "悪夢消化時に追加でHP +5%回復",
-		"seed_texture": preload("res://resource/tex_seed_1000_No_200.png"),
+		"seed_texture": preload("res://art/stage_clear/tex_seed_1000_No_200.png"),
 		"flower_texture": preload("res://art/dreamseed/flower/tex_passive_flower_1000.png"),
 	},
 	{
 		"name": "カゲチーノ",
 		"rarity": RARITY_HIGH,
 		"effect": "胃袋の悪夢から受けるダメージ -20%",
-		"seed_texture": preload("res://resource/tex_seed_1000_No_300.png"),
+		"seed_texture": preload("res://art/stage_clear/tex_seed_1000_No_300.png"),
 		"flower_texture": preload("res://art/dreamseed/flower/tex_seed_2000_demo_1000.png"),
 	},
 ]
@@ -85,7 +85,8 @@ func _setup_seed_buttons() -> void:
 	for i in range(seed_buttons.size()):
 		var button := seed_buttons[i]
 		button.pressed.connect(_on_seed_button_pressed.bind(i))
-		_apply_seed_button(button, SEED_OPTIONS[i])
+		var seed: Dictionary = SEED_OPTIONS[i]
+		_apply_seed_button(button, seed)
 
 
 func _setup_flower_slots() -> void:
@@ -98,14 +99,15 @@ func _apply_seed_button(button: Button, seed: Dictionary) -> void:
 	var title_label := button.get_node("NameLabel") as Label
 	var effect_label := button.get_node("EffectLabel") as Label
 	seed_texture.texture = seed["seed_texture"] as Texture2D
-	title_label.text = seed["name"]
-	effect_label.text = seed["effect"]
+	title_label.text = str(seed["name"])
+	effect_label.text = str(seed["effect"])
 
 
 func _show_select_mode() -> void:
 	waiting_for_replacement = false
 	selected_seed_index = -1
 	guide_text.text = "夢の種をひとつ選んでください"
+	abandon_button.disabled = false
 	abandon_button.text = "放棄する（HP +10%回復）"
 	for button in seed_buttons:
 		button.disabled = false
@@ -116,18 +118,19 @@ func _show_select_mode() -> void:
 func _show_replacement_mode(seed_index: int) -> void:
 	waiting_for_replacement = true
 	selected_seed_index = seed_index
-	var seed := SEED_OPTIONS[seed_index]
+	var seed: Dictionary = SEED_OPTIONS[seed_index]
 	guide_text.text = "頭がいっぱいです。同じレアリティの花を抜くか、選択を放棄してください"
+	abandon_button.disabled = false
 	abandon_button.text = "この選択を放棄する（HP +10%回復）"
 	for button in seed_buttons:
 		button.disabled = true
 	for i in range(flower_slots.size()):
-		var planted := planted_flowers[i]
+		var planted: Dictionary = planted_flowers[i]
 		flower_slots[i].disabled = planted["rarity"] != seed["rarity"]
 
 
 func _on_seed_button_pressed(seed_index: int) -> void:
-	var seed := SEED_OPTIONS[seed_index]
+	var seed: Dictionary = SEED_OPTIONS[seed_index]
 	if _can_plant_seed(seed):
 		_plant_seed(seed)
 		return
@@ -137,13 +140,13 @@ func _on_seed_button_pressed(seed_index: int) -> void:
 func _on_flower_slot_pressed(slot_index: int) -> void:
 	if not waiting_for_replacement or selected_seed_index == -1:
 		return
-	var seed := SEED_OPTIONS[selected_seed_index]
+	var seed: Dictionary = SEED_OPTIONS[selected_seed_index]
 	if planted_flowers[slot_index]["rarity"] != seed["rarity"]:
 		return
 	planted_flowers[slot_index] = _create_flower_from_seed(seed)
 	_refresh_flower_slots()
 	selection_finished.emit(0.0)
-	_show_finished_mode("%sを植えました" % seed["name"])
+	_show_finished_mode("%sを植えました" % str(seed["name"]))
 
 
 func _on_abandon_button_pressed() -> void:
@@ -152,14 +155,15 @@ func _on_abandon_button_pressed() -> void:
 
 
 func _can_plant_seed(seed: Dictionary) -> bool:
-	return _count_planted_by_rarity(seed["rarity"]) < int(MAX_FLOWERS_BY_RARITY[seed["rarity"]])
+	var rarity := str(seed["rarity"])
+	return _count_planted_by_rarity(rarity) < int(MAX_FLOWERS_BY_RARITY[rarity])
 
 
 func _plant_seed(seed: Dictionary) -> void:
 	planted_flowers.append(_create_flower_from_seed(seed))
 	_refresh_flower_slots()
 	selection_finished.emit(0.0)
-	_show_finished_mode("%sを植えました" % seed["name"])
+	_show_finished_mode("%sを植えました" % str(seed["name"]))
 
 
 func _show_finished_mode(message: String) -> void:

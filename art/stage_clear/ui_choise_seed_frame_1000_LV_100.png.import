@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7vy4jxh1mamj"
-path="res://.godot/imported/ui_seed_guide_frame_1000.png-9103b6767ba2d555cd4c366e0ec5e314.ctex"
+uid="uid://bf3b0ngamjwoc"
+path="res://.godot/imported/ui_choise_seed_frame_1000_LV_100.png-207af9cc07f323f885213b419251f559.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resource/ui_seed_guide_frame_1000.png"
-dest_files=["res://.godot/imported/ui_seed_guide_frame_1000.png-9103b6767ba2d555cd4c366e0ec5e314.ctex"]
+source_file="res://art/stage_clear/ui_choise_seed_frame_1000_LV_100.png"
+dest_files=["res://.godot/imported/ui_choise_seed_frame_1000_LV_100.png-207af9cc07f323f885213b419251f559.ctex"]
 
 [params]
 
