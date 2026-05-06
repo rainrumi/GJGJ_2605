@@ -25,6 +25,9 @@ const ENEMY_COST_PULSE_DURATION_AT_BASE_INTERVAL := 0.2
 const ENEMY_COST_PULSE_BASE_INTERVAL := 0.6
 const HP_GAUGE_TWEEN_DURATION_AT_BASE_INTERVAL := 0.2
 const HP_GAUGE_TWEEN_BASE_INTERVAL := 0.6
+const TIME_ELAPSED_FLOAT_DISTANCE := 10.0
+const TIME_ELAPSED_TWEEN_DURATION_AT_BASE_INTERVAL := 0.3
+const TIME_ELAPSED_TWEEN_BASE_INTERVAL := 0.6
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
 	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
@@ -81,6 +84,8 @@ var stomach_preview_sprite: Sprite2D
 var digestion_timer: Timer
 var hp_damage_preview_label: Label
 var time_elapsed_label: Label
+var time_elapsed_label_base_position := Vector2.ZERO
+var time_elapsed_tween: Tween
 var hp_gauge_full_width := 0.0
 var hp_gauge_tween: Tween
 var auto_digest_enabled := false
@@ -454,7 +459,9 @@ func _create_time_elapsed_label() -> void:
 	time_elapsed_label.visible = false
 	time_elapsed_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	time_elapsed_label.size = Vector2(104.0, 36.0)
-	time_elapsed_label.position = time_bar.position + Vector2(-110.0, 42.0)
+	time_elapsed_label_base_position = time_bar.position + Vector2(-110.0, 42.0)
+	time_elapsed_label.position = time_elapsed_label_base_position
+	time_elapsed_label.modulate.a = 0.0
 	time_elapsed_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	time_elapsed_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	time_elapsed_label.add_theme_color_override("font_color", Color(0.94, 0.88, 1.0, 1.0))
@@ -662,14 +669,37 @@ func _advance_time(amount_minutes: int) -> void:
 func _show_time_elapsed(amount_minutes: int) -> void:
 	if not auto_digest_enabled or time_elapsed_label == null:
 		return
+	if time_elapsed_tween != null and time_elapsed_tween.is_valid():
+		time_elapsed_tween.kill()
 	time_elapsed_label.text = _format_elapsed_time(amount_minutes)
+	time_elapsed_label.position = time_elapsed_label_base_position
+	time_elapsed_label.modulate.a = 0.0
 	time_elapsed_label.visible = true
+	time_elapsed_tween = create_tween()
+	time_elapsed_tween.set_parallel(true)
+	time_elapsed_tween.set_trans(Tween.TRANS_QUART)
+	time_elapsed_tween.set_ease(Tween.EASE_OUT)
+	time_elapsed_tween.tween_property(time_elapsed_label, "modulate:a", 1.0, _get_time_elapsed_tween_duration())
+	time_elapsed_tween.tween_property(
+		time_elapsed_label,
+		"position:y",
+		time_elapsed_label_base_position.y - TIME_ELAPSED_FLOAT_DISTANCE,
+		_get_time_elapsed_tween_duration()
+	)
 	_pulse_time_text()
 
 
 func _hide_time_elapsed_label() -> void:
 	if time_elapsed_label != null:
+		if time_elapsed_tween != null and time_elapsed_tween.is_valid():
+			time_elapsed_tween.kill()
 		time_elapsed_label.visible = false
+		time_elapsed_label.position = time_elapsed_label_base_position
+		time_elapsed_label.modulate.a = 0.0
+
+
+func _get_time_elapsed_tween_duration() -> float:
+	return maxf(0.03, TIME_ELAPSED_TWEEN_DURATION_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / TIME_ELAPSED_TWEEN_BASE_INTERVAL)
 
 
 func _format_elapsed_time(amount_minutes: int) -> String:
