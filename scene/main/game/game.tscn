@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scene/object/enemy/enemy.tscn" id="2_enemy"]
 [ext_resource type="PackedScene" uid="uid://cai1mrucqy6v5" path="res://scene/object/stomach/stomach.tscn" id="5_stomach"]
 [ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
+[ext_resource type="Texture2D" uid="uid://bm3qblcikrvsm" path="res://art/ui/hp/ui_hp_gauge_1000.png" id="10_cdvix"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="13_font"]
 [ext_resource type="Texture2D" uid="uid://dmwygbcsp6evw" path="res://art/dreamseed/flower/tex_passive_flower_1000.png" id="16_flower"]
@@ -103,20 +104,36 @@ text = "テストテストテスト"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HPBar" type="TextureRect" parent="UI" unique_id=1969915224]
-offset_left = 67.0
-offset_top = 647.0
-offset_right = 331.0
-offset_bottom = 687.0
-mouse_filter = 2
+[node name="HPBar" type="NinePatchRect" parent="UI" unique_id=756334925]
+offset_left = 71.0
+offset_top = 654.0
+offset_right = 327.0
+offset_bottom = 680.0
 texture = ExtResource("19_hp_frame")
+region_rect = Rect2(0, 0, 256, 26)
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="HP_gauge" type="NinePatchRect" parent="UI/HPBar" unique_id=667900455]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 250.0
+offset_bottom = 20.0
+texture = ExtResource("10_cdvix")
+patch_margin_left = 8
+patch_margin_top = 6
+patch_margin_right = 8
+patch_margin_bottom = 6
 
 [node name="HPText" type="Label" parent="UI/HPBar" unique_id=970781772]
 layout_mode = 0
 offset_left = 30.0
-offset_top = 2.0
+offset_top = -6.0
 offset_right = 234.0
-offset_bottom = 38.0
+offset_bottom = 30.0
 theme_override_colors/font_color = Color(0.03529412, 0.02745098, 0.21176471, 1)
 theme_override_colors/font_outline_color = Color(0.94, 0.88, 1, 1)
 theme_override_constants/outline_size = 2
@@ -173,6 +190,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="StatusPanel" type="Control" parent="UI" unique_id=1605446388]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0
