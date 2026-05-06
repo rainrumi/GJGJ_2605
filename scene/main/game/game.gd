@@ -65,6 +65,8 @@ var stomach_grid_cell_size := 0.0
 var stomach_grid_step := 0.0
 var stomach_preview_sprite: Sprite2D
 var digestion_timer: Timer
+var auto_digest_enabled := false
+var auto_digest_paused_for_drag := false
 
 
 func _ready() -> void:
@@ -83,7 +85,7 @@ func start_battle() -> void:
 	battle_active = true
 	dragging_enemy_index = -1
 	_hide_stomach_preview()
-	_stop_auto_digest()
+	_reset_auto_digest()
 	enemies = [
 		_create_enemy("大人に追われる悪夢", 1400, 6, 2),
 		_create_enemy("落下する悪夢", 1000, 5, 3),
@@ -119,6 +121,10 @@ func _input(event: InputEvent) -> void:
 
 
 func _handle_press(mouse_position: Vector2) -> void:
+	var digestion_rect := _get_global_rect(digestion_frame)
+	if digestion_frame.visible and digestion_rect.has_point(mouse_position):
+		_start_auto_digest()
+		return
 	for i in range(enemy_nodes.size() - 1, -1, -1):
 		if not _can_drag_enemy(i):
 			continue
@@ -126,6 +132,7 @@ func _handle_press(mouse_position: Vector2) -> void:
 			dragging_enemy_index = i
 			drag_offset = enemy_nodes[i].global_position - mouse_position
 			drag_grab_cell = _get_enemy_grab_cell(i, mouse_position)
+			_pause_auto_digest_for_drag()
 			_update_stomach_preview(mouse_position)
 			return
 
@@ -140,6 +147,7 @@ func _handle_release(mouse_position: Vector2) -> void:
 		_try_start_digesting(enemy_index, mouse_position)
 	else:
 		_return_enemy_to_origin(enemy_index)
+	_resume_auto_digest_after_drag()
 
 
 func _create_enemy(name: String, hp_value: int, size: int, damage: int) -> Dictionary:
@@ -198,11 +206,17 @@ func _create_digestion_timer() -> void:
 func _update_auto_digest_timer() -> void:
 	if digestion_timer == null:
 		return
-	if battle_active and _active_digest_count() > 0:
+	var active_digest_count := _active_digest_count()
+	if auto_digest_enabled and active_digest_count == 0:
+		auto_digest_enabled = false
+		auto_digest_paused_for_drag = false
+	if auto_digest_enabled and battle_active and not auto_digest_paused_for_drag and active_digest_count > 0:
 		if digestion_timer.is_stopped():
 			digestion_timer.start()
 	else:
-		_stop_auto_digest()
+		if not digestion_timer.is_stopped():
+			digestion_timer.stop()
+	_update_digestion_button_visibility()
 
 
 func _stop_auto_digest() -> void:
@@ -210,7 +224,45 @@ func _stop_auto_digest() -> void:
 		digestion_timer.stop()
 
 
+func _reset_auto_digest() -> void:
+	auto_digest_enabled = false
+	auto_digest_paused_for_drag = false
+	_stop_auto_digest()
+	_update_digestion_button_visibility()
+
+
+func _start_auto_digest() -> void:
+	if _active_digest_count() == 0:
+		_advance_digest_turn()
+		return
+	auto_digest_enabled = true
+	auto_digest_paused_for_drag = false
+	_update_digestion_button_visibility()
+	_advance_digest_turn()
+
+
+func _pause_auto_digest_for_drag() -> void:
+	if not auto_digest_enabled:
+		return
+	auto_digest_paused_for_drag = true
+	_update_auto_digest_timer()
+
+
+func _resume_auto_digest_after_drag() -> void:
+	if not auto_digest_enabled:
+		return
+	auto_digest_paused_for_drag = false
+	_update_auto_digest_timer()
+
+
+func _update_digestion_button_visibility() -> void:
+	digestion_frame.visible = battle_active and not auto_digest_enabled
+
+
 func _on_digestion_timer_timeout() -> void:
+	if not auto_digest_enabled or auto_digest_paused_for_drag:
+		_update_auto_digest_timer()
+		return
 	_advance_digest_turn()
 
 
@@ -229,13 +281,12 @@ func _try_start_digesting(enemy_index: int, mouse_position: Vector2) -> void:
 	enemy["digesting"] = true
 	enemies[enemy_index] = enemy
 	_place_enemy_in_stomach(enemy_index, top_left)
-	_update_auto_digest_timer()
 	_update_ui("%s の消化を開始しました" % String(enemy["name"]))
 
 
 func _advance_digest_turn() -> void:
 	if _active_digest_count() == 0:
-		_stop_auto_digest()
+		_reset_auto_digest()
 		_update_ui("消化中の悪夢がありません")
 		return
 	_digest_nightmares()
@@ -282,13 +333,13 @@ func _apply_digest_damage() -> void:
 func _check_battle_end() -> void:
 	if _all_enemies_digested():
 		battle_active = false
-		_stop_auto_digest()
+		_reset_auto_digest()
 		_update_ui("勝利。すべての悪夢を消化しました")
 		battle_finished.emit(true)
 		return
 	if minutes >= END_HOUR * 60:
 		battle_active = false
-		_stop_auto_digest()
+		_reset_auto_digest()
 		_update_ui("敗北。朝までに消化しきれませんでした")
 		battle_finished.emit(false)
 
@@ -332,10 +383,7 @@ func _update_ui(message: String) -> void:
 
 
 func _update_digestion_label() -> void:
-	if _active_digest_count() == 0:
-		digestion_label.text = "消化開始！"
-	else:
-		digestion_label.text = "30分進める"
+	digestion_label.text = "消化開始！"
 
 
 func _update_enemy_labels() -> void:
