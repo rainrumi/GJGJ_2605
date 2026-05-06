@@ -39,8 +39,9 @@ const ENEMY_STOMACH_SHAPES: Array[Array] = [
 
 @onready var ui: CanvasLayer = $UI
 @onready var time_text: Label = $UI/TimeBar/TimeText
-@onready var hp_bar: TextureRect = $UI/HPBar
-@onready var hp_text: Label = $UI/HPBar/HPText
+@onready var hp_frame: NinePatchRect = $UI/HpFrame
+@onready var hp_gauge: NinePatchRect = $UI/HpFrame/HpGauge
+@onready var hp_text: Label = $UI/HpFrame/HpText
 @onready var message_text: Label = get_node_or_null("UI/StatusPanel/MessageText") as Label
 @onready var passive_guide_text: Label = get_node_or_null("UI/PassiveGuideFrame/PassiveGuideText") as Label
 @onready var digestion_frame: TextureRect = $UI/DigestionFrame
@@ -68,6 +69,7 @@ var stomach_grid_step := 0.0
 var stomach_preview_sprite: Sprite2D
 var digestion_timer: Timer
 var hp_damage_preview_label: Label
+var hp_gauge_full_width := 0.0
 var auto_digest_enabled := false
 var auto_digest_paused_for_drag := false
 var dragged_enemy_was_digesting := false
@@ -78,6 +80,7 @@ var dragged_enemy_original_global_position := Vector2.ZERO
 func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
 	_prepare_mouse_filters()
+	_capture_hp_gauge_size()
 	_configure_stomach_grid()
 	_create_stomach_preview()
 	_create_digestion_timer()
@@ -189,16 +192,20 @@ func _prepare_mouse_filters() -> void:
 	var passive_guide_frame := get_node_or_null("UI/PassiveGuideFrame") as Control
 	if passive_guide_frame != null:
 		passive_guide_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var hp_bar := get_node_or_null("UI/HPBar") as Control
-	if hp_bar != null:
-		hp_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var hp_frame := get_node_or_null("UI/HpFrame") as Control
+	if hp_frame != null:
+		hp_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var time_bar := get_node_or_null("UI/TimeBar") as Control
 	if time_bar != null:
 		time_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for enemy_node in enemy_nodes:
-		var label := enemy_node.get_node_or_null("HPText") as Label
+		var label := enemy_node.get_node_or_null("HpText") as Label
 		if label != null:
 			label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+func _capture_hp_gauge_size() -> void:
+	hp_gauge_full_width = hp_gauge.size.x
 
 
 func _can_drag_enemy(enemy_index: int) -> bool:
@@ -431,9 +438,16 @@ func _advance_time(amount_minutes: int) -> void:
 func _update_ui(message: String) -> void:
 	time_text.text = _format_time()
 	hp_text.text = "%d/%d" % [maxi(0, hp), MAX_HP]
+	_update_hp_gauge()
 	if message_text != null:
 		message_text.text = message
 	_update_digestion_label()
+
+
+func _update_hp_gauge() -> void:
+	var hp_ratio := clampf(float(maxi(0, hp)) / float(MAX_HP), 0.0, 1.0)
+	hp_gauge.visible = hp_ratio > 0.0
+	hp_gauge.size = Vector2(hp_gauge_full_width * hp_ratio, hp_gauge.size.y)
 
 
 func _update_digestion_label() -> void:
@@ -442,7 +456,7 @@ func _update_digestion_label() -> void:
 
 func _update_enemy_labels() -> void:
 	for i in range(enemy_nodes.size()):
-		var label := enemy_nodes[i].get_node_or_null("HPText") as Label
+		var label := enemy_nodes[i].get_node_or_null("HpText") as Label
 		if label == null or i >= enemies.size():
 			continue
 		label.text = str(int(enemies[i]["remaining_hp"]))
@@ -539,7 +553,7 @@ func _hide_hp_damage_preview() -> void:
 func _position_hp_damage_preview() -> void:
 	if hp_damage_preview_label == null:
 		return
-	hp_damage_preview_label.position = hp_bar.position + Vector2(hp_bar.size.x - 42.0, -16.0)
+	hp_damage_preview_label.position = hp_frame.position + Vector2(hp_frame.size.x - 42.0, -16.0)
 
 
 func _place_enemy_in_stomach(enemy_index: int, top_left: Vector2i) -> void:
