@@ -838,8 +838,24 @@ func _position_digestion_line() -> void:
 		return
 	digestion_line.position = Vector2(
 		stomach_frame.position.x + stomach_frame.size.x,
-		stomach_grid_origin.y + float(STOMACH_ROWS - 1) * stomach_grid_step
+		_get_digestion_line_top_y()
 	)
+
+
+func _get_digestion_line_top_y() -> float:
+	return _get_digestion_judgement_line_y() - _get_stomach_grid_row_subdivision()
+
+
+func _get_digestion_judgement_line_y() -> float:
+	return _get_stomach_cell_top_y(STOMACH_ROWS - 1)
+
+
+func _get_stomach_cell_top_y(row: int) -> float:
+	return stomach_grid_origin.y + float(row) * stomach_grid_step
+
+
+func _get_stomach_grid_row_subdivision() -> float:
+	return stomach_grid_step / float(STOMACH_ROWS)
 
 
 func _create_stomach_preview() -> void:
