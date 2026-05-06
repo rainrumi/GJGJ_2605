@@ -14,6 +14,7 @@ const STOMACH_ROWS := 5
 const MAX_FULLNESS := STOMACH_COLUMNS * STOMACH_ROWS
 const STOMACH_GRID_EDGE_OVERLAP := 1.0
 const DIGEST_AUTO_INTERVAL := 0.8
+const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
 	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
@@ -38,6 +39,7 @@ const ENEMY_STOMACH_SHAPES: Array[Array] = [
 
 @onready var ui: CanvasLayer = $UI
 @onready var time_text: Label = $UI/TimeBar/TimeText
+@onready var hp_bar: TextureRect = $UI/HPBar
 @onready var hp_text: Label = $UI/HPBar/HPText
 @onready var message_text: Label = get_node_or_null("UI/StatusPanel/MessageText") as Label
 @onready var passive_guide_text: Label = get_node_or_null("UI/PassiveGuideFrame/PassiveGuideText") as Label
@@ -65,8 +67,12 @@ var stomach_grid_cell_size := 0.0
 var stomach_grid_step := 0.0
 var stomach_preview_sprite: Sprite2D
 var digestion_timer: Timer
+var hp_damage_preview_label: Label
 var auto_digest_enabled := false
 var auto_digest_paused_for_drag := false
+var dragged_enemy_was_digesting := false
+var dragged_enemy_original_cell := Vector2i.ZERO
+var dragged_enemy_original_global_position := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -75,6 +81,7 @@ func _ready() -> void:
 	_configure_stomach_grid()
 	_create_stomach_preview()
 	_create_digestion_timer()
+	_create_hp_damage_preview()
 	_sync_ui_visibility()
 	start_battle()
 
@@ -84,7 +91,9 @@ func start_battle() -> void:
 	hp = MAX_HP
 	battle_active = true
 	dragging_enemy_index = -1
+	dragged_enemy_was_digesting = false
 	_hide_stomach_preview()
+	_hide_hp_damage_preview()
 	_reset_auto_digest()
 	enemies = [
 		_create_enemy("大人に追われる悪夢", 1400, 6, 2),
@@ -118,6 +127,7 @@ func _input(event: InputEvent) -> void:
 		if dragging_enemy_index != -1:
 			enemy_nodes[dragging_enemy_index].global_position = mouse_motion.position + drag_offset
 			_update_stomach_preview(mouse_motion.position)
+			_update_hp_damage_preview(mouse_motion.position)
 
 
 func _handle_press(mouse_position: Vector2) -> void:
@@ -132,8 +142,10 @@ func _handle_press(mouse_position: Vector2) -> void:
 			dragging_enemy_index = i
 			drag_offset = enemy_nodes[i].global_position - mouse_position
 			drag_grab_cell = _get_enemy_grab_cell(i, mouse_position)
+			_start_enemy_drag(i)
 			_pause_auto_digest_for_drag()
 			_update_stomach_preview(mouse_position)
+			_update_hp_damage_preview(mouse_position)
 			return
 
 
@@ -143,10 +155,11 @@ func _handle_release(mouse_position: Vector2) -> void:
 	var enemy_index := dragging_enemy_index
 	dragging_enemy_index = -1
 	_hide_stomach_preview()
+	_hide_hp_damage_preview()
 	if _get_stomach_rect().has_point(mouse_position):
 		_try_start_digesting(enemy_index, mouse_position)
 	else:
-		_return_enemy_to_origin(enemy_index)
+		_remove_dragged_enemy_from_stomach(enemy_index)
 	_resume_auto_digest_after_drag()
 
 
@@ -190,7 +203,14 @@ func _prepare_mouse_filters() -> void:
 
 func _can_drag_enemy(enemy_index: int) -> bool:
 	var enemy := enemies[enemy_index]
-	return not bool(enemy["digesting"]) and not bool(enemy["digested"])
+	return not bool(enemy["digested"])
+
+
+func _start_enemy_drag(enemy_index: int) -> void:
+	var enemy := enemies[enemy_index]
+	dragged_enemy_was_digesting = bool(enemy["digesting"])
+	dragged_enemy_original_cell = enemy["stomach_cell"]
+	dragged_enemy_original_global_position = enemy_nodes[enemy_index].global_position
 
 
 func _create_digestion_timer() -> void:
@@ -201,6 +221,23 @@ func _create_digestion_timer() -> void:
 	digestion_timer.autostart = false
 	digestion_timer.timeout.connect(_on_digestion_timer_timeout)
 	add_child(digestion_timer)
+
+
+func _create_hp_damage_preview() -> void:
+	hp_damage_preview_label = Label.new()
+	hp_damage_preview_label.name = "RemoveNightmareDamagePreview"
+	hp_damage_preview_label.visible = false
+	hp_damage_preview_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hp_damage_preview_label.text = "-%d" % _get_remove_from_stomach_damage()
+	hp_damage_preview_label.add_theme_color_override("font_color", Color.html("#ff0736"))
+	hp_damage_preview_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	hp_damage_preview_label.add_theme_constant_override("outline_size", 3)
+	var preview_font := hp_text.get_theme_font("font")
+	if preview_font != null:
+		hp_damage_preview_label.add_theme_font_override("font", preview_font)
+	hp_damage_preview_label.add_theme_font_size_override("font_size", 28)
+	ui.add_child(hp_damage_preview_label)
+	_position_hp_damage_preview()
 
 
 func _update_auto_digest_timer() -> void:
@@ -274,14 +311,16 @@ func _prepare_stomach_for_digest() -> void:
 
 func _try_start_digesting(enemy_index: int, mouse_position: Vector2) -> void:
 	var enemy := enemies[enemy_index]
-	var next_fullness := _current_fullness() + int(enemy["size"])
+	var next_fullness := _current_fullness()
+	if not dragged_enemy_was_digesting:
+		next_fullness += int(enemy["size"])
 	if next_fullness > MAX_FULLNESS:
-		_return_enemy_to_origin(enemy_index)
+		_return_dragged_enemy(enemy_index)
 		_update_ui("胃袋がいっぱいです")
 		return
 	var top_left := _get_dragged_enemy_top_left_cell(mouse_position)
 	if not _can_place_enemy_at(enemy_index, top_left):
-		_return_enemy_to_origin(enemy_index)
+		_return_dragged_enemy(enemy_index)
 		_update_ui("その場所には置けません")
 		return
 	enemy["digesting"] = true
@@ -334,6 +373,15 @@ func _apply_digest_damage() -> void:
 		if bool(enemy["digesting"]) and not bool(enemy["digested"]):
 			damage += int(enemy["damage"])
 	hp -= damage
+
+
+func _apply_remove_from_stomach_damage() -> void:
+	hp = maxi(0, hp - _get_remove_from_stomach_damage())
+	_update_ui("胃袋から悪夢を戻したためダメージを受けました")
+
+
+func _get_remove_from_stomach_damage() -> int:
+	return ceili(float(MAX_HP) * REMOVE_FROM_STOMACH_DAMAGE_RATE)
 
 
 func _check_battle_end() -> void:
@@ -472,12 +520,56 @@ func _hide_stomach_preview() -> void:
 		stomach_preview_sprite.visible = false
 
 
+func _update_hp_damage_preview(mouse_position: Vector2) -> void:
+	if hp_damage_preview_label == null:
+		return
+	if dragged_enemy_was_digesting and not _get_stomach_rect().has_point(mouse_position):
+		hp_damage_preview_label.text = "-%d" % _get_remove_from_stomach_damage()
+		_position_hp_damage_preview()
+		hp_damage_preview_label.visible = true
+	else:
+		_hide_hp_damage_preview()
+
+
+func _hide_hp_damage_preview() -> void:
+	if hp_damage_preview_label != null:
+		hp_damage_preview_label.visible = false
+
+
+func _position_hp_damage_preview() -> void:
+	if hp_damage_preview_label == null:
+		return
+	hp_damage_preview_label.position = hp_bar.position + Vector2(hp_bar.size.x - 42.0, -16.0)
+
+
 func _place_enemy_in_stomach(enemy_index: int, top_left: Vector2i) -> void:
 	var size := ENEMY_STOMACH_SIZES[enemy_index]
 	var enemy := enemies[enemy_index]
 	enemy["stomach_cell"] = top_left
 	enemies[enemy_index] = enemy
 	enemy_nodes[enemy_index].global_position = _get_stomach_area_center(top_left, size)
+
+
+func _return_dragged_enemy(enemy_index: int) -> void:
+	if dragged_enemy_was_digesting:
+		var enemy := enemies[enemy_index]
+		enemy["digesting"] = true
+		enemy["stomach_cell"] = dragged_enemy_original_cell
+		enemies[enemy_index] = enemy
+		enemy_nodes[enemy_index].global_position = dragged_enemy_original_global_position
+	else:
+		_return_enemy_to_origin(enemy_index)
+
+
+func _remove_dragged_enemy_from_stomach(enemy_index: int) -> void:
+	if not dragged_enemy_was_digesting:
+		_return_enemy_to_origin(enemy_index)
+		return
+	var enemy := enemies[enemy_index]
+	enemy["digesting"] = false
+	enemies[enemy_index] = enemy
+	_return_enemy_to_origin(enemy_index)
+	_apply_remove_from_stomach_damage()
 
 
 func _return_enemy_to_origin(enemy_index: int) -> void:
