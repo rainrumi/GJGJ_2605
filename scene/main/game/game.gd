@@ -325,7 +325,7 @@ func _try_start_digesting(enemy_index: int, mouse_position: Vector2) -> void:
 		_return_dragged_enemy(enemy_index)
 		_update_ui("胃袋がいっぱいです")
 		return
-	var top_left := _get_dragged_enemy_top_left_cell(mouse_position)
+	var top_left := _get_dragged_enemy_drop_cell(enemy_index, mouse_position)
 	if not _can_place_enemy_at(enemy_index, top_left):
 		_return_dragged_enemy(enemy_index)
 		_update_ui("その場所には置けません")
@@ -519,7 +519,7 @@ func _update_stomach_preview(mouse_position: Vector2) -> void:
 	if source_sprite == null or source_sprite.texture == null:
 		_hide_stomach_preview()
 		return
-	var top_left := _get_dragged_enemy_top_left_cell(mouse_position)
+	var top_left := _get_dragged_enemy_drop_cell(dragging_enemy_index, mouse_position)
 	stomach_preview_sprite.texture = source_sprite.texture
 	stomach_preview_sprite.scale = source_sprite.scale
 	stomach_preview_sprite.global_position = _get_stomach_area_center(top_left, ENEMY_STOMACH_SIZES[dragging_enemy_index])
@@ -628,6 +628,17 @@ func _get_nearest_enemy_shape_cell(enemy_index: int, target_cell: Vector2i) -> V
 
 func _get_dragged_enemy_top_left_cell(mouse_position: Vector2) -> Vector2i:
 	return _get_nearest_stomach_cell(mouse_position) - drag_grab_cell
+
+
+func _get_dragged_enemy_drop_cell(enemy_index: int, mouse_position: Vector2) -> Vector2i:
+	var target_cell := _get_dragged_enemy_top_left_cell(mouse_position)
+	target_cell.y = 0
+	if not _can_place_enemy_at(enemy_index, target_cell):
+		return target_cell
+	var drop_cell := target_cell
+	while _can_place_enemy_at(enemy_index, drop_cell + Vector2i(0, 1)):
+		drop_cell += Vector2i(0, 1)
+	return drop_cell
 
 
 func _get_nearest_stomach_cell(global_position: Vector2) -> Vector2i:
