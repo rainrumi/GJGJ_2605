@@ -20,6 +20,9 @@ const HOVER_TWEEN_DURATION := 0.1
 const TIME_PULSE_SCALE := 1.1
 const TIME_PULSE_DURATION_AT_BASE_INTERVAL := 0.2
 const TIME_PULSE_BASE_INTERVAL := 0.6
+const ENEMY_COST_PULSE_SCALE := 1.1
+const ENEMY_COST_PULSE_DURATION_AT_BASE_INTERVAL := 0.2
+const ENEMY_COST_PULSE_BASE_INTERVAL := 0.6
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
 	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
@@ -88,6 +91,8 @@ var digestion_button_tween: Tween
 var digestion_button_hovered := false
 var time_text_base_scale := Vector2.ONE
 var time_text_pulse_tween: Tween
+var enemy_cost_base_scales: Array[Vector2] = []
+var enemy_cost_pulse_tweens: Array = []
 
 
 func _ready() -> void:
@@ -95,6 +100,7 @@ func _ready() -> void:
 	_prepare_mouse_filters()
 	_prepare_hover_effects()
 	_prepare_time_pulse()
+	_prepare_enemy_cost_pulses()
 	_capture_hp_gauge_size()
 	_configure_stomach_grid()
 	_create_stomach_preview()
@@ -112,6 +118,7 @@ func start_battle() -> void:
 	_set_hovered_enemy(-1)
 	_set_digestion_button_hovered(false)
 	_reset_time_text_pulse()
+	_reset_enemy_cost_pulses()
 	dragged_enemy_was_digesting = false
 	_hide_stomach_preview()
 	_hide_hp_damage_preview()
@@ -339,6 +346,53 @@ func _get_time_pulse_duration() -> float:
 	return maxf(0.03, TIME_PULSE_DURATION_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / TIME_PULSE_BASE_INTERVAL)
 
 
+func _prepare_enemy_cost_pulses() -> void:
+	enemy_cost_base_scales.clear()
+	enemy_cost_pulse_tweens.clear()
+	for enemy_node in enemy_nodes:
+		var label := enemy_node.get_node_or_null("HPText") as Label
+		if label == null:
+			enemy_cost_base_scales.append(Vector2.ONE)
+		else:
+			enemy_cost_base_scales.append(label.scale)
+			label.pivot_offset = label.size * 0.5
+		enemy_cost_pulse_tweens.append(null)
+
+
+func _reset_enemy_cost_pulses() -> void:
+	for i in range(enemy_cost_pulse_tweens.size()):
+		var tween = enemy_cost_pulse_tweens[i]
+		if tween != null and tween.is_valid():
+			tween.kill()
+		var label := enemy_nodes[i].get_node_or_null("HPText") as Label
+		if label != null and i < enemy_cost_base_scales.size():
+			label.scale = enemy_cost_base_scales[i]
+
+
+func _pulse_enemy_cost(enemy_index: int) -> void:
+	if enemy_index >= enemy_cost_base_scales.size():
+		return
+	var label := enemy_nodes[enemy_index].get_node_or_null("HPText") as Label
+	if label == null:
+		return
+	var tween = enemy_cost_pulse_tweens[enemy_index]
+	if tween != null and tween.is_valid():
+		tween.kill()
+	label.scale = enemy_cost_base_scales[enemy_index]
+	var total_duration := _get_enemy_cost_pulse_duration()
+	var half_duration := total_duration * 0.5
+	tween = create_tween()
+	tween.set_trans(Tween.TRANS_ELASTIC)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "scale", enemy_cost_base_scales[enemy_index] * ENEMY_COST_PULSE_SCALE, half_duration)
+	tween.tween_property(label, "scale", enemy_cost_base_scales[enemy_index], half_duration)
+	enemy_cost_pulse_tweens[enemy_index] = tween
+
+
+func _get_enemy_cost_pulse_duration() -> float:
+	return maxf(0.03, ENEMY_COST_PULSE_DURATION_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / ENEMY_COST_PULSE_BASE_INTERVAL)
+
+
 func _can_drag_enemy(enemy_index: int) -> bool:
 	var enemy := enemies[enemy_index]
 	return not bool(enemy["digested"])
@@ -494,6 +548,7 @@ func _digest_nightmares() -> void:
 		if bottom_cell_count == 0:
 			continue
 		enemy["remaining_hp"] = maxi(0, int(enemy["remaining_hp"]) - DIGEST_DAMAGE * bottom_cell_count)
+		_pulse_enemy_cost(i)
 		if int(enemy["remaining_hp"]) == 0:
 			enemy["digested"] = true
 			enemy["digesting"] = false
