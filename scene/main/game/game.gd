@@ -17,6 +17,9 @@ const DIGEST_AUTO_INTERVAL := 0.6
 const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
 const HOVER_SCALE := 1.1
 const HOVER_TWEEN_DURATION := 0.1
+const TIME_PULSE_SCALE := 1.1
+const TIME_PULSE_DURATION_AT_BASE_INTERVAL := 0.2
+const TIME_PULSE_BASE_INTERVAL := 0.6
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TEXTURES: Array[Texture2D] = [
 	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
@@ -83,12 +86,15 @@ var hovered_enemy_index := -1
 var digestion_button_base_scale := Vector2.ONE
 var digestion_button_tween: Tween
 var digestion_button_hovered := false
+var time_text_base_scale := Vector2.ONE
+var time_text_pulse_tween: Tween
 
 
 func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
 	_prepare_mouse_filters()
 	_prepare_hover_effects()
+	_prepare_time_pulse()
 	_capture_hp_gauge_size()
 	_configure_stomach_grid()
 	_create_stomach_preview()
@@ -105,6 +111,7 @@ func start_battle() -> void:
 	dragging_enemy_index = -1
 	_set_hovered_enemy(-1)
 	_set_digestion_button_hovered(false)
+	_reset_time_text_pulse()
 	dragged_enemy_was_digesting = false
 	_hide_stomach_preview()
 	_hide_hp_damage_preview()
@@ -302,6 +309,34 @@ func _set_digestion_button_hovered(hovered: bool) -> void:
 	digestion_button_tween.set_trans(Tween.TRANS_QUAD)
 	digestion_button_tween.set_ease(Tween.EASE_OUT)
 	digestion_button_tween.tween_property(digestion_frame, "scale", target_scale, HOVER_TWEEN_DURATION)
+
+
+func _prepare_time_pulse() -> void:
+	time_text_base_scale = time_text.scale
+	time_text.pivot_offset = time_text.size * 0.5
+
+
+func _reset_time_text_pulse() -> void:
+	if time_text_pulse_tween != null and time_text_pulse_tween.is_valid():
+		time_text_pulse_tween.kill()
+	time_text.scale = time_text_base_scale
+
+
+func _pulse_time_text() -> void:
+	if time_text_pulse_tween != null and time_text_pulse_tween.is_valid():
+		time_text_pulse_tween.kill()
+	time_text.scale = time_text_base_scale
+	var total_duration := _get_time_pulse_duration()
+	var half_duration := total_duration * 0.5
+	time_text_pulse_tween = create_tween()
+	time_text_pulse_tween.set_trans(Tween.TRANS_QUAD)
+	time_text_pulse_tween.set_ease(Tween.EASE_OUT)
+	time_text_pulse_tween.tween_property(time_text, "scale", time_text_base_scale * TIME_PULSE_SCALE, half_duration)
+	time_text_pulse_tween.tween_property(time_text, "scale", time_text_base_scale, half_duration)
+
+
+func _get_time_pulse_duration() -> float:
+	return maxf(0.03, TIME_PULSE_DURATION_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / TIME_PULSE_BASE_INTERVAL)
 
 
 func _can_drag_enemy(enemy_index: int) -> bool:
@@ -530,6 +565,8 @@ func _current_fullness() -> int:
 
 func _advance_time(amount_minutes: int) -> void:
 	minutes += amount_minutes
+	if auto_digest_enabled:
+		_pulse_time_text()
 
 
 func _update_ui(message: String) -> void:
