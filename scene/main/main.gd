@@ -3,6 +3,7 @@ extends Node
 @onready var title: Node = $Title
 @onready var game: Node = $Game
 @onready var game_ui: CanvasLayer = $Game/UI
+@onready var stage_clear: Node = $StageClear
 @onready var bgm: AudioStreamPlayer = $BGM
 
 
@@ -15,18 +16,34 @@ func show_title() -> void:
 	title.visible = true
 	game.visible = false
 	game_ui.visible = false
+	stage_clear.visible = false
 
 
 func show_game() -> void:
 	title.visible = false
 	game.visible = true
 	game_ui.visible = true
+	stage_clear.visible = false
 	if game.has_method("start_battle"):
 		game.start_battle()
 
 
+func show_stage_clear() -> void:
+	title.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = true
+
+
 func _on_title_start_game() -> void:
 	show_game()
+
+
+func _on_game_battle_finished(won: bool) -> void:
+	if won:
+		show_stage_clear()
+	else:
+		show_title()
 
 
 func _play_bgm() -> void:
