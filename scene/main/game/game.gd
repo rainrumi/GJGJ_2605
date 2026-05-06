@@ -24,11 +24,6 @@ const ENEMY_START_POSITIONS: Array[Vector2] = [
 	Vector2(1000, 280),
 	Vector2(1150, 500),
 ]
-const ENEMY_STOMACH_TOP_LEFT_CELLS: Array[Vector2i] = [
-	Vector2i(0, 0),
-	Vector2i(1, 2),
-	Vector2i(2, 0),
-]
 const ENEMY_STOMACH_SIZES: Array[Vector2i] = [
 	Vector2i(2, 3),
 	Vector2i(3, 3),
@@ -61,17 +56,20 @@ var hp: int = MAX_HP
 var enemies: Array[Dictionary] = []
 var dragging_enemy_index := -1
 var drag_offset := Vector2.ZERO
+var drag_grab_cell := Vector2i.ZERO
 var original_enemy_positions: Array[Vector2] = []
 var battle_active := false
 var stomach_grid_origin := Vector2.ZERO
 var stomach_grid_cell_size := 0.0
 var stomach_grid_step := 0.0
+var stomach_preview_sprite: Sprite2D
 
 
 func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
 	_prepare_mouse_filters()
 	_configure_stomach_grid()
+	_create_stomach_preview()
 	_sync_ui_visibility()
 	start_battle()
 
@@ -81,6 +79,7 @@ func start_battle() -> void:
 	hp = MAX_HP
 	battle_active = true
 	dragging_enemy_index = -1
+	_hide_stomach_preview()
 	enemies = [
 		_create_enemy("大人に追われる悪夢", 1400, 6, 2),
 		_create_enemy("落下する悪夢", 1000, 5, 3),
@@ -112,6 +111,7 @@ func _input(event: InputEvent) -> void:
 		var mouse_motion: InputEventMouseMotion = event as InputEventMouseMotion
 		if dragging_enemy_index != -1:
 			enemy_nodes[dragging_enemy_index].global_position = mouse_motion.position + drag_offset
+			_update_stomach_preview(mouse_motion.position)
 
 
 func _handle_press(mouse_position: Vector2) -> void:
@@ -125,6 +125,8 @@ func _handle_press(mouse_position: Vector2) -> void:
 		if _get_enemy_rect(i).has_point(mouse_position):
 			dragging_enemy_index = i
 			drag_offset = enemy_nodes[i].global_position - mouse_position
+			drag_grab_cell = _get_enemy_grab_cell(i, mouse_position)
+			_update_stomach_preview(mouse_position)
 			return
 
 
@@ -133,8 +135,9 @@ func _handle_release(mouse_position: Vector2) -> void:
 		return
 	var enemy_index := dragging_enemy_index
 	dragging_enemy_index = -1
+	_hide_stomach_preview()
 	if _get_stomach_rect().has_point(mouse_position):
-		_try_start_digesting(enemy_index)
+		_try_start_digesting(enemy_index, mouse_position)
 	else:
 		_return_enemy_to_origin(enemy_index)
 
@@ -182,16 +185,21 @@ func _can_drag_enemy(enemy_index: int) -> bool:
 	return not bool(enemy["digesting"]) and not bool(enemy["digested"])
 
 
-func _try_start_digesting(enemy_index: int) -> void:
+func _try_start_digesting(enemy_index: int, mouse_position: Vector2) -> void:
 	var enemy := enemies[enemy_index]
 	var next_fullness := _current_fullness() + int(enemy["size"])
 	if next_fullness > MAX_FULLNESS:
 		_return_enemy_to_origin(enemy_index)
 		_update_ui("胃袋がいっぱいです")
 		return
+	var top_left := _get_dragged_enemy_top_left_cell(mouse_position)
+	if not _can_place_enemy_at(enemy_index, top_left):
+		_return_enemy_to_origin(enemy_index)
+		_update_ui("その場所には置けません")
+		return
 	enemy["digesting"] = true
 	enemies[enemy_index] = enemy
-	_place_enemy_in_stomach(enemy_index)
+	_place_enemy_in_stomach(enemy_index, top_left)
 	_update_ui("%s の消化を開始しました" % String(enemy["name"]))
 
 
@@ -343,8 +351,40 @@ func _configure_stomach_grid() -> void:
 	stomach.move_child(stomach_frame, stomach.get_child_count() - 1)
 
 
-func _place_enemy_in_stomach(enemy_index: int) -> void:
-	var top_left := ENEMY_STOMACH_TOP_LEFT_CELLS[enemy_index]
+func _create_stomach_preview() -> void:
+	stomach_preview_sprite = Sprite2D.new()
+	stomach_preview_sprite.name = "EnemyPlacementPreview"
+	stomach_preview_sprite.visible = false
+	stomach_preview_sprite.modulate = Color(1.0, 1.0, 1.0, 0.42)
+	stomach_preview_sprite.z_index = 5
+	stomach.add_child(stomach_preview_sprite)
+	stomach.move_child(stomach_frame, stomach.get_child_count() - 1)
+
+
+func _update_stomach_preview(mouse_position: Vector2) -> void:
+	if dragging_enemy_index == -1 or not _get_stomach_rect().has_point(mouse_position):
+		_hide_stomach_preview()
+		return
+	var source_sprite := enemy_nodes[dragging_enemy_index].get_node_or_null("Sprite2D") as Sprite2D
+	if source_sprite == null or source_sprite.texture == null:
+		_hide_stomach_preview()
+		return
+	var top_left := _get_dragged_enemy_top_left_cell(mouse_position)
+	stomach_preview_sprite.texture = source_sprite.texture
+	stomach_preview_sprite.scale = source_sprite.scale
+	stomach_preview_sprite.global_position = _get_stomach_area_center(top_left, ENEMY_STOMACH_SIZES[dragging_enemy_index])
+	stomach_preview_sprite.modulate = Color(1.0, 1.0, 1.0, 0.42)
+	if not _can_place_enemy_at(dragging_enemy_index, top_left):
+		stomach_preview_sprite.modulate = Color(1.0, 0.35, 0.35, 0.32)
+	stomach_preview_sprite.visible = true
+
+
+func _hide_stomach_preview() -> void:
+	if stomach_preview_sprite != null:
+		stomach_preview_sprite.visible = false
+
+
+func _place_enemy_in_stomach(enemy_index: int, top_left: Vector2i) -> void:
 	var size := ENEMY_STOMACH_SIZES[enemy_index]
 	var enemy := enemies[enemy_index]
 	enemy["stomach_cell"] = top_left
@@ -364,6 +404,45 @@ func _get_enemy_rect(enemy_index: int) -> Rect2:
 		return Rect2(enemy_nodes[enemy_index].global_position - Vector2(50, 50), Vector2(100, 100))
 	var size := sprite.texture.get_size() * sprite.scale.abs()
 	return Rect2(sprite.global_position - size * 0.5, size)
+
+
+func _get_enemy_grab_cell(enemy_index: int, mouse_position: Vector2) -> Vector2i:
+	var enemy_rect := _get_enemy_rect(enemy_index)
+	var enemy_size := ENEMY_STOMACH_SIZES[enemy_index]
+	var relative_position := mouse_position - enemy_rect.position
+	var grabbed_cell := Vector2i(
+		clampi(int(relative_position.x / enemy_rect.size.x * float(enemy_size.x)), 0, enemy_size.x - 1),
+		clampi(int(relative_position.y / enemy_rect.size.y * float(enemy_size.y)), 0, enemy_size.y - 1)
+	)
+	if _get_enemy_shape_offsets(enemy_index).has(grabbed_cell):
+		return grabbed_cell
+	return _get_nearest_enemy_shape_cell(enemy_index, grabbed_cell)
+
+
+func _get_nearest_enemy_shape_cell(enemy_index: int, target_cell: Vector2i) -> Vector2i:
+	var nearest_cell := Vector2i.ZERO
+	var nearest_distance := INF
+	for offset in _get_enemy_shape_offsets(enemy_index):
+		var offset_cell: Vector2i = offset
+		var diff := target_cell - offset_cell
+		var distance := float(diff.x * diff.x + diff.y * diff.y)
+		if distance < nearest_distance:
+			nearest_distance = distance
+			nearest_cell = offset_cell
+	return nearest_cell
+
+
+func _get_dragged_enemy_top_left_cell(mouse_position: Vector2) -> Vector2i:
+	return _get_nearest_stomach_cell(mouse_position) - drag_grab_cell
+
+
+func _get_nearest_stomach_cell(global_position: Vector2) -> Vector2i:
+	var local_position := stomach.to_local(global_position)
+	var centered_position := local_position - stomach_grid_origin - Vector2.ONE * stomach_grid_cell_size * 0.5
+	return Vector2i(
+		clampi(roundi(centered_position.x / stomach_grid_step), 0, STOMACH_COLUMNS - 1),
+		clampi(roundi(centered_position.y / stomach_grid_step), 0, STOMACH_ROWS - 1)
+	)
 
 
 func _get_stomach_rect() -> Rect2:
@@ -443,10 +522,14 @@ func _can_place_enemy_at(enemy_index: int, top_left: Vector2i) -> bool:
 
 func _get_enemy_occupied_cells(enemy_index: int, top_left: Vector2i) -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
-	for offset in ENEMY_STOMACH_SHAPES[enemy_index]:
+	for offset in _get_enemy_shape_offsets(enemy_index):
 		var offset_cell: Vector2i = offset
 		cells.append(top_left + offset_cell)
 	return cells
+
+
+func _get_enemy_shape_offsets(enemy_index: int) -> Array:
+	return ENEMY_STOMACH_SHAPES[enemy_index]
 
 
 func _get_stomach_area_center(top_left: Vector2i, size: Vector2i) -> Vector2:
