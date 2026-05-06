@@ -3,9 +3,11 @@ extends Node
 @onready var title: Node = $Title
 @onready var game: Node = $Game
 @onready var game_ui: CanvasLayer = $Game/UI
+@onready var bgm: AudioStreamPlayer = $BGM
 
 
 func _ready() -> void:
+	_play_bgm()
 	show_title()
 
 
@@ -25,3 +27,11 @@ func show_game() -> void:
 
 func _on_title_start_game() -> void:
 	show_game()
+
+
+func _play_bgm() -> void:
+	if bgm.stream is AudioStreamMP3:
+		var mp3_stream := bgm.stream as AudioStreamMP3
+		mp3_stream.loop = true
+	if not bgm.playing:
+		bgm.play()
