@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://djqhgj0uikma7" path="res://art/ui/time/ui_time_frame_1000.png" id="18_time_frame"]
 [ext_resource type="Texture2D" uid="uid://cd5grt48wcvhd" path="res://art/ui/hp/ui_hp_frame_1000.png" id="19_hp_frame"]
 [ext_resource type="Texture2D" uid="uid://dr2mri7shrvne" path="res://art/ui/passive/ui_passive_guide_frame_1000.png" id="20_passive_guide"]
+[ext_resource type="AudioStream" path="res://sound/se/click.mp3" id="21_click_se"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
@@ -79,6 +80,9 @@ position = Vector2(518.515, 403)
 
 [node name="Character" parent="." unique_id=652368236 instance=ExtResource("6_character")]
 position = Vector2(190, 420)
+
+[node name="ClickSe" type="AudioStreamPlayer" parent="." unique_id=163842910]
+stream = ExtResource("21_click_se")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]
 script = ExtResource("3_battle_ui_script")
