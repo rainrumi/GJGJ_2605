@@ -309,21 +309,20 @@ autowrap_mode = 3
 [node name="AbandonButton" type="Button" parent="UI" unique_id=1850666034]
 layout_mode = 0
 offset_left = 621.0
-offset_top = 632.0
+offset_top = 600.0
 offset_right = 1081.0
-offset_bottom = 684.0
+offset_bottom = 652.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_pressed_color = Color(0.705882, 0.607843, 0.694118, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 26
+text = "放棄する"
 flat = true
 
 [node name="Frame" type="TextureRect" parent="UI/AbandonButton" unique_id=1144243439]
 show_behind_parent = true
 layout_mode = 0
-offset_left = 1.0
-offset_top = -25.0
-offset_right = 461.0
-offset_bottom = 27.0
+offset_right = 460.0
+offset_bottom = 52.0
 mouse_filter = 2
 texture = ExtResource("7_cancel_frame")
