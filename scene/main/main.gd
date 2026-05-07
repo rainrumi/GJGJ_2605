@@ -1,5 +1,7 @@
 extends Node
 
+const STAGE_CLEAR_RETURN_DELAY := 1.0
+
 @onready var title: Node = $Title
 @onready var game: Node = $Game
 @onready var game_ui: CanvasLayer = $Game/UI
@@ -49,6 +51,7 @@ func _on_game_battle_finished(won: bool) -> void:
 
 
 func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
+	await get_tree().create_timer(STAGE_CLEAR_RETURN_DELAY).timeout
 	show_game()
 
 
