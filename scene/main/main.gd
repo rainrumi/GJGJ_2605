@@ -21,13 +21,13 @@ func show_title() -> void:
 	stage_clear.visible = false
 
 
-func show_game() -> void:
+func show_game(reset_player_state: bool = true) -> void:
 	title.visible = false
 	game.visible = true
 	game_ui.visible = true
 	stage_clear.visible = false
 	if game.has_method("start_battle"):
-		game.start_battle()
+		game.start_battle(_get_starting_hp(reset_player_state))
 
 
 func show_stage_clear() -> void:
@@ -40,6 +40,8 @@ func show_stage_clear() -> void:
 
 
 func _on_title_start_game() -> void:
+	if stage_clear.has_method("reset_player_state"):
+		stage_clear.reset_player_state()
 	show_game()
 
 
@@ -52,7 +54,17 @@ func _on_game_battle_finished(won: bool) -> void:
 
 func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
 	await get_tree().create_timer(STAGE_CLEAR_RETURN_DELAY).timeout
-	show_game()
+	show_game(false)
+
+
+func _get_starting_hp(reset_player_state: bool) -> int:
+	if reset_player_state:
+		if game.has_method("get_max_hp"):
+			return game.get_max_hp()
+		return 100
+	if stage_clear.has_method("get_current_hp"):
+		return stage_clear.get_current_hp()
+	return game.get_current_hp()
 
 
 func _play_bgm() -> void:

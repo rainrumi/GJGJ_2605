@@ -101,6 +101,18 @@ func setup_hp(value: int) -> void:
 		_show_select_mode()
 
 
+func reset_player_state() -> void:
+	current_hp = MAX_HP
+	_initialize_planted_flowers()
+	if is_node_ready():
+		_set_hp(current_hp, false)
+		_show_select_mode()
+
+
+func get_current_hp() -> int:
+	return current_hp
+
+
 func _initialize_planted_flowers() -> void:
 	planted_flowers = [
 		_create_flower("ひとつめの花", RARITY_NORMAL, FLOWER_TEXTURE_NORMAL),

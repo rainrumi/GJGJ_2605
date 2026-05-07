@@ -47,9 +47,9 @@ func _ready() -> void:
 	start_battle()
 
 
-func start_battle() -> void:
+func start_battle(starting_hp: int = MAX_HP) -> void:
 	minutes = START_HOUR * 60
-	hp = MAX_HP
+	hp = clampi(starting_hp, 0, MAX_HP)
 	battle_active = true
 	auto_digest_enabled = false
 	auto_digest_paused_for_drag = false
@@ -416,3 +416,7 @@ func _refresh_ui() -> void:
 
 func get_current_hp() -> int:
 	return hp
+
+
+func get_max_hp() -> int:
+	return MAX_HP
