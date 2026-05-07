@@ -383,9 +383,8 @@ func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 
 
 func _set_status_message(message: String) -> void:
-	current_message = message
-	ui.set_message(current_message)
-	ui.set_debug_message(current_message)
+	ui.set_message(START_MESSAGE)
+	ui.set_debug_message(message)
 	_refresh_ui()
 
 
