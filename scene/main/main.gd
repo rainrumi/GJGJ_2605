@@ -32,6 +32,8 @@ func show_stage_clear() -> void:
 	title.visible = false
 	game.visible = false
 	game_ui.visible = false
+	if stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
+		stage_clear.setup_hp(game.get_current_hp())
 	stage_clear.visible = true
 
 

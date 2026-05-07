@@ -3,6 +3,8 @@ extends Node2D
 signal selection_finished(recovered_hp_rate: float)
 
 const HP_RECOVERY_RATE := 0.1
+const MAX_HP := 100
+const HP_GAUGE_TWEEN_DURATION := 0.35
 const RARITY_NORMAL := "normal"
 const RARITY_HIGH := "high"
 const HEAD_FLOWER_DISPLAY_COUNT := 1
@@ -23,7 +25,7 @@ const SEED_OPTIONS: Array[Dictionary] = [
 	{
 		"name": "カモミール",
 		"rarity": RARITY_NORMAL,
-		"effect": "悪夢を消化すると追加でHP+5%回復",
+		"effect": "悪夢を消化するたびに追加でHP+5%回復",
 		"seed_texture": preload("res://art/stage_clear/tex_seed_1000_No_200.png"),
 		"flower_texture": FLOWER_TEXTURE_NORMAL,
 	},
@@ -39,6 +41,9 @@ const SEED_OPTIONS: Array[Dictionary] = [
 @export var max_normal_flowers := 3
 @export var max_high_flowers := 2
 
+@onready var hp_frame: NinePatchRect = $CharacterArea/HpFrame
+@onready var hp_gauge: NinePatchRect = $CharacterArea/HpFrame/HpGauge
+@onready var hp_text: Label = $CharacterArea/HpFrame/HpText
 @onready var planted_info_text: Label = $CharacterArea/PlantedInfoFrame/PlantedInfoText
 @onready var guide_text: Label = $UI/GuideText
 @onready var seed_buttons: Array[Button] = [
@@ -55,16 +60,27 @@ const SEED_OPTIONS: Array[Dictionary] = [
 ]
 
 var planted_flowers: Array[Dictionary] = []
+var current_hp := MAX_HP
+var _hp_gauge_full_width := 0.0
+var _hp_gauge_tween: Tween
 
 
 func _ready() -> void:
+	_capture_hp_gauge_size()
 	_initialize_planted_flowers()
 	_setup_seed_buttons()
 	_setup_flower_slots()
 	abandon_button.button_down.connect(_on_abandon_button_down)
 	abandon_button.button_up.connect(_on_abandon_button_up)
 	abandon_button.pressed.connect(_on_abandon_button_pressed)
+	_set_hp(current_hp, false)
 	_show_select_mode()
+
+
+func setup_hp(value: int) -> void:
+	current_hp = clampi(value, 0, MAX_HP)
+	if is_node_ready():
+		_set_hp(current_hp, false)
 
 
 func _initialize_planted_flowers() -> void:
@@ -121,8 +137,10 @@ func _on_seed_button_pressed(seed_index: int) -> void:
 
 
 func _on_abandon_button_pressed() -> void:
+	var recovered_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * HP_RECOVERY_RATE))
+	_set_hp(recovered_hp, true)
 	selection_finished.emit(HP_RECOVERY_RATE)
-	_show_finished_mode("種を見送り、HPを10%回復しました")
+	_show_finished_mode("種を放棄してHPを10%回復しました")
 
 
 func _show_finished_mode(message: String) -> void:
@@ -210,3 +228,29 @@ func _on_abandon_button_up() -> void:
 
 func _reset_abandon_button_visual() -> void:
 	abandon_button_frame.modulate = ABANDON_BUTTON_DEFAULT_MODULATE
+
+
+func _capture_hp_gauge_size() -> void:
+	_hp_gauge_full_width = hp_gauge.size.x
+
+
+func _set_hp(value: int, animated: bool) -> void:
+	current_hp = clampi(value, 0, MAX_HP)
+	hp_text.text = "%d/%d" % [current_hp, MAX_HP]
+	var hp_ratio := clampf(float(current_hp) / float(MAX_HP), 0.0, 1.0)
+	var target_size := Vector2(_hp_gauge_full_width * hp_ratio, hp_gauge.size.y)
+	if _hp_gauge_tween != null and _hp_gauge_tween.is_valid():
+		_hp_gauge_tween.kill()
+	if current_hp > 0:
+		hp_gauge.visible = true
+	if not animated:
+		hp_gauge.size = target_size
+		if current_hp == 0:
+			hp_gauge.visible = false
+		return
+	_hp_gauge_tween = create_tween()
+	_hp_gauge_tween.set_trans(Tween.TRANS_QUAD)
+	_hp_gauge_tween.set_ease(Tween.EASE_OUT)
+	_hp_gauge_tween.tween_property(hp_gauge, "size", target_size, HP_GAUGE_TWEEN_DURATION)
+	if current_hp == 0:
+		_hp_gauge_tween.tween_callback(func() -> void: hp_gauge.visible = false)

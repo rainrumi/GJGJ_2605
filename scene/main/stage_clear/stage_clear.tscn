@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://d1swr615sa4we" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_200.png" id="6_seed_frame_high"]
 [ext_resource type="Texture2D" uid="uid://bvewbj2k87hga" path="res://art/stage_clear/ui_choise_cancel_frame_1000.png" id="7_cancel_frame"]
 [ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="8_clear_effect"]
+[ext_resource type="Texture2D" uid="uid://cd5grt48wcvhd" path="res://art/ui/hp/ui_hp_frame_1000.png" id="9_hp_frame"]
+[ext_resource type="Texture2D" uid="uid://bm3qblcikrvsm" path="res://art/ui/hp/ui_hp_gauge_1000.png" id="10_hp_gauge"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
@@ -23,6 +25,45 @@ color = Color(0, 0, 0, 1)
 [node name="Character" type="Sprite2D" parent="CharacterArea" unique_id=837318386]
 position = Vector2(190, 420)
 texture = ExtResource("3_character")
+
+[node name="HpFrame" type="NinePatchRect" parent="CharacterArea" unique_id=1355600101]
+offset_left = 58.0
+offset_top = 506.0
+offset_right = 314.0
+offset_bottom = 532.0
+texture = ExtResource("9_hp_frame")
+region_rect = Rect2(0, 0, 256, 26)
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="HpGauge" type="NinePatchRect" parent="CharacterArea/HpFrame" unique_id=695049737]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 250.0
+offset_bottom = 20.0
+texture = ExtResource("10_hp_gauge")
+patch_margin_left = 8
+patch_margin_top = 6
+patch_margin_right = 8
+patch_margin_bottom = 6
+
+[node name="HpText" type="Label" parent="CharacterArea/HpFrame" unique_id=663179621]
+layout_mode = 0
+offset_left = 30.0
+offset_top = -6.0
+offset_right = 234.0
+offset_bottom = 30.0
+theme_override_colors/font_color = Color(0.03529412, 0.02745098, 0.21176471, 1)
+theme_override_colors/font_outline_color = Color(0.94, 0.88, 1, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "100/100"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="FlowerSlots" type="Control" parent="CharacterArea" unique_id=816859833]
 layout_mode = 3
@@ -313,7 +354,7 @@ offset_top = 600.0
 offset_right = 1081.0
 offset_bottom = 652.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_pressed_color = Color(0.705882, 0.607843, 0.694118, 1)
+theme_override_colors/font_pressed_color = Color(0.03529412, 0.02745098, 0.21176471, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 26
 text = "放棄する"
