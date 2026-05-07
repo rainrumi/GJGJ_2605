@@ -5,6 +5,8 @@ const HOVER_SCALE := 1.1
 const HOVER_TWEEN_DURATION := 0.1
 const COST_PULSE_SCALE := 1.1
 const COST_PULSE_DURATION := 0.2
+const DIGESTED_SCALE := 1.5
+const DIGESTED_TWEEN_DURATION := 0.5
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var hp_label: Label = get_node_or_null("HPText") as Label
@@ -19,6 +21,7 @@ var origin_position := Vector2.ZERO
 var _base_scale := Vector2.ONE
 var _hover_tween: Tween
 var _cost_pulse_tween: Tween
+var _digested_tween: Tween
 var _hovered := false
 
 
@@ -42,6 +45,7 @@ func reset_for_battle() -> void:
 	digested = false
 	stomach_cell = Vector2i.ZERO
 	visible = true
+	_reset_visuals()
 	return_to_origin()
 	set_hovered(false)
 	_update_hp_label()
@@ -83,7 +87,7 @@ func set_digested(value: bool) -> void:
 	digested = value
 	if digested:
 		digesting = false
-		visible = false
+		_play_digested_tween()
 
 
 func set_stomach_cell(cell: Vector2i) -> void:
@@ -175,6 +179,40 @@ func _get_nearest_shape_cell(target_cell: Vector2i) -> Vector2i:
 			nearest_distance = distance
 			nearest_cell = offset
 	return nearest_cell
+
+
+func _play_digested_tween() -> void:
+	if _digested_tween != null and _digested_tween.is_valid():
+		_digested_tween.kill()
+	if _hover_tween != null and _hover_tween.is_valid():
+		_hover_tween.kill()
+	_hovered = false
+	visible = true
+	scale = Vector2.ONE
+	modulate.a = 1.0
+	_digested_tween = create_tween()
+	_digested_tween.set_parallel(true)
+	_digested_tween.set_trans(Tween.TRANS_QUART)
+	_digested_tween.set_ease(Tween.EASE_OUT)
+	_digested_tween.tween_property(self, "scale", Vector2.ONE * DIGESTED_SCALE, DIGESTED_TWEEN_DURATION)
+	_digested_tween.tween_property(self, "modulate:a", 0.0, DIGESTED_TWEEN_DURATION)
+	_digested_tween.chain().tween_callback(func() -> void: visible = false)
+
+
+func _reset_visuals() -> void:
+	if _hover_tween != null and _hover_tween.is_valid():
+		_hover_tween.kill()
+	if _cost_pulse_tween != null and _cost_pulse_tween.is_valid():
+		_cost_pulse_tween.kill()
+	if _digested_tween != null and _digested_tween.is_valid():
+		_digested_tween.kill()
+	_hovered = false
+	scale = Vector2.ONE
+	modulate.a = 1.0
+	if sprite != null:
+		sprite.scale = _base_scale
+	if hp_label != null:
+		hp_label.scale = Vector2.ONE
 
 
 func _update_hp_label() -> void:

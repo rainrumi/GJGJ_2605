@@ -27,6 +27,7 @@ var hp := MAX_HP
 var battle_active := false
 var auto_digest_enabled := false
 var auto_digest_paused_for_drag := false
+var digest_turn_in_progress := false
 var digestion_timer: Timer
 var current_message := START_MESSAGE
 
@@ -52,6 +53,7 @@ func start_battle() -> void:
 	battle_active = true
 	auto_digest_enabled = false
 	auto_digest_paused_for_drag = false
+	digest_turn_in_progress = false
 	if digestion_timer != null and not digestion_timer.is_stopped():
 		digestion_timer.stop()
 	dragging_enemy = null
@@ -267,13 +269,20 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 
 
 func _advance_digest_turn() -> void:
+	if digest_turn_in_progress:
+		return
+	digest_turn_in_progress = true
 	if _active_digest_count() == 0:
 		auto_digest_enabled = false
 		_set_status_message("消化中の悪夢がありません")
+		digest_turn_in_progress = false
 		return
 	var elapsed_minutes := STEP_MINUTES
-	_digest_nightmares()
+	var digested_any := _digest_nightmares()
 	_apply_digest_damage()
+	if digested_any:
+		await get_tree().create_timer(Enemy.DIGESTED_TWEEN_DURATION).timeout
+		stomach.apply_gravity(enemies)
 	minutes += STEP_MINUTES
 	if hp <= 0:
 		hp = REST_HP
@@ -285,9 +294,10 @@ func _advance_digest_turn() -> void:
 	ui.show_time_elapsed(elapsed_minutes)
 	_check_battle_end()
 	_update_auto_digest_timer()
+	digest_turn_in_progress = false
 
 
-func _digest_nightmares() -> void:
+func _digest_nightmares() -> bool:
 	var digested_any := false
 	for enemy in enemies:
 		var bottom_cell_count := stomach.get_bottom_row_cell_count(enemy)
@@ -296,8 +306,7 @@ func _digest_nightmares() -> void:
 		if enemy.take_digest_damage(DIGEST_DAMAGE * bottom_cell_count):
 			digested_any = true
 		enemy.pulse_cost_label()
-	if digested_any:
-		stomach.apply_gravity(enemies)
+	return digested_any
 
 
 func _apply_digest_damage() -> void:
