@@ -9,120 +9,39 @@ const REST_MINUTES := 60
 const MAX_HP := 100
 const REST_HP := 50
 const DIGEST_DAMAGE := 200
-const STOMACH_COLUMNS := 4
-const STOMACH_ROWS := 5
-const MAX_FULLNESS := STOMACH_COLUMNS * STOMACH_ROWS
-const STOMACH_GRID_EDGE_OVERLAP := 1.0
 const DIGEST_AUTO_INTERVAL := 0.6
 const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
-const HOVER_SCALE := 1.1
-const HOVER_TWEEN_DURATION := 0.1
-const TIME_PULSE_SCALE := 1.1
-const TIME_PULSE_DURATION_AT_BASE_INTERVAL := 0.2
-const TIME_PULSE_BASE_INTERVAL := 0.6
-const ENEMY_COST_PULSE_SCALE := 1.1
-const ENEMY_COST_PULSE_DURATION_AT_BASE_INTERVAL := 0.2
-const ENEMY_COST_PULSE_BASE_INTERVAL := 0.6
-const HP_GAUGE_TWEEN_DURATION_AT_BASE_INTERVAL := 0.2
-const HP_GAUGE_TWEEN_BASE_INTERVAL := 0.6
-const TIME_ELAPSED_FLOAT_DISTANCE := 10.0
-const TIME_ELAPSED_TWEEN_DURATION_AT_BASE_INTERVAL := 0.3
-const TIME_ELAPSED_HIDE_DELAY_AT_BASE_INTERVAL := 0.2
-const TIME_ELAPSED_TWEEN_BASE_INTERVAL := 0.6
-const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
-const ENEMY_TEXTURES: Array[Texture2D] = [
-	preload("res://art/enemy/tex_enemy_1000_No_100.png"),
-	preload("res://art/enemy/tex_enemy_1000_No_200.png"),
-	preload("res://art/enemy/tex_enemy_1000_No_300.png"),
-]
-const ENEMY_START_POSITIONS: Array[Vector2] = [
-	Vector2(850, 500),
-	Vector2(1000, 280),
-	Vector2(1150, 500),
-]
-const ENEMY_STOMACH_SIZES: Array[Vector2i] = [
-	Vector2i(2, 3),
-	Vector2i(3, 3),
-	Vector2i(2, 2),
-]
-const ENEMY_STOMACH_SHAPES: Array[Array] = [
-	[Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2)],
-	[Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2)],
-	[Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+const START_MESSAGE := "Digest the nightmares before morning."
+
+@onready var ui: BattleUI = $UI
+@onready var stomach: StomachBoard = $Stomach
+@onready var enemies: Array[Enemy] = [
+	$EnemyLeft as Enemy,
+	$EnemyCenter as Enemy,
+	$EnemyRight as Enemy,
 ]
 
-@onready var ui: CanvasLayer = $UI
-@onready var time_bar: TextureRect = $UI/TimeBar
-@onready var time_text: Label = $UI/TimeBar/TimeText
-@onready var hp_frame: NinePatchRect = $UI/HpFrame
-@onready var hp_gauge: NinePatchRect = $UI/HpFrame/HpGauge
-@onready var hp_text: Label = $UI/HpFrame/HpText
-@onready var message_text: Label = get_node_or_null("UI/StatusPanel/MessageText") as Label
-@onready var debug_message_button: Button = get_node_or_null("UI/StatusPanel/DebugMessageButton") as Button
-@onready var passive_guide_text: Label = get_node_or_null("UI/PassiveGuideFrame/PassiveGuideText") as Label
-@onready var digestion_frame: TextureRect = $UI/DigestionFrame
-@onready var digestion_label: Label = $UI/DigestionFrame/DigestionLabel
-@onready var stomach: Node2D = $Stomach
-@onready var stomach_frame: NinePatchRect = $Stomach/frame
-@onready var stomach_grid_frame: NinePatchRect = $Stomach/grid_frame
-@onready var digestion_line: TextureRect = get_node_or_null("Stomach/DigestionLine") as TextureRect
-@onready var enemy_nodes: Array[Node2D] = [
-	$EnemyLeft as Node2D,
-	$EnemyCenter as Node2D,
-	$EnemyRight as Node2D,
-]
-
-var minutes: int = START_HOUR * 60
-var hp: int = MAX_HP
-var enemies: Array[Dictionary] = []
-var dragging_enemy_index := -1
-var drag_offset := Vector2.ZERO
-var drag_grab_cell := Vector2i.ZERO
-var original_enemy_positions: Array[Vector2] = []
+var minutes := START_HOUR * 60
+var hp := MAX_HP
 var battle_active := false
-var stomach_grid_origin := Vector2.ZERO
-var stomach_grid_cell_size := 0.0
-var stomach_grid_step := 0.0
-var stomach_preview_sprite: Sprite2D
-var digestion_timer: Timer
-var hp_damage_preview_label: Label
-var time_elapsed_label: Label
-var time_elapsed_label_base_position := Vector2.ZERO
-var time_elapsed_tween: Tween
-var hp_gauge_full_width := 0.0
-var hp_gauge_tween: Tween
 var auto_digest_enabled := false
 var auto_digest_paused_for_drag := false
+var digestion_timer: Timer
+var current_message := START_MESSAGE
+
+var dragging_enemy: Enemy
+var drag_offset := Vector2.ZERO
+var drag_grab_cell := Vector2i.ZERO
 var dragged_enemy_was_digesting := false
 var dragged_enemy_original_cell := Vector2i.ZERO
 var dragged_enemy_original_global_position := Vector2.ZERO
-var enemy_base_scales: Array[Vector2] = []
-var enemy_hover_tweens: Array = []
-var hovered_enemy_index := -1
-var digestion_button_base_scale := Vector2.ONE
-var digestion_button_tween: Tween
-var digestion_button_hovered := false
-var time_text_base_scale := Vector2.ONE
-var time_text_pulse_tween: Tween
-var enemy_cost_base_scales: Array[Vector2] = []
-var enemy_cost_pulse_tweens: Array = []
-var debug_message := ""
+var hovered_enemy: Enemy
 
 
 func _ready() -> void:
-	visibility_changed.connect(_on_visibility_changed)
-	_prepare_debug_message_button()
-	_prepare_mouse_filters()
-	_prepare_hover_effects()
-	_prepare_time_pulse()
-	_prepare_enemy_cost_pulses()
-	_capture_hp_gauge_size()
-	_configure_stomach_grid()
-	_create_stomach_preview()
+	ui.digestion_requested.connect(_on_digestion_requested)
 	_create_digestion_timer()
-	_create_hp_damage_preview()
-	_create_time_elapsed_label()
-	_sync_ui_visibility()
+	_setup_enemies()
 	start_battle()
 
 
@@ -130,317 +49,148 @@ func start_battle() -> void:
 	minutes = START_HOUR * 60
 	hp = MAX_HP
 	battle_active = true
-	dragging_enemy_index = -1
-	_set_hovered_enemy(-1)
-	_set_digestion_button_hovered(false)
-	_reset_time_text_pulse()
-	_reset_enemy_cost_pulses()
-	_reset_hp_gauge()
-	dragged_enemy_was_digesting = false
-	_hide_stomach_preview()
-	_hide_hp_damage_preview()
-	_hide_time_elapsed_label()
-	_reset_auto_digest()
-	enemies = [
-		_create_enemy("大人に追われる悪夢", 1400, 6, 2),
-		_create_enemy("落下する悪夢", 1000, 5, 3),
-		_create_enemy("仕事が終わらない悪夢", 2000, 3, 5),
-	]
-	original_enemy_positions.clear()
-	for i in range(enemy_nodes.size()):
-		var start_position: Vector2 = ENEMY_START_POSITIONS[i] as Vector2
-		original_enemy_positions.append(start_position)
-		enemy_nodes[i].position = start_position
-		enemy_nodes[i].visible = true
-	_apply_enemy_textures()
-	_update_enemy_labels()
-	_update_ui(START_MESSAGE)
-
-
-func _prepare_debug_message_button() -> void:
-	if message_text != null:
-		message_text.text = START_MESSAGE
-	if debug_message_button == null:
-		return
-	debug_message_button.pressed.connect(_on_debug_message_button_pressed)
+	auto_digest_enabled = false
+	auto_digest_paused_for_drag = false
+	if digestion_timer != null and not digestion_timer.is_stopped():
+		digestion_timer.stop()
+	dragging_enemy = null
+	hovered_enemy = null
+	for enemy in enemies:
+		enemy.reset_for_battle()
+	current_message = START_MESSAGE
+	ui.reset_for_battle(MAX_HP, minutes, current_message)
+	_refresh_ui()
+	stomach.hide_preview()
 
 
 func _process(_delta: float) -> void:
 	if not battle_active:
-		_set_hovered_enemy(-1)
-		_set_digestion_button_hovered(false)
+		_set_hovered_enemy(null)
 		return
 	var mouse_position := get_viewport().get_mouse_position()
+	if dragging_enemy != null:
+		dragging_enemy.global_position = mouse_position + drag_offset
+		stomach.show_preview(dragging_enemy, mouse_position, drag_grab_cell, enemies)
+		_update_hp_damage_preview(mouse_position)
+		_set_hovered_enemy(null)
+		return
 	_update_enemy_hover(mouse_position)
-	_update_digestion_button_hover(mouse_position)
 
 
 func _input(event: InputEvent) -> void:
 	if not battle_active:
 		return
 	if event is InputEventMouseButton:
-		var mouse_button: InputEventMouseButton = event as InputEventMouseButton
+		var mouse_button := event as InputEventMouseButton
 		if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 			return
 		if mouse_button.pressed:
 			_handle_press(mouse_button.position)
 		else:
 			_handle_release(mouse_button.position)
-	elif event is InputEventMouseMotion:
-		var mouse_motion: InputEventMouseMotion = event as InputEventMouseMotion
-		if dragging_enemy_index != -1:
-			enemy_nodes[dragging_enemy_index].global_position = mouse_motion.position + drag_offset
-			_update_stomach_preview(mouse_motion.position)
-			_update_hp_damage_preview(mouse_motion.position)
 
 
 func _handle_press(mouse_position: Vector2) -> void:
-	var digestion_rect := _get_global_rect(digestion_frame)
-	if digestion_frame.visible and digestion_rect.has_point(mouse_position):
-		_start_auto_digest()
-		return
-	for i in range(enemy_nodes.size() - 1, -1, -1):
-		if not _can_drag_enemy(i):
+	for i in range(enemies.size() - 1, -1, -1):
+		var enemy := enemies[i]
+		if not enemy.can_drag():
 			continue
-		if _get_enemy_rect(i).has_point(mouse_position):
-			dragging_enemy_index = i
-			drag_offset = enemy_nodes[i].global_position - mouse_position
-			drag_grab_cell = _get_enemy_grab_cell(i, mouse_position)
-			_start_enemy_drag(i)
-			_pause_auto_digest_for_drag()
-			_update_stomach_preview(mouse_position)
-			_update_hp_damage_preview(mouse_position)
+		if enemy.get_global_rect().has_point(mouse_position):
+			dragging_enemy = enemy
+			drag_offset = enemy.global_position - mouse_position
+			drag_grab_cell = enemy.get_grab_cell(mouse_position)
+			dragged_enemy_was_digesting = enemy.digesting
+			dragged_enemy_original_cell = enemy.stomach_cell
+			dragged_enemy_original_global_position = enemy.global_position
+			auto_digest_paused_for_drag = auto_digest_enabled
+			_update_auto_digest_timer()
 			return
 
 
 func _handle_release(mouse_position: Vector2) -> void:
-	if dragging_enemy_index == -1:
+	if dragging_enemy == null:
 		return
-	var enemy_index := dragging_enemy_index
-	dragging_enemy_index = -1
-	_hide_stomach_preview()
-	_hide_hp_damage_preview()
-	if _get_stomach_rect().has_point(mouse_position):
-		_try_start_digesting(enemy_index, mouse_position)
+	var released_enemy := dragging_enemy
+	dragging_enemy = null
+	stomach.hide_preview()
+	ui.hide_hp_damage_preview()
+	if stomach.contains_global_position(mouse_position):
+		_try_start_digesting(released_enemy, mouse_position)
 	else:
-		_remove_dragged_enemy_from_stomach(enemy_index)
-	_resume_auto_digest_after_drag()
+		_remove_enemy_from_stomach(released_enemy)
+	if auto_digest_enabled:
+		auto_digest_paused_for_drag = false
+	_update_auto_digest_timer()
 
 
-func _create_enemy(name: String, hp_value: int, size: int, damage: int) -> Dictionary:
-	return {
-		"name": name,
-		"max_hp": hp_value,
-		"remaining_hp": hp_value,
-		"size": size,
-		"damage": damage,
-		"digesting": false,
-		"digested": false,
-		"stomach_cell": Vector2i.ZERO,
-	}
+func _setup_enemies() -> void:
+	var definitions := _build_enemy_definitions()
+	for i in range(enemies.size()):
+		var definition := definitions[i]
+		enemies[i].setup(
+			definition,
+			Vector2(
+				stomach.get_span_size(definition.stomach_size.x),
+				stomach.get_span_size(definition.stomach_size.y)
+			)
+		)
 
 
-func _prepare_mouse_filters() -> void:
-	digestion_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	digestion_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if message_text != null:
-		message_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if debug_message_button != null:
-		debug_message_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	if passive_guide_text != null:
-		passive_guide_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var status_panel := get_node_or_null("UI/StatusPanel") as Control
-	if status_panel != null:
-		status_panel.mouse_filter = Control.MOUSE_FILTER_PASS
-	var passive_guide_frame := get_node_or_null("UI/PassiveGuideFrame") as Control
-	if passive_guide_frame != null:
-		passive_guide_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var hp_frame := get_node_or_null("UI/HpFrame") as Control
-	if hp_frame != null:
-		hp_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var time_bar := get_node_or_null("UI/TimeBar") as Control
-	if time_bar != null:
-		time_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for enemy_node in enemy_nodes:
-		var label := enemy_node.get_node_or_null("HPText") as Label
-		if label != null:
-			label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if digestion_line != null:
-		digestion_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+func _build_enemy_definitions() -> Array[EnemyDefinition]:
+	var definitions: Array[EnemyDefinition] = []
+	definitions.append(_create_enemy_definition(
+		"Adult nightmare",
+		preload("res://art/enemy/tex_enemy_1000_No_100.png"),
+		1400,
+		6,
+		2,
+		Vector2(850, 500),
+		Vector2i(2, 3),
+		[Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2)]
+	))
+	definitions.append(_create_enemy_definition(
+		"Overeating nightmare",
+		preload("res://art/enemy/tex_enemy_1000_No_200.png"),
+		1000,
+		5,
+		3,
+		Vector2(1000, 280),
+		Vector2i(3, 3),
+		[Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2)]
+	))
+	definitions.append(_create_enemy_definition(
+		"Chased nightmare",
+		preload("res://art/enemy/tex_enemy_1000_No_300.png"),
+		2000,
+		3,
+		5,
+		Vector2(1150, 500),
+		Vector2i(2, 2),
+		[Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)]
+	))
+	return definitions
 
 
-func _capture_hp_gauge_size() -> void:
-	hp_gauge_full_width = hp_gauge.size.x
-
-
-func _reset_hp_gauge() -> void:
-	if hp_gauge_tween != null and hp_gauge_tween.is_valid():
-		hp_gauge_tween.kill()
-	hp_gauge.visible = hp > 0
-	hp_gauge.size = Vector2(hp_gauge_full_width * clampf(float(maxi(0, hp)) / float(MAX_HP), 0.0, 1.0), hp_gauge.size.y)
-
-
-func _prepare_hover_effects() -> void:
-	enemy_base_scales.clear()
-	enemy_hover_tweens.clear()
-	for enemy_node in enemy_nodes:
-		var sprite := enemy_node.get_node_or_null("Sprite2D") as Sprite2D
-		if sprite == null:
-			enemy_base_scales.append(Vector2.ONE)
-		else:
-			enemy_base_scales.append(sprite.scale)
-		enemy_hover_tweens.append(null)
-	digestion_button_base_scale = digestion_frame.scale
-	digestion_frame.pivot_offset = digestion_frame.size * 0.5
-
-
-func _update_enemy_hover(mouse_position: Vector2) -> void:
-	if dragging_enemy_index != -1:
-		_set_hovered_enemy(-1)
-		return
-	for i in range(enemy_nodes.size() - 1, -1, -1):
-		if not _can_drag_enemy(i) or not enemy_nodes[i].visible:
-			continue
-		if _get_enemy_rect(i).has_point(mouse_position):
-			_set_hovered_enemy(i)
-			return
-	_set_hovered_enemy(-1)
-
-
-func _set_hovered_enemy(enemy_index: int) -> void:
-	if hovered_enemy_index == enemy_index:
-		return
-	var previous_index := hovered_enemy_index
-	hovered_enemy_index = enemy_index
-	if previous_index != -1:
-		_tween_enemy_hover(previous_index, false)
-	if hovered_enemy_index != -1:
-		_tween_enemy_hover(hovered_enemy_index, true)
-
-
-func _tween_enemy_hover(enemy_index: int, hovered: bool) -> void:
-	var sprite := enemy_nodes[enemy_index].get_node_or_null("Sprite2D") as Sprite2D
-	if sprite == null:
-		return
-	var tween = enemy_hover_tweens[enemy_index]
-	if tween != null and tween.is_valid():
-		tween.kill()
-	var target_scale := enemy_base_scales[enemy_index]
-	if hovered:
-		target_scale *= HOVER_SCALE
-	tween = create_tween()
-	tween.set_trans(Tween.TRANS_QUAD)
-	tween.set_ease(Tween.EASE_OUT)
-	tween.tween_property(sprite, "scale", target_scale, HOVER_TWEEN_DURATION)
-	enemy_hover_tweens[enemy_index] = tween
-
-
-func _update_digestion_button_hover(mouse_position: Vector2) -> void:
-	var hovered := digestion_frame.visible and _get_global_rect(digestion_frame).has_point(mouse_position)
-	_set_digestion_button_hovered(hovered)
-
-
-func _set_digestion_button_hovered(hovered: bool) -> void:
-	if digestion_button_hovered == hovered:
-		return
-	digestion_button_hovered = hovered
-	if digestion_button_tween != null and digestion_button_tween.is_valid():
-		digestion_button_tween.kill()
-	var target_scale := digestion_button_base_scale
-	if digestion_button_hovered:
-		target_scale *= HOVER_SCALE
-	digestion_button_tween = create_tween()
-	digestion_button_tween.set_trans(Tween.TRANS_QUAD)
-	digestion_button_tween.set_ease(Tween.EASE_OUT)
-	digestion_button_tween.tween_property(digestion_frame, "scale", target_scale, HOVER_TWEEN_DURATION)
-
-
-func _prepare_time_pulse() -> void:
-	time_text_base_scale = time_text.scale
-	time_text.pivot_offset = time_text.size * 0.5
-
-
-func _reset_time_text_pulse() -> void:
-	if time_text_pulse_tween != null and time_text_pulse_tween.is_valid():
-		time_text_pulse_tween.kill()
-	time_text.scale = time_text_base_scale
-
-
-func _pulse_time_text() -> void:
-	if time_text_pulse_tween != null and time_text_pulse_tween.is_valid():
-		time_text_pulse_tween.kill()
-	time_text.scale = time_text_base_scale
-	var total_duration := _get_time_pulse_duration()
-	var half_duration := total_duration * 0.5
-	time_text_pulse_tween = create_tween()
-	time_text_pulse_tween.set_trans(Tween.TRANS_QUAD)
-	time_text_pulse_tween.set_ease(Tween.EASE_OUT)
-	time_text_pulse_tween.tween_property(time_text, "scale", time_text_base_scale * TIME_PULSE_SCALE, half_duration)
-	time_text_pulse_tween.tween_property(time_text, "scale", time_text_base_scale, half_duration)
-
-
-func _get_time_pulse_duration() -> float:
-	return maxf(0.03, TIME_PULSE_DURATION_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / TIME_PULSE_BASE_INTERVAL)
-
-
-func _prepare_enemy_cost_pulses() -> void:
-	enemy_cost_base_scales.clear()
-	enemy_cost_pulse_tweens.clear()
-	for enemy_node in enemy_nodes:
-		var label := enemy_node.get_node_or_null("HPText") as Label
-		if label == null:
-			enemy_cost_base_scales.append(Vector2.ONE)
-		else:
-			enemy_cost_base_scales.append(label.scale)
-			label.pivot_offset = label.size * 0.5
-		enemy_cost_pulse_tweens.append(null)
-
-
-func _reset_enemy_cost_pulses() -> void:
-	for i in range(enemy_cost_pulse_tweens.size()):
-		var tween = enemy_cost_pulse_tweens[i]
-		if tween != null and tween.is_valid():
-			tween.kill()
-		var label := enemy_nodes[i].get_node_or_null("HPText") as Label
-		if label != null and i < enemy_cost_base_scales.size():
-			label.scale = enemy_cost_base_scales[i]
-
-
-func _pulse_enemy_cost(enemy_index: int) -> void:
-	if enemy_index >= enemy_cost_base_scales.size():
-		return
-	var label := enemy_nodes[enemy_index].get_node_or_null("HPText") as Label
-	if label == null:
-		return
-	var tween = enemy_cost_pulse_tweens[enemy_index]
-	if tween != null and tween.is_valid():
-		tween.kill()
-	label.scale = enemy_cost_base_scales[enemy_index]
-	var total_duration := _get_enemy_cost_pulse_duration()
-	var half_duration := total_duration * 0.5
-	tween = create_tween()
-	tween.set_trans(Tween.TRANS_ELASTIC)
-	tween.set_ease(Tween.EASE_OUT)
-	tween.tween_property(label, "scale", enemy_cost_base_scales[enemy_index] * ENEMY_COST_PULSE_SCALE, half_duration)
-	tween.tween_property(label, "scale", enemy_cost_base_scales[enemy_index], half_duration)
-	enemy_cost_pulse_tweens[enemy_index] = tween
-
-
-func _get_enemy_cost_pulse_duration() -> float:
-	return maxf(0.03, ENEMY_COST_PULSE_DURATION_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / ENEMY_COST_PULSE_BASE_INTERVAL)
-
-
-func _can_drag_enemy(enemy_index: int) -> bool:
-	var enemy := enemies[enemy_index]
-	return not bool(enemy["digested"])
-
-
-func _start_enemy_drag(enemy_index: int) -> void:
-	_set_hovered_enemy(-1)
-	var enemy := enemies[enemy_index]
-	dragged_enemy_was_digesting = bool(enemy["digesting"])
-	dragged_enemy_original_cell = enemy["stomach_cell"]
-	dragged_enemy_original_global_position = enemy_nodes[enemy_index].global_position
+func _create_enemy_definition(
+	display_name: String,
+	texture: Texture2D,
+	max_hp: int,
+	size: int,
+	damage: int,
+	start_position: Vector2,
+	stomach_size: Vector2i,
+	stomach_shape: Array[Vector2i]
+) -> EnemyDefinition:
+	var definition := EnemyDefinition.new()
+	definition.display_name = display_name
+	definition.texture = texture
+	definition.max_hp = max_hp
+	definition.size = size
+	definition.damage = damage
+	definition.start_position = start_position
+	definition.stomach_size = stomach_size
+	definition.stomach_shape = stomach_shape
+	return definition
 
 
 func _create_digestion_timer() -> void:
@@ -448,52 +198,146 @@ func _create_digestion_timer() -> void:
 	digestion_timer.name = "AutoDigestionTimer"
 	digestion_timer.wait_time = DIGEST_AUTO_INTERVAL
 	digestion_timer.one_shot = false
-	digestion_timer.autostart = false
 	digestion_timer.timeout.connect(_on_digestion_timer_timeout)
 	add_child(digestion_timer)
 
 
-func _create_hp_damage_preview() -> void:
-	hp_damage_preview_label = Label.new()
-	hp_damage_preview_label.name = "RemoveNightmareDamagePreview"
-	hp_damage_preview_label.visible = false
-	hp_damage_preview_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hp_damage_preview_label.text = "-%d" % _get_remove_from_stomach_damage()
-	hp_damage_preview_label.add_theme_color_override("font_color", Color.html("#ff0736"))
-	hp_damage_preview_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	hp_damage_preview_label.add_theme_constant_override("outline_size", 3)
-	var preview_font := hp_text.get_theme_font("font")
-	if preview_font != null:
-		hp_damage_preview_label.add_theme_font_override("font", preview_font)
-	hp_damage_preview_label.add_theme_font_size_override("font_size", 28)
-	ui.add_child(hp_damage_preview_label)
-	_position_hp_damage_preview()
+func _on_digestion_requested() -> void:
+	if not battle_active:
+		return
+	if _active_digest_count() == 0:
+		_advance_digest_turn()
+		return
+	auto_digest_enabled = true
+	auto_digest_paused_for_drag = false
+	if not stomach.has_bottom_touching_enemy(enemies):
+		stomach.apply_gravity(enemies)
+	_refresh_ui()
+	_advance_digest_turn()
 
 
-func _create_time_elapsed_label() -> void:
-	time_elapsed_label = Label.new()
-	time_elapsed_label.name = "TimeElapsedLabel"
-	time_elapsed_label.visible = false
-	time_elapsed_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	time_elapsed_label.size = Vector2(104.0, 36.0)
-	time_elapsed_label_base_position = time_bar.position + Vector2(-110.0, 42.0)
-	time_elapsed_label.position = time_elapsed_label_base_position
-	time_elapsed_label.modulate.a = 0.0
-	time_elapsed_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	time_elapsed_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	time_elapsed_label.add_theme_color_override("font_color", Color(0.94, 0.88, 1.0, 1.0))
-	time_elapsed_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	time_elapsed_label.add_theme_constant_override("outline_size", 4)
-	var elapsed_font := time_text.get_theme_font("font")
-	if elapsed_font != null:
-		time_elapsed_label.add_theme_font_override("font", elapsed_font)
-	time_elapsed_label.add_theme_font_size_override("font_size", 28)
-	ui.add_child(time_elapsed_label)
+func _on_digestion_timer_timeout() -> void:
+	if not auto_digest_enabled or auto_digest_paused_for_drag:
+		_update_auto_digest_timer()
+		return
+	_advance_digest_turn()
+
+
+func _try_start_digesting(enemy: Enemy, mouse_position: Vector2) -> void:
+	var next_fullness := stomach.get_current_fullness(enemies)
+	if not dragged_enemy_was_digesting:
+		next_fullness += enemy.get_size()
+	if next_fullness > stomach.get_capacity():
+		_return_dragged_enemy(enemy)
+		_set_status_message("The stomach is full.")
+		return
+	var top_left := stomach.get_drop_cell(enemy, mouse_position, drag_grab_cell, enemies)
+	if not stomach.can_place(enemy, top_left, enemies):
+		_return_dragged_enemy(enemy)
+		_set_status_message("That position is blocked.")
+		return
+	enemy.set_digesting(true)
+	stomach.place_enemy(enemy, top_left)
+	_set_status_message("")
+
+
+func _return_dragged_enemy(enemy: Enemy) -> void:
+	if dragged_enemy_was_digesting:
+		enemy.set_digesting(true)
+		enemy.set_stomach_cell(dragged_enemy_original_cell)
+		enemy.global_position = dragged_enemy_original_global_position
+		return
+	enemy.return_to_origin()
+
+
+func _remove_enemy_from_stomach(enemy: Enemy) -> void:
+	if not dragged_enemy_was_digesting:
+		enemy.return_to_origin()
+		return
+	enemy.set_digesting(false)
+	enemy.return_to_origin()
+	hp = maxi(0, hp - _get_remove_from_stomach_damage())
+	_set_status_message("You took damage after removing a nightmare.")
+
+
+func _advance_digest_turn() -> void:
+	if _active_digest_count() == 0:
+		auto_digest_enabled = false
+		_set_status_message("No nightmares are digesting.")
+		return
+	var elapsed_minutes := STEP_MINUTES
+	_digest_nightmares()
+	_apply_digest_damage()
+	minutes += STEP_MINUTES
+	if hp <= 0:
+		hp = REST_HP
+		minutes += REST_MINUTES
+		elapsed_minutes += REST_MINUTES
+		_set_status_message("HP reached zero, so you rested.")
+	else:
+		_set_status_message("")
+	ui.show_time_elapsed(elapsed_minutes)
+	_check_battle_end()
+	_update_auto_digest_timer()
+
+
+func _digest_nightmares() -> void:
+	var digested_any := false
+	for enemy in enemies:
+		var bottom_cell_count := stomach.get_bottom_row_cell_count(enemy)
+		if bottom_cell_count == 0:
+			continue
+		if enemy.take_digest_damage(DIGEST_DAMAGE * bottom_cell_count):
+			digested_any = true
+		enemy.pulse_cost_label()
+	if digested_any:
+		stomach.apply_gravity(enemies)
+
+
+func _apply_digest_damage() -> void:
+	var damage := 0
+	for enemy in enemies:
+		if enemy.is_active_in_stomach():
+			damage += enemy.get_damage()
+	hp -= damage
+
+
+func _check_battle_end() -> void:
+	if _all_enemies_digested():
+		battle_active = false
+		auto_digest_enabled = false
+		_update_auto_digest_timer()
+		_set_status_message("All nightmares were digested.")
+		battle_finished.emit(true)
+		return
+	if minutes >= END_HOUR * 60:
+		battle_active = false
+		auto_digest_enabled = false
+		_update_auto_digest_timer()
+		_set_status_message("Morning came before digestion finished.")
+		battle_finished.emit(false)
+
+
+func _all_enemies_digested() -> bool:
+	for enemy in enemies:
+		if not enemy.digested:
+			return false
+	return true
+
+
+func _active_digest_count() -> int:
+	var count := 0
+	for enemy in enemies:
+		if enemy.is_active_in_stomach():
+			count += 1
+	return count
+
+
+func _get_remove_from_stomach_damage() -> int:
+	return ceili(float(MAX_HP) * REMOVE_FROM_STOMACH_DAMAGE_RATE)
 
 
 func _update_auto_digest_timer() -> void:
-	if digestion_timer == null:
-		return
 	var active_digest_count := _active_digest_count()
 	if auto_digest_enabled and active_digest_count == 0:
 		auto_digest_enabled = false
@@ -504,652 +348,46 @@ func _update_auto_digest_timer() -> void:
 	else:
 		if not digestion_timer.is_stopped():
 			digestion_timer.stop()
-	_update_digestion_button_visibility()
+	_refresh_ui()
 
 
-func _stop_auto_digest() -> void:
-	if digestion_timer != null and not digestion_timer.is_stopped():
-		digestion_timer.stop()
-
-
-func _reset_auto_digest() -> void:
-	auto_digest_enabled = false
-	auto_digest_paused_for_drag = false
-	_stop_auto_digest()
-	_update_digestion_button_visibility()
-
-
-func _start_auto_digest() -> void:
-	if _active_digest_count() == 0:
-		_advance_digest_turn()
-		return
-	auto_digest_enabled = true
-	auto_digest_paused_for_drag = false
-	_update_digestion_button_visibility()
-	_prepare_stomach_for_digest()
-	_advance_digest_turn()
-
-
-func _pause_auto_digest_for_drag() -> void:
-	if not auto_digest_enabled:
-		return
-	auto_digest_paused_for_drag = true
-	_update_auto_digest_timer()
-
-
-func _resume_auto_digest_after_drag() -> void:
-	if not auto_digest_enabled:
-		return
-	auto_digest_paused_for_drag = false
-	_update_auto_digest_timer()
-
-
-func _update_digestion_button_visibility() -> void:
-	digestion_frame.visible = battle_active and not auto_digest_enabled
-
-
-func _on_digestion_timer_timeout() -> void:
-	if not auto_digest_enabled or auto_digest_paused_for_drag:
-		_update_auto_digest_timer()
-		return
-	_advance_digest_turn()
-
-
-func _prepare_stomach_for_digest() -> void:
-	if not _has_bottom_touching_nightmare():
-		_apply_stomach_gravity()
-
-
-func _try_start_digesting(enemy_index: int, mouse_position: Vector2) -> void:
-	var enemy := enemies[enemy_index]
-	var next_fullness := _current_fullness()
-	if not dragged_enemy_was_digesting:
-		next_fullness += int(enemy["size"])
-	if next_fullness > MAX_FULLNESS:
-		_return_dragged_enemy(enemy_index)
-		_update_ui("胃袋がいっぱいです")
-		return
-	var top_left := _get_dragged_enemy_drop_cell(enemy_index, mouse_position)
-	if not _can_place_enemy_at(enemy_index, top_left):
-		_return_dragged_enemy(enemy_index)
-		_update_ui("その場所には置けません")
-		return
-	enemy["digesting"] = true
-	enemies[enemy_index] = enemy
-	_place_enemy_in_stomach(enemy_index, top_left)
-	_update_ui("")
-
-
-func _advance_digest_turn() -> void:
-	if _active_digest_count() == 0:
-		_reset_auto_digest()
-		_update_ui("消化中の悪夢がありません")
-		return
-	var elapsed_minutes := STEP_MINUTES
-	_digest_nightmares()
-	_apply_digest_damage()
-	_advance_time(STEP_MINUTES)
-	if hp <= 0:
-		hp = REST_HP
-		_advance_time(REST_MINUTES)
-		elapsed_minutes += REST_MINUTES
-		_update_ui("体力が尽きたため休憩しました")
-	else:
-		_update_ui("")
-	_show_time_elapsed(elapsed_minutes)
-	_check_battle_end()
-	_update_auto_digest_timer()
-
-
-func _digest_nightmares() -> void:
-	var digested_this_turn := false
-	for i in range(enemies.size()):
+func _update_enemy_hover(mouse_position: Vector2) -> void:
+	for i in range(enemies.size() - 1, -1, -1):
 		var enemy := enemies[i]
-		var bottom_cell_count := _get_bottom_row_cell_count(i)
-		if bottom_cell_count == 0:
+		if not enemy.can_drag() or not enemy.visible:
 			continue
-		enemy["remaining_hp"] = maxi(0, int(enemy["remaining_hp"]) - DIGEST_DAMAGE * bottom_cell_count)
-		_pulse_enemy_cost(i)
-		if int(enemy["remaining_hp"]) == 0:
-			enemy["digested"] = true
-			enemy["digesting"] = false
-			enemy_nodes[i].visible = false
-			digested_this_turn = true
-		enemies[i] = enemy
-	if digested_this_turn:
-		_apply_stomach_gravity()
-	_update_enemy_labels()
-
-
-func _apply_digest_damage() -> void:
-	var damage := 0
-	for raw_enemy in enemies:
-		var enemy: Dictionary = raw_enemy
-		if bool(enemy["digesting"]) and not bool(enemy["digested"]):
-			damage += int(enemy["damage"])
-	hp -= damage
-
-
-func _apply_remove_from_stomach_damage() -> void:
-	hp = maxi(0, hp - _get_remove_from_stomach_damage())
-	_update_ui("胃袋から悪夢を戻したためダメージを受けました")
-
-
-func _get_remove_from_stomach_damage() -> int:
-	return ceili(float(MAX_HP) * REMOVE_FROM_STOMACH_DAMAGE_RATE)
-
-
-func _check_battle_end() -> void:
-	if _all_enemies_digested():
-		battle_active = false
-		_reset_auto_digest()
-		_update_ui("勝利。すべての悪夢を消化しました")
-		battle_finished.emit(true)
-		return
-	if minutes >= END_HOUR * 60:
-		battle_active = false
-		_reset_auto_digest()
-		_update_ui("敗北。朝までに消化しきれませんでした")
-		battle_finished.emit(false)
-
-
-func _all_enemies_digested() -> bool:
-	for raw_enemy in enemies:
-		var enemy: Dictionary = raw_enemy
-		if not bool(enemy["digested"]):
-			return false
-	return true
-
-
-func _active_digest_count() -> int:
-	var count := 0
-	for raw_enemy in enemies:
-		var enemy: Dictionary = raw_enemy
-		if bool(enemy["digesting"]) and not bool(enemy["digested"]):
-			count += 1
-	return count
-
-
-func _current_fullness() -> int:
-	var fullness := 0
-	for raw_enemy in enemies:
-		var enemy: Dictionary = raw_enemy
-		if bool(enemy["digesting"]) and not bool(enemy["digested"]):
-			fullness += int(enemy["size"])
-	return fullness
-
-
-func _advance_time(amount_minutes: int) -> void:
-	minutes += amount_minutes
-
-
-func _show_time_elapsed(amount_minutes: int) -> void:
-	if not auto_digest_enabled or time_elapsed_label == null:
-		return
-	if time_elapsed_tween != null and time_elapsed_tween.is_valid():
-		time_elapsed_tween.kill()
-	time_elapsed_label.text = _format_elapsed_time(amount_minutes)
-	time_elapsed_label.position = time_elapsed_label_base_position
-	time_elapsed_label.modulate.a = 0.0
-	time_elapsed_label.visible = true
-	time_elapsed_tween = create_tween()
-	time_elapsed_tween.set_parallel(true)
-	time_elapsed_tween.set_trans(Tween.TRANS_QUART)
-	time_elapsed_tween.set_ease(Tween.EASE_OUT)
-	time_elapsed_tween.tween_property(time_elapsed_label, "modulate:a", 1.0, _get_time_elapsed_tween_duration())
-	time_elapsed_tween.tween_property(
-		time_elapsed_label,
-		"position:y",
-		time_elapsed_label_base_position.y - TIME_ELAPSED_FLOAT_DISTANCE,
-		_get_time_elapsed_tween_duration()
-	)
-	time_elapsed_tween.chain().tween_interval(_get_time_elapsed_hide_delay())
-	time_elapsed_tween.chain().tween_callback(_hide_time_elapsed_after_delay)
-	_pulse_time_text()
-
-
-func _hide_time_elapsed_label() -> void:
-	if time_elapsed_label != null:
-		if time_elapsed_tween != null and time_elapsed_tween.is_valid():
-			time_elapsed_tween.kill()
-		time_elapsed_label.visible = false
-		time_elapsed_label.position = time_elapsed_label_base_position
-		time_elapsed_label.modulate.a = 0.0
-
-
-func _hide_time_elapsed_after_delay() -> void:
-	if time_elapsed_label != null:
-		time_elapsed_label.visible = false
-		time_elapsed_label.position = time_elapsed_label_base_position
-		time_elapsed_label.modulate.a = 0.0
-
-
-func _get_time_elapsed_tween_duration() -> float:
-	return maxf(0.03, TIME_ELAPSED_TWEEN_DURATION_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / TIME_ELAPSED_TWEEN_BASE_INTERVAL)
-
-
-func _get_time_elapsed_hide_delay() -> float:
-	return maxf(0.03, TIME_ELAPSED_HIDE_DELAY_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / TIME_ELAPSED_TWEEN_BASE_INTERVAL)
-
-
-func _format_elapsed_time(amount_minutes: int) -> String:
-	var hours := int(amount_minutes / 60)
-	var minutes_only := amount_minutes % 60
-	if hours == 0:
-		return "+%02dm" % minutes_only
-	if minutes_only == 0:
-		return "+%dh" % hours
-	return "+%dh%02dm" % [hours, minutes_only]
-
-
-func _update_ui(message: String) -> void:
-	time_text.text = _format_time()
-	hp_text.text = "%d/%d" % [maxi(0, hp), MAX_HP]
-	_update_hp_gauge()
-	if message != "" and message != START_MESSAGE:
-		debug_message = message
-	if message_text != null:
-		message_text.text = START_MESSAGE
-	_update_digestion_label()
-
-
-func _on_debug_message_button_pressed() -> void:
-	if message_text == null:
-		return
-	if debug_message == "":
-		message_text.text = START_MESSAGE
-		return
-	message_text.text = debug_message
-
-
-func _update_hp_gauge() -> void:
-	var hp_ratio := clampf(float(maxi(0, hp)) / float(MAX_HP), 0.0, 1.0)
-	var target_size := Vector2(hp_gauge_full_width * hp_ratio, hp_gauge.size.y)
-	if hp_gauge_tween != null and hp_gauge_tween.is_valid():
-		hp_gauge_tween.kill()
-	if hp_ratio > 0.0:
-		hp_gauge.visible = true
-	hp_gauge_tween = create_tween()
-	hp_gauge_tween.set_trans(Tween.TRANS_QUAD)
-	hp_gauge_tween.set_ease(Tween.EASE_OUT)
-	hp_gauge_tween.tween_property(hp_gauge, "size", target_size, _get_hp_gauge_tween_duration())
-	if hp_ratio == 0.0:
-		hp_gauge_tween.tween_callback(func() -> void: hp_gauge.visible = false)
-
-
-func _get_hp_gauge_tween_duration() -> float:
-	return maxf(0.03, HP_GAUGE_TWEEN_DURATION_AT_BASE_INTERVAL * DIGEST_AUTO_INTERVAL / HP_GAUGE_TWEEN_BASE_INTERVAL)
-
-
-func _update_digestion_label() -> void:
-	digestion_label.text = "消化開始！"
-
-
-func _update_enemy_labels() -> void:
-	for i in range(enemy_nodes.size()):
-		var label := enemy_nodes[i].get_node_or_null("HPText") as Label
-		if label == null or i >= enemies.size():
-			continue
-		label.text = str(int(enemies[i]["remaining_hp"]))
-
-
-func _apply_enemy_textures() -> void:
-	for i in range(enemy_nodes.size()):
-		if i >= ENEMY_TEXTURES.size():
+		if enemy.get_global_rect().has_point(mouse_position):
+			_set_hovered_enemy(enemy)
 			return
-		var sprite := enemy_nodes[i].get_node_or_null("Sprite2D") as Sprite2D
-		if sprite == null:
-			continue
-		sprite.texture = ENEMY_TEXTURES[i] as Texture2D
-		_resize_enemy_to_stomach_grid(i, sprite)
+	_set_hovered_enemy(null)
 
 
-func _configure_stomach_grid() -> void:
-	var template_position := stomach_grid_frame.position
-	var template_size := stomach_grid_frame.size
-	stomach_grid_cell_size = minf(
-		(template_size.x + float(STOMACH_COLUMNS - 1) * STOMACH_GRID_EDGE_OVERLAP) / float(STOMACH_COLUMNS),
-		(template_size.y + float(STOMACH_ROWS - 1) * STOMACH_GRID_EDGE_OVERLAP) / float(STOMACH_ROWS)
-	)
-	stomach_grid_step = stomach_grid_cell_size - STOMACH_GRID_EDGE_OVERLAP
-	var grid_size := Vector2(
-		float(STOMACH_COLUMNS) * stomach_grid_cell_size - float(STOMACH_COLUMNS - 1) * STOMACH_GRID_EDGE_OVERLAP,
-		float(STOMACH_ROWS) * stomach_grid_cell_size - float(STOMACH_ROWS - 1) * STOMACH_GRID_EDGE_OVERLAP
-	)
-	stomach_grid_origin = template_position + (template_size - grid_size) * 0.5
-	for child in stomach.get_children():
-		if child is NinePatchRect and String(child.name).begins_with("grid_frame_"):
-			child.queue_free()
-	for row in range(STOMACH_ROWS):
-		for column in range(STOMACH_COLUMNS):
-			var cell := stomach_grid_frame
-			if row != 0 or column != 0:
-				cell = stomach_grid_frame.duplicate() as NinePatchRect
-				cell.name = "grid_frame_%d_%d" % [column, row]
-				stomach.add_child(cell)
-			cell.position = stomach_grid_origin + Vector2(column, row) * stomach_grid_step
-			cell.size = Vector2(stomach_grid_cell_size, stomach_grid_cell_size)
-	_position_digestion_line()
-	stomach.move_child(stomach_frame, stomach.get_child_count() - 1)
-
-
-func _position_digestion_line() -> void:
-	if digestion_line == null or stomach_frame == null:
+func _set_hovered_enemy(enemy: Enemy) -> void:
+	if hovered_enemy == enemy:
 		return
-	digestion_line.position = Vector2(
-		stomach_frame.position.x + stomach_frame.size.x,
-		_get_digestion_line_top_y()
-	)
-
-
-func _get_digestion_line_top_y() -> float:
-	return _get_digestion_judgement_line_y() - _get_stomach_grid_row_subdivision()
-
-
-func _get_digestion_judgement_line_y() -> float:
-	return _get_stomach_cell_top_y(STOMACH_ROWS - 1)
-
-
-func _get_stomach_cell_top_y(row: int) -> float:
-	return stomach_grid_origin.y + float(row) * stomach_grid_step
-
-
-func _get_stomach_grid_row_subdivision() -> float:
-	return stomach_grid_step / float(STOMACH_ROWS)
-
-
-func _create_stomach_preview() -> void:
-	stomach_preview_sprite = Sprite2D.new()
-	stomach_preview_sprite.name = "EnemyPlacementPreview"
-	stomach_preview_sprite.visible = false
-	stomach_preview_sprite.modulate = Color(1.0, 1.0, 1.0, 0.42)
-	stomach_preview_sprite.z_index = 5
-	stomach.add_child(stomach_preview_sprite)
-	stomach.move_child(stomach_frame, stomach.get_child_count() - 1)
-
-
-func _update_stomach_preview(mouse_position: Vector2) -> void:
-	if dragging_enemy_index == -1 or not _get_stomach_rect().has_point(mouse_position):
-		_hide_stomach_preview()
-		return
-	var source_sprite := enemy_nodes[dragging_enemy_index].get_node_or_null("Sprite2D") as Sprite2D
-	if source_sprite == null or source_sprite.texture == null:
-		_hide_stomach_preview()
-		return
-	var top_left := _get_dragged_enemy_drop_cell(dragging_enemy_index, mouse_position)
-	if not _is_enemy_within_stomach_bounds(dragging_enemy_index, top_left):
-		_hide_stomach_preview()
-		return
-	stomach_preview_sprite.texture = source_sprite.texture
-	stomach_preview_sprite.scale = source_sprite.scale
-	stomach_preview_sprite.global_position = _get_stomach_area_center(top_left, ENEMY_STOMACH_SIZES[dragging_enemy_index])
-	stomach_preview_sprite.modulate = Color(1.0, 1.0, 1.0, 0.42)
-	if not _can_place_enemy_at(dragging_enemy_index, top_left):
-		stomach_preview_sprite.modulate = Color(1.0, 0.35, 0.35, 0.32)
-	stomach_preview_sprite.visible = true
-
-
-func _hide_stomach_preview() -> void:
-	if stomach_preview_sprite != null:
-		stomach_preview_sprite.visible = false
+	if hovered_enemy != null:
+		hovered_enemy.set_hovered(false)
+	hovered_enemy = enemy
+	if hovered_enemy != null:
+		hovered_enemy.set_hovered(true)
 
 
 func _update_hp_damage_preview(mouse_position: Vector2) -> void:
-	if hp_damage_preview_label == null:
-		return
-	if dragged_enemy_was_digesting and not _get_stomach_rect().has_point(mouse_position):
-		hp_damage_preview_label.text = "-%d" % _get_remove_from_stomach_damage()
-		_position_hp_damage_preview()
-		hp_damage_preview_label.visible = true
+	if dragged_enemy_was_digesting and not stomach.contains_global_position(mouse_position):
+		ui.show_hp_damage_preview(_get_remove_from_stomach_damage())
 	else:
-		_hide_hp_damage_preview()
+		ui.hide_hp_damage_preview()
 
 
-func _hide_hp_damage_preview() -> void:
-	if hp_damage_preview_label != null:
-		hp_damage_preview_label.visible = false
+func _set_status_message(message: String) -> void:
+	current_message = message
+	ui.set_message(current_message)
+	ui.set_debug_message(current_message)
+	_refresh_ui()
 
 
-func _position_hp_damage_preview() -> void:
-	if hp_damage_preview_label == null:
-		return
-	hp_damage_preview_label.position = hp_frame.position + Vector2(hp_frame.size.x - 42.0, -16.0)
-
-
-func _place_enemy_in_stomach(enemy_index: int, top_left: Vector2i) -> void:
-	var size := ENEMY_STOMACH_SIZES[enemy_index]
-	var enemy := enemies[enemy_index]
-	enemy["stomach_cell"] = top_left
-	enemies[enemy_index] = enemy
-	enemy_nodes[enemy_index].global_position = _get_stomach_area_center(top_left, size)
-
-
-func _return_dragged_enemy(enemy_index: int) -> void:
-	if dragged_enemy_was_digesting:
-		var enemy := enemies[enemy_index]
-		enemy["digesting"] = true
-		enemy["stomach_cell"] = dragged_enemy_original_cell
-		enemies[enemy_index] = enemy
-		enemy_nodes[enemy_index].global_position = dragged_enemy_original_global_position
-	else:
-		_return_enemy_to_origin(enemy_index)
-
-
-func _remove_dragged_enemy_from_stomach(enemy_index: int) -> void:
-	if not dragged_enemy_was_digesting:
-		_return_enemy_to_origin(enemy_index)
-		return
-	var enemy := enemies[enemy_index]
-	enemy["digesting"] = false
-	enemies[enemy_index] = enemy
-	_return_enemy_to_origin(enemy_index)
-	_apply_remove_from_stomach_damage()
-
-
-func _return_enemy_to_origin(enemy_index: int) -> void:
-	if enemy_index >= original_enemy_positions.size():
-		return
-	enemy_nodes[enemy_index].position = original_enemy_positions[enemy_index]
-
-
-func _get_enemy_rect(enemy_index: int) -> Rect2:
-	var sprite := enemy_nodes[enemy_index].get_node_or_null("Sprite2D") as Sprite2D
-	if sprite == null or sprite.texture == null:
-		return Rect2(enemy_nodes[enemy_index].global_position - Vector2(50, 50), Vector2(100, 100))
-	var size := sprite.texture.get_size() * sprite.scale.abs()
-	return Rect2(sprite.global_position - size * 0.5, size)
-
-
-func _get_enemy_grab_cell(enemy_index: int, mouse_position: Vector2) -> Vector2i:
-	var enemy_rect := _get_enemy_rect(enemy_index)
-	var enemy_size := ENEMY_STOMACH_SIZES[enemy_index]
-	var relative_position := mouse_position - enemy_rect.position
-	var grabbed_cell := Vector2i(
-		clampi(int(relative_position.x / enemy_rect.size.x * float(enemy_size.x)), 0, enemy_size.x - 1),
-		clampi(int(relative_position.y / enemy_rect.size.y * float(enemy_size.y)), 0, enemy_size.y - 1)
-	)
-	if _get_enemy_shape_offsets(enemy_index).has(grabbed_cell):
-		return grabbed_cell
-	return _get_nearest_enemy_shape_cell(enemy_index, grabbed_cell)
-
-
-func _get_nearest_enemy_shape_cell(enemy_index: int, target_cell: Vector2i) -> Vector2i:
-	var nearest_cell := Vector2i.ZERO
-	var nearest_distance := INF
-	for offset in _get_enemy_shape_offsets(enemy_index):
-		var offset_cell: Vector2i = offset
-		var diff := target_cell - offset_cell
-		var distance := float(diff.x * diff.x + diff.y * diff.y)
-		if distance < nearest_distance:
-			nearest_distance = distance
-			nearest_cell = offset_cell
-	return nearest_cell
-
-
-func _get_dragged_enemy_top_left_cell(mouse_position: Vector2) -> Vector2i:
-	return _get_nearest_stomach_cell(mouse_position) - drag_grab_cell
-
-
-func _get_dragged_enemy_drop_cell(enemy_index: int, mouse_position: Vector2) -> Vector2i:
-	var target_cell := _get_dragged_enemy_top_left_cell(mouse_position)
-	target_cell.y = 0
-	if not _can_place_enemy_at(enemy_index, target_cell):
-		return target_cell
-	var drop_cell := target_cell
-	while _can_place_enemy_at(enemy_index, drop_cell + Vector2i(0, 1)):
-		drop_cell += Vector2i(0, 1)
-	return drop_cell
-
-
-func _get_nearest_stomach_cell(global_position: Vector2) -> Vector2i:
-	var local_position := stomach.to_local(global_position)
-	var centered_position := local_position - stomach_grid_origin - Vector2.ONE * stomach_grid_cell_size * 0.5
-	return Vector2i(
-		clampi(roundi(centered_position.x / stomach_grid_step), 0, STOMACH_COLUMNS - 1),
-		clampi(roundi(centered_position.y / stomach_grid_step), 0, STOMACH_ROWS - 1)
-	)
-
-
-func _get_stomach_rect() -> Rect2:
-	if stomach_frame == null:
-		return Rect2(stomach.global_position - Vector2(188, 284), Vector2(376, 568))
-	return _get_global_rect(stomach_frame)
-
-
-func _get_bottom_row_cell_count(enemy_index: int) -> int:
-	var enemy := enemies[enemy_index]
-	if not bool(enemy["digesting"]) or bool(enemy["digested"]):
-		return 0
-	var top_left: Vector2i = enemy["stomach_cell"]
-	var count := 0
-	for cell in _get_enemy_occupied_cells(enemy_index, top_left):
-		if cell.y == STOMACH_ROWS - 1:
-			count += 1
-	return count
-
-
-func _has_bottom_touching_nightmare() -> bool:
-	for i in range(enemies.size()):
-		if _get_bottom_row_cell_count(i) > 0:
-			return true
-	return false
-
-
-func _apply_stomach_gravity() -> void:
-	var moved := true
-	while moved:
-		moved = false
-		for i in _get_active_enemy_indices_bottom_first():
-			var enemy := enemies[i]
-			var current_cell: Vector2i = enemy["stomach_cell"]
-			var next_cell := current_cell + Vector2i(0, 1)
-			if not _can_place_enemy_at(i, next_cell):
-				continue
-			enemy["stomach_cell"] = next_cell
-			enemies[i] = enemy
-			enemy_nodes[i].global_position = _get_stomach_area_center(next_cell, ENEMY_STOMACH_SIZES[i])
-			moved = true
-
-
-func _get_active_enemy_indices_bottom_first() -> Array[int]:
-	var indices: Array[int] = []
-	for i in range(enemies.size()):
-		var enemy := enemies[i]
-		if bool(enemy["digesting"]) and not bool(enemy["digested"]):
-			indices.append(i)
-	indices.sort_custom(_sort_enemy_indices_by_bottom_row)
-	return indices
-
-
-func _sort_enemy_indices_by_bottom_row(a: int, b: int) -> bool:
-	return _get_enemy_bottom_row(a) > _get_enemy_bottom_row(b)
-
-
-func _get_enemy_bottom_row(enemy_index: int) -> int:
-	var enemy := enemies[enemy_index]
-	var top_left: Vector2i = enemy["stomach_cell"]
-	var bottom_row := 0
-	for cell in _get_enemy_occupied_cells(enemy_index, top_left):
-		bottom_row = maxi(bottom_row, cell.y)
-	return bottom_row
-
-
-func _can_place_enemy_at(enemy_index: int, top_left: Vector2i) -> bool:
-	var cells := _get_enemy_occupied_cells(enemy_index, top_left)
-	if not _is_enemy_within_stomach_bounds(enemy_index, top_left):
-		return false
-	for other_index in range(enemies.size()):
-		if other_index == enemy_index:
-			continue
-		var other := enemies[other_index]
-		if not bool(other["digesting"]) or bool(other["digested"]):
-			continue
-		var other_top_left: Vector2i = other["stomach_cell"]
-		for cell in cells:
-			if _get_enemy_occupied_cells(other_index, other_top_left).has(cell):
-				return false
-	return true
-
-
-func _is_enemy_within_stomach_bounds(enemy_index: int, top_left: Vector2i) -> bool:
-	for cell in _get_enemy_occupied_cells(enemy_index, top_left):
-		if cell.x < 0 or cell.x >= STOMACH_COLUMNS or cell.y < 0 or cell.y >= STOMACH_ROWS:
-			return false
-	return true
-
-
-func _get_enemy_occupied_cells(enemy_index: int, top_left: Vector2i) -> Array[Vector2i]:
-	var cells: Array[Vector2i] = []
-	for offset in _get_enemy_shape_offsets(enemy_index):
-		var offset_cell: Vector2i = offset
-		cells.append(top_left + offset_cell)
-	return cells
-
-
-func _get_enemy_shape_offsets(enemy_index: int) -> Array:
-	return ENEMY_STOMACH_SHAPES[enemy_index]
-
-
-func _get_stomach_area_center(top_left: Vector2i, size: Vector2i) -> Vector2:
-	var local_position := stomach_grid_origin + Vector2(
-		float(top_left.x) * stomach_grid_step + _get_stomach_span_size(size.x) * 0.5,
-		float(top_left.y) * stomach_grid_step + _get_stomach_span_size(size.y) * 0.5
-	)
-	return stomach.to_global(local_position)
-
-
-func _resize_enemy_to_stomach_grid(enemy_index: int, sprite: Sprite2D) -> void:
-	if enemy_index >= ENEMY_STOMACH_SIZES.size() or sprite.texture == null:
-		return
-	var size := ENEMY_STOMACH_SIZES[enemy_index]
-	var target_size := Vector2(
-		_get_stomach_span_size(size.x),
-		_get_stomach_span_size(size.y)
-	)
-	sprite.scale = target_size / sprite.texture.get_size()
-	if enemy_index < enemy_base_scales.size():
-		enemy_base_scales[enemy_index] = sprite.scale
-
-
-func _get_stomach_span_size(cell_count: int) -> float:
-	return float(cell_count) * stomach_grid_cell_size - float(cell_count - 1) * STOMACH_GRID_EDGE_OVERLAP
-
-
-func _get_global_rect(control: Control) -> Rect2:
-	return Rect2(control.global_position, control.size)
-
-
-func _format_time() -> String:
-	var hour := int(minutes / 60) % 24
-	var minute := minutes % 60
-	return "%02d:%02d" % [hour, minute]
-
-
-func _on_visibility_changed() -> void:
-	_sync_ui_visibility()
-
-
-func _sync_ui_visibility() -> void:
-	if ui == null:
-		return
-	ui.visible = visible
+func _refresh_ui() -> void:
+	ui.set_hp(hp, MAX_HP)
+	ui.set_time(minutes)
+	ui.set_digestion_count(_active_digest_count())
+	ui.set_digestion_button_visible(battle_active and not auto_digest_enabled)
