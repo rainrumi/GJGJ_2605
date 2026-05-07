@@ -365,6 +365,10 @@ func _set_game_content_visible(is_visible: bool) -> void:
 	for child in get_children():
 		if child == day_intro:
 			continue
+		if child is CanvasLayer:
+			var canvas_layer := child as CanvasLayer
+			canvas_layer.visible = is_visible
+			continue
 		if child is CanvasItem:
 			var canvas_item := child as CanvasItem
 			canvas_item.visible = is_visible
