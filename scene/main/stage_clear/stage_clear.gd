@@ -40,7 +40,7 @@ const SEED_OPTIONS: Array[Dictionary] = [
 @export var max_high_flowers := 2
 
 @onready var planted_info_text: Label = $CharacterArea/PlantedInfoFrame/PlantedInfoText
-@onready var guide_text: Label = $UI/GuideFrame/GuideText
+@onready var guide_text: Label = $UI/GuideText
 @onready var seed_buttons: Array[Button] = [
 	$UI/SeedChoices/SeedChoice1 as Button,
 	$UI/SeedChoices/SeedChoice2 as Button,
