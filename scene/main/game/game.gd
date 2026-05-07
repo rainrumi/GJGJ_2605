@@ -7,7 +7,7 @@ const END_HOUR := 30
 const STEP_MINUTES := 30
 const REST_MINUTES := 60
 const MAX_HP := 100
-const REST_HP := 50
+const REST_HP_RATE := 0.1
 const DIGEST_DAMAGE := 200
 const DIGEST_AUTO_INTERVAL := 0.6
 const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
@@ -285,7 +285,7 @@ func _advance_digest_turn() -> void:
 		stomach.apply_gravity(enemies)
 	minutes += STEP_MINUTES
 	if hp <= 0:
-		hp = REST_HP
+		hp = _get_rest_hp()
 		minutes += REST_MINUTES
 		elapsed_minutes += REST_MINUTES
 		_set_status_message("HPが尽きたため休憩しました")
@@ -350,6 +350,10 @@ func _active_digest_count() -> int:
 
 func _get_remove_from_stomach_damage() -> int:
 	return ceili(float(MAX_HP) * REMOVE_FROM_STOMACH_DAMAGE_RATE)
+
+
+func _get_rest_hp() -> int:
+	return ceili(float(MAX_HP) * REST_HP_RATE)
 
 
 func _update_auto_digest_timer() -> void:
