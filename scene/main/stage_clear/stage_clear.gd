@@ -6,6 +6,7 @@ const HP_RECOVERY_RATE := 0.1
 const MAX_HP := 100
 const HP_GAUGE_TWEEN_DURATION := 0.35
 const HOVER_SCALE := 1.1
+const PRESSED_SCALE := 0.95
 const HOVER_TWEEN_DURATION := 0.1
 const RARITY_NORMAL := "normal"
 const RARITY_HIGH := "high"
@@ -251,6 +252,7 @@ func _on_abandon_button_down() -> void:
 
 func _on_abandon_button_up() -> void:
 	_abandon_button_pressed = false
+	_abandon_button_hovered = false
 	_reset_abandon_button_visual()
 	_update_abandon_button_scale()
 
@@ -323,6 +325,7 @@ func _on_seed_button_up(index: int) -> void:
 	if index < 0 or index >= _seed_button_pressed_states.size():
 		return
 	_seed_button_pressed_states[index] = false
+	_seed_button_hovered_states[index] = false
 	_update_seed_button_scale(index)
 
 
@@ -336,7 +339,7 @@ func _update_seed_button_scale(index: int) -> void:
 	if _seed_button_hovered_states[index]:
 		target_scale *= HOVER_SCALE
 	if _seed_button_pressed_states[index]:
-		target_scale = _seed_button_base_scales[index]
+		target_scale = _seed_button_base_scales[index] * PRESSED_SCALE
 	var next_tween := create_tween()
 	next_tween.set_trans(Tween.TRANS_QUAD)
 	next_tween.set_ease(Tween.EASE_OUT)
@@ -362,7 +365,7 @@ func _update_abandon_button_scale() -> void:
 	if _abandon_button_hovered:
 		target_scale *= HOVER_SCALE
 	if _abandon_button_pressed:
-		target_scale = _abandon_button_base_scale
+		target_scale = _abandon_button_base_scale * PRESSED_SCALE
 	_abandon_button_hover_tween = create_tween()
 	_abandon_button_hover_tween.set_trans(Tween.TRANS_QUAD)
 	_abandon_button_hover_tween.set_ease(Tween.EASE_OUT)
