@@ -8,7 +8,7 @@ const HP_GAUGE_TWEEN_DURATION := 0.35
 const RARITY_NORMAL := "normal"
 const RARITY_HIGH := "high"
 const HEAD_FLOWER_DISPLAY_COUNT := 1
-const ABANDON_BUTTON_PRESSED_MODULATE := Color(0.84, 0.74, 0.82, 1.0)
+const ABANDON_BUTTON_PRESSED_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
 const ABANDON_BUTTON_DEFAULT_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
 
 const FLOWER_TEXTURE_NORMAL := preload("res://art/dreamseed/flower/tex_passive_flower_1000.png")
