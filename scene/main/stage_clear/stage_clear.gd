@@ -5,6 +5,8 @@ signal selection_finished(recovered_hp_rate: float)
 const HP_RECOVERY_RATE := 0.1
 const MAX_HP := 100
 const HP_GAUGE_TWEEN_DURATION := 0.35
+const HOVER_SCALE := 1.1
+const HOVER_TWEEN_DURATION := 0.1
 const RARITY_NORMAL := "normal"
 const RARITY_HIGH := "high"
 const HEAD_FLOWER_DISPLAY_COUNT := 1
@@ -51,6 +53,11 @@ const SEED_OPTIONS: Array[Dictionary] = [
 	$UI/SeedChoices/SeedChoice2 as Button,
 	$UI/SeedChoices/SeedChoice3 as Button,
 ]
+@onready var seed_button_frames: Array[TextureRect] = [
+	$UI/SeedChoices/SeedChoice1/Frame as TextureRect,
+	$UI/SeedChoices/SeedChoice2/Frame as TextureRect,
+	$UI/SeedChoices/SeedChoice3/Frame as TextureRect,
+]
 @onready var abandon_button: Button = $UI/AbandonButton
 @onready var abandon_button_frame: TextureRect = $UI/AbandonButton/Frame
 @onready var flower_slots: Array[Button] = [
@@ -63,16 +70,23 @@ var planted_flowers: Array[Dictionary] = []
 var current_hp := MAX_HP
 var _hp_gauge_full_width := 0.0
 var _hp_gauge_tween: Tween
+var _seed_button_base_scales: Array[Vector2] = []
+var _seed_button_tweens: Array[Tween] = []
+var _abandon_button_base_scale := Vector2.ONE
+var _abandon_button_hover_tween: Tween
 
 
 func _ready() -> void:
 	_capture_hp_gauge_size()
 	_initialize_planted_flowers()
+	_capture_button_scales()
 	_setup_seed_buttons()
 	_setup_flower_slots()
 	abandon_button.button_down.connect(_on_abandon_button_down)
 	abandon_button.button_up.connect(_on_abandon_button_up)
 	abandon_button.pressed.connect(_on_abandon_button_pressed)
+	abandon_button.mouse_entered.connect(_on_abandon_button_mouse_entered)
+	abandon_button.mouse_exited.connect(_on_abandon_button_mouse_exited)
 	_set_hp(current_hp, false)
 	_show_select_mode()
 
@@ -94,6 +108,8 @@ func _setup_seed_buttons() -> void:
 	for i in range(seed_buttons.size()):
 		var button := seed_buttons[i]
 		button.pressed.connect(_on_seed_button_pressed.bind(i))
+		button.mouse_entered.connect(_on_seed_button_mouse_entered.bind(i))
+		button.mouse_exited.connect(_on_seed_button_mouse_exited.bind(i))
 		_apply_seed_button(button, SEED_OPTIONS[i])
 
 
@@ -230,6 +246,16 @@ func _reset_abandon_button_visual() -> void:
 	abandon_button_frame.modulate = ABANDON_BUTTON_DEFAULT_MODULATE
 
 
+func _capture_button_scales() -> void:
+	_seed_button_base_scales.clear()
+	_seed_button_tweens.resize(seed_button_frames.size())
+	for frame in seed_button_frames:
+		frame.pivot_offset = frame.size * 0.5
+		_seed_button_base_scales.append(frame.scale)
+	abandon_button_frame.pivot_offset = abandon_button_frame.size * 0.5
+	_abandon_button_base_scale = abandon_button_frame.scale
+
+
 func _capture_hp_gauge_size() -> void:
 	_hp_gauge_full_width = hp_gauge.size.x
 
@@ -254,3 +280,52 @@ func _set_hp(value: int, animated: bool) -> void:
 	_hp_gauge_tween.tween_property(hp_gauge, "size", target_size, HP_GAUGE_TWEEN_DURATION)
 	if current_hp == 0:
 		_hp_gauge_tween.tween_callback(func() -> void: hp_gauge.visible = false)
+
+
+func _on_seed_button_mouse_entered(index: int) -> void:
+	_set_seed_button_hovered(index, true)
+
+
+func _on_seed_button_mouse_exited(index: int) -> void:
+	_set_seed_button_hovered(index, false)
+
+
+func _set_seed_button_hovered(index: int, is_hovered: bool) -> void:
+	if index < 0 or index >= seed_button_frames.size():
+		return
+	var tween := _seed_button_tweens[index]
+	if tween != null and tween.is_valid():
+		tween.kill()
+	var target_scale := _seed_button_base_scales[index]
+	if is_hovered:
+		target_scale *= HOVER_SCALE
+	var next_tween := create_tween()
+	next_tween.set_trans(Tween.TRANS_QUAD)
+	next_tween.set_ease(Tween.EASE_OUT)
+	next_tween.tween_property(seed_button_frames[index], "scale", target_scale, HOVER_TWEEN_DURATION)
+	_seed_button_tweens[index] = next_tween
+
+
+func _on_abandon_button_mouse_entered() -> void:
+	_set_abandon_button_hovered(true)
+
+
+func _on_abandon_button_mouse_exited() -> void:
+	_set_abandon_button_hovered(false)
+
+
+func _set_abandon_button_hovered(is_hovered: bool) -> void:
+	if _abandon_button_hover_tween != null and _abandon_button_hover_tween.is_valid():
+		_abandon_button_hover_tween.kill()
+	var target_scale := _abandon_button_base_scale
+	if is_hovered:
+		target_scale *= HOVER_SCALE
+	_abandon_button_hover_tween = create_tween()
+	_abandon_button_hover_tween.set_trans(Tween.TRANS_QUAD)
+	_abandon_button_hover_tween.set_ease(Tween.EASE_OUT)
+	_abandon_button_hover_tween.tween_property(
+		abandon_button_frame,
+		"scale",
+		target_scale,
+		HOVER_TWEEN_DURATION
+	)
