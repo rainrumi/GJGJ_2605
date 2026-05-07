@@ -13,6 +13,8 @@ const DIGEST_AUTO_INTERVAL := 0.6
 const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 
+@export var enemy_definitions: Array[Resource] = []
+
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
 @onready var click_se: AudioStreamPlayer = $ClickSe
@@ -137,9 +139,10 @@ func _handle_release(mouse_position: Vector2) -> void:
 
 
 func _setup_enemies() -> void:
-	var definitions := _build_enemy_definitions()
-	for i in range(enemies.size()):
-		var definition := definitions[i]
+	for i in range(mini(enemies.size(), enemy_definitions.size())):
+		var definition := enemy_definitions[i] as EnemyDefinition
+		if definition == null:
+			continue
 		enemies[i].setup(
 			definition,
 			Vector2(
@@ -147,63 +150,6 @@ func _setup_enemies() -> void:
 				stomach.get_span_size(definition.stomach_size.y)
 			)
 		)
-
-
-func _build_enemy_definitions() -> Array[EnemyDefinition]:
-	var definitions: Array[EnemyDefinition] = []
-	definitions.append(_create_enemy_definition(
-		"Adult nightmare",
-		preload("res://art/enemy/tex_enemy_1000_No_100.png"),
-		1400,
-		6,
-		2,
-		Vector2(850, 500),
-		Vector2i(2, 3),
-		[Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2)]
-	))
-	definitions.append(_create_enemy_definition(
-		"Overeating nightmare",
-		preload("res://art/enemy/tex_enemy_1000_No_200.png"),
-		1000,
-		5,
-		3,
-		Vector2(1000, 280),
-		Vector2i(3, 3),
-		[Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2)]
-	))
-	definitions.append(_create_enemy_definition(
-		"Chased nightmare",
-		preload("res://art/enemy/tex_enemy_1000_No_300.png"),
-		2000,
-		3,
-		5,
-		Vector2(1150, 500),
-		Vector2i(2, 2),
-		[Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)]
-	))
-	return definitions
-
-
-func _create_enemy_definition(
-	display_name: String,
-	texture: Texture2D,
-	max_hp: int,
-	size: int,
-	damage: int,
-	start_position: Vector2,
-	stomach_size: Vector2i,
-	stomach_shape: Array[Vector2i]
-) -> EnemyDefinition:
-	var definition := EnemyDefinition.new()
-	definition.display_name = display_name
-	definition.texture = texture
-	definition.max_hp = max_hp
-	definition.size = size
-	definition.damage = damage
-	definition.start_position = start_position
-	definition.stomach_size = stomach_size
-	definition.stomach_shape = stomach_shape
-	return definition
 
 
 func _create_digestion_timer() -> void:

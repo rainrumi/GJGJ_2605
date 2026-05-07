@@ -9,9 +9,15 @@
 [ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="8_clear_effect"]
 [ext_resource type="Texture2D" uid="uid://cd5grt48wcvhd" path="res://art/ui/hp/ui_hp_frame_1000.png" id="9_hp_frame"]
 [ext_resource type="Texture2D" uid="uid://bm3qblcikrvsm" path="res://art/ui/hp/ui_hp_gauge_1000.png" id="10_hp_gauge"]
+[ext_resource type="Resource" path="res://data/resources/stage_clear/normal_flower.tres" id="11_initial_flower"]
+[ext_resource type="Resource" path="res://data/resources/stage_clear/carnation_seed.tres" id="12_carnation_seed"]
+[ext_resource type="Resource" path="res://data/resources/stage_clear/chamomile_seed.tres" id="13_chamomile_seed"]
+[ext_resource type="Resource" path="res://data/resources/stage_clear/capuchi_seed.tres" id="14_capuchi_seed"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
+initial_flower = ExtResource("11_initial_flower")
+seed_options = Array[Resource]([ExtResource("12_carnation_seed"), ExtResource("13_chamomile_seed"), ExtResource("14_capuchi_seed")])
 
 [node name="Background" type="ColorRect" parent="." unique_id=1811970880]
 offset_right = 1280.0

@@ -8,49 +8,16 @@ const HP_GAUGE_TWEEN_DURATION := 0.35
 const HOVER_SCALE := 1.1
 const PRESSED_SCALE := 0.95
 const HOVER_TWEEN_DURATION := 0.1
-const RARITY_NORMAL := "normal"
-const RARITY_HIGH := "high"
+const RARITY_NORMAL: StringName = &"normal"
+const RARITY_HIGH: StringName = &"high"
 const HEAD_FLOWER_DISPLAY_COUNT := 1
 const ABANDON_BUTTON_PRESSED_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
 const ABANDON_BUTTON_DEFAULT_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
 
-const FLOWER_TEXTURE_NORMAL := preload("res://art/dreamseed/flower/tex_passive_flower_1000.png")
-const FLOWER_TEXTURE_HIGH := preload("res://art/dreamseed/flower/tex_seed_2000_demo_1000.png")
-const SEED_FRAME_NORMAL := preload("res://art/stage_clear/ui_choise_seed_frame_1000_LV_100.png")
-const SEED_FRAME_HIGH := preload("res://art/stage_clear/ui_choise_seed_frame_1000_LV_200.png")
-
-const SEED_OPTIONS: Array[Dictionary] = [
-	{
-		"name": "カーネーション",
-		"rarity": RARITY_NORMAL,
-		"effect": "HP +10%",
-		"effect_font_size": 21,
-		"seed_texture": preload("res://art/stage_clear/tex_seed_1000_No_100.png"),
-		"frame_texture": SEED_FRAME_NORMAL,
-		"flower_texture": FLOWER_TEXTURE_NORMAL,
-	},
-	{
-		"name": "カモミール",
-		"rarity": RARITY_NORMAL,
-		"effect": "悪夢を消化するときに追加でHP+5%回復",
-		"effect_font_size": 19,
-		"seed_texture": preload("res://art/stage_clear/tex_seed_1000_No_200.png"),
-		"frame_texture": SEED_FRAME_NORMAL,
-		"flower_texture": FLOWER_TEXTURE_NORMAL,
-	},
-	{
-		"name": "カプチーノ",
-		"rarity": RARITY_HIGH,
-		"effect": "胃の中に入っている悪夢がひとつの間だけ、受けるダメージ-50%",
-		"effect_font_size": 17,
-		"seed_texture": preload("res://art/stage_clear/tex_seed_1000_No_300.png"),
-		"frame_texture": SEED_FRAME_HIGH,
-		"flower_texture": FLOWER_TEXTURE_HIGH,
-	},
-]
-
 @export var max_normal_flowers := 3
 @export var max_high_flowers := 2
+@export var initial_flower: FlowerDefinition
+@export var seed_options: Array[Resource] = []
 
 @onready var hp_gauge: NinePatchRect = $CharacterArea/HpFrame/HpGauge
 @onready var hp_text: Label = $CharacterArea/HpFrame/HpText
@@ -69,7 +36,7 @@ const SEED_OPTIONS: Array[Dictionary] = [
 	$CharacterArea/FlowerSlots/FlowerSlot3 as Button,
 ]
 
-var planted_flowers: Array[Dictionary] = []
+var planted_flowers: Array[FlowerDefinition] = []
 var current_hp := MAX_HP
 var _hp_gauge_full_width := 0.0
 var _hp_gauge_tween: Tween
@@ -114,22 +81,31 @@ func get_current_hp() -> int:
 
 
 func _initialize_planted_flowers() -> void:
-	planted_flowers = [
-		_create_flower("ひとつめの花", RARITY_NORMAL, FLOWER_TEXTURE_NORMAL),
-	]
+	planted_flowers.clear()
+	if initial_flower != null:
+		planted_flowers.append(initial_flower)
 	_refresh_flower_slots()
+
+
+func _get_seed_option(seed_index: int) -> SeedOptionDefinition:
+	if seed_index < 0 or seed_index >= seed_options.size():
+		return null
+	return seed_options[seed_index] as SeedOptionDefinition
 
 
 func _setup_seed_choices() -> void:
 	for i in range(seed_choices.size()):
 		var seed_choice := seed_choices[i]
-		var seed: Dictionary = SEED_OPTIONS[i]
+		var seed := _get_seed_option(i)
+		if seed == null:
+			seed_choice.set_choice_disabled(true)
+			continue
 		seed_choice.setup_choice(
-			str(seed["name"]),
-			str(seed["effect"]),
-			seed["seed_texture"] as Texture2D,
-			seed["frame_texture"] as Texture2D,
-			int(seed["effect_font_size"])
+			seed.display_name,
+			seed.effect_text,
+			seed.seed_texture,
+			seed.frame_texture,
+			seed.effect_font_size
 		)
 		seed_choice.pressed.connect(_on_seed_choice_pressed.bind(i))
 
@@ -145,24 +121,26 @@ func _show_select_mode() -> void:
 	_reset_abandon_button_visual()
 	_reset_abandon_button_scale()
 	abandon_button.text = "放棄する　HP +10%回復"
-	for seed_choice in seed_choices:
-		seed_choice.set_choice_disabled(false)
+	for i in range(seed_choices.size()):
+		seed_choices[i].set_choice_disabled(_get_seed_option(i) == null)
 	for slot in flower_slots:
 		slot.disabled = true
 
 
 func _on_seed_choice_pressed(seed_index: int) -> void:
-	var seed: Dictionary = SEED_OPTIONS[seed_index]
+	var seed := _get_seed_option(seed_index)
+	if seed == null:
+		return
 	if _can_plant_seed(seed):
-		planted_flowers.append(_create_flower_from_seed(seed))
+		planted_flowers.append(seed.flower_definition)
 		_refresh_flower_slots()
 		selection_finished.emit(0.0)
-		_show_finished_mode("%sを植えました" % str(seed["name"]))
+		_show_finished_mode("%sを植えました" % seed.display_name)
 		return
 	_replace_flower(seed)
 	_refresh_flower_slots()
 	selection_finished.emit(0.0)
-	_show_finished_mode("%sを植え替えました" % str(seed["name"]))
+	_show_finished_mode("%sを植え替えました" % seed.display_name)
 
 
 func _on_abandon_button_pressed() -> void:
@@ -184,45 +162,31 @@ func _show_finished_mode(message: String) -> void:
 		slot.disabled = true
 
 
-func _create_flower_from_seed(seed: Dictionary) -> Dictionary:
-	return _create_flower(
-		str(seed["name"]),
-		str(seed["rarity"]),
-		seed["flower_texture"] as Texture2D
-	)
+func _can_plant_seed(seed: SeedOptionDefinition) -> bool:
+	if seed.flower_definition == null:
+		return false
+	return _count_planted_by_rarity(seed.rarity) < _get_max_flowers_by_rarity(seed.rarity)
 
 
-func _create_flower(name: String, rarity: String, flower_texture: Texture2D) -> Dictionary:
-	return {
-		"name": name,
-		"rarity": rarity,
-		"flower_texture": flower_texture,
-	}
-
-
-func _can_plant_seed(seed: Dictionary) -> bool:
-	var rarity := str(seed["rarity"])
-	return _count_planted_by_rarity(rarity) < _get_max_flowers_by_rarity(rarity)
-
-
-func _replace_flower(seed: Dictionary) -> void:
-	var rarity := str(seed["rarity"])
+func _replace_flower(seed: SeedOptionDefinition) -> void:
+	if seed.flower_definition == null:
+		return
 	for i in range(planted_flowers.size()):
-		if str(planted_flowers[i]["rarity"]) != rarity:
+		if planted_flowers[i] == null or planted_flowers[i].rarity != seed.rarity:
 			continue
-		planted_flowers[i] = _create_flower_from_seed(seed)
+		planted_flowers[i] = seed.flower_definition
 		return
 
 
-func _count_planted_by_rarity(rarity: String) -> int:
+func _count_planted_by_rarity(rarity: StringName) -> int:
 	var count := 0
 	for flower in planted_flowers:
-		if str(flower["rarity"]) == rarity:
+		if flower != null and flower.rarity == rarity:
 			count += 1
 	return count
 
 
-func _get_max_flowers_by_rarity(rarity: String) -> int:
+func _get_max_flowers_by_rarity(rarity: StringName) -> int:
 	match rarity:
 		RARITY_NORMAL:
 			return max_normal_flowers
@@ -234,11 +198,11 @@ func _get_max_flowers_by_rarity(rarity: String) -> int:
 func _refresh_flower_slots() -> void:
 	for i in range(flower_slots.size()):
 		var texture_rect := flower_slots[i].get_node("FlowerTexture") as TextureRect
-		if i >= HEAD_FLOWER_DISPLAY_COUNT or i >= planted_flowers.size():
+		if i >= HEAD_FLOWER_DISPLAY_COUNT or i >= planted_flowers.size() or planted_flowers[i] == null:
 			texture_rect.texture = null
 			flower_slots[i].disabled = true
 			continue
-		texture_rect.texture = planted_flowers[i]["flower_texture"] as Texture2D
+		texture_rect.texture = planted_flowers[i].texture
 		flower_slots[i].disabled = true
 	_update_planted_info_text()
 

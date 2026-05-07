@@ -15,9 +15,13 @@
 [ext_resource type="Texture2D" uid="uid://dr2mri7shrvne" path="res://art/ui/passive/ui_passive_guide_frame_1000.png" id="20_passive_guide"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://sound/se/click.mp3" id="21_click_se"]
 [ext_resource type="PackedScene" uid="uid://deupqxttm1xa8" path="res://scene/main/day_intro/day_intro.tscn" id="22_day_intro"]
+[ext_resource type="Resource" path="res://data/resources/enemies/adult_nightmare.tres" id="23_adult"]
+[ext_resource type="Resource" path="res://data/resources/enemies/overeating_nightmare.tres" id="24_overeating"]
+[ext_resource type="Resource" path="res://data/resources/enemies/chased_nightmare.tres" id="25_chased"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
+enemy_definitions = Array[Resource]([ExtResource("23_adult"), ExtResource("24_overeating"), ExtResource("25_chased")])
 
 [node name="Background" parent="." unique_id=1278647446 instance=ExtResource("1_background")]
 

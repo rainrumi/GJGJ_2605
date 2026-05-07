@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SeedOptionDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/seed_option_definition.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://art/stage_clear/tex_seed_1000_No_100.png" id="2_seed"]
+[ext_resource type="Texture2D" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_100.png" id="3_frame"]
+[ext_resource type="Resource" path="res://data/resources/stage_clear/normal_flower.tres" id="4_flower"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "カーネーション"
+rarity = &"normal"
+effect_text = "HP +10%"
+effect_font_size = 21
+seed_texture = ExtResource("2_seed")
+frame_texture = ExtResource("3_frame")
+flower_definition = ExtResource("4_flower")
