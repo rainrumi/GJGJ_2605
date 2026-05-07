@@ -87,13 +87,22 @@ func set_debug_message(message: String) -> void:
 
 
 func set_digestion_count(count: int) -> void:
-	digestion_label.text = "Digest x%d" % count
+	if count > 0:
+		digestion_label.text = "消化開始！ x%d" % count
+		return
+	digestion_label.text = "消化開始！"
 
 
 func set_digestion_button_visible(is_visible: bool) -> void:
 	digestion_frame.visible = is_visible
 	if not is_visible:
 		digestion_frame.scale = _digestion_button_base_scale
+
+
+func is_digestion_button_hit(mouse_position: Vector2) -> bool:
+	if not digestion_frame.visible:
+		return false
+	return digestion_frame.get_global_rect().has_point(mouse_position)
 
 
 func show_time_elapsed(amount_minutes: int) -> void:

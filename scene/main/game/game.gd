@@ -11,7 +11,7 @@ const REST_HP := 50
 const DIGEST_DAMAGE := 200
 const DIGEST_AUTO_INTERVAL := 0.6
 const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
-const START_MESSAGE := "Digest the nightmares before morning."
+const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
@@ -91,6 +91,9 @@ func _input(event: InputEvent) -> void:
 
 
 func _handle_press(mouse_position: Vector2) -> void:
+	if ui.is_digestion_button_hit(mouse_position):
+		_on_digestion_requested()
+		return
 	for i in range(enemies.size() - 1, -1, -1):
 		var enemy := enemies[i]
 		if not enemy.can_drag():
@@ -229,12 +232,12 @@ func _try_start_digesting(enemy: Enemy, mouse_position: Vector2) -> void:
 		next_fullness += enemy.get_size()
 	if next_fullness > stomach.get_capacity():
 		_return_dragged_enemy(enemy)
-		_set_status_message("The stomach is full.")
+		_set_status_message("胃袋がいっぱいで置けません")
 		return
 	var top_left := stomach.get_drop_cell(enemy, mouse_position, drag_grab_cell, enemies)
 	if not stomach.can_place(enemy, top_left, enemies):
 		_return_dragged_enemy(enemy)
-		_set_status_message("That position is blocked.")
+		_set_status_message("その場所には置けません")
 		return
 	enemy.set_digesting(true)
 	stomach.place_enemy(enemy, top_left)
@@ -257,13 +260,13 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	enemy.set_digesting(false)
 	enemy.return_to_origin()
 	hp = maxi(0, hp - _get_remove_from_stomach_damage())
-	_set_status_message("You took damage after removing a nightmare.")
+	_set_status_message("悪夢を外したのでダメージを受けました")
 
 
 func _advance_digest_turn() -> void:
 	if _active_digest_count() == 0:
 		auto_digest_enabled = false
-		_set_status_message("No nightmares are digesting.")
+		_set_status_message("消化中の悪夢がありません")
 		return
 	var elapsed_minutes := STEP_MINUTES
 	_digest_nightmares()
@@ -273,7 +276,7 @@ func _advance_digest_turn() -> void:
 		hp = REST_HP
 		minutes += REST_MINUTES
 		elapsed_minutes += REST_MINUTES
-		_set_status_message("HP reached zero, so you rested.")
+		_set_status_message("HPが尽きたため休憩しました")
 	else:
 		_set_status_message("")
 	ui.show_time_elapsed(elapsed_minutes)
@@ -307,14 +310,14 @@ func _check_battle_end() -> void:
 		battle_active = false
 		auto_digest_enabled = false
 		_update_auto_digest_timer()
-		_set_status_message("All nightmares were digested.")
+		_set_status_message("すべての悪夢を消化しました")
 		battle_finished.emit(true)
 		return
 	if minutes >= END_HOUR * 60:
 		battle_active = false
 		auto_digest_enabled = false
 		_update_auto_digest_timer()
-		_set_status_message("Morning came before digestion finished.")
+		_set_status_message("朝までに消化しきれませんでした")
 		battle_finished.emit(false)
 
 
