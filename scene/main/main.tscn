@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://b1alo4br58fxi" path="res://scene/main/main.gd" id="1_6vuhr"]
 [ext_resource type="PackedScene" uid="uid://duqrptvdqkp7l" path="res://scene/main/title/title.tscn" id="2_a0c6e"]
 [ext_resource type="PackedScene" uid="uid://bd6olk1dyr2q7" path="res://scene/main/game/game.tscn" id="3_qtsyf"]
-[ext_resource type="AudioStream" path="res://sound/bgm/Night_Dance.mp3" id="4_odqci"]
+[ext_resource type="AudioStream" uid="uid://dc8vyar0jf1e4" path="res://sound/bgm/Night_Dance.mp3" id="4_odqci"]
 [ext_resource type="PackedScene" uid="uid://cnvmrlnictk8h" path="res://scene/main/stage_clear/stage_clear.tscn" id="5_stage_clear"]
 
 [node name="Main" type="Node" unique_id=1753159910]
@@ -28,7 +28,7 @@ stream = ExtResource("4_odqci")
 [node name="Game" parent="." unique_id=335814330 instance=ExtResource("3_qtsyf")]
 visible = false
 
-[node name="StageClear" parent="." instance=ExtResource("5_stage_clear")]
+[node name="StageClear" parent="." unique_id=742663998 instance=ExtResource("5_stage_clear")]
 visible = false
 
 [connection signal="start_game" from="Title" to="." method="_on_title_start_game"]

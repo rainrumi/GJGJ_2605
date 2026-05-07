@@ -5,7 +5,7 @@ const HOVER_SCALE := 1.1
 const HOVER_TWEEN_DURATION := 0.1
 const COST_PULSE_SCALE := 1.1
 const COST_PULSE_DURATION := 0.2
-const DIGESTED_SCALE := 1.5
+const DIGESTED_SCALE := 1.2
 const DIGESTED_TWEEN_DURATION := 0.5
 
 @onready var sprite: Sprite2D = $Sprite2D
