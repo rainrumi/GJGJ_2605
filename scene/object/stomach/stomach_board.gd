@@ -33,11 +33,11 @@ func contains_global_position(global_position: Vector2) -> bool:
 
 
 func get_drop_cell(enemy: Enemy, mouse_position: Vector2, grab_cell: Vector2i, active_enemies: Array[Enemy]) -> Vector2i:
-	var target_cell := _get_nearest_cell(mouse_position) - grab_cell
+	var target_cell: Vector2i = _get_nearest_cell(mouse_position) - grab_cell
 	target_cell.y = 0
 	if not can_place(enemy, target_cell, active_enemies):
 		return target_cell
-	var drop_cell := target_cell
+	var drop_cell: Vector2i = target_cell
 	while can_place(enemy, drop_cell + Vector2i(0, 1), active_enemies):
 		drop_cell += Vector2i(0, 1)
 	return drop_cell
@@ -46,11 +46,11 @@ func get_drop_cell(enemy: Enemy, mouse_position: Vector2, grab_cell: Vector2i, a
 func can_place(enemy: Enemy, top_left: Vector2i, active_enemies: Array[Enemy]) -> bool:
 	if not _is_within_bounds(enemy, top_left):
 		return false
-	var occupied_cells := enemy.get_occupied_cells(top_left)
-	for other in active_enemies:
+	var occupied_cells: Array[Vector2i] = enemy.get_occupied_cells(top_left)
+	for other: Enemy in active_enemies:
 		if other == enemy or not other.is_active_in_stomach():
 			continue
-		for cell in occupied_cells:
+		for cell: Vector2i in occupied_cells:
 			if other.get_occupied_cells(other.stomach_cell).has(cell):
 				return false
 	return true
@@ -65,14 +65,14 @@ func apply_gravity(active_enemies: Array[Enemy]) -> void:
 	var moved := true
 	while moved:
 		moved = false
-		var sorted_enemies := active_enemies.duplicate()
+		var sorted_enemies: Array[Enemy] = active_enemies.duplicate()
 		sorted_enemies.sort_custom(func(a: Enemy, b: Enemy) -> bool:
 			return a.get_bottom_row(a.stomach_cell) > b.get_bottom_row(b.stomach_cell)
 		)
-		for enemy in sorted_enemies:
+		for enemy: Enemy in sorted_enemies:
 			if not enemy.is_active_in_stomach():
 				continue
-			var next_cell := enemy.stomach_cell + Vector2i(0, 1)
+			var next_cell: Vector2i = enemy.stomach_cell + Vector2i(0, 1)
 			if not can_place(enemy, next_cell, active_enemies):
 				continue
 			place_enemy(enemy, next_cell)
@@ -81,14 +81,14 @@ func apply_gravity(active_enemies: Array[Enemy]) -> void:
 
 func get_current_fullness(active_enemies: Array[Enemy]) -> int:
 	var fullness := 0
-	for enemy in active_enemies:
+	for enemy: Enemy in active_enemies:
 		if enemy.is_active_in_stomach():
 			fullness += enemy.get_size()
 	return fullness
 
 
 func has_bottom_touching_enemy(active_enemies: Array[Enemy]) -> bool:
-	for enemy in active_enemies:
+	for enemy: Enemy in active_enemies:
 		if get_bottom_row_cell_count(enemy) > 0:
 			return true
 	return false
@@ -98,7 +98,7 @@ func get_bottom_row_cell_count(enemy: Enemy) -> int:
 	if not enemy.is_active_in_stomach():
 		return 0
 	var count := 0
-	for cell in enemy.get_occupied_cells(enemy.stomach_cell):
+	for cell: Vector2i in enemy.get_occupied_cells(enemy.stomach_cell):
 		if cell.y == rows - 1:
 			count += 1
 	return count
@@ -110,7 +110,7 @@ func show_preview(enemy: Enemy, mouse_position: Vector2, grab_cell: Vector2i, ac
 	if not contains_global_position(mouse_position):
 		hide_preview()
 		return
-	var top_left := get_drop_cell(enemy, mouse_position, grab_cell, active_enemies)
+	var top_left: Vector2i = get_drop_cell(enemy, mouse_position, grab_cell, active_enemies)
 	if not _is_within_bounds(enemy, top_left):
 		hide_preview()
 		return
@@ -129,7 +129,7 @@ func hide_preview() -> void:
 
 
 func get_global_position_for_cell(top_left: Vector2i, size: Vector2i) -> Vector2:
-	var local_position := _grid_origin + Vector2(
+	var local_position: Vector2 = _grid_origin + Vector2(
 		float(top_left.x) * _grid_step + get_span_size(size.x) * 0.5,
 		float(top_left.y) * _grid_step + get_span_size(size.y) * 0.5
 	)
@@ -142,17 +142,17 @@ func _configure_grid() -> void:
 		(grid_frame.size.y + float(rows - 1) * edge_overlap) / float(rows)
 	)
 	_grid_step = _cell_size - edge_overlap
-	var grid_size := Vector2(
+	var grid_size: Vector2 = Vector2(
 		float(columns) * _cell_size - float(columns - 1) * edge_overlap,
 		float(rows) * _cell_size - float(rows - 1) * edge_overlap
 	)
 	_grid_origin = grid_frame.position + (grid_frame.size - grid_size) * 0.5
-	for child in get_children():
+	for child: Node in get_children():
 		if child is NinePatchRect and String(child.name).begins_with("grid_frame_"):
 			child.queue_free()
 	for row in range(rows):
 		for column in range(columns):
-			var cell := grid_frame
+			var cell: NinePatchRect = grid_frame
 			if row != 0 or column != 0:
 				cell = grid_frame.duplicate() as NinePatchRect
 				cell.name = "grid_frame_%d_%d" % [column, row]
@@ -185,8 +185,8 @@ func _get_digestion_line_top_y() -> float:
 
 
 func _get_nearest_cell(global_position: Vector2) -> Vector2i:
-	var local_position := to_local(global_position)
-	var centered_position := local_position - _grid_origin - Vector2.ONE * _cell_size * 0.5
+	var local_position: Vector2 = to_local(global_position)
+	var centered_position: Vector2 = local_position - _grid_origin - Vector2.ONE * _cell_size * 0.5
 	return Vector2i(
 		clampi(roundi(centered_position.x / _grid_step), 0, columns - 1),
 		clampi(roundi(centered_position.y / _grid_step), 0, rows - 1)
@@ -194,7 +194,7 @@ func _get_nearest_cell(global_position: Vector2) -> Vector2i:
 
 
 func _is_within_bounds(enemy: Enemy, top_left: Vector2i) -> bool:
-	for cell in enemy.get_occupied_cells(top_left):
+	for cell: Vector2i in enemy.get_occupied_cells(top_left):
 		if cell.x < 0 or cell.x >= columns or cell.y < 0 or cell.y >= rows:
 			return false
 	return true
