@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://deupqxttm1xa8"]
+
+[ext_resource type="Script" uid="uid://bbxwd5nb6r1ww" path="res://scene/main/day_intro/day_intro.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+
+[node name="DayIntro" type="CanvasLayer" unique_id=850570030]
+layer = 100
+script = ExtResource("1_script")
+
+[node name="Screen" type="Control" parent="." unique_id=635007718]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1280.0
+offset_bottom = 720.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Background" type="ColorRect" parent="Screen" unique_id=1818975299]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="DayLabel" type="Label" parent="Screen" unique_id=2137397511]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -960.0
+offset_top = -450.0
+offset_right = -360.0
+offset_bottom = -330.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 72
+text = "1日目"
+horizontal_alignment = 1
+vertical_alignment = 1

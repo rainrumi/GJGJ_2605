@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" path="res://scene/object/background/background.tscn" id="1_background"]
 [ext_resource type="PackedScene" path="res://scene/object/enemy/enemy.tscn" id="2_enemy"]
-[ext_resource type="Script" path="res://scene/ui/battle_ui/battle_ui.gd" id="3_battle_ui_script"]
+[ext_resource type="Script" uid="uid://dptae2htd5ca5" path="res://scene/ui/battle_ui/battle_ui.gd" id="3_battle_ui_script"]
 [ext_resource type="PackedScene" uid="uid://cai1mrucqy6v5" path="res://scene/object/stomach/stomach.tscn" id="5_stomach"]
 [ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
 [ext_resource type="Texture2D" uid="uid://bm3qblcikrvsm" path="res://art/ui/hp/ui_hp_gauge_1000.png" id="10_cdvix"]
@@ -13,7 +13,8 @@
 [ext_resource type="Texture2D" uid="uid://djqhgj0uikma7" path="res://art/ui/time/ui_time_frame_1000.png" id="18_time_frame"]
 [ext_resource type="Texture2D" uid="uid://cd5grt48wcvhd" path="res://art/ui/hp/ui_hp_frame_1000.png" id="19_hp_frame"]
 [ext_resource type="Texture2D" uid="uid://dr2mri7shrvne" path="res://art/ui/passive/ui_passive_guide_frame_1000.png" id="20_passive_guide"]
-[ext_resource type="AudioStream" path="res://sound/se/click.mp3" id="21_click_se"]
+[ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://sound/se/click.mp3" id="21_click_se"]
+[ext_resource type="PackedScene" path="res://scene/main/day_intro/day_intro.tscn" id="22_day_intro"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
@@ -225,3 +226,5 @@ offset_bottom = 188.0
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 18
 text = "Debug"
+
+[node name="DayIntro" parent="." unique_id=1219786125 instance=ExtResource("22_day_intro")]

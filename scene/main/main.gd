@@ -8,6 +8,8 @@ const STAGE_CLEAR_RETURN_DELAY := 1.0
 @onready var stage_clear: Node = $StageClear
 @onready var bgm: AudioStreamPlayer = $BGM
 
+var current_day := 1
+
 
 func _ready() -> void:
 	_play_bgm()
@@ -27,7 +29,7 @@ func show_game(reset_player_state: bool = true) -> void:
 	game_ui.visible = true
 	stage_clear.visible = false
 	if game.has_method("start_battle"):
-		game.start_battle(_get_starting_hp(reset_player_state))
+		game.start_battle(_get_starting_hp(reset_player_state), current_day)
 
 
 func show_stage_clear() -> void:
@@ -40,6 +42,7 @@ func show_stage_clear() -> void:
 
 
 func _on_title_start_game() -> void:
+	current_day = 1
 	if stage_clear.has_method("reset_player_state"):
 		stage_clear.reset_player_state()
 	show_game()
@@ -54,6 +57,7 @@ func _on_game_battle_finished(won: bool) -> void:
 
 func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
 	await get_tree().create_timer(STAGE_CLEAR_RETURN_DELAY).timeout
+	current_day += 1
 	show_game(false)
 
 
