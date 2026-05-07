@@ -72,8 +72,12 @@ var _hp_gauge_full_width := 0.0
 var _hp_gauge_tween: Tween
 var _seed_button_base_scales: Array[Vector2] = []
 var _seed_button_tweens: Array[Tween] = []
+var _seed_button_hovered_states: Array[bool] = []
+var _seed_button_pressed_states: Array[bool] = []
 var _abandon_button_base_scale := Vector2.ONE
 var _abandon_button_hover_tween: Tween
+var _abandon_button_hovered := false
+var _abandon_button_pressed := false
 
 
 func _ready() -> void:
@@ -108,6 +112,8 @@ func _setup_seed_buttons() -> void:
 	for i in range(seed_buttons.size()):
 		var button := seed_buttons[i]
 		button.pressed.connect(_on_seed_button_pressed.bind(i))
+		button.button_down.connect(_on_seed_button_down.bind(i))
+		button.button_up.connect(_on_seed_button_up.bind(i))
 		button.mouse_entered.connect(_on_seed_button_mouse_entered.bind(i))
 		button.mouse_exited.connect(_on_seed_button_mouse_exited.bind(i))
 		_apply_seed_button(button, SEED_OPTIONS[i])
@@ -144,11 +150,13 @@ func _on_seed_button_pressed(seed_index: int) -> void:
 		planted_flowers.append(_create_flower_from_seed(seed))
 		_refresh_flower_slots()
 		selection_finished.emit(0.0)
+		_reset_button_easing_state()
 		_show_finished_mode("%sを植えました" % str(seed["name"]))
 		return
 	_replace_flower(seed)
 	_refresh_flower_slots()
 	selection_finished.emit(0.0)
+	_reset_button_easing_state()
 	_show_finished_mode("%sを植え替えました" % str(seed["name"]))
 
 
@@ -156,6 +164,7 @@ func _on_abandon_button_pressed() -> void:
 	var recovered_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * HP_RECOVERY_RATE))
 	_set_hp(recovered_hp, true)
 	selection_finished.emit(HP_RECOVERY_RATE)
+	_reset_button_easing_state()
 	_show_finished_mode("種を放棄してHPを10%回復しました")
 
 
@@ -235,11 +244,15 @@ func _update_planted_info_text() -> void:
 
 
 func _on_abandon_button_down() -> void:
+	_abandon_button_pressed = true
 	abandon_button_frame.modulate = ABANDON_BUTTON_PRESSED_MODULATE
+	_update_abandon_button_scale()
 
 
 func _on_abandon_button_up() -> void:
+	_abandon_button_pressed = false
 	_reset_abandon_button_visual()
+	_update_abandon_button_scale()
 
 
 func _reset_abandon_button_visual() -> void:
@@ -249,6 +262,8 @@ func _reset_abandon_button_visual() -> void:
 func _capture_button_scales() -> void:
 	_seed_button_base_scales.clear()
 	_seed_button_tweens.resize(seed_button_frames.size())
+	_seed_button_hovered_states.resize(seed_button_frames.size())
+	_seed_button_pressed_states.resize(seed_button_frames.size())
 	for frame in seed_button_frames:
 		frame.pivot_offset = frame.size * 0.5
 		_seed_button_base_scales.append(frame.scale)
@@ -283,22 +298,45 @@ func _set_hp(value: int, animated: bool) -> void:
 
 
 func _on_seed_button_mouse_entered(index: int) -> void:
-	_set_seed_button_hovered(index, true)
+	if index < 0 or index >= _seed_button_hovered_states.size():
+		return
+	_seed_button_hovered_states[index] = true
+	_update_seed_button_scale(index)
 
 
 func _on_seed_button_mouse_exited(index: int) -> void:
-	_set_seed_button_hovered(index, false)
+	if index < 0 or index >= _seed_button_hovered_states.size():
+		return
+	_seed_button_hovered_states[index] = false
+	_seed_button_pressed_states[index] = false
+	_update_seed_button_scale(index)
 
 
-func _set_seed_button_hovered(index: int, is_hovered: bool) -> void:
+func _on_seed_button_down(index: int) -> void:
+	if index < 0 or index >= _seed_button_pressed_states.size():
+		return
+	_seed_button_pressed_states[index] = true
+	_update_seed_button_scale(index)
+
+
+func _on_seed_button_up(index: int) -> void:
+	if index < 0 or index >= _seed_button_pressed_states.size():
+		return
+	_seed_button_pressed_states[index] = false
+	_update_seed_button_scale(index)
+
+
+func _update_seed_button_scale(index: int) -> void:
 	if index < 0 or index >= seed_button_frames.size():
 		return
 	var tween := _seed_button_tweens[index]
 	if tween != null and tween.is_valid():
 		tween.kill()
 	var target_scale := _seed_button_base_scales[index]
-	if is_hovered:
+	if _seed_button_hovered_states[index]:
 		target_scale *= HOVER_SCALE
+	if _seed_button_pressed_states[index]:
+		target_scale = _seed_button_base_scales[index]
 	var next_tween := create_tween()
 	next_tween.set_trans(Tween.TRANS_QUAD)
 	next_tween.set_ease(Tween.EASE_OUT)
@@ -307,19 +345,24 @@ func _set_seed_button_hovered(index: int, is_hovered: bool) -> void:
 
 
 func _on_abandon_button_mouse_entered() -> void:
-	_set_abandon_button_hovered(true)
+	_abandon_button_hovered = true
+	_update_abandon_button_scale()
 
 
 func _on_abandon_button_mouse_exited() -> void:
-	_set_abandon_button_hovered(false)
+	_abandon_button_hovered = false
+	_abandon_button_pressed = false
+	_update_abandon_button_scale()
 
 
-func _set_abandon_button_hovered(is_hovered: bool) -> void:
+func _update_abandon_button_scale() -> void:
 	if _abandon_button_hover_tween != null and _abandon_button_hover_tween.is_valid():
 		_abandon_button_hover_tween.kill()
 	var target_scale := _abandon_button_base_scale
-	if is_hovered:
+	if _abandon_button_hovered:
 		target_scale *= HOVER_SCALE
+	if _abandon_button_pressed:
+		target_scale = _abandon_button_base_scale
 	_abandon_button_hover_tween = create_tween()
 	_abandon_button_hover_tween.set_trans(Tween.TRANS_QUAD)
 	_abandon_button_hover_tween.set_ease(Tween.EASE_OUT)
@@ -329,3 +372,18 @@ func _set_abandon_button_hovered(is_hovered: bool) -> void:
 		target_scale,
 		HOVER_TWEEN_DURATION
 	)
+
+
+func _reset_button_easing_state() -> void:
+	for i in range(seed_button_frames.size()):
+		_seed_button_hovered_states[i] = false
+		_seed_button_pressed_states[i] = false
+		var tween := _seed_button_tweens[i]
+		if tween != null and tween.is_valid():
+			tween.kill()
+		seed_button_frames[i].scale = _seed_button_base_scales[i]
+	_abandon_button_hovered = false
+	_abandon_button_pressed = false
+	if _abandon_button_hover_tween != null and _abandon_button_hover_tween.is_valid():
+		_abandon_button_hover_tween.kill()
+	abandon_button_frame.scale = _abandon_button_base_scale
