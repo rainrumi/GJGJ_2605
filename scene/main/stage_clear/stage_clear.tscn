@@ -1,29 +1,30 @@
 [gd_scene format=3 uid="uid://cnvmrlnictk8h"]
 
-[ext_resource type="Script" path="res://scene/main/stage_clear/stage_clear.gd" id="1_script"]
-[ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="2_font"]
-[ext_resource type="Texture2D" path="res://art/character/tex_character_portrate_1000.png" id="3_character"]
-[ext_resource type="Texture2D" path="res://art/stage_clear/ui_seed_guide_frame_1000.png" id="4_guide_frame"]
-[ext_resource type="Texture2D" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_100.png" id="5_seed_frame_normal"]
-[ext_resource type="Texture2D" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_200.png" id="6_seed_frame_high"]
-[ext_resource type="Texture2D" path="res://art/stage_clear/ui_choise_cancel_frame_1000.png" id="7_cancel_frame"]
+[ext_resource type="Script" uid="uid://ccel0yj6xx277" path="res://scene/main/stage_clear/stage_clear.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://art/character/tex_character_portrate_1000.png" id="3_character"]
+[ext_resource type="Texture2D" uid="uid://cs7k0sbpnhylu" path="res://art/stage_clear/ui_seed_guide_frame_1000.png" id="4_guide_frame"]
+[ext_resource type="Texture2D" uid="uid://bf3b0ngamjwoc" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_100.png" id="5_seed_frame_normal"]
+[ext_resource type="Texture2D" uid="uid://d1swr615sa4we" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_200.png" id="6_seed_frame_high"]
+[ext_resource type="Texture2D" uid="uid://bvewbj2k87hga" path="res://art/stage_clear/ui_choise_cancel_frame_1000.png" id="7_cancel_frame"]
+[ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="8_clear_effect"]
 
-[node name="StageClear" type="Node2D"]
+[node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1811970880]
 offset_right = 1280.0
 offset_bottom = 720.0
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="CharacterArea" type="Node2D" parent="."]
+[node name="CharacterArea" type="Node2D" parent="." unique_id=1051992702]
 
-[node name="Character" type="Sprite2D" parent="CharacterArea"]
+[node name="Character" type="Sprite2D" parent="CharacterArea" unique_id=837318386]
 position = Vector2(190, 420)
 texture = ExtResource("3_character")
 
-[node name="FlowerSlots" type="Control" parent="CharacterArea"]
+[node name="FlowerSlots" type="Control" parent="CharacterArea" unique_id=816859833]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 100.0
@@ -32,15 +33,14 @@ offset_right = 306.0
 offset_bottom = 142.0
 mouse_filter = 2
 
-[node name="FlowerSlot1" type="Button" parent="CharacterArea/FlowerSlots"]
+[node name="FlowerSlot1" type="Button" parent="CharacterArea/FlowerSlots" unique_id=1068812583]
 layout_mode = 0
-offset_left = 0.0
 offset_top = 12.0
 offset_right = 64.0
 offset_bottom = 96.0
 flat = true
 
-[node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot1"]
+[node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot1" unique_id=739893816]
 layout_mode = 0
 offset_left = -36.0
 offset_top = -4.0
@@ -50,15 +50,14 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="FlowerSlot2" type="Button" parent="CharacterArea/FlowerSlots"]
+[node name="FlowerSlot2" type="Button" parent="CharacterArea/FlowerSlots" unique_id=1384755432]
 layout_mode = 0
 offset_left = 70.0
-offset_top = 0.0
 offset_right = 134.0
 offset_bottom = 96.0
 flat = true
 
-[node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot2"]
+[node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot2" unique_id=1517214821]
 layout_mode = 0
 offset_left = -36.0
 offset_top = -4.0
@@ -68,7 +67,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="FlowerSlot3" type="Button" parent="CharacterArea/FlowerSlots"]
+[node name="FlowerSlot3" type="Button" parent="CharacterArea/FlowerSlots" unique_id=996341120]
 layout_mode = 0
 offset_left = 140.0
 offset_top = 14.0
@@ -76,7 +75,7 @@ offset_right = 204.0
 offset_bottom = 98.0
 flat = true
 
-[node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot3"]
+[node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot3" unique_id=965076757]
 layout_mode = 0
 offset_left = -26.0
 offset_top = -12.0
@@ -86,7 +85,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PlantedInfoFrame" type="TextureRect" parent="CharacterArea"]
+[node name="PlantedInfoFrame" type="TextureRect" parent="CharacterArea" unique_id=2006200451]
 offset_left = 320.0
 offset_top = 150.0
 offset_right = 566.0
@@ -94,7 +93,7 @@ offset_bottom = 286.0
 mouse_filter = 2
 texture = ExtResource("4_guide_frame")
 
-[node name="PlantedInfoText" type="Label" parent="CharacterArea/PlantedInfoFrame"]
+[node name="PlantedInfoText" type="Label" parent="CharacterArea/PlantedInfoFrame" unique_id=1010225640]
 layout_mode = 0
 offset_left = 18.0
 offset_top = 16.0
@@ -110,19 +109,30 @@ text = "植えられる数
 高級 あと 0本"
 vertical_alignment = 1
 
-[node name="UI" type="Control" parent="."]
+[node name="UI" type="Control" parent="." unique_id=450061926]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 mouse_filter = 2
 
-[node name="TitleLabel" type="Label" parent="UI"]
+[node name="TitleEffect" type="TextureRect" parent="UI" unique_id=1736404112]
 layout_mode = 0
-offset_left = 706.0
-offset_top = 67.0
-offset_right = 1056.0
-offset_bottom = 144.0
+offset_left = 572.0
+offset_top = 31.0
+offset_right = 1124.0
+offset_bottom = 223.0
+mouse_filter = 2
+texture = ExtResource("8_clear_effect")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="UI" unique_id=968893526]
+layout_mode = 0
+offset_left = 708.0
+offset_top = 82.0
+offset_right = 1058.0
+offset_bottom = 159.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
@@ -132,52 +142,44 @@ text = "消化完了！"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="GuideFrame" type="TextureRect" parent="UI"]
+[node name="GuideText" type="Label" parent="UI" unique_id=1500483512]
 layout_mode = 0
-offset_left = 638.0
-offset_top = 198.0
-offset_right = 884.0
-offset_bottom = 334.0
-mouse_filter = 2
-texture = ExtResource("4_guide_frame")
-
-[node name="GuideText" type="Label" parent="UI/GuideFrame"]
-layout_mode = 0
-offset_left = 16.0
-offset_top = 20.0
-offset_right = 230.0
-offset_bottom = 116.0
+offset_left = 649.0
+offset_top = 215.0
+offset_right = 1060.0
+offset_bottom = 311.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 text = "夢の種をひとつ選んでください"
-autowrap_mode = 3
+horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
-[node name="SeedChoices" type="Control" parent="UI"]
-layout_mode = 0
+[node name="SeedChoices" type="Control" parent="UI" unique_id=42702980]
+anchors_preset = 0
 offset_left = 460.0
 offset_top = 334.0
 offset_right = 1236.0
 offset_bottom = 586.0
 mouse_filter = 2
 
-[node name="SeedChoice1" type="Button" parent="UI/SeedChoices"]
+[node name="SeedChoice1" type="Button" parent="UI/SeedChoices" unique_id=1193043233]
 layout_mode = 0
 offset_right = 248.0
 offset_bottom = 248.0
 flat = true
 
-[node name="Frame" type="TextureRect" parent="UI/SeedChoices/SeedChoice1"]
+[node name="Frame" type="TextureRect" parent="UI/SeedChoices/SeedChoice1" unique_id=1445999077]
 layout_mode = 0
 offset_right = 248.0
 offset_bottom = 248.0
 mouse_filter = 2
 texture = ExtResource("5_seed_frame_normal")
 
-[node name="SeedTexture" type="TextureRect" parent="UI/SeedChoices/SeedChoice1"]
+[node name="SeedTexture" type="TextureRect" parent="UI/SeedChoices/SeedChoice1" unique_id=56124655]
 layout_mode = 0
 offset_left = 44.0
 offset_top = 42.0
@@ -187,7 +189,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="NameLabel" type="Label" parent="UI/SeedChoices/SeedChoice1"]
+[node name="NameLabel" type="Label" parent="UI/SeedChoices/SeedChoice1" unique_id=2098629077]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 10.0
@@ -198,7 +200,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 
-[node name="EffectLabel" type="Label" parent="UI/SeedChoices/SeedChoice1"]
+[node name="EffectLabel" type="Label" parent="UI/SeedChoices/SeedChoice1" unique_id=348163115]
 layout_mode = 0
 offset_left = 24.0
 offset_top = 176.0
@@ -210,21 +212,21 @@ theme_override_font_sizes/font_size = 21
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="SeedChoice2" type="Button" parent="UI/SeedChoices"]
+[node name="SeedChoice2" type="Button" parent="UI/SeedChoices" unique_id=1919438745]
 layout_mode = 0
 offset_left = 266.0
 offset_right = 514.0
 offset_bottom = 248.0
 flat = true
 
-[node name="Frame" type="TextureRect" parent="UI/SeedChoices/SeedChoice2"]
+[node name="Frame" type="TextureRect" parent="UI/SeedChoices/SeedChoice2" unique_id=326549587]
 layout_mode = 0
 offset_right = 248.0
 offset_bottom = 248.0
 mouse_filter = 2
 texture = ExtResource("5_seed_frame_normal")
 
-[node name="SeedTexture" type="TextureRect" parent="UI/SeedChoices/SeedChoice2"]
+[node name="SeedTexture" type="TextureRect" parent="UI/SeedChoices/SeedChoice2" unique_id=547349756]
 layout_mode = 0
 offset_left = 44.0
 offset_top = 42.0
@@ -234,7 +236,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="NameLabel" type="Label" parent="UI/SeedChoices/SeedChoice2"]
+[node name="NameLabel" type="Label" parent="UI/SeedChoices/SeedChoice2" unique_id=699478597]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 10.0
@@ -245,7 +247,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 
-[node name="EffectLabel" type="Label" parent="UI/SeedChoices/SeedChoice2"]
+[node name="EffectLabel" type="Label" parent="UI/SeedChoices/SeedChoice2" unique_id=1996335724]
 layout_mode = 0
 offset_left = 24.0
 offset_top = 176.0
@@ -257,21 +259,21 @@ theme_override_font_sizes/font_size = 19
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="SeedChoice3" type="Button" parent="UI/SeedChoices"]
+[node name="SeedChoice3" type="Button" parent="UI/SeedChoices" unique_id=848086781]
 layout_mode = 0
 offset_left = 532.0
 offset_right = 780.0
 offset_bottom = 248.0
 flat = true
 
-[node name="Frame" type="TextureRect" parent="UI/SeedChoices/SeedChoice3"]
+[node name="Frame" type="TextureRect" parent="UI/SeedChoices/SeedChoice3" unique_id=1130264178]
 layout_mode = 0
 offset_right = 248.0
 offset_bottom = 248.0
 mouse_filter = 2
 texture = ExtResource("6_seed_frame_high")
 
-[node name="SeedTexture" type="TextureRect" parent="UI/SeedChoices/SeedChoice3"]
+[node name="SeedTexture" type="TextureRect" parent="UI/SeedChoices/SeedChoice3" unique_id=872966343]
 layout_mode = 0
 offset_left = 42.0
 offset_top = 40.0
@@ -281,7 +283,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="NameLabel" type="Label" parent="UI/SeedChoices/SeedChoice3"]
+[node name="NameLabel" type="Label" parent="UI/SeedChoices/SeedChoice3" unique_id=1305169584]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 10.0
@@ -292,7 +294,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 
-[node name="EffectLabel" type="Label" parent="UI/SeedChoices/SeedChoice3"]
+[node name="EffectLabel" type="Label" parent="UI/SeedChoices/SeedChoice3" unique_id=840669087]
 layout_mode = 0
 offset_left = 24.0
 offset_top = 166.0
@@ -304,21 +306,24 @@ theme_override_font_sizes/font_size = 17
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="AbandonButton" type="Button" parent="UI"]
+[node name="AbandonButton" type="Button" parent="UI" unique_id=1850666034]
 layout_mode = 0
 offset_left = 621.0
 offset_top = 632.0
 offset_right = 1081.0
 offset_bottom = 684.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_pressed_color = Color(0.705882, 0.607843, 0.694118, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 26
 flat = true
 
-[node name="Frame" type="TextureRect" parent="UI/AbandonButton"]
-layout_mode = 0
-offset_right = 460.0
-offset_bottom = 52.0
-mouse_filter = 2
+[node name="Frame" type="TextureRect" parent="UI/AbandonButton" unique_id=1144243439]
 show_behind_parent = true
+layout_mode = 0
+offset_left = 1.0
+offset_top = -25.0
+offset_right = 461.0
+offset_bottom = 27.0
+mouse_filter = 2
 texture = ExtResource("7_cancel_frame")
