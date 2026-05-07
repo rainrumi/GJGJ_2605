@@ -64,7 +64,9 @@ func start_battle(starting_hp: int = MAX_HP, day: int = 1) -> void:
 	ui.reset_for_battle(MAX_HP, minutes, current_message)
 	_refresh_ui()
 	stomach.hide_preview()
+	_set_game_content_visible(false)
 	await day_intro.show_day(day)
+	_set_game_content_visible(true)
 	battle_active = true
 	_refresh_ui()
 
@@ -357,6 +359,15 @@ func _get_remove_from_stomach_damage() -> int:
 
 func _get_rest_hp() -> int:
 	return ceili(float(MAX_HP) * REST_HP_RATE)
+
+
+func _set_game_content_visible(is_visible: bool) -> void:
+	for child in get_children():
+		if child == day_intro:
+			continue
+		if child is CanvasItem:
+			var canvas_item := child as CanvasItem
+			canvas_item.visible = is_visible
 
 
 func _update_auto_digest_timer() -> void:
