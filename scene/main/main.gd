@@ -48,6 +48,10 @@ func _on_game_battle_finished(won: bool) -> void:
 		show_title()
 
 
+func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
+	show_game()
+
+
 func _play_bgm() -> void:
 	if bgm.stream is AudioStreamMP3:
 		var mp3_stream := bgm.stream as AudioStreamMP3

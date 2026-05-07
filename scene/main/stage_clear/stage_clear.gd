@@ -98,6 +98,7 @@ func setup_hp(value: int) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	if is_node_ready():
 		_set_hp(current_hp, false)
+		_show_select_mode()
 
 
 func _initialize_planted_flowers() -> void:
