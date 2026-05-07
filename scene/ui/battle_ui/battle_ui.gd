@@ -87,9 +87,6 @@ func set_debug_message(message: String) -> void:
 
 
 func set_digestion_count(count: int) -> void:
-	if count > 0:
-		digestion_label.text = "消化開始！ x%d" % count
-		return
 	digestion_label.text = "消化開始！"
 
 
