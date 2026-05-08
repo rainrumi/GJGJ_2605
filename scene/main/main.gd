@@ -13,6 +13,7 @@ const STAGE_CLEAR_RETURN_DELAY := 1.0
 
 var current_day := 1
 var selected_stage_index := 0
+var should_reset_player_state := true
 
 
 func _ready() -> void:
@@ -66,6 +67,7 @@ func show_stage_clear() -> void:
 
 func _on_title_start_game() -> void:
 	current_day = 1
+	should_reset_player_state = true
 	if stage_clear.has_method("reset_player_state"):
 		stage_clear.reset_player_state()
 	title.visible = false
@@ -89,7 +91,8 @@ func show_day_intro() -> void:
 
 func _on_stage_select_stage_selected(stage_index: int) -> void:
 	selected_stage_index = stage_index
-	show_game()
+	show_game(should_reset_player_state)
+	should_reset_player_state = false
 
 
 func _on_game_battle_finished(won: bool) -> void:
