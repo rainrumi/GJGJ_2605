@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="NovelTextResource" format=3 uid="uid://dpwdn5mwco1y8"]
+
+[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel_text_resource.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+text = "みなさん、ふわふわ学校へのご入学誠におめでとうございます。
+早速ですが、あなたたちはこれから１か月間悪夢を食べる練習をしていただきます。
+自身の体力と能力を考えて20日間悪夢を食べましょう。
+4日に1回能力試験を行いますのでぜひ奮ってご参加ください。"

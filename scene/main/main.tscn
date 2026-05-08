@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bd6olk1dyr2q7" path="res://scene/main/game/game.tscn" id="3_qtsyf"]
 [ext_resource type="AudioStream" uid="uid://dc8vyar0jf1e4" path="res://sound/bgm/Night_Dance.mp3" id="4_odqci"]
 [ext_resource type="PackedScene" uid="uid://cnvmrlnictk8h" path="res://scene/main/stage_clear/stage_clear.tscn" id="5_stage_clear"]
+[ext_resource type="PackedScene" path="res://scene/main/opening_novel/opening_novel.tscn" id="6_opening_novel"]
 
 [node name="Main" type="Node" unique_id=1753159910]
 script = ExtResource("1_6vuhr")
@@ -25,6 +26,9 @@ stream = ExtResource("4_odqci")
 
 [node name="Title" parent="." unique_id=1609153234 instance=ExtResource("2_a0c6e")]
 
+[node name="OpeningNovel" parent="." instance=ExtResource("6_opening_novel")]
+visible = false
+
 [node name="Game" parent="." unique_id=335814330 instance=ExtResource("3_qtsyf")]
 visible = false
 
@@ -32,5 +36,6 @@ visible = false
 visible = false
 
 [connection signal="start_game" from="Title" to="." method="_on_title_start_game"]
+[connection signal="finished" from="OpeningNovel" to="." method="_on_opening_novel_finished"]
 [connection signal="battle_finished" from="Game" to="." method="_on_game_battle_finished"]
 [connection signal="selection_finished" from="StageClear" to="." method="_on_stage_clear_selection_finished"]

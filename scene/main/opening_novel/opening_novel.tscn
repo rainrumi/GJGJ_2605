@@ -1,0 +1,85 @@
+[gd_scene format=3 uid="uid://cw5upfry3m3nf"]
+
+[ext_resource type="Script" uid="uid://b5om836obl82m" path="res://scene/main/opening_novel/opening_novel.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+[ext_resource type="Resource" uid="uid://dpwdn5mwco1y8" path="res://data/resources/novel/opening_novel_text.tres" id="3_text"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text_box"]
+bg_color = Color(0.0352941, 0.027451, 0.211765, 0.9)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.94, 0.88, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="OpeningNovel" type="CanvasLayer" unique_id=1826410718]
+layer = 50
+script = ExtResource("1_script")
+novel_text = ExtResource("3_text")
+
+[node name="Screen" type="Control" parent="." unique_id=1190891835]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBox" type="Panel" parent="Screen" unique_id=1725155311]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 72.0
+offset_top = -222.0
+offset_right = -72.0
+offset_bottom = -44.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_text_box")
+
+[node name="TextLabel" type="Label" parent="Screen/TextBox" unique_id=1311919522]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 34.0
+offset_top = 24.0
+offset_right = -34.0
+offset_bottom = -42.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+autowrap_mode = 3
+
+[node name="NextLabel" type="Label" parent="Screen/TextBox" unique_id=719110256]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -78.0
+offset_top = -42.0
+offset_right = -30.0
+offset_bottom = -12.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "▼"
+horizontal_alignment = 1
+vertical_alignment = 1

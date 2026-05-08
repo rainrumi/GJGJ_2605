@@ -3,6 +3,7 @@ extends Node
 const STAGE_CLEAR_RETURN_DELAY := 1.0
 
 @onready var title: Node = $Title
+@onready var opening_novel: CanvasLayer = $OpeningNovel
 @onready var game: Node = $Game
 @onready var game_ui: CanvasLayer = $Game/UI
 @onready var stage_clear: Node = $StageClear
@@ -18,6 +19,7 @@ func _ready() -> void:
 
 func show_title() -> void:
 	title.visible = true
+	opening_novel.visible = false
 	game.visible = false
 	game_ui.visible = false
 	stage_clear.visible = false
@@ -25,6 +27,7 @@ func show_title() -> void:
 
 func show_game(reset_player_state: bool = true) -> void:
 	title.visible = false
+	opening_novel.visible = false
 	game.visible = true
 	game_ui.visible = true
 	stage_clear.visible = false
@@ -34,6 +37,7 @@ func show_game(reset_player_state: bool = true) -> void:
 
 func show_stage_clear() -> void:
 	title.visible = false
+	opening_novel.visible = false
 	game.visible = false
 	game_ui.visible = false
 	if stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
@@ -45,6 +49,11 @@ func _on_title_start_game() -> void:
 	current_day = 1
 	if stage_clear.has_method("reset_player_state"):
 		stage_clear.reset_player_state()
+	title.visible = false
+	opening_novel.start()
+
+
+func _on_opening_novel_finished() -> void:
 	show_game()
 
 
