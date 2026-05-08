@@ -19,12 +19,6 @@ script = ExtResource("1_script")
 initial_flower = ExtResource("11_initial_flower")
 seed_options = Array[Resource]([ExtResource("12_carnation_seed"), ExtResource("13_chamomile_seed"), ExtResource("14_capuchi_seed")])
 
-[node name="Background" type="ColorRect" parent="." unique_id=1811970880]
-offset_right = 1280.0
-offset_bottom = 720.0
-mouse_filter = 2
-color = Color(0, 0, 0, 1)
-
 [node name="CharacterArea" type="Node2D" parent="." unique_id=1051992702]
 
 [node name="Character" type="Sprite2D" parent="CharacterArea" unique_id=837318386]

@@ -19,16 +19,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Background" type="ColorRect" parent="Screen" unique_id=1818975299]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 0)
-
 [node name="DayLabel" type="Label" parent="Screen" unique_id=2137397511]
 layout_mode = 1
 anchors_preset = 8
