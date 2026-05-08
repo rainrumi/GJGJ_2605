@@ -7,7 +7,10 @@ const TWEEN_DURATION := 0.1
 
 @onready var frame: TextureRect = $Frame
 @onready var name_label: Label = $NameLabel
-@onready var detail_label: Label = $DetailLabel
+@onready var difficulty_label: Label = $DifficultyLabel
+@onready var location_label: Label = $LocationLabel
+@onready var reward_icon: TextureRect = $RewardIcon
+@onready var tags_label: Label = $TagsLabel
 
 var _base_scale := Vector2.ONE
 var _hovered := false
@@ -24,9 +27,15 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 
-func setup_choice(title: String, detail: String) -> void:
-	name_label.text = title
-	detail_label.text = detail
+func setup_choice(stage_definition: StageDefinition) -> void:
+	if stage_definition == null:
+		disabled = true
+		return
+	name_label.text = stage_definition.display_name
+	difficulty_label.text = "・難易度 Lv.%d" % stage_definition.difficulty_level
+	location_label.text = "・場所 %s" % stage_definition.location
+	reward_icon.texture = stage_definition.reward_icon
+	tags_label.text = "・タグ %s" % stage_definition.get_tag_text()
 
 
 func _on_button_down() -> void:
