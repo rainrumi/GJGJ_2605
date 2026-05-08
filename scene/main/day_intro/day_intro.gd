@@ -15,7 +15,7 @@ func _ready() -> void:
 
 
 func show_day(day: int) -> void:
-	day_label.text = "%d日目" % day
+	day_label.text = "%d日目" % _get_start_display_day(day)
 	if _fade_tween != null and _fade_tween.is_valid():
 		_fade_tween.kill()
 	screen.modulate.a = 0.0
@@ -24,5 +24,13 @@ func show_day(day: int) -> void:
 	_fade_tween.set_trans(Tween.TRANS_QUART)
 	_fade_tween.set_ease(Tween.EASE_OUT)
 	_fade_tween.tween_property(screen, "modulate:a", 1.0, FADE_IN_DURATION)
-	await get_tree().create_timer(DISPLAY_DURATION).timeout
+	await get_tree().create_timer(DISPLAY_DURATION * 0.5).timeout
+	day_label.text = "%d日目" % day
+	await get_tree().create_timer(DISPLAY_DURATION * 0.5).timeout
 	visible = false
+
+
+func _get_start_display_day(day: int) -> int:
+	if day <= 1:
+		return day
+	return day - 1

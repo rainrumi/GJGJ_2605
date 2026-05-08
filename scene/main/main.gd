@@ -4,6 +4,7 @@ const STAGE_CLEAR_RETURN_DELAY := 1.0
 
 @onready var title: Node = $Title
 @onready var opening_novel: CanvasLayer = $OpeningNovel
+@onready var day_intro: DayIntro = $DayIntro
 @onready var stage_select: Node = $StageSelect
 @onready var game: Node = $Game
 @onready var game_ui: CanvasLayer = $Game/UI
@@ -22,6 +23,7 @@ func _ready() -> void:
 func show_title() -> void:
 	title.visible = true
 	opening_novel.visible = false
+	day_intro.visible = false
 	stage_select.visible = false
 	game.visible = false
 	game_ui.visible = false
@@ -31,6 +33,7 @@ func show_title() -> void:
 func show_stage_select() -> void:
 	title.visible = false
 	opening_novel.visible = false
+	day_intro.visible = false
 	stage_select.visible = true
 	game.visible = false
 	game_ui.visible = false
@@ -40,6 +43,7 @@ func show_stage_select() -> void:
 func show_game(reset_player_state: bool = true) -> void:
 	title.visible = false
 	opening_novel.visible = false
+	day_intro.visible = false
 	stage_select.visible = false
 	game.visible = true
 	game_ui.visible = true
@@ -51,6 +55,7 @@ func show_game(reset_player_state: bool = true) -> void:
 func show_stage_clear() -> void:
 	title.visible = false
 	opening_novel.visible = false
+	day_intro.visible = false
 	stage_select.visible = false
 	game.visible = false
 	game_ui.visible = false
@@ -68,6 +73,17 @@ func _on_title_start_game() -> void:
 
 
 func _on_opening_novel_finished() -> void:
+	show_day_intro()
+
+
+func show_day_intro() -> void:
+	title.visible = false
+	opening_novel.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+	await day_intro.show_day(current_day)
 	show_stage_select()
 
 
@@ -86,7 +102,7 @@ func _on_game_battle_finished(won: bool) -> void:
 func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
 	await get_tree().create_timer(STAGE_CLEAR_RETURN_DELAY).timeout
 	current_day += 1
-	show_game(false)
+	show_day_intro()
 
 
 func _get_starting_hp(reset_player_state: bool) -> int:

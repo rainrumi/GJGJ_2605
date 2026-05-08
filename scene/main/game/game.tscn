@@ -14,7 +14,6 @@
 [ext_resource type="Texture2D" uid="uid://cd5grt48wcvhd" path="res://art/ui/hp/ui_hp_frame_1000.png" id="19_hp_frame"]
 [ext_resource type="Texture2D" uid="uid://dr2mri7shrvne" path="res://art/ui/passive/ui_passive_guide_frame_1000.png" id="20_passive_guide"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://sound/se/click.mp3" id="21_click_se"]
-[ext_resource type="PackedScene" uid="uid://deupqxttm1xa8" path="res://scene/main/day_intro/day_intro.tscn" id="22_day_intro"]
 [ext_resource type="Resource" path="res://data/resources/enemies/adult_nightmare.tres" id="23_adult"]
 [ext_resource type="Resource" path="res://data/resources/enemies/overeating_nightmare.tres" id="24_overeating"]
 [ext_resource type="Resource" path="res://data/resources/enemies/chased_nightmare.tres" id="25_chased"]
@@ -230,5 +229,3 @@ offset_bottom = 188.0
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 18
 text = "Debug"
-
-[node name="DayIntro" parent="." unique_id=1219786125 instance=ExtResource("22_day_intro")]

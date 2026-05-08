@@ -12,7 +12,7 @@
 [ext_resource type="Resource" path="res://data/resources/stage_clear/normal_flower.tres" id="11_initial_flower"]
 [ext_resource type="Resource" path="res://data/resources/stage_clear/carnation_seed.tres" id="12_carnation_seed"]
 [ext_resource type="Resource" path="res://data/resources/stage_clear/chamomile_seed.tres" id="13_chamomile_seed"]
-[ext_resource type="Resource" path="res://data/resources/stage_clear/capuchi_seed.tres" id="14_capuchi_seed"]
+[ext_resource type="Resource" uid="uid://bdc1rl2wr5u3c" path="res://data/resources/stage_clear/capuchi_seed.tres" id="14_capuchi_seed"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
@@ -212,15 +212,15 @@ offset_right = 1236.0
 offset_bottom = 586.0
 mouse_filter = 2
 
-[node name="SeedChoice1" parent="UI/SeedChoices" instance=ExtResource("5_seed_choice")]
+[node name="SeedChoice1" parent="UI/SeedChoices" unique_id=507694198 instance=ExtResource("5_seed_choice")]
 layout_mode = 0
 
-[node name="SeedChoice2" parent="UI/SeedChoices" instance=ExtResource("5_seed_choice")]
+[node name="SeedChoice2" parent="UI/SeedChoices" unique_id=939057767 instance=ExtResource("5_seed_choice")]
 layout_mode = 0
 offset_left = 266.0
 offset_right = 514.0
 
-[node name="SeedChoice3" parent="UI/SeedChoices" instance=ExtResource("5_seed_choice")]
+[node name="SeedChoice3" parent="UI/SeedChoices" unique_id=1608006173 instance=ExtResource("5_seed_choice")]
 layout_mode = 0
 offset_left = 532.0
 offset_right = 780.0
@@ -232,9 +232,9 @@ offset_top = 600.0
 offset_right = 1081.0
 offset_bottom = 652.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_disabled_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_pressed_color = Color(0.15686275, 0.13333334, 0.5647059, 1)
 theme_override_colors/font_hover_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_disabled_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 26
 text = "放棄する"
