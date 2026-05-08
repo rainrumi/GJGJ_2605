@@ -4,12 +4,14 @@ const STAGE_CLEAR_RETURN_DELAY := 1.0
 
 @onready var title: Node = $Title
 @onready var opening_novel: CanvasLayer = $OpeningNovel
+@onready var stage_select: Node = $StageSelect
 @onready var game: Node = $Game
 @onready var game_ui: CanvasLayer = $Game/UI
 @onready var stage_clear: Node = $StageClear
 @onready var bgm: AudioStreamPlayer = $BGM
 
 var current_day := 1
+var selected_stage_index := 0
 
 
 func _ready() -> void:
@@ -20,6 +22,16 @@ func _ready() -> void:
 func show_title() -> void:
 	title.visible = true
 	opening_novel.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+
+
+func show_stage_select() -> void:
+	title.visible = false
+	opening_novel.visible = false
+	stage_select.visible = true
 	game.visible = false
 	game_ui.visible = false
 	stage_clear.visible = false
@@ -28,6 +40,7 @@ func show_title() -> void:
 func show_game(reset_player_state: bool = true) -> void:
 	title.visible = false
 	opening_novel.visible = false
+	stage_select.visible = false
 	game.visible = true
 	game_ui.visible = true
 	stage_clear.visible = false
@@ -38,6 +51,7 @@ func show_game(reset_player_state: bool = true) -> void:
 func show_stage_clear() -> void:
 	title.visible = false
 	opening_novel.visible = false
+	stage_select.visible = false
 	game.visible = false
 	game_ui.visible = false
 	if stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
@@ -54,6 +68,11 @@ func _on_title_start_game() -> void:
 
 
 func _on_opening_novel_finished() -> void:
+	show_stage_select()
+
+
+func _on_stage_select_stage_selected(stage_index: int) -> void:
+	selected_stage_index = stage_index
 	show_game()
 
 

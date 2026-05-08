@@ -1,0 +1,76 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scene/main/stage_select/stage_select.gd" id="1_script"]
+[ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+[ext_resource type="Texture2D" path="res://art/character/tex_character_portrate_1000.png" id="3_character"]
+[ext_resource type="Texture2D" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="4_title_effect"]
+[ext_resource type="PackedScene" path="res://scene/main/stage_select/stage_choice.tscn" id="5_stage_choice"]
+
+[node name="StageSelect" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="CharacterArea" type="Node2D" parent="."]
+
+[node name="Character" type="Sprite2D" parent="CharacterArea"]
+position = Vector2(190, 420)
+texture = ExtResource("3_character")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+
+[node name="TitleEffect" type="TextureRect" parent="UI"]
+layout_mode = 0
+offset_left = 572.0
+offset_top = 31.0
+offset_right = 1124.0
+offset_bottom = 223.0
+mouse_filter = 2
+texture = ExtResource("4_title_effect")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 626.0
+offset_top = 82.0
+offset_right = 1196.0
+offset_bottom = 159.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 56
+text = "夢の主を選択"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StageChoices" type="Control" parent="UI"]
+anchors_preset = 0
+offset_left = 460.0
+offset_top = 334.0
+offset_right = 1236.0
+offset_bottom = 586.0
+mouse_filter = 2
+
+[node name="StageChoice1" parent="UI/StageChoices" instance=ExtResource("5_stage_choice")]
+layout_mode = 0
+
+[node name="StageChoice2" parent="UI/StageChoices" instance=ExtResource("5_stage_choice")]
+layout_mode = 0
+offset_left = 266.0
+offset_right = 514.0
+
+[node name="StageChoice3" parent="UI/StageChoices" instance=ExtResource("5_stage_choice")]
+layout_mode = 0
+offset_left = 532.0
+offset_right = 780.0
