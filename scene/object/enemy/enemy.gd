@@ -10,6 +10,7 @@ const DIGESTED_TWEEN_DURATION := 0.5
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var hp_label: Label = get_node_or_null("HPText") as Label
+@onready var damage_label: Label = get_node_or_null("DamageText") as Label
 
 var definition: EnemyDefinition
 var skill_definition: NightmareSkillDefinition
@@ -46,6 +47,8 @@ func setup(
 	reset_for_battle()
 	if hp_label != null:
 		hp_label.pivot_offset = hp_label.size * 0.5
+	if damage_label != null:
+		damage_label.pivot_offset = damage_label.size * 0.5
 
 
 func reset_for_battle() -> void:
@@ -58,6 +61,7 @@ func reset_for_battle() -> void:
 	return_to_origin()
 	set_hovered(false)
 	_update_hp_label()
+	_update_damage_label()
 
 
 func get_display_name() -> String:
@@ -229,6 +233,11 @@ func _reset_visuals() -> void:
 func _update_hp_label() -> void:
 	if hp_label != null:
 		hp_label.text = str(current_hp)
+
+
+func _update_damage_label() -> void:
+	if damage_label != null:
+		damage_label.text = "攻 %d" % definition.damage
 
 
 func _get_texture() -> Texture2D:
