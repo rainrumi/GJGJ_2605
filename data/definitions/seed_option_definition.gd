@@ -8,3 +8,4 @@ extends Resource
 @export var seed_texture: Texture2D
 @export var frame_texture: Texture2D
 @export var flower_definition: FlowerDefinition
+@export var dream_seed_skill: DreamSeedSkillDefinition

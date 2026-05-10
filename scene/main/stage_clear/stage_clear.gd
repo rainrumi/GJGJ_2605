@@ -80,6 +80,14 @@ func get_current_hp() -> int:
 	return current_hp
 
 
+func get_planted_flowers() -> Array[FlowerDefinition]:
+	var flowers: Array[FlowerDefinition] = []
+	for flower in planted_flowers:
+		if flower != null:
+			flowers.append(flower)
+	return flowers
+
+
 func _initialize_planted_flowers() -> void:
 	planted_flowers.clear()
 	if initial_flower != null:
@@ -131,24 +139,26 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 	var seed := _get_seed_option(seed_index)
 	if seed == null:
 		return
+	var flower := _create_seed_flower(seed)
 	if _can_plant_seed(seed):
-		planted_flowers.append(seed.flower_definition)
+		planted_flowers.append(flower)
 		_refresh_flower_slots()
 		selection_finished.emit(0.0)
 		_show_finished_mode("%sを植えました" % seed.display_name)
 		return
-	_replace_flower(seed)
+	_replace_flower(seed, flower)
 	_refresh_flower_slots()
 	selection_finished.emit(0.0)
 	_show_finished_mode("%sを植え替えました" % seed.display_name)
 
 
 func _on_abandon_button_pressed() -> void:
-	var recovered_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * HP_RECOVERY_RATE))
+	var recovery_rate := HP_RECOVERY_RATE + _get_seed_clear_recovery_bonus_rate()
+	var recovered_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * recovery_rate))
 	_set_hp(recovered_hp, true)
-	selection_finished.emit(HP_RECOVERY_RATE)
+	selection_finished.emit(recovery_rate)
 	_reset_abandon_button_scale()
-	_show_finished_mode("種を放棄してHPを10%回復しました")
+	_show_finished_mode("種を放棄してHPを回復しました")
 
 
 func _show_finished_mode(message: String) -> void:
@@ -168,13 +178,21 @@ func _can_plant_seed(seed: SeedOptionDefinition) -> bool:
 	return _count_planted_by_rarity(seed.rarity) < _get_max_flowers_by_rarity(seed.rarity)
 
 
-func _replace_flower(seed: SeedOptionDefinition) -> void:
+func _create_seed_flower(seed: SeedOptionDefinition) -> FlowerDefinition:
 	if seed.flower_definition == null:
+		return null
+	var flower := seed.flower_definition.duplicate() as FlowerDefinition
+	flower.dream_seed_skill = seed.dream_seed_skill
+	return flower
+
+
+func _replace_flower(seed: SeedOptionDefinition, flower: FlowerDefinition) -> void:
+	if flower == null:
 		return
 	for i in range(planted_flowers.size()):
 		if planted_flowers[i] == null or planted_flowers[i].rarity != seed.rarity:
 			continue
-		planted_flowers[i] = seed.flower_definition
+		planted_flowers[i] = flower
 		return
 
 
@@ -193,6 +211,17 @@ func _get_max_flowers_by_rarity(rarity: StringName) -> int:
 		RARITY_HIGH:
 			return max_high_flowers
 	return 0
+
+
+func _get_seed_clear_recovery_bonus_rate() -> float:
+	var bonus_rate := 0.0
+	for flower in planted_flowers:
+		if flower == null or flower.dream_seed_skill == null:
+			continue
+		var skill := flower.dream_seed_skill
+		if skill.skill_id == 2 and skill.category == "夢の花系統":
+			bonus_rate += 0.1
+	return bonus_rate
 
 
 func _refresh_flower_slots() -> void:

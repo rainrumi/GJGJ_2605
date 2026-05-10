@@ -53,6 +53,10 @@ var auto_digest_paused_for_drag := false
 var digest_turn_in_progress := false
 var digestion_timer: Timer
 var current_message := START_MESSAGE
+var planted_flowers: Array[FlowerDefinition] = []
+var digest_order := 0
+var next_digest_damage_bonus_rate := 0.0
+var rest_recovery_bonus_rate := 0.0
 
 var dragging_enemy: Enemy
 var drag_offset := Vector2.ZERO
@@ -70,9 +74,12 @@ func _ready() -> void:
 	_hide_nightmare_tooltip()
 
 
-func start_battle(starting_hp: int = MAX_HP, _day: int = 1) -> void:
+func start_battle(starting_hp: int = MAX_HP, _day: int = 1, flowers: Array = []) -> void:
 	minutes = START_HOUR * 60
 	hp = clampi(starting_hp, 0, MAX_HP)
+	_set_planted_flowers(flowers)
+	next_digest_damage_bonus_rate = 0.0
+	rest_recovery_bonus_rate = 0.0
 	battle_active = false
 	auto_digest_enabled = false
 	auto_digest_paused_for_drag = false
@@ -88,6 +95,13 @@ func start_battle(starting_hp: int = MAX_HP, _day: int = 1) -> void:
 	stomach.hide_preview()
 	battle_active = true
 	_refresh_ui()
+
+
+func _set_planted_flowers(flowers: Array) -> void:
+	planted_flowers.clear()
+	for flower in flowers:
+		if flower is FlowerDefinition:
+			planted_flowers.append(flower as FlowerDefinition)
 
 
 func _process(_delta: float) -> void:
@@ -156,6 +170,7 @@ func _handle_release(mouse_position: Vector2) -> void:
 
 
 func _setup_enemies() -> void:
+	digest_order = 0
 	var selected_skills := _get_random_nightmare_skills()
 	var enemy_positions := _get_enemy_positions(selected_skills.size())
 	var main_effect_enemy_index := randi() % selected_skills.size() if not selected_skills.is_empty() else -1
@@ -165,6 +180,7 @@ func _setup_enemies() -> void:
 			enemy.visible = false
 			enemy.digested = true
 			enemy.digesting = false
+			enemy.has_main_effect = false
 			continue
 		var definition := _get_enemy_template(i)
 		if definition == null:
@@ -316,13 +332,14 @@ func _advance_digest_turn() -> void:
 		_set_status_message("消化中の悪夢がありません")
 		digest_turn_in_progress = false
 		return
-	var elapsed_minutes := STEP_MINUTES
-	var digested_any := _digest_nightmares()
+	_apply_turn_start_effects()
+	var elapsed_minutes := _get_step_minutes()
+	var digested_enemies := _digest_nightmares()
 	_apply_digest_damage()
-	if digested_any:
+	if not digested_enemies.is_empty():
 		await get_tree().create_timer(Enemy.DIGESTED_TWEEN_DURATION).timeout
 		stomach.apply_gravity(enemies)
-	minutes += STEP_MINUTES
+	minutes += elapsed_minutes
 	if hp <= 0:
 		hp = _get_rest_hp()
 		minutes += REST_MINUTES
@@ -336,24 +353,261 @@ func _advance_digest_turn() -> void:
 	digest_turn_in_progress = false
 
 
-func _digest_nightmares() -> bool:
-	var digested_any := false
+func _digest_nightmares() -> Array[Enemy]:
+	var digested_enemies: Array[Enemy] = []
+	var shared_damage: Dictionary = {}
+	var digest_damage_per_cell := _get_digest_damage_per_cell()
 	for enemy in enemies:
 		var bottom_cell_count := stomach.get_bottom_row_cell_count(enemy)
 		if bottom_cell_count == 0:
 			continue
-		if enemy.take_digest_damage(DIGEST_DAMAGE * bottom_cell_count):
-			digested_any = true
+		var damage := digest_damage_per_cell * bottom_cell_count
+		_apply_digest_damage_share(enemy, damage, shared_damage)
+		if enemy.take_digest_damage(damage):
+			digested_enemies.append(enemy)
+		_apply_digest_heal_reaction(enemy)
 		enemy.pulse_cost_label()
-	return digested_any
+	for target in shared_damage.keys():
+		var target_enemy := target as Enemy
+		if target_enemy == null or target_enemy.digested:
+			continue
+		if target_enemy.take_digest_damage(shared_damage[target]) and not digested_enemies.has(target_enemy):
+			digested_enemies.append(target_enemy)
+	return _resolve_digested_enemy_effects(digested_enemies)
 
 
 func _apply_digest_damage() -> void:
 	var damage := 0
 	for enemy in enemies:
 		if enemy.is_active_in_stomach():
-			damage += enemy.get_damage()
-	hp -= damage
+			damage += _get_enemy_attack_damage(enemy)
+	_take_player_damage(damage)
+
+
+func _apply_turn_start_effects() -> void:
+	for enemy in enemies:
+		if enemy.digested:
+			continue
+		if enemy.is_active_in_stomach():
+			enemy.stomach_elapsed_minutes += STEP_MINUTES
+		if _has_nightmare_effect(enemy, 7) and not enemy.is_active_in_stomach():
+			var next_multiplier := enemy.attack_multiplier
+			if randi() % 2 == 0:
+				next_multiplier -= 0.2
+			else:
+				next_multiplier += 0.2
+			enemy.set_attack_multiplier(clampf(next_multiplier, 0.0, 2.0))
+
+
+func _get_digest_damage_per_cell() -> int:
+	var multiplier := 1.0 + _get_dream_seed_digest_damage_rate()
+	if next_digest_damage_bonus_rate > 0.0:
+		multiplier += next_digest_damage_bonus_rate
+		next_digest_damage_bonus_rate = 0.0
+	if _has_active_nightmare_effect(5) and minutes >= 25 * 60:
+		var passed_hours := maxi(0, floori(float(minutes - 25 * 60) / 60.0))
+		var reduction := 0.3 + float(passed_hours) * 0.05
+		multiplier *= maxf(0.1, 1.0 - reduction)
+	return maxi(1, roundi(float(DIGEST_DAMAGE) * multiplier))
+
+
+func _get_step_minutes() -> int:
+	var step_minutes := STEP_MINUTES
+	for enemy in enemies:
+		if _has_nightmare_effect(enemy, 6) and enemy.stomach_elapsed_minutes > 0 and enemy.stomach_elapsed_minutes % 60 == 0:
+			step_minutes += 30
+	var time_rate := 1.0 - _get_dream_seed_time_reduction_rate()
+	return maxi(1, roundi(float(step_minutes) * time_rate))
+
+
+func _get_enemy_attack_damage(enemy: Enemy) -> int:
+	var damage := enemy.get_damage()
+	if _has_nightmare_effect(enemy, 1):
+		damage = roundi(float(damage) * maxf(0.0, 1.0 - float(_get_adjacent_enemies(enemy).size()) * 0.25))
+	if _has_nightmare_effect(enemy, 4):
+		var bottom_cells := stomach.get_bottom_row_cell_count(enemy)
+		var upper_cells := maxi(0, enemy.get_size() - bottom_cells)
+		damage = roundi(float(damage) * maxf(0.0, 1.0 + float(bottom_cells - upper_cells) * 0.2))
+	return damage
+
+
+func _take_player_damage(amount: int) -> void:
+	if amount <= 0:
+		return
+	var final_damage := maxi(0, roundi(float(amount) * _get_dream_seed_player_damage_multiplier()))
+	hp -= final_damage
+	next_digest_damage_bonus_rate += _get_dream_seed_reflect_digest_rate(final_damage)
+
+
+func _apply_digest_damage_share(enemy: Enemy, damage: int, shared_damage: Dictionary) -> void:
+	if _has_nightmare_effect(enemy, 2):
+		var adjacent_enemies := _get_adjacent_enemies(enemy)
+		if not adjacent_enemies.is_empty():
+			var split_damage := maxi(1, roundi(float(damage) * 0.4 / float(adjacent_enemies.size())))
+			for adjacent_enemy in adjacent_enemies:
+				shared_damage[adjacent_enemy] = shared_damage.get(adjacent_enemy, 0) + split_damage
+
+
+func _apply_digest_heal_reaction(enemy: Enemy) -> void:
+	if _has_nightmare_effect(enemy, 3) and not enemy.digested:
+		var heal_rate := minf(1.0, float(_get_open_side_count(enemy)) * 0.1)
+		enemy.heal(roundi(float(enemy.max_hp) * heal_rate))
+
+
+func _resolve_digested_enemy_effects(digested_enemies: Array[Enemy]) -> Array[Enemy]:
+	var final_digested: Array[Enemy] = []
+	for enemy in digested_enemies:
+		digest_order += 1
+		if _has_nightmare_effect(enemy, 10) and digest_order % 2 == 1:
+			_take_player_damage(enemy.get_damage() * 3)
+		if _has_nightmare_effect(enemy, 11) and digest_order % 2 == 0 and not enemy.revive_used:
+			enemy.revive_with_half_hp()
+			continue
+		final_digested.append(enemy)
+	_apply_chain_reactions(final_digested)
+	_apply_spawn_reactions(final_digested)
+	return final_digested
+
+
+func _apply_chain_reactions(digested_enemies: Array[Enemy]) -> void:
+	for watcher in enemies:
+		if not _has_nightmare_effect(watcher, 9) or watcher.digested:
+			continue
+		for digested_enemy in digested_enemies:
+			if watcher == digested_enemy:
+				continue
+			watcher.change_max_hp(roundi(float(watcher.max_hp) * 0.9))
+			watcher.add_damage(roundi(float(digested_enemy.get_damage()) * 0.5))
+
+
+func _apply_spawn_reactions(digested_enemies: Array[Enemy]) -> void:
+	for enemy in digested_enemies:
+		if _has_nightmare_effect(enemy, 8):
+			for i in range(enemy.get_size()):
+				if not _spawn_nuisance_nightmare(enemy, 0.2, 0.2):
+					break
+		if _has_nightmare_effect(enemy, 12) and digested_enemies.size() == 1:
+			_spawn_nuisance_nightmare(enemy, 0.3, 0.0)
+
+
+func _spawn_nuisance_nightmare(source_enemy: Enemy, hp_rate: float, damage_rate: float) -> bool:
+	for enemy in enemies:
+		if enemy.visible or not enemy.digested:
+			continue
+		enemy.setup(
+			source_enemy.definition,
+			Vector2(
+				stomach.get_span_size(source_enemy.definition.stomach_size.x),
+				stomach.get_span_size(source_enemy.definition.stomach_size.y)
+			),
+			null,
+			false,
+			source_enemy.origin_position + Vector2(36.0, -36.0)
+		)
+		enemy.change_max_hp(maxi(1, roundi(float(source_enemy.max_hp) * hp_rate)))
+		enemy.current_hp = enemy.max_hp
+		enemy.set_damage_value(roundi(float(source_enemy.get_damage()) * damage_rate))
+		return true
+	return false
+
+
+func _has_nightmare_effect(enemy: Enemy, skill_id: int) -> bool:
+	return enemy.has_main_effect and enemy.skill_definition != null and enemy.skill_definition.skill_id == skill_id
+
+
+func _has_active_nightmare_effect(skill_id: int) -> bool:
+	for enemy in enemies:
+		if _has_nightmare_effect(enemy, skill_id) and not enemy.digested:
+			return true
+	return false
+
+
+func _get_adjacent_enemies(enemy: Enemy) -> Array[Enemy]:
+	var adjacent_enemies: Array[Enemy] = []
+	if not enemy.is_active_in_stomach():
+		return adjacent_enemies
+	for other in enemies:
+		if other == enemy or not other.is_active_in_stomach():
+			continue
+		if _are_enemies_adjacent(enemy, other):
+			adjacent_enemies.append(other)
+	return adjacent_enemies
+
+
+func _are_enemies_adjacent(enemy: Enemy, other: Enemy) -> bool:
+	var other_cells := other.get_occupied_cells(other.stomach_cell)
+	for cell in enemy.get_occupied_cells(enemy.stomach_cell):
+		if other_cells.has(cell + Vector2i(-1, 0)) or other_cells.has(cell + Vector2i(1, 0)):
+			return true
+		if other_cells.has(cell + Vector2i(0, -1)) or other_cells.has(cell + Vector2i(0, 1)):
+			return true
+	return false
+
+
+func _get_open_side_count(enemy: Enemy) -> int:
+	var open_side_count := 0
+	for direction in [Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)]:
+		if not _has_adjacent_enemy_in_direction(enemy, direction):
+			open_side_count += 1
+	return open_side_count
+
+
+func _has_adjacent_enemy_in_direction(enemy: Enemy, direction: Vector2i) -> bool:
+	var occupied_cells := enemy.get_occupied_cells(enemy.stomach_cell)
+	for other in enemies:
+		if other == enemy or not other.is_active_in_stomach():
+			continue
+		var other_cells := other.get_occupied_cells(other.stomach_cell)
+		for cell in occupied_cells:
+			if other_cells.has(cell + direction):
+				return true
+	return false
+
+
+func _get_dream_seed_digest_damage_rate() -> float:
+	var rate := 0.0
+	for skill in _get_planted_seed_skills():
+		if skill.skill_id == 1 and skill.category == "夢の花系統":
+			rate += 0.1
+		if skill.skill_id == 5 and skill.category == "反射系統":
+			rate += 0.1
+		if skill.skill_id == 4 and skill.category == "時間系統" and minutes >= 27 * 60:
+			rate += 2.0
+	return rate
+
+
+func _get_dream_seed_player_damage_multiplier() -> float:
+	var multiplier := 1.0
+	for skill in _get_planted_seed_skills():
+		if skill.skill_id == 2 and skill.category == "反射系統":
+			multiplier += 0.3
+	return multiplier
+
+
+func _get_dream_seed_reflect_digest_rate(taken_damage: int) -> float:
+	if taken_damage <= 0:
+		return 0.0
+	var rate := 0.0
+	for skill in _get_planted_seed_skills():
+		if skill.skill_id == 2 and skill.category == "反射系統":
+			rate += float(taken_damage) * 0.3 / float(DIGEST_DAMAGE)
+	return rate
+
+
+func _get_dream_seed_time_reduction_rate() -> float:
+	var rate := 0.0
+	for skill in _get_planted_seed_skills():
+		if skill.skill_id == 3 and skill.category == "夢の花系統":
+			rate += 0.05
+	return minf(0.2, rate)
+
+
+func _get_planted_seed_skills() -> Array[DreamSeedSkillDefinition]:
+	var skills: Array[DreamSeedSkillDefinition] = []
+	for flower in planted_flowers:
+		if flower != null and flower.dream_seed_skill != null:
+			skills.append(flower.dream_seed_skill)
+	return skills
 
 
 func _check_battle_end() -> void:
@@ -392,7 +646,20 @@ func _get_remove_from_stomach_damage() -> int:
 
 
 func _get_rest_hp() -> int:
-	return ceili(float(MAX_HP) * REST_HP_RATE)
+	var recovery_rate := REST_HP_RATE + _get_dream_seed_rest_recovery_bonus_rate()
+	if rest_recovery_bonus_rate > 0.0:
+		rest_recovery_bonus_rate = maxf(0.0, rest_recovery_bonus_rate - 0.1)
+	return ceili(float(MAX_HP) * recovery_rate)
+
+
+func _get_dream_seed_rest_recovery_bonus_rate() -> float:
+	if rest_recovery_bonus_rate > 0.0:
+		return rest_recovery_bonus_rate
+	for skill in _get_planted_seed_skills():
+		if skill.skill_id == 4 and skill.category == "夢の花系統":
+			rest_recovery_bonus_rate = 0.5
+			return rest_recovery_bonus_rate
+	return 0.0
 
 
 func _update_auto_digest_timer() -> void:
@@ -441,8 +708,8 @@ func _show_nightmare_tooltip(enemy: Enemy) -> void:
 	nightmare_category_detail_label.text = enemy.get_category_detail()
 	_update_optional_text_color(nightmare_category_label, nightmare_category_detail_label, nightmare_category_label.text)
 	nightmare_status_title_label.text = "ステータス"
-	nightmare_hp_label.text = "HP: %d" % enemy.definition.max_hp
-	nightmare_damage_label.text = "攻撃力: %d" % enemy.definition.damage
+	nightmare_hp_label.text = "HP: %d" % enemy.max_hp
+	nightmare_damage_label.text = "攻撃力: %d" % enemy.get_damage()
 	nightmare_main_effect_title_label.text = "メイン効果"
 	nightmare_main_effect_label.text = _get_effect_text(main_effect_text)
 	nightmare_sub_effect_title_label.text = "サブ効果"

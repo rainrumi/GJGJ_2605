@@ -50,7 +50,7 @@ func show_game(reset_player_state: bool = true) -> void:
 	game_ui.visible = true
 	stage_clear.visible = false
 	if game.has_method("start_battle"):
-		game.start_battle(_get_starting_hp(reset_player_state), current_day)
+		game.start_battle(_get_starting_hp(reset_player_state), current_day, _get_planted_flowers())
 
 
 func show_stage_clear() -> void:
@@ -116,6 +116,13 @@ func _get_starting_hp(reset_player_state: bool) -> int:
 	if stage_clear.has_method("get_current_hp"):
 		return stage_clear.get_current_hp()
 	return game.get_current_hp()
+
+
+func _get_planted_flowers() -> Array[FlowerDefinition]:
+	if stage_clear.has_method("get_planted_flowers"):
+		return stage_clear.get_planted_flowers()
+	var flowers: Array[FlowerDefinition] = []
+	return flowers
 
 
 func _play_bgm() -> void:

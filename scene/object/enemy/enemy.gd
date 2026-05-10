@@ -17,6 +17,11 @@ const MAIN_EFFECT_STATUS_COLOR := Color(0.78, 0.18, 0.08, 1.0)
 var definition: EnemyDefinition
 var skill_definition: NightmareSkillDefinition
 var has_main_effect := false
+var max_hp := 0
+var damage := 0
+var attack_multiplier := 1.0
+var stomach_elapsed_minutes := 0
+var revive_used := false
 var current_hp := 0
 var digesting := false
 var digested := false
@@ -40,6 +45,11 @@ func setup(
 	definition = enemy_definition
 	skill_definition = nightmare_skill
 	has_main_effect = has_effect
+	max_hp = enemy_definition.max_hp
+	damage = enemy_definition.damage
+	attack_multiplier = 1.0
+	stomach_elapsed_minutes = 0
+	revive_used = false
 	origin_position = enemy_definition.start_position
 	if start_position_override != Vector2.INF:
 		origin_position = start_position_override
@@ -57,10 +67,11 @@ func setup(
 
 
 func reset_for_battle() -> void:
-	current_hp = definition.max_hp
+	current_hp = max_hp
 	digesting = false
 	digested = false
 	stomach_cell = Vector2i.ZERO
+	stomach_elapsed_minutes = 0
 	visible = true
 	_reset_visuals()
 	return_to_origin()
@@ -77,7 +88,7 @@ func get_display_name() -> String:
 
 
 func get_damage() -> int:
-	return definition.damage
+	return maxi(0, roundi(float(damage) * attack_multiplier))
 
 
 func get_size() -> int:
@@ -101,6 +112,8 @@ func is_active_in_stomach() -> bool:
 
 
 func set_digesting(value: bool) -> void:
+	if digesting != value:
+		stomach_elapsed_minutes = 0
 	digesting = value
 
 
@@ -243,7 +256,7 @@ func _update_hp_label() -> void:
 
 func _update_damage_label() -> void:
 	if damage_label != null:
-		damage_label.text = "攻 %d" % definition.damage
+		damage_label.text = "攻 %d" % get_damage()
 
 
 func _get_texture() -> Texture2D:
@@ -279,6 +292,47 @@ func get_main_effect_text() -> String:
 
 func get_sub_effect_text() -> String:
 	return "-"
+
+
+func heal(amount: int) -> void:
+	current_hp = mini(max_hp, current_hp + amount)
+	_update_hp_label()
+
+
+func change_max_hp(new_max_hp: int) -> void:
+	max_hp = maxi(1, new_max_hp)
+	current_hp = mini(current_hp, max_hp)
+	_update_hp_label()
+
+
+func add_damage(amount: int) -> void:
+	damage = maxi(0, damage + amount)
+	_update_damage_label()
+
+
+func set_damage_value(value: int) -> void:
+	damage = maxi(0, value)
+	_update_damage_label()
+
+
+func set_attack_multiplier(value: float) -> void:
+	attack_multiplier = clampf(value, 0.0, 3.0)
+	_update_damage_label()
+
+
+func revive_with_half_hp() -> void:
+	if _digested_tween != null and _digested_tween.is_valid():
+		_digested_tween.kill()
+	revive_used = true
+	change_max_hp(ceili(float(max_hp) * 0.5))
+	current_hp = max_hp
+	digested = false
+	digesting = false
+	visible = true
+	return_to_origin()
+	scale = Vector2.ONE
+	modulate.a = 1.0
+	_update_hp_label()
 
 
 func _update_status_label_colors() -> void:
