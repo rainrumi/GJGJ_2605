@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="StageDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://bkvf8y2r5p72b"]
 
-[ext_resource type="Script" path="res://data/definitions/stage_definition.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")

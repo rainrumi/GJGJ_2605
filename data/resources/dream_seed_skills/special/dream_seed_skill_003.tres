@@ -1,13 +1,14 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://xy0783ffixh6"]
 
-[ext_resource type="Script" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://art/dreamseed/flower/tex_seed_2000_demo_1000.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bq08sweapverk" path="res://art/dreamseed/flower/tex_seed_2000_demo_1000.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
-texture = ExtResource("2_texture")
 skill_id = 3
 category = "時間系統"
 display_name = "夢の花名"
+texture = ExtResource("2_texture")
 main_description = "1時までにステージをクリアすると永久に攻撃力が5%上昇する。（重複不可）"
-sub_description = "即時発動型。\n消化が進むときの時間経過を通常の50%遅くする。この効果は4回発動すると消える。"
+sub_description = "即時発動型。
+消化が進むときの時間経過を通常の50%遅くする。この効果は4回発動すると消える。"

@@ -1,13 +1,15 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://cw5psdb31ijoc"]
 
-[ext_resource type="Script" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://art/dreamseed/flower/tex_passive_flower_1000.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dmwygbcsp6evw" path="res://art/dreamseed/flower/tex_passive_flower_1000.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
-texture = ExtResource("2_texture")
 skill_id = 2
 category = "反射系統"
 display_name = "夢の花名"
-main_description = "悪夢から受けるダメージが30%上昇。\nダメージを受けた時、次ターンの消化ダメージを受けたダメージの30%分上昇させる。"
-sub_description = "HP現在の消化ダメージ500%、く型マスの花びらを生成する。\n消化されたとき、消化されるまでに受けた消化ダメージを隣接するモノに分配して与える。"
+texture = ExtResource("2_texture")
+main_description = "悪夢から受けるダメージが30%上昇。
+ダメージを受けた時、次ターンの消化ダメージを受けたダメージの30%分上昇させる。"
+sub_description = "HP現在の消化ダメージ500%、く型マスの花びらを生成する。
+消化されたとき、消化されるまでに受けた消化ダメージを隣接するモノに分配して与える。"

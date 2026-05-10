@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedOptionDefinition" load_steps=6 format=3 uid="uid://bdc1rl2wr5u3c"]
+[gd_resource type="Resource" script_class="SeedOptionDefinition" format=3 uid="uid://bdc1rl2wr5u3c"]
 
 [ext_resource type="Script" uid="uid://k6gwji460bpe" path="res://data/definitions/seed_option_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://jk280o7vv13u" path="res://art/stage_clear/tex_seed_1000_No_300.png" id="2_seed"]

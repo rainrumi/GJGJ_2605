@@ -100,7 +100,13 @@ func get_stomach_size() -> Vector2i:
 
 
 func get_stomach_shape() -> Array[Vector2i]:
-	return definition.stomach_shape
+	var shape: Array[Vector2i] = []
+	if definition == null:
+		return shape
+	for cell in definition.stomach_shape:
+		if cell is Vector2i:
+			shape.append(cell)
+	return shape
 
 
 func can_drag() -> bool:

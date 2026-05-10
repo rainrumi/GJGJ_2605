@@ -410,15 +410,38 @@ func _apply_turn_start_effects() -> void:
 
 
 func _get_digest_damage_per_cell() -> int:
-	var multiplier := 1.0 + _get_dream_seed_digest_damage_rate()
+	var breakdown := _get_digest_damage_breakdown(true)
+	return int(breakdown["total"])
+
+
+func _get_digest_damage_breakdown(consume_pending_bonus: bool = false) -> Dictionary:
+	var seed_rate := _get_dream_seed_digest_damage_rate()
 	if next_digest_damage_bonus_rate > 0.0:
-		multiplier += next_digest_damage_bonus_rate
+		seed_rate += next_digest_damage_bonus_rate
+	if consume_pending_bonus:
 		next_digest_damage_bonus_rate = 0.0
-	if _has_active_nightmare_effect(5) and minutes >= 25 * 60:
-		var passed_hours := maxi(0, floori(float(minutes - 25 * 60) / 60.0))
-		var reduction := 0.3 + float(passed_hours) * 0.05
-		multiplier *= maxf(0.1, 1.0 - reduction)
-	return maxi(1, roundi(float(DIGEST_DAMAGE) * multiplier))
+	var base_damage := DIGEST_DAMAGE
+	var seed_buff := roundi(float(base_damage) * seed_rate)
+	var damage_after_seed := base_damage + seed_buff
+	var nightmare_rate := _get_nightmare_digest_damage_rate()
+	var total_damage := maxi(1, roundi(float(damage_after_seed) * (1.0 + nightmare_rate)))
+	var nightmare_buff := total_damage - damage_after_seed
+	return {
+		"total": total_damage,
+		"base": base_damage,
+		"seed_buff": seed_buff,
+		"seed_rate": seed_rate,
+		"nightmare_buff": nightmare_buff,
+		"nightmare_rate": nightmare_rate,
+	}
+
+
+func _get_nightmare_digest_damage_rate() -> float:
+	if not _has_active_nightmare_effect(5) or minutes < 25 * 60:
+		return 0.0
+	var passed_hours := maxi(0, floori(float(minutes - 25 * 60) / 60.0))
+	var reduction := 0.3 + float(passed_hours) * 0.05
+	return -minf(0.9, reduction)
 
 
 func _get_step_minutes() -> int:
@@ -792,6 +815,15 @@ func _play_click_se() -> void:
 
 
 func _refresh_ui() -> void:
+	var digest_damage := _get_digest_damage_breakdown()
+	ui.set_digest_damage_info(
+		int(digest_damage["total"]),
+		int(digest_damage["base"]),
+		int(digest_damage["seed_buff"]),
+		float(digest_damage["seed_rate"]),
+		int(digest_damage["nightmare_buff"]),
+		float(digest_damage["nightmare_rate"])
+	)
 	ui.set_hp(hp, MAX_HP)
 	ui.set_time(minutes)
 	ui.set_digestion_count(_active_digest_count())

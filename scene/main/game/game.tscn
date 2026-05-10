@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bd6olk1dyr2q7"]
+[gd_scene format=3 uid="uid://bd6olk1dyr2q7"]
 
 [ext_resource type="PackedScene" path="res://scene/object/background/background.tscn" id="1_background"]
 [ext_resource type="PackedScene" path="res://scene/object/enemy/enemy.tscn" id="2_enemy"]
@@ -20,11 +20,11 @@
 [ext_resource type="Resource" path="res://data/resources/nightmare_skills/nightmare_skill_catalog.tres" id="26_nightmare_skill_catalog"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nightmare_tooltip"]
-bg_color = Color(0, 0, 0, 0.68)
 content_margin_left = 24.0
 content_margin_top = 24.0
 content_margin_right = 24.0
 content_margin_bottom = 24.0
+bg_color = Color(0, 0, 0, 0.68)
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
@@ -54,7 +54,7 @@ text = "1400"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DamageText" type="Label" parent="EnemyLeft"]
+[node name="DamageText" type="Label" parent="EnemyLeft" unique_id=551870154]
 offset_left = -74.0
 offset_top = -62.0
 offset_right = 74.0
@@ -85,7 +85,7 @@ text = "1000"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DamageText" type="Label" parent="EnemyCenter"]
+[node name="DamageText" type="Label" parent="EnemyCenter" unique_id=783746076]
 offset_left = -94.0
 offset_top = -62.0
 offset_right = 94.0
@@ -116,7 +116,7 @@ text = "2000"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DamageText" type="Label" parent="EnemyRight"]
+[node name="DamageText" type="Label" parent="EnemyRight" unique_id=952825343]
 offset_left = -71.0
 offset_top = -17.0
 offset_right = 77.0
@@ -130,10 +130,10 @@ text = "攻 5"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EnemyUpperRight" parent="." instance=ExtResource("2_enemy")]
+[node name="EnemyUpperRight" parent="." unique_id=708008963 instance=ExtResource("2_enemy")]
 position = Vector2(1150, 280)
 
-[node name="HPText" type="Label" parent="EnemyUpperRight"]
+[node name="HPText" type="Label" parent="EnemyUpperRight" unique_id=124001063]
 offset_left = -74.0
 offset_top = -26.0
 offset_right = 74.0
@@ -147,7 +147,7 @@ text = "1400"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DamageText" type="Label" parent="EnemyUpperRight"]
+[node name="DamageText" type="Label" parent="EnemyUpperRight" unique_id=902953290]
 offset_left = -74.0
 offset_top = -62.0
 offset_right = 74.0
@@ -173,7 +173,7 @@ stream = ExtResource("21_click_se")
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]
 script = ExtResource("3_battle_ui_script")
 
-[node name="NightmareTooltipPanel" type="Panel" parent="UI"]
+[node name="NightmareTooltipPanel" type="Panel" parent="UI" unique_id=910619767]
 visible = false
 z_index = 50
 offset_right = 384.0
@@ -181,7 +181,7 @@ offset_bottom = 720.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nightmare_tooltip")
 
-[node name="Content" type="Control" parent="UI/NightmareTooltipPanel"]
+[node name="Content" type="Control" parent="UI/NightmareTooltipPanel" unique_id=1572556432]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -194,168 +194,174 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="NameLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="NameLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=1431516189]
 layout_mode = 0
 offset_right = 214.0
 offset_bottom = 52.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 36
-horizontal_alignment = 0
 vertical_alignment = 1
 text_overrun_behavior = 3
 
-[node name="DebugNumberLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="DebugNumberLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=1843686498]
 visible = false
 layout_mode = 0
 offset_left = 216.0
 offset_right = 336.0
 offset_bottom = 54.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 18
 horizontal_alignment = 2
-vertical_alignment = 0
 
-[node name="CategoryLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="CategoryLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=1307650906]
 layout_mode = 0
 offset_top = 58.0
 offset_right = 336.0
 offset_bottom = 90.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 24
-horizontal_alignment = 0
 vertical_alignment = 1
 
-[node name="CategoryDetailLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="CategoryDetailLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=821412320]
 layout_mode = 0
 offset_top = 98.0
 offset_right = 336.0
 offset_bottom = 158.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 18
-horizontal_alignment = 0
-vertical_alignment = 0
 autowrap_mode = 3
 
-[node name="StatusTitleLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="StatusTitleLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=809180479]
 layout_mode = 0
 offset_top = 170.0
 offset_right = 336.0
 offset_bottom = 206.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 28
-horizontal_alignment = 0
-vertical_alignment = 1
 text = "ステータス"
+vertical_alignment = 1
 
-[node name="HpLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="HpLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=947481253]
 layout_mode = 0
 offset_top = 214.0
 offset_right = 336.0
 offset_bottom = 244.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 22
-horizontal_alignment = 0
 vertical_alignment = 1
 
-[node name="DamageLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="DamageLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=467675470]
 layout_mode = 0
 offset_top = 248.0
 offset_right = 336.0
 offset_bottom = 278.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 22
-horizontal_alignment = 0
 vertical_alignment = 1
 
-[node name="MainEffectTitleLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="MainEffectTitleLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=393401162]
 layout_mode = 0
 offset_top = 312.0
 offset_right = 336.0
 offset_bottom = 348.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 28
-horizontal_alignment = 0
-vertical_alignment = 1
 text = "メイン効果"
+vertical_alignment = 1
 
-[node name="MainEffectLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="MainEffectLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=609886720]
 layout_mode = 0
 offset_top = 354.0
 offset_right = 336.0
 offset_bottom = 486.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 22
-horizontal_alignment = 0
-vertical_alignment = 0
 autowrap_mode = 3
 
-[node name="SubEffectTitleLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="SubEffectTitleLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=42602159]
 layout_mode = 0
 offset_top = 526.0
 offset_right = 336.0
 offset_bottom = 562.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 28
-horizontal_alignment = 0
-vertical_alignment = 1
 text = "サブ効果"
+vertical_alignment = 1
 
-[node name="SubEffectLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="SubEffectLabel" type="Label" parent="UI/NightmareTooltipPanel/Content" unique_id=765765588]
 layout_mode = 0
 offset_top = 568.0
 offset_right = 336.0
 offset_bottom = 674.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 22
-horizontal_alignment = 0
-vertical_alignment = 0
 autowrap_mode = 3
 
 [node name="PassiveGuideFrame" type="TextureRect" parent="UI" unique_id=1593431656]
 offset_left = 298.0
 offset_top = 15.0
-offset_right = 762.0
+offset_right = 978.0
 offset_bottom = 123.0
 mouse_filter = 2
 texture = ExtResource("20_passive_guide")
 
 [node name="PassiveGuideText" type="Label" parent="UI/PassiveGuideFrame" unique_id=997175241]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 10.0
-offset_right = 444.0
-offset_bottom = 72.0
+offset_left = 27.0
+offset_top = -10.0
+offset_right = 451.0
+offset_bottom = 21.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 36
-text = "テストテストテスト"
+theme_override_font_sizes/font_size = 24
+text = "消化ダメージ"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DigestDamageValue" type="Label" parent="UI/PassiveGuideFrame" unique_id=1335802653]
+layout_mode = 0
+offset_left = 160.0
+offset_top = 23.0
+offset_right = 324.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 64
+text = "0200"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DigestDamageDetail" type="Label" parent="UI/PassiveGuideFrame" unique_id=270902301]
+layout_mode = 0
+offset_left = 416.0
+offset_top = 14.0
+offset_right = 670.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0.552941, 0.517647, 0.588235, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 18
+text = "基礎消化ダメージ：200
+夢の種バフ：+000(+00%)
+悪夢バフ：+000(+00%)"
 vertical_alignment = 1
 
 [node name="HpFrame" type="NinePatchRect" parent="UI" unique_id=756334925]

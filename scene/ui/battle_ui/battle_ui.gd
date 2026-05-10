@@ -26,6 +26,8 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @onready var time_text: Label = $TimeBar/TimeText
 @onready var digestion_frame: TextureRect = $DigestionFrame
 @onready var digestion_label: Label = $DigestionFrame/DigestionLabel
+@onready var digest_damage_value: Label = $PassiveGuideFrame/DigestDamageValue
+@onready var digest_damage_detail: Label = $PassiveGuideFrame/DigestDamageDetail
 @onready var message_text: Label = $StatusPanel/MessageText
 @onready var debug_message_button: Button = $StatusPanel/DebugMessageButton
 
@@ -47,6 +49,7 @@ func _ready() -> void:
 	_prepare_mouse_filters()
 	_prepare_debug_message_button()
 	_prepare_digestion_button()
+	_configure_digest_damage_labels()
 	_capture_sizes()
 	_create_hp_damage_preview()
 	_create_time_elapsed_label()
@@ -55,6 +58,7 @@ func _ready() -> void:
 func reset_for_battle(max_hp: int, minutes: int, message: String) -> void:
 	set_hp(max_hp, max_hp)
 	set_time(minutes)
+	set_digest_damage_info(0, 0, 0, 0.0, 0, 0.0)
 	set_message(message)
 	set_debug_message("")
 	set_debug_button_active(false)
@@ -94,6 +98,37 @@ func set_debug_message(message: String) -> void:
 	_debug_message = message
 
 
+func set_digest_damage_info(
+	total_damage: int,
+	base_damage: int,
+	seed_buff: int,
+	seed_rate: float,
+	nightmare_buff: int,
+	nightmare_rate: float
+) -> void:
+	passive_guide_text.text = "消化ダメージ"
+	digest_damage_value.text = "%04d" % total_damage
+	digest_damage_detail.text = "基礎消化ダメージ：%03d\n夢の種バフ：%s(%s)\n悪夢バフ：%s(%s)" % [
+		base_damage,
+		_format_buff_amount(seed_buff),
+		_format_buff_rate(seed_rate),
+		_format_buff_amount(nightmare_buff),
+		_format_buff_rate(nightmare_rate),
+	]
+
+
+func _configure_digest_damage_labels() -> void:
+	passive_guide_text.position = Vector2(26.0, 10.0)
+	passive_guide_text.size = Vector2(158.0, 30.0)
+	passive_guide_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	passive_guide_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	passive_guide_text.add_theme_font_size_override("font_size", 24)
+	digest_damage_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	digest_damage_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	digest_damage_detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	digest_damage_detail.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+
 func set_debug_button_active(is_active: bool) -> void:
 	_debug_button_active = is_active
 	if is_active:
@@ -127,6 +162,19 @@ func _create_debug_button_style(color: Color) -> StyleBoxFlat:
 	style.corner_radius_bottom_right = 2
 	style.corner_radius_bottom_left = 2
 	return style
+
+
+func _format_buff_amount(amount: int) -> String:
+	if amount >= 0:
+		return "+%03d" % amount
+	return "-%03d" % absi(amount)
+
+
+func _format_buff_rate(rate: float) -> String:
+	var percent := roundi(rate * 100.0)
+	if percent >= 0:
+		return "+%02d%%" % percent
+	return "-%02d%%" % absi(percent)
 
 
 func set_digestion_count(count: int) -> void:
@@ -188,6 +236,8 @@ func hide_hp_damage_preview() -> void:
 
 func _prepare_mouse_filters() -> void:
 	passive_guide_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	digest_damage_value.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	digest_damage_detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hp_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hp_gauge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hp_text.mouse_filter = Control.MOUSE_FILTER_IGNORE

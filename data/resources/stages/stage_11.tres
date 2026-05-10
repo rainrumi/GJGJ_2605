@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="StageDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://b7f2dqt8cxtw1"]
 
-[ext_resource type="Script" path="res://data/definitions/stage_definition.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
 stage_id = 11
 display_name = "夢の主 11"
-difficulty_level = 1
 level_text = "★1洞窟"
 location = "イリユ洞窟"
 tags = Array[StringName]([&"洞窟"])

@@ -1,13 +1,15 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://cq3y5p5ecyr01"]
 
-[ext_resource type="Script" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://art/dreamseed/flower/tex_seed_2000_demo_1000.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bq08sweapverk" path="res://art/dreamseed/flower/tex_seed_2000_demo_1000.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
-texture = ExtResource("2_texture")
 skill_id = 5
 category = "反射系統"
 display_name = "夢の花名"
-main_description = "消化ダメージ量+10%\n消化中の消化ダメージアップ効果が200%上昇する。"
-sub_description = "HP1,マス1\n消化されたとき、隣接する花の受ける消化ダメージとHPを100%上昇する"
+texture = ExtResource("2_texture")
+main_description = "消化ダメージ量+10%
+消化中の消化ダメージアップ効果が200%上昇する。"
+sub_description = "HP1,マス1
+消化されたとき、隣接する花の受ける消化ダメージとHPを100%上昇する"
