@@ -1,17 +1,15 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scene/main/stage_select/stage_select.gd" id="1_script"]
 [ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Texture2D" path="res://art/character/tex_character_portrate_1000.png" id="3_character"]
 [ext_resource type="Texture2D" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="4_title_effect"]
 [ext_resource type="PackedScene" path="res://scene/main/stage_select/stage_choice.tscn" id="5_stage_choice"]
-[ext_resource type="Resource" path="res://data/resources/stages/stage_1.tres" id="6_stage_1"]
-[ext_resource type="Resource" path="res://data/resources/stages/stage_2.tres" id="7_stage_2"]
-[ext_resource type="Resource" path="res://data/resources/stages/stage_3.tres" id="8_stage_3"]
+[ext_resource type="Resource" path="res://data/resources/stages/stage_catalog.tres" id="6_stage_catalog"]
 
 [node name="StageSelect" type="Node2D"]
 script = ExtResource("1_script")
-stage_definitions = Array[StageDefinition]([ExtResource("6_stage_1"), ExtResource("7_stage_2"), ExtResource("8_stage_3")])
+stage_catalog = ExtResource("6_stage_catalog")
 
 [node name="CharacterArea" type="Node2D" parent="."]
 

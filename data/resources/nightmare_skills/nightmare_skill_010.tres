@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 10
+category = "消化順・連鎖反応系（悪夢が消化された時、または他の悪夢が消化された時に反応する系統。）"
+display_name = "悪夢名"
+description = "消化されたとき、消化された順番が偶数でない場合、攻撃力×300%のダメージを与える（同時消化の場合は余剰ダメ量＞設置順で消化順が決定される）"

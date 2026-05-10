@@ -1,13 +1,11 @@
-[gd_resource type="Resource" script_class="StageDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="StageDefinition" load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://data/definitions/stage_definition.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://art/dreamseed/flower/tex_passive_flower_1000.png" id="2_reward"]
 
 [resource]
 script = ExtResource("1_script")
+stage_id = 1
 display_name = "夢の主 1"
-difficulty_level = 1
-location = "ふわふわ学校"
-reward_icon = ExtResource("2_reward")
-is_rare = false
-tags = Array[StringName]([&"基本"])
+difficulty_level = 4
+level_text = "★4混沌"
+location = "ルノヴァ旧市街"

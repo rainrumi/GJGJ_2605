@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 4
+category = "時間系統"
+display_name = "夢の花名"
+main_description = "クリア時刻によるHP回復が出来なくなる。クリア時刻が3/5時以降の場合追加で夢の種を1/2回獲得できる。"
+sub_description = "時刻が3時以降のとき消化ダメージが200%上昇する。"

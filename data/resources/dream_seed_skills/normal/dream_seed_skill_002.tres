@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 2
+category = "夢の花系統"
+display_name = "夢の花名"
+main_description = "ステージクリア時の回復量+10%"
+sub_description = "即時発動\nHP5%回復"

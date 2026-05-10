@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_script")
-stage_id = 3
-display_name = "夢の主 3"
-difficulty_level = 3
-level_text = "★3大学校"
-location = "エルメナ大学"
+stage_id = 8
+display_name = "夢の主 8"
+difficulty_level = 2
+level_text = "★2行政区"
+location = "ザイカ行政区"

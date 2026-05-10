@@ -32,7 +32,7 @@ func setup_choice(stage_definition: StageDefinition) -> void:
 		disabled = true
 		return
 	name_label.text = stage_definition.display_name
-	difficulty_label.text = "・難易度 Lv.%d" % stage_definition.difficulty_level
+	difficulty_label.text = "・難易度 %s" % stage_definition.get_difficulty_text()
 	location_label.text = "・場所 %s" % stage_definition.location
 	reward_icon.texture = stage_definition.reward_icon
 	tags_label.text = "・タグ %s" % stage_definition.get_tag_text()

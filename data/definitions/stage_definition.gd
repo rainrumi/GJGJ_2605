@@ -1,12 +1,20 @@
 class_name StageDefinition
 extends Resource
 
+@export var stage_id := 0
 @export var display_name := ""
 @export var difficulty_level := 1
+@export var level_text := ""
 @export var location := ""
 @export var reward_icon: Texture2D
 @export var is_rare := false
 @export var tags: Array[StringName] = []
+
+
+func get_difficulty_text() -> String:
+	if level_text.is_empty():
+		return "Lv.%d" % difficulty_level
+	return "Lv.%d %s" % [difficulty_level, level_text]
 
 
 func get_tag_text() -> String:

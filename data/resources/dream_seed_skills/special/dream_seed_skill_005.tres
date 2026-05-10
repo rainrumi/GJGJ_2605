@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 5
+category = "反射系統"
+display_name = "夢の花名"
+main_description = "消化ダメージ量+10%\n消化中の消化ダメージアップ効果が200%上昇する。"
+sub_description = "HP1,マス1\n消化されたとき、隣接する花の受ける消化ダメージとHPを100%上昇する"

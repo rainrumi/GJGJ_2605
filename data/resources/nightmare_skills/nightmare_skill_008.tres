@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 8
+category = "時間・成長系（時間経過で悪夢の状態が変わる系統。）"
+display_name = "悪夢名"
+description = "消化されたとき、この悪夢が存在したマスひとつにつき本悪夢の最大HP20%、消化時に与えたダメージ20%の攻撃力をもつお邪魔悪夢が１体生成される。"

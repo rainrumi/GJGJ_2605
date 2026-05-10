@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 1
+category = "隣接・配置系（悪夢の周囲にあるものを参照する系統。）"
+display_name = "悪夢名"
+description = "隣接する悪夢・花びらの数だけ攻撃力が下がる"
