@@ -13,7 +13,8 @@ const DIGEST_AUTO_INTERVAL := 0.6
 const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
 const ENEMY_TOP_Y := 280.0
-const ENEMY_BOTTOM_Y := 500.0
+const ENEMY_MIDDLE_Y := 390.0
+const ENEMY_BOTTOM_Y := 505.0
 const ENEMY_LEFT_X := 850.0
 const ENEMY_CENTER_X := 1000.0
 const ENEMY_RIGHT_X := 1150.0
@@ -214,13 +215,12 @@ func _get_enemy_template(enemy_index: int) -> EnemyDefinition:
 
 
 func _get_enemy_positions(enemy_count: int) -> Array[Vector2]:
-	var middle_y := (ENEMY_TOP_Y + ENEMY_BOTTOM_Y) * 0.5
 	var positions: Array[Vector2] = []
 	match enemy_count:
 		2:
 			positions = [
-				Vector2(ENEMY_LEFT_X, middle_y),
-				Vector2(ENEMY_RIGHT_X, middle_y),
+				Vector2(ENEMY_LEFT_X, ENEMY_MIDDLE_Y),
+				Vector2(ENEMY_RIGHT_X, ENEMY_MIDDLE_Y),
 			]
 		4:
 			positions = [
