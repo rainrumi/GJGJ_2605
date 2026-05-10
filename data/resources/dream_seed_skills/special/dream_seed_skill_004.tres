@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://art/dreamseed/flower/tex_passive_flower_1000.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
+texture = ExtResource("2_texture")
 skill_id = 4
 category = "時間系統"
 display_name = "夢の花名"

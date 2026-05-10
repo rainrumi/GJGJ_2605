@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="NightmareSkillDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://art/enemy/tex_enemy_1000_No_300.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
+texture = ExtResource("2_texture")
 skill_id = 12
 category = "消化順・連鎖反応系（悪夢が消化された時、または他の悪夢が消化された時に反応する系統。）"
 display_name = "悪夢名"
