@@ -29,6 +29,7 @@ const TOOLTIP_EFFECT_EMPTY_COLOR := Color(0.2666667, 0.2666667, 0.2666667, 1.0)
 @onready var click_se: AudioStreamPlayer = $ClickSe
 @onready var nightmare_tooltip_panel: Panel = $UI/NightmareTooltipPanel
 @onready var nightmare_name_label: Label = $UI/NightmareTooltipPanel/Content/NameLabel
+@onready var nightmare_debug_number_label: Label = $UI/NightmareTooltipPanel/Content/DebugNumberLabel
 @onready var nightmare_category_label: Label = $UI/NightmareTooltipPanel/Content/CategoryLabel
 @onready var nightmare_category_detail_label: Label = $UI/NightmareTooltipPanel/Content/CategoryDetailLabel
 @onready var nightmare_status_title_label: Label = $UI/NightmareTooltipPanel/Content/StatusTitleLabel
@@ -57,6 +58,7 @@ var planted_flowers: Array[FlowerDefinition] = []
 var digest_order := 0
 var next_digest_damage_bonus_rate := 0.0
 var rest_recovery_bonus_rate := 0.0
+var debug_numbers_visible := false
 
 var dragging_enemy: Enemy
 var drag_offset := Vector2.ZERO
@@ -70,6 +72,7 @@ var hovered_enemy: Enemy
 func _ready() -> void:
 	randomize()
 	ui.digestion_requested.connect(_on_digestion_requested)
+	ui.debug_message_requested.connect(_on_debug_message_requested)
 	_create_digestion_timer()
 	_hide_nightmare_tooltip()
 
@@ -80,6 +83,7 @@ func start_battle(starting_hp: int = MAX_HP, _day: int = 1, flowers: Array = [])
 	_set_planted_flowers(flowers)
 	next_digest_damage_bonus_rate = 0.0
 	rest_recovery_bonus_rate = 0.0
+	debug_numbers_visible = false
 	battle_active = false
 	auto_digest_enabled = false
 	auto_digest_paused_for_drag = false
@@ -284,6 +288,12 @@ func _on_digestion_timer_timeout() -> void:
 		_update_auto_digest_timer()
 		return
 	_advance_digest_turn()
+
+
+func _on_debug_message_requested(is_active: bool) -> void:
+	debug_numbers_visible = is_active
+	if hovered_enemy != null:
+		_show_nightmare_tooltip(hovered_enemy)
 
 
 func _try_start_digesting(enemy: Enemy, mouse_position: Vector2) -> void:
@@ -610,6 +620,27 @@ func _get_planted_seed_skills() -> Array[DreamSeedSkillDefinition]:
 	return skills
 
 
+func _get_tooltip_debug_number_text(enemy: Enemy) -> String:
+	return "悪夢:%s\n種:%s" % [_get_enemy_skill_id_text(enemy), _get_seed_skill_id_text()]
+
+
+func _get_enemy_skill_id_text(enemy: Enemy) -> String:
+	if enemy.skill_definition == null:
+		return "-"
+	return str(enemy.skill_definition.skill_id)
+
+
+func _get_seed_skill_id_text() -> String:
+	var seed_ids: Array[String] = []
+	for flower in planted_flowers:
+		if flower == null or flower.dream_seed_skill == null:
+			continue
+		seed_ids.append(str(flower.dream_seed_skill.skill_id))
+	if seed_ids.is_empty():
+		return "-"
+	return ",".join(seed_ids)
+
+
 func _check_battle_end() -> void:
 	if _all_enemies_digested():
 		battle_active = false
@@ -704,6 +735,8 @@ func _show_nightmare_tooltip(enemy: Enemy) -> void:
 	var main_effect_text := enemy.get_main_effect_text()
 	var sub_effect_text := enemy.get_sub_effect_text()
 	nightmare_name_label.text = enemy.get_display_name()
+	nightmare_debug_number_label.text = _get_tooltip_debug_number_text(enemy)
+	nightmare_debug_number_label.visible = debug_numbers_visible
 	nightmare_category_label.text = enemy.get_category_name()
 	nightmare_category_detail_label.text = enemy.get_category_detail()
 	_update_optional_text_color(nightmare_category_label, nightmare_category_detail_label, nightmare_category_label.text)
@@ -721,6 +754,7 @@ func _show_nightmare_tooltip(enemy: Enemy) -> void:
 
 func _hide_nightmare_tooltip() -> void:
 	nightmare_tooltip_panel.visible = false
+	nightmare_debug_number_label.visible = false
 
 
 func _get_effect_text(text: String) -> String:
