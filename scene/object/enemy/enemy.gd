@@ -7,6 +7,8 @@ const COST_PULSE_SCALE := 1.1
 const COST_PULSE_DURATION := 0.2
 const DIGESTED_SCALE := 1.2
 const DIGESTED_TWEEN_DURATION := 0.5
+const DEFAULT_STATUS_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
+const MAIN_EFFECT_STATUS_COLOR := Color(0.78, 0.18, 0.08, 1.0)
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var hp_label: Label = get_node_or_null("HPText") as Label
@@ -14,6 +16,7 @@ const DIGESTED_TWEEN_DURATION := 0.5
 
 var definition: EnemyDefinition
 var skill_definition: NightmareSkillDefinition
+var has_main_effect := false
 var current_hp := 0
 var digesting := false
 var digested := false
@@ -31,10 +34,12 @@ func setup(
 	enemy_definition: EnemyDefinition,
 	target_size: Vector2,
 	nightmare_skill: NightmareSkillDefinition = null,
+	has_effect := false,
 	start_position_override := Vector2.INF
 ) -> void:
 	definition = enemy_definition
 	skill_definition = nightmare_skill
+	has_main_effect = has_effect
 	origin_position = enemy_definition.start_position
 	if start_position_override != Vector2.INF:
 		origin_position = start_position_override
@@ -62,6 +67,7 @@ func reset_for_battle() -> void:
 	set_hovered(false)
 	_update_hp_label()
 	_update_damage_label()
+	_update_status_label_colors()
 
 
 func get_display_name() -> String:
@@ -262,13 +268,21 @@ func get_category_detail() -> String:
 
 
 func get_main_effect_text() -> String:
-	if skill_definition == null:
+	if not has_main_effect or skill_definition == null:
 		return ""
 	return skill_definition.description
 
 
 func get_sub_effect_text() -> String:
 	return "-"
+
+
+func _update_status_label_colors() -> void:
+	var status_color := MAIN_EFFECT_STATUS_COLOR if has_main_effect else DEFAULT_STATUS_COLOR
+	if hp_label != null:
+		hp_label.add_theme_color_override("font_color", status_color)
+	if damage_label != null:
+		damage_label.add_theme_color_override("font_color", status_color)
 
 
 func _get_category_text() -> String:

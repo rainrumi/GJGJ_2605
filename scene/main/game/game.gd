@@ -155,6 +155,7 @@ func _handle_release(mouse_position: Vector2) -> void:
 func _setup_enemies() -> void:
 	var selected_skills := _get_random_nightmare_skills()
 	var enemy_positions := _get_enemy_positions(selected_skills.size())
+	var main_effect_enemy_index := randi() % selected_skills.size() if not selected_skills.is_empty() else -1
 	for i in range(enemies.size()):
 		var enemy := enemies[i]
 		if i >= selected_skills.size():
@@ -172,6 +173,7 @@ func _setup_enemies() -> void:
 				stomach.get_span_size(definition.stomach_size.y)
 			),
 			selected_skills[i],
+			i == main_effect_enemy_index,
 			enemy_positions[i]
 		)
 
