@@ -10,8 +10,11 @@ const DIGESTED_TWEEN_DURATION := 0.5
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var hp_label: Label = get_node_or_null("HPText") as Label
+@onready var tooltip_panel: Panel = $TooltipPanel
+@onready var tooltip_label: Label = $TooltipPanel/TooltipLabel
 
 var definition: EnemyDefinition
+var skill_definition: NightmareSkillDefinition
 var current_hp := 0
 var digesting := false
 var digested := false
@@ -25,15 +28,24 @@ var _digested_tween: Tween
 var _hovered := false
 
 
-func setup(enemy_definition: EnemyDefinition, target_size: Vector2) -> void:
+func setup(
+	enemy_definition: EnemyDefinition,
+	target_size: Vector2,
+	nightmare_skill: NightmareSkillDefinition = null,
+	start_position_override := Vector2.INF
+) -> void:
 	definition = enemy_definition
+	skill_definition = nightmare_skill
 	origin_position = enemy_definition.start_position
+	if start_position_override != Vector2.INF:
+		origin_position = start_position_override
 	position = origin_position
 	if sprite != null:
-		sprite.texture = enemy_definition.texture
-		if enemy_definition.texture != null:
-			sprite.scale = target_size / enemy_definition.texture.get_size()
+		sprite.texture = _get_texture()
+		if sprite.texture != null:
+			sprite.scale = target_size / sprite.texture.get_size()
 			_base_scale = sprite.scale
+	_update_tooltip()
 	reset_for_battle()
 	if hp_label != null:
 		hp_label.pivot_offset = hp_label.size * 0.5
@@ -52,6 +64,8 @@ func reset_for_battle() -> void:
 
 
 func get_display_name() -> String:
+	if skill_definition != null and not skill_definition.display_name.is_empty():
+		return skill_definition.display_name
 	return definition.display_name
 
 
@@ -102,6 +116,7 @@ func set_hovered(value: bool) -> void:
 	if _hovered == value or sprite == null:
 		return
 	_hovered = value
+	tooltip_panel.visible = _hovered
 	if _hover_tween != null and _hover_tween.is_valid():
 		_hover_tween.kill()
 	var target_scale := _base_scale
@@ -213,8 +228,37 @@ func _reset_visuals() -> void:
 		sprite.scale = _base_scale
 	if hp_label != null:
 		hp_label.scale = Vector2.ONE
+	tooltip_panel.visible = false
 
 
 func _update_hp_label() -> void:
 	if hp_label != null:
 		hp_label.text = str(current_hp)
+
+
+func _get_texture() -> Texture2D:
+	if skill_definition != null and skill_definition.texture != null:
+		return skill_definition.texture
+	return definition.texture
+
+
+func _update_tooltip() -> void:
+	if tooltip_label == null:
+		return
+	var lines: Array[String] = [
+		get_display_name(),
+		"系統: %s" % _get_category_text(),
+		"HP: %d" % definition.max_hp,
+		"攻撃力: %d" % definition.damage,
+		"サイズ: %d" % definition.size,
+	]
+	if skill_definition != null and not skill_definition.description.is_empty():
+		lines.append("")
+		lines.append(skill_definition.description)
+	tooltip_label.text = "\n".join(lines)
+
+
+func _get_category_text() -> String:
+	if skill_definition == null or skill_definition.category.is_empty():
+		return "通常"
+	return skill_definition.category

@@ -12,8 +12,14 @@ const DIGEST_DAMAGE := 200
 const DIGEST_AUTO_INTERVAL := 0.6
 const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
+const ENEMY_TOP_Y := 280.0
+const ENEMY_BOTTOM_Y := 500.0
+const ENEMY_LEFT_X := 850.0
+const ENEMY_CENTER_X := 1000.0
+const ENEMY_RIGHT_X := 1150.0
 
 @export var enemy_definitions: Array[Resource] = []
+@export var nightmare_skill_catalog: NightmareSkillCatalog
 
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
@@ -22,6 +28,7 @@ const START_MESSAGE := "６時までにすべての悪夢を消化しましょ�
 	$EnemyLeft as Enemy,
 	$EnemyCenter as Enemy,
 	$EnemyRight as Enemy,
+	$EnemyUpperRight as Enemy,
 ]
 
 var minutes := START_HOUR * 60
@@ -43,9 +50,9 @@ var hovered_enemy: Enemy
 
 
 func _ready() -> void:
+	randomize()
 	ui.digestion_requested.connect(_on_digestion_requested)
 	_create_digestion_timer()
-	_setup_enemies()
 
 
 func start_battle(starting_hp: int = MAX_HP, _day: int = 1) -> void:
@@ -59,8 +66,7 @@ func start_battle(starting_hp: int = MAX_HP, _day: int = 1) -> void:
 		digestion_timer.stop()
 	dragging_enemy = null
 	hovered_enemy = null
-	for enemy in enemies:
-		enemy.reset_for_battle()
+	_setup_enemies()
 	current_message = START_MESSAGE
 	ui.reset_for_battle(MAX_HP, minutes, current_message)
 	_refresh_ui()
@@ -135,17 +141,87 @@ func _handle_release(mouse_position: Vector2) -> void:
 
 
 func _setup_enemies() -> void:
-	for i in range(mini(enemies.size(), enemy_definitions.size())):
-		var definition := enemy_definitions[i] as EnemyDefinition
+	var selected_skills := _get_random_nightmare_skills()
+	var enemy_positions := _get_enemy_positions(selected_skills.size())
+	for i in range(enemies.size()):
+		var enemy := enemies[i]
+		if i >= selected_skills.size():
+			enemy.visible = false
+			enemy.digested = true
+			enemy.digesting = false
+			continue
+		var definition := _get_enemy_template(i)
 		if definition == null:
 			continue
-		enemies[i].setup(
+		enemy.setup(
 			definition,
 			Vector2(
 				stomach.get_span_size(definition.stomach_size.x),
 				stomach.get_span_size(definition.stomach_size.y)
-			)
+			),
+			selected_skills[i],
+			enemy_positions[i]
 		)
+
+
+func _get_random_nightmare_skills() -> Array[NightmareSkillDefinition]:
+	if nightmare_skill_catalog == null or nightmare_skill_catalog.skills.is_empty():
+		return []
+	var skills_by_category: Dictionary = {}
+	for skill in nightmare_skill_catalog.skills:
+		if skill == null:
+			continue
+		var category := skill.category
+		if category.is_empty():
+			category = "通常"
+		if not skills_by_category.has(category):
+			skills_by_category[category] = []
+		skills_by_category[category].append(skill)
+	var categories := skills_by_category.keys()
+	if categories.is_empty():
+		return []
+	var category = categories[randi() % categories.size()]
+	var category_skills: Array = skills_by_category[category].duplicate()
+	category_skills.shuffle()
+	var max_count := mini(4, category_skills.size())
+	var min_count := mini(2, max_count)
+	var count := randi_range(min_count, max_count)
+	var selected: Array[NightmareSkillDefinition] = []
+	for i in range(count):
+		selected.append(category_skills[i] as NightmareSkillDefinition)
+	return selected
+
+
+func _get_enemy_template(enemy_index: int) -> EnemyDefinition:
+	if enemy_definitions.is_empty():
+		return null
+	var template := enemy_definitions[enemy_index % enemy_definitions.size()] as EnemyDefinition
+	return template
+
+
+func _get_enemy_positions(enemy_count: int) -> Array[Vector2]:
+	var middle_y := (ENEMY_TOP_Y + ENEMY_BOTTOM_Y) * 0.5
+	var positions: Array[Vector2] = []
+	match enemy_count:
+		2:
+			positions = [
+				Vector2(ENEMY_LEFT_X, middle_y),
+				Vector2(ENEMY_RIGHT_X, middle_y),
+			]
+		4:
+			positions = [
+				Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y),
+				Vector2(ENEMY_RIGHT_X, ENEMY_TOP_Y),
+				Vector2(ENEMY_RIGHT_X, ENEMY_BOTTOM_Y),
+				Vector2(ENEMY_LEFT_X, ENEMY_TOP_Y),
+			]
+		_:
+			positions = [
+				Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y),
+				Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y),
+				Vector2(ENEMY_RIGHT_X, ENEMY_BOTTOM_Y),
+			]
+	return positions
 
 
 func _create_digestion_timer() -> void:
