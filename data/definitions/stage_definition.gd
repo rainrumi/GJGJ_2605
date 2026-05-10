@@ -12,9 +12,7 @@ extends Resource
 
 
 func get_difficulty_text() -> String:
-	if level_text.is_empty():
-		return "Lv.%d" % difficulty_level
-	return "Lv.%d %s" % [difficulty_level, level_text]
+	return "Lv.%d" % difficulty_level
 
 
 func get_tag_text() -> String:

@@ -9,3 +9,4 @@ display_name = "夢の主 5"
 difficulty_level = 3
 level_text = "★3大樹"
 location = "大樹リラン駐屯地"
+tags = Array[StringName]([&"大樹"])
