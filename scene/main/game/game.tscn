@@ -166,7 +166,7 @@ vertical_alignment = 1
 layout_mode = 0
 offset_top = 98.0
 offset_right = 336.0
-offset_bottom = 178.0
+offset_bottom = 158.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
@@ -177,9 +177,9 @@ autowrap_mode = 3
 
 [node name="StatusTitleLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
 layout_mode = 0
-offset_top = 196.0
+offset_top = 170.0
 offset_right = 336.0
-offset_bottom = 232.0
+offset_bottom = 206.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
@@ -190,9 +190,9 @@ text = "ステータス"
 
 [node name="HpLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
 layout_mode = 0
-offset_top = 240.0
+offset_top = 214.0
 offset_right = 336.0
-offset_bottom = 270.0
+offset_bottom = 244.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
@@ -202,9 +202,9 @@ vertical_alignment = 1
 
 [node name="DamageLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
 layout_mode = 0
-offset_top = 274.0
+offset_top = 248.0
 offset_right = 336.0
-offset_bottom = 304.0
+offset_bottom = 278.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("13_font")
@@ -212,9 +212,22 @@ theme_override_font_sizes/font_size = 22
 horizontal_alignment = 0
 vertical_alignment = 1
 
+[node name="MainEffectTitleLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+layout_mode = 0
+offset_top = 312.0
+offset_right = 336.0
+offset_bottom = 348.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 0
+vertical_alignment = 1
+text = "メイン効果"
+
 [node name="MainEffectLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
 layout_mode = 0
-offset_top = 338.0
+offset_top = 354.0
 offset_right = 336.0
 offset_bottom = 486.0
 mouse_filter = 2
@@ -225,9 +238,22 @@ horizontal_alignment = 0
 vertical_alignment = 0
 autowrap_mode = 3
 
-[node name="SubEffectLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+[node name="SubEffectTitleLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
 layout_mode = 0
 offset_top = 526.0
+offset_right = 336.0
+offset_bottom = 562.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 0
+vertical_alignment = 1
+text = "サブ効果"
+
+[node name="SubEffectLabel" type="Label" parent="UI/NightmareTooltipPanel/Content"]
+layout_mode = 0
+offset_top = 568.0
 offset_right = 336.0
 offset_bottom = 674.0
 mouse_filter = 2

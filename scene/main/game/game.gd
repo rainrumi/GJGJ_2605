@@ -31,7 +31,9 @@ const ENEMY_RIGHT_X := 1150.0
 @onready var nightmare_status_title_label: Label = $UI/NightmareTooltipPanel/Content/StatusTitleLabel
 @onready var nightmare_hp_label: Label = $UI/NightmareTooltipPanel/Content/HpLabel
 @onready var nightmare_damage_label: Label = $UI/NightmareTooltipPanel/Content/DamageLabel
+@onready var nightmare_main_effect_title_label: Label = $UI/NightmareTooltipPanel/Content/MainEffectTitleLabel
 @onready var nightmare_main_effect_label: Label = $UI/NightmareTooltipPanel/Content/MainEffectLabel
+@onready var nightmare_sub_effect_title_label: Label = $UI/NightmareTooltipPanel/Content/SubEffectTitleLabel
 @onready var nightmare_sub_effect_label: Label = $UI/NightmareTooltipPanel/Content/SubEffectLabel
 @onready var enemies: Array[Enemy] = [
 	$EnemyLeft as Enemy,
@@ -434,8 +436,10 @@ func _show_nightmare_tooltip(enemy: Enemy) -> void:
 	nightmare_status_title_label.text = "ステータス"
 	nightmare_hp_label.text = "HP: %d" % enemy.definition.max_hp
 	nightmare_damage_label.text = "攻撃力: %d" % enemy.definition.damage
-	nightmare_main_effect_label.text = "メイン効果: %s" % _get_effect_text(enemy.get_main_effect_text())
-	nightmare_sub_effect_label.text = "サブ効果: %s" % _get_effect_text(enemy.get_sub_effect_text())
+	nightmare_main_effect_title_label.text = "メイン効果"
+	nightmare_main_effect_label.text = _get_effect_text(enemy.get_main_effect_text())
+	nightmare_sub_effect_title_label.text = "サブ効果"
+	nightmare_sub_effect_label.text = _get_effect_text(enemy.get_sub_effect_text())
 	nightmare_tooltip_panel.visible = true
 
 
