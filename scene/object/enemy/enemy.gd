@@ -251,6 +251,8 @@ func _get_texture() -> Texture2D:
 
 
 func get_category_name() -> String:
+	if not has_main_effect:
+		return "-"
 	var category_text := _get_category_text()
 	var separator_index := category_text.find("（")
 	if separator_index == -1:
@@ -259,6 +261,8 @@ func get_category_name() -> String:
 
 
 func get_category_detail() -> String:
+	if not has_main_effect:
+		return ""
 	var category_text := _get_category_text()
 	var start_index := category_text.find("（")
 	var end_index := category_text.rfind("）")

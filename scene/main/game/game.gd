@@ -18,6 +18,8 @@ const ENEMY_BOTTOM_Y := 505.0
 const ENEMY_LEFT_X := 850.0
 const ENEMY_CENTER_X := 1000.0
 const ENEMY_RIGHT_X := 1150.0
+const TOOLTIP_EFFECT_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
+const TOOLTIP_EFFECT_EMPTY_COLOR := Color(0.2666667, 0.2666667, 0.2666667, 1.0)
 
 @export var enemy_definitions: Array[Resource] = []
 @export var nightmare_skill_catalog: NightmareSkillCatalog
@@ -432,16 +434,21 @@ func _set_hovered_enemy(enemy: Enemy) -> void:
 
 
 func _show_nightmare_tooltip(enemy: Enemy) -> void:
+	var main_effect_text := enemy.get_main_effect_text()
+	var sub_effect_text := enemy.get_sub_effect_text()
 	nightmare_name_label.text = enemy.get_display_name()
 	nightmare_category_label.text = enemy.get_category_name()
 	nightmare_category_detail_label.text = enemy.get_category_detail()
+	_update_optional_text_color(nightmare_category_label, nightmare_category_detail_label, nightmare_category_label.text)
 	nightmare_status_title_label.text = "ステータス"
 	nightmare_hp_label.text = "HP: %d" % enemy.definition.max_hp
 	nightmare_damage_label.text = "攻撃力: %d" % enemy.definition.damage
 	nightmare_main_effect_title_label.text = "メイン効果"
-	nightmare_main_effect_label.text = _get_effect_text(enemy.get_main_effect_text())
+	nightmare_main_effect_label.text = _get_effect_text(main_effect_text)
 	nightmare_sub_effect_title_label.text = "サブ効果"
-	nightmare_sub_effect_label.text = _get_effect_text(enemy.get_sub_effect_text())
+	nightmare_sub_effect_label.text = _get_effect_text(sub_effect_text)
+	_update_optional_text_color(nightmare_main_effect_title_label, nightmare_main_effect_label, main_effect_text)
+	_update_optional_text_color(nightmare_sub_effect_title_label, nightmare_sub_effect_label, sub_effect_text)
 	nightmare_tooltip_panel.visible = true
 
 
@@ -453,6 +460,14 @@ func _get_effect_text(text: String) -> String:
 	if text.is_empty():
 		return "-"
 	return text
+
+
+func _update_optional_text_color(title_label: Label, detail_label: Label, text: String) -> void:
+	var effect_color := TOOLTIP_EFFECT_ACTIVE_COLOR
+	if text.is_empty() or text == "-":
+		effect_color = TOOLTIP_EFFECT_EMPTY_COLOR
+	title_label.add_theme_color_override("font_color", effect_color)
+	detail_label.add_theme_color_override("font_color", effect_color)
 
 
 func _update_hp_damage_preview(mouse_position: Vector2) -> void:
