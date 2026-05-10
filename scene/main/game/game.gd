@@ -24,6 +24,15 @@ const ENEMY_RIGHT_X := 1150.0
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
 @onready var click_se: AudioStreamPlayer = $ClickSe
+@onready var nightmare_tooltip_panel: Panel = $UI/NightmareTooltipPanel
+@onready var nightmare_name_label: Label = $UI/NightmareTooltipPanel/Content/NameLabel
+@onready var nightmare_category_label: Label = $UI/NightmareTooltipPanel/Content/CategoryLabel
+@onready var nightmare_category_detail_label: Label = $UI/NightmareTooltipPanel/Content/CategoryDetailLabel
+@onready var nightmare_status_title_label: Label = $UI/NightmareTooltipPanel/Content/StatusTitleLabel
+@onready var nightmare_hp_label: Label = $UI/NightmareTooltipPanel/Content/HpLabel
+@onready var nightmare_damage_label: Label = $UI/NightmareTooltipPanel/Content/DamageLabel
+@onready var nightmare_main_effect_label: Label = $UI/NightmareTooltipPanel/Content/MainEffectLabel
+@onready var nightmare_sub_effect_label: Label = $UI/NightmareTooltipPanel/Content/SubEffectLabel
 @onready var enemies: Array[Enemy] = [
 	$EnemyLeft as Enemy,
 	$EnemyCenter as Enemy,
@@ -53,6 +62,7 @@ func _ready() -> void:
 	randomize()
 	ui.digestion_requested.connect(_on_digestion_requested)
 	_create_digestion_timer()
+	_hide_nightmare_tooltip()
 
 
 func start_battle(starting_hp: int = MAX_HP, _day: int = 1) -> void:
@@ -412,6 +422,31 @@ func _set_hovered_enemy(enemy: Enemy) -> void:
 	hovered_enemy = enemy
 	if hovered_enemy != null:
 		hovered_enemy.set_hovered(true)
+		_show_nightmare_tooltip(hovered_enemy)
+	else:
+		_hide_nightmare_tooltip()
+
+
+func _show_nightmare_tooltip(enemy: Enemy) -> void:
+	nightmare_name_label.text = enemy.get_display_name()
+	nightmare_category_label.text = enemy.get_category_name()
+	nightmare_category_detail_label.text = enemy.get_category_detail()
+	nightmare_status_title_label.text = "ステータス"
+	nightmare_hp_label.text = "HP: %d" % enemy.definition.max_hp
+	nightmare_damage_label.text = "攻撃力: %d" % enemy.definition.damage
+	nightmare_main_effect_label.text = "メイン効果: %s" % _get_effect_text(enemy.get_main_effect_text())
+	nightmare_sub_effect_label.text = "サブ効果: %s" % _get_effect_text(enemy.get_sub_effect_text())
+	nightmare_tooltip_panel.visible = true
+
+
+func _hide_nightmare_tooltip() -> void:
+	nightmare_tooltip_panel.visible = false
+
+
+func _get_effect_text(text: String) -> String:
+	if text.is_empty():
+		return "-"
+	return text
 
 
 func _update_hp_damage_preview(mouse_position: Vector2) -> void:

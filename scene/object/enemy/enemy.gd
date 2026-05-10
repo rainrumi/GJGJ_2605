@@ -10,8 +10,6 @@ const DIGESTED_TWEEN_DURATION := 0.5
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var hp_label: Label = get_node_or_null("HPText") as Label
-@onready var tooltip_panel: Panel = $TooltipPanel
-@onready var tooltip_label: Label = $TooltipPanel/TooltipLabel
 
 var definition: EnemyDefinition
 var skill_definition: NightmareSkillDefinition
@@ -45,7 +43,6 @@ func setup(
 		if sprite.texture != null:
 			sprite.scale = target_size / sprite.texture.get_size()
 			_base_scale = sprite.scale
-	_update_tooltip()
 	reset_for_battle()
 	if hp_label != null:
 		hp_label.pivot_offset = hp_label.size * 0.5
@@ -116,7 +113,6 @@ func set_hovered(value: bool) -> void:
 	if _hovered == value or sprite == null:
 		return
 	_hovered = value
-	tooltip_panel.visible = _hovered
 	if _hover_tween != null and _hover_tween.is_valid():
 		_hover_tween.kill()
 	var target_scale := _base_scale
@@ -228,7 +224,6 @@ func _reset_visuals() -> void:
 		sprite.scale = _base_scale
 	if hp_label != null:
 		hp_label.scale = Vector2.ONE
-	tooltip_panel.visible = false
 
 
 func _update_hp_label() -> void:
@@ -237,25 +232,34 @@ func _update_hp_label() -> void:
 
 
 func _get_texture() -> Texture2D:
-	if skill_definition != null and skill_definition.texture != null:
-		return skill_definition.texture
 	return definition.texture
 
 
-func _update_tooltip() -> void:
-	if tooltip_label == null:
-		return
-	var lines: Array[String] = [
-		get_display_name(),
-		"系統: %s" % _get_category_text(),
-		"HP: %d" % definition.max_hp,
-		"攻撃力: %d" % definition.damage,
-		"サイズ: %d" % definition.size,
-	]
-	if skill_definition != null and not skill_definition.description.is_empty():
-		lines.append("")
-		lines.append(skill_definition.description)
-	tooltip_label.text = "\n".join(lines)
+func get_category_name() -> String:
+	var category_text := _get_category_text()
+	var separator_index := category_text.find("（")
+	if separator_index == -1:
+		return category_text
+	return category_text.substr(0, separator_index)
+
+
+func get_category_detail() -> String:
+	var category_text := _get_category_text()
+	var start_index := category_text.find("（")
+	var end_index := category_text.rfind("）")
+	if start_index == -1 or end_index == -1 or end_index <= start_index:
+		return ""
+	return category_text.substr(start_index + 1, end_index - start_index - 1)
+
+
+func get_main_effect_text() -> String:
+	if skill_definition == null:
+		return ""
+	return skill_definition.description
+
+
+func get_sub_effect_text() -> String:
+	return "-"
 
 
 func _get_category_text() -> String:

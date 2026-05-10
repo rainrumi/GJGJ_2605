@@ -1,43 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Texture2D" path="res://art/enemy/tex_enemy_1000_No_100.png" id="1_enemy"]
 [ext_resource type="Script" path="res://scene/object/enemy/enemy.gd" id="2_script"]
-[ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="3_font"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tooltip"]
-bg_color = Color(0, 0, 0, 0.72)
-content_margin_left = 12.0
-content_margin_top = 10.0
-content_margin_right = 12.0
-content_margin_bottom = 10.0
 
 [node name="Enemy" type="Node2D"]
 script = ExtResource("2_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_enemy")
-
-[node name="TooltipPanel" type="Panel" parent="."]
-visible = false
-z_index = 20
-offset_left = 42.0
-offset_top = -178.0
-offset_right = 382.0
-offset_bottom = -8.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tooltip")
-
-[node name="TooltipLabel" type="Label" parent="TooltipPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 18
-horizontal_alignment = 0
-vertical_alignment = 0
-autowrap_mode = 3
