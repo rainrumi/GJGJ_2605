@@ -28,6 +28,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @onready var digestion_label: Label = $DigestionFrame/DigestionLabel
 @onready var digest_damage_value: Label = $PassiveGuideFrame/DigestDamageValue
 @onready var digest_damage_detail: Label = $PassiveGuideFrame/DigestDamageDetail
+@onready var status_panel: Control = $StatusPanel
 @onready var message_text: Label = $StatusPanel/MessageText
 @onready var debug_message_button: Button = $StatusPanel/DebugMessageButton
 @onready var nightmare_tooltip: NightmareTooltipView = $NightmareTooltipPanel
@@ -253,6 +254,7 @@ func _prepare_mouse_filters() -> void:
 	hp_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	time_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	time_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	status_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	message_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	debug_message_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	digestion_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
