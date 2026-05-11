@@ -18,6 +18,7 @@ const ENEMY_BOTTOM_Y := 505.0
 const ENEMY_LEFT_X := 850.0
 const ENEMY_CENTER_X := 1000.0
 const ENEMY_RIGHT_X := 1150.0
+const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 
 @export var enemy_definitions: Array[Resource] = []
 @export var nightmare_skill_catalog: NightmareSkillCatalog
@@ -328,18 +329,23 @@ func _advance_digest_turn() -> void:
 	ui.show_time_elapsed(elapsed_minutes)
 	_check_battle_end()
 	_update_auto_digest_timer()
+	_activate_deferred_nuisance_enemies()
 	digest_turn_in_progress = false
 
 
 func _digest_nightmares() -> Array[Enemy]:
 	var digested_enemies: Array[Enemy] = []
 	var shared_damage: Dictionary = {}
+	var received_digest_damage: Dictionary = {}
 	var digest_damage_per_cell := _get_digest_damage_per_cell()
 	for enemy in enemies:
+		if not enemy.can_take_stomach_turn():
+			continue
 		var bottom_cell_count := stomach.get_bottom_row_cell_count(enemy)
 		if bottom_cell_count == 0:
 			continue
 		var damage := digest_damage_per_cell * bottom_cell_count
+		received_digest_damage[enemy] = received_digest_damage.get(enemy, 0) + damage
 		_apply_digest_damage_share(enemy, damage, shared_damage)
 		if enemy.take_digest_damage(damage):
 			digested_enemies.append(enemy)
@@ -349,15 +355,16 @@ func _digest_nightmares() -> Array[Enemy]:
 		var target_enemy := target as Enemy
 		if target_enemy == null or target_enemy.digested:
 			continue
+		received_digest_damage[target_enemy] = received_digest_damage.get(target_enemy, 0) + shared_damage[target]
 		if target_enemy.take_digest_damage(shared_damage[target]) and not digested_enemies.has(target_enemy):
 			digested_enemies.append(target_enemy)
-	return _resolve_digested_enemy_effects(digested_enemies)
+	return _resolve_digested_enemy_effects(digested_enemies, received_digest_damage)
 
 
 func _apply_digest_damage() -> void:
 	var damage := 0
 	for enemy in enemies:
-		if enemy.is_active_in_stomach():
+		if enemy.can_take_stomach_turn():
 			damage += _get_enemy_attack_damage(enemy)
 	_take_player_damage(damage)
 
@@ -366,7 +373,7 @@ func _apply_turn_start_effects() -> void:
 	for enemy in enemies:
 		if enemy.digested:
 			continue
-		if enemy.is_active_in_stomach():
+		if enemy.can_take_stomach_turn():
 			enemy.stomach_elapsed_minutes += STEP_MINUTES
 		if _has_nightmare_effect(enemy, 7) and not enemy.is_active_in_stomach():
 			var next_multiplier := enemy.attack_multiplier
@@ -455,7 +462,7 @@ func _apply_digest_heal_reaction(enemy: Enemy) -> void:
 		enemy.heal(roundi(float(enemy.max_hp) * heal_rate))
 
 
-func _resolve_digested_enemy_effects(digested_enemies: Array[Enemy]) -> Array[Enemy]:
+func _resolve_digested_enemy_effects(digested_enemies: Array[Enemy], received_digest_damage: Dictionary) -> Array[Enemy]:
 	var final_digested: Array[Enemy] = []
 	for enemy in digested_enemies:
 		digest_order += 1
@@ -466,7 +473,7 @@ func _resolve_digested_enemy_effects(digested_enemies: Array[Enemy]) -> Array[En
 			continue
 		final_digested.append(enemy)
 	_apply_chain_reactions(final_digested)
-	_apply_spawn_reactions(final_digested)
+	_apply_spawn_reactions(final_digested, received_digest_damage)
 	return final_digested
 
 
@@ -481,35 +488,59 @@ func _apply_chain_reactions(digested_enemies: Array[Enemy]) -> void:
 			watcher.add_damage(roundi(float(digested_enemy.get_damage()) * 0.5))
 
 
-func _apply_spawn_reactions(digested_enemies: Array[Enemy]) -> void:
+func _apply_spawn_reactions(digested_enemies: Array[Enemy], received_digest_damage: Dictionary) -> void:
 	for enemy in digested_enemies:
 		if _has_nightmare_effect(enemy, 8):
-			for i in range(enemy.get_size()):
-				if not _spawn_nuisance_nightmare(enemy, 0.2, 0.2):
+			var nuisance_damage := roundi(float(received_digest_damage.get(enemy, 0)) * 0.2)
+			for cell in enemy.get_occupied_cells(enemy.stomach_cell):
+				if not _spawn_nuisance_nightmare(enemy, cell, 0.2, nuisance_damage):
 					break
 		if _has_nightmare_effect(enemy, 12) and digested_enemies.size() == 1:
-			_spawn_nuisance_nightmare(enemy, 0.3, 0.0)
+			var spawn_cells := enemy.get_occupied_cells(enemy.stomach_cell)
+			if not spawn_cells.is_empty():
+				_spawn_nuisance_nightmare(enemy, spawn_cells[0], 0.3, 0)
 
 
-func _spawn_nuisance_nightmare(source_enemy: Enemy, hp_rate: float, damage_rate: float) -> bool:
+func _spawn_nuisance_nightmare(source_enemy: Enemy, spawn_cell: Vector2i, hp_rate: float, damage_value: int) -> bool:
+	var nuisance_enemy := _get_available_nuisance_enemy(source_enemy)
+	if nuisance_enemy == null:
+		return false
+	var source_definition := source_enemy.definition
+	var source_origin_position := source_enemy.origin_position
+	var source_max_hp := source_enemy.max_hp
+	nuisance_enemy.setup(
+		source_definition,
+		Vector2.ONE * stomach.get_span_size(1),
+		null,
+		false,
+		source_origin_position
+	)
+	nuisance_enemy.setup_as_one_cell_stomach_block(Vector2.ONE * stomach.get_span_size(1))
+	nuisance_enemy.change_max_hp(maxi(1, roundi(float(source_max_hp) * hp_rate)))
+	nuisance_enemy.current_hp = nuisance_enemy.max_hp
+	nuisance_enemy.set_damage_value(maxi(0, damage_value))
+	nuisance_enemy.set_digesting(true)
+	stomach.place_enemy(nuisance_enemy, spawn_cell)
+	return true
+
+
+func _get_available_nuisance_enemy(source_enemy: Enemy) -> Enemy:
 	for enemy in enemies:
 		if enemy.visible or not enemy.digested:
 			continue
-		enemy.setup(
-			source_enemy.definition,
-			Vector2(
-				stomach.get_span_size(source_enemy.definition.stomach_size.x),
-				stomach.get_span_size(source_enemy.definition.stomach_size.y)
-			),
-			null,
-			false,
-			source_enemy.origin_position + Vector2(36.0, -36.0)
-		)
-		enemy.change_max_hp(maxi(1, roundi(float(source_enemy.max_hp) * hp_rate)))
-		enemy.current_hp = enemy.max_hp
-		enemy.set_damage_value(roundi(float(source_enemy.get_damage()) * damage_rate))
-		return true
-	return false
+		return enemy
+	if source_enemy.digested:
+		return source_enemy
+	var enemy := ENEMY_SCENE.instantiate() as Enemy
+	add_child(enemy)
+	enemies.append(enemy)
+	input_controller.setup(enemies)
+	return enemy
+
+
+func _activate_deferred_nuisance_enemies() -> void:
+	for enemy in enemies:
+		enemy.activate_stomach_turn()
 
 
 func _has_nightmare_effect(enemy: Enemy, skill_id: int) -> bool:

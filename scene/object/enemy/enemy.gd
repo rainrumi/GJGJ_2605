@@ -9,6 +9,7 @@ const DIGESTED_SCALE := 1.2
 const DIGESTED_TWEEN_DURATION := 0.5
 const DEFAULT_STATUS_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
 const MAIN_EFFECT_STATUS_COLOR := Color(0.78, 0.18, 0.08, 1.0)
+const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_1000.png")
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var hp_label: Label = get_node_or_null("HPText") as Label
@@ -25,6 +26,8 @@ var revive_used := false
 var current_hp := 0
 var digesting := false
 var digested := false
+var gravity_locked := false
+var activation_deferred := false
 var stomach_cell := Vector2i.ZERO
 var origin_position := Vector2.ZERO
 
@@ -33,6 +36,10 @@ var _hover_tween: Tween
 var _cost_pulse_tween: Tween
 var _digested_tween: Tween
 var _hovered := false
+var _stomach_size_override := Vector2i.ZERO
+var _stomach_shape_override: Array[Vector2i] = []
+var _size_override := 0
+var _texture_override: Texture2D
 
 
 func setup(
@@ -50,6 +57,10 @@ func setup(
 	attack_multiplier = 1.0
 	stomach_elapsed_minutes = 0
 	revive_used = false
+	gravity_locked = false
+	activation_deferred = false
+	_texture_override = null
+	clear_stomach_footprint_override()
 	origin_position = enemy_definition.start_position
 	if start_position_override != Vector2.INF:
 		origin_position = start_position_override
@@ -70,6 +81,8 @@ func reset_for_battle() -> void:
 	current_hp = max_hp
 	digesting = false
 	digested = false
+	gravity_locked = false
+	activation_deferred = false
 	stomach_cell = Vector2i.ZERO
 	stomach_elapsed_minutes = 0
 	visible = true
@@ -92,14 +105,20 @@ func get_damage() -> int:
 
 
 func get_size() -> int:
+	if _size_override > 0:
+		return _size_override
 	return definition.size
 
 
 func get_stomach_size() -> Vector2i:
+	if _stomach_size_override != Vector2i.ZERO:
+		return _stomach_size_override
 	return definition.stomach_size
 
 
 func get_stomach_shape() -> Array[Vector2i]:
+	if not _stomach_shape_override.is_empty():
+		return _stomach_shape_override.duplicate()
 	var shape: Array[Vector2i] = []
 	if definition == null:
 		return shape
@@ -117,6 +136,10 @@ func is_active_in_stomach() -> bool:
 	return digesting and not digested
 
 
+func can_take_stomach_turn() -> bool:
+	return is_active_in_stomach() and not activation_deferred
+
+
 func set_digesting(value: bool) -> void:
 	if digesting != value:
 		stomach_elapsed_minutes = 0
@@ -132,6 +155,49 @@ func set_digested(value: bool) -> void:
 
 func set_stomach_cell(cell: Vector2i) -> void:
 	stomach_cell = cell
+
+
+func set_stomach_footprint_override(size: Vector2i, shape: Array[Vector2i], cell_count: int) -> void:
+	_stomach_size_override = size
+	_stomach_shape_override = shape.duplicate()
+	_size_override = cell_count
+
+
+func set_texture_override(texture: Texture2D, target_size: Vector2) -> void:
+	_texture_override = texture
+	if sprite == null or _texture_override == null:
+		return
+	sprite.texture = _texture_override
+	if sprite.texture != null:
+		sprite.scale = target_size / sprite.texture.get_size()
+		_base_scale = sprite.scale
+	_reset_visuals()
+
+
+func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
+	var block_shape: Array[Vector2i] = [Vector2i.ZERO]
+	set_stomach_footprint_override(Vector2i.ONE, block_shape, 1)
+	set_texture_override(ONE_CELL_STOMACH_TEXTURE, target_size)
+	gravity_locked = true
+	activation_deferred = true
+
+
+func can_apply_gravity() -> bool:
+	return not gravity_locked
+
+
+func clear_gravity_lock() -> void:
+	gravity_locked = false
+
+
+func activate_stomach_turn() -> void:
+	activation_deferred = false
+
+
+func clear_stomach_footprint_override() -> void:
+	_stomach_size_override = Vector2i.ZERO
+	_stomach_shape_override.clear()
+	_size_override = 0
 
 
 func return_to_origin() -> void:
@@ -266,6 +332,8 @@ func _update_damage_label() -> void:
 
 
 func _get_texture() -> Texture2D:
+	if _texture_override != null:
+		return _texture_override
 	return definition.texture
 
 

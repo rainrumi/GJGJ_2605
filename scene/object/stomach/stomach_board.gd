@@ -70,13 +70,15 @@ func apply_gravity(active_enemies: Array[Enemy]) -> void:
 			return a.get_bottom_row(a.stomach_cell) > b.get_bottom_row(b.stomach_cell)
 		)
 		for enemy: Enemy in sorted_enemies:
-			if not enemy.is_active_in_stomach():
+			if not enemy.is_active_in_stomach() or not enemy.can_apply_gravity():
 				continue
 			var next_cell: Vector2i = enemy.stomach_cell + Vector2i(0, 1)
 			if not can_place(enemy, next_cell, active_enemies):
 				continue
 			place_enemy(enemy, next_cell)
 			moved = true
+	for enemy: Enemy in active_enemies:
+		enemy.clear_gravity_lock()
 
 
 func get_current_fullness(active_enemies: Array[Enemy]) -> int:
@@ -95,7 +97,7 @@ func has_bottom_touching_enemy(active_enemies: Array[Enemy]) -> bool:
 
 
 func get_bottom_row_cell_count(enemy: Enemy) -> int:
-	if not enemy.is_active_in_stomach():
+	if not enemy.can_take_stomach_turn():
 		return 0
 	var count := 0
 	for cell: Vector2i in enemy.get_occupied_cells(enemy.stomach_cell):
