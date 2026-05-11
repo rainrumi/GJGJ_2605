@@ -30,6 +30,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @onready var digest_damage_detail: Label = $PassiveGuideFrame/DigestDamageDetail
 @onready var message_text: Label = $StatusPanel/MessageText
 @onready var debug_message_button: Button = $StatusPanel/DebugMessageButton
+@onready var nightmare_tooltip: NightmareTooltipView = $NightmareTooltipPanel
 
 var _hp_gauge_full_width := 0.0
 var _hp_gauge_tween: Tween
@@ -66,6 +67,7 @@ func reset_for_battle(max_hp: int, minutes: int, message: String) -> void:
 	set_digestion_button_visible(true)
 	hide_hp_damage_preview()
 	hide_time_elapsed()
+	hide_nightmare_tooltip()
 
 
 func set_hp(current_hp: int, max_hp: int) -> void:
@@ -96,6 +98,14 @@ func set_message(message: String) -> void:
 
 func set_debug_message(message: String) -> void:
 	_debug_message = message
+
+
+func show_nightmare_tooltip(enemy: Enemy, debug_number_text: String, debug_numbers_visible: bool) -> void:
+	nightmare_tooltip.show_enemy(enemy, debug_number_text, debug_numbers_visible)
+
+
+func hide_nightmare_tooltip() -> void:
+	nightmare_tooltip.hide_tooltip()
 
 
 func set_digest_damage_info(

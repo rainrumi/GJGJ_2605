@@ -18,27 +18,14 @@ const ENEMY_BOTTOM_Y := 505.0
 const ENEMY_LEFT_X := 850.0
 const ENEMY_CENTER_X := 1000.0
 const ENEMY_RIGHT_X := 1150.0
-const TOOLTIP_EFFECT_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
-const TOOLTIP_EFFECT_EMPTY_COLOR := Color(0.2666667, 0.2666667, 0.2666667, 1.0)
 
 @export var enemy_definitions: Array[Resource] = []
 @export var nightmare_skill_catalog: NightmareSkillCatalog
 
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
+@onready var input_controller: GameInputController = $GameInputController
 @onready var click_se: AudioStreamPlayer = $ClickSe
-@onready var nightmare_tooltip_panel: Panel = $UI/NightmareTooltipPanel
-@onready var nightmare_name_label: Label = $UI/NightmareTooltipPanel/Content/NameLabel
-@onready var nightmare_debug_number_label: Label = $UI/NightmareTooltipPanel/Content/DebugNumberLabel
-@onready var nightmare_category_label: Label = $UI/NightmareTooltipPanel/Content/CategoryLabel
-@onready var nightmare_category_detail_label: Label = $UI/NightmareTooltipPanel/Content/CategoryDetailLabel
-@onready var nightmare_status_title_label: Label = $UI/NightmareTooltipPanel/Content/StatusTitleLabel
-@onready var nightmare_hp_label: Label = $UI/NightmareTooltipPanel/Content/HpLabel
-@onready var nightmare_damage_label: Label = $UI/NightmareTooltipPanel/Content/DamageLabel
-@onready var nightmare_main_effect_title_label: Label = $UI/NightmareTooltipPanel/Content/MainEffectTitleLabel
-@onready var nightmare_main_effect_label: Label = $UI/NightmareTooltipPanel/Content/MainEffectLabel
-@onready var nightmare_sub_effect_title_label: Label = $UI/NightmareTooltipPanel/Content/SubEffectTitleLabel
-@onready var nightmare_sub_effect_label: Label = $UI/NightmareTooltipPanel/Content/SubEffectLabel
 @onready var enemies: Array[Enemy] = [
 	$EnemyLeft as Enemy,
 	$EnemyCenter as Enemy,
@@ -73,8 +60,13 @@ func _ready() -> void:
 	randomize()
 	ui.digestion_requested.connect(_on_digestion_requested)
 	ui.debug_message_requested.connect(_on_debug_message_requested)
+	input_controller.setup(enemies)
+	input_controller.enemy_drag_started.connect(_on_enemy_drag_started)
+	input_controller.enemy_drag_moved.connect(_on_enemy_drag_moved)
+	input_controller.enemy_drag_released.connect(_on_enemy_drag_released)
+	input_controller.enemy_hover_requested.connect(_set_hovered_enemy)
 	_create_digestion_timer()
-	_hide_nightmare_tooltip()
+	ui.hide_nightmare_tooltip()
 
 
 func start_battle(starting_hp: int = MAX_HP, _day: int = 1, flowers: Array = []) -> void:
@@ -85,6 +77,7 @@ func start_battle(starting_hp: int = MAX_HP, _day: int = 1, flowers: Array = [])
 	rest_recovery_bonus_rate = 0.0
 	debug_numbers_visible = false
 	battle_active = false
+	input_controller.set_active(false)
 	auto_digest_enabled = false
 	auto_digest_paused_for_drag = false
 	digest_turn_in_progress = false
@@ -98,6 +91,7 @@ func start_battle(starting_hp: int = MAX_HP, _day: int = 1, flowers: Array = [])
 	_refresh_ui()
 	stomach.hide_preview()
 	battle_active = true
+	input_controller.set_active(true)
 	_refresh_ui()
 
 
@@ -108,66 +102,40 @@ func _set_planted_flowers(flowers: Array) -> void:
 			planted_flowers.append(flower as FlowerDefinition)
 
 
-func _process(_delta: float) -> void:
-	if not battle_active:
-		_set_hovered_enemy(null)
-		return
-	var mouse_position := get_viewport().get_mouse_position()
-	if dragging_enemy != null:
-		dragging_enemy.global_position = mouse_position + drag_offset
-		stomach.show_preview(dragging_enemy, mouse_position, drag_grab_cell, enemies)
-		_update_hp_damage_preview(mouse_position)
-		_set_hovered_enemy(null)
-		return
-	_update_enemy_hover(mouse_position)
-
-
-func _input(event: InputEvent) -> void:
+func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i) -> void:
 	if not battle_active:
 		return
-	if event is InputEventMouseButton:
-		var mouse_button := event as InputEventMouseButton
-		if mouse_button.button_index != MOUSE_BUTTON_LEFT:
-			return
-		if mouse_button.pressed:
-			_handle_press(mouse_button.position)
-		else:
-			_handle_release(mouse_button.position)
+	dragging_enemy = enemy
+	drag_offset = pointer_offset
+	drag_grab_cell = grab_cell
+	dragged_enemy_was_digesting = enemy.digesting
+	dragged_enemy_original_cell = enemy.stomach_cell
+	dragged_enemy_original_global_position = enemy.global_position
+	auto_digest_paused_for_drag = auto_digest_enabled
+	_update_auto_digest_timer()
+	_play_click_se()
 
 
-func _handle_press(mouse_position: Vector2) -> void:
-	if ui.is_digestion_button_hit(mouse_position):
-		_on_digestion_requested()
+func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i) -> void:
+	if not battle_active or enemy != dragging_enemy:
 		return
-	for i in range(enemies.size() - 1, -1, -1):
-		var enemy := enemies[i]
-		if not enemy.can_drag():
-			continue
-		if enemy.get_global_rect().has_point(mouse_position):
-			dragging_enemy = enemy
-			drag_offset = enemy.global_position - mouse_position
-			drag_grab_cell = enemy.get_grab_cell(mouse_position)
-			dragged_enemy_was_digesting = enemy.digesting
-			dragged_enemy_original_cell = enemy.stomach_cell
-			dragged_enemy_original_global_position = enemy.global_position
-			auto_digest_paused_for_drag = auto_digest_enabled
-			_update_auto_digest_timer()
-			_play_click_se()
-			return
+	dragging_enemy.global_position = mouse_position + pointer_offset
+	stomach.show_preview(dragging_enemy, mouse_position, grab_cell, enemies)
+	_update_hp_damage_preview(mouse_position)
+	_set_hovered_enemy(null)
 
 
-func _handle_release(mouse_position: Vector2) -> void:
-	if dragging_enemy == null:
+func _on_enemy_drag_released(enemy: Enemy, mouse_position: Vector2) -> void:
+	if not battle_active or dragging_enemy == null or enemy != dragging_enemy:
 		return
-	var released_enemy := dragging_enemy
 	dragging_enemy = null
 	_play_click_se()
 	stomach.hide_preview()
 	ui.hide_hp_damage_preview()
 	if stomach.contains_global_position(mouse_position):
-		_try_start_digesting(released_enemy, mouse_position)
+		_try_start_digesting(enemy, mouse_position)
 	else:
-		_remove_enemy_from_stomach(released_enemy)
+		_remove_enemy_from_stomach(enemy)
 	if auto_digest_enabled:
 		auto_digest_paused_for_drag = false
 	_update_auto_digest_timer()
@@ -293,7 +261,7 @@ func _on_digestion_timer_timeout() -> void:
 func _on_debug_message_requested(is_active: bool) -> void:
 	debug_numbers_visible = is_active
 	if hovered_enemy != null:
-		_show_nightmare_tooltip(hovered_enemy)
+		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 
 
 func _try_start_digesting(enemy: Enemy, mouse_position: Vector2) -> void:
@@ -667,6 +635,7 @@ func _get_seed_skill_id_text() -> String:
 func _check_battle_end() -> void:
 	if _all_enemies_digested():
 		battle_active = false
+		input_controller.set_active(false)
 		auto_digest_enabled = false
 		_update_auto_digest_timer()
 		_set_status_message("すべての悪夢を消化しました")
@@ -674,6 +643,7 @@ func _check_battle_end() -> void:
 		return
 	if minutes >= END_HOUR * 60:
 		battle_active = false
+		input_controller.set_active(false)
 		auto_digest_enabled = false
 		_update_auto_digest_timer()
 		_set_status_message("朝までに消化しきれませんでした")
@@ -730,17 +700,6 @@ func _update_auto_digest_timer() -> void:
 	_refresh_ui()
 
 
-func _update_enemy_hover(mouse_position: Vector2) -> void:
-	for i in range(enemies.size() - 1, -1, -1):
-		var enemy := enemies[i]
-		if not enemy.can_drag() or not enemy.visible:
-			continue
-		if enemy.get_global_rect().has_point(mouse_position):
-			_set_hovered_enemy(enemy)
-			return
-	_set_hovered_enemy(null)
-
-
 func _set_hovered_enemy(enemy: Enemy) -> void:
 	if hovered_enemy == enemy:
 		return
@@ -749,49 +708,9 @@ func _set_hovered_enemy(enemy: Enemy) -> void:
 	hovered_enemy = enemy
 	if hovered_enemy != null:
 		hovered_enemy.set_hovered(true)
-		_show_nightmare_tooltip(hovered_enemy)
+		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 	else:
-		_hide_nightmare_tooltip()
-
-
-func _show_nightmare_tooltip(enemy: Enemy) -> void:
-	var main_effect_text := enemy.get_main_effect_text()
-	var sub_effect_text := enemy.get_sub_effect_text()
-	nightmare_name_label.text = enemy.get_display_name()
-	nightmare_debug_number_label.text = _get_tooltip_debug_number_text(enemy)
-	nightmare_debug_number_label.visible = debug_numbers_visible
-	nightmare_category_label.text = enemy.get_category_name()
-	nightmare_category_detail_label.text = enemy.get_category_detail()
-	_update_optional_text_color(nightmare_category_label, nightmare_category_detail_label, nightmare_category_label.text)
-	nightmare_status_title_label.text = "ステータス"
-	nightmare_hp_label.text = "HP: %d" % enemy.max_hp
-	nightmare_damage_label.text = "攻撃力: %d" % enemy.get_damage()
-	nightmare_main_effect_title_label.text = "メイン効果"
-	nightmare_main_effect_label.text = _get_effect_text(main_effect_text)
-	nightmare_sub_effect_title_label.text = "サブ効果"
-	nightmare_sub_effect_label.text = _get_effect_text(sub_effect_text)
-	_update_optional_text_color(nightmare_main_effect_title_label, nightmare_main_effect_label, main_effect_text)
-	_update_optional_text_color(nightmare_sub_effect_title_label, nightmare_sub_effect_label, sub_effect_text)
-	nightmare_tooltip_panel.visible = true
-
-
-func _hide_nightmare_tooltip() -> void:
-	nightmare_tooltip_panel.visible = false
-	nightmare_debug_number_label.visible = false
-
-
-func _get_effect_text(text: String) -> String:
-	if text.is_empty():
-		return "-"
-	return text
-
-
-func _update_optional_text_color(title_label: Label, detail_label: Label, text: String) -> void:
-	var effect_color := TOOLTIP_EFFECT_ACTIVE_COLOR
-	if text.is_empty() or text == "-":
-		effect_color = TOOLTIP_EFFECT_EMPTY_COLOR
-	title_label.add_theme_color_override("font_color", effect_color)
-	detail_label.add_theme_color_override("font_color", effect_color)
+		ui.hide_nightmare_tooltip()
 
 
 func _update_hp_damage_preview(mouse_position: Vector2) -> void:

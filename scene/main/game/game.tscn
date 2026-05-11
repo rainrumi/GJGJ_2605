@@ -18,6 +18,8 @@
 [ext_resource type="Resource" path="res://data/resources/enemies/overeating_nightmare.tres" id="24_overeating"]
 [ext_resource type="Resource" path="res://data/resources/enemies/chased_nightmare.tres" id="25_chased"]
 [ext_resource type="Resource" path="res://data/resources/nightmare_skills/nightmare_skill_catalog.tres" id="26_nightmare_skill_catalog"]
+[ext_resource type="Script" path="res://scene/main/game/game_input_controller.gd" id="27_game_input_controller"]
+[ext_resource type="Script" path="res://scene/ui/battle_ui/nightmare_tooltip_view.gd" id="28_nightmare_tooltip_view"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nightmare_tooltip"]
 content_margin_left = 24.0
@@ -32,6 +34,9 @@ enemy_definitions = Array[Resource]([ExtResource("23_adult"), ExtResource("24_ov
 nightmare_skill_catalog = ExtResource("26_nightmare_skill_catalog")
 
 [node name="Background" parent="." unique_id=1278647446 instance=ExtResource("1_background")]
+
+[node name="GameInputController" type="Node" parent="." unique_id=161686257]
+script = ExtResource("27_game_input_controller")
 
 [node name="PassiveFlower" type="Sprite2D" parent="." unique_id=1390278827]
 position = Vector2(181, 81)
@@ -180,6 +185,7 @@ offset_right = 384.0
 offset_bottom = 720.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nightmare_tooltip")
+script = ExtResource("28_nightmare_tooltip_view")
 
 [node name="Content" type="Control" parent="UI/NightmareTooltipPanel" unique_id=1572556432]
 layout_mode = 1
