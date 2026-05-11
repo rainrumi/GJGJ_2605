@@ -1,30 +1,30 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene format=3 uid="uid://durkvvfl2418x"]
 
-[ext_resource type="Script" path="res://scene/main/stage_select/stage_select.gd" id="1_script"]
-[ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="2_font"]
-[ext_resource type="Texture2D" path="res://art/character/tex_character_portrate_1000.png" id="3_character"]
-[ext_resource type="Texture2D" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="4_title_effect"]
+[ext_resource type="Script" uid="uid://ghs00rpe7llg" path="res://scene/main/stage_select/stage_select.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://art/character/tex_character_portrate_1000.png" id="3_character"]
+[ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="4_title_effect"]
 [ext_resource type="PackedScene" path="res://scene/main/stage_select/stage_choice.tscn" id="5_stage_choice"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_catalog.tres" id="6_stage_catalog"]
 
-[node name="StageSelect" type="Node2D"]
+[node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
 stage_catalog = ExtResource("6_stage_catalog")
 
-[node name="CharacterArea" type="Node2D" parent="."]
+[node name="CharacterArea" type="Node2D" parent="." unique_id=691295669]
 
-[node name="Character" type="Sprite2D" parent="CharacterArea"]
+[node name="Character" type="Sprite2D" parent="CharacterArea" unique_id=1350771073]
 position = Vector2(190, 420)
 texture = ExtResource("3_character")
 
-[node name="UI" type="Control" parent="."]
+[node name="UI" type="Control" parent="." unique_id=299033329]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 mouse_filter = 2
 
-[node name="TitleEffect" type="TextureRect" parent="UI"]
+[node name="TitleEffect" type="TextureRect" parent="UI" unique_id=506160278]
 layout_mode = 0
 offset_left = 572.0
 offset_top = 31.0
@@ -35,7 +35,7 @@ texture = ExtResource("4_title_effect")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="TitleLabel" type="Label" parent="UI"]
+[node name="TitleLabel" type="Label" parent="UI" unique_id=733318273]
 layout_mode = 0
 offset_left = 626.0
 offset_top = 82.0
@@ -50,7 +50,7 @@ text = "夢の主を選択"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StageChoices" type="Control" parent="UI"]
+[node name="StageChoices" type="Control" parent="UI" unique_id=1363958576]
 anchors_preset = 0
 offset_left = 460.0
 offset_top = 334.0
@@ -58,15 +58,15 @@ offset_right = 1236.0
 offset_bottom = 586.0
 mouse_filter = 2
 
-[node name="StageChoice1" parent="UI/StageChoices" instance=ExtResource("5_stage_choice")]
+[node name="StageChoice1" parent="UI/StageChoices" unique_id=786245821 instance=ExtResource("5_stage_choice")]
 layout_mode = 0
 
-[node name="StageChoice2" parent="UI/StageChoices" instance=ExtResource("5_stage_choice")]
+[node name="StageChoice2" parent="UI/StageChoices" unique_id=576244151 instance=ExtResource("5_stage_choice")]
 layout_mode = 0
 offset_left = 266.0
 offset_right = 514.0
 
-[node name="StageChoice3" parent="UI/StageChoices" instance=ExtResource("5_stage_choice")]
+[node name="StageChoice3" parent="UI/StageChoices" unique_id=259931286 instance=ExtResource("5_stage_choice")]
 layout_mode = 0
 offset_left = 532.0
 offset_right = 780.0

@@ -60,11 +60,17 @@ func _setup_tag_frames(tag_names: Array[String]) -> void:
 	if tag_frame_scene == null:
 		return
 	for tag_name in tag_names:
-		var tag_frame := tag_frame_scene.instantiate() as StageSelectTagFrame
-		if tag_frame == null:
+		var tag_node := tag_frame_scene.instantiate()
+		if tag_node == null:
 			continue
-		tags_container.add_child(tag_frame)
-		tag_frame.setup_tag(tag_name)
+		tags_container.add_child(tag_node)
+		if tag_node is StageSelectTagFrame:
+			var tag_frame := tag_node as StageSelectTagFrame
+			tag_frame.setup_tag(tag_name)
+		elif tag_node.has_node("Name"):
+			var label := tag_node.get_node("Name") as Label
+			if label != null:
+				label.text = tag_name
 
 
 func _on_button_down() -> void:
