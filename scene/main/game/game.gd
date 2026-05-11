@@ -753,5 +753,9 @@ func get_current_hp() -> int:
 	return hp
 
 
+func get_clear_minutes() -> int:
+	return minutes
+
+
 func get_max_hp() -> int:
 	return MAX_HP

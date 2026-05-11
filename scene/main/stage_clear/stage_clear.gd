@@ -2,7 +2,11 @@ extends Node2D
 
 signal selection_finished(recovered_hp_rate: float)
 
-const HP_RECOVERY_RATE := 0.1
+const ABANDON_HP_RECOVERY_RATE := 0.1
+const CLEAR_RECOVERY_START_HOUR := 22
+const CLEAR_RECOVERY_END_HOUR := 27
+const CLEAR_RECOVERY_BASE_RATE := 0.5
+const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
 const MAX_HP := 100
 const HP_GAUGE_TWEEN_DURATION := 0.35
 const HOVER_SCALE := 1.1
@@ -20,6 +24,7 @@ const ABANDON_BUTTON_DEFAULT_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
 @export var seed_options: Array[Resource] = []
 
 @onready var hp_gauge: NinePatchRect = $CharacterArea/HpFrame/HpGauge
+@onready var hp_heal_plan: NinePatchRect = $CharacterArea/HpFrame/HpHealPlan
 @onready var hp_text: Label = $CharacterArea/HpFrame/HpText
 @onready var planted_info_text: Label = $CharacterArea/PlantedInfoFrame/PlantedInfoText
 @onready var guide_text: Label = $UI/GuideText
@@ -38,6 +43,8 @@ const ABANDON_BUTTON_DEFAULT_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
 
 var planted_flowers: Array[FlowerDefinition] = []
 var current_hp := MAX_HP
+var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
+var _clear_recovery_applied := false
 var _hp_gauge_full_width := 0.0
 var _hp_gauge_tween: Tween
 var _abandon_button_base_scale := Vector2.ONE
@@ -63,6 +70,16 @@ func _ready() -> void:
 
 func setup_hp(value: int) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
+	_clear_recovery_applied = false
+	if is_node_ready():
+		_set_hp(current_hp, false)
+		_show_select_mode()
+
+
+func setup_clear_result(value: int, cleared_minutes: int) -> void:
+	current_hp = clampi(value, 0, MAX_HP)
+	clear_minutes = cleared_minutes
+	_clear_recovery_applied = false
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
@@ -70,6 +87,8 @@ func setup_hp(value: int) -> void:
 
 func reset_player_state() -> void:
 	current_hp = MAX_HP
+	clear_minutes = CLEAR_RECOVERY_START_HOUR * 60
+	_clear_recovery_applied = false
 	_initialize_planted_flowers()
 	if is_node_ready():
 		_set_hp(current_hp, false)
@@ -128,7 +147,8 @@ func _show_select_mode() -> void:
 	abandon_button.disabled = false
 	_reset_abandon_button_visual()
 	_reset_abandon_button_scale()
-	abandon_button.text = "放棄する　HP +10%回復"
+	abandon_button.text = "放棄する　HP +%d%%回復" % roundi(ABANDON_HP_RECOVERY_RATE * 100.0)
+	_update_hp_heal_plan()
 	for i in range(seed_choices.size()):
 		seed_choices[i].set_choice_disabled(_get_seed_option(i) == null)
 	for slot in flower_slots:
@@ -143,19 +163,19 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 	if _can_plant_seed(seed):
 		planted_flowers.append(flower)
 		_refresh_flower_slots()
-		selection_finished.emit(0.0)
+		var recovered_rate := _apply_selection_recovery(0.0)
+		selection_finished.emit(recovered_rate)
 		_show_finished_mode("%sを植えました" % seed.display_name)
 		return
 	_replace_flower(seed, flower)
 	_refresh_flower_slots()
-	selection_finished.emit(0.0)
+	var replacement_recovered_rate := _apply_selection_recovery(0.0)
+	selection_finished.emit(replacement_recovered_rate)
 	_show_finished_mode("%sを植え替えました" % seed.display_name)
 
 
 func _on_abandon_button_pressed() -> void:
-	var recovery_rate := HP_RECOVERY_RATE + _get_seed_clear_recovery_bonus_rate()
-	var recovered_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * recovery_rate))
-	_set_hp(recovered_hp, true)
+	var recovery_rate := _apply_selection_recovery(ABANDON_HP_RECOVERY_RATE)
 	selection_finished.emit(recovery_rate)
 	_reset_abandon_button_scale()
 	_show_finished_mode("種を放棄してHPを回復しました")
@@ -170,6 +190,7 @@ func _show_finished_mode(message: String) -> void:
 		seed_choice.set_choice_disabled(true)
 	for slot in flower_slots:
 		slot.disabled = true
+	_update_hp_heal_plan()
 
 
 func _can_plant_seed(seed: SeedOptionDefinition) -> bool:
@@ -222,6 +243,44 @@ func _get_seed_clear_recovery_bonus_rate() -> float:
 		if skill.skill_id == 2 and skill.category == "夢の花系統":
 			bonus_rate += 0.1
 	return bonus_rate
+
+
+func _get_clear_time_recovery_rate() -> float:
+	if _is_clear_time_recovery_disabled():
+		return 0.0
+	var clear_hour := int(clear_minutes / 60)
+	if clear_hour < CLEAR_RECOVERY_START_HOUR:
+		return CLEAR_RECOVERY_BASE_RATE
+	if clear_hour >= CLEAR_RECOVERY_END_HOUR:
+		return 0.0
+	var elapsed_hours := clear_hour - CLEAR_RECOVERY_START_HOUR
+	return maxf(0.0, CLEAR_RECOVERY_BASE_RATE - float(elapsed_hours) * CLEAR_RECOVERY_HOURLY_LOSS_RATE)
+
+
+func _get_planned_clear_recovery_rate() -> float:
+	if _clear_recovery_applied:
+		return 0.0
+	return _get_clear_time_recovery_rate() + _get_seed_clear_recovery_bonus_rate()
+
+
+func _apply_selection_recovery(extra_recovery_rate: float) -> float:
+	if _clear_recovery_applied:
+		return 0.0
+	var recovery_rate := _get_planned_clear_recovery_rate() + extra_recovery_rate
+	var recovered_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * recovery_rate))
+	_clear_recovery_applied = true
+	_set_hp(recovered_hp, true)
+	return recovery_rate
+
+
+func _is_clear_time_recovery_disabled() -> bool:
+	for flower in planted_flowers:
+		if flower == null or flower.dream_seed_skill == null:
+			continue
+		var skill := flower.dream_seed_skill
+		if skill.skill_id == 4 and skill.category == "時間系統":
+			return true
+	return false
 
 
 func _refresh_flower_slots() -> void:
@@ -281,13 +340,32 @@ func _set_hp(value: int, animated: bool) -> void:
 		hp_gauge.size = target_size
 		if current_hp == 0:
 			hp_gauge.visible = false
+		_update_hp_heal_plan()
 		return
 	_hp_gauge_tween = create_tween()
 	_hp_gauge_tween.set_trans(Tween.TRANS_QUAD)
 	_hp_gauge_tween.set_ease(Tween.EASE_OUT)
 	_hp_gauge_tween.tween_property(hp_gauge, "size", target_size, HP_GAUGE_TWEEN_DURATION)
+	_hp_gauge_tween.tween_callback(Callable(self, "_update_hp_heal_plan"))
 	if current_hp == 0:
 		_hp_gauge_tween.tween_callback(func() -> void: hp_gauge.visible = false)
+
+
+func _update_hp_heal_plan() -> void:
+	if hp_heal_plan == null:
+		return
+	var recovery_rate := _get_planned_clear_recovery_rate()
+	var current_ratio := clampf(float(current_hp) / float(MAX_HP), 0.0, 1.0)
+	var target_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * recovery_rate))
+	var target_ratio := clampf(float(target_hp) / float(MAX_HP), 0.0, 1.0)
+	var current_width := _hp_gauge_full_width * current_ratio
+	var target_width := _hp_gauge_full_width * target_ratio
+	var plan_width := maxf(0.0, target_width - current_width)
+	hp_heal_plan.visible = plan_width > 0.0
+	hp_heal_plan.position = hp_gauge.position + Vector2(current_width, 0.0)
+	hp_heal_plan.size = Vector2(plan_width, hp_gauge.size.y)
+	hp_heal_plan.z_index = hp_gauge.z_index + 1
+	hp_text.z_index = hp_heal_plan.z_index + 1
 
 
 func _on_abandon_button_mouse_entered() -> void:

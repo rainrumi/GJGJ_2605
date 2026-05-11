@@ -13,6 +13,7 @@
 [ext_resource type="Resource" path="res://data/resources/stage_clear/carnation_seed.tres" id="12_carnation_seed"]
 [ext_resource type="Resource" path="res://data/resources/stage_clear/chamomile_seed.tres" id="13_chamomile_seed"]
 [ext_resource type="Resource" uid="uid://bdc1rl2wr5u3c" path="res://data/resources/stage_clear/capuchi_seed.tres" id="14_capuchi_seed"]
+[ext_resource type="Texture2D" path="res://art/ui/hp/ui_hp_heal_plan_1000.png" id="15_hp_heal_plan"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
@@ -44,6 +45,19 @@ offset_top = 6.0
 offset_right = 250.0
 offset_bottom = 20.0
 texture = ExtResource("10_hp_gauge")
+patch_margin_left = 8
+patch_margin_top = 6
+patch_margin_right = 8
+patch_margin_bottom = 6
+
+[node name="HpHealPlan" type="NinePatchRect" parent="CharacterArea/HpFrame"]
+visible = false
+layout_mode = 0
+offset_left = 250.0
+offset_top = 6.0
+offset_right = 250.0
+offset_bottom = 20.0
+texture = ExtResource("15_hp_heal_plan")
 patch_margin_left = 8
 patch_margin_top = 6
 patch_margin_right = 8
