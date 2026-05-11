@@ -1,3 +1,4 @@
+class_name OpeningNovel
 extends CanvasLayer
 
 signal finished
@@ -25,6 +26,15 @@ func _ready() -> void:
 
 func start() -> void:
 	_pages = novel_text.get_pages() if novel_text != null else []
+	_page_index = 0
+	_is_showing = true
+	visible = true
+	layer = 100
+	_show_current_page()
+
+
+func start_with_text(next_novel_text: NovelTextResource) -> void:
+	_pages = next_novel_text.get_pages() if next_novel_text != null else []
 	_page_index = 0
 	_is_showing = true
 	visible = true

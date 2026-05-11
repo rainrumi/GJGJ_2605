@@ -2,8 +2,16 @@ extends Node
 
 const STAGE_CLEAR_RETURN_DELAY := 1.0
 
+enum NovelFlow {
+	NONE,
+	OPENING,
+	END_GAMEOVER,
+}
+
+@export var end_gameover_novel_text: NovelTextResource
+
 @onready var title: Node = $Title
-@onready var opening_novel: CanvasLayer = $OpeningNovel
+@onready var opening_novel: OpeningNovel = $OpeningNovel
 @onready var day_intro: DayIntro = $DayIntro
 @onready var stage_select: Node = $StageSelect
 @onready var game: Node = $Game
@@ -14,6 +22,7 @@ const STAGE_CLEAR_RETURN_DELAY := 1.0
 var current_day := 1
 var selected_stage_index := 0
 var should_reset_player_state := true
+var active_novel_flow := NovelFlow.NONE
 
 
 func _ready() -> void:
@@ -73,11 +82,18 @@ func _on_title_start_game() -> void:
 	if stage_clear.has_method("reset_player_state"):
 		stage_clear.reset_player_state()
 	title.visible = false
+	active_novel_flow = NovelFlow.OPENING
 	opening_novel.start()
 
 
 func _on_opening_novel_finished() -> void:
-	show_day_intro()
+	match active_novel_flow:
+		NovelFlow.END_GAMEOVER:
+			active_novel_flow = NovelFlow.NONE
+			_finish_end_gameover_novel()
+		_:
+			active_novel_flow = NovelFlow.NONE
+			show_day_intro()
 
 
 func show_day_intro() -> void:
@@ -101,7 +117,26 @@ func _on_game_battle_finished(won: bool) -> void:
 	if won:
 		show_stage_clear()
 	else:
-		show_title()
+		show_end_gameover_novel()
+
+
+func show_end_gameover_novel() -> void:
+	title.visible = false
+	opening_novel.visible = false
+	day_intro.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+	active_novel_flow = NovelFlow.END_GAMEOVER
+	opening_novel.start_with_text(end_gameover_novel_text)
+
+
+func _finish_end_gameover_novel() -> void:
+	if stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
+		stage_clear.setup_hp(game.get_current_hp())
+	current_day += 1
+	show_day_intro()
 
 
 func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
