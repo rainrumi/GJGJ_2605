@@ -103,8 +103,8 @@ func hide_nightmare_tooltip() -> void:
 	nightmare_tooltip.hide_tooltip()
 func set_digest_damage_info(total_damage: int, base_damage: int, seed_buff: int, seed_rate: float, nightmare_buff: int, nightmare_rate: float) -> void:
 	passive_guide_text.text = "消化ダメージ"
-	digest_damage_value.text = "%04d" % total_damage
-	digest_damage_detail.text = "基礎消化ダメージ：%03d\n夢の種バフ：%s(%s)\n悪夢バフ：%s(%s)" % [base_damage, _format_buff_amount(seed_buff), _format_buff_rate(seed_rate), _format_buff_amount(nightmare_buff), _format_buff_rate(nightmare_rate)]
+	digest_damage_value.text = "%d" % total_damage
+	digest_damage_detail.text = "基礎消化ダメージ：%d\n夢の種バフ：%s(%s)\n悪夢バフ：%s(%s)" % [base_damage, _format_buff_amount(seed_buff), _format_buff_rate(seed_rate), _format_buff_amount(nightmare_buff), _format_buff_rate(nightmare_rate)]
 func _configure_digest_damage_labels() -> void:
 	passive_guide_text.position = Vector2(26.0, 10.0)
 	passive_guide_text.size = Vector2(158.0, 30.0)
@@ -146,13 +146,13 @@ func _create_debug_button_style(color: Color) -> StyleBoxFlat:
 	return style
 func _format_buff_amount(amount: int) -> String:
 	if amount >= 0:
-		return "+%03d" % amount
-	return "-%03d" % absi(amount)
+		return "+%d" % amount
+	return "-%d" % absi(amount)
 func _format_buff_rate(rate: float) -> String:
 	var percent := roundi(rate * 100.0)
 	if percent >= 0:
-		return "+%02d%%" % percent
-	return "-%02d%%" % absi(percent)
+		return "+%d%%" % percent
+	return "-%d%%" % absi(percent)
 func set_digestion_count(count: int) -> void:
 	digestion_label.text = "消化開始！"
 func set_digestion_button_visible(is_visible: bool) -> void:
