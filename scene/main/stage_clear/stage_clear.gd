@@ -1,7 +1,5 @@
-extends Node2D
-
+﻿extends Node2D
 signal selection_finished(recovered_hp_rate: float)
-
 const ABANDON_HP_RECOVERY_RATE := 0.1
 const CLEAR_RECOVERY_START_HOUR := 22
 const CLEAR_RECOVERY_END_HOUR := 27
@@ -17,12 +15,10 @@ const RARITY_HIGH: StringName = &"high"
 const HEAD_FLOWER_DISPLAY_COUNT := 1
 const ABANDON_BUTTON_PRESSED_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
 const ABANDON_BUTTON_DEFAULT_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
-
 @export var max_normal_flowers := 3
 @export var max_high_flowers := 2
 @export var initial_flower: FlowerDefinition
 @export var seed_options: Array[Resource] = []
-
 @onready var hp_gauge: NinePatchRect = $CharacterArea/HpFrame/HpGauge
 @onready var hp_heal_plan: NinePatchRect = $CharacterArea/HpFrame/HpHealPlan
 @onready var hp_text: Label = $CharacterArea/HpFrame/HpText
@@ -40,7 +36,6 @@ const ABANDON_BUTTON_DEFAULT_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
 	$CharacterArea/FlowerSlots/FlowerSlot2 as Button,
 	$CharacterArea/FlowerSlots/FlowerSlot3 as Button,
 ]
-
 var planted_flowers: Array[FlowerDefinition] = []
 var current_hp := MAX_HP
 var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
@@ -51,8 +46,6 @@ var _abandon_button_base_scale := Vector2.ONE
 var _abandon_button_hover_tween: Tween
 var _abandon_button_hovered := false
 var _abandon_button_pressed := false
-
-
 func _ready() -> void:
 	_capture_hp_gauge_size()
 	_capture_button_scales()
@@ -66,16 +59,12 @@ func _ready() -> void:
 	abandon_button.mouse_exited.connect(_on_abandon_button_mouse_exited)
 	_set_hp(current_hp, false)
 	_show_select_mode()
-
-
 func setup_hp(value: int) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	_clear_recovery_applied = false
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
-
-
 func setup_clear_result(value: int, cleared_minutes: int) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	clear_minutes = cleared_minutes
@@ -83,8 +72,6 @@ func setup_clear_result(value: int, cleared_minutes: int) -> void:
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
-
-
 func reset_player_state() -> void:
 	current_hp = MAX_HP
 	clear_minutes = CLEAR_RECOVERY_START_HOUR * 60
@@ -93,33 +80,23 @@ func reset_player_state() -> void:
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
-
-
 func get_current_hp() -> int:
 	return current_hp
-
-
 func get_planted_flowers() -> Array[FlowerDefinition]:
 	var flowers: Array[FlowerDefinition] = []
 	for flower in planted_flowers:
 		if flower != null:
 			flowers.append(flower)
 	return flowers
-
-
 func _initialize_planted_flowers() -> void:
 	planted_flowers.clear()
 	if initial_flower != null:
 		planted_flowers.append(initial_flower)
 	_refresh_flower_slots()
-
-
 func _get_seed_option(seed_index: int) -> SeedOptionDefinition:
 	if seed_index < 0 or seed_index >= seed_options.size():
 		return null
 	return seed_options[seed_index] as SeedOptionDefinition
-
-
 func _setup_seed_choices() -> void:
 	for i in range(seed_choices.size()):
 		var seed_choice := seed_choices[i]
@@ -135,13 +112,9 @@ func _setup_seed_choices() -> void:
 			seed.effect_font_size
 		)
 		seed_choice.pressed.connect(_on_seed_choice_pressed.bind(i))
-
-
 func _setup_flower_slots() -> void:
 	for slot in flower_slots:
 		slot.disabled = true
-
-
 func _show_select_mode() -> void:
 	guide_text.text = "夢の種をひとつ選んでください"
 	abandon_button.disabled = false
@@ -153,8 +126,6 @@ func _show_select_mode() -> void:
 		seed_choices[i].set_choice_disabled(_get_seed_option(i) == null)
 	for slot in flower_slots:
 		slot.disabled = true
-
-
 func _on_seed_choice_pressed(seed_index: int) -> void:
 	var seed := _get_seed_option(seed_index)
 	if seed == null:
@@ -172,15 +143,11 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 	var replacement_recovered_rate := _apply_selection_recovery(0.0)
 	selection_finished.emit(replacement_recovered_rate)
 	_show_finished_mode("%sを植え替えました" % seed.display_name)
-
-
 func _on_abandon_button_pressed() -> void:
 	var recovery_rate := _apply_selection_recovery(ABANDON_HP_RECOVERY_RATE)
 	selection_finished.emit(recovery_rate)
 	_reset_abandon_button_scale()
 	_show_finished_mode("種を放棄してHPを回復しました")
-
-
 func _show_finished_mode(message: String) -> void:
 	guide_text.text = message
 	abandon_button.disabled = true
@@ -191,22 +158,14 @@ func _show_finished_mode(message: String) -> void:
 	for slot in flower_slots:
 		slot.disabled = true
 	_update_hp_heal_plan()
-
-
 func _can_plant_seed(seed: SeedOptionDefinition) -> bool:
-	if seed.flower_definition == null:
-		return false
-	return _count_planted_by_rarity(seed.rarity) < _get_max_flowers_by_rarity(seed.rarity)
-
-
+	return StageClearRecoveryCalculator.can_plant_seed(seed, planted_flowers, max_normal_flowers, max_high_flowers)
 func _create_seed_flower(seed: SeedOptionDefinition) -> FlowerDefinition:
 	if seed.flower_definition == null:
 		return null
 	var flower := seed.flower_definition.duplicate() as FlowerDefinition
 	flower.dream_seed_skill = seed.dream_seed_skill
 	return flower
-
-
 func _replace_flower(seed: SeedOptionDefinition, flower: FlowerDefinition) -> void:
 	if flower == null:
 		return
@@ -215,54 +174,8 @@ func _replace_flower(seed: SeedOptionDefinition, flower: FlowerDefinition) -> vo
 			continue
 		planted_flowers[i] = flower
 		return
-
-
-func _count_planted_by_rarity(rarity: StringName) -> int:
-	var count := 0
-	for flower in planted_flowers:
-		if flower != null and flower.rarity == rarity:
-			count += 1
-	return count
-
-
-func _get_max_flowers_by_rarity(rarity: StringName) -> int:
-	match rarity:
-		RARITY_NORMAL:
-			return max_normal_flowers
-		RARITY_HIGH:
-			return max_high_flowers
-	return 0
-
-
-func _get_seed_clear_recovery_bonus_rate() -> float:
-	var bonus_rate := 0.0
-	for flower in planted_flowers:
-		if flower == null or flower.dream_seed_skill == null:
-			continue
-		var skill := flower.dream_seed_skill
-		if skill.skill_id == 2 and skill.category == "夢の花系統":
-			bonus_rate += 0.1
-	return bonus_rate
-
-
-func _get_clear_time_recovery_rate() -> float:
-	if _is_clear_time_recovery_disabled():
-		return 0.0
-	var clear_hour := int(clear_minutes / 60)
-	if clear_hour < CLEAR_RECOVERY_START_HOUR:
-		return CLEAR_RECOVERY_BASE_RATE
-	if clear_hour >= CLEAR_RECOVERY_END_HOUR:
-		return 0.0
-	var elapsed_hours := clear_hour - CLEAR_RECOVERY_START_HOUR
-	return maxf(0.0, CLEAR_RECOVERY_BASE_RATE - float(elapsed_hours) * CLEAR_RECOVERY_HOURLY_LOSS_RATE)
-
-
 func _get_planned_clear_recovery_rate() -> float:
-	if _clear_recovery_applied:
-		return 0.0
-	return _get_clear_time_recovery_rate() + _get_seed_clear_recovery_bonus_rate()
-
-
+	return StageClearRecoveryCalculator.get_planned_recovery_rate(planted_flowers, clear_minutes, _clear_recovery_applied, CLEAR_RECOVERY_START_HOUR, CLEAR_RECOVERY_END_HOUR, CLEAR_RECOVERY_BASE_RATE, CLEAR_RECOVERY_HOURLY_LOSS_RATE)
 func _apply_selection_recovery(extra_recovery_rate: float) -> float:
 	if _clear_recovery_applied:
 		return 0.0
@@ -271,18 +184,6 @@ func _apply_selection_recovery(extra_recovery_rate: float) -> float:
 	_clear_recovery_applied = true
 	_set_hp(recovered_hp, true)
 	return recovery_rate
-
-
-func _is_clear_time_recovery_disabled() -> bool:
-	for flower in planted_flowers:
-		if flower == null or flower.dream_seed_skill == null:
-			continue
-		var skill := flower.dream_seed_skill
-		if skill.skill_id == 4 and skill.category == "時間系統":
-			return true
-	return false
-
-
 func _refresh_flower_slots() -> void:
 	for i in range(flower_slots.size()):
 		var texture_rect := flower_slots[i].get_node("FlowerTexture") as TextureRect
@@ -293,40 +194,28 @@ func _refresh_flower_slots() -> void:
 		texture_rect.texture = planted_flowers[i].texture
 		flower_slots[i].disabled = true
 	_update_planted_info_text()
-
-
 func _update_planted_info_text() -> void:
-	var normal_remaining := maxi(0, max_normal_flowers - _count_planted_by_rarity(RARITY_NORMAL))
-	var high_remaining := maxi(0, max_high_flowers - _count_planted_by_rarity(RARITY_HIGH))
-	planted_info_text.text = "植えられる本数\n通常　あと %d本\n高級　あと %d本" % [normal_remaining, high_remaining]
-
-
+	var normal_count := StageClearRecoveryCalculator.count_planted_by_rarity(planted_flowers, RARITY_NORMAL)
+	var high_count := StageClearRecoveryCalculator.count_planted_by_rarity(planted_flowers, RARITY_HIGH)
+	var normal_remaining := maxi(0, max_normal_flowers - normal_count)
+	var high_remaining := maxi(0, max_high_flowers - high_count)
+	planted_info_text.text = "植えられる数\n通常　あと %d本\n高級　あと %d本" % [normal_remaining, high_remaining]
 func _on_abandon_button_down() -> void:
 	_abandon_button_pressed = true
 	abandon_button_frame.modulate = ABANDON_BUTTON_PRESSED_MODULATE
 	_update_abandon_button_scale()
-
-
 func _on_abandon_button_up() -> void:
 	_abandon_button_pressed = false
 	_abandon_button_hovered = false
 	_reset_abandon_button_visual()
 	_update_abandon_button_scale()
-
-
 func _reset_abandon_button_visual() -> void:
 	abandon_button_frame.modulate = ABANDON_BUTTON_DEFAULT_MODULATE
-
-
 func _capture_button_scales() -> void:
 	abandon_button_frame.pivot_offset = abandon_button_frame.size * 0.5
 	_abandon_button_base_scale = abandon_button_frame.scale
-
-
 func _capture_hp_gauge_size() -> void:
 	_hp_gauge_full_width = hp_gauge.size.x
-
-
 func _set_hp(value: int, animated: bool) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	hp_text.text = "%d/%d" % [current_hp, MAX_HP]
@@ -349,8 +238,6 @@ func _set_hp(value: int, animated: bool) -> void:
 	_hp_gauge_tween.tween_callback(Callable(self, "_update_hp_heal_plan"))
 	if current_hp == 0:
 		_hp_gauge_tween.tween_callback(func() -> void: hp_gauge.visible = false)
-
-
 func _update_hp_heal_plan() -> void:
 	if hp_heal_plan == null:
 		return
@@ -366,19 +253,13 @@ func _update_hp_heal_plan() -> void:
 	hp_heal_plan.size = Vector2(plan_width, hp_gauge.size.y)
 	hp_heal_plan.z_index = hp_gauge.z_index + 1
 	hp_text.z_index = hp_heal_plan.z_index + 1
-
-
 func _on_abandon_button_mouse_entered() -> void:
 	_abandon_button_hovered = true
 	_update_abandon_button_scale()
-
-
 func _on_abandon_button_mouse_exited() -> void:
 	_abandon_button_hovered = false
 	_abandon_button_pressed = false
 	_update_abandon_button_scale()
-
-
 func _update_abandon_button_scale() -> void:
 	if _abandon_button_hover_tween != null and _abandon_button_hover_tween.is_valid():
 		_abandon_button_hover_tween.kill()
@@ -396,11 +277,10 @@ func _update_abandon_button_scale() -> void:
 		target_scale,
 		HOVER_TWEEN_DURATION
 	)
-
-
 func _reset_abandon_button_scale() -> void:
 	_abandon_button_hovered = false
 	_abandon_button_pressed = false
 	if _abandon_button_hover_tween != null and _abandon_button_hover_tween.is_valid():
 		_abandon_button_hover_tween.kill()
 	abandon_button_frame.scale = _abandon_button_base_scale
+

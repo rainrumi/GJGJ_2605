@@ -1,10 +1,8 @@
 class_name BattleUI
 extends CanvasLayer
-
 signal digestion_requested
 signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
-
 const HOVER_SCALE := 1.1
 const HOVER_TWEEN_DURATION := 0.1
 const TIME_PULSE_SCALE := 1.1
@@ -18,7 +16,6 @@ const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
 const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
-
 @onready var passive_guide_text: Label = $PassiveGuideFrame/PassiveGuideText
 @onready var hp_frame: NinePatchRect = $HpFrame
 @onready var hp_gauge: NinePatchRect = $HpFrame/HpGauge
@@ -34,7 +31,6 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @onready var debug_reroll_button: Button = $StatusPanel/DebugRerollButton
 @onready var debug_message_button: Button = $StatusPanel/DebugMessageButton
 @onready var nightmare_tooltip: NightmareTooltipView = $NightmareTooltipPanel
-
 var _hp_gauge_full_width := 0.0
 var _hp_gauge_tween: Tween
 var _digestion_button_base_scale := Vector2.ONE
@@ -47,8 +43,6 @@ var _time_elapsed_tween: Tween
 var _hp_damage_preview_label: Label
 var _debug_message := ""
 var _debug_button_active := false
-
-
 func _ready() -> void:
 	_prepare_mouse_filters()
 	_prepare_debug_message_button()
@@ -57,8 +51,6 @@ func _ready() -> void:
 	_capture_sizes()
 	_create_hp_damage_preview()
 	_create_time_elapsed_label()
-
-
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var key_event := event as InputEventKey
@@ -68,8 +60,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			_on_debug_message_button_pressed()
 		if key_event.keycode == KEY_R and _debug_button_active:
 			debug_reroll_requested.emit()
-
-
 func reset_for_battle(max_hp: int, minutes: int, message: String) -> void:
 	set_hp(max_hp, max_hp)
 	set_time(minutes)
@@ -82,8 +72,6 @@ func reset_for_battle(max_hp: int, minutes: int, message: String) -> void:
 	hide_hp_damage_preview()
 	hide_time_elapsed()
 	hide_nightmare_tooltip()
-
-
 func set_hp(current_hp: int, max_hp: int) -> void:
 	hp_text.text = "%d/%d" % [maxi(0, current_hp), max_hp]
 	var hp_ratio := clampf(float(maxi(0, current_hp)) / float(max_hp), 0.0, 1.0)
@@ -98,49 +86,22 @@ func set_hp(current_hp: int, max_hp: int) -> void:
 	_hp_gauge_tween.tween_property(hp_gauge, "size", target_size, HP_GAUGE_TWEEN_DURATION)
 	if hp_ratio == 0.0:
 		_hp_gauge_tween.tween_callback(func() -> void: hp_gauge.visible = false)
-
-
 func set_time(minutes: int) -> void:
 	var hour := int(minutes / 60) % 24
 	var minute := minutes % 60
 	time_text.text = "%02d:%02d" % [hour, minute]
-
-
 func set_message(message: String) -> void:
 	message_text.text = message
-
-
 func set_debug_message(message: String) -> void:
 	_debug_message = message
-
-
 func show_nightmare_tooltip(enemy: Enemy, debug_number_text: String, debug_numbers_visible: bool) -> void:
 	nightmare_tooltip.show_enemy(enemy, debug_number_text, debug_numbers_visible)
-
-
 func hide_nightmare_tooltip() -> void:
 	nightmare_tooltip.hide_tooltip()
-
-
-func set_digest_damage_info(
-	total_damage: int,
-	base_damage: int,
-	seed_buff: int,
-	seed_rate: float,
-	nightmare_buff: int,
-	nightmare_rate: float
-) -> void:
+func set_digest_damage_info(total_damage: int, base_damage: int, seed_buff: int, seed_rate: float, nightmare_buff: int, nightmare_rate: float) -> void:
 	passive_guide_text.text = "消化ダメージ"
 	digest_damage_value.text = "%04d" % total_damage
-	digest_damage_detail.text = "基礎消化ダメージ：%03d\n夢の種バフ：%s(%s)\n悪夢バフ：%s(%s)" % [
-		base_damage,
-		_format_buff_amount(seed_buff),
-		_format_buff_rate(seed_rate),
-		_format_buff_amount(nightmare_buff),
-		_format_buff_rate(nightmare_rate),
-	]
-
-
+	digest_damage_detail.text = "基礎消化ダメージ：%03d\n夢の種バフ：%s(%s)\n悪夢バフ：%s(%s)" % [base_damage, _format_buff_amount(seed_buff), _format_buff_rate(seed_rate), _format_buff_amount(nightmare_buff), _format_buff_rate(nightmare_rate)]
 func _configure_digest_damage_labels() -> void:
 	passive_guide_text.position = Vector2(26.0, 10.0)
 	passive_guide_text.size = Vector2(158.0, 30.0)
@@ -151,8 +112,6 @@ func _configure_digest_damage_labels() -> void:
 	digest_damage_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	digest_damage_detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	digest_damage_detail.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-
-
 func set_debug_button_active(is_active: bool) -> void:
 	_debug_button_active = is_active
 	if is_active:
@@ -173,52 +132,34 @@ func set_debug_button_active(is_active: bool) -> void:
 	debug_message_button.remove_theme_stylebox_override("hover")
 	debug_message_button.remove_theme_stylebox_override("pressed")
 	debug_message_button.remove_theme_stylebox_override("focus")
-
-
 func _create_debug_button_style(color: Color) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
 	style.border_color = Color(0.0, 0.0, 0.0, 1.0)
-	style.border_width_left = 2
-	style.border_width_top = 2
-	style.border_width_right = 2
-	style.border_width_bottom = 2
-	style.corner_radius_top_left = 2
-	style.corner_radius_top_right = 2
-	style.corner_radius_bottom_right = 2
-	style.corner_radius_bottom_left = 2
+	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+		style.set_border_width(side, 2)
+	for corner in [CORNER_TOP_LEFT, CORNER_TOP_RIGHT, CORNER_BOTTOM_RIGHT, CORNER_BOTTOM_LEFT]:
+		style.set_corner_radius(corner, 2)
 	return style
-
-
 func _format_buff_amount(amount: int) -> String:
 	if amount >= 0:
 		return "+%03d" % amount
 	return "-%03d" % absi(amount)
-
-
 func _format_buff_rate(rate: float) -> String:
 	var percent := roundi(rate * 100.0)
 	if percent >= 0:
 		return "+%02d%%" % percent
 	return "-%02d%%" % absi(percent)
-
-
 func set_digestion_count(count: int) -> void:
 	digestion_label.text = "消化開始！"
-
-
 func set_digestion_button_visible(is_visible: bool) -> void:
 	digestion_frame.visible = is_visible
 	if not is_visible:
 		digestion_frame.scale = _digestion_button_base_scale
-
-
 func is_digestion_button_hit(mouse_position: Vector2) -> bool:
 	if not digestion_frame.visible:
 		return false
 	return digestion_frame.get_global_rect().has_point(mouse_position)
-
-
 func show_time_elapsed(amount_minutes: int) -> void:
 	if _time_elapsed_tween != null and _time_elapsed_tween.is_valid():
 		_time_elapsed_tween.kill()
@@ -231,35 +172,22 @@ func show_time_elapsed(amount_minutes: int) -> void:
 	_time_elapsed_tween.set_trans(Tween.TRANS_QUART)
 	_time_elapsed_tween.set_ease(Tween.EASE_OUT)
 	_time_elapsed_tween.tween_property(_time_elapsed_label, "modulate:a", 1.0, TIME_ELAPSED_TWEEN_DURATION)
-	_time_elapsed_tween.tween_property(
-		_time_elapsed_label,
-		"position:y",
-		_time_elapsed_label_base_position.y - TIME_ELAPSED_FLOAT_DISTANCE,
-		TIME_ELAPSED_TWEEN_DURATION
-	)
+	_time_elapsed_tween.tween_property(_time_elapsed_label, "position:y", _time_elapsed_label_base_position.y - TIME_ELAPSED_FLOAT_DISTANCE, TIME_ELAPSED_TWEEN_DURATION)
 	_time_elapsed_tween.chain().tween_interval(TIME_ELAPSED_HIDE_DELAY)
 	_time_elapsed_tween.chain().tween_callback(hide_time_elapsed)
 	_pulse_time_text()
-
-
 func hide_time_elapsed() -> void:
 	if _time_elapsed_tween != null and _time_elapsed_tween.is_valid():
 		_time_elapsed_tween.kill()
 	_time_elapsed_label.visible = false
 	_time_elapsed_label.position = _time_elapsed_label_base_position
 	_time_elapsed_label.modulate.a = 0.0
-
-
 func show_hp_damage_preview(amount: int) -> void:
 	_hp_damage_preview_label.text = "-%d" % amount
 	_hp_damage_preview_label.position = hp_frame.position + Vector2(hp_frame.size.x - 42.0, -16.0)
 	_hp_damage_preview_label.visible = true
-
-
 func hide_hp_damage_preview() -> void:
 	_hp_damage_preview_label.visible = false
-
-
 func _prepare_mouse_filters() -> void:
 	passive_guide_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	digest_damage_value.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -275,28 +203,20 @@ func _prepare_mouse_filters() -> void:
 	debug_message_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	digestion_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	digestion_frame.mouse_filter = Control.MOUSE_FILTER_STOP
-
-
 func _prepare_debug_message_button() -> void:
 	debug_reroll_button.visible = false
 	debug_reroll_button.pressed.connect(_on_debug_reroll_button_pressed)
 	debug_message_button.pressed.connect(_on_debug_message_button_pressed)
-
-
 func _prepare_digestion_button() -> void:
 	_digestion_button_base_scale = digestion_frame.scale
 	digestion_frame.pivot_offset = digestion_frame.size * 0.5
 	digestion_frame.gui_input.connect(_on_digestion_frame_gui_input)
 	digestion_frame.mouse_entered.connect(_on_digestion_frame_mouse_entered)
 	digestion_frame.mouse_exited.connect(_on_digestion_frame_mouse_exited)
-
-
 func _capture_sizes() -> void:
 	_hp_gauge_full_width = hp_gauge.size.x
 	_time_text_base_scale = time_text.scale
 	time_text.pivot_offset = time_text.size * 0.5
-
-
 func _create_hp_damage_preview() -> void:
 	_hp_damage_preview_label = Label.new()
 	_hp_damage_preview_label.name = "RemoveNightmareDamagePreview"
@@ -310,8 +230,6 @@ func _create_hp_damage_preview() -> void:
 		_hp_damage_preview_label.add_theme_font_override("font", preview_font)
 	_hp_damage_preview_label.add_theme_font_size_override("font_size", 28)
 	add_child(_hp_damage_preview_label)
-
-
 func _create_time_elapsed_label() -> void:
 	_time_elapsed_label = Label.new()
 	_time_elapsed_label.name = "TimeElapsedLabel"
@@ -331,8 +249,6 @@ func _create_time_elapsed_label() -> void:
 		_time_elapsed_label.add_theme_font_override("font", elapsed_font)
 	_time_elapsed_label.add_theme_font_size_override("font_size", 28)
 	add_child(_time_elapsed_label)
-
-
 func _pulse_time_text() -> void:
 	if _time_text_pulse_tween != null and _time_text_pulse_tween.is_valid():
 		_time_text_pulse_tween.kill()
@@ -342,8 +258,6 @@ func _pulse_time_text() -> void:
 	_time_text_pulse_tween.set_ease(Tween.EASE_OUT)
 	_time_text_pulse_tween.tween_property(time_text, "scale", _time_text_base_scale * TIME_PULSE_SCALE, TIME_PULSE_DURATION * 0.5)
 	_time_text_pulse_tween.tween_property(time_text, "scale", _time_text_base_scale, TIME_PULSE_DURATION * 0.5)
-
-
 func _format_elapsed_time(amount_minutes: int) -> String:
 	var hours := int(amount_minutes / 60)
 	var minutes_only := amount_minutes % 60
@@ -352,19 +266,13 @@ func _format_elapsed_time(amount_minutes: int) -> String:
 	if minutes_only == 0:
 		return "+%dh" % hours
 	return "+%dh%02dm" % [hours, minutes_only]
-
-
 func _on_debug_message_button_pressed() -> void:
 	set_debug_button_active(not _debug_button_active)
 	debug_message_requested.emit(_debug_button_active)
-
-
 func _on_debug_reroll_button_pressed() -> void:
 	if not _debug_button_active:
 		return
 	debug_reroll_requested.emit()
-
-
 func _on_digestion_frame_gui_input(event: InputEvent) -> void:
 	if not digestion_frame.visible:
 		return
@@ -372,16 +280,10 @@ func _on_digestion_frame_gui_input(event: InputEvent) -> void:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
 			digestion_requested.emit()
-
-
 func _on_digestion_frame_mouse_entered() -> void:
 	_set_digestion_button_hovered(true)
-
-
 func _on_digestion_frame_mouse_exited() -> void:
 	_set_digestion_button_hovered(false)
-
-
 func _set_digestion_button_hovered(is_hovered: bool) -> void:
 	if _digestion_button_tween != null and _digestion_button_tween.is_valid():
 		_digestion_button_tween.kill()

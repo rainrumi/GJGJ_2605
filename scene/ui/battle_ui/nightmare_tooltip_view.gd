@@ -1,4 +1,4 @@
-class_name NightmareTooltipView
+﻿class_name NightmareTooltipView
 extends Panel
 
 const EFFECT_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
@@ -59,3 +59,4 @@ func _update_optional_text_color(title_label: Label, detail_label: Label, text: 
 		effect_color = EFFECT_EMPTY_COLOR
 	title_label.add_theme_color_override("font_color", effect_color)
 	detail_label.add_theme_color_override("font_color", effect_color)
+
