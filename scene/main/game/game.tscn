@@ -18,8 +18,8 @@
 [ext_resource type="Resource" path="res://data/resources/enemies/overeating_nightmare.tres" id="24_overeating"]
 [ext_resource type="Resource" path="res://data/resources/enemies/chased_nightmare.tres" id="25_chased"]
 [ext_resource type="Resource" path="res://data/resources/nightmare_skills/nightmare_skill_catalog.tres" id="26_nightmare_skill_catalog"]
-[ext_resource type="Script" path="res://scene/main/game/game_input_controller.gd" id="27_game_input_controller"]
-[ext_resource type="Script" path="res://scene/ui/battle_ui/nightmare_tooltip_view.gd" id="28_nightmare_tooltip_view"]
+[ext_resource type="Script" uid="uid://dqfh2rsac6b2h" path="res://scene/main/game/game_input_controller.gd" id="27_game_input_controller"]
+[ext_resource type="Script" uid="uid://cadvjfvgq6ltr" path="res://scene/ui/battle_ui/nightmare_tooltip_view.gd" id="28_nightmare_tooltip_view"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nightmare_tooltip"]
 content_margin_left = 24.0
@@ -325,25 +325,24 @@ texture = ExtResource("20_passive_guide")
 
 [node name="PassiveGuideText" type="Label" parent="UI/PassiveGuideFrame" unique_id=997175241]
 layout_mode = 0
-offset_left = 27.0
-offset_top = -10.0
-offset_right = 451.0
-offset_bottom = 21.0
+offset_left = 36.0
+offset_top = 12.0
+offset_right = 194.0
+offset_bottom = 42.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 24
 text = "消化ダメージ"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DigestDamageValue" type="Label" parent="UI/PassiveGuideFrame" unique_id=1335802653]
 layout_mode = 0
-offset_left = 160.0
-offset_top = 23.0
-offset_right = 324.0
-offset_bottom = 88.0
+offset_left = 155.0
+offset_top = 25.0
+offset_right = 319.0
+offset_bottom = 90.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
@@ -351,6 +350,35 @@ theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 64
 text = "200"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DigestEfficiencyValue" type="Label" parent="UI/PassiveGuideFrame" unique_id=790039167]
+layout_mode = 0
+offset_left = 431.0
+offset_top = 25.0
+offset_right = 655.0
+offset_bottom = 90.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 64
+text = "30min"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DigestEfficiencyTitle" type="Label" parent="UI/PassiveGuideFrame" unique_id=1402067713]
+layout_mode = 0
+offset_left = 367.0
+offset_top = 12.0
+offset_right = 464.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 22
+text = "消化効率"
 vertical_alignment = 1
 
 [node name="DigestDamageDetail" type="Label" parent="UI/PassiveGuideFrame" unique_id=270902301]
@@ -365,7 +393,6 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 18
-text = ""
 vertical_alignment = 1
 
 [node name="HpFrame" type="NinePatchRect" parent="UI" unique_id=756334925]
@@ -475,7 +502,7 @@ text = "６時までにすべての悪夢を消化しましょう"
 horizontal_alignment = 2
 autowrap_mode = 3
 
-[node name="DebugRerollButton" type="Button" parent="UI/StatusPanel"]
+[node name="DebugRerollButton" type="Button" parent="UI/StatusPanel" unique_id=917573151]
 visible = false
 layout_mode = 0
 offset_left = 1054.0

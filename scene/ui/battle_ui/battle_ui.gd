@@ -31,6 +31,8 @@ const TOOLTIP_SUB_TEXT_COLOR := Color(0.94, 0.88, 1.0, 1.0)
 @onready var digestion_frame: TextureRect = $DigestionFrame
 @onready var digestion_label: Label = $DigestionFrame/DigestionLabel
 @onready var digest_damage_value: Label = $PassiveGuideFrame/DigestDamageValue
+@onready var digest_efficiency_value: Label = $PassiveGuideFrame/DigestEfficiencyValue
+@onready var digest_efficiency_title: Label = $PassiveGuideFrame/DigestEfficiencyTitle
 @onready var digest_damage_detail: Label = $PassiveGuideFrame/DigestDamageDetail
 @onready var status_panel: Control = $StatusPanel
 @onready var message_text: Label = $StatusPanel/MessageText
@@ -58,7 +60,6 @@ func _ready() -> void:
 	_prepare_mouse_filters()
 	_prepare_debug_message_button()
 	_prepare_digestion_button()
-	_configure_digest_damage_labels()
 	_capture_sizes()
 	_create_hp_damage_preview()
 	_create_time_elapsed_label()
@@ -76,6 +77,7 @@ func reset_for_battle(max_hp: int, minutes: int, message: String) -> void:
 	set_hp(max_hp, max_hp)
 	set_time(minutes)
 	set_digest_damage_info(0, 0, 0, 0.0, 0, 0.0)
+	set_digest_efficiency_minutes(30.0)
 	set_message(message)
 	set_debug_message("")
 	set_debug_button_active(false)
@@ -131,17 +133,8 @@ func set_digest_damage_info(total_damage: int, base_damage: int, seed_buff: int,
 	_digest_tooltip_base_value_label.text = "%d" % base_damage
 	_digest_tooltip_seed_value_label.text = "%s（%s）" % [_format_buff_amount(seed_buff), _format_buff_rate(seed_rate)]
 	_digest_tooltip_nightmare_value_label.text = "%s（%s）" % [_format_buff_amount(nightmare_buff), _format_buff_rate(nightmare_rate)]
-func _configure_digest_damage_labels() -> void:
-	passive_guide_text.position = Vector2(26.0, 10.0)
-	passive_guide_text.size = Vector2(158.0, 30.0)
-	passive_guide_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	passive_guide_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	passive_guide_text.add_theme_font_size_override("font_size", 24)
-	digest_damage_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	digest_damage_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	digest_damage_detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	digest_damage_detail.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	digest_damage_detail.visible = false
+func set_digest_efficiency_minutes(amount_minutes: float) -> void:
+	digest_efficiency_value.text = _format_digest_efficiency(amount_minutes)
 func set_debug_button_active(is_active: bool) -> void:
 	_debug_button_active = is_active
 	if is_active:
@@ -180,6 +173,18 @@ func _format_buff_rate(rate: float) -> String:
 	if percent >= 0:
 		return "+%d%%" % percent
 	return "-%d%%" % absi(percent)
+func _format_digest_efficiency(amount_minutes: float) -> String:
+	var total_seconds := maxi(1, roundi(amount_minutes * 60.0))
+	if total_seconds < 60:
+		return "%dsec" % total_seconds
+	var total_minutes := int(total_seconds / 60)
+	var hours := int(total_minutes / 60)
+	var minutes_only := total_minutes % 60
+	if hours <= 0:
+		return "%dmin" % total_minutes
+	if minutes_only == 0:
+		return "%dh" % hours
+	return "%dh%dm" % [hours, minutes_only]
 func _get_total_buff_rate(seed_rate: float, nightmare_rate: float) -> float:
 	return (1.0 + seed_rate) * (1.0 + nightmare_rate) - 1.0
 func set_digestion_count(count: int) -> void:
@@ -255,6 +260,8 @@ func _prepare_mouse_filters() -> void:
 	passive_guide_frame.mouse_filter = Control.MOUSE_FILTER_STOP
 	passive_guide_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	digest_damage_value.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	digest_efficiency_value.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	digest_efficiency_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	digest_damage_detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hp_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hp_gauge.mouse_filter = Control.MOUSE_FILTER_IGNORE
