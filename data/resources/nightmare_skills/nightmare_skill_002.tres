@@ -9,4 +9,4 @@ skill_id = 2
 category = "隣接・配置系（悪夢の周囲にあるものを参照する系統。）"
 display_name = "悪夢名"
 texture = ExtResource("2_texture")
-description = "受けた消化ダメージの40%を隣接する悪夢に分配する"
+description = "隣接する悪夢に受けた消化ダメージ50%を分配する"

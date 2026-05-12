@@ -9,4 +9,4 @@ skill_id = 1
 category = "隣接・配置系（悪夢の周囲にあるものを参照する系統。）"
 display_name = "悪夢名"
 texture = ExtResource("2_texture")
-description = "隣接する悪夢・花びらの数だけ攻撃力が下がる"
+description = "悪夢が隣接しない隣接マス×基礎攻撃力分、攻撃力が増加する"

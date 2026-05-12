@@ -17,10 +17,11 @@ var skill_definition: NightmareSkillDefinition
 var has_main_effect := false
 var max_hp := 0
 var damage := 0
+var base_damage := 0
 var display_damage_override := -1
 var attack_multiplier := 1.0
 var stomach_elapsed_minutes := 0
-var revive_used := false
+var revive_count := 0
 var current_hp := 0
 var digesting := false
 var digested := false
@@ -42,10 +43,12 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 	skill_definition = nightmare_skill
 	has_main_effect = has_effect
 	max_hp = enemy_definition.max_hp
-	damage = enemy_definition.damage; display_damage_override = -1
+	damage = enemy_definition.damage
+	base_damage = enemy_definition.damage
+	display_damage_override = -1
 	attack_multiplier = 1.0
 	stomach_elapsed_minutes = 0
-	revive_used = false
+	revive_count = 0
 	gravity_locked = false
 	activation_deferred = false
 	_texture_override = null
@@ -72,6 +75,7 @@ func reset_for_battle() -> void:
 	activation_deferred = false
 	stomach_cell = Vector2i.ZERO
 	stomach_elapsed_minutes = 0
+	revive_count = 0
 	visible = true
 	_reset_visuals()
 	return_to_origin()
@@ -276,14 +280,16 @@ func set_hp_values(next_max_hp: int, next_current_hp: int) -> void:
 func add_damage(amount: int) -> void:
 	damage = maxi(0, damage + amount); _update_damage_label()
 func set_damage_value(value: int) -> void:
-	damage = maxi(0, value); _update_damage_label()
+	damage = maxi(0, value); base_damage = damage; _update_damage_label()
 func set_attack_multiplier(value: float) -> void:
 	attack_multiplier = clampf(value, 0.0, 3.0); _update_damage_label()
 func revive_with_half_hp() -> void:
+	revive_with_hp_rate(0.5)
+func revive_with_hp_rate(hp_rate: float) -> void:
 	if _digested_tween != null and _digested_tween.is_valid():
 		_digested_tween.kill()
-	revive_used = true
-	change_max_hp(ceili(float(max_hp) * 0.5))
+	revive_count += 1
+	change_max_hp(ceili(float(max_hp) * hp_rate))
 	current_hp = max_hp
 	digested = false
 	digesting = false
@@ -298,4 +304,3 @@ func _update_status_label_colors() -> void:
 		hp_label.add_theme_color_override("font_color", status_color)
 	if damage_label != null:
 		damage_label.add_theme_color_override("font_color", status_color)
-

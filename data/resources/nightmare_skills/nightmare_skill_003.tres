@@ -9,4 +9,4 @@ skill_id = 3
 category = "隣接・配置系（悪夢の周囲にあるものを参照する系統。）"
 display_name = "悪夢名"
 texture = ExtResource("2_texture")
-description = "消化ダメージを受けたとき、残りHP10%×隣接していない面の数だけHPを回復する（最大100%）"
+description = "非隣接マス数×10%分、受ける消化ダメージを軽減する（最大100%）"
