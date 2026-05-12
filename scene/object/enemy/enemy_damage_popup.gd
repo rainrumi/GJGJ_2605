@@ -10,7 +10,7 @@ static func show_damage(owner: Node, hp_label: Label, amount: int, color: Color)
 	if owner == null or hp_label == null or amount <= 0:
 		return
 	var label := Label.new()
-	label.text = "-%03d" % amount
+	label.text = "-%d" % amount
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.size = hp_label.size
 	label.position = hp_label.position + Vector2(0.0, -hp_label.size.y * 0.7)
