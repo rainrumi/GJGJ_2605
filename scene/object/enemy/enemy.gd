@@ -175,6 +175,7 @@ func pulse_cost_label() -> void:
 	_cost_pulse_tween.tween_property(hp_label, "scale", Vector2.ONE * COST_PULSE_SCALE, COST_PULSE_DURATION * 0.5)
 	_cost_pulse_tween.tween_property(hp_label, "scale", Vector2.ONE, COST_PULSE_DURATION * 0.5)
 func take_digest_damage(amount: int) -> bool:
+	EnemyDamagePopup.show_damage(self, hp_label, amount, MAIN_EFFECT_STATUS_COLOR)
 	current_hp = maxi(0, current_hp - amount)
 	_update_hp_label()
 	if current_hp == 0:
@@ -248,8 +249,7 @@ func _update_hp_label() -> void:
 	if hp_label != null:
 		hp_label.text = str(current_hp)
 func _update_damage_label() -> void:
-	if damage_label != null:
-		damage_label.text = "攻 %d" % get_damage()
+	if damage_label != null: damage_label.text = "攻 %d" % get_damage()
 func _get_texture() -> Texture2D:
 	if _texture_override != null:
 		return _texture_override

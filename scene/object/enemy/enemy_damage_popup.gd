@@ -1,0 +1,39 @@
+class_name EnemyDamagePopup
+extends RefCounted
+
+const FLOAT_DISTANCE := 16.0
+const DURATION := 0.35
+const HIDE_DELAY := 0.15
+
+
+static func show_damage(owner: Node, hp_label: Label, amount: int, color: Color) -> void:
+	if owner == null or hp_label == null or amount <= 0:
+		return
+	var label := Label.new()
+	label.text = "-%03d" % amount
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.size = hp_label.size
+	label.position = hp_label.position + Vector2(0.0, -hp_label.size.y * 0.7)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Color.WHITE)
+	label.add_theme_constant_override("outline_size", 3)
+	_copy_font(hp_label, label)
+	owner.add_child(label)
+	var tween := owner.create_tween()
+	tween.set_parallel(true)
+	tween.set_trans(Tween.TRANS_QUART)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "position:y", label.position.y - FLOAT_DISTANCE, DURATION)
+	tween.tween_property(label, "modulate:a", 1.0, DURATION)
+	tween.chain().tween_interval(HIDE_DELAY)
+	tween.chain().tween_property(label, "modulate:a", 0.0, DURATION)
+	tween.chain().tween_callback(label.queue_free)
+
+
+static func _copy_font(source: Label, target: Label) -> void:
+	var font := source.get_theme_font("font")
+	if font != null:
+		target.add_theme_font_override("font", font)
+	target.add_theme_font_size_override("font_size", source.get_theme_font_size("font_size"))
