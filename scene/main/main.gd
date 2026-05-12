@@ -129,7 +129,7 @@ func show_end_gameover_novel() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	active_novel_flow = NovelFlow.END_GAMEOVER
-	opening_novel.start_with_text(end_gameover_novel_text)
+	opening_novel.start_with_text(_get_end_gameover_novel_text())
 
 
 func _finish_end_gameover_novel() -> void:
@@ -137,6 +137,16 @@ func _finish_end_gameover_novel() -> void:
 		stage_clear.setup_hp(game.get_current_hp())
 	current_day += 1
 	show_day_intro()
+
+
+func _get_end_gameover_novel_text() -> NovelTextResource:
+	var novel_text := NovelTextResource.new()
+	novel_text.text = end_gameover_novel_text.text if end_gameover_novel_text != null else ""
+	var recovery_percent := 0
+	if game.has_method("get_last_time_over_recovery_percent"):
+		recovery_percent = game.get_last_time_over_recovery_percent()
+	novel_text.text += "\n（HPが%d%%回復した）" % recovery_percent
+	return novel_text
 
 
 func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:

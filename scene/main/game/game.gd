@@ -5,6 +5,7 @@ const END_HOUR := 30
 const REST_MINUTES := 60
 const MAX_HP := 100
 const REST_HP_RATE := 0.1
+const TIME_OVER_HP_RECOVERY_RATE := 0.7
 const DIGEST_AUTO_INTERVAL := 0.6
 const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
 const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
@@ -32,6 +33,7 @@ var dragged_enemy_was_digesting := false
 var dragged_enemy_original_cell := Vector2i.ZERO
 var dragged_enemy_original_global_position := Vector2.ZERO
 var hovered_enemy: Enemy
+var last_time_over_recovery_percent := 0
 func _ready() -> void:
 	randomize()
 	enemy_setup.setup(self, input_controller, stomach, enemy_definitions, nightmare_skill_catalog)
@@ -42,6 +44,7 @@ func _ready() -> void:
 func start_battle(starting_hp: int = MAX_HP, _day: int = 1, flowers: Array = []) -> void:
 	minutes = START_HOUR * 60
 	hp = clampi(starting_hp, 0, MAX_HP)
+	last_time_over_recovery_percent = 0
 	debug_numbers_visible = false
 	_set_battle_flags(false)
 	digest_controller.setup(flowers)
@@ -59,6 +62,8 @@ func get_clear_minutes() -> int:
 	return minutes
 func get_max_hp() -> int:
 	return MAX_HP
+func get_last_time_over_recovery_percent() -> int:
+	return last_time_over_recovery_percent
 func _connect_ui() -> void:
 	ui.digestion_requested.connect(_on_digestion_requested)
 	ui.debug_message_requested.connect(_on_debug_message_requested)
@@ -226,6 +231,7 @@ func _check_battle_end() -> void:
 		_finish_battle(true, "すべての悪夢を消化しました")
 		return
 	if minutes >= END_HOUR * 60:
+		_apply_time_over_recovery()
 		_finish_battle(false, "朝までに消化しきれませんでした")
 func _finish_battle(won: bool, message: String) -> void:
 	battle_active = false
@@ -234,6 +240,10 @@ func _finish_battle(won: bool, message: String) -> void:
 	_update_auto_digest_timer()
 	_set_status_message(message)
 	battle_finished.emit(won)
+func _apply_time_over_recovery() -> void:
+	var previous_hp := hp
+	hp = mini(MAX_HP, hp + ceili(float(MAX_HP) * TIME_OVER_HP_RECOVERY_RATE))
+	last_time_over_recovery_percent = roundi(float(hp - previous_hp) / float(MAX_HP) * 100.0)
 func _update_auto_digest_timer() -> void:
 	var active_digest_count := _active_digest_count()
 	if auto_digest_enabled and active_digest_count == 0:
