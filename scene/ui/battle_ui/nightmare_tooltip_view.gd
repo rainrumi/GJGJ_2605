@@ -17,6 +17,7 @@ const EFFECT_EMPTY_COLOR := Color(0.2666667, 0.2666667, 0.2666667, 1.0)
 @onready var sub_effect_label: Label = $Content/SubEffectLabel
 
 
+# 悪夢詳細表示
 func show_enemy(enemy: Enemy, debug_number_text: String, debug_numbers_visible: bool) -> void:
 	var main_effect_text := enemy.get_main_effect_text()
 	var sub_effect_text := enemy.get_sub_effect_text()
@@ -38,25 +39,28 @@ func show_enemy(enemy: Enemy, debug_number_text: String, debug_numbers_visible: 
 	visible = true
 
 
+# 詳細を隠す
 func hide_tooltip() -> void:
 	visible = false
 	debug_number_label.visible = false
 
 
+# デバッグ表示切替
 func set_debug_numbers_visible(is_visible: bool) -> void:
 	debug_number_label.visible = visible and is_visible
 
 
+# 効果文を整形
 func _get_effect_text(text: String) -> String:
 	if text.is_empty():
 		return "-"
 	return text
 
 
+# 空効果を暗色化
 func _update_optional_text_color(title_label: Label, detail_label: Label, text: String) -> void:
 	var effect_color := EFFECT_ACTIVE_COLOR
 	if text.is_empty() or text == "-":
 		effect_color = EFFECT_EMPTY_COLOR
 	title_label.add_theme_color_override("font_color", effect_color)
 	detail_label.add_theme_color_override("font_color", effect_color)
-

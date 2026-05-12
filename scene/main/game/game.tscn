@@ -20,6 +20,12 @@
 [ext_resource type="Resource" path="res://data/resources/nightmare_skills/nightmare_skill_catalog.tres" id="26_nightmare_skill_catalog"]
 [ext_resource type="Script" uid="uid://dqfh2rsac6b2h" path="res://scene/main/game/game_input_controller.gd" id="27_game_input_controller"]
 [ext_resource type="Script" uid="uid://cadvjfvgq6ltr" path="res://scene/ui/battle_ui/nightmare_tooltip_view.gd" id="28_nightmare_tooltip_view"]
+[ext_resource type="Script" uid="uid://dwf2m1c1gwuye" path="res://scene/ui/battle_ui/digest_summary_view.gd" id="29_digest_summary_view"]
+[ext_resource type="Script" uid="uid://bguqd5rsu6rco" path="res://scene/ui/battle_ui/digest_damage_tooltip_view.gd" id="30_digest_damage_tooltip_view"]
+[ext_resource type="Script" uid="uid://dpje2jwnuu84m" path="res://scene/ui/battle_ui/hp_status_view.gd" id="31_hp_status_view"]
+[ext_resource type="Script" uid="uid://bg88dk2f4fpjw" path="res://scene/ui/battle_ui/time_status_view.gd" id="32_time_status_view"]
+[ext_resource type="Script" uid="uid://cb3ps8imae8l4" path="res://scene/ui/battle_ui/digestion_button_view.gd" id="33_digestion_button_view"]
+[ext_resource type="Script" uid="uid://wiaj3pchfaj2" path="res://scene/ui/battle_ui/status_panel_view.gd" id="34_status_panel_view"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nightmare_tooltip"]
 content_margin_left = 24.0
@@ -316,12 +322,147 @@ theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 22
 autowrap_mode = 3
 
+[node name="DigestDamageTooltipPanel" type="Panel" parent="UI" unique_id=360984446]
+visible = false
+z_index = 49
+offset_right = 384.0
+offset_bottom = 720.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nightmare_tooltip")
+script = ExtResource("30_digest_damage_tooltip_view")
+
+[node name="Content" type="Control" parent="UI/DigestDamageTooltipPanel" unique_id=1552226571]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TitleLabel" type="Label" parent="UI/DigestDamageTooltipPanel/Content" unique_id=2026410580]
+layout_mode = 0
+offset_right = 336.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 36
+text = "消化ダメージ詳細"
+vertical_alignment = 1
+
+[node name="TotalTitleLabel" type="Label" parent="UI/DigestDamageTooltipPanel/Content" unique_id=354858722]
+layout_mode = 0
+offset_top = 76.0
+offset_right = 336.0
+offset_bottom = 114.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 28
+text = "最終消化ダメージ"
+vertical_alignment = 1
+
+[node name="TotalValueLabel" type="Label" parent="UI/DigestDamageTooltipPanel/Content" unique_id=1798348636]
+layout_mode = 0
+offset_top = 118.0
+offset_right = 336.0
+offset_bottom = 152.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+
+[node name="BaseTitleLabel" type="Label" parent="UI/DigestDamageTooltipPanel/Content" unique_id=1701125350]
+layout_mode = 0
+offset_top = 202.0
+offset_right = 336.0
+offset_bottom = 238.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 26
+text = "基礎ダメージ"
+vertical_alignment = 1
+
+[node name="BaseValueLabel" type="Label" parent="UI/DigestDamageTooltipPanel/Content" unique_id=1651568661]
+layout_mode = 0
+offset_top = 240.0
+offset_right = 336.0
+offset_bottom = 272.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 20
+vertical_alignment = 1
+
+[node name="SeedTitleLabel" type="Label" parent="UI/DigestDamageTooltipPanel/Content" unique_id=151139886]
+layout_mode = 0
+offset_top = 282.0
+offset_right = 336.0
+offset_bottom = 318.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 26
+text = "夢の種バフ"
+vertical_alignment = 1
+
+[node name="SeedValueLabel" type="Label" parent="UI/DigestDamageTooltipPanel/Content" unique_id=1174513130]
+layout_mode = 0
+offset_top = 320.0
+offset_right = 336.0
+offset_bottom = 352.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 20
+vertical_alignment = 1
+
+[node name="NightmareTitleLabel" type="Label" parent="UI/DigestDamageTooltipPanel/Content" unique_id=560947278]
+layout_mode = 0
+offset_top = 362.0
+offset_right = 336.0
+offset_bottom = 398.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 26
+text = "悪夢バフ"
+vertical_alignment = 1
+
+[node name="NightmareValueLabel" type="Label" parent="UI/DigestDamageTooltipPanel/Content" unique_id=1509938396]
+layout_mode = 0
+offset_top = 400.0
+offset_right = 336.0
+offset_bottom = 432.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 20
+vertical_alignment = 1
+
 [node name="PassiveGuideFrame" type="TextureRect" parent="UI" unique_id=1593431656]
 offset_left = 298.0
 offset_top = 15.0
 offset_right = 978.0
 offset_bottom = 123.0
 texture = ExtResource("20_passive_guide")
+script = ExtResource("29_digest_summary_view")
 
 [node name="PassiveGuideText" type="Label" parent="UI/PassiveGuideFrame" unique_id=997175241]
 layout_mode = 0
@@ -406,6 +547,7 @@ patch_margin_left = 12
 patch_margin_top = 12
 patch_margin_right = 12
 patch_margin_bottom = 12
+script = ExtResource("31_hp_status_view")
 
 [node name="HpGauge" type="NinePatchRect" parent="UI/HpFrame" unique_id=667900455]
 layout_mode = 0
@@ -441,6 +583,7 @@ offset_right = 1277.0
 offset_bottom = 121.0
 mouse_filter = 2
 texture = ExtResource("18_time_frame")
+script = ExtResource("32_time_status_view")
 
 [node name="TimeText" type="Label" parent="UI/TimeBar" unique_id=1349676453]
 layout_mode = 0
@@ -464,6 +607,7 @@ offset_right = 1259.0
 offset_bottom = 714.0
 mouse_filter = 2
 texture = ExtResource("17_digestion")
+script = ExtResource("33_digestion_button_view")
 
 [node name="DigestionLabel" type="Label" parent="UI/DigestionFrame" unique_id=127424852]
 layout_mode = 0
@@ -486,6 +630,7 @@ anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 mouse_filter = 2
+script = ExtResource("34_status_panel_view")
 
 [node name="MessageText" type="Label" parent="UI/StatusPanel" unique_id=196976463]
 layout_mode = 0
