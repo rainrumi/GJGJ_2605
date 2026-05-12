@@ -47,9 +47,9 @@ position = Vector2(850, 500)
 
 [node name="HPText" type="Label" parent="EnemyLeft" unique_id=1793702045]
 offset_left = -74.0
-offset_top = -26.0
+offset_top = -62.0
 offset_right = 74.0
-offset_bottom = 22.0
+offset_bottom = -14.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
@@ -61,9 +61,9 @@ vertical_alignment = 1
 
 [node name="DamageText" type="Label" parent="EnemyLeft" unique_id=551870154]
 offset_left = -74.0
-offset_top = -62.0
+offset_top = -26.0
 offset_right = 74.0
-offset_bottom = -14.0
+offset_bottom = 22.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
@@ -78,9 +78,9 @@ position = Vector2(1000, 280)
 
 [node name="HPText" type="Label" parent="EnemyCenter" unique_id=514782430]
 offset_left = -94.0
-offset_top = -26.0
+offset_top = -62.0
 offset_right = 94.0
-offset_bottom = 22.0
+offset_bottom = -14.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
@@ -92,9 +92,9 @@ vertical_alignment = 1
 
 [node name="DamageText" type="Label" parent="EnemyCenter" unique_id=783746076]
 offset_left = -94.0
-offset_top = -62.0
+offset_top = -26.0
 offset_right = 94.0
-offset_bottom = -14.0
+offset_bottom = 22.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
@@ -109,9 +109,9 @@ position = Vector2(1150, 500)
 
 [node name="HPText" type="Label" parent="EnemyRight" unique_id=966397350]
 offset_left = -71.0
-offset_top = 19.0
+offset_top = -17.0
 offset_right = 77.0
-offset_bottom = 67.0
+offset_bottom = 31.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
@@ -123,9 +123,9 @@ vertical_alignment = 1
 
 [node name="DamageText" type="Label" parent="EnemyRight" unique_id=952825343]
 offset_left = -71.0
-offset_top = -17.0
+offset_top = 19.0
 offset_right = 77.0
-offset_bottom = 31.0
+offset_bottom = 67.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
@@ -140,9 +140,9 @@ position = Vector2(1150, 280)
 
 [node name="HPText" type="Label" parent="EnemyUpperRight" unique_id=124001063]
 offset_left = -74.0
-offset_top = -26.0
+offset_top = -62.0
 offset_right = 74.0
-offset_bottom = 22.0
+offset_bottom = -14.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
@@ -154,9 +154,9 @@ vertical_alignment = 1
 
 [node name="DamageText" type="Label" parent="EnemyUpperRight" unique_id=902953290]
 offset_left = -74.0
-offset_top = -62.0
+offset_top = -26.0
 offset_right = 74.0
-offset_bottom = -14.0
+offset_bottom = 22.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
