@@ -32,6 +32,25 @@ static func get_open_side_count(enemy: Enemy, enemies: Array[Enemy]) -> int:
 	return open_side_count
 
 
+static func get_open_face_count(enemy: Enemy, enemies: Array[Enemy]) -> int:
+	if not enemy.is_active_in_stomach():
+		return 0
+	var occupied_cells: Array[Vector2i] = enemy.get_occupied_cells(enemy.stomach_cell)
+	var occupied_cell_set := {}
+	var directions: Array[Vector2i] = [Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)]
+	for cell: Vector2i in occupied_cells:
+		occupied_cell_set[cell] = true
+	var open_face_count := 0
+	for cell: Vector2i in occupied_cells:
+		for direction: Vector2i in directions:
+			var adjacent_cell := cell + direction
+			if occupied_cell_set.has(adjacent_cell):
+				continue
+			if not has_enemy_at_cell(enemy, adjacent_cell, enemies):
+				open_face_count += 1
+	return open_face_count
+
+
 static func has_adjacent_enemy_in_direction(
 	enemy: Enemy,
 	direction: Vector2i,
@@ -45,4 +64,13 @@ static func has_adjacent_enemy_in_direction(
 		for cell in occupied_cells:
 			if other_cells.has(cell + direction):
 				return true
+	return false
+
+
+static func has_enemy_at_cell(enemy: Enemy, target_cell: Vector2i, enemies: Array[Enemy]) -> bool:
+	for other in enemies:
+		if other == enemy or not other.is_active_in_stomach():
+			continue
+		if other.get_occupied_cells(other.stomach_cell).has(target_cell):
+			return true
 	return false

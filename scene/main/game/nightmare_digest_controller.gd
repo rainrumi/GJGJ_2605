@@ -3,6 +3,8 @@ extends RefCounted
 
 const STEP_MINUTES := 30
 const DIGEST_DAMAGE := 200
+const SKILL_3_HEAL_RATE_PER_OPEN_FACE := 0.1
+const SKILL_3_MAX_OPEN_FACE_COUNT := 8
 const SKILL_7_HP_STEP_RATE := 0.2
 const SKILL_7_MIN_HP_RATE := 0.2
 const SKILL_7_MAX_HP_RATE := 2.0
@@ -73,7 +75,7 @@ func digest_nightmares(
 	var digest_damage_per_cell := int(get_digest_damage_breakdown(enemies, minutes, true)["total"])
 	for enemy in enemies:
 		_digest_enemy(enemy, enemies, stomach, digest_damage_per_cell, shared_damage, damage_display_values, received_digest_damage, digested_enemies)
-	_apply_shared_damage(shared_damage, damage_display_values, received_digest_damage, digested_enemies)
+	_apply_shared_damage(shared_damage, enemies, damage_display_values, received_digest_damage, digested_enemies)
 	_show_enemy_damage_values(damage_display_values)
 	return _resolve_digested_enemy_effects(enemies, digested_enemies, received_digest_damage, enemy_setup)
 
@@ -152,12 +154,13 @@ func _digest_enemy(
 	_apply_digest_damage_share(enemy, enemies, damage, shared_damage)
 	if enemy.take_digest_damage(damage, false):
 		digested_enemies.append(enemy)
-	_apply_digest_heal_reaction(enemy, enemies)
+	_apply_digest_heal_reaction(enemy, enemies, damage)
 	enemy.pulse_cost_label()
 
 
 func _apply_shared_damage(
 	shared_damage: Dictionary,
+	enemies: Array[Enemy],
 	damage_display_values: Dictionary,
 	received_digest_damage: Dictionary,
 	digested_enemies: Array[Enemy]
@@ -172,6 +175,7 @@ func _apply_shared_damage(
 		_append_damage_values(damage_display_values, target_enemy, damage_values)
 		if target_enemy.take_digest_damage(total_damage, false) and not digested_enemies.has(target_enemy):
 			digested_enemies.append(target_enemy)
+		_apply_digest_heal_reaction(target_enemy, enemies, total_damage)
 
 
 func _resolve_digested_enemy_effects(
@@ -253,10 +257,14 @@ func _apply_digest_damage_share(
 		_append_damage_value(shared_damage, adjacent_enemy, split_damage)
 
 
-func _apply_digest_heal_reaction(enemy: Enemy, enemies: Array[Enemy]) -> void:
+func _apply_digest_heal_reaction(enemy: Enemy, enemies: Array[Enemy], received_damage: int) -> void:
 	if _has_nightmare_effect(enemy, 3) and not enemy.digested:
-		var open_sides := NightmarePlacementQuery.get_open_side_count(enemy, enemies)
-		enemy.heal(roundi(float(enemy.max_hp) * minf(1.0, float(open_sides) * 0.1)))
+		var open_faces := mini(
+			NightmarePlacementQuery.get_open_face_count(enemy, enemies),
+			SKILL_3_MAX_OPEN_FACE_COUNT
+		)
+		var heal_rate := float(open_faces) * SKILL_3_HEAL_RATE_PER_OPEN_FACE
+		enemy.heal(roundi(float(received_damage) * heal_rate))
 
 
 func _apply_outside_stomach_hp_variation(enemy: Enemy) -> void:
