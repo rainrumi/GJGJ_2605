@@ -257,12 +257,15 @@ func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 	else:
 		ui.hide_hp_damage_preview()
 func _refresh_ui() -> void:
+	digest_controller.refresh_enemy_status_display(enemies, stomach)
 	var digest_damage := digest_controller.get_digest_damage_breakdown(enemies, minutes)
 	ui.set_digest_damage_info(int(digest_damage["total"]), int(digest_damage["base"]), int(digest_damage["seed_buff"]), float(digest_damage["seed_rate"]), int(digest_damage["nightmare_buff"]), float(digest_damage["nightmare_rate"]))
 	ui.set_hp(hp, MAX_HP)
 	ui.set_time(minutes)
 	ui.set_digestion_count(_active_digest_count())
 	ui.set_digestion_button_visible(battle_active and not auto_digest_enabled)
+	if hovered_enemy != null:
+		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 func _set_status_message(message: String) -> void:
 	ui.set_message(START_MESSAGE)
 	ui.set_debug_message(message)

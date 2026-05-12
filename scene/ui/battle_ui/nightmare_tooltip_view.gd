@@ -27,8 +27,8 @@ func show_enemy(enemy: Enemy, debug_number_text: String, debug_numbers_visible: 
 	category_detail_label.text = enemy.get_category_detail()
 	_update_optional_text_color(category_label, category_detail_label, category_label.text)
 	status_title_label.text = "ステータス"
-	hp_label.text = "HP: %d" % enemy.max_hp
-	damage_label.text = "攻撃力: %d" % enemy.get_damage()
+	hp_label.text = "HP: %d/%d" % [enemy.current_hp, enemy.max_hp]
+	damage_label.text = "攻撃力: %d" % enemy.get_display_damage()
 	main_effect_title_label.text = "メイン効果"
 	main_effect_label.text = _get_effect_text(main_effect_text)
 	sub_effect_title_label.text = "サブ効果"

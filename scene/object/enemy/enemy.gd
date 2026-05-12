@@ -17,6 +17,7 @@ var skill_definition: NightmareSkillDefinition
 var has_main_effect := false
 var max_hp := 0
 var damage := 0
+var display_damage_override := -1
 var attack_multiplier := 1.0
 var stomach_elapsed_minutes := 0
 var revive_used := false
@@ -41,7 +42,7 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 	skill_definition = nightmare_skill
 	has_main_effect = has_effect
 	max_hp = enemy_definition.max_hp
-	damage = enemy_definition.damage
+	damage = enemy_definition.damage; display_damage_override = -1
 	attack_multiplier = 1.0
 	stomach_elapsed_minutes = 0
 	revive_used = false
@@ -82,8 +83,8 @@ func get_display_name() -> String:
 	if skill_definition != null and not skill_definition.display_name.is_empty():
 		return skill_definition.display_name
 	return definition.display_name
-func get_damage() -> int:
-	return maxi(0, roundi(float(damage) * attack_multiplier))
+func get_damage() -> int: return maxi(0, roundi(float(damage) * attack_multiplier))
+func get_display_damage() -> int: return display_damage_override if display_damage_override >= 0 else get_damage()
 func get_size() -> int:
 	if _size_override > 0:
 		return _size_override
@@ -248,8 +249,9 @@ func _reset_visuals() -> void:
 func _update_hp_label() -> void:
 	if hp_label != null:
 		hp_label.text = str(current_hp)
+func set_display_damage(value: int) -> void: display_damage_override = maxi(0, value); _update_damage_label()
 func _update_damage_label() -> void:
-	if damage_label != null: damage_label.text = "攻 %d" % get_damage()
+	if damage_label != null: damage_label.text = "攻 %d" % get_display_damage()
 func _get_texture() -> Texture2D:
 	if _texture_override != null:
 		return _texture_override
@@ -263,21 +265,17 @@ func get_main_effect_text() -> String:
 func get_sub_effect_text() -> String:
 	return "-"
 func heal(amount: int) -> void:
-	current_hp = mini(max_hp, current_hp + amount)
-	_update_hp_label()
+	current_hp = mini(max_hp, current_hp + amount); _update_hp_label()
 func change_max_hp(new_max_hp: int) -> void:
-	max_hp = maxi(1, new_max_hp)
-	current_hp = mini(current_hp, max_hp)
-	_update_hp_label()
+	max_hp = maxi(1, new_max_hp); current_hp = mini(current_hp, max_hp); _update_hp_label()
+func set_hp_values(next_max_hp: int, next_current_hp: int) -> void:
+	max_hp = maxi(1, next_max_hp); current_hp = clampi(next_current_hp, 0, max_hp); _update_hp_label()
 func add_damage(amount: int) -> void:
-	damage = maxi(0, damage + amount)
-	_update_damage_label()
+	damage = maxi(0, damage + amount); _update_damage_label()
 func set_damage_value(value: int) -> void:
-	damage = maxi(0, value)
-	_update_damage_label()
+	damage = maxi(0, value); _update_damage_label()
 func set_attack_multiplier(value: float) -> void:
-	attack_multiplier = clampf(value, 0.0, 3.0)
-	_update_damage_label()
+	attack_multiplier = clampf(value, 0.0, 3.0); _update_damage_label()
 func revive_with_half_hp() -> void:
 	if _digested_tween != null and _digested_tween.is_valid():
 		_digested_tween.kill()

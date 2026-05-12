@@ -3,20 +3,29 @@ extends RefCounted
 
 const STEP_MINUTES := 30
 const DIGEST_DAMAGE := 200
+const SKILL_7_HP_STEP_RATE := 0.2
+const SKILL_7_MIN_HP_RATE := 0.2
+const SKILL_7_MAX_HP_RATE := 2.0
 
 var seed_effects := DreamSeedEffectCalculator.new()
 var digest_order := 0
 var _pending_player_damage := 0
+var _skill_7_base_hp: Dictionary = {}
+var _skill_7_hp_rate: Dictionary = {}
 
 
 func setup(flowers: Array) -> void:
 	digest_order = 0
 	_pending_player_damage = 0
+	_skill_7_base_hp.clear()
+	_skill_7_hp_rate.clear()
 	seed_effects.setup(flowers)
 
 
 func reset_digest_order() -> void:
 	digest_order = 0
+	_skill_7_base_hp.clear()
+	_skill_7_hp_rate.clear()
 
 
 func get_digest_damage_breakdown(
@@ -48,12 +57,7 @@ func apply_turn_start_effects(enemies: Array[Enemy]) -> void:
 		if enemy.can_take_stomach_turn():
 			enemy.stomach_elapsed_minutes += STEP_MINUTES
 		if _has_nightmare_effect(enemy, 7) and not enemy.is_active_in_stomach():
-			var next_multiplier := enemy.attack_multiplier
-			if randi() % 2 == 0:
-				next_multiplier -= 0.2
-			else:
-				next_multiplier += 0.2
-			enemy.set_attack_multiplier(clampf(next_multiplier, 0.0, 2.0))
+			_apply_outside_stomach_hp_variation(enemy)
 
 
 func digest_nightmares(
@@ -78,6 +82,13 @@ func apply_digest_damage(enemies: Array[Enemy], stomach: StomachBoard) -> int:
 		if enemy.can_take_stomach_turn():
 			damage += _get_enemy_attack_damage(enemy, enemies, stomach)
 	return seed_effects.apply_player_damage(damage, DIGEST_DAMAGE) + consume_pending_player_damage()
+
+
+func refresh_enemy_status_display(enemies: Array[Enemy], stomach: StomachBoard) -> void:
+	for enemy in enemies:
+		if enemy == null or enemy.digested:
+			continue
+		enemy.set_display_damage(_get_enemy_attack_damage(enemy, enemies, stomach))
 
 
 func get_rest_hp(max_hp: int, rest_hp_rate: float) -> int:
@@ -201,7 +212,7 @@ func _get_enemy_attack_damage(enemy: Enemy, enemies: Array[Enemy], stomach: Stom
 	if _has_nightmare_effect(enemy, 1):
 		var adjacent_count := NightmarePlacementQuery.get_adjacent_enemies(enemy, enemies).size()
 		damage = roundi(float(damage) * maxf(0.0, 1.0 - float(adjacent_count) * 0.25))
-	if _has_nightmare_effect(enemy, 4):
+	if _has_nightmare_effect(enemy, 4) and enemy.is_active_in_stomach():
 		var bottom_cells := stomach.get_bottom_row_cell_count(enemy)
 		var upper_cells := maxi(0, enemy.get_size() - bottom_cells)
 		damage = roundi(float(damage) * maxf(0.0, 1.0 + float(bottom_cells - upper_cells) * 0.2))
@@ -228,6 +239,22 @@ func _apply_digest_heal_reaction(enemy: Enemy, enemies: Array[Enemy]) -> void:
 	if _has_nightmare_effect(enemy, 3) and not enemy.digested:
 		var open_sides := NightmarePlacementQuery.get_open_side_count(enemy, enemies)
 		enemy.heal(roundi(float(enemy.max_hp) * minf(1.0, float(open_sides) * 0.1)))
+
+
+func _apply_outside_stomach_hp_variation(enemy: Enemy) -> void:
+	if not _skill_7_base_hp.has(enemy):
+		_skill_7_base_hp[enemy] = enemy.max_hp
+		_skill_7_hp_rate[enemy] = 1.0
+	var next_rate := float(_skill_7_hp_rate[enemy])
+	if randi() % 2 == 0:
+		next_rate += SKILL_7_HP_STEP_RATE
+	else:
+		next_rate -= SKILL_7_HP_STEP_RATE
+	next_rate = clampf(next_rate, SKILL_7_MIN_HP_RATE, SKILL_7_MAX_HP_RATE)
+	_skill_7_hp_rate[enemy] = next_rate
+	var next_max_hp := maxi(1, roundi(float(int(_skill_7_base_hp[enemy])) * next_rate))
+	var hp_delta := next_max_hp - enemy.max_hp
+	enemy.set_hp_values(next_max_hp, maxi(1, enemy.current_hp + hp_delta))
 
 
 func _get_nightmare_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
