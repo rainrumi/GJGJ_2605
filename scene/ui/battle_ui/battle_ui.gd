@@ -8,6 +8,9 @@ const HOVER_TWEEN_DURATION := 0.1
 const TIME_PULSE_SCALE := 1.1
 const TIME_PULSE_DURATION := 0.2
 const HP_GAUGE_TWEEN_DURATION := 0.2
+const HP_DAMAGE_FLOAT_DISTANCE := 16.0
+const HP_DAMAGE_TWEEN_DURATION := 0.35
+const HP_DAMAGE_HIDE_DELAY := 0.15
 const TIME_ELAPSED_FLOAT_DISTANCE := 10.0
 const TIME_ELAPSED_TWEEN_DURATION := 0.3
 const TIME_ELAPSED_HIDE_DELAY := 0.2
@@ -186,6 +189,37 @@ func show_hp_damage_preview(amount: int) -> void:
 	_hp_damage_preview_label.text = "-%d" % amount
 	_hp_damage_preview_label.position = hp_frame.position + Vector2(hp_frame.size.x - 42.0, -16.0)
 	_hp_damage_preview_label.visible = true
+func show_hp_damage_values(damage_values: Array[int]) -> void:
+	var damage_texts: Array[String] = []
+	for damage in damage_values:
+		if damage > 0:
+			damage_texts.append("-%d" % damage)
+	if damage_texts.is_empty():
+		return
+	var label := Label.new()
+	label.text = "\n".join(damage_texts)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.size = Vector2(92.0, maxf(36.0, float(damage_texts.size()) * 30.0))
+	label.position = hp_frame.position + hp_text.position + Vector2((hp_text.size.x - label.size.x) * 0.5, -label.size.y + 4.0)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	label.add_theme_color_override("font_color", Color.html("#ff0736"))
+	label.add_theme_color_override("font_outline_color", Color.WHITE)
+	label.add_theme_constant_override("outline_size", 3)
+	var damage_font := hp_text.get_theme_font("font")
+	if damage_font != null:
+		label.add_theme_font_override("font", damage_font)
+	label.add_theme_font_size_override("font_size", 28)
+	add_child(label)
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.set_trans(Tween.TRANS_QUART)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "position:y", label.position.y - HP_DAMAGE_FLOAT_DISTANCE, HP_DAMAGE_TWEEN_DURATION)
+	tween.tween_property(label, "modulate:a", 1.0, HP_DAMAGE_TWEEN_DURATION)
+	tween.chain().tween_interval(HP_DAMAGE_HIDE_DELAY)
+	tween.chain().tween_property(label, "modulate:a", 0.0, HP_DAMAGE_TWEEN_DURATION)
+	tween.chain().tween_callback(label.queue_free)
 func hide_hp_damage_preview() -> void:
 	_hp_damage_preview_label.visible = false
 func _prepare_mouse_filters() -> void:

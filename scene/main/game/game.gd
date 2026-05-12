@@ -180,7 +180,10 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 		return
 	enemy.set_digesting(false)
 	enemy.return_to_origin()
-	hp = maxi(0, hp - _get_remove_from_stomach_damage())
+	var damage := _get_remove_from_stomach_damage()
+	var damage_values: Array[int] = [damage]
+	ui.show_hp_damage_values(damage_values)
+	hp = maxi(0, hp - damage)
 	_set_status_message("悪夢を外したのでダメージを受けました")
 func _advance_digest_turn() -> void:
 	if digest_turn_in_progress:
@@ -192,7 +195,10 @@ func _advance_digest_turn() -> void:
 	digest_controller.apply_turn_start_effects(enemies)
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
 	var digested_enemies := digest_controller.digest_nightmares(enemies, stomach, minutes, enemy_setup)
-	hp = maxi(0, hp - digest_controller.apply_digest_damage(enemies, stomach))
+	var player_damage_values := digest_controller.apply_digest_damage_values(enemies, stomach)
+	if not player_damage_values.is_empty():
+		ui.show_hp_damage_values(player_damage_values)
+		hp = maxi(0, hp - _sum_damage_values(player_damage_values))
 	if not digested_enemies.is_empty():
 		await get_tree().create_timer(Enemy.DIGESTED_TWEEN_DURATION).timeout
 		stomach.apply_gravity(enemies)
@@ -289,6 +295,11 @@ func _active_digest_count() -> int:
 	return count
 func _get_remove_from_stomach_damage() -> int:
 	return ceili(float(MAX_HP) * REMOVE_FROM_STOMACH_DAMAGE_RATE)
+func _sum_damage_values(damage_values: Array[int]) -> int:
+	var total := 0
+	for damage in damage_values:
+		total += damage
+	return total
 func _play_click_se() -> void:
 	if click_se == null:
 		return
