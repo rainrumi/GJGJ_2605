@@ -175,14 +175,17 @@ func pulse_cost_label() -> void:
 	_cost_pulse_tween.set_ease(Tween.EASE_OUT)
 	_cost_pulse_tween.tween_property(hp_label, "scale", Vector2.ONE * COST_PULSE_SCALE, COST_PULSE_DURATION * 0.5)
 	_cost_pulse_tween.tween_property(hp_label, "scale", Vector2.ONE, COST_PULSE_DURATION * 0.5)
-func take_digest_damage(amount: int) -> bool:
-	EnemyDamagePopup.show_damage(self, hp_label, amount, MAIN_EFFECT_STATUS_COLOR)
+func take_digest_damage(amount: int, show_popup := true) -> bool:
+	if show_popup:
+		EnemyDamagePopup.show_damage(self, hp_label, amount, MAIN_EFFECT_STATUS_COLOR)
 	current_hp = maxi(0, current_hp - amount)
 	_update_hp_label()
 	if current_hp == 0:
 		set_digested(true)
 		return true
 	return false
+func show_digest_damage_values(damage_values: Array) -> void:
+	EnemyDamagePopup.show_damage_values(self, hp_label, damage_values, MAIN_EFFECT_STATUS_COLOR)
 func get_global_rect() -> Rect2:
 	if sprite == null or sprite.texture == null:
 		return Rect2(global_position - Vector2(50.0, 50.0), Vector2(100.0, 100.0))

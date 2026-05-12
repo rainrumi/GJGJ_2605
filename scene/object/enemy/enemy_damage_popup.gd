@@ -7,15 +7,25 @@ const HIDE_DELAY := 0.15
 
 
 static func show_damage(owner: Node, hp_label: Label, amount: int, color: Color) -> void:
-	if owner == null or hp_label == null or amount <= 0:
+	show_damage_values(owner, hp_label, [amount], color)
+
+
+static func show_damage_values(owner: Node, hp_label: Label, damage_values: Array, color: Color) -> void:
+	if owner == null or hp_label == null:
+		return
+	var damage_texts: Array[String] = []
+	for damage in damage_values:
+		if damage > 0:
+			damage_texts.append("-%d" % damage)
+	if damage_texts.is_empty():
 		return
 	var label := Label.new()
-	label.text = "-%d" % amount
+	label.text = "\n".join(damage_texts)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.size = hp_label.size
-	label.position = hp_label.position + Vector2(0.0, -hp_label.size.y * 0.7)
+	label.size = Vector2(hp_label.size.x, maxf(hp_label.size.y, float(damage_texts.size()) * hp_label.size.y))
+	label.position = hp_label.position + Vector2(0.0, -label.size.y + hp_label.size.y * 0.3)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color.WHITE)
 	label.add_theme_constant_override("outline_size", 3)

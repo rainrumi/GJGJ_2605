@@ -68,11 +68,13 @@ func digest_nightmares(
 ) -> Array[Enemy]:
 	var digested_enemies: Array[Enemy] = []
 	var shared_damage: Dictionary = {}
+	var damage_display_values: Dictionary = {}
 	var received_digest_damage: Dictionary = {}
 	var digest_damage_per_cell := int(get_digest_damage_breakdown(enemies, minutes, true)["total"])
 	for enemy in enemies:
-		_digest_enemy(enemy, enemies, stomach, digest_damage_per_cell, shared_damage, received_digest_damage, digested_enemies)
-	_apply_shared_damage(shared_damage, received_digest_damage, digested_enemies)
+		_digest_enemy(enemy, enemies, stomach, digest_damage_per_cell, shared_damage, damage_display_values, received_digest_damage, digested_enemies)
+	_apply_shared_damage(shared_damage, damage_display_values, received_digest_damage, digested_enemies)
+	_show_enemy_damage_values(damage_display_values)
 	return _resolve_digested_enemy_effects(enemies, digested_enemies, received_digest_damage, enemy_setup)
 
 
@@ -135,6 +137,7 @@ func _digest_enemy(
 	stomach: StomachBoard,
 	digest_damage_per_cell: int,
 	shared_damage: Dictionary,
+	damage_display_values: Dictionary,
 	received_digest_damage: Dictionary,
 	digested_enemies: Array[Enemy]
 ) -> void:
@@ -145,8 +148,9 @@ func _digest_enemy(
 		return
 	var damage := digest_damage_per_cell * bottom_cell_count
 	received_digest_damage[enemy] = received_digest_damage.get(enemy, 0) + damage
+	_append_damage_value(damage_display_values, enemy, damage)
 	_apply_digest_damage_share(enemy, enemies, damage, shared_damage)
-	if enemy.take_digest_damage(damage):
+	if enemy.take_digest_damage(damage, false):
 		digested_enemies.append(enemy)
 	_apply_digest_heal_reaction(enemy, enemies)
 	enemy.pulse_cost_label()
@@ -154,6 +158,7 @@ func _digest_enemy(
 
 func _apply_shared_damage(
 	shared_damage: Dictionary,
+	damage_display_values: Dictionary,
 	received_digest_damage: Dictionary,
 	digested_enemies: Array[Enemy]
 ) -> void:
@@ -161,8 +166,11 @@ func _apply_shared_damage(
 		var target_enemy := target as Enemy
 		if target_enemy == null or target_enemy.digested:
 			continue
-		received_digest_damage[target_enemy] = received_digest_damage.get(target_enemy, 0) + shared_damage[target]
-		if target_enemy.take_digest_damage(shared_damage[target]) and not digested_enemies.has(target_enemy):
+		var damage_values: Array = shared_damage[target]
+		var total_damage := _sum_damage_values(damage_values)
+		received_digest_damage[target_enemy] = received_digest_damage.get(target_enemy, 0) + total_damage
+		_append_damage_values(damage_display_values, target_enemy, damage_values)
+		if target_enemy.take_digest_damage(total_damage, false) and not digested_enemies.has(target_enemy):
 			digested_enemies.append(target_enemy)
 
 
@@ -242,7 +250,7 @@ func _apply_digest_damage_share(
 		return
 	var split_damage := maxi(1, roundi(float(damage) * 0.4 / float(adjacent_enemies.size())))
 	for adjacent_enemy in adjacent_enemies:
-		shared_damage[adjacent_enemy] = shared_damage.get(adjacent_enemy, 0) + split_damage
+		_append_damage_value(shared_damage, adjacent_enemy, split_damage)
 
 
 func _apply_digest_heal_reaction(enemy: Enemy, enemies: Array[Enemy]) -> void:
@@ -265,6 +273,37 @@ func _apply_outside_stomach_hp_variation(enemy: Enemy) -> void:
 	var next_max_hp := maxi(1, roundi(float(int(_skill_7_base_hp[enemy])) * next_rate))
 	var hp_delta := next_max_hp - enemy.max_hp
 	enemy.set_hp_values(next_max_hp, maxi(1, enemy.current_hp + hp_delta))
+
+
+func _show_enemy_damage_values(damage_display_values: Dictionary) -> void:
+	for target in damage_display_values.keys():
+		var enemy := target as Enemy
+		if enemy == null:
+			continue
+		var damage_values: Array = damage_display_values[target]
+		enemy.show_digest_damage_values(damage_values)
+
+
+func _append_damage_value(damage_values_by_enemy: Dictionary, enemy: Enemy, damage: int) -> void:
+	if enemy == null or damage <= 0:
+		return
+	var damage_values: Array[int] = []
+	if damage_values_by_enemy.has(enemy):
+		damage_values.append_array(damage_values_by_enemy[enemy])
+	damage_values.append(damage)
+	damage_values_by_enemy[enemy] = damage_values
+
+
+func _append_damage_values(damage_values_by_enemy: Dictionary, enemy: Enemy, damage_values: Array) -> void:
+	for damage in damage_values:
+		_append_damage_value(damage_values_by_enemy, enemy, damage)
+
+
+func _sum_damage_values(damage_values: Array) -> int:
+	var total := 0
+	for damage in damage_values:
+		total += damage
+	return total
 
 
 func _split_damage_values(raw_damage_values: Array[int], final_damage: int) -> Array[int]:
