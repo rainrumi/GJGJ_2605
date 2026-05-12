@@ -477,6 +477,17 @@ text = "６時までにすべての悪夢を消化しましょう"
 horizontal_alignment = 2
 autowrap_mode = 3
 
+[node name="DebugRerollButton" type="Button" parent="UI/StatusPanel"]
+visible = false
+layout_mode = 0
+offset_left = 1054.0
+offset_top = 154.0
+offset_right = 1161.0
+offset_bottom = 188.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 18
+text = "リロール"
+
 [node name="DebugMessageButton" type="Button" parent="UI/StatusPanel" unique_id=2146876269]
 layout_mode = 0
 offset_left = 1168.0

@@ -61,6 +61,7 @@ func _ready() -> void:
 	randomize()
 	ui.digestion_requested.connect(_on_digestion_requested)
 	ui.debug_message_requested.connect(_on_debug_message_requested)
+	ui.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	input_controller.setup(enemies)
 	input_controller.enemy_drag_started.connect(_on_enemy_drag_started)
 	input_controller.enemy_drag_moved.connect(_on_enemy_drag_moved)
@@ -263,6 +264,20 @@ func _on_debug_message_requested(is_active: bool) -> void:
 	debug_numbers_visible = is_active
 	if hovered_enemy != null:
 		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
+
+
+func _on_debug_reroll_requested() -> void:
+	if not battle_active or not debug_numbers_visible or digest_turn_in_progress or dragging_enemy != null:
+		return
+	auto_digest_enabled = false
+	auto_digest_paused_for_drag = false
+	_update_auto_digest_timer()
+	stomach.hide_preview()
+	ui.hide_hp_damage_preview()
+	_set_hovered_enemy(null)
+	_setup_enemies()
+	input_controller.setup(enemies)
+	_refresh_ui()
 
 
 func _try_start_digesting(enemy: Enemy, mouse_position: Vector2) -> void:

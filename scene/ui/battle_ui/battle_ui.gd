@@ -3,6 +3,7 @@ extends CanvasLayer
 
 signal digestion_requested
 signal debug_message_requested(is_active: bool)
+signal debug_reroll_requested
 
 const HOVER_SCALE := 1.1
 const HOVER_TWEEN_DURATION := 0.1
@@ -30,6 +31,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @onready var digest_damage_detail: Label = $PassiveGuideFrame/DigestDamageDetail
 @onready var status_panel: Control = $StatusPanel
 @onready var message_text: Label = $StatusPanel/MessageText
+@onready var debug_reroll_button: Button = $StatusPanel/DebugRerollButton
 @onready var debug_message_button: Button = $StatusPanel/DebugMessageButton
 @onready var nightmare_tooltip: NightmareTooltipView = $NightmareTooltipPanel
 
@@ -55,6 +57,17 @@ func _ready() -> void:
 	_capture_sizes()
 	_create_hp_damage_preview()
 	_create_time_elapsed_label()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if not key_event.pressed or key_event.echo:
+			return
+		if key_event.keycode == KEY_D:
+			_on_debug_message_button_pressed()
+		if key_event.keycode == KEY_R and _debug_button_active:
+			debug_reroll_requested.emit()
 
 
 func reset_for_battle(max_hp: int, minutes: int, message: String) -> void:
@@ -143,6 +156,7 @@ func _configure_digest_damage_labels() -> void:
 func set_debug_button_active(is_active: bool) -> void:
 	_debug_button_active = is_active
 	if is_active:
+		debug_reroll_button.visible = true
 		debug_message_button.add_theme_color_override("font_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
 		debug_message_button.add_theme_color_override("font_hover_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
 		debug_message_button.add_theme_color_override("font_pressed_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
@@ -151,6 +165,7 @@ func set_debug_button_active(is_active: bool) -> void:
 		debug_message_button.add_theme_stylebox_override("pressed", _create_debug_button_style(DEBUG_BUTTON_ACTIVE_PRESSED_COLOR))
 		debug_message_button.add_theme_stylebox_override("focus", _create_debug_button_style(DEBUG_BUTTON_ACTIVE_COLOR))
 		return
+	debug_reroll_button.visible = false
 	debug_message_button.add_theme_color_override("font_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
 	debug_message_button.add_theme_color_override("font_hover_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
 	debug_message_button.add_theme_color_override("font_pressed_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
@@ -256,12 +271,15 @@ func _prepare_mouse_filters() -> void:
 	time_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	status_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	message_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	debug_reroll_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_message_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	digestion_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	digestion_frame.mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 func _prepare_debug_message_button() -> void:
+	debug_reroll_button.visible = false
+	debug_reroll_button.pressed.connect(_on_debug_reroll_button_pressed)
 	debug_message_button.pressed.connect(_on_debug_message_button_pressed)
 
 
@@ -339,6 +357,12 @@ func _format_elapsed_time(amount_minutes: int) -> String:
 func _on_debug_message_button_pressed() -> void:
 	set_debug_button_active(not _debug_button_active)
 	debug_message_requested.emit(_debug_button_active)
+
+
+func _on_debug_reroll_button_pressed() -> void:
+	if not _debug_button_active:
+		return
+	debug_reroll_requested.emit()
 
 
 func _on_digestion_frame_gui_input(event: InputEvent) -> void:
