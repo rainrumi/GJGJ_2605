@@ -10,7 +10,7 @@
 script = ExtResource("1_script")
 display_name = "カプチーノ"
 rarity = &"high"
-effect_text = "消化ごとの時間経過-5%（最大20%）"
+effect_text = "消化ごとに進む時間-5%（最大20%）"
 effect_font_size = 17
 seed_texture = ExtResource("2_seed")
 frame_texture = ExtResource("3_frame")

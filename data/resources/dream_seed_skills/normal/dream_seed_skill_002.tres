@@ -9,6 +9,7 @@ skill_id = 2
 category = "夢の花系統"
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
+stock_count = 3
 main_description = "ステージクリア時の回復量+10%"
 sub_description = "即時発動
 HP5%回復"

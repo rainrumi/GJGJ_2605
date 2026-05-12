@@ -1,6 +1,13 @@
 class_name DreamSeedEffectCalculator
 extends RefCounted
 
+const CATEGORY_DREAM_FLOWER := "夢の花系統"
+const SKILL_1_DIGEST_DAMAGE_RATE := 0.1
+const SKILL_3_TIME_REDUCTION_RATE := 0.05
+const SKILL_3_MAX_TIME_REDUCTION_RATE := 0.2
+const SKILL_4_REST_RECOVERY_START_RATE := 0.5
+const SKILL_4_REST_RECOVERY_DECAY_RATE := 0.1
+
 var next_digest_damage_bonus_rate := 0.0
 var rest_recovery_bonus_rate := 0.0
 var _planted_flowers: Array[FlowerDefinition] = []
@@ -18,10 +25,10 @@ func setup(flowers: Array) -> void:
 func get_digest_damage_breakdown(
 	base_damage: int,
 	nightmare_rate: float,
-	minutes: int,
+	_minutes: int,
 	consume_pending_bonus: bool = false
 ) -> Dictionary:
-	var seed_rate := _get_digest_damage_rate(minutes)
+	var seed_rate := _get_digest_damage_rate()
 	if next_digest_damage_bonus_rate > 0.0:
 		seed_rate += next_digest_damage_bonus_rate
 	if consume_pending_bonus:
@@ -39,26 +46,26 @@ func get_digest_damage_breakdown(
 	}
 
 
-func apply_player_damage(amount: int, base_damage: int) -> int:
+func apply_player_damage(amount: int, _base_damage: int) -> int:
 	if amount <= 0:
 		return 0
 	var final_damage := maxi(0, roundi(float(amount) * _get_player_damage_multiplier()))
-	next_digest_damage_bonus_rate += _get_reflect_digest_rate(final_damage, base_damage)
+	next_digest_damage_bonus_rate += _get_reflect_digest_rate(final_damage)
 	return final_damage
 
 
 func get_time_reduction_rate() -> float:
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
-		if skill.skill_id == 3 and skill.category == "螟｢縺ｮ闃ｱ邉ｻ邨ｱ":
-			rate += 0.05
-	return minf(0.2, rate)
+		if _is_dream_flower_skill(skill, 3):
+			rate += SKILL_3_TIME_REDUCTION_RATE
+	return minf(SKILL_3_MAX_TIME_REDUCTION_RATE, rate)
 
 
 func get_rest_hp(max_hp: int, base_recovery_rate: float) -> int:
 	var recovery_rate := base_recovery_rate + _get_rest_recovery_bonus_rate()
 	if rest_recovery_bonus_rate > 0.0:
-		rest_recovery_bonus_rate = maxf(0.0, rest_recovery_bonus_rate - 0.1)
+		rest_recovery_bonus_rate = maxf(0.0, rest_recovery_bonus_rate - SKILL_4_REST_RECOVERY_DECAY_RATE)
 	return ceili(float(max_hp) * recovery_rate)
 
 
@@ -73,42 +80,28 @@ func get_seed_skill_id_text() -> String:
 	return ",".join(seed_ids)
 
 
-func _get_digest_damage_rate(minutes: int) -> float:
+func _get_digest_damage_rate() -> float:
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
-		if skill.skill_id == 1 and skill.category == "螟｢縺ｮ闃ｱ邉ｻ邨ｱ":
-			rate += 0.1
-		if skill.skill_id == 5 and skill.category == "蜿榊ｰ・ｳｻ邨ｱ":
-			rate += 0.1
-		if skill.skill_id == 4 and skill.category == "譎る俣邉ｻ邨ｱ" and minutes >= 27 * 60:
-			rate += 2.0
+		if _is_dream_flower_skill(skill, 1):
+			rate += SKILL_1_DIGEST_DAMAGE_RATE
 	return rate
 
 
 func _get_player_damage_multiplier() -> float:
-	var multiplier := 1.0
-	for skill in _get_planted_seed_skills():
-		if skill.skill_id == 2 and skill.category == "蜿榊ｰ・ｳｻ邨ｱ":
-			multiplier += 0.3
-	return multiplier
+	return 1.0
 
 
-func _get_reflect_digest_rate(taken_damage: int, base_damage: int) -> float:
-	if taken_damage <= 0:
-		return 0.0
-	var rate := 0.0
-	for skill in _get_planted_seed_skills():
-		if skill.skill_id == 2 and skill.category == "蜿榊ｰ・ｳｻ邨ｱ":
-			rate += float(taken_damage) * 0.3 / float(base_damage)
-	return rate
+func _get_reflect_digest_rate(_taken_damage: int) -> float:
+	return 0.0
 
 
 func _get_rest_recovery_bonus_rate() -> float:
 	if rest_recovery_bonus_rate > 0.0:
 		return rest_recovery_bonus_rate
 	for skill in _get_planted_seed_skills():
-		if skill.skill_id == 4 and skill.category == "螟｢縺ｮ闃ｱ邉ｻ邨ｱ":
-			rest_recovery_bonus_rate = 0.5
+		if _is_dream_flower_skill(skill, 4):
+			rest_recovery_bonus_rate = SKILL_4_REST_RECOVERY_START_RATE
 			return rest_recovery_bonus_rate
 	return 0.0
 
@@ -119,3 +112,7 @@ func _get_planted_seed_skills() -> Array[DreamSeedSkillDefinition]:
 		if flower != null and flower.dream_seed_skill != null:
 			skills.append(flower.dream_seed_skill)
 	return skills
+
+
+func _is_dream_flower_skill(skill: DreamSeedSkillDefinition, skill_id: int) -> bool:
+	return skill != null and skill.skill_id == skill_id and skill.category == CATEGORY_DREAM_FLOWER
