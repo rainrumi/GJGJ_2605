@@ -16,21 +16,18 @@ var _time_elapsed_label_base_position := Vector2.ZERO
 var _time_elapsed_tween: Tween
 
 
-# 初期化
 func _ready() -> void:
 	_prepare_mouse_filters()
 	_capture_sizes()
 	_create_time_elapsed_label()
 
 
-# 時刻を反映
 func set_time(minutes: int) -> void:
 	var hour := int(minutes / 60) % 24
 	var minute := minutes % 60
 	time_text.text = "%02d:%02d" % [hour, minute]
 
 
-# 経過を表示
 func show_elapsed(amount_minutes: int) -> void:
 	if _time_elapsed_tween != null and _time_elapsed_tween.is_valid():
 		_time_elapsed_tween.kill()
@@ -43,41 +40,44 @@ func show_elapsed(amount_minutes: int) -> void:
 	_time_elapsed_tween.set_trans(Tween.TRANS_QUART)
 	_time_elapsed_tween.set_ease(Tween.EASE_OUT)
 	_time_elapsed_tween.tween_property(_time_elapsed_label, "modulate:a", 1.0, TIME_ELAPSED_TWEEN_DURATION)
-	_time_elapsed_tween.tween_property(_time_elapsed_label, "position:y", _time_elapsed_label_base_position.y - TIME_ELAPSED_FLOAT_DISTANCE, TIME_ELAPSED_TWEEN_DURATION)
+	_time_elapsed_tween.tween_property(
+		_time_elapsed_label,
+		"position:y",
+		_time_elapsed_label_base_position.y - TIME_ELAPSED_FLOAT_DISTANCE,
+		TIME_ELAPSED_TWEEN_DURATION
+	)
 	_time_elapsed_tween.chain().tween_interval(TIME_ELAPSED_HIDE_DELAY)
 	_time_elapsed_tween.chain().tween_callback(hide_elapsed)
 	_pulse_time_text()
 
 
-# 経過を隠す
 func hide_elapsed() -> void:
 	if _time_elapsed_tween != null and _time_elapsed_tween.is_valid():
 		_time_elapsed_tween.kill()
+	if _time_elapsed_label == null:
+		return
 	_time_elapsed_label.visible = false
 	_time_elapsed_label.position = _time_elapsed_label_base_position
 	_time_elapsed_label.modulate.a = 0.0
 
 
-# 入力無視設定
 func _prepare_mouse_filters() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	time_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
-# サイズを記録
 func _capture_sizes() -> void:
 	_time_text_base_scale = time_text.scale
 	time_text.pivot_offset = time_text.size * 0.5
 
 
-# 経過ラベル作成
 func _create_time_elapsed_label() -> void:
 	_time_elapsed_label = Label.new()
 	_time_elapsed_label.name = "TimeElapsedLabel"
 	_time_elapsed_label.visible = false
 	_time_elapsed_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_time_elapsed_label.size = Vector2(104.0, 36.0)
-	_time_elapsed_label_base_position = position + Vector2(-110.0, 42.0)
+	_time_elapsed_label_base_position = Vector2(-110.0, 42.0)
 	_time_elapsed_label.position = _time_elapsed_label_base_position
 	_time_elapsed_label.modulate.a = 0.0
 	_time_elapsed_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -89,10 +89,9 @@ func _create_time_elapsed_label() -> void:
 	if elapsed_font != null:
 		_time_elapsed_label.add_theme_font_override("font", elapsed_font)
 	_time_elapsed_label.add_theme_font_size_override("font_size", 28)
-	get_parent().add_child(_time_elapsed_label)
+	add_child(_time_elapsed_label)
 
 
-# 時刻を強調
 func _pulse_time_text() -> void:
 	if _time_text_pulse_tween != null and _time_text_pulse_tween.is_valid():
 		_time_text_pulse_tween.kill()
@@ -104,7 +103,6 @@ func _pulse_time_text() -> void:
 	_time_text_pulse_tween.tween_property(time_text, "scale", _time_text_base_scale, TIME_PULSE_DURATION * 0.5)
 
 
-# 経過を整形
 func _format_elapsed_time(amount_minutes: int) -> String:
 	var hours := int(amount_minutes / 60)
 	var minutes_only := amount_minutes % 60

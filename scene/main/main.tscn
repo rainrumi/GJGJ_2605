@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://b1alo4br58fxi" path="res://scene/main/main.gd" id="1_6vuhr"]
 [ext_resource type="PackedScene" uid="uid://duqrptvdqkp7l" path="res://scene/main/title/title.tscn" id="2_a0c6e"]
 [ext_resource type="PackedScene" uid="uid://bd6olk1dyr2q7" path="res://scene/main/game/game.tscn" id="3_qtsyf"]
-[ext_resource type="AudioStream" uid="uid://dc8vyar0jf1e4" path="res://sound/bgm/Night_Dance.mp3" id="4_odqci"]
 [ext_resource type="PackedScene" uid="uid://cnvmrlnictk8h" path="res://scene/main/stage_clear/stage_clear.tscn" id="5_stage_clear"]
 [ext_resource type="PackedScene" uid="uid://cw5upfry3m3nf" path="res://scene/main/opening_novel/opening_novel.tscn" id="6_opening_novel"]
 [ext_resource type="PackedScene" uid="uid://durkvvfl2418x" path="res://scene/main/stage_select/stage_select.tscn" id="7_stage_select"]
@@ -26,7 +25,6 @@ mouse_filter = 2
 color = Color(0.1254902, 0.1254902, 0.1254902, 1)
 
 [node name="BGM" type="AudioStreamPlayer" parent="." unique_id=984718531]
-stream = ExtResource("4_odqci")
 
 [node name="Title" parent="." unique_id=1609153234 instance=ExtResource("2_a0c6e")]
 
