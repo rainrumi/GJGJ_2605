@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://bdwlmrqlmsor3"]
 
-[ext_resource type="Texture2D" path="res://art/enemy/tex_enemy_1000_No_100.png" id="1_enemy"]
-[ext_resource type="Script" path="res://scene/object/enemy/enemy.gd" id="2_script"]
+[ext_resource type="Texture2D" uid="uid://ch5ohl873x4x4" path="res://art/enemy/tex_enemy_1000_No_100.png" id="1_enemy"]
+[ext_resource type="Script" uid="uid://ccx2iw1mxklqy" path="res://scene/object/enemy/enemy.gd" id="2_script"]
 
-[node name="Enemy" type="Node2D"]
+[node name="Enemy" type="Node2D" unique_id=1729494960]
 script = ExtResource("2_script")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=713877918]
 texture = ExtResource("1_enemy")

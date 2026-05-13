@@ -185,15 +185,27 @@ func _apply_selection_recovery(extra_recovery_rate: float) -> float:
 	_set_hp(recovered_hp, true)
 	return recovery_rate
 func _refresh_flower_slots() -> void:
+	var display_textures := _get_display_flower_textures()
 	for i in range(flower_slots.size()):
 		var texture_rect := flower_slots[i].get_node("FlowerTexture") as TextureRect
-		if i >= HEAD_FLOWER_DISPLAY_COUNT or i >= planted_flowers.size() or planted_flowers[i] == null:
+		if i >= HEAD_FLOWER_DISPLAY_COUNT or i >= display_textures.size():
 			texture_rect.texture = null
 			flower_slots[i].disabled = true
 			continue
-		texture_rect.texture = planted_flowers[i].texture
+		texture_rect.texture = display_textures[i]
 		flower_slots[i].disabled = true
 	_update_planted_info_text()
+func _get_display_flower_textures() -> Array[Texture2D]:
+	var textures: Array[Texture2D] = []
+	for flower in planted_flowers:
+		var texture := _get_display_flower_texture(flower)
+		if texture != null:
+			textures.append(texture)
+	return textures
+func _get_display_flower_texture(flower: FlowerDefinition) -> Texture2D:
+	if flower == null or flower.dream_seed_skill == null:
+		return null
+	return flower.dream_seed_skill.texture
 func _update_planted_info_text() -> void:
 	var normal_count := StageClearRecoveryCalculator.count_planted_by_rarity(planted_flowers, RARITY_NORMAL)
 	var high_count := StageClearRecoveryCalculator.count_planted_by_rarity(planted_flowers, RARITY_HIGH)
@@ -283,4 +295,3 @@ func _reset_abandon_button_scale() -> void:
 	if _abandon_button_hover_tween != null and _abandon_button_hover_tween.is_valid():
 		_abandon_button_hover_tween.kill()
 	abandon_button_frame.scale = _abandon_button_base_scale
-

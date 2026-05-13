@@ -1,14 +1,15 @@
 [gd_scene format=3 uid="uid://bd6olk1dyr2q7"]
 
 [ext_resource type="PackedScene" path="res://scene/object/background/background.tscn" id="1_background"]
-[ext_resource type="PackedScene" path="res://scene/object/enemy/enemy.tscn" id="2_enemy"]
+[ext_resource type="PackedScene" uid="uid://bdwlmrqlmsor3" path="res://scene/object/enemy/enemy.tscn" id="2_enemy"]
 [ext_resource type="Script" uid="uid://dptae2htd5ca5" path="res://scene/ui/battle_ui/battle_ui.gd" id="3_battle_ui_script"]
 [ext_resource type="PackedScene" uid="uid://cai1mrucqy6v5" path="res://scene/object/stomach/stomach.tscn" id="5_stomach"]
 [ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
 [ext_resource type="Texture2D" uid="uid://bm3qblcikrvsm" path="res://art/ui/hp/ui_hp_gauge_1000.png" id="10_cdvix"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
+[ext_resource type="Texture2D" uid="uid://kqpvrg8div8l" path="res://art/dreamseed/flower/tex_seed_1000_No_100_chibi_100.png" id="13_f3sh4"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="13_font"]
-[ext_resource type="Texture2D" uid="uid://dmwygbcsp6evw" path="res://art/dreamseed/flower/tex_passive_flower_1000.png" id="16_flower"]
+[ext_resource type="Script" uid="uid://bm4w874wal4cv" path="res://scene/object/dreamseed/passive_flower_spawner.gd" id="16_passive_flower_spawner"]
 [ext_resource type="Texture2D" uid="uid://cno8kuv3l6jtg" path="res://art/stomach/tex_digestion_frame_1000.png" id="17_digestion"]
 [ext_resource type="Texture2D" uid="uid://djqhgj0uikma7" path="res://art/ui/time/ui_time_frame_1000.png" id="18_time_frame"]
 [ext_resource type="Texture2D" uid="uid://cd5grt48wcvhd" path="res://art/ui/hp/ui_hp_frame_1000.png" id="19_hp_frame"]
@@ -44,9 +45,8 @@ nightmare_skill_catalog = ExtResource("26_nightmare_skill_catalog")
 [node name="GameInputController" type="Node" parent="." unique_id=161686257]
 script = ExtResource("27_game_input_controller")
 
-[node name="PassiveFlower" type="Sprite2D" parent="." unique_id=1390278827]
-position = Vector2(181, 81)
-texture = ExtResource("16_flower")
+[node name="PassiveFlower" type="Node2D" parent="." unique_id=1390278827]
+script = ExtResource("16_passive_flower_spawner")
 
 [node name="EnemyLeft" parent="." unique_id=1201043878 instance=ExtResource("2_enemy")]
 position = Vector2(850, 500)
@@ -177,6 +177,11 @@ position = Vector2(518.515, 403)
 
 [node name="Character" parent="." unique_id=652368236 instance=ExtResource("6_character")]
 position = Vector2(190, 420)
+
+[node name="Sprite2D2" type="Sprite2D" parent="Character" unique_id=2013735947]
+modulate = Color(0.9490196, 0.89411765, 1, 1)
+position = Vector2(25, -309)
+texture = ExtResource("13_f3sh4")
 
 [node name="ClickSe" type="AudioStreamPlayer" parent="." unique_id=163842910]
 stream = ExtResource("21_click_se")
@@ -540,7 +545,7 @@ vertical_alignment = 1
 offset_left = 64.0
 offset_top = 570.0
 offset_right = 320.0
-offset_bottom = 596.0
+offset_bottom = 595.99994
 texture = ExtResource("19_hp_frame")
 region_rect = Rect2(0, 0, 256, 26)
 patch_margin_left = 12
@@ -625,6 +630,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="StatusPanel" type="Control" parent="UI" unique_id=1605446388]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0

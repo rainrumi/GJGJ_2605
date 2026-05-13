@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://csw3037sd7vtl"]
 
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://bq08sweapverk" path="res://art/dreamseed/flower/tex_seed_2000_demo_1000.png" id="2_texture"]
+[ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/flower/tex_seed_1000_No_100.png" id="2_gdfog"]
 
 [resource]
 script = ExtResource("1_script")
 skill_id = 1
 category = "夢の花系統"
 display_name = "夢の花名"
-texture = ExtResource("2_texture")
+texture = ExtResource("2_gdfog")
 stock_count = 1
 main_description = "消化ダメージ+10%"
 sub_description = "即時発動
