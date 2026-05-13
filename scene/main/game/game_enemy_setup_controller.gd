@@ -109,7 +109,7 @@ func _get_random_nightmare_skills() -> Array[NightmareSkillDefinition]:
 			continue
 		var category := skill.category
 		if category.is_empty():
-			category = "騾壼ｸｸ"
+			category = "通常"
 		if not skills_by_category.has(category):
 			skills_by_category[category] = []
 		skills_by_category[category].append(skill)
