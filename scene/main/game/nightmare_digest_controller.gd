@@ -114,6 +114,12 @@ func activate_deferred_nuisance_enemies(enemies: Array[Enemy]) -> void:
 		enemy.activate_stomach_turn()
 
 
+func unlock_deferred_nuisance_gravity(enemies: Array[Enemy]) -> void:
+	for enemy in enemies:
+		if enemy.is_active_in_stomach() and enemy.activation_deferred:
+			enemy.clear_gravity_lock()
+
+
 func has_active_nightmare_effect(enemies: Array[Enemy], skill_id: int) -> bool:
 	for enemy in enemies:
 		if _has_nightmare_effect(enemy, skill_id) and not enemy.digested:

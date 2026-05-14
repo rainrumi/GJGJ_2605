@@ -208,6 +208,7 @@ func _advance_digest_turn() -> void:
 		hp = maxi(0, hp - _sum_damage_values(player_damage_values))
 	if not digested_enemies.is_empty():
 		await get_tree().create_timer(Enemy.DIGESTED_TWEEN_DURATION).timeout
+		digest_controller.unlock_deferred_nuisance_gravity(enemies)
 		stomach.apply_gravity(enemies)
 	_finish_digest_turn(elapsed_minutes)
 func _finish_empty_digest_turn() -> void:
