@@ -49,126 +49,15 @@ script = ExtResource("16_passive_flower_spawner")
 [node name="EnemyLeft" parent="." unique_id=1201043878 instance=ExtResource("2_enemy")]
 position = Vector2(850, 500)
 
-[node name="HPText" type="Label" parent="EnemyLeft" unique_id=1793702045]
-offset_left = -74.0
-offset_top = -62.0
-offset_right = 74.0
-offset_bottom = -14.0
-theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 32
-text = "1400"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="DamageText" type="Label" parent="EnemyLeft" unique_id=551870154]
-offset_left = -74.0
-offset_top = -26.0
-offset_right = 74.0
-offset_bottom = 22.0
-theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 28
-text = "攻 2"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="EnemyCenter" parent="." unique_id=625950174 instance=ExtResource("2_enemy")]
 position = Vector2(1000, 280)
 
-[node name="HPText" type="Label" parent="EnemyCenter" unique_id=514782430]
-offset_left = -94.0
-offset_top = -62.0
-offset_right = 94.0
-offset_bottom = -14.0
-theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 32
-text = "1000"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="DamageText" type="Label" parent="EnemyCenter" unique_id=783746076]
-offset_left = -94.0
-offset_top = -26.0
-offset_right = 94.0
-offset_bottom = 22.0
-theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 28
-text = "攻 3"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="EnemyRight" parent="." unique_id=1712927430 instance=ExtResource("2_enemy")]
 position = Vector2(1150, 500)
 
-[node name="HPText" type="Label" parent="EnemyRight" unique_id=966397350]
-offset_left = -71.0
-offset_top = -17.0
-offset_right = 77.0
-offset_bottom = 31.0
-theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 32
-text = "2000"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="DamageText" type="Label" parent="EnemyRight" unique_id=952825343]
-offset_left = -71.0
-offset_top = 19.0
-offset_right = 77.0
-offset_bottom = 67.0
-theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 28
-text = "攻 5"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="EnemyUpperRight" parent="." unique_id=708008963 instance=ExtResource("2_enemy")]
 position = Vector2(1150, 280)
-
-[node name="HPText" type="Label" parent="EnemyUpperRight" unique_id=124001063]
-offset_left = -74.0
-offset_top = -62.0
-offset_right = 74.0
-offset_bottom = -14.0
-theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 32
-text = "1400"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="DamageText" type="Label" parent="EnemyUpperRight" unique_id=902953290]
-offset_left = -74.0
-offset_top = -26.0
-offset_right = 74.0
-offset_bottom = 22.0
-theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 28
-text = "攻 2"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="Stomach" parent="." unique_id=1086540852 instance=ExtResource("5_stomach")]
 position = Vector2(518.515, 403)

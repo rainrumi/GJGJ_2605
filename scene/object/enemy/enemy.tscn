@@ -2,9 +2,38 @@
 
 [ext_resource type="Texture2D" uid="uid://ch5ohl873x4x4" path="res://art/enemy/tex_enemy_1000_No_100.png" id="1_enemy"]
 [ext_resource type="Script" uid="uid://ccx2iw1mxklqy" path="res://scene/object/enemy/enemy.gd" id="2_script"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="3_font"]
 
 [node name="Enemy" type="Node2D" unique_id=1729494960]
 script = ExtResource("2_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=713877918]
 texture = ExtResource("1_enemy")
+
+[node name="HPText" type="Label" parent="." unique_id=157147899]
+offset_left = -74.0
+offset_top = -50.0
+offset_right = 74.0
+offset_bottom = -2.0
+theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 32
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DamageText" type="Label" parent="." unique_id=937697251]
+offset_left = -74.0
+offset_top = -1.0
+offset_right = 74.0
+offset_bottom = 47.0
+theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 28
+text = "攻 0"
+horizontal_alignment = 1
+vertical_alignment = 1

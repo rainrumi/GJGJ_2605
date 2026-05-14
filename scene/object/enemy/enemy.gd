@@ -10,8 +10,8 @@ const DEFAULT_STATUS_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
 const MAIN_EFFECT_STATUS_COLOR := Color(0.78, 0.18, 0.08, 1.0)
 const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_1000.png")
 @onready var sprite: Sprite2D = $Sprite2D
-@onready var hp_label: Label = get_node_or_null("HPText") as Label
-@onready var damage_label: Label = get_node_or_null("DamageText") as Label
+@onready var hp_label: Label = $HPText
+@onready var damage_label: Label = $DamageText
 var definition: EnemyDefinition
 var skill_definition: NightmareSkillDefinition
 var has_main_effect := false
@@ -63,10 +63,6 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 			sprite.scale = target_size / sprite.texture.get_size()
 			_base_scale = sprite.scale
 	reset_for_battle()
-	if hp_label != null:
-		hp_label.pivot_offset = hp_label.size * 0.5
-	if damage_label != null:
-		damage_label.pivot_offset = damage_label.size * 0.5
 func reset_for_battle() -> void:
 	current_hp = max_hp
 	digesting = false
@@ -253,6 +249,8 @@ func _reset_visuals() -> void:
 		sprite.scale = _base_scale
 	if hp_label != null:
 		hp_label.scale = Vector2.ONE
+	if damage_label != null:
+		damage_label.scale = Vector2.ONE
 func _update_hp_label() -> void:
 	if hp_label != null:
 		hp_label.text = str(current_hp)
