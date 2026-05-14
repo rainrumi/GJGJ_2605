@@ -36,6 +36,7 @@ func set_hp(current_hp: int, max_hp: int, animated: bool = true) -> void:
 	var hp_ratio := clampf(float(_current_hp) / float(_max_hp), 0.0, 1.0)
 	var target_size := Vector2(_hp_gauge_full_width * hp_ratio, hp_gauge.size.y)
 	var is_recovering := _has_hp_value and animated and _current_hp > previous_hp
+	var recovered_hp := _current_hp - previous_hp
 	_has_hp_value = true
 	if _hp_gauge_tween != null and _hp_gauge_tween.is_valid():
 		_hp_gauge_tween.kill()
@@ -51,6 +52,7 @@ func set_hp(current_hp: int, max_hp: int, animated: bool = true) -> void:
 		return
 	if is_recovering:
 		_show_hp_heal_plan(target_size.x)
+		_show_heal_value(recovered_hp)
 	else:
 		_update_hp_heal_plan()
 	_hp_gauge_tween = create_tween()
@@ -85,6 +87,14 @@ func show_damage_values(damage_values: Array[int]) -> void:
 	if damage_texts.is_empty():
 		return
 	var label := _create_damage_value_label(damage_texts)
+	get_parent().add_child(label)
+	_play_damage_value_tween(label)
+
+
+func _show_heal_value(amount: int) -> void:
+	if amount <= 0:
+		return
+	var label := _create_heal_value_label(amount)
 	get_parent().add_child(label)
 	_play_damage_value_tween(label)
 
@@ -128,6 +138,18 @@ func _create_damage_value_label(damage_texts: Array[String]) -> Label:
 	return label
 
 
+func _create_heal_value_label(amount: int) -> Label:
+	var label := Label.new()
+	label.text = "+%d" % amount
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.size = Vector2(92.0, 36.0)
+	label.position = position + hp_text.position + Vector2((hp_text.size.x - label.size.x) * 0.5, -label.size.y + 4.0)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	_apply_heal_label_style(label)
+	return label
+
+
 func _apply_damage_label_style(label: Label, font_size: int, outline_color: Color) -> void:
 	label.add_theme_color_override("font_color", Color.html("#ff0736"))
 	label.add_theme_color_override("font_outline_color", outline_color)
@@ -136,6 +158,16 @@ func _apply_damage_label_style(label: Label, font_size: int, outline_color: Colo
 	if damage_font != null:
 		label.add_theme_font_override("font", damage_font)
 	label.add_theme_font_size_override("font_size", font_size)
+
+
+func _apply_heal_label_style(label: Label) -> void:
+	label.add_theme_color_override("font_color", Color.WHITE)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 3)
+	var heal_font := hp_text.get_theme_font("font")
+	if heal_font != null:
+		label.add_theme_font_override("font", heal_font)
+	label.add_theme_font_size_override("font_size", 28)
 
 
 func _play_damage_value_tween(label: Label) -> void:
