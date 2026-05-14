@@ -7,7 +7,7 @@
 script = ExtResource("1_script")
 skill_id = 1
 category = "夢の花系統"
-display_name = "夢の花名"
+display_name = "カーネーション"
 texture = ExtResource("2_gdfog")
 stock_count = 1
 main_description = "消化ダメージ+10%"

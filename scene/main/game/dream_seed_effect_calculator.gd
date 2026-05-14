@@ -5,12 +5,11 @@ const CATEGORY_DREAM_FLOWER := "夢の花系統"
 const SKILL_1_DIGEST_DAMAGE_RATE := 0.1
 const SKILL_3_TIME_REDUCTION_RATE := 0.05
 const SKILL_3_MAX_TIME_REDUCTION_RATE := 0.2
-const SKILL_4_REST_RECOVERY_START_RATE := 0.5
-const SKILL_4_REST_RECOVERY_DECAY_RATE := 0.1
+const SKILL_4_REST_RECOVERY_BONUS_RATE := 0.5
 
 var next_digest_damage_bonus_rate := 0.0
-var rest_recovery_bonus_rate := 0.0
 var _planted_flowers: Array[FlowerDefinition] = []
+var _skill_4_stock_by_flower: Dictionary = {}
 
 
 func setup(flowers: Array) -> void:
@@ -19,7 +18,7 @@ func setup(flowers: Array) -> void:
 		if flower is FlowerDefinition:
 			_planted_flowers.append(flower as FlowerDefinition)
 	next_digest_damage_bonus_rate = 0.0
-	rest_recovery_bonus_rate = 0.0
+	_setup_skill_4_stocks()
 
 
 func get_digest_damage_breakdown(
@@ -63,9 +62,7 @@ func get_time_reduction_rate() -> float:
 
 
 func get_rest_hp(max_hp: int, base_recovery_rate: float) -> int:
-	var recovery_rate := base_recovery_rate + _get_rest_recovery_bonus_rate()
-	if rest_recovery_bonus_rate > 0.0:
-		rest_recovery_bonus_rate = maxf(0.0, rest_recovery_bonus_rate - SKILL_4_REST_RECOVERY_DECAY_RATE)
+	var recovery_rate := base_recovery_rate + _consume_rest_recovery_bonus_rate()
 	return ceili(float(max_hp) * recovery_rate)
 
 
@@ -96,14 +93,24 @@ func _get_reflect_digest_rate(_taken_damage: int) -> float:
 	return 0.0
 
 
-func _get_rest_recovery_bonus_rate() -> float:
-	if rest_recovery_bonus_rate > 0.0:
-		return rest_recovery_bonus_rate
-	for skill in _get_planted_seed_skills():
-		if _is_dream_flower_skill(skill, 4):
-			rest_recovery_bonus_rate = SKILL_4_REST_RECOVERY_START_RATE
-			return rest_recovery_bonus_rate
-	return 0.0
+func _setup_skill_4_stocks() -> void:
+	_skill_4_stock_by_flower.clear()
+	for flower in _planted_flowers:
+		if flower == null or flower.dream_seed_skill == null:
+			continue
+		if _is_dream_flower_skill(flower.dream_seed_skill, 4):
+			_skill_4_stock_by_flower[flower] = maxi(0, flower.dream_seed_skill.stock_count)
+
+
+func _consume_rest_recovery_bonus_rate() -> float:
+	var bonus_rate := 0.0
+	for flower in _skill_4_stock_by_flower.keys():
+		var stock := int(_skill_4_stock_by_flower[flower])
+		if stock <= 0:
+			continue
+		bonus_rate += SKILL_4_REST_RECOVERY_BONUS_RATE
+		_skill_4_stock_by_flower[flower] = stock - 1
+	return bonus_rate
 
 
 func _get_planted_seed_skills() -> Array[DreamSeedSkillDefinition]:

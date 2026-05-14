@@ -7,7 +7,7 @@
 script = ExtResource("1_script")
 skill_id = 2
 category = "夢の花系統"
-display_name = "夢の花名"
+display_name = "カモミール"
 texture = ExtResource("2_48bk4")
 stock_count = 3
 main_description = "ステージクリア時HP10%回復"
