@@ -1,9 +1,62 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=6 format=3]
 
-[ext_resource type="Texture2D" path="res://art/ui/hp/ui_hp_frame_1000.png" id="1_hp"]
+[ext_resource type="Texture2D" uid="uid://cd5grt48wcvhd" path="res://art/ui/hp/ui_hp_frame_1000.png" id="1_hp_frame"]
+[ext_resource type="Script" path="res://scene/ui/hp/hp.gd" id="2_hp_script"]
+[ext_resource type="Texture2D" uid="uid://bm3qblcikrvsm" path="res://art/ui/hp/ui_hp_gauge_1000.png" id="3_hp_gauge"]
+[ext_resource type="Texture2D" path="res://art/ui/hp/ui_hp_heal_plan_1000.png" id="4_hp_heal_plan"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="5_font"]
 
-[node name="HP" type="TextureRect"]
-offset_right = 264.0
-offset_bottom = 40.0
+[node name="HpFrame" type="NinePatchRect"]
+offset_right = 256.0
+offset_bottom = 26.0
 mouse_filter = 2
-texture = ExtResource("1_hp")
+texture = ExtResource("1_hp_frame")
+region_rect = Rect2(0, 0, 256, 26)
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+script = ExtResource("2_hp_script")
+
+[node name="HpGauge" type="NinePatchRect" parent="."]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 250.0
+offset_bottom = 20.0
+mouse_filter = 2
+texture = ExtResource("3_hp_gauge")
+patch_margin_left = 8
+patch_margin_top = 6
+patch_margin_right = 8
+patch_margin_bottom = 6
+
+[node name="HpHealPlan" type="NinePatchRect" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 250.0
+offset_top = 6.0
+offset_right = 250.0
+offset_bottom = 20.0
+mouse_filter = 2
+texture = ExtResource("4_hp_heal_plan")
+patch_margin_left = 8
+patch_margin_top = 6
+patch_margin_right = 8
+patch_margin_bottom = 6
+
+[node name="HpText" type="Label" parent="."]
+layout_mode = 0
+offset_left = 30.0
+offset_top = -6.0
+offset_right = 234.0
+offset_bottom = 30.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.03529412, 0.02745098, 0.21176471, 1)
+theme_override_colors/font_outline_color = Color(0.94, 0.88, 1, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 20
+text = "100/100"
+horizontal_alignment = 1
+vertical_alignment = 1

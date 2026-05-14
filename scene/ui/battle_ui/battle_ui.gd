@@ -6,7 +6,7 @@ signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 
 @onready var digest_summary: DigestSummaryView = $PassiveGuideFrame
-@onready var hp_status: HpStatusView = $HpFrame
+@onready var hp_status: HpView = $HpFrame
 @onready var time_status: TimeStatusView = $TimeBar
 @onready var digestion_button: DigestionButtonView = $DigestionFrame
 @onready var status_panel: StatusPanelView = $StatusPanel

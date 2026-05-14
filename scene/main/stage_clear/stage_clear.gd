@@ -6,7 +6,6 @@ const CLEAR_RECOVERY_END_HOUR := 27
 const CLEAR_RECOVERY_BASE_RATE := 0.5
 const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
 const MAX_HP := 100
-const HP_GAUGE_TWEEN_DURATION := 0.35
 const HOVER_SCALE := 1.1
 const PRESSED_SCALE := 0.95
 const HOVER_TWEEN_DURATION := 0.1
@@ -19,9 +18,7 @@ const ABANDON_BUTTON_DEFAULT_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
 @export var max_high_flowers := 2
 @export var initial_flower: FlowerDefinition
 @export var seed_options: Array[Resource] = []
-@onready var hp_gauge: NinePatchRect = $CharacterArea/HpFrame/HpGauge
-@onready var hp_heal_plan: NinePatchRect = $CharacterArea/HpFrame/HpHealPlan
-@onready var hp_text: Label = $CharacterArea/HpFrame/HpText
+@onready var hp_view: HpView = $CharacterArea/HpFrame
 @onready var planted_info_text: Label = $CharacterArea/PlantedInfoFrame/PlantedInfoText
 @onready var guide_text: Label = $UI/GuideText
 @onready var seed_choices: Array[StageClearSeedChoice] = [
@@ -40,14 +37,11 @@ var planted_flowers: Array[FlowerDefinition] = []
 var current_hp := MAX_HP
 var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
 var _clear_recovery_applied := false
-var _hp_gauge_full_width := 0.0
-var _hp_gauge_tween: Tween
 var _abandon_button_base_scale := Vector2.ONE
 var _abandon_button_hover_tween: Tween
 var _abandon_button_hovered := false
 var _abandon_button_pressed := false
 func _ready() -> void:
-	_capture_hp_gauge_size()
 	_capture_button_scales()
 	_initialize_planted_flowers()
 	_setup_seed_choices()
@@ -226,45 +220,12 @@ func _reset_abandon_button_visual() -> void:
 func _capture_button_scales() -> void:
 	abandon_button_frame.pivot_offset = abandon_button_frame.size * 0.5
 	_abandon_button_base_scale = abandon_button_frame.scale
-func _capture_hp_gauge_size() -> void:
-	_hp_gauge_full_width = hp_gauge.size.x
 func _set_hp(value: int, animated: bool) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
-	hp_text.text = "%d/%d" % [current_hp, MAX_HP]
-	var hp_ratio := clampf(float(current_hp) / float(MAX_HP), 0.0, 1.0)
-	var target_size := Vector2(_hp_gauge_full_width * hp_ratio, hp_gauge.size.y)
-	if _hp_gauge_tween != null and _hp_gauge_tween.is_valid():
-		_hp_gauge_tween.kill()
-	if current_hp > 0:
-		hp_gauge.visible = true
-	if not animated:
-		hp_gauge.size = target_size
-		if current_hp == 0:
-			hp_gauge.visible = false
-		_update_hp_heal_plan()
-		return
-	_hp_gauge_tween = create_tween()
-	_hp_gauge_tween.set_trans(Tween.TRANS_QUAD)
-	_hp_gauge_tween.set_ease(Tween.EASE_OUT)
-	_hp_gauge_tween.tween_property(hp_gauge, "size", target_size, HP_GAUGE_TWEEN_DURATION)
-	_hp_gauge_tween.tween_callback(Callable(self, "_update_hp_heal_plan"))
-	if current_hp == 0:
-		_hp_gauge_tween.tween_callback(func() -> void: hp_gauge.visible = false)
+	hp_view.set_hp(current_hp, MAX_HP, animated)
+	_update_hp_heal_plan()
 func _update_hp_heal_plan() -> void:
-	if hp_heal_plan == null:
-		return
-	var recovery_rate := _get_planned_clear_recovery_rate()
-	var current_ratio := clampf(float(current_hp) / float(MAX_HP), 0.0, 1.0)
-	var target_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * recovery_rate))
-	var target_ratio := clampf(float(target_hp) / float(MAX_HP), 0.0, 1.0)
-	var current_width := _hp_gauge_full_width * current_ratio
-	var target_width := _hp_gauge_full_width * target_ratio
-	var plan_width := maxf(0.0, target_width - current_width)
-	hp_heal_plan.visible = plan_width > 0.0
-	hp_heal_plan.position = hp_gauge.position + Vector2(current_width, 0.0)
-	hp_heal_plan.size = Vector2(plan_width, hp_gauge.size.y)
-	hp_heal_plan.z_index = hp_gauge.z_index + 1
-	hp_text.z_index = hp_heal_plan.z_index + 1
+	hp_view.set_planned_recovery_rate(_get_planned_clear_recovery_rate())
 func _on_abandon_button_mouse_entered() -> void:
 	_abandon_button_hovered = true
 	_update_abandon_button_scale()

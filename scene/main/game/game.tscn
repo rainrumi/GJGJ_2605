@@ -5,14 +5,12 @@
 [ext_resource type="Script" uid="uid://dptae2htd5ca5" path="res://scene/ui/battle_ui/battle_ui.gd" id="3_battle_ui_script"]
 [ext_resource type="PackedScene" uid="uid://cai1mrucqy6v5" path="res://scene/object/stomach/stomach.tscn" id="5_stomach"]
 [ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
-[ext_resource type="Texture2D" uid="uid://bm3qblcikrvsm" path="res://art/ui/hp/ui_hp_gauge_1000.png" id="10_cdvix"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
 [ext_resource type="Texture2D" uid="uid://kqpvrg8div8l" path="res://art/dreamseed/flower/tex_seed_1000_No_100_chibi_100.png" id="13_f3sh4"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="13_font"]
 [ext_resource type="Script" uid="uid://bm4w874wal4cv" path="res://scene/object/dreamseed/passive_flower_spawner.gd" id="16_passive_flower_spawner"]
 [ext_resource type="Texture2D" uid="uid://cno8kuv3l6jtg" path="res://art/stomach/tex_digestion_frame_1000.png" id="17_digestion"]
 [ext_resource type="Texture2D" uid="uid://djqhgj0uikma7" path="res://art/ui/time/ui_time_frame_1000.png" id="18_time_frame"]
-[ext_resource type="Texture2D" uid="uid://cd5grt48wcvhd" path="res://art/ui/hp/ui_hp_frame_1000.png" id="19_hp_frame"]
 [ext_resource type="Texture2D" uid="uid://dr2mri7shrvne" path="res://art/ui/passive/ui_passive_guide_frame_1000.png" id="20_passive_guide"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://sound/se/click.mp3" id="21_click_se"]
 [ext_resource type="Resource" path="res://data/resources/enemies/adult_nightmare.tres" id="23_adult"]
@@ -23,7 +21,7 @@
 [ext_resource type="Script" uid="uid://cadvjfvgq6ltr" path="res://scene/ui/battle_ui/nightmare_tooltip_view.gd" id="28_nightmare_tooltip_view"]
 [ext_resource type="Script" uid="uid://dwf2m1c1gwuye" path="res://scene/ui/battle_ui/digest_summary_view.gd" id="29_digest_summary_view"]
 [ext_resource type="Script" uid="uid://bguqd5rsu6rco" path="res://scene/ui/battle_ui/digest_damage_tooltip_view.gd" id="30_digest_damage_tooltip_view"]
-[ext_resource type="Script" uid="uid://dpje2jwnuu84m" path="res://scene/ui/battle_ui/hp_status_view.gd" id="31_hp_status_view"]
+[ext_resource type="PackedScene" path="res://scene/ui/hp/hp.tscn" id="31_hp_scene"]
 [ext_resource type="Script" uid="uid://bg88dk2f4fpjw" path="res://scene/ui/battle_ui/time_status_view.gd" id="32_time_status_view"]
 [ext_resource type="Script" uid="uid://cb3ps8imae8l4" path="res://scene/ui/battle_ui/digestion_button_view.gd" id="33_digestion_button_view"]
 [ext_resource type="Script" uid="uid://wiaj3pchfaj2" path="res://scene/ui/battle_ui/status_panel_view.gd" id="34_status_panel_view"]
@@ -541,45 +539,11 @@ theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 18
 vertical_alignment = 1
 
-[node name="HpFrame" type="NinePatchRect" parent="UI" unique_id=756334925]
+[node name="HpFrame" parent="UI" unique_id=756334925 instance=ExtResource("31_hp_scene")]
 offset_left = 64.0
 offset_top = 570.0
 offset_right = 320.0
 offset_bottom = 595.99994
-texture = ExtResource("19_hp_frame")
-region_rect = Rect2(0, 0, 256, 26)
-patch_margin_left = 12
-patch_margin_top = 12
-patch_margin_right = 12
-patch_margin_bottom = 12
-script = ExtResource("31_hp_status_view")
-
-[node name="HpGauge" type="NinePatchRect" parent="UI/HpFrame" unique_id=667900455]
-layout_mode = 0
-offset_left = 6.0
-offset_top = 6.0
-offset_right = 250.0
-offset_bottom = 20.0
-texture = ExtResource("10_cdvix")
-patch_margin_left = 8
-patch_margin_top = 6
-patch_margin_right = 8
-patch_margin_bottom = 6
-
-[node name="HpText" type="Label" parent="UI/HpFrame" unique_id=970781772]
-layout_mode = 0
-offset_left = 30.0
-offset_top = -6.0
-offset_right = 234.0
-offset_bottom = 30.0
-theme_override_colors/font_color = Color(0.03529412, 0.02745098, 0.21176471, 1)
-theme_override_colors/font_outline_color = Color(0.94, 0.88, 1, 1)
-theme_override_constants/outline_size = 10
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 20
-text = "100/100"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="TimeBar" type="TextureRect" parent="UI" unique_id=414664386]
 offset_left = 997.0
