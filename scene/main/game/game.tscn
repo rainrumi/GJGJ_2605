@@ -21,7 +21,7 @@
 [ext_resource type="Script" uid="uid://cadvjfvgq6ltr" path="res://scene/ui/battle_ui/nightmare_tooltip_view.gd" id="28_nightmare_tooltip_view"]
 [ext_resource type="Script" uid="uid://dwf2m1c1gwuye" path="res://scene/ui/battle_ui/digest_summary_view.gd" id="29_digest_summary_view"]
 [ext_resource type="Script" uid="uid://bguqd5rsu6rco" path="res://scene/ui/battle_ui/digest_damage_tooltip_view.gd" id="30_digest_damage_tooltip_view"]
-[ext_resource type="PackedScene" path="res://scene/ui/hp/hp.tscn" id="31_hp_scene"]
+[ext_resource type="PackedScene" uid="uid://cfjja3p43w2i0" path="res://scene/ui/hp/hp.tscn" id="31_hp_scene"]
 [ext_resource type="Script" uid="uid://bg88dk2f4fpjw" path="res://scene/ui/battle_ui/time_status_view.gd" id="32_time_status_view"]
 [ext_resource type="Script" uid="uid://cb3ps8imae8l4" path="res://scene/ui/battle_ui/digestion_button_view.gd" id="33_digestion_button_view"]
 [ext_resource type="Script" uid="uid://wiaj3pchfaj2" path="res://scene/ui/battle_ui/status_panel_view.gd" id="34_status_panel_view"]

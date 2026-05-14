@@ -1,15 +1,14 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://cfjja3p43w2i0"]
 
 [ext_resource type="Texture2D" uid="uid://cd5grt48wcvhd" path="res://art/ui/hp/ui_hp_frame_1000.png" id="1_hp_frame"]
-[ext_resource type="Script" path="res://scene/ui/hp/hp.gd" id="2_hp_script"]
+[ext_resource type="Script" uid="uid://d1pvoy4j5dui5" path="res://scene/ui/hp/hp.gd" id="2_hp_script"]
 [ext_resource type="Texture2D" uid="uid://bm3qblcikrvsm" path="res://art/ui/hp/ui_hp_gauge_1000.png" id="3_hp_gauge"]
-[ext_resource type="Texture2D" path="res://art/ui/hp/ui_hp_heal_plan_1000.png" id="4_hp_heal_plan"]
+[ext_resource type="Texture2D" uid="uid://03g3ejo1pkfn" path="res://art/ui/hp/ui_hp_heal_plan_1000.png" id="4_hp_heal_plan"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="5_font"]
 
-[node name="HpFrame" type="NinePatchRect"]
+[node name="HpFrame" type="NinePatchRect" unique_id=1335638981]
 offset_right = 256.0
 offset_bottom = 26.0
-mouse_filter = 2
 texture = ExtResource("1_hp_frame")
 region_rect = Rect2(0, 0, 256, 26)
 patch_margin_left = 12
@@ -18,40 +17,38 @@ patch_margin_right = 12
 patch_margin_bottom = 12
 script = ExtResource("2_hp_script")
 
-[node name="HpGauge" type="NinePatchRect" parent="."]
+[node name="HpGauge" type="NinePatchRect" parent="." unique_id=238748779]
 layout_mode = 0
 offset_left = 6.0
 offset_top = 6.0
 offset_right = 250.0
 offset_bottom = 20.0
-mouse_filter = 2
 texture = ExtResource("3_hp_gauge")
 patch_margin_left = 8
 patch_margin_top = 6
 patch_margin_right = 8
 patch_margin_bottom = 6
 
-[node name="HpHealPlan" type="NinePatchRect" parent="."]
+[node name="HpHealPlan" type="NinePatchRect" parent="." unique_id=1336152795]
 visible = false
+modulate = Color(1, 1, 1, 1)
 layout_mode = 0
-offset_left = 250.0
+offset_left = 6.0
 offset_top = 6.0
 offset_right = 250.0
 offset_bottom = 20.0
-mouse_filter = 2
 texture = ExtResource("4_hp_heal_plan")
 patch_margin_left = 8
 patch_margin_top = 6
 patch_margin_right = 8
 patch_margin_bottom = 6
 
-[node name="HpText" type="Label" parent="."]
+[node name="HpText" type="Label" parent="." unique_id=813127707]
 layout_mode = 0
 offset_left = 30.0
 offset_top = -6.0
 offset_right = 234.0
 offset_bottom = 30.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.03529412, 0.02745098, 0.21176471, 1)
 theme_override_colors/font_outline_color = Color(0.94, 0.88, 1, 1)
 theme_override_constants/outline_size = 10

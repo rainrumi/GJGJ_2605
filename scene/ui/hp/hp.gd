@@ -16,36 +16,48 @@ var _planned_recovery_rate := 0.0
 var _hp_gauge_full_width := 0.0
 var _hp_gauge_tween: Tween
 var _hp_damage_preview_label: Label
+var _is_hp_recovering := false
+var _has_hp_value := false
 
 
 func _ready() -> void:
 	_prepare_mouse_filters()
+	_prepare_draw_order()
 	_capture_sizes()
 	_create_hp_damage_preview()
 	_update_hp_heal_plan()
 
 
 func set_hp(current_hp: int, max_hp: int, animated: bool = true) -> void:
+	var previous_hp := _current_hp
 	_max_hp = maxi(1, max_hp)
 	_current_hp = clampi(current_hp, 0, _max_hp)
 	hp_text.text = "%d/%d" % [_current_hp, _max_hp]
 	var hp_ratio := clampf(float(_current_hp) / float(_max_hp), 0.0, 1.0)
 	var target_size := Vector2(_hp_gauge_full_width * hp_ratio, hp_gauge.size.y)
+	var is_recovering := _has_hp_value and animated and _current_hp > previous_hp
+	_has_hp_value = true
 	if _hp_gauge_tween != null and _hp_gauge_tween.is_valid():
 		_hp_gauge_tween.kill()
+	_is_hp_recovering = is_recovering
 	if _current_hp > 0:
 		hp_gauge.visible = true
 	if not animated:
 		hp_gauge.size = target_size
 		if _current_hp == 0:
 			hp_gauge.visible = false
+		_is_hp_recovering = false
 		_update_hp_heal_plan()
 		return
+	if is_recovering:
+		_show_hp_heal_plan(target_size.x)
+	else:
+		_update_hp_heal_plan()
 	_hp_gauge_tween = create_tween()
 	_hp_gauge_tween.set_trans(Tween.TRANS_QUAD)
 	_hp_gauge_tween.set_ease(Tween.EASE_OUT)
 	_hp_gauge_tween.tween_property(hp_gauge, "size", target_size, HP_GAUGE_TWEEN_DURATION)
-	_hp_gauge_tween.tween_callback(Callable(self, "_update_hp_heal_plan"))
+	_hp_gauge_tween.tween_callback(Callable(self, "_on_hp_gauge_tween_finished"))
 	if _current_hp == 0:
 		_hp_gauge_tween.tween_callback(func() -> void: hp_gauge.visible = false)
 
@@ -82,6 +94,13 @@ func _prepare_mouse_filters() -> void:
 	hp_gauge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hp_heal_plan.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hp_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+func _prepare_draw_order() -> void:
+	move_child(hp_heal_plan, hp_gauge.get_index())
+	hp_heal_plan.z_index = 0
+	hp_gauge.z_index = 0
+	hp_text.z_index = 1
 
 
 func _capture_sizes() -> void:
@@ -132,14 +151,27 @@ func _play_damage_value_tween(label: Label) -> void:
 
 
 func _update_hp_heal_plan() -> void:
+	if _is_hp_recovering:
+		return
 	var current_ratio := clampf(float(_current_hp) / float(_max_hp), 0.0, 1.0)
 	var target_hp := mini(_max_hp, _current_hp + ceili(float(_max_hp) * _planned_recovery_rate))
 	var target_ratio := clampf(float(target_hp) / float(_max_hp), 0.0, 1.0)
-	var current_width := _hp_gauge_full_width * current_ratio
 	var target_width := _hp_gauge_full_width * target_ratio
-	var plan_width := maxf(0.0, target_width - current_width)
-	hp_heal_plan.visible = plan_width > 0.0
-	hp_heal_plan.position = hp_gauge.position + Vector2(current_width, 0.0)
-	hp_heal_plan.size = Vector2(plan_width, hp_gauge.size.y)
-	hp_heal_plan.z_index = hp_gauge.z_index + 1
-	hp_text.z_index = hp_heal_plan.z_index + 1
+	if target_ratio <= current_ratio:
+		hp_heal_plan.visible = false
+		return
+	_show_hp_heal_plan(target_width)
+
+
+func _show_hp_heal_plan(target_width: float) -> void:
+	hp_heal_plan.visible = true
+	hp_heal_plan.position = hp_gauge.position
+	hp_heal_plan.size = Vector2(target_width, hp_gauge.size.y)
+	hp_heal_plan.z_index = 0
+	hp_gauge.z_index = 0
+	hp_text.z_index = 1
+
+
+func _on_hp_gauge_tween_finished() -> void:
+	_is_hp_recovering = false
+	_update_hp_heal_plan()
