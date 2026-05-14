@@ -4,7 +4,8 @@ extends LeftTooltipView
 
 func _ready() -> void:
 	super()
-	set_title("消化効率")
+	set_title("消化間隔")
+	set_note("最終消化間隔分の時間が経過すると消化ダメージを与えます。", true)
 
 
 func set_efficiency_info(amount_minutes: float) -> void:

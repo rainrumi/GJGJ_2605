@@ -28,13 +28,6 @@
 [ext_resource type="Script" uid="uid://d36mcwrf0i80" path="res://scene/ui/battle_ui/digest_efficiency_tooltip_view.gd" id="35_digest_efficiency_tooltip_view"]
 [ext_resource type="PackedScene" path="res://scene/ui/battle_ui/left_tooltip.tscn" id="36_left_tooltip"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nightmare_tooltip"]
-content_margin_left = 24.0
-content_margin_top = 24.0
-content_margin_right = 24.0
-content_margin_bottom = 24.0
-bg_color = Color(0, 0, 0, 0.68)
-
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
 enemy_definitions = Array[Resource]([ExtResource("23_adult"), ExtResource("24_overeating"), ExtResource("25_chased")])
@@ -77,19 +70,16 @@ stream = ExtResource("21_click_se")
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]
 script = ExtResource("3_battle_ui_script")
 
-[node name="NightmareTooltipPanel" parent="UI" instance=ExtResource("36_left_tooltip")]
+[node name="NightmareTooltipPanel" parent="UI" unique_id=1766035489 instance=ExtResource("36_left_tooltip")]
 z_index = 50
 script = ExtResource("28_nightmare_tooltip_view")
 
-[node name="DigestDamageTooltipPanel" parent="UI" instance=ExtResource("36_left_tooltip")]
+[node name="DigestDamageTooltipPanel" parent="UI" unique_id=1352488328 instance=ExtResource("36_left_tooltip")]
 script = ExtResource("30_digest_damage_tooltip_view")
 
-[node name="DigestEfficiencyTooltipPanel" parent="UI" instance=ExtResource("36_left_tooltip")]
+[node name="DigestEfficiencyTooltipPanel" parent="UI" unique_id=1285341923 instance=ExtResource("36_left_tooltip")]
 script = ExtResource("35_digest_efficiency_tooltip_view")
 note_visible = true
-
-[node name="NoteLabel" parent="DigestEfficiencyTooltipPanel/Content" index="3"]
-text = "この時間が経過するたびに消化が1回進みます。"
 
 [node name="PassiveGuideFrame" type="TextureRect" parent="UI" unique_id=1593431656]
 offset_left = 298.0
@@ -154,7 +144,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 22
-text = "消化効率"
+text = "消化間隔"
 vertical_alignment = 1
 
 [node name="DigestDamageDetail" type="Label" parent="UI/PassiveGuideFrame" unique_id=270902301]

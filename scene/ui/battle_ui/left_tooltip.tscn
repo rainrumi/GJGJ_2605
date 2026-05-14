@@ -43,12 +43,13 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 36
 vertical_alignment = 1
 
-[node name="EntryContainer" type="Control" parent="Content"]
+[node name="EntryContainer" type="VBoxContainer" parent="Content"]
 layout_mode = 0
 offset_top = 76.0
 offset_right = 336.0
 offset_bottom = 420.0
 mouse_filter = 2
+theme_override_constants/separation = 26
 
 [node name="NoteSlice" type="Label" parent="Content"]
 layout_mode = 0

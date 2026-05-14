@@ -4,7 +4,7 @@ extends LeftTooltipView
 
 func _ready() -> void:
 	super()
-	set_title("消化ダメージ詳細")
+	set_title("消化ダメージ")
 	set_note("消化が進むごとに最終消化ダメージを与えます。", true)
 
 
