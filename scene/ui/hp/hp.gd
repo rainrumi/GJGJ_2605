@@ -71,7 +71,7 @@ func set_planned_recovery_rate(recovery_rate: float) -> void:
 
 func show_damage_preview(amount: int) -> void:
 	_hp_damage_preview_label.text = "-%d" % amount
-	_hp_damage_preview_label.position = position + Vector2(size.x - 42.0, -16.0)
+	_hp_damage_preview_label.position = Vector2(size.x - 42.0, -16.0)
 	_hp_damage_preview_label.visible = true
 
 
@@ -87,7 +87,7 @@ func show_damage_values(damage_values: Array[int]) -> void:
 	if damage_texts.is_empty():
 		return
 	var label := _create_damage_value_label(damage_texts)
-	get_parent().add_child(label)
+	add_child(label)
 	_play_damage_value_tween(label)
 
 
@@ -95,7 +95,7 @@ func _show_heal_value(amount: int) -> void:
 	if amount <= 0:
 		return
 	var label := _create_heal_value_label(amount)
-	get_parent().add_child(label)
+	add_child(label)
 	_play_damage_value_tween(label)
 
 
@@ -123,7 +123,7 @@ func _create_hp_damage_preview() -> void:
 	_hp_damage_preview_label.visible = false
 	_hp_damage_preview_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_apply_damage_label_style(_hp_damage_preview_label, 28, Color.BLACK)
-	get_parent().add_child(_hp_damage_preview_label)
+	add_child(_hp_damage_preview_label)
 
 
 func _create_damage_value_label(damage_texts: Array[String]) -> Label:
@@ -131,7 +131,7 @@ func _create_damage_value_label(damage_texts: Array[String]) -> Label:
 	label.text = "\n".join(damage_texts)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.size = Vector2(92.0, maxf(36.0, float(damage_texts.size()) * 30.0))
-	label.position = position + hp_text.position + Vector2((hp_text.size.x - label.size.x) * 0.5, -label.size.y + 4.0)
+	label.position = hp_text.position + Vector2((hp_text.size.x - label.size.x) * 0.5, -label.size.y + 4.0)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	_apply_damage_label_style(label, 28, Color.WHITE)
@@ -143,7 +143,7 @@ func _create_heal_value_label(amount: int) -> Label:
 	label.text = "+%d" % amount
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.size = Vector2(92.0, 36.0)
-	label.position = position + hp_text.position + Vector2((hp_text.size.x - label.size.x) * 0.5, -label.size.y + 4.0)
+	label.position = hp_text.position + Vector2((hp_text.size.x - label.size.x) * 0.5, -label.size.y + 4.0)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	_apply_heal_label_style(label)

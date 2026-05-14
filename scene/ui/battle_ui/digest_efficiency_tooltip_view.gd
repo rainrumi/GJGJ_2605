@@ -1,21 +1,23 @@
 class_name DigestEfficiencyTooltipView
-extends Panel
-
-@onready var current_value_label: Label = $Content/CurrentValueLabel
-@onready var base_value_label: Label = $Content/BaseValueLabel
+extends LeftTooltipView
 
 
-func show_tooltip() -> void:
-	visible = true
-
-
-func hide_tooltip() -> void:
-	visible = false
+func _ready() -> void:
+	super()
+	set_title("消化効率")
 
 
 func set_efficiency_info(amount_minutes: float) -> void:
-	current_value_label.text = _format_minutes(amount_minutes)
-	base_value_label.text = _format_minutes(30.0)
+	set_entries([
+		{
+			"explanation": "最終消化間隔",
+			"value": _format_minutes(amount_minutes),
+		},
+		{
+			"explanation": "基本の消化間隔",
+			"value": _format_minutes(30.0),
+		},
+	])
 
 
 func _format_minutes(amount_minutes: float) -> String:
