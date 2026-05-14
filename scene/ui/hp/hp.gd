@@ -32,7 +32,7 @@ func set_hp(current_hp: int, max_hp: int, animated: bool = true) -> void:
 	var previous_hp := _current_hp
 	_max_hp = maxi(1, max_hp)
 	_current_hp = clampi(current_hp, 0, _max_hp)
-	hp_text.text = "%d/%d" % [_current_hp, _max_hp]
+	_update_hp_text()
 	var hp_ratio := clampf(float(_current_hp) / float(_max_hp), 0.0, 1.0)
 	var target_size := Vector2(_hp_gauge_full_width * hp_ratio, hp_gauge.size.y)
 	var is_recovering := _has_hp_value and animated and _current_hp > previous_hp
@@ -187,12 +187,22 @@ func _update_hp_heal_plan() -> void:
 		return
 	var current_ratio := clampf(float(_current_hp) / float(_max_hp), 0.0, 1.0)
 	var target_hp := mini(_max_hp, _current_hp + ceili(float(_max_hp) * _planned_recovery_rate))
+	var planned_recovery := target_hp - _current_hp
 	var target_ratio := clampf(float(target_hp) / float(_max_hp), 0.0, 1.0)
 	var target_width := _hp_gauge_full_width * target_ratio
 	if target_ratio <= current_ratio:
 		hp_heal_plan.visible = false
+		_update_hp_text()
 		return
+	_update_hp_text(planned_recovery)
 	_show_hp_heal_plan(target_width)
+
+
+func _update_hp_text(planned_recovery: int = 0) -> void:
+	if planned_recovery > 0:
+		hp_text.text = "%d(+%d)/%d" % [_current_hp, planned_recovery, _max_hp]
+		return
+	hp_text.text = "%d/%d" % [_current_hp, _max_hp]
 
 
 func _show_hp_heal_plan(target_width: float) -> void:

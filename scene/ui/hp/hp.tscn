@@ -31,7 +31,6 @@ patch_margin_bottom = 6
 
 [node name="HpHealPlan" type="NinePatchRect" parent="." unique_id=1336152795]
 visible = false
-modulate = Color(1, 1, 1, 1)
 layout_mode = 0
 offset_left = 6.0
 offset_top = 6.0
