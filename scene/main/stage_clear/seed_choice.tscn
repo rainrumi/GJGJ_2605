@@ -1,54 +1,52 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://cdxfuey83p5f0"]
 
-[ext_resource type="Script" path="res://scene/main/stage_clear/seed_choice.gd" id="1_script"]
-[ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="2_font"]
-[ext_resource type="Texture2D" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_100.png" id="3_frame"]
+[ext_resource type="Script" uid="uid://dl173oyj7acni" path="res://scene/main/stage_clear/seed_choice.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://bf3b0ngamjwoc" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_100.png" id="3_frame"]
 
-[node name="SeedChoice" type="Button"]
+[node name="SeedChoice" type="Button" unique_id=188041236]
 custom_minimum_size = Vector2(124, 124)
-offset_right = 124
-offset_bottom = 124
+offset_right = 124.0
+offset_bottom = 124.0
 flat = true
 script = ExtResource("1_script")
 
-[node name="Frame" type="TextureRect" parent="."]
+[node name="Frame" type="TextureRect" parent="." unique_id=2013798613]
 modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_right = 124
-offset_bottom = 124
+offset_right = 124.0
+offset_bottom = 124.0
 mouse_filter = 2
 texture = ExtResource("3_frame")
 
-[node name="SeedTexture" type="TextureRect" parent="."]
-modulate = Color(0.9411765, 0.8784314, 1, 1)
+[node name="SeedTexture" type="TextureRect" parent="." unique_id=864452691]
+self_modulate = Color(0, 0, 0, 1)
 layout_mode = 0
-offset_left = 22
-offset_top = 21
-offset_right = 102
-offset_bottom = 86
+offset_left = 22.0
+offset_top = 21.0
+offset_right = 102.0
+offset_bottom = 86.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="NameLabel" type="Label" parent="."]
+[node name="NameLabel" type="Label" parent="." unique_id=256460895]
 layout_mode = 0
-offset_left = 7
-offset_top = 5
-offset_right = 117
-offset_bottom = 21
-mouse_filter = 2
+offset_left = 7.0
+offset_top = 5.0
+offset_right = 117.0
+offset_bottom = 21.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 
-[node name="EffectLabel" type="Label" parent="."]
+[node name="EffectLabel" type="Label" parent="." unique_id=713516620]
 layout_mode = 0
-offset_left = 12
-offset_top = 88
-offset_right = 112
-offset_bottom = 116
-mouse_filter = 2
+offset_left = 12.0
+offset_top = 88.0
+offset_right = 112.0
+offset_bottom = 116.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 11

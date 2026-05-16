@@ -47,6 +47,7 @@ func _create_flower(texture: Texture2D) -> Node2D:
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
 	sprite.modulate = Color(0.9411765, 0.8784314, 1.0, 1.0)
+	sprite.self_modulate = Color(0.0, 0.0, 0.0, 1.0)
 	flower.add_child(sprite)
 	return flower
 

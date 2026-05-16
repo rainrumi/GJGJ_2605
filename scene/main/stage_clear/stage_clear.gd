@@ -91,6 +91,18 @@ func _get_seed_option(seed_index: int) -> SeedOptionDefinition:
 	if seed_index < 0 or seed_index >= seed_options.size():
 		return null
 	return seed_options[seed_index] as SeedOptionDefinition
+func _get_seed_display_name(seed: SeedOptionDefinition) -> String:
+	if seed.dream_seed_skill != null:
+		return seed.dream_seed_skill.display_name
+	return seed.display_name
+func _get_seed_effect_text(seed: SeedOptionDefinition) -> String:
+	if seed.dream_seed_skill != null:
+		return seed.dream_seed_skill.main_description
+	return seed.effect_text
+func _get_seed_texture(seed: SeedOptionDefinition) -> Texture2D:
+	if seed.dream_seed_skill != null:
+		return seed.dream_seed_skill.texture
+	return seed.seed_texture
 func _setup_seed_choices() -> void:
 	for i in range(seed_choices.size()):
 		var seed_choice := seed_choices[i]
@@ -99,9 +111,9 @@ func _setup_seed_choices() -> void:
 			seed_choice.set_choice_disabled(true)
 			continue
 		seed_choice.setup_choice(
-			seed.display_name,
-			seed.effect_text,
-			seed.seed_texture,
+			_get_seed_display_name(seed),
+			_get_seed_effect_text(seed),
+			_get_seed_texture(seed),
 			seed.frame_texture,
 			seed.effect_font_size
 		)
@@ -133,13 +145,13 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 		_refresh_flower_slots()
 		var recovered_rate := _apply_selection_recovery(0.0)
 		selection_finished.emit(recovered_rate)
-		_show_finished_mode("%sを植えました" % seed.display_name)
+		_show_finished_mode("%sを植えました" % _get_seed_display_name(seed))
 		return
 	_replace_flower(seed, flower)
 	_refresh_flower_slots()
 	var replacement_recovered_rate := _apply_selection_recovery(0.0)
 	selection_finished.emit(replacement_recovered_rate)
-	_show_finished_mode("%sを植え替えました" % seed.display_name)
+	_show_finished_mode("%sを植え替えました" % _get_seed_display_name(seed))
 func _on_abandon_button_pressed() -> void:
 	hp_view.set_planned_recovery_rate(_get_abandon_recovery_rate())
 	var recovery_rate := _apply_selection_recovery(ABANDON_HP_RECOVERY_RATE)

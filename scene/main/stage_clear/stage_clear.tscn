@@ -49,6 +49,7 @@ flat = true
 
 [node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot1" unique_id=739893816]
 modulate = Color(0.9411765, 0.8784314, 1, 1)
+self_modulate = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_left = -18
 offset_top = -2
@@ -67,6 +68,7 @@ flat = true
 
 [node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot2" unique_id=1517214821]
 modulate = Color(0.9411765, 0.8784314, 1, 1)
+self_modulate = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_left = -18
 offset_top = -2
@@ -86,6 +88,7 @@ flat = true
 
 [node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot3" unique_id=965076757]
 modulate = Color(0.9411765, 0.8784314, 1, 1)
+self_modulate = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_left = -13
 offset_top = -6
