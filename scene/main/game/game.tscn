@@ -152,7 +152,7 @@ vertical_alignment = 1
 [node name="HpFrame" parent="UI" unique_id=756334925 instance=ExtResource("31_hp_scene")]
 offset_left = 31.0
 offset_top = 282.0
-offset_right = 159.0
+offset_right = 157.0
 offset_bottom = 294.99997
 
 [node name="TimeBar" type="TextureRect" parent="UI" unique_id=414664386]

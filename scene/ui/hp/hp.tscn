@@ -1,47 +1,48 @@
 [gd_scene format=3 uid="uid://cfjja3p43w2i0"]
 
-[ext_resource type="Texture2D" uid="uid://cd5grt48wcvhd" path="res://art/ui/hp/ui_hp_frame_1000.png" id="1_hp_frame"]
+[ext_resource type="Texture2D" uid="uid://b36tju1anjxla" path="res://art/ui/player/hp/ui_player_hp_frame.png" id="1_ufdaa"]
 [ext_resource type="Script" uid="uid://d1pvoy4j5dui5" path="res://scene/ui/hp/hp.gd" id="2_hp_script"]
-[ext_resource type="Texture2D" uid="uid://bm3qblcikrvsm" path="res://art/ui/hp/ui_hp_gauge_1000.png" id="3_hp_gauge"]
-[ext_resource type="Texture2D" uid="uid://03g3ejo1pkfn" path="res://art/ui/hp/ui_hp_heal_plan_1000.png" id="4_hp_heal_plan"]
+[ext_resource type="Texture2D" uid="uid://dxngqlvp4mqnl" path="res://art/ui/player/hp/ui_player_hp_bar.png" id="3_12af1"]
+[ext_resource type="Texture2D" uid="uid://rdjv6c07wbxi" path="res://art/ui/player/hp/ui_player_hp_mask.png" id="4_12af1"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="5_font"]
 
 [node name="HpFrame" type="NinePatchRect" unique_id=1335638981]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-offset_right = 128.0
+offset_right = 126.0
 offset_bottom = 13.0
-texture = ExtResource("1_hp_frame")
-patch_margin_left = 6
-patch_margin_top = 6
-patch_margin_right = 6
-patch_margin_bottom = 6
+texture = ExtResource("1_ufdaa")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
 script = ExtResource("2_hp_script")
 
 [node name="HpGauge" type="NinePatchRect" parent="." unique_id=238748779]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 125.0
-offset_bottom = 10.0
-texture = ExtResource("3_hp_gauge")
-patch_margin_left = 4
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 124.0
+offset_bottom = 11.0
+texture = ExtResource("3_12af1")
+patch_margin_left = 3
 patch_margin_top = 3
-patch_margin_right = 4
+patch_margin_right = 3
 patch_margin_bottom = 3
 
-[node name="HpHealPlan" type="NinePatchRect" parent="." unique_id=1336152795]
+[node name="HpHealPlan" type="NinePatchRect" parent="." unique_id=2143733906]
 visible = false
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 125.0
-offset_bottom = 10.0
-texture = ExtResource("4_hp_heal_plan")
-patch_margin_left = 4
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 124.0
+offset_bottom = 11.0
+texture = ExtResource("4_12af1")
+region_rect = Rect2(0, 0, 122, 9)
+patch_margin_left = 3
 patch_margin_top = 3
-patch_margin_right = 4
+patch_margin_right = 3
 patch_margin_bottom = 3
 
 [node name="HpText" type="Label" parent="." unique_id=813127707]
