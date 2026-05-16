@@ -146,10 +146,10 @@ text = "消化間隔"
 vertical_alignment = 1
 
 [node name="HpFrame" parent="UI" unique_id=756334925 instance=ExtResource("31_hp_scene")]
-offset_left = 32.0
-offset_top = 285.0
-offset_right = 160.0
-offset_bottom = 297.99997
+offset_left = 31.0
+offset_top = 282.0
+offset_right = 159.0
+offset_bottom = 294.99997
 
 [node name="TimeBar" type="TextureRect" parent="UI" unique_id=414664386]
 modulate = Color(0.9411765, 0.8784314, 1, 1)
