@@ -109,9 +109,16 @@ func set_digest_damage_info(
 	digest_tooltip.set_damage_info(total_damage, base_damage, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
 
 
-func set_digest_efficiency_minutes(amount_minutes: float) -> void:
+func set_digest_efficiency_minutes(
+	amount_minutes: float,
+	base_minutes: float = 30.0,
+	seed_buff: int = 0,
+	seed_rate: float = 0.0,
+	nightmare_buff: int = 0,
+	nightmare_rate: float = 0.0
+) -> void:
 	digest_summary.set_digest_efficiency_minutes(amount_minutes)
-	efficiency_tooltip.set_efficiency_info(amount_minutes)
+	efficiency_tooltip.set_efficiency_info(amount_minutes, base_minutes, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
 
 
 func set_debug_button_active(is_active: bool) -> void:

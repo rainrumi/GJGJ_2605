@@ -278,8 +278,9 @@ func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 func _refresh_ui() -> void:
 	digest_controller.refresh_enemy_status_display(enemies, stomach)
 	var digest_damage := digest_controller.get_digest_damage_breakdown(enemies, minutes)
+	var digest_efficiency := digest_controller.get_step_minutes_breakdown(enemies)
 	ui.set_digest_damage_info(int(digest_damage["total"]), int(digest_damage["base"]), int(digest_damage["seed_buff"]), float(digest_damage["seed_rate"]), int(digest_damage["nightmare_buff"]), float(digest_damage["nightmare_rate"]))
-	ui.set_digest_efficiency_minutes(float(digest_controller.get_step_minutes(enemies)))
+	ui.set_digest_efficiency_minutes(float(digest_efficiency["total"]), float(digest_efficiency["base"]), int(digest_efficiency["seed_buff"]), float(digest_efficiency["seed_rate"]), int(digest_efficiency["nightmare_buff"]), float(digest_efficiency["nightmare_rate"]))
 	ui.set_hp(hp, MAX_HP)
 	ui.set_time(minutes)
 	ui.set_digestion_count(_active_digest_count())

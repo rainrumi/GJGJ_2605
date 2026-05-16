@@ -46,12 +46,25 @@ func get_digest_damage_breakdown(
 
 
 func get_step_minutes(enemies: Array[Enemy]) -> int:
-	var step_minutes := STEP_MINUTES
+	return int(get_step_minutes_breakdown(enemies)["total"])
+
+
+func get_step_minutes_breakdown(enemies: Array[Enemy]) -> Dictionary:
+	var base_minutes := STEP_MINUTES
+	var nightmare_minutes := base_minutes
 	for enemy in enemies:
 		if _has_nightmare_effect(enemy, 6) and enemy.stomach_elapsed_minutes > 0 and enemy.stomach_elapsed_minutes % 60 == 0:
-			step_minutes += 30
-	var time_rate := 1.0 - seed_effects.get_time_reduction_rate()
-	return maxi(1, roundi(float(step_minutes) * time_rate))
+			nightmare_minutes += 30
+	var seed_rate := -seed_effects.get_time_reduction_rate()
+	var total_minutes := maxi(1, roundi(float(nightmare_minutes) * (1.0 + seed_rate)))
+	return {
+		"total": total_minutes,
+		"base": base_minutes,
+		"seed_buff": total_minutes - nightmare_minutes,
+		"seed_rate": seed_rate,
+		"nightmare_buff": nightmare_minutes - base_minutes,
+		"nightmare_rate": float(nightmare_minutes - base_minutes) / float(base_minutes),
+	}
 
 
 func apply_turn_start_effects(enemies: Array[Enemy]) -> void:

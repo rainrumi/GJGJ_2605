@@ -8,7 +8,14 @@ func _ready() -> void:
 	set_note("最終消化間隔分の時間が経過すると消化ダメージを与えます。", true)
 
 
-func set_efficiency_info(amount_minutes: float) -> void:
+func set_efficiency_info(
+	amount_minutes: float,
+	base_minutes: float = 30.0,
+	seed_buff: int = 0,
+	seed_rate: float = 0.0,
+	nightmare_buff: int = 0,
+	nightmare_rate: float = 0.0
+) -> void:
 	set_entries([
 		{
 			"explanation": "最終消化間隔",
@@ -16,7 +23,17 @@ func set_efficiency_info(amount_minutes: float) -> void:
 		},
 		{
 			"explanation": "基本の消化間隔",
-			"value": _format_minutes(30.0),
+			"value": _format_minutes(base_minutes),
+		},
+		{
+			"explanation": "夢の種バフ",
+			"value": "%s（%s）" % [_format_buff_minutes(seed_buff), _format_buff_rate(seed_rate)],
+			"enabled": not is_zero_approx(seed_rate),
+		},
+		{
+			"explanation": "悪夢バフ",
+			"value": "%s（%s）" % [_format_buff_minutes(nightmare_buff), _format_buff_rate(nightmare_rate)],
+			"enabled": not is_zero_approx(nightmare_rate),
 		},
 	])
 
@@ -33,3 +50,17 @@ func _format_minutes(amount_minutes: float) -> String:
 	if minutes_only == 0:
 		return "%d時間" % hours
 	return "%d時間%d分" % [hours, minutes_only]
+
+
+func _format_buff_minutes(amount_minutes: int) -> String:
+	if amount_minutes == 0:
+		return "+0分"
+	var sign := "+" if amount_minutes >= 0 else "-"
+	return "%s%s" % [sign, _format_minutes(absi(amount_minutes))]
+
+
+func _format_buff_rate(rate: float) -> String:
+	var percent := roundi(rate * 100.0)
+	if percent >= 0:
+		return "+%d%%" % percent
+	return "-%d%%" % absi(percent)
