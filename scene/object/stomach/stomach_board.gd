@@ -7,7 +7,7 @@ extends Node2D
 
 @onready var grid_frame: NinePatchRect = $grid_frame
 @onready var frame: NinePatchRect = $frame
-@onready var line_mesh: StomachLineMesh = $MeshInstance2D
+@onready var line_mesh: StomachLineMesh = $line
 
 var _grid_origin := Vector2.ZERO
 var _cell_size := 0.0
@@ -229,10 +229,20 @@ func _update_frame_size(active_grid_area_size: Vector2) -> void:
 
 
 func _update_line_mesh() -> void:
-	var line_bottom_margin := _frame_base_position.y + _frame_base_size.y - (_line_base_position.y + _line_base_size.y)
-	var line_position := Vector2(frame.position.x, frame.position.y + frame.size.y - line_bottom_margin - _line_base_size.y)
-	var line_size := Vector2(frame.size.x, _line_base_size.y)
+	var bottom_row := rows - 1
+	var digest_line_top_y := _get_row_top_y(bottom_row)
+	var digest_line_bottom_y := _get_row_bottom_y(bottom_row)
+	var line_position := Vector2(frame.position.x, digest_line_top_y)
+	var line_size := Vector2(frame.size.x, digest_line_bottom_y - digest_line_top_y)
 	line_mesh.set_line_rect(line_position, line_size)
+
+
+func _get_row_top_y(row: int) -> float:
+	return _grid_origin.y + float(row) * _grid_step
+
+
+func _get_row_bottom_y(row: int) -> float:
+	return _get_row_top_y(row) + _cell_size
 
 
 func _create_preview() -> void:
