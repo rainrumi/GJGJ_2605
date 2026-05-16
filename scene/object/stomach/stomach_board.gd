@@ -7,6 +7,7 @@ extends Node2D
 
 @onready var grid_frame: NinePatchRect = $grid_frame
 @onready var frame: NinePatchRect = $frame
+@onready var line_mesh: StomachLineMesh = $MeshInstance2D
 
 var _grid_origin := Vector2.ZERO
 var _cell_size := 0.0
@@ -15,6 +16,8 @@ var _grid_frame_area_position := Vector2.ZERO
 var _grid_frame_area_size := Vector2.ZERO
 var _frame_base_position := Vector2.ZERO
 var _frame_base_size := Vector2.ZERO
+var _line_base_position := Vector2.ZERO
+var _line_base_size := Vector2.ZERO
 var _preview_sprite: Sprite2D
 
 
@@ -167,6 +170,7 @@ func _configure_grid() -> void:
 	var active_grid_area_size := _get_active_grid_area_size(grid_size, is_horizontal_limited)
 	_grid_origin = (active_grid_area_position + (active_grid_area_size - grid_size) * 0.5).round()
 	_update_frame_size(active_grid_area_size)
+	_update_line_mesh()
 	for child: Node in get_children():
 		if child is NinePatchRect and String(child.name).begins_with("grid_frame_"):
 			remove_child(child)
@@ -188,6 +192,8 @@ func _capture_grid_frame_area() -> void:
 	_grid_frame_area_size = grid_frame.size
 	_frame_base_position = frame.position
 	_frame_base_size = frame.size
+	_line_base_position = line_mesh.position
+	_line_base_size = line_mesh.size
 
 
 func _get_active_grid_area_size(grid_size: Vector2, is_horizontal_limited: bool) -> Vector2:
@@ -220,6 +226,13 @@ func _update_frame_size(active_grid_area_size: Vector2) -> void:
 		target_size.y = active_grid_area_size.y + top_margin + bottom_margin
 	frame.position = (_frame_base_position + (_frame_base_size - target_size) * 0.5).round()
 	frame.size = target_size.round()
+
+
+func _update_line_mesh() -> void:
+	var line_bottom_margin := _frame_base_position.y + _frame_base_size.y - (_line_base_position.y + _line_base_size.y)
+	var line_position := Vector2(frame.position.x, frame.position.y + frame.size.y - line_bottom_margin - _line_base_size.y)
+	var line_size := Vector2(frame.size.x, _line_base_size.y)
+	line_mesh.set_line_rect(line_position, line_size)
 
 
 func _create_preview() -> void:

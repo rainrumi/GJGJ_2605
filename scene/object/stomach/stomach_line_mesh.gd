@@ -15,13 +15,11 @@ var _last_build_signature := ""
 
 
 func _ready() -> void:
-	_bake_scale_into_size()
 	_rebuild_mesh()
 
 
 func _process(_delta: float) -> void:
 	if Engine.is_editor_hint():
-		_bake_scale_into_size()
 		_rebuild_mesh_if_needed()
 
 
@@ -78,11 +76,11 @@ func _rebuild_mesh() -> void:
 	mesh = array_mesh
 
 
-func _bake_scale_into_size() -> void:
-	if scale.is_equal_approx(Vector2.ONE):
-		return
-	size = Vector2(size.x * scale.x, size.y * scale.y).abs()
+func set_line_rect(line_position: Vector2, line_size: Vector2) -> void:
+	position = line_position.round()
+	size = line_size.round()
 	scale = Vector2.ONE
+	_rebuild_mesh()
 
 
 func _update_shader_parameters() -> void:

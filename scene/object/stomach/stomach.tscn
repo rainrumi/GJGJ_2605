@@ -12,7 +12,7 @@
 shader = ExtResource("5_line_shader")
 shader_parameter/line_texture = ExtResource("6_line_texture")
 shader_parameter/line_texture_size = Vector2(6, 6)
-shader_parameter/mesh_size = Vector2(153, 5628.0015)
+shader_parameter/mesh_size = Vector2(153, 54)
 shader_parameter/wave_amplitude = 1.0
 shader_parameter/wave_frequency = 15.0
 shader_parameter/edge_keep_width = 8.0
@@ -41,7 +41,7 @@ position = Vector2(-76, 64)
 mesh = SubResource("ArrayMesh_naj01")
 texture = ExtResource("2_ogirn")
 script = ExtResource("7_line_mesh_script")
-size = Vector2(153, 5628.0015)
+size = Vector2(153, 54)
 
 [node name="grid_frame" type="NinePatchRect" parent="." unique_id=1967012628]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
