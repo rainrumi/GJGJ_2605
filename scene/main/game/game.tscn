@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://cai1mrucqy6v5" path="res://scene/object/stomach/stomach.tscn" id="5_stomach"]
 [ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
-[ext_resource type="Texture2D" uid="uid://kqpvrg8div8l" path="res://art/dreamseed/flower/tex_seed_1000_No_100_chibi_100.png" id="13_f3sh4"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="13_font"]
 [ext_resource type="Script" uid="uid://bm4w874wal4cv" path="res://scene/object/dreamseed/passive_flower_spawner.gd" id="16_passive_flower_spawner"]
 [ext_resource type="Texture2D" uid="uid://cno8kuv3l6jtg" path="res://art/stomach/tex_digestion_frame_1000.png" id="17_digestion"]
@@ -59,11 +58,6 @@ position = Vector2(518.515, 403)
 [node name="Character" parent="." unique_id=652368236 instance=ExtResource("6_character")]
 position = Vector2(190, 420)
 
-[node name="Sprite2D2" type="Sprite2D" parent="Character" unique_id=2013735947]
-modulate = Color(0.9490196, 0.89411765, 1, 1)
-position = Vector2(25, -309)
-texture = ExtResource("13_f3sh4")
-
 [node name="ClickSe" type="AudioStreamPlayer" parent="." unique_id=163842910]
 stream = ExtResource("21_click_se")
 
@@ -105,30 +99,30 @@ vertical_alignment = 1
 
 [node name="DigestDamageValue" type="Label" parent="UI/PassiveGuideFrame" unique_id=1335802653]
 layout_mode = 0
-offset_left = 155.0
-offset_top = 25.0
-offset_right = 319.0
-offset_bottom = 90.0
+offset_left = 145.0
+offset_top = 14.0
+offset_right = 308.99985
+offset_bottom = 79.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 44
 text = "200"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DigestEfficiencyValue" type="Label" parent="UI/PassiveGuideFrame" unique_id=790039167]
 layout_mode = 0
-offset_left = 431.0
-offset_top = 25.0
-offset_right = 655.0
-offset_bottom = 90.0
+offset_left = 410.0
+offset_top = 14.0
+offset_right = 634.0
+offset_bottom = 79.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 44
 text = "30min"
 horizontal_alignment = 1
 vertical_alignment = 1

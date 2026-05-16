@@ -4,7 +4,7 @@ extends Node2D
 const ROW_CAPACITY := 10
 const FLOWER_SPACING := 20.0
 const ROW_SPACING := 20.0
-const FIRST_ROW_ORIGIN := Vector2(180.0, 80.0)
+const FIRST_ROW_ORIGIN := Vector2(640.0, 88.0)
 
 
 func setup_flowers(flowers: Array) -> void:
