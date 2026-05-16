@@ -153,18 +153,18 @@ func get_global_position_for_cell(top_left: Vector2i, size: Vector2i) -> Vector2
 func _configure_grid() -> void:
 	var cell_size_columns := maxi(columns, 4)
 	var cell_size_rows := maxi(rows, 4)
-	_cell_size = floorf(minf(
-		(_grid_frame_area_size.x + float(cell_size_columns - 1) * edge_overlap) / float(cell_size_columns),
-		(_grid_frame_area_size.y + float(cell_size_rows - 1) * edge_overlap) / float(cell_size_rows)
-	))
+	var horizontal_cell_size := (_grid_frame_area_size.x + float(cell_size_columns - 1) * edge_overlap) / float(cell_size_columns)
+	var vertical_cell_size := (_grid_frame_area_size.y + float(cell_size_rows - 1) * edge_overlap) / float(cell_size_rows)
+	var is_horizontal_limited := horizontal_cell_size <= vertical_cell_size
+	_cell_size = floorf(minf(horizontal_cell_size, vertical_cell_size))
 	_cell_size = maxf(1.0, _cell_size)
 	_grid_step = _cell_size - edge_overlap
 	var grid_size: Vector2 = Vector2(
 		float(columns) * _cell_size - float(columns - 1) * edge_overlap,
 		float(rows) * _cell_size - float(rows - 1) * edge_overlap
 	)
-	var active_grid_area_position := _get_active_grid_area_position(grid_size)
-	var active_grid_area_size := _get_active_grid_area_size(grid_size)
+	var active_grid_area_position := _get_active_grid_area_position(grid_size, is_horizontal_limited)
+	var active_grid_area_size := _get_active_grid_area_size(grid_size, is_horizontal_limited)
 	_grid_origin = (active_grid_area_position + (active_grid_area_size - grid_size) * 0.5).round()
 	_update_frame_size(active_grid_area_size)
 	for child: Node in get_children():
@@ -190,20 +190,20 @@ func _capture_grid_frame_area() -> void:
 	_frame_base_size = frame.size
 
 
-func _get_active_grid_area_size(grid_size: Vector2) -> Vector2:
+func _get_active_grid_area_size(grid_size: Vector2, is_horizontal_limited: bool) -> Vector2:
 	var active_size := _grid_frame_area_size
-	if columns < 4:
+	if columns < 4 or (rows > 5 and not is_horizontal_limited):
 		active_size.x = grid_size.x
-	if rows < 4:
+	if rows < 4 or (columns > 4 and is_horizontal_limited):
 		active_size.y = grid_size.y
 	return active_size.round()
 
 
-func _get_active_grid_area_position(grid_size: Vector2) -> Vector2:
+func _get_active_grid_area_position(grid_size: Vector2, is_horizontal_limited: bool) -> Vector2:
 	var active_position := _grid_frame_area_position
-	if columns < 4:
+	if columns < 4 or (rows > 5 and not is_horizontal_limited):
 		active_position.x = _grid_frame_area_position.x + (_grid_frame_area_size.x - grid_size.x) * 0.5
-	if rows < 4:
+	if rows < 4 or (columns > 4 and is_horizontal_limited):
 		active_position.y = _grid_frame_area_position.y + (_grid_frame_area_size.y - grid_size.y) * 0.5
 	return active_position.round()
 
@@ -214,9 +214,9 @@ func _update_frame_size(active_grid_area_size: Vector2) -> void:
 	var right_margin := _frame_base_size.x - left_margin - _grid_frame_area_size.x
 	var bottom_margin := _frame_base_size.y - top_margin - _grid_frame_area_size.y
 	var target_size := _frame_base_size
-	if columns < 4:
+	if not is_equal_approx(active_grid_area_size.x, _grid_frame_area_size.x):
 		target_size.x = active_grid_area_size.x + left_margin + right_margin
-	if rows < 4:
+	if not is_equal_approx(active_grid_area_size.y, _grid_frame_area_size.y):
 		target_size.y = active_grid_area_size.y + top_margin + bottom_margin
 	frame.position = (_frame_base_position + (_frame_base_size - target_size) * 0.5).round()
 	frame.size = target_size.round()
