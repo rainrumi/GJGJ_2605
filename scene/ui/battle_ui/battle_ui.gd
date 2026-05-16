@@ -5,9 +5,12 @@ signal digestion_requested
 signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 
-@onready var digest_summary: DigestSummaryView = $PassiveGuideFrame
+@onready var digest_damage_icon: Control = $DigestiveDMG/digestiveDMG_icon
+@onready var digest_damage_value_label: Label = $DigestiveDMG/digestiveDMG_value
+@onready var digest_efficiency_icon: Control = $DigestiveINTERVAL/digestiveINTERVAL_icon
+@onready var digest_efficiency_value_label: Label = $DigestiveINTERVAL/digestiveINTERVAL_value
 @onready var hp_status: HpView = $HpFrame
-@onready var time_status: TimeStatusView = $TimeBar
+@onready var time_status: TimeStatusView = $Time
 @onready var digestion_button: DigestionButtonView = $DigestionFrame
 @onready var status_panel: StatusPanelView = $StatusPanel
 @onready var nightmare_tooltip: NightmareTooltipView = $NightmareTooltipPanel
@@ -16,6 +19,7 @@ signal debug_reroll_requested
 
 
 func _ready() -> void:
+	_prepare_digest_mouse_filters()
 	_connect_child_signals()
 	hide_nightmare_tooltip()
 	hide_digest_damage_tooltip()
@@ -36,7 +40,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func reset_for_battle(max_hp: int, minutes: int, message: String) -> void:
 	set_hp(max_hp, max_hp)
 	set_time(minutes)
-	digest_summary.reset_summary()
+	set_digest_damage(0)
+	set_digest_efficiency_value(30.0)
 	digest_tooltip.set_damage_info(0, 0, 0, 0.0, 0, 0.0)
 	efficiency_tooltip.set_efficiency_info(30.0)
 	set_message(message)
@@ -105,7 +110,7 @@ func set_digest_damage_info(
 	nightmare_buff: int,
 	nightmare_rate: float
 ) -> void:
-	digest_summary.set_digest_damage(total_damage)
+	set_digest_damage(total_damage)
 	digest_tooltip.set_damage_info(total_damage, base_damage, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
 
 
@@ -117,7 +122,7 @@ func set_digest_efficiency_minutes(
 	nightmare_buff: int = 0,
 	nightmare_rate: float = 0.0
 ) -> void:
-	digest_summary.set_digest_efficiency_minutes(amount_minutes)
+	set_digest_efficiency_value(amount_minutes)
 	efficiency_tooltip.set_efficiency_info(amount_minutes, base_minutes, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
 
 
@@ -161,10 +166,43 @@ func _connect_child_signals() -> void:
 	digestion_button.digestion_requested.connect(_on_digestion_requested)
 	status_panel.debug_message_requested.connect(_on_debug_message_requested)
 	status_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
-	digest_summary.detail_requested.connect(show_digest_damage_tooltip)
-	digest_summary.detail_closed.connect(hide_digest_damage_tooltip)
-	digest_summary.efficiency_detail_requested.connect(show_digest_efficiency_tooltip)
-	digest_summary.efficiency_detail_closed.connect(hide_digest_efficiency_tooltip)
+	digest_damage_icon.mouse_entered.connect(show_digest_damage_tooltip)
+	digest_damage_icon.mouse_exited.connect(hide_digest_damage_tooltip)
+	digest_damage_value_label.mouse_entered.connect(show_digest_damage_tooltip)
+	digest_damage_value_label.mouse_exited.connect(hide_digest_damage_tooltip)
+	digest_efficiency_icon.mouse_entered.connect(show_digest_efficiency_tooltip)
+	digest_efficiency_icon.mouse_exited.connect(hide_digest_efficiency_tooltip)
+	digest_efficiency_value_label.mouse_entered.connect(show_digest_efficiency_tooltip)
+	digest_efficiency_value_label.mouse_exited.connect(hide_digest_efficiency_tooltip)
+
+
+func _prepare_digest_mouse_filters() -> void:
+	digest_damage_icon.mouse_filter = Control.MOUSE_FILTER_STOP
+	digest_damage_value_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	digest_efficiency_icon.mouse_filter = Control.MOUSE_FILTER_STOP
+	digest_efficiency_value_label.mouse_filter = Control.MOUSE_FILTER_STOP
+
+
+func set_digest_damage(total_damage: int) -> void:
+	digest_damage_value_label.text = "%d" % total_damage
+
+
+func set_digest_efficiency_value(amount_minutes: float) -> void:
+	digest_efficiency_value_label.text = _format_digest_efficiency(amount_minutes)
+
+
+func _format_digest_efficiency(amount_minutes: float) -> String:
+	var total_seconds := maxi(1, roundi(amount_minutes * 60.0))
+	if total_seconds < 60:
+		return "%dsec" % total_seconds
+	var total_minutes := int(total_seconds / 60)
+	var hours := int(total_minutes / 60)
+	var minutes_only := total_minutes % 60
+	if hours <= 0:
+		return "%dmin" % total_minutes
+	if minutes_only == 0:
+		return "%dh" % hours
+	return "%dh%dm" % [hours, minutes_only]
 
 
 func _on_digestion_requested() -> void:
