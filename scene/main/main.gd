@@ -20,7 +20,7 @@ enum NovelFlow {
 @onready var bgm: AudioStreamPlayer = $BGM
 
 var current_day := 1
-var selected_stage_index := 0
+var selected_stage_id := 0
 var should_reset_player_state := true
 var active_novel_flow := NovelFlow.NONE
 
@@ -48,6 +48,8 @@ func show_stage_select() -> void:
 	game.visible = false
 	game_ui.visible = false
 	stage_clear.visible = false
+	if stage_select.has_method("setup_stage_choices"):
+		stage_select.call("setup_stage_choices")
 
 
 func show_game(reset_player_state: bool = true) -> void:
@@ -107,8 +109,8 @@ func show_day_intro() -> void:
 	show_stage_select()
 
 
-func _on_stage_select_stage_selected(stage_index: int) -> void:
-	selected_stage_index = stage_index
+func _on_stage_select_stage_selected(stage_id: int) -> void:
+	selected_stage_id = stage_id
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
 
