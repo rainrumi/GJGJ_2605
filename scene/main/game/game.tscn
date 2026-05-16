@@ -82,7 +82,7 @@ script = ExtResource("35_digest_efficiency_tooltip_view")
 note_visible = true
 
 [node name="PassiveGuideFrame" type="TextureRect" parent="UI" unique_id=1593431656]
-modulate = Color(0.9411765, 0.8784314, 1, 1)
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 offset_left = 149.0
 offset_top = 7.5
 offset_right = 393.0
@@ -91,6 +91,7 @@ texture = ExtResource("20_passive_guide")
 script = ExtResource("29_digest_summary_view")
 
 [node name="PassiveGuideText" type="Label" parent="UI/PassiveGuideFrame" unique_id=997175241]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 18.0
 offset_top = 6.0
@@ -104,6 +105,7 @@ text = "消化ダメージ"
 vertical_alignment = 1
 
 [node name="DigestDamageValue" type="Label" parent="UI/PassiveGuideFrame" unique_id=1335802653]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 72.5
 offset_top = 7.0
@@ -119,6 +121,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DigestEfficiencyValue" type="Label" parent="UI/PassiveGuideFrame" unique_id=790039167]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 169.5
 offset_top = 3.5
@@ -133,6 +136,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DigestEfficiencyTitle" type="Label" parent="UI/PassiveGuideFrame" unique_id=1402067713]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 148.0
 offset_top = 2.5
@@ -177,7 +181,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DigestionFrame" type="TextureRect" parent="UI" unique_id=75896202]
-modulate = Color(0.9411765, 0.8784314, 1, 1)
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 offset_left = 491.5
 offset_top = 313.0
 offset_right = 629.5

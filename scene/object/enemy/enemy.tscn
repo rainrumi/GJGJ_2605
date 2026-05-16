@@ -8,7 +8,8 @@
 script = ExtResource("2_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=713877918]
-modulate = Color(0.9411765, 0.8784314, 1, 1)
+modulate = Color(1, 1, 1, 1)
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 texture = ExtResource("1_enemy")
 
 [node name="HPText" type="Label" parent="." unique_id=157147899]
