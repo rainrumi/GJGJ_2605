@@ -55,7 +55,7 @@ position = Vector2(575, 250)
 position = Vector2(575, 140)
 
 [node name="Stomach" parent="." unique_id=1086540852 instance=ExtResource("5_stomach")]
-position = Vector2(180, 75)
+position = Vector2(270, 192.97)
 
 [node name="Character" parent="." unique_id=652368236 instance=ExtResource("6_character")]
 position = Vector2(95, 210)
