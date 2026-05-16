@@ -2,7 +2,7 @@ extends Node2D
 signal battle_finished(won: bool)
 const START_HOUR := 22
 const END_HOUR := 30
-const REST_MINUTES := 60
+const REST_MINUTES := 30
 const MAX_HP := 100
 const REST_HP_RATE := 0.1
 const TIME_OVER_HP_RECOVERY_RATE := 0.7
@@ -53,7 +53,7 @@ func start_battle(starting_hp: int = MAX_HP, _day: int = 1, flowers: Array = [])
 	dragging_enemy = null
 	hovered_enemy = null
 	enemy_setup.setup_enemies(enemies)
-	ui.reset_for_battle(MAX_HP, minutes, START_MESSAGE)
+	ui.reset_for_battle(MAX_HP, minutes, START_MESSAGE, REST_MINUTES, REST_HP_RATE)
 	stomach.hide_preview()
 	battle_active = true
 	input_controller.set_active(true)
