@@ -11,16 +11,26 @@ extends Node2D
 var _grid_origin := Vector2.ZERO
 var _cell_size := 0.0
 var _grid_step := 0.0
+var _grid_frame_area_position := Vector2.ZERO
+var _grid_frame_area_size := Vector2.ZERO
 var _preview_sprite: Sprite2D
 
 
 func _ready() -> void:
+	_capture_grid_frame_area()
 	_configure_grid()
 	_create_preview()
 
 
 func get_capacity() -> int:
 	return columns * rows
+
+
+func set_grid_size(new_columns: int, new_rows: int) -> void:
+	columns = maxi(1, new_columns)
+	rows = maxi(1, new_rows)
+	hide_preview()
+	_configure_grid()
 
 
 func get_span_size(cell_count: int) -> float:
@@ -140,17 +150,18 @@ func get_global_position_for_cell(top_left: Vector2i, size: Vector2i) -> Vector2
 
 func _configure_grid() -> void:
 	_cell_size = minf(
-		(grid_frame.size.x + float(columns - 1) * edge_overlap) / float(columns),
-		(grid_frame.size.y + float(rows - 1) * edge_overlap) / float(rows)
+		(_grid_frame_area_size.x + float(columns - 1) * edge_overlap) / float(columns),
+		(_grid_frame_area_size.y + float(rows - 1) * edge_overlap) / float(rows)
 	)
 	_grid_step = _cell_size - edge_overlap
 	var grid_size: Vector2 = Vector2(
 		float(columns) * _cell_size - float(columns - 1) * edge_overlap,
 		float(rows) * _cell_size - float(rows - 1) * edge_overlap
 	)
-	_grid_origin = grid_frame.position + (grid_frame.size - grid_size) * 0.5
+	_grid_origin = _grid_frame_area_position + (_grid_frame_area_size - grid_size) * 0.5
 	for child: Node in get_children():
 		if child is NinePatchRect and String(child.name).begins_with("grid_frame_"):
+			remove_child(child)
 			child.queue_free()
 	for row in range(rows):
 		for column in range(columns):
@@ -162,6 +173,11 @@ func _configure_grid() -> void:
 			cell.position = _grid_origin + Vector2(column, row) * _grid_step
 			cell.size = Vector2(_cell_size, _cell_size)
 	frame.z_index = 10
+
+
+func _capture_grid_frame_area() -> void:
+	_grid_frame_area_position = grid_frame.position
+	_grid_frame_area_size = grid_frame.size
 
 
 func _create_preview() -> void:

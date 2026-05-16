@@ -9,8 +9,10 @@ script = ExtResource("1_script")
 
 [node name="grid_frame" type="NinePatchRect" parent="." unique_id=1967012628]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-offset_right = 153.0
-offset_bottom = 235.0
+offset_left = 2.0
+offset_top = 7.0
+offset_right = 151.0
+offset_bottom = 228.0
 texture = ExtResource("4_ogirn")
 region_rect = Rect2(0, 0, 24, 24)
 patch_margin_left = 2

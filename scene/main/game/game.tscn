@@ -220,6 +220,46 @@ text = "６時までにすべての悪夢を消化しましょう"
 horizontal_alignment = 2
 autowrap_mode = 3
 
+[node name="DebugStomachXPlusButton" type="Button" parent="UI/StatusPanel" unique_id=645112890]
+layout_mode = 0
+offset_left = 225.0
+offset_top = 339.0
+offset_right = 258.0
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 8
+text = "X+1"
+
+[node name="DebugStomachXMinusButton" type="Button" parent="UI/StatusPanel" unique_id=537635604]
+layout_mode = 0
+offset_left = 262.0
+offset_top = 339.0
+offset_right = 295.0
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 8
+text = "X-1"
+
+[node name="DebugStomachYPlusButton" type="Button" parent="UI/StatusPanel" unique_id=494838133]
+layout_mode = 0
+offset_left = 299.0
+offset_top = 339.0
+offset_right = 332.0
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 8
+text = "Y+1"
+
+[node name="DebugStomachYMinusButton" type="Button" parent="UI/StatusPanel" unique_id=1840537296]
+layout_mode = 0
+offset_left = 336.0
+offset_top = 339.0
+offset_right = 369.0
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 8
+text = "Y-1"
+
 [node name="DebugRerollButton" type="Button" parent="UI/StatusPanel" unique_id=917573151]
 layout_mode = 0
 offset_left = 377.0

@@ -3,6 +3,7 @@ extends Control
 
 signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
+signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 
 const DEBUG_BUTTON_NORMAL_FONT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
@@ -11,6 +12,10 @@ const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
 const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 
 @onready var message_text: Label = $MessageText
+@onready var debug_stomach_x_plus_button: Button = $DebugStomachXPlusButton
+@onready var debug_stomach_x_minus_button: Button = $DebugStomachXMinusButton
+@onready var debug_stomach_y_plus_button: Button = $DebugStomachYPlusButton
+@onready var debug_stomach_y_minus_button: Button = $DebugStomachYMinusButton
 @onready var debug_reroll_button: Button = $DebugRerollButton
 @onready var debug_message_button: Button = $DebugMessageButton
 
@@ -21,7 +26,11 @@ var debug_button_active := false
 # 初期化
 func _ready() -> void:
 	_prepare_mouse_filters()
-	debug_reroll_button.visible = false
+	_set_debug_controls_visible(false)
+	debug_stomach_x_plus_button.pressed.connect(_on_debug_stomach_x_plus_button_pressed)
+	debug_stomach_x_minus_button.pressed.connect(_on_debug_stomach_x_minus_button_pressed)
+	debug_stomach_y_plus_button.pressed.connect(_on_debug_stomach_y_plus_button_pressed)
+	debug_stomach_y_minus_button.pressed.connect(_on_debug_stomach_y_minus_button_pressed)
 	debug_reroll_button.pressed.connect(_on_debug_reroll_button_pressed)
 	debug_message_button.pressed.connect(_on_debug_message_button_pressed)
 
@@ -62,13 +71,17 @@ func request_debug_reroll() -> void:
 func _prepare_mouse_filters() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	message_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	debug_stomach_x_plus_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	debug_stomach_x_minus_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	debug_stomach_y_plus_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	debug_stomach_y_minus_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_reroll_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_message_button.mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 # 有効表示
 func _apply_active_style() -> void:
-	debug_reroll_button.visible = true
+	_set_debug_controls_visible(true)
 	debug_message_button.add_theme_color_override("font_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
 	debug_message_button.add_theme_color_override("font_hover_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
 	debug_message_button.add_theme_color_override("font_pressed_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
@@ -80,7 +93,7 @@ func _apply_active_style() -> void:
 
 # 通常表示
 func _apply_normal_style() -> void:
-	debug_reroll_button.visible = false
+	_set_debug_controls_visible(false)
 	debug_message_button.add_theme_color_override("font_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
 	debug_message_button.add_theme_color_override("font_hover_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
 	debug_message_button.add_theme_color_override("font_pressed_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
@@ -102,6 +115,14 @@ func _create_debug_button_style(color: Color) -> StyleBoxFlat:
 	return style
 
 
+func _set_debug_controls_visible(is_visible: bool) -> void:
+	debug_stomach_x_plus_button.visible = is_visible
+	debug_stomach_x_minus_button.visible = is_visible
+	debug_stomach_y_plus_button.visible = is_visible
+	debug_stomach_y_minus_button.visible = is_visible
+	debug_reroll_button.visible = is_visible
+
+
 # Debug押下
 func _on_debug_message_button_pressed() -> void:
 	toggle_debug_message()
@@ -110,3 +131,19 @@ func _on_debug_message_button_pressed() -> void:
 # Reroll押下
 func _on_debug_reroll_button_pressed() -> void:
 	request_debug_reroll()
+
+
+func _on_debug_stomach_x_plus_button_pressed() -> void:
+	debug_stomach_size_requested.emit(1, 0)
+
+
+func _on_debug_stomach_x_minus_button_pressed() -> void:
+	debug_stomach_size_requested.emit(-1, 0)
+
+
+func _on_debug_stomach_y_plus_button_pressed() -> void:
+	debug_stomach_size_requested.emit(0, 1)
+
+
+func _on_debug_stomach_y_minus_button_pressed() -> void:
+	debug_stomach_size_requested.emit(0, -1)

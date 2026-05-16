@@ -77,6 +77,7 @@ func _connect_ui() -> void:
 	ui.digestion_requested.connect(_on_digestion_requested)
 	ui.debug_message_requested.connect(_on_debug_message_requested)
 	ui.debug_reroll_requested.connect(_on_debug_reroll_requested)
+	ui.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
 func _connect_input() -> void:
 	input_controller.setup(enemies)
 	input_controller.enemy_drag_started.connect(_on_enemy_drag_started)
@@ -161,6 +162,22 @@ func _on_debug_reroll_requested() -> void:
 	stomach.hide_preview()
 	ui.hide_hp_damage_preview()
 	_set_hovered_enemy(null)
+	digest_controller.reset_digest_order()
+	enemy_setup.setup_enemies(enemies)
+	input_controller.setup(enemies)
+	_refresh_ui()
+
+
+func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> void:
+	if not battle_active or not debug_numbers_visible or digest_turn_in_progress or dragging_enemy != null:
+		return
+	auto_digest_enabled = false
+	auto_digest_paused_for_drag = false
+	_update_auto_digest_timer()
+	stomach.hide_preview()
+	ui.hide_hp_damage_preview()
+	_set_hovered_enemy(null)
+	stomach.set_grid_size(stomach.columns + delta_columns, stomach.rows + delta_rows)
 	digest_controller.reset_digest_order()
 	enemy_setup.setup_enemies(enemies)
 	input_controller.setup(enemies)
