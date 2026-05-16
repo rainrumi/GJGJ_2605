@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cai1mrucqy6v5"]
+[gd_scene format=4 uid="uid://cai1mrucqy6v5"]
 
 [ext_resource type="Script" uid="uid://b2xc8aserj0xc" path="res://scene/object/stomach/stomach_board.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dthrac2twg0il" path="res://art/texture/stomach/tex_stomach_digestiveLINE_mask.png" id="2_ogirn"]
@@ -6,16 +6,36 @@
 [ext_resource type="Texture2D" uid="uid://qnhr5hhcadyj" path="res://art/ui/grid/grid_atlas.png" id="4_ogirn"]
 [ext_resource type="Shader" uid="uid://c7qregkik0v1o" path="res://scene/object/stomach/stomach_line.gdshader" id="5_line_shader"]
 [ext_resource type="Texture2D" uid="uid://dmjaiy0fbffvw" path="res://art/texture/stomach/tex_stomach_digestiveLINE_texture.png" id="6_line_texture"]
+[ext_resource type="Script" uid="uid://dgc7bo3r7hhut" path="res://scene/object/stomach/stomach_line_mesh.gd" id="7_line_mesh_script"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_stomach_line"]
 shader = ExtResource("5_line_shader")
 shader_parameter/line_texture = ExtResource("6_line_texture")
 shader_parameter/line_texture_size = Vector2(6, 6)
+shader_parameter/mesh_size = Vector2(153, 10)
+shader_parameter/wave_amplitude = 1.0
+shader_parameter/wave_frequency = 15.0
+shader_parameter/edge_keep_width = 8.0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_naj01"]
+_surfaces = [{
+"2d": true,
+"aabb": AABB(0, 0, 0, 153, 10, 0),
+"attribute_data": PackedByteArray("AAAAAAAAAAAhDVI9AAAAACd2oj0AAAAAvuXbPQAAAACrqgo+AAAAAHZiJz4AAAAAQhpEPgAAAAAN0mA+AAAAANmJfT4AAAAA0iCNPgAAAAC4fJs+AAAAAJ7YqT4AAAAAgzS4PgAAAABpkMY+AAAAAE/s1D4AAAAANUjjPgAAAAAapPE+AAAAAAAAAD8AAAAA8y0HPwAAAADmWw4/AAAAANmJFT8AAAAAy7ccPwAAAAC+5SM/AAAAALETKz8AAAAApEEyPwAAAACXbzk/AAAAAIqdQD8AAAAAfctHPwAAAABw+U4/AAAAAGInVj8AAAAAVVVdPwAAAABIg2Q/AAAAADuxaz8AAAAALt9yPwAAAAAAAIA/AAAAAAAAAACMLjo9IQ1SPYwuOj0ndqI9jC46Pb7l2z2MLjo9q6oKPowuOj12Yic+jC46PUIaRD6MLjo9DdJgPowuOj3ZiX0+jC46PdIgjT6MLjo9uHybPowuOj2e2Kk+jC46PYM0uD6MLjo9aZDGPowuOj1P7NQ+jC46PTVI4z6MLjo9GqTxPowuOj0AAAA/jC46PfMtBz+MLjo95lsOP4wuOj3ZiRU/jC46Pcu3HD+MLjo9vuUjP4wuOj2xEys/jC46PaRBMj+MLjo9l285P4wuOj2KnUA/jC46PX3LRz+MLjo9cPlOP4wuOj1iJ1Y/jC46PVVVXT+MLjo9SINkP4wuOj07sWs/jC46PS7fcj+MLjo9AACAP4wuOj0AAAAAAACAPyENUj0AAIA/J3aiPQAAgD++5ds9AACAP6uqCj4AAIA/dmInPgAAgD9CGkQ+AACAPw3SYD4AAIA/2Yl9PgAAgD/SII0+AACAP7h8mz4AAIA/ntipPgAAgD+DNLg+AACAP2mQxj4AAIA/T+zUPgAAgD81SOM+AACAPxqk8T4AAIA/AAAAPwAAgD/zLQc/AACAP+ZbDj8AAIA/2YkVPwAAgD/Ltxw/AACAP77lIz8AAIA/sRMrPwAAgD+kQTI/AACAP5dvOT8AAIA/ip1APwAAgD99y0c/AACAP3D5Tj8AAIA/YidWPwAAgD9VVV0/AACAP0iDZD8AAIA/O7FrPwAAgD8u33I/AACAPwAAgD8AAIA/"),
+"format": 34393296913,
+"index_count": 408,
+"index_data": PackedByteArray("AAAjAAEAAQAjACQAAQAkAAIAAgAkACUAAgAlAAMAAwAlACYAAwAmAAQABAAmACcABAAnAAUABQAnACgABQAoAAYABgAoACkABgApAAcABwApACoABwAqAAgACAAqACsACAArAAkACQArACwACQAsAAoACgAsAC0ACgAtAAsACwAtAC4ACwAuAAwADAAuAC8ADAAvAA0ADQAvADAADQAwAA4ADgAwADEADgAxAA8ADwAxADIADwAyABAAEAAyADMAEAAzABEAEQAzADQAEQA0ABIAEgA0ADUAEgA1ABMAEwA1ADYAEwA2ABQAFAA2ADcAFAA3ABUAFQA3ADgAFQA4ABYAFgA4ADkAFgA5ABcAFwA5ADoAFwA6ABgAGAA6ADsAGAA7ABkAGQA7ADwAGQA8ABoAGgA8AD0AGgA9ABsAGwA9AD4AGwA+ABwAHAA+AD8AHAA/AB0AHQA/AEAAHQBAAB4AHgBAAEEAHgBBAB8AHwBBAEIAHwBCACAAIABCAEMAIABDACEAIQBDAEQAIQBEACIAIgBEAEUAIwBGACQAJABGAEcAJABHACUAJQBHAEgAJQBIACYAJgBIAEkAJgBJACcAJwBJAEoAJwBKACgAKABKAEsAKABLACkAKQBLAEwAKQBMACoAKgBMAE0AKgBNACsAKwBNAE4AKwBOACwALABOAE8ALABPAC0ALQBPAFAALQBQAC4ALgBQAFEALgBRAC8ALwBRAFIALwBSADAAMABSAFMAMABTADEAMQBTAFQAMQBUADIAMgBUAFUAMgBVADMAMwBVAFYAMwBWADQANABWAFcANABXADUANQBXAFgANQBYADYANgBYAFkANgBZADcANwBZAFoANwBaADgAOABaAFsAOABbADkAOQBbAFwAOQBcADoAOgBcAF0AOgBdADsAOwBdAF4AOwBeADwAPABeAF8APABfAD0APQBfAGAAPQBgAD4APgBgAGEAPgBhAD8APwBhAGIAPwBiAEAAQABiAGMAQABjAEEAQQBjAGQAQQBkAEIAQgBkAGUAQgBlAEMAQwBlAGYAQwBmAEQARABmAGcARABnAEUARQBnAGgA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 105,
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAABBAAAAAACAREEAAAAAAICEQQAAAAAAwKZBAAAAAAAAyUEAAAAAAEDrQQAAAAAAwAZCAAAAAADgF0IAAAAAAAApQgAAAAAAIDpCAAAAAABAS0IAAAAAAGBcQgAAAAAAgG1CAAAAAACgfkIAAAAAAOCHQgAAAAAAcJBCAAAAAAAAmUIAAAAAAJChQgAAAAAAIKpCAAAAAACwskIAAAAAAEC7QgAAAAAA0MNCAAAAAABgzEIAAAAAAPDUQgAAAAAAgN1CAAAAAAAQ5kIAAAAAAKDuQgAAAAAAMPdCAAAAAADA/0IAAAAAACgEQwAAAAAAcAhDAAAAAAC4DEMAAAAAAAARQwAAAAAAABlDAAAAAAAAAAAAAABAAAAAQQAAAEAAgERBAAAAQACAhEEAAABAAMCmQQAAAEAAAMlBAAAAQABA60EAAABAAMAGQgAAAEAA4BdCAAAAQAAAKUIAAABAACA6QgAAAEAAQEtCAAAAQABgXEIAAABAAIBtQgAAAEAAoH5CAAAAQADgh0IAAABAAHCQQgAAAEAAAJlCAAAAQACQoUIAAABAACCqQgAAAEAAsLJCAAAAQABAu0IAAABAANDDQgAAAEAAYMxCAAAAQADw1EIAAABAAIDdQgAAAEAAEOZCAAAAQACg7kIAAABAADD3QgAAAEAAwP9CAAAAQAAoBEMAAABAAHAIQwAAAEAAuAxDAAAAQAAAEUMAAABAAAAZQwAAAEAAAAAAAAAgQQAAAEEAACBBAIBEQQAAIEEAgIRBAAAgQQDApkEAACBBAADJQQAAIEEAQOtBAAAgQQDABkIAACBBAOAXQgAAIEEAAClCAAAgQQAgOkIAACBBAEBLQgAAIEEAYFxCAAAgQQCAbUIAACBBAKB+QgAAIEEA4IdCAAAgQQBwkEIAACBBAACZQgAAIEEAkKFCAAAgQQAgqkIAACBBALCyQgAAIEEAQLtCAAAgQQDQw0IAACBBAGDMQgAAIEEA8NRCAAAgQQCA3UIAACBBABDmQgAAIEEAoO5CAAAgQQAw90IAACBBAMD/QgAAIEEAKARDAAAgQQBwCEMAACBBALgMQwAAIEEAABFDAAAgQQAAGUMAACBB")
+}]
 
 [node name="Stomach" type="Node2D" unique_id=439071358]
 script = ExtResource("1_script")
 
 [node name="line" type="NinePatchRect" parent="." unique_id=174212976]
+visible = false
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 material = SubResource("ShaderMaterial_stomach_line")
 anchors_preset = 8
@@ -24,7 +44,7 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -76.0
-offset_top = 105.0
+offset_top = 108.0
 offset_right = 77.0
 offset_bottom = 118.0
 grow_horizontal = 2
@@ -35,6 +55,14 @@ patch_margin_left = 8
 patch_margin_top = 2
 patch_margin_right = 8
 patch_margin_bottom = 8
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=540694965]
+material = SubResource("ShaderMaterial_stomach_line")
+position = Vector2(-76, 104)
+scale = Vector2(1, 1.4)
+mesh = SubResource("ArrayMesh_naj01")
+texture = ExtResource("2_ogirn")
+script = ExtResource("7_line_mesh_script")
 
 [node name="grid_frame" type="NinePatchRect" parent="." unique_id=1967012628]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
