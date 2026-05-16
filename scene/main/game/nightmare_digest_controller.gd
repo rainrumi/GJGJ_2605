@@ -122,6 +122,10 @@ func get_rest_hp(max_hp: int, rest_hp_rate: float) -> int:
 	return seed_effects.get_rest_hp(max_hp, rest_hp_rate)
 
 
+func get_rest_recovery_bonus_rate() -> float:
+	return seed_effects.get_rest_recovery_bonus_rate()
+
+
 func activate_deferred_nuisance_enemies(enemies: Array[Enemy]) -> void:
 	for enemy in enemies:
 		enemy.activate_stomach_turn()

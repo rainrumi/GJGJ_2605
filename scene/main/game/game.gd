@@ -53,7 +53,14 @@ func start_battle(starting_hp: int = MAX_HP, _day: int = 1, flowers: Array = [])
 	dragging_enemy = null
 	hovered_enemy = null
 	enemy_setup.setup_enemies(enemies)
-	ui.reset_for_battle(MAX_HP, minutes, START_MESSAGE, REST_MINUTES, REST_HP_RATE)
+	ui.reset_for_battle(
+		MAX_HP,
+		minutes,
+		START_MESSAGE,
+		REST_MINUTES,
+		REST_HP_RATE,
+		digest_controller.get_rest_recovery_bonus_rate()
+	)
 	stomach.hide_preview()
 	battle_active = true
 	input_controller.set_active(true)
@@ -281,6 +288,7 @@ func _refresh_ui() -> void:
 	var digest_efficiency := digest_controller.get_step_minutes_breakdown(enemies)
 	ui.set_digest_damage_info(int(digest_damage["total"]), int(digest_damage["base"]), int(digest_damage["seed_buff"]), float(digest_damage["seed_rate"]), int(digest_damage["nightmare_buff"]), float(digest_damage["nightmare_rate"]))
 	ui.set_digest_efficiency_minutes(float(digest_efficiency["total"]), float(digest_efficiency["base"]), int(digest_efficiency["seed_buff"]), float(digest_efficiency["seed_rate"]), int(digest_efficiency["nightmare_buff"]), float(digest_efficiency["nightmare_rate"]))
+	ui.set_rest_recovery_bonus_rate(digest_controller.get_rest_recovery_bonus_rate())
 	ui.set_hp(hp, MAX_HP)
 	ui.set_time(minutes)
 	ui.set_digestion_count(_active_digest_count())

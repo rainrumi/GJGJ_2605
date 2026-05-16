@@ -19,6 +19,11 @@ signal debug_reroll_requested
 @onready var digest_tooltip: DigestDamageTooltipView = $DigestDamageTooltipPanel
 @onready var efficiency_tooltip: DigestEfficiencyTooltipView = $DigestEfficiencyTooltipPanel
 @onready var time_tooltip: TimeTooltipView = $TimeTooltipPanel
+@onready var hp_tooltip: HpTooltipView = $HpTooltipPanel
+
+var _rest_minutes := 30
+var _rest_hp_rate := 0.1
+var _rest_recovery_bonus_rate := 0.0
 
 
 func _ready() -> void:
@@ -28,6 +33,7 @@ func _ready() -> void:
 	hide_digest_damage_tooltip()
 	hide_digest_efficiency_tooltip()
 	hide_time_tooltip()
+	hide_hp_tooltip()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -41,14 +47,24 @@ func _unhandled_input(event: InputEvent) -> void:
 			status_panel.request_debug_reroll()
 
 
-func reset_for_battle(max_hp: int, minutes: int, message: String, rest_minutes: int = 30, rest_hp_rate: float = 0.1) -> void:
+func reset_for_battle(
+	max_hp: int,
+	minutes: int,
+	message: String,
+	rest_minutes: int = 30,
+	rest_hp_rate: float = 0.1,
+	rest_recovery_bonus_rate: float = 0.0
+) -> void:
+	_rest_minutes = rest_minutes
+	_rest_hp_rate = rest_hp_rate
+	_rest_recovery_bonus_rate = rest_recovery_bonus_rate
 	set_hp(max_hp, max_hp)
 	set_time(minutes)
 	set_digest_damage(0)
 	set_digest_efficiency_value(30.0)
 	digest_tooltip.set_damage_info(0, 0, 0, 0.0, 0, 0.0)
 	efficiency_tooltip.set_efficiency_info(30.0)
-	time_tooltip.set_time_info(rest_minutes, rest_hp_rate)
+	time_tooltip.set_time_info()
 	set_message(message)
 	set_debug_message("")
 	set_debug_button_active(false)
@@ -60,10 +76,16 @@ func reset_for_battle(max_hp: int, minutes: int, message: String, rest_minutes: 
 	hide_digest_damage_tooltip()
 	hide_digest_efficiency_tooltip()
 	hide_time_tooltip()
+	hide_hp_tooltip()
 
 
 func set_hp(current_hp: int, max_hp: int) -> void:
 	hp_status.set_hp(current_hp, max_hp)
+	hp_tooltip.set_hp_info(current_hp, max_hp, _rest_minutes, _rest_hp_rate, _rest_recovery_bonus_rate)
+
+
+func set_rest_recovery_bonus_rate(rest_recovery_bonus_rate: float) -> void:
+	_rest_recovery_bonus_rate = rest_recovery_bonus_rate
 
 
 func set_time(minutes: int) -> void:
@@ -82,6 +104,7 @@ func show_nightmare_tooltip(enemy: Enemy, debug_number_text: String, debug_numbe
 	hide_digest_damage_tooltip()
 	hide_digest_efficiency_tooltip()
 	hide_time_tooltip()
+	hide_hp_tooltip()
 	nightmare_tooltip.show_enemy(enemy, debug_number_text, debug_numbers_visible)
 
 
@@ -93,6 +116,7 @@ func show_digest_damage_tooltip() -> void:
 	hide_nightmare_tooltip()
 	hide_digest_efficiency_tooltip()
 	hide_time_tooltip()
+	hide_hp_tooltip()
 	digest_tooltip.show_tooltip()
 
 
@@ -104,6 +128,7 @@ func show_digest_efficiency_tooltip() -> void:
 	hide_nightmare_tooltip()
 	hide_digest_damage_tooltip()
 	hide_time_tooltip()
+	hide_hp_tooltip()
 	efficiency_tooltip.show_tooltip()
 
 
@@ -115,11 +140,24 @@ func show_time_tooltip() -> void:
 	hide_nightmare_tooltip()
 	hide_digest_damage_tooltip()
 	hide_digest_efficiency_tooltip()
+	hide_hp_tooltip()
 	time_tooltip.show_tooltip()
 
 
 func hide_time_tooltip() -> void:
 	time_tooltip.hide_tooltip()
+
+
+func show_hp_tooltip() -> void:
+	hide_nightmare_tooltip()
+	hide_digest_damage_tooltip()
+	hide_digest_efficiency_tooltip()
+	hide_time_tooltip()
+	hp_tooltip.show_tooltip()
+
+
+func hide_hp_tooltip() -> void:
+	hp_tooltip.hide_tooltip()
 
 
 func set_digest_damage_info(
@@ -192,6 +230,8 @@ func _connect_child_signals() -> void:
 	digest_efficiency_panel.mouse_exited.connect(hide_digest_efficiency_tooltip)
 	time_status.mouse_entered.connect(show_time_tooltip)
 	time_status.mouse_exited.connect(hide_time_tooltip)
+	hp_status.mouse_entered.connect(show_hp_tooltip)
+	hp_status.mouse_exited.connect(hide_hp_tooltip)
 
 
 func _prepare_digest_mouse_filters() -> void:
@@ -202,6 +242,7 @@ func _prepare_digest_mouse_filters() -> void:
 	digest_efficiency_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	digest_efficiency_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	time_status.mouse_filter = Control.MOUSE_FILTER_STOP
+	hp_status.mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 func set_digest_damage(total_damage: int) -> void:

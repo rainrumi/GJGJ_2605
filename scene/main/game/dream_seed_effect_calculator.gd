@@ -66,6 +66,14 @@ func get_rest_hp(max_hp: int, base_recovery_rate: float) -> int:
 	return ceili(float(max_hp) * recovery_rate)
 
 
+func get_rest_recovery_bonus_rate() -> float:
+	var bonus_rate := 0.0
+	for flower in _skill_4_stock_by_flower.keys():
+		if int(_skill_4_stock_by_flower[flower]) > 0:
+			bonus_rate += SKILL_4_REST_RECOVERY_BONUS_RATE
+	return bonus_rate
+
+
 func get_seed_skill_id_text() -> String:
 	var seed_ids: Array[String] = []
 	for flower in _planted_flowers:

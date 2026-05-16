@@ -27,6 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://cgefols2qgnfi" path="res://art/ui/icon/ui_icon_digestiveDMG.png" id="37_digestive_dmg_icon"]
 [ext_resource type="Texture2D" uid="uid://cv2lt30r8m0jq" path="res://art/ui/icon/ui_icon_digestiveINTERVAL.png" id="38_digestive_interval_icon"]
 [ext_resource type="Script" path="res://scene/ui/battle_ui/time_tooltip_view.gd" id="39_time_tooltip_view"]
+[ext_resource type="Script" path="res://scene/ui/battle_ui/hp_tooltip_view.gd" id="40_hp_tooltip_view"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
@@ -86,6 +87,11 @@ note_visible = true
 offset_right = 192.0
 offset_bottom = 360.0
 script = ExtResource("39_time_tooltip_view")
+
+[node name="HpTooltipPanel" parent="UI" unique_id=1178298816 instance=ExtResource("36_left_tooltip")]
+offset_right = 192.0
+offset_bottom = 360.0
+script = ExtResource("40_hp_tooltip_view")
 
 [node name="DigestiveDMG" type="TextureRect" parent="UI" unique_id=633967596]
 offset_left = 159.0
