@@ -82,10 +82,10 @@ script = ExtResource("35_digest_efficiency_tooltip_view")
 note_visible = true
 
 [node name="DigestiveDMG" type="TextureRect" parent="UI" unique_id=633967596]
-offset_left = 160.0
-offset_top = 10.0
-offset_right = 240.0
-offset_bottom = 50.0
+offset_left = 159.0
+offset_top = 12.0
+offset_right = 239.0
+offset_bottom = 46.0
 expand_mode = 2
 
 [node name="digestiveDMG_icon" type="TextureRect" parent="UI/DigestiveDMG" unique_id=997175241]
@@ -99,8 +99,9 @@ texture = ExtResource("37_digestive_dmg_icon")
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 35.0
+offset_top = 3.0
 offset_right = 95.0
-offset_bottom = 30.0
+offset_bottom = 28.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
@@ -110,10 +111,10 @@ text = "300"
 vertical_alignment = 1
 
 [node name="DigestiveINTERVAL" type="TextureRect" parent="UI" unique_id=1021503093]
-offset_left = 260.0
-offset_top = 10.0
-offset_right = 360.0
-offset_bottom = 50.0
+offset_left = 259.0
+offset_top = 12.0
+offset_right = 359.0
+offset_bottom = 46.0
 
 [node name="digestiveINTERVAL_icon" type="TextureRect" parent="UI/DigestiveINTERVAL" unique_id=1402067713]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
@@ -126,8 +127,9 @@ texture = ExtResource("38_digestive_interval_icon")
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 35.0
+offset_top = 3.0
 offset_right = 135.0
-offset_bottom = 30.0
+offset_bottom = 28.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("13_font")
@@ -136,27 +138,29 @@ text = "30min"
 vertical_alignment = 1
 
 [node name="Time" type="TextureRect" parent="UI" unique_id=1489256391]
-offset_left = 482.0
-offset_top = 11.0
-offset_right = 522.0
-offset_bottom = 51.0
+offset_left = 480.0
+offset_top = 15.0
+offset_right = 588.0
+offset_bottom = 49.0
 script = ExtResource("32_time_status_view")
 metadata/_custom_type_script = "uid://bg88dk2f4fpjw"
 
 [node name="TimeBar" type="TextureRect" parent="UI/Time" unique_id=414664386]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
+offset_top = 2.0
 offset_right = 32.0
-offset_bottom = 32.0
+offset_bottom = 34.0
 mouse_filter = 2
 texture = ExtResource("18_time_frame")
 
 [node name="TimeText" type="Label" parent="UI/Time" unique_id=1349676453]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = 38.0
-offset_right = 118.0
-offset_bottom = 30.0
+offset_left = 40.0
+offset_top = 3.0
+offset_right = 120.0
+offset_bottom = 28.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("13_font")

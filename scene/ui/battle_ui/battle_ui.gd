@@ -5,8 +5,10 @@ signal digestion_requested
 signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 
+@onready var digest_damage_panel: Control = $DigestiveDMG
 @onready var digest_damage_icon: Control = $DigestiveDMG/digestiveDMG_icon
 @onready var digest_damage_value_label: Label = $DigestiveDMG/digestiveDMG_value
+@onready var digest_efficiency_panel: Control = $DigestiveINTERVAL
 @onready var digest_efficiency_icon: Control = $DigestiveINTERVAL/digestiveINTERVAL_icon
 @onready var digest_efficiency_value_label: Label = $DigestiveINTERVAL/digestiveINTERVAL_value
 @onready var hp_status: HpView = $HpFrame
@@ -166,21 +168,19 @@ func _connect_child_signals() -> void:
 	digestion_button.digestion_requested.connect(_on_digestion_requested)
 	status_panel.debug_message_requested.connect(_on_debug_message_requested)
 	status_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
-	digest_damage_icon.mouse_entered.connect(show_digest_damage_tooltip)
-	digest_damage_icon.mouse_exited.connect(hide_digest_damage_tooltip)
-	digest_damage_value_label.mouse_entered.connect(show_digest_damage_tooltip)
-	digest_damage_value_label.mouse_exited.connect(hide_digest_damage_tooltip)
-	digest_efficiency_icon.mouse_entered.connect(show_digest_efficiency_tooltip)
-	digest_efficiency_icon.mouse_exited.connect(hide_digest_efficiency_tooltip)
-	digest_efficiency_value_label.mouse_entered.connect(show_digest_efficiency_tooltip)
-	digest_efficiency_value_label.mouse_exited.connect(hide_digest_efficiency_tooltip)
+	digest_damage_panel.mouse_entered.connect(show_digest_damage_tooltip)
+	digest_damage_panel.mouse_exited.connect(hide_digest_damage_tooltip)
+	digest_efficiency_panel.mouse_entered.connect(show_digest_efficiency_tooltip)
+	digest_efficiency_panel.mouse_exited.connect(hide_digest_efficiency_tooltip)
 
 
 func _prepare_digest_mouse_filters() -> void:
-	digest_damage_icon.mouse_filter = Control.MOUSE_FILTER_STOP
-	digest_damage_value_label.mouse_filter = Control.MOUSE_FILTER_STOP
-	digest_efficiency_icon.mouse_filter = Control.MOUSE_FILTER_STOP
-	digest_efficiency_value_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	digest_damage_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	digest_damage_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	digest_damage_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	digest_efficiency_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	digest_efficiency_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	digest_efficiency_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func set_digest_damage(total_damage: int) -> void:
