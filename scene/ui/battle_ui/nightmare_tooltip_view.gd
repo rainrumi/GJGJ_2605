@@ -33,9 +33,12 @@ func _get_enemy_entries(enemy: Enemy, debug_numbers_visible: bool) -> Array:
 			"explanation": "Debug",
 			"value": _debug_number_text,
 		})
+	var category_detail := enemy.get_category_detail()
+	var main_effect_text := enemy.get_main_effect_text()
 	entries.append({
 		"explanation": enemy.get_category_name(),
-		"value": _get_effect_text(enemy.get_category_detail()),
+		"value": _get_effect_text(category_detail),
+		"enabled": not category_detail.is_empty(),
 	})
 	entries.append({
 		"explanation": "ステータス",
@@ -43,7 +46,8 @@ func _get_enemy_entries(enemy: Enemy, debug_numbers_visible: bool) -> Array:
 	})
 	entries.append({
 		"explanation": "メイン効果",
-		"value": _get_effect_text(enemy.get_main_effect_text()),
+		"value": _get_effect_text(main_effect_text),
+		"enabled": not main_effect_text.is_empty(),
 	})
 	return entries
 

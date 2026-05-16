@@ -5,6 +5,11 @@ extends Panel
 @export_multiline var note_text := ""
 @export var note_visible := false
 
+const ENABLED_EXPLANATION_COLOR := Color.WHITE
+const ENABLED_VALUE_COLOR := Color(0.94, 0.88, 1.0, 1.0)
+const DISABLED_EXPLANATION_COLOR := Color(0.55, 0.55, 0.62, 1.0)
+const DISABLED_VALUE_COLOR := Color(0.45, 0.43, 0.5, 1.0)
+
 @onready var title_label: Label = $Content/TitleLabel
 @onready var entry_container: VBoxContainer = $Content/EntryContainer
 @onready var note_slice: Label = $Content/NoteSlice
@@ -34,10 +39,12 @@ func set_entries(entries: Array) -> void:
 	for entry in entries:
 		var explanation := ""
 		var value := ""
+		var enabled := true
 		if entry is Dictionary:
 			explanation = str(entry.get("explanation", ""))
 			value = str(entry.get("value", ""))
-		_add_entry_block(explanation, value)
+			enabled = bool(entry.get("enabled", true))
+		_add_entry_block(explanation, value, enabled)
 
 
 func set_note(text: String, is_visible: bool) -> void:
@@ -47,13 +54,13 @@ func set_note(text: String, is_visible: bool) -> void:
 	note_slice.visible = is_visible
 
 
-func _add_entry_block(explanation: String, value: String) -> void:
+func _add_entry_block(explanation: String, value: String, enabled: bool) -> void:
 	var block := VBoxContainer.new()
 	block.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	block.add_theme_constant_override("separation", 5)
 	entry_container.add_child(block)
-	block.add_child(_create_entry_label(explanation, 26, Color.WHITE))
-	block.add_child(_create_entry_label(value, 20, Color(0.94, 0.88, 1.0, 1.0)))
+	block.add_child(_create_entry_label(explanation, 26, _get_explanation_color(enabled)))
+	block.add_child(_create_entry_label(value, 20, _get_value_color(enabled)))
 
 
 func _create_entry_label(text: String, font_size: int, font_color: Color) -> Label:
@@ -69,3 +76,11 @@ func _create_entry_label(text: String, font_size: int, font_color: Color) -> Lab
 	label.add_theme_font_override("font", title_label.get_theme_font("font"))
 	label.add_theme_font_size_override("font_size", font_size)
 	return label
+
+
+func _get_explanation_color(enabled: bool) -> Color:
+	return ENABLED_EXPLANATION_COLOR if enabled else DISABLED_EXPLANATION_COLOR
+
+
+func _get_value_color(enabled: bool) -> Color:
+	return ENABLED_VALUE_COLOR if enabled else DISABLED_VALUE_COLOR

@@ -29,10 +29,12 @@ func set_damage_info(
 		{
 			"explanation": "夢の種バフ",
 			"value": "%s（%s）" % [_format_buff_amount(seed_buff), _format_buff_rate(seed_rate)],
+			"enabled": not is_zero_approx(seed_rate),
 		},
 		{
 			"explanation": "悪夢バフ",
 			"value": "%s（%s）" % [_format_buff_amount(nightmare_buff), _format_buff_rate(nightmare_rate)],
+			"enabled": not is_zero_approx(nightmare_rate),
 		},
 	])
 
