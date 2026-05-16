@@ -7,10 +7,10 @@
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="5_font"]
 
 [node name="HpFrame" type="NinePatchRect" unique_id=1335638981]
-offset_right = 128
-offset_bottom = 13
+modulate = Color(0.9411765, 0.8784314, 1, 1)
+offset_right = 128.0
+offset_bottom = 13.0
 texture = ExtResource("1_hp_frame")
-region_rect = Rect2(0, 0, 256, 26)
 patch_margin_left = 6
 patch_margin_top = 6
 patch_margin_right = 6
@@ -19,10 +19,10 @@ script = ExtResource("2_hp_script")
 
 [node name="HpGauge" type="NinePatchRect" parent="." unique_id=238748779]
 layout_mode = 0
-offset_left = 3
-offset_top = 3
-offset_right = 125
-offset_bottom = 10
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 125.0
+offset_bottom = 10.0
 texture = ExtResource("3_hp_gauge")
 patch_margin_left = 4
 patch_margin_top = 3
@@ -31,11 +31,12 @@ patch_margin_bottom = 3
 
 [node name="HpHealPlan" type="NinePatchRect" parent="." unique_id=1336152795]
 visible = false
+modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = 3
-offset_top = 3
-offset_right = 125
-offset_bottom = 10
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 125.0
+offset_bottom = 10.0
 texture = ExtResource("4_hp_heal_plan")
 patch_margin_left = 4
 patch_margin_top = 3
@@ -44,12 +45,12 @@ patch_margin_bottom = 3
 
 [node name="HpText" type="Label" parent="." unique_id=813127707]
 layout_mode = 0
-offset_left = 15
-offset_top = -3
-offset_right = 117
-offset_bottom = 15
+offset_left = 15.0
+offset_top = -3.0
+offset_right = 117.0
+offset_bottom = 15.0
 theme_override_colors/font_color = Color(0.03529412, 0.02745098, 0.21176471, 1)
-theme_override_colors/font_outline_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("5_font")
 theme_override_font_sizes/font_size = 10

@@ -46,7 +46,7 @@ func _create_flower(texture: Texture2D) -> Node2D:
 	flower.name = "PassiveFlowerItem"
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
-	sprite.scale = Vector2(0.5, 0.5)
+	sprite.modulate = Color(0.9411765, 0.8784314, 1.0, 1.0)
 	flower.add_child(sprite)
 	return flower
 

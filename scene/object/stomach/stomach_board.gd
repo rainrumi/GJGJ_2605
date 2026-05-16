@@ -119,9 +119,9 @@ func show_preview(enemy: Enemy, mouse_position: Vector2, grab_cell: Vector2i, ac
 	_preview_sprite.texture = enemy.sprite.texture
 	_preview_sprite.scale = enemy.sprite.scale
 	_preview_sprite.global_position = get_global_position_for_cell(top_left, enemy.get_stomach_size())
-	_preview_sprite.modulate = Color(1.0, 1.0, 1.0, 0.42)
+	_preview_sprite.modulate = Color(0.9411765, 0.8784314, 1.0, 0.42)
 	if not can_place(enemy, top_left, active_enemies):
-		_preview_sprite.modulate = Color(1.0, 0.35, 0.35, 0.32)
+		_preview_sprite.modulate = Color(0.9411765, 0.8784314, 1.0, 0.32)
 	_preview_sprite.visible = true
 
 
@@ -171,7 +171,7 @@ func _create_preview() -> void:
 	_preview_sprite = Sprite2D.new()
 	_preview_sprite.name = "EnemyPlacementPreview"
 	_preview_sprite.visible = false
-	_preview_sprite.modulate = Color(1.0, 1.0, 1.0, 0.42)
+	_preview_sprite.modulate = Color(0.9411765, 0.8784314, 1.0, 0.42)
 	_preview_sprite.z_index = 5
 	add_child(_preview_sprite)
 

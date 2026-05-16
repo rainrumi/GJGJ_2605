@@ -12,8 +12,8 @@ const HOVER_TWEEN_DURATION := 0.1
 const RARITY_NORMAL: StringName = &"normal"
 const RARITY_HIGH: StringName = &"high"
 const HEAD_FLOWER_DISPLAY_COUNT := 1
-const ABANDON_BUTTON_PRESSED_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
-const ABANDON_BUTTON_DEFAULT_MODULATE := Color(1.0, 1.0, 1.0, 1.0)
+const ABANDON_BUTTON_PRESSED_MODULATE := Color(0.9411765, 0.8784314, 1.0, 1.0)
+const ABANDON_BUTTON_DEFAULT_MODULATE := Color(0.9411765, 0.8784314, 1.0, 1.0)
 @export var max_normal_flowers := 3
 @export var max_high_flowers := 2
 @export var initial_flower: FlowerDefinition

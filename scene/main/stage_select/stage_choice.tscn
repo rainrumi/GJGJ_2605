@@ -12,6 +12,7 @@ flat = true
 script = ExtResource("1_script")
 
 [node name="Frame" type="TextureRect" parent="." unique_id=1488704689]
+modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_right = 124
 offset_bottom = 124
@@ -70,6 +71,7 @@ text = "報酬"
 vertical_alignment = 1
 
 [node name="RewardIcon" type="TextureRect" parent="." unique_id=1446009597]
+modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 12
 offset_top = 68

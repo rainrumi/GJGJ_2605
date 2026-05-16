@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://bujf6qni8sb7"]
 
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://bohjr6l6tyw7q" path="res://art/dreamseed/flower/tex_seed_1000_No_200.png" id="2_48bk4"]
+[ext_resource type="Texture2D" uid="uid://bohjr6l6tyw7q" path="res://art/dreamseed/tex_seed_1000_No_200.png" id="2_48bk4"]
 
 [resource]
 script = ExtResource("1_script")

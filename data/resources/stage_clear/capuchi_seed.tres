@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SeedOptionDefinition" format=3 uid="uid://bdc1rl2wr5u3c"]
 
 [ext_resource type="Script" uid="uid://k6gwji460bpe" path="res://data/definitions/seed_option_definition.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://art/stage_clear/tex_seed_1000_No_300.png" id="2_seed"]
+[ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_seed"]
 [ext_resource type="Texture2D" uid="uid://d1swr615sa4we" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_200.png" id="3_frame"]
 [ext_resource type="Resource" path="res://data/resources/stage_clear/high_flower.tres" id="4_flower"]
 [ext_resource type="Resource" uid="uid://bmtmv5tea634" path="res://data/resources/dream_seed_skills/normal/dream_seed_skill_003.tres" id="5_skill"]

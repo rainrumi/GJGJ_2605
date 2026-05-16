@@ -14,8 +14,8 @@ stage_catalog = ExtResource("6_stage_catalog")
 [node name="CharacterArea" type="Node2D" parent="." unique_id=691295669]
 
 [node name="Character" type="Sprite2D" parent="CharacterArea" unique_id=1350771073]
+modulate = Color(0.9411765, 0.8784314, 1, 1)
 position = Vector2(95, 210)
-scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_character")
 
 [node name="UI" type="Control" parent="." unique_id=299033329]
@@ -26,6 +26,7 @@ offset_bottom = 360
 mouse_filter = 2
 
 [node name="TitleEffect" type="TextureRect" parent="UI" unique_id=506160278]
+modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 286
 offset_top = 15.5

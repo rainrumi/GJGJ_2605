@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cai1mrucqy6v5"]
 
-[ext_resource type="Script" path="res://scene/object/stomach/stomach_board.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://b2xc8aserj0xc" path="res://scene/object/stomach/stomach_board.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://i8f283fq31p" path="res://art/stomach/tex_ui_stomach_frame_1000.png" id="2_frame"]
 [ext_resource type="Texture2D" uid="uid://qnhr5hhcadyj" path="res://art/ui/grid/grid_atlas.png" id="4_ogirn"]
 [ext_resource type="Texture2D" uid="uid://coh2vv1pametd" path="res://art/stomach/tex_ui_stomach_line_1000.png" id="5_line"]
@@ -9,22 +9,24 @@
 script = ExtResource("1_script")
 
 [node name="grid_frame" type="NinePatchRect" parent="." unique_id=1967012628]
-offset_left = -67
-offset_top = -117
-offset_right = 86
-offset_bottom = 118
+modulate = Color(0.9411765, 0.8784314, 1, 1)
+offset_left = -67.0
+offset_top = -117.0
+offset_right = 86.0
+offset_bottom = 118.0
 texture = ExtResource("4_ogirn")
-region_rect = Rect2(0, 0, 48, 48)
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+region_rect = Rect2(0, 0, 24, 24)
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
 
 [node name="frame" type="NinePatchRect" parent="." unique_id=737108641]
-offset_left = -94
-offset_top = -142
-offset_right = 94
-offset_bottom = 142
+modulate = Color(0.9411765, 0.8784314, 1, 1)
+offset_left = -94.0
+offset_top = -142.0
+offset_right = 94.0
+offset_bottom = 142.0
 texture = ExtResource("2_frame")
 patch_margin_left = 42
 patch_margin_top = 28
@@ -32,9 +34,10 @@ patch_margin_right = 20
 patch_margin_bottom = 104
 
 [node name="DigestionLine" type="TextureRect" parent="." unique_id=442792509]
+modulate = Color(0.9411765, 0.8784314, 1, 1)
 offset_left = 91.5
-offset_top = 70
+offset_top = 70.0
 offset_right = 111.5
-offset_bottom = 90
+offset_bottom = 90.0
 mouse_filter = 2
 texture = ExtResource("5_line")

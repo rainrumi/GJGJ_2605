@@ -8,8 +8,8 @@
 script = ExtResource("3_script")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=1083138993]
+modulate = Color(0.9411765, 0.8784314, 1, 1)
 position = Vector2(320, 180)
-scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_title")
 
 [node name="Menu" type="Control" parent="." unique_id=1268464866]

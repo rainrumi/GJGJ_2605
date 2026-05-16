@@ -12,6 +12,7 @@ flat = true
 script = ExtResource("1_script")
 
 [node name="Frame" type="TextureRect" parent="."]
+modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_right = 124
 offset_bottom = 124
@@ -19,6 +20,7 @@ mouse_filter = 2
 texture = ExtResource("3_frame")
 
 [node name="SeedTexture" type="TextureRect" parent="."]
+modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 22
 offset_top = 21
