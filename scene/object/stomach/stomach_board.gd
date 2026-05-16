@@ -163,8 +163,9 @@ func _configure_grid() -> void:
 		float(columns) * _cell_size - float(columns - 1) * edge_overlap,
 		float(rows) * _cell_size - float(rows - 1) * edge_overlap
 	)
+	var active_grid_area_position := _get_active_grid_area_position(grid_size)
 	var active_grid_area_size := _get_active_grid_area_size(grid_size)
-	_grid_origin = (_grid_frame_area_position + (active_grid_area_size - grid_size) * 0.5).round()
+	_grid_origin = (active_grid_area_position + (active_grid_area_size - grid_size) * 0.5).round()
 	_update_frame_size(active_grid_area_size)
 	for child: Node in get_children():
 		if child is NinePatchRect and String(child.name).begins_with("grid_frame_"):
@@ -198,6 +199,15 @@ func _get_active_grid_area_size(grid_size: Vector2) -> Vector2:
 	return active_size.round()
 
 
+func _get_active_grid_area_position(grid_size: Vector2) -> Vector2:
+	var active_position := _grid_frame_area_position
+	if columns < 4:
+		active_position.x = _grid_frame_area_position.x + (_grid_frame_area_size.x - grid_size.x) * 0.5
+	if rows < 4:
+		active_position.y = _grid_frame_area_position.y + (_grid_frame_area_size.y - grid_size.y) * 0.5
+	return active_position.round()
+
+
 func _update_frame_size(active_grid_area_size: Vector2) -> void:
 	var left_margin := _grid_frame_area_position.x - _frame_base_position.x
 	var top_margin := _grid_frame_area_position.y - _frame_base_position.y
@@ -208,7 +218,7 @@ func _update_frame_size(active_grid_area_size: Vector2) -> void:
 		target_size.x = active_grid_area_size.x + left_margin + right_margin
 	if rows < 4:
 		target_size.y = active_grid_area_size.y + top_margin + bottom_margin
-	frame.position = _frame_base_position
+	frame.position = (_frame_base_position + (_frame_base_size - target_size) * 0.5).round()
 	frame.size = target_size.round()
 
 
