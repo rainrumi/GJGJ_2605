@@ -33,13 +33,7 @@ func _get_enemy_entries(enemy: Enemy, debug_numbers_visible: bool) -> Array:
 			"explanation": "Debug",
 			"value": _debug_number_text,
 		})
-	var category_detail := enemy.get_category_detail()
 	var main_effect_text := enemy.get_main_effect_text()
-	entries.append({
-		"explanation": enemy.get_category_name(),
-		"value": _get_effect_text(category_detail),
-		"enabled": not category_detail.is_empty(),
-	})
 	entries.append({
 		"explanation": "ステータス",
 		"value": "HP: %d/%d\n攻撃力: %d" % [enemy.current_hp, enemy.max_hp, enemy.get_display_damage()],
