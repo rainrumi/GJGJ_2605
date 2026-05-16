@@ -5,22 +5,22 @@
 [node name="TimeBar" type="Control" unique_id=1013623940]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 280.0
-offset_bottom = 104.0
+offset_right = 140
+offset_bottom = 52
 mouse_filter = 2
 
 [node name="Frame" type="TextureRect" parent="." unique_id=1833787077]
 layout_mode = 0
-offset_right = 280.0
-offset_bottom = 104.0
+offset_right = 140
+offset_bottom = 52
 mouse_filter = 2
 texture = ExtResource("1_bar")
 
 [node name="Graph" type="TextureRect" parent="." unique_id=19062390]
 visible = false
 layout_mode = 0
-offset_left = 124.0
-offset_top = 36.0
-offset_right = 156.0
-offset_bottom = 68.0
+offset_left = 62
+offset_top = 18
+offset_right = 78
+offset_bottom = 34
 mouse_filter = 2

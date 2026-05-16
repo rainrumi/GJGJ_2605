@@ -5,76 +5,76 @@
 [ext_resource type="Texture2D" uid="uid://dvwpme4r85vqi" path="res://art/stage_select/ui_choise_stage_frame_1000_LV_100.png" id="3_frame"]
 
 [node name="StageChoice" type="Button" unique_id=188156610]
-custom_minimum_size = Vector2(248, 248)
-offset_right = 248.0
-offset_bottom = 248.0
+custom_minimum_size = Vector2(124, 124)
+offset_right = 124
+offset_bottom = 124
 flat = true
 script = ExtResource("1_script")
 
 [node name="Frame" type="TextureRect" parent="." unique_id=1488704689]
 layout_mode = 0
-offset_right = 248.0
-offset_bottom = 248.0
+offset_right = 124
+offset_bottom = 124
 mouse_filter = 2
 texture = ExtResource("3_frame")
 
 [node name="NameLabel" type="Label" parent="." unique_id=794671039]
 visible = false
 layout_mode = 0
-offset_left = 24.0
-offset_top = 68.0
-offset_right = 224.0
-offset_bottom = 96.0
+offset_left = 12
+offset_top = 34
+offset_right = 112
+offset_bottom = 48
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 9
 vertical_alignment = 1
 text_overrun_behavior = 3
 
 [node name="DifficultyLabel" type="Label" parent="." unique_id=863256926]
 layout_mode = 0
-offset_left = 16.0
-offset_top = 18.0
-offset_right = 232.0
-offset_bottom = 58.0
+offset_left = 8
+offset_top = 9
+offset_right = 116
+offset_bottom = 29
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 18
 text = "難易度"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="LocationLabel" type="Label" parent="." unique_id=1473998700]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 68.0
-offset_right = 224.0
-offset_bottom = 96.0
+offset_left = 12
+offset_top = 34
+offset_right = 112
+offset_bottom = 48
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 9
 text = "場所"
 vertical_alignment = 1
 text_overrun_behavior = 3
 
 [node name="RewardLabel" type="Label" parent="." unique_id=1722941389]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 104.0
-offset_right = 224.0
-offset_bottom = 132.0
+offset_left = 12
+offset_top = 52
+offset_right = 112
+offset_bottom = 66
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 10
 text = "報酬"
 vertical_alignment = 1
 
 [node name="RewardIcon" type="TextureRect" parent="." unique_id=1446009597]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 136.0
-offset_right = 64.0
-offset_bottom = 172.0
+offset_left = 12
+offset_top = 68
+offset_right = 32
+offset_bottom = 86
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5

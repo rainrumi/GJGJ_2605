@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="EnemyDefinition" format=3 uid="uid://0vj26vry850v"]
 
-[ext_resource type="Script" path="res://scene/object/enemy/enemy_definition.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://art/enemy/tex_enemy_1000_No_200.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://b6d4ok46ormpj" path="res://scene/object/enemy/enemy_definition.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c4p17deewofeo" path="res://art/enemy/tex_enemy_1000_No_200.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
@@ -10,6 +10,6 @@ texture = ExtResource("2_texture")
 max_hp = 1000
 size = 5
 damage = 3
-start_position = Vector2(1000, 280)
+start_position = Vector2(500, 140)
 stomach_size = Vector2i(3, 3)
 stomach_shape = Array[Vector2i]([Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2)])

@@ -11,29 +11,29 @@ script = ExtResource("2_script")
 texture = ExtResource("1_enemy")
 
 [node name="HPText" type="Label" parent="." unique_id=157147899]
-offset_left = -74.0
-offset_top = -50.0
-offset_right = 74.0
-offset_bottom = -2.0
+offset_left = -37
+offset_top = -25
+offset_right = 37
+offset_bottom = -1
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DamageText" type="Label" parent="." unique_id=937697251]
-offset_left = -74.0
-offset_top = -1.0
-offset_right = 74.0
-offset_bottom = 47.0
+offset_left = -37
+offset_top = -0.5
+offset_right = 37
+offset_bottom = 23.5
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 14
 text = "攻 0"
 horizontal_alignment = 1
 vertical_alignment = 1

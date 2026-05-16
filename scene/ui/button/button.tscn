@@ -3,10 +3,10 @@
 [ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="1_qdxw8"]
 
 [node name="BattleButton" type="Button" unique_id=564553469]
-offset_right = 232.0
-offset_bottom = 104.0
+offset_right = 116
+offset_bottom = 52
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("1_qdxw8")
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 14

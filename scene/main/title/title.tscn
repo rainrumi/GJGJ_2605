@@ -8,54 +8,55 @@
 script = ExtResource("3_script")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=1083138993]
-position = Vector2(640, 360)
+position = Vector2(320, 180)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_title")
 
 [node name="Menu" type="Control" parent="." unique_id=1268464866]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 26.0
-offset_top = 307.0
-offset_right = 306.0
-offset_bottom = 611.0
+offset_left = 13
+offset_top = 153.5
+offset_right = 153
+offset_bottom = 305.5
 
 [node name="StartButton" parent="Menu" unique_id=286137335 instance=ExtResource("4_button")]
 layout_mode = 0
-offset_right = 280.0
-offset_bottom = 58.0
+offset_right = 140
+offset_bottom = 29
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 16
 text = "最初から"
 
 [node name="ContinueButton" parent="Menu" unique_id=1693844036 instance=ExtResource("4_button")]
 layout_mode = 0
-offset_top = 80.0
-offset_right = 280.0
-offset_bottom = 138.0
+offset_top = 40
+offset_right = 140
+offset_bottom = 69
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 16
 text = "続きから"
 
 [node name="SettingsButton" parent="Menu" unique_id=922349689 instance=ExtResource("4_button")]
 layout_mode = 0
-offset_top = 160.0
-offset_right = 280.0
-offset_bottom = 218.0
+offset_top = 80
+offset_right = 140
+offset_bottom = 109
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 16
 text = "設定"
 
 [node name="QuitButton" parent="Menu" unique_id=1448078595 instance=ExtResource("4_button")]
 layout_mode = 0
-offset_top = 240.0
-offset_right = 280.0
-offset_bottom = 298.0
+offset_top = 120
+offset_right = 140
+offset_bottom = 149
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 16
 text = "終了"
 
 [connection signal="pressed" from="Menu/StartButton" to="." method="_on_start_button_pressed"]

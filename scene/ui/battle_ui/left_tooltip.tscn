@@ -4,17 +4,17 @@
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_left_tooltip"]
-content_margin_left = 24.0
-content_margin_top = 24.0
-content_margin_right = 24.0
-content_margin_bottom = 24.0
+content_margin_left = 12
+content_margin_top = 12
+content_margin_right = 12
+content_margin_bottom = 12
 bg_color = Color(0, 0, 0, 0.68)
 
 [node name="LeftTooltipPanel" type="Panel"]
 visible = false
 z_index = 49
-offset_right = 384.0
-offset_bottom = 720.0
+offset_right = 192
+offset_bottom = 360
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_left_tooltip")
 script = ExtResource("1_script")
@@ -24,54 +24,54 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 24.0
-offset_right = -24.0
-offset_bottom = -24.0
+offset_left = 12
+offset_top = 12
+offset_right = -12
+offset_bottom = -12
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
 [node name="TitleLabel" type="Label" parent="Content"]
 layout_mode = 0
-offset_right = 336.0
-offset_bottom = 52.0
+offset_right = 168
+offset_bottom = 26
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 3
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 18
 vertical_alignment = 1
 
 [node name="EntryContainer" type="VBoxContainer" parent="Content"]
 layout_mode = 0
-offset_top = 76.0
-offset_right = 336.0
-offset_bottom = 420.0
+offset_top = 38
+offset_right = 168
+offset_bottom = 210
 mouse_filter = 2
-theme_override_constants/separation = 26
+theme_override_constants/separation = 13
 
 [node name="NoteSlice" type="Label" parent="Content"]
 layout_mode = 0
-offset_top = 450.0
-offset_right = 336.0
-offset_bottom = 486.0
+offset_top = 225
+offset_right = 168
+offset_bottom = 243
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 3
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 10
 text = "--------------"
 autowrap_mode = 3
 
 [node name="NoteLabel" type="Label" parent="Content"]
 layout_mode = 0
-offset_top = 500.0
-offset_right = 336.0
-offset_bottom = 600.0
+offset_top = 250
+offset_right = 168
+offset_bottom = 300
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 3
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 10
 autowrap_mode = 3

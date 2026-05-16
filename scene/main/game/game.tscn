@@ -41,22 +41,22 @@ script = ExtResource("27_game_input_controller")
 script = ExtResource("16_passive_flower_spawner")
 
 [node name="EnemyLeft" parent="." unique_id=1201043878 instance=ExtResource("2_enemy")]
-position = Vector2(850, 500)
+position = Vector2(425, 250)
 
 [node name="EnemyCenter" parent="." unique_id=625950174 instance=ExtResource("2_enemy")]
-position = Vector2(1000, 280)
+position = Vector2(500, 140)
 
 [node name="EnemyRight" parent="." unique_id=1712927430 instance=ExtResource("2_enemy")]
-position = Vector2(1150, 500)
+position = Vector2(575, 250)
 
 [node name="EnemyUpperRight" parent="." unique_id=708008963 instance=ExtResource("2_enemy")]
-position = Vector2(1150, 280)
+position = Vector2(575, 140)
 
 [node name="Stomach" parent="." unique_id=1086540852 instance=ExtResource("5_stomach")]
-position = Vector2(518.515, 403)
+position = Vector2(259.2575, 201.5)
 
 [node name="Character" parent="." unique_id=652368236 instance=ExtResource("6_character")]
-position = Vector2(190, 420)
+position = Vector2(95, 210)
 
 [node name="ClickSe" type="AudioStreamPlayer" parent="." unique_id=163842910]
 stream = ExtResource("21_click_se")
@@ -66,145 +66,137 @@ script = ExtResource("3_battle_ui_script")
 
 [node name="NightmareTooltipPanel" parent="UI" unique_id=1766035489 instance=ExtResource("36_left_tooltip")]
 z_index = 50
+offset_right = 192.0
+offset_bottom = 360.0
 script = ExtResource("28_nightmare_tooltip_view")
 
 [node name="DigestDamageTooltipPanel" parent="UI" unique_id=1352488328 instance=ExtResource("36_left_tooltip")]
+offset_right = 192.0
+offset_bottom = 360.0
 script = ExtResource("30_digest_damage_tooltip_view")
 
 [node name="DigestEfficiencyTooltipPanel" parent="UI" unique_id=1285341923 instance=ExtResource("36_left_tooltip")]
+offset_right = 192.0
+offset_bottom = 360.0
 script = ExtResource("35_digest_efficiency_tooltip_view")
 note_visible = true
 
 [node name="PassiveGuideFrame" type="TextureRect" parent="UI" unique_id=1593431656]
-offset_left = 298.0
-offset_top = 15.0
-offset_right = 978.0
-offset_bottom = 123.0
+offset_left = 149.0
+offset_top = 7.5
+offset_right = 393.0
+offset_bottom = 61.5
 texture = ExtResource("20_passive_guide")
 script = ExtResource("29_digest_summary_view")
 
 [node name="PassiveGuideText" type="Label" parent="UI/PassiveGuideFrame" unique_id=997175241]
 layout_mode = 0
-offset_left = 36.0
-offset_top = 12.0
-offset_right = 194.0
-offset_bottom = 42.0
+offset_left = 18.0
+offset_top = 6.0
+offset_right = 97.0
+offset_bottom = 21.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 12
 text = "消化ダメージ"
 vertical_alignment = 1
 
 [node name="DigestDamageValue" type="Label" parent="UI/PassiveGuideFrame" unique_id=1335802653]
 layout_mode = 0
-offset_left = 145.0
-offset_top = 14.0
-offset_right = 308.99985
-offset_bottom = 79.0
+offset_left = 72.5
+offset_top = 7.0
+offset_right = 154.49992
+offset_bottom = 39.5
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 44
+theme_override_font_sizes/font_size = 22
 text = "200"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DigestEfficiencyValue" type="Label" parent="UI/PassiveGuideFrame" unique_id=790039167]
 layout_mode = 0
-offset_left = 410.0
-offset_top = 14.0
-offset_right = 634.0
-offset_bottom = 79.0
+offset_left = 169.5
+offset_top = 3.5
+offset_right = 281.5
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 44
+theme_override_font_sizes/font_size = 22
 text = "30min"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DigestEfficiencyTitle" type="Label" parent="UI/PassiveGuideFrame" unique_id=1402067713]
 layout_mode = 0
-offset_left = 367.0
-offset_top = 12.0
-offset_right = 464.0
-offset_bottom = 42.0
+offset_left = 148.0
+offset_top = 2.5
+offset_right = 196.5
+offset_bottom = 17.5
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 11
 text = "消化間隔"
 vertical_alignment = 1
 
-[node name="DigestDamageDetail" type="Label" parent="UI/PassiveGuideFrame" unique_id=270902301]
-visible = false
-layout_mode = 0
-offset_left = 416.0
-offset_top = 14.0
-offset_right = 670.0
-offset_bottom = 96.0
-theme_override_colors/font_color = Color(0.552941, 0.517647, 0.588235, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 18
-vertical_alignment = 1
-
 [node name="HpFrame" parent="UI" unique_id=756334925 instance=ExtResource("31_hp_scene")]
-offset_left = 64.0
-offset_top = 570.0
-offset_right = 320.0
-offset_bottom = 595.99994
+offset_left = 32.0
+offset_top = 285.0
+offset_right = 160.0
+offset_bottom = 297.99997
 
 [node name="TimeBar" type="TextureRect" parent="UI" unique_id=414664386]
-offset_left = 997.0
-offset_top = 17.0
-offset_right = 1277.0
-offset_bottom = 121.0
+offset_left = 498.5
+offset_top = 8.5
+offset_right = 638.5
+offset_bottom = 60.5
 mouse_filter = 2
 texture = ExtResource("18_time_frame")
 script = ExtResource("32_time_status_view")
 
 [node name="TimeText" type="Label" parent="UI/TimeBar" unique_id=1349676453]
 layout_mode = 0
-offset_left = 28.0
-offset_top = 6.0
-offset_right = 256.0
-offset_bottom = 91.0
+offset_left = 14.0
+offset_top = 3.0
+offset_right = 128.0
+offset_bottom = 45.5
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 68
+theme_override_font_sizes/font_size = 34
 text = "22:00"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DigestionFrame" type="TextureRect" parent="UI" unique_id=75896202]
-offset_left = 983.0
-offset_top = 626.0
-offset_right = 1259.0
-offset_bottom = 714.0
+offset_left = 491.5
+offset_top = 313.0
+offset_right = 629.5
+offset_bottom = 357.0
 mouse_filter = 2
 texture = ExtResource("17_digestion")
 script = ExtResource("33_digestion_button_view")
 
 [node name="DigestionLabel" type="Label" parent="UI/DigestionFrame" unique_id=127424852]
 layout_mode = 0
-offset_left = 18.0
-offset_top = 29.0
-offset_right = 258.0
-offset_bottom = 82.0
+offset_left = 9.0
+offset_top = 14.5
+offset_right = 129.0
+offset_bottom = 41.0
 theme_override_colors/font_color = Color(0.033389993, 0.027299998, 0.21, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 18
 text = "消化開始！"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -213,22 +205,22 @@ vertical_alignment = 1
 visible = false
 layout_mode = 3
 anchors_preset = 0
-offset_right = 1280.0
-offset_bottom = 720.0
+offset_right = 640.0
+offset_bottom = 360.0
 mouse_filter = 2
 script = ExtResource("34_status_panel_view")
 
 [node name="MessageText" type="Label" parent="UI/StatusPanel" unique_id=196976463]
 layout_mode = 0
-offset_left = 792.0
-offset_top = 117.0
-offset_right = 1275.0
-offset_bottom = 149.0
+offset_left = 396.0
+offset_top = 58.5
+offset_right = 637.5
+offset_bottom = 74.5
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 13
 text = "６時までにすべての悪夢を消化しましょう"
 horizontal_alignment = 2
 autowrap_mode = 3
@@ -236,20 +228,20 @@ autowrap_mode = 3
 [node name="DebugRerollButton" type="Button" parent="UI/StatusPanel" unique_id=917573151]
 visible = false
 layout_mode = 0
-offset_left = 1054.0
-offset_top = 154.0
-offset_right = 1161.0
-offset_bottom = 188.0
+offset_left = 527.0
+offset_top = 77.0
+offset_right = 580.5
+offset_bottom = 94.0
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 9
 text = "リロール"
 
 [node name="DebugMessageButton" type="Button" parent="UI/StatusPanel" unique_id=2146876269]
 layout_mode = 0
-offset_left = 1168.0
-offset_top = 154.0
-offset_right = 1275.0
-offset_bottom = 188.0
+offset_left = 584.0
+offset_top = 77.0
+offset_right = 637.5
+offset_bottom = 94.0
 theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 9
 text = "Debug"

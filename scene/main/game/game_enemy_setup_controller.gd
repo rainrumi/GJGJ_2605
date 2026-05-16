@@ -1,12 +1,12 @@
 class_name GameEnemySetupController
 extends RefCounted
 
-const ENEMY_TOP_Y := 280.0
-const ENEMY_MIDDLE_Y := 390.0
-const ENEMY_BOTTOM_Y := 505.0
-const ENEMY_LEFT_X := 850.0
-const ENEMY_CENTER_X := 1000.0
-const ENEMY_RIGHT_X := 1150.0
+const ENEMY_TOP_Y := 140.0
+const ENEMY_MIDDLE_Y := 195.0
+const ENEMY_BOTTOM_Y := 252.5
+const ENEMY_LEFT_X := 425.0
+const ENEMY_CENTER_X := 500.0
+const ENEMY_RIGHT_X := 575.0
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 
 var _owner: Node

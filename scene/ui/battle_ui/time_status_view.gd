@@ -3,7 +3,7 @@ extends TextureRect
 
 const TIME_PULSE_SCALE := 1.1
 const TIME_PULSE_DURATION := 0.2
-const TIME_ELAPSED_FLOAT_DISTANCE := 10.0
+const TIME_ELAPSED_FLOAT_DISTANCE := 5.0
 const TIME_ELAPSED_TWEEN_DURATION := 0.3
 const TIME_ELAPSED_HIDE_DELAY := 0.2
 
@@ -76,19 +76,19 @@ func _create_time_elapsed_label() -> void:
 	_time_elapsed_label.name = "TimeElapsedLabel"
 	_time_elapsed_label.visible = false
 	_time_elapsed_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_time_elapsed_label.size = Vector2(104.0, 36.0)
-	_time_elapsed_label_base_position = Vector2(-110.0, 42.0)
+	_time_elapsed_label.size = Vector2(52.0, 18.0)
+	_time_elapsed_label_base_position = Vector2(-55.0, 21.0)
 	_time_elapsed_label.position = _time_elapsed_label_base_position
 	_time_elapsed_label.modulate.a = 0.0
 	_time_elapsed_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_time_elapsed_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_time_elapsed_label.add_theme_color_override("font_color", Color(0.94, 0.88, 1.0, 1.0))
 	_time_elapsed_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	_time_elapsed_label.add_theme_constant_override("outline_size", 4)
+	_time_elapsed_label.add_theme_constant_override("outline_size", 2)
 	var elapsed_font := time_text.get_theme_font("font")
 	if elapsed_font != null:
 		_time_elapsed_label.add_theme_font_override("font", elapsed_font)
-	_time_elapsed_label.add_theme_font_size_override("font_size", 28)
+	_time_elapsed_label.add_theme_font_size_override("font_size", 14)
 	add_child(_time_elapsed_label)
 
 

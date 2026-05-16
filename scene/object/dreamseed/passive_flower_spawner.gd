@@ -2,9 +2,9 @@ class_name PassiveFlowerSpawner
 extends Node2D
 
 const ROW_CAPACITY := 10
-const FLOWER_SPACING := 20.0
-const ROW_SPACING := 20.0
-const FIRST_ROW_ORIGIN := Vector2(640.0, 88.0)
+const FLOWER_SPACING := 10.0
+const ROW_SPACING := 10.0
+const FIRST_ROW_ORIGIN := Vector2(320.0, 44.0)
 
 
 func setup_flowers(flowers: Array) -> void:
@@ -46,6 +46,7 @@ func _create_flower(texture: Texture2D) -> Node2D:
 	flower.name = "PassiveFlowerItem"
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
+	sprite.scale = Vector2(0.5, 0.5)
 	flower.add_child(sprite)
 	return flower
 

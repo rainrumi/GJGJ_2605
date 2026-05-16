@@ -1,4 +1,4 @@
-﻿class_name Enemy
+class_name Enemy
 extends Node2D
 const HOVER_SCALE := 1.1
 const HOVER_TWEEN_DURATION := 0.1
@@ -188,7 +188,7 @@ func show_digest_damage_values(damage_values: Array) -> void:
 	EnemyDamagePopup.show_damage_values(self, hp_label, damage_values, MAIN_EFFECT_STATUS_COLOR)
 func get_global_rect() -> Rect2:
 	if sprite == null or sprite.texture == null:
-		return Rect2(global_position - Vector2(50.0, 50.0), Vector2(100.0, 100.0))
+		return Rect2(global_position - Vector2(25.0, 25.0), Vector2(50.0, 50.0))
 	var size := sprite.texture.get_size() * sprite.scale.abs()
 	return Rect2(sprite.global_position - size * 0.5, size)
 func get_grab_cell(mouse_position: Vector2) -> Vector2i:

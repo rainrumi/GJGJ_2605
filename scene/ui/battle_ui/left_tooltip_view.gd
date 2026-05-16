@@ -57,10 +57,10 @@ func set_note(text: String, is_visible: bool) -> void:
 func _add_entry_block(explanation: String, value: String, enabled: bool) -> void:
 	var block := VBoxContainer.new()
 	block.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	block.add_theme_constant_override("separation", 5)
+	block.add_theme_constant_override("separation", 3)
 	entry_container.add_child(block)
-	block.add_child(_create_entry_label(explanation, 26, _get_explanation_color(enabled)))
-	block.add_child(_create_entry_label(value, 20, _get_value_color(enabled)))
+	block.add_child(_create_entry_label(explanation, 13, _get_explanation_color(enabled)))
+	block.add_child(_create_entry_label(value, 10, _get_value_color(enabled)))
 
 
 func _create_entry_label(text: String, font_size: int, font_color: Color) -> Label:
@@ -72,7 +72,7 @@ func _create_entry_label(text: String, font_size: int, font_color: Color) -> Lab
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.add_theme_color_override("font_color", font_color)
 	label.add_theme_color_override("font_outline_color", Color.BLACK)
-	label.add_theme_constant_override("outline_size", 3)
+	label.add_theme_constant_override("outline_size", 2)
 	label.add_theme_font_override("font", title_label.get_theme_font("font"))
 	label.add_theme_font_size_override("font_size", font_size)
 	return label

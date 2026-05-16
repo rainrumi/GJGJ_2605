@@ -1,9 +1,9 @@
 class_name StageSelectTagFrame
 extends Label
 
-@export var min_width := 46.0
-@export var text_padding_x := 4.0
-@export var font_size := 14
+@export var min_width := 23.0
+@export var text_padding_x := 2.0
+@export var font_size := 7
 
 
 func setup_tag(tag_name: String) -> void:

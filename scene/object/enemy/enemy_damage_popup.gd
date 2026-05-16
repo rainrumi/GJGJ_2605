@@ -1,7 +1,7 @@
 class_name EnemyDamagePopup
 extends RefCounted
 
-const FLOAT_DISTANCE := 16.0
+const FLOAT_DISTANCE := 8.0
 const DURATION := 0.35
 const HIDE_DELAY := 0.15
 
@@ -28,7 +28,7 @@ static func show_damage_values(owner: Node, hp_label: Label, damage_values: Arra
 	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color.WHITE)
-	label.add_theme_constant_override("outline_size", 3)
+	label.add_theme_constant_override("outline_size", 2)
 	_copy_font(hp_label, label)
 	owner.add_child(label)
 	var tween := owner.create_tween()

@@ -2,7 +2,7 @@ class_name HpView
 extends NinePatchRect
 
 const HP_GAUGE_TWEEN_DURATION := 0.2
-const HP_DAMAGE_FLOAT_DISTANCE := 16.0
+const HP_DAMAGE_FLOAT_DISTANCE := 8.0
 const HP_DAMAGE_TWEEN_DURATION := 0.35
 const HP_DAMAGE_HIDE_DELAY := 0.15
 
@@ -71,7 +71,7 @@ func set_planned_recovery_rate(recovery_rate: float) -> void:
 
 func show_damage_preview(amount: int) -> void:
 	_hp_damage_preview_label.text = "-%d" % amount
-	_hp_damage_preview_label.position = Vector2(size.x - 42.0, -16.0)
+	_hp_damage_preview_label.position = Vector2(size.x - 21.0, -8.0)
 	_hp_damage_preview_label.visible = true
 
 
@@ -122,7 +122,7 @@ func _create_hp_damage_preview() -> void:
 	_hp_damage_preview_label.name = "RemoveNightmareDamagePreview"
 	_hp_damage_preview_label.visible = false
 	_hp_damage_preview_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_apply_damage_label_style(_hp_damage_preview_label, 28, Color.BLACK)
+	_apply_damage_label_style(_hp_damage_preview_label, 14, Color.BLACK)
 	add_child(_hp_damage_preview_label)
 
 
@@ -130,11 +130,11 @@ func _create_damage_value_label(damage_texts: Array[String]) -> Label:
 	var label := Label.new()
 	label.text = "\n".join(damage_texts)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.size = Vector2(92.0, maxf(36.0, float(damage_texts.size()) * 30.0))
-	label.position = hp_text.position + Vector2((hp_text.size.x - label.size.x) * 0.5, -label.size.y + 4.0)
+	label.size = Vector2(46.0, maxf(18.0, float(damage_texts.size()) * 15.0))
+	label.position = hp_text.position + Vector2((hp_text.size.x - label.size.x) * 0.5, -label.size.y + 2.0)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-	_apply_damage_label_style(label, 28, Color.WHITE)
+	_apply_damage_label_style(label, 14, Color.WHITE)
 	return label
 
 
@@ -142,8 +142,8 @@ func _create_heal_value_label(amount: int) -> Label:
 	var label := Label.new()
 	label.text = "+%d" % amount
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.size = Vector2(92.0, 36.0)
-	label.position = hp_text.position + Vector2((hp_text.size.x - label.size.x) * 0.5, -label.size.y + 4.0)
+	label.size = Vector2(46.0, 18.0)
+	label.position = hp_text.position + Vector2((hp_text.size.x - label.size.x) * 0.5, -label.size.y + 2.0)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	_apply_heal_label_style(label)
@@ -153,7 +153,7 @@ func _create_heal_value_label(amount: int) -> Label:
 func _apply_damage_label_style(label: Label, font_size: int, outline_color: Color) -> void:
 	label.add_theme_color_override("font_color", Color.html("#ff0736"))
 	label.add_theme_color_override("font_outline_color", outline_color)
-	label.add_theme_constant_override("outline_size", 3)
+	label.add_theme_constant_override("outline_size", 2)
 	var damage_font := hp_text.get_theme_font("font")
 	if damage_font != null:
 		label.add_theme_font_override("font", damage_font)
@@ -163,11 +163,11 @@ func _apply_damage_label_style(label: Label, font_size: int, outline_color: Colo
 func _apply_heal_label_style(label: Label) -> void:
 	label.add_theme_color_override("font_color", Color.WHITE)
 	label.add_theme_color_override("font_outline_color", Color.BLACK)
-	label.add_theme_constant_override("outline_size", 3)
+	label.add_theme_constant_override("outline_size", 2)
 	var heal_font := hp_text.get_theme_font("font")
 	if heal_font != null:
 		label.add_theme_font_override("font", heal_font)
-	label.add_theme_font_size_override("font_size", 28)
+	label.add_theme_font_size_override("font_size", 14)
 
 
 func _play_damage_value_tween(label: Label) -> void:

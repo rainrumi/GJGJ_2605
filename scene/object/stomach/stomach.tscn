@@ -9,32 +9,32 @@
 script = ExtResource("1_script")
 
 [node name="grid_frame" type="NinePatchRect" parent="." unique_id=1967012628]
-offset_left = -134.0
-offset_top = -234.0
-offset_right = 172.0
-offset_bottom = 236.0
+offset_left = -67
+offset_top = -117
+offset_right = 86
+offset_bottom = 118
 texture = ExtResource("4_ogirn")
 region_rect = Rect2(0, 0, 48, 48)
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
 
 [node name="frame" type="NinePatchRect" parent="." unique_id=737108641]
-offset_left = -188.0
-offset_top = -284.0
-offset_right = 188.0
-offset_bottom = 284.0
+offset_left = -94
+offset_top = -142
+offset_right = 94
+offset_bottom = 142
 texture = ExtResource("2_frame")
-patch_margin_left = 84
-patch_margin_top = 56
-patch_margin_right = 40
-patch_margin_bottom = 208
+patch_margin_left = 42
+patch_margin_top = 28
+patch_margin_right = 20
+patch_margin_bottom = 104
 
 [node name="DigestionLine" type="TextureRect" parent="." unique_id=442792509]
-offset_left = 183.0
-offset_top = 140.0
-offset_right = 223.0
-offset_bottom = 180.0
+offset_left = 91.5
+offset_top = 70
+offset_right = 111.5
+offset_bottom = 90
 mouse_filter = 2
 texture = ExtResource("5_line")

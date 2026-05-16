@@ -10,7 +10,6 @@ signal efficiency_detail_closed
 @onready var damage_value_label: Label = $DigestDamageValue
 @onready var efficiency_value_label: Label = $DigestEfficiencyValue
 @onready var efficiency_title_label: Label = $DigestEfficiencyTitle
-@onready var detail_label: Label = $DigestDamageDetail
 
 
 func _ready() -> void:
@@ -29,13 +28,11 @@ func reset_summary() -> void:
 	set_digest_damage(0)
 	set_digest_efficiency_minutes(30.0)
 	title_label.text = "消化ダメージ"
-	detail_label.visible = false
 
 
 func set_digest_damage(total_damage: int) -> void:
 	title_label.text = "消化ダメージ"
 	damage_value_label.text = "%d" % total_damage
-	detail_label.visible = false
 
 
 func set_digest_efficiency_minutes(amount_minutes: float) -> void:
@@ -48,7 +45,6 @@ func _prepare_mouse_filters() -> void:
 	damage_value_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	efficiency_value_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	efficiency_title_label.mouse_filter = Control.MOUSE_FILTER_STOP
-	detail_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func _format_digest_efficiency(amount_minutes: float) -> String:
