@@ -26,8 +26,8 @@
 [ext_resource type="PackedScene" path="res://scene/ui/battle_ui/left_tooltip.tscn" id="36_left_tooltip"]
 [ext_resource type="Texture2D" uid="uid://cgefols2qgnfi" path="res://art/ui/icon/ui_icon_digestiveDMG.png" id="37_digestive_dmg_icon"]
 [ext_resource type="Texture2D" uid="uid://cv2lt30r8m0jq" path="res://art/ui/icon/ui_icon_digestiveINTERVAL.png" id="38_digestive_interval_icon"]
-[ext_resource type="Script" path="res://scene/ui/battle_ui/time_tooltip_view.gd" id="39_time_tooltip_view"]
-[ext_resource type="Script" path="res://scene/ui/battle_ui/hp_tooltip_view.gd" id="40_hp_tooltip_view"]
+[ext_resource type="Script" uid="uid://b05fwmrw470hd" path="res://scene/ui/battle_ui/time_tooltip_view.gd" id="39_time_tooltip_view"]
+[ext_resource type="Script" uid="uid://e7h4ik0nntom" path="res://scene/ui/battle_ui/hp_tooltip_view.gd" id="40_hp_tooltip_view"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
@@ -55,7 +55,7 @@ position = Vector2(575, 250)
 position = Vector2(575, 140)
 
 [node name="Stomach" parent="." unique_id=1086540852 instance=ExtResource("5_stomach")]
-position = Vector2(259.2575, 201.5)
+position = Vector2(180, 75)
 
 [node name="Character" parent="." unique_id=652368236 instance=ExtResource("6_character")]
 position = Vector2(95, 210)
@@ -197,7 +197,6 @@ texture = ExtResource("17_digestion")
 script = ExtResource("33_digestion_button_view")
 
 [node name="StatusPanel" type="Control" parent="UI" unique_id=1605446388]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 640.0
@@ -206,11 +205,12 @@ mouse_filter = 2
 script = ExtResource("34_status_panel_view")
 
 [node name="MessageText" type="Label" parent="UI/StatusPanel" unique_id=196976463]
+visible = false
 layout_mode = 0
-offset_left = 396.0
-offset_top = 58.5
-offset_right = 637.5
-offset_bottom = 74.5
+offset_left = 388.0
+offset_top = 52.5
+offset_right = 638.0
+offset_bottom = 68.5
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
@@ -221,22 +221,21 @@ horizontal_alignment = 2
 autowrap_mode = 3
 
 [node name="DebugRerollButton" type="Button" parent="UI/StatusPanel" unique_id=917573151]
-visible = false
 layout_mode = 0
-offset_left = 527.0
-offset_top = 77.0
-offset_right = 580.5
-offset_bottom = 94.0
+offset_left = 377.0
+offset_top = 339.0
+offset_right = 430.5
+offset_bottom = 357.0
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 9
 text = "リロール"
 
 [node name="DebugMessageButton" type="Button" parent="UI/StatusPanel" unique_id=2146876269]
 layout_mode = 0
-offset_left = 584.0
-offset_top = 77.0
-offset_right = 637.5
-offset_bottom = 94.0
+offset_left = 434.0
+offset_top = 339.0
+offset_right = 487.5
+offset_bottom = 357.0
 theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 9
 text = "Debug"
