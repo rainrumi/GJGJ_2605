@@ -7,7 +7,6 @@ extends Node2D
 
 @onready var grid_frame: NinePatchRect = $grid_frame
 @onready var frame: NinePatchRect = $frame
-@onready var digestion_line: TextureRect = $DigestionLine
 
 var _grid_origin := Vector2.ZERO
 var _cell_size := 0.0
@@ -162,10 +161,7 @@ func _configure_grid() -> void:
 				add_child(cell)
 			cell.position = _grid_origin + Vector2(column, row) * _grid_step
 			cell.size = Vector2(_cell_size, _cell_size)
-	_position_digestion_line()
 	frame.z_index = 10
-	if digestion_line != null:
-		digestion_line.z_index = 11
 
 
 func _create_preview() -> void:
@@ -176,16 +172,6 @@ func _create_preview() -> void:
 	_preview_sprite.self_modulate = Color(0.9411765, 0.8784314, 1.0, 1.0)
 	_preview_sprite.z_index = 5
 	add_child(_preview_sprite)
-
-
-func _position_digestion_line() -> void:
-	if digestion_line == null:
-		return
-	digestion_line.position = Vector2(frame.position.x + frame.size.x, _get_digestion_line_top_y())
-
-
-func _get_digestion_line_top_y() -> float:
-	return _grid_origin.y + float(rows - 1) * _grid_step - _grid_step / float(rows)
 
 
 func _get_nearest_cell(global_position: Vector2) -> Vector2i:

@@ -6,8 +6,6 @@ signal digestion_requested
 const HOVER_SCALE := 1.1
 const HOVER_TWEEN_DURATION := 0.1
 
-@onready var digestion_label: Label = $DigestionLabel
-
 var _base_scale := Vector2.ONE
 var _hover_tween: Tween
 
@@ -24,7 +22,7 @@ func _ready() -> void:
 
 # 回数を反映
 func set_count(_count: int) -> void:
-	digestion_label.text = "消化開始！"
+	pass
 
 
 # 表示を切替
@@ -44,7 +42,6 @@ func is_hit(mouse_position: Vector2) -> bool:
 # 入力設定
 func _prepare_mouse_filters() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	digestion_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 # 入力を処理
