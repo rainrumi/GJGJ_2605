@@ -149,16 +149,17 @@ func get_global_position_for_cell(top_left: Vector2i, size: Vector2i) -> Vector2
 
 
 func _configure_grid() -> void:
-	_cell_size = minf(
+	_cell_size = floorf(minf(
 		(_grid_frame_area_size.x + float(columns - 1) * edge_overlap) / float(columns),
 		(_grid_frame_area_size.y + float(rows - 1) * edge_overlap) / float(rows)
-	)
+	))
+	_cell_size = maxf(1.0, _cell_size)
 	_grid_step = _cell_size - edge_overlap
 	var grid_size: Vector2 = Vector2(
 		float(columns) * _cell_size - float(columns - 1) * edge_overlap,
 		float(rows) * _cell_size - float(rows - 1) * edge_overlap
 	)
-	_grid_origin = _grid_frame_area_position + (_grid_frame_area_size - grid_size) * 0.5
+	_grid_origin = (_grid_frame_area_position + (_grid_frame_area_size - grid_size) * 0.5).round()
 	for child: Node in get_children():
 		if child is NinePatchRect and String(child.name).begins_with("grid_frame_"):
 			remove_child(child)
@@ -170,7 +171,7 @@ func _configure_grid() -> void:
 				cell = grid_frame.duplicate() as NinePatchRect
 				cell.name = "grid_frame_%d_%d" % [column, row]
 				add_child(cell)
-			cell.position = _grid_origin + Vector2(column, row) * _grid_step
+			cell.position = (_grid_origin + Vector2(column, row) * _grid_step).round()
 			cell.size = Vector2(_cell_size, _cell_size)
 	frame.z_index = 10
 
