@@ -45,10 +45,6 @@ func _get_enemy_entries(enemy: Enemy, debug_numbers_visible: bool) -> Array:
 		"explanation": "メイン効果",
 		"value": _get_effect_text(enemy.get_main_effect_text()),
 	})
-	entries.append({
-		"explanation": "サブ効果",
-		"value": _get_effect_text(enemy.get_sub_effect_text()),
-	})
 	return entries
 
 
