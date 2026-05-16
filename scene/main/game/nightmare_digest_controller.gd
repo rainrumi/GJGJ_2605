@@ -2,7 +2,7 @@ class_name NightmareDigestController
 extends RefCounted
 
 const STEP_MINUTES := 30
-const DIGEST_DAMAGE := 200
+const DIGEST_DAMAGE := 300
 const SKILL_3_DAMAGE_REDUCTION_PER_OPEN_FACE := 0.1
 const SKILL_7_HP_STEP_RATE := 0.2
 const SKILL_7_MIN_HP_RATE := 0.2
