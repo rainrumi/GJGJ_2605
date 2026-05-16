@@ -13,6 +13,8 @@ var _cell_size := 0.0
 var _grid_step := 0.0
 var _grid_frame_area_position := Vector2.ZERO
 var _grid_frame_area_size := Vector2.ZERO
+var _frame_base_position := Vector2.ZERO
+var _frame_base_size := Vector2.ZERO
 var _preview_sprite: Sprite2D
 
 
@@ -149,9 +151,11 @@ func get_global_position_for_cell(top_left: Vector2i, size: Vector2i) -> Vector2
 
 
 func _configure_grid() -> void:
+	var cell_size_columns := maxi(columns, 4)
+	var cell_size_rows := maxi(rows, 4)
 	_cell_size = floorf(minf(
-		(_grid_frame_area_size.x + float(columns - 1) * edge_overlap) / float(columns),
-		(_grid_frame_area_size.y + float(rows - 1) * edge_overlap) / float(rows)
+		(_grid_frame_area_size.x + float(cell_size_columns - 1) * edge_overlap) / float(cell_size_columns),
+		(_grid_frame_area_size.y + float(cell_size_rows - 1) * edge_overlap) / float(cell_size_rows)
 	))
 	_cell_size = maxf(1.0, _cell_size)
 	_grid_step = _cell_size - edge_overlap
@@ -159,7 +163,9 @@ func _configure_grid() -> void:
 		float(columns) * _cell_size - float(columns - 1) * edge_overlap,
 		float(rows) * _cell_size - float(rows - 1) * edge_overlap
 	)
-	_grid_origin = (_grid_frame_area_position + (_grid_frame_area_size - grid_size) * 0.5).round()
+	var active_grid_area_size := _get_active_grid_area_size(grid_size)
+	_grid_origin = (_grid_frame_area_position + (active_grid_area_size - grid_size) * 0.5).round()
+	_update_frame_size(active_grid_area_size)
 	for child: Node in get_children():
 		if child is NinePatchRect and String(child.name).begins_with("grid_frame_"):
 			remove_child(child)
@@ -179,6 +185,31 @@ func _configure_grid() -> void:
 func _capture_grid_frame_area() -> void:
 	_grid_frame_area_position = grid_frame.position
 	_grid_frame_area_size = grid_frame.size
+	_frame_base_position = frame.position
+	_frame_base_size = frame.size
+
+
+func _get_active_grid_area_size(grid_size: Vector2) -> Vector2:
+	var active_size := _grid_frame_area_size
+	if columns < 4:
+		active_size.x = grid_size.x
+	if rows < 4:
+		active_size.y = grid_size.y
+	return active_size.round()
+
+
+func _update_frame_size(active_grid_area_size: Vector2) -> void:
+	var left_margin := _grid_frame_area_position.x - _frame_base_position.x
+	var top_margin := _grid_frame_area_position.y - _frame_base_position.y
+	var right_margin := _frame_base_size.x - left_margin - _grid_frame_area_size.x
+	var bottom_margin := _frame_base_size.y - top_margin - _grid_frame_area_size.y
+	var target_size := _frame_base_size
+	if columns < 4:
+		target_size.x = active_grid_area_size.x + left_margin + right_margin
+	if rows < 4:
+		target_size.y = active_grid_area_size.y + top_margin + bottom_margin
+	frame.position = _frame_base_position
+	frame.size = target_size.round()
 
 
 func _create_preview() -> void:
