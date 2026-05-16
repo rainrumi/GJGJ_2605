@@ -168,8 +168,8 @@ func _configure_grid() -> void:
 	)
 	var active_grid_area_position := _get_active_grid_area_position(grid_size, is_horizontal_limited)
 	var active_grid_area_size := _get_active_grid_area_size(grid_size, is_horizontal_limited)
-	_grid_origin = (active_grid_area_position + (active_grid_area_size - grid_size) * 0.5).round()
 	_update_frame_size(active_grid_area_size)
+	_grid_origin = _get_grid_origin(active_grid_area_position, active_grid_area_size, grid_size)
 	_update_line_mesh()
 	for child: Node in get_children():
 		if child is NinePatchRect and String(child.name).begins_with("grid_frame_"):
@@ -226,6 +226,12 @@ func _update_frame_size(active_grid_area_size: Vector2) -> void:
 		target_size.y = active_grid_area_size.y + top_margin + bottom_margin
 	frame.position = (_frame_base_position + (_frame_base_size - target_size) * 0.5).round()
 	frame.size = target_size.round()
+
+
+func _get_grid_origin(active_grid_area_position: Vector2, active_grid_area_size: Vector2, grid_size: Vector2) -> Vector2:
+	var grid_origin_x := active_grid_area_position.x + (active_grid_area_size.x - grid_size.x) * 0.5
+	var grid_origin_y := frame.position.y + frame.size.y - grid_size.y
+	return Vector2(grid_origin_x, grid_origin_y).round()
 
 
 func _update_line_mesh() -> void:
