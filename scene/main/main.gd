@@ -19,8 +19,7 @@ enum NovelFlow {
 @onready var stage_clear: Node = $StageClear
 @onready var bgm: BeatConductor = $BGM
 
-var current_day := 1
-var selected_stage_id := 0
+var run_state := RunState.new()
 var should_reset_player_state := true
 var active_novel_flow := NovelFlow.NONE
 
@@ -63,7 +62,7 @@ func show_game(reset_player_state: bool = true) -> void:
 	game_ui.visible = true
 	stage_clear.visible = false
 	if game.has_method("start_battle"):
-		game.start_battle(_get_starting_hp(reset_player_state), current_day, _get_planted_flowers())
+		game.start_battle(_create_battle_start_context(reset_player_state))
 
 
 func show_stage_clear() -> void:
@@ -81,7 +80,7 @@ func show_stage_clear() -> void:
 
 
 func _on_title_start_game() -> void:
-	current_day = 1
+	run_state.reset()
 	should_reset_player_state = true
 	if stage_clear.has_method("reset_player_state"):
 		stage_clear.reset_player_state()
@@ -107,12 +106,12 @@ func show_day_intro() -> void:
 	game.visible = false
 	game_ui.visible = false
 	stage_clear.visible = false
-	await day_intro.show_day(current_day)
+	await day_intro.show_day(run_state.current_day)
 	show_stage_select()
 
 
 func _on_stage_select_stage_selected(stage_id: int) -> void:
-	selected_stage_id = stage_id
+	run_state.selected_stage_id = stage_id
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
 
@@ -139,7 +138,7 @@ func show_end_gameover_novel() -> void:
 func _finish_end_gameover_novel() -> void:
 	if stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
 		stage_clear.setup_hp(game.get_current_hp())
-	current_day += 1
+	run_state.current_day += 1
 	show_day_intro()
 
 
@@ -155,8 +154,17 @@ func _get_end_gameover_novel_text() -> NovelTextResource:
 
 func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
 	await get_tree().create_timer(STAGE_CLEAR_RETURN_DELAY).timeout
-	current_day += 1
+	run_state.current_day += 1
 	show_day_intro()
+
+
+func _create_battle_start_context(reset_player_state: bool) -> BattleStartContext:
+	var context := BattleStartContext.new()
+	context.starting_hp = _get_starting_hp(reset_player_state)
+	context.day = run_state.current_day
+	context.stage_id = run_state.selected_stage_id
+	context.flowers = _get_planted_flowers()
+	return context
 
 
 func _get_starting_hp(reset_player_state: bool) -> int:

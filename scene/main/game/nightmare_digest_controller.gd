@@ -10,6 +10,18 @@ const SKILL_7_MAX_HP_RATE := 2.0
 const SKILL_11_REVIVE_START_RATE := 0.5
 const SKILL_11_REVIVE_DECAY_RATE := 0.1
 const SKILL_11_MIN_REVIVE_RATE := 0.1
+const NIGHTMARE_SKILL_OPEN_CELL_ATTACK := 1
+const NIGHTMARE_SKILL_DAMAGE_SHARE := 2
+const NIGHTMARE_SKILL_OPEN_CELL_DEFENSE := 3
+const NIGHTMARE_SKILL_BOTTOM_ATTACK := 4
+const NIGHTMARE_SKILL_LATE_DIGEST_WEAKEN := 5
+const NIGHTMARE_SKILL_TIME_DELAY := 6
+const NIGHTMARE_SKILL_RANDOM_HP := 7
+const NIGHTMARE_SKILL_SPAWN_BLOCKS := 8
+const NIGHTMARE_SKILL_CHAIN_GROWTH := 9
+const NIGHTMARE_SKILL_ODD_ORDER_DAMAGE := 10
+const NIGHTMARE_SKILL_EVEN_ORDER_REVIVE := 11
+const NIGHTMARE_SKILL_SINGLE_DIGEST_SPAWN := 12
 
 var seed_effects := DreamSeedEffectCalculator.new()
 var digest_order := 0
@@ -63,7 +75,7 @@ func get_step_minutes_breakdown(enemies: Array[Enemy]) -> Dictionary:
 	var base_minutes := STEP_MINUTES
 	var nightmare_minutes := base_minutes
 	for enemy in enemies:
-		if _has_nightmare_effect(enemy, 6) and enemy.stomach_elapsed_minutes > 0 and enemy.stomach_elapsed_minutes % 60 == 0:
+		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_TIME_DELAY) and enemy.stomach_elapsed_minutes > 0 and enemy.stomach_elapsed_minutes % 60 == 0:
 			nightmare_minutes += 30
 	var seed_rate := -seed_effects.get_time_reduction_rate()
 	var total_minutes := maxi(1, roundi(float(nightmare_minutes) * (1.0 + seed_rate)))
@@ -83,7 +95,7 @@ func apply_turn_start_effects(enemies: Array[Enemy]) -> void:
 			continue
 		if enemy.can_take_stomach_turn():
 			enemy.stomach_elapsed_minutes += STEP_MINUTES
-		if _has_nightmare_effect(enemy, 7) and not enemy.is_active_in_stomach():
+		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_RANDOM_HP) and not enemy.is_active_in_stomach():
 			_apply_outside_stomach_hp_variation(enemy)
 
 
@@ -222,11 +234,11 @@ func _resolve_digested_enemy_effects(
 	_sort_digested_enemies(enemies, digested_enemies, received_digest_damage, turn_start_hp)
 	for enemy in digested_enemies:
 		digest_order += 1
-		if _has_nightmare_effect(enemy, 10) and digest_order % 2 == 1:
+		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_ODD_ORDER_DAMAGE) and digest_order % 2 == 1:
 			var damage := seed_effects.apply_player_damage(enemy.get_damage() * 3, DIGEST_DAMAGE)
 			if damage > 0:
 				_pending_player_damage_values.append(damage)
-		if _has_nightmare_effect(enemy, 11) and digest_order % 2 == 0:
+		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_EVEN_ORDER_REVIVE) and digest_order % 2 == 0:
 			var revive_rate := maxf(
 				SKILL_11_MIN_REVIVE_RATE,
 				SKILL_11_REVIVE_START_RATE - float(enemy.revive_count) * SKILL_11_REVIVE_DECAY_RATE
@@ -256,7 +268,7 @@ func _sort_digested_enemies(
 
 func _apply_chain_reactions(enemies: Array[Enemy], digested_enemies: Array[Enemy]) -> void:
 	for watcher in enemies:
-		if not _has_nightmare_effect(watcher, 9) or watcher.digested:
+		if not _has_nightmare_effect(watcher, NIGHTMARE_SKILL_CHAIN_GROWTH) or watcher.digested:
 			continue
 		for digested_enemy in digested_enemies:
 			if watcher == digested_enemy:
@@ -272,12 +284,12 @@ func _apply_spawn_reactions(
 	enemy_setup: GameEnemySetupController
 ) -> void:
 	for enemy in digested_enemies:
-		if _has_nightmare_effect(enemy, 8):
+		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_SPAWN_BLOCKS):
 			var nuisance_damage := roundi(float(enemy.base_damage) * 0.5)
 			for cell in enemy.get_occupied_cells(enemy.stomach_cell):
 				if not enemy_setup.spawn_nuisance_nightmare(enemies, enemy, cell, 0.5, nuisance_damage):
 					break
-		if _has_nightmare_effect(enemy, 12) and digested_enemies.size() == 1:
+		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_SINGLE_DIGEST_SPAWN) and digested_enemies.size() == 1:
 			var spawn_cells := enemy.get_occupied_cells(enemy.stomach_cell)
 			if not spawn_cells.is_empty():
 				enemy_setup.spawn_nuisance_nightmare(enemies, enemy, spawn_cells[0], 0.3, 0)
@@ -285,10 +297,10 @@ func _apply_spawn_reactions(
 
 func _get_enemy_attack_damage(enemy: Enemy, enemies: Array[Enemy], stomach: StomachBoard) -> int:
 	var damage := enemy.get_damage()
-	if _has_nightmare_effect(enemy, 1):
+	if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_OPEN_CELL_ATTACK):
 		var open_adjacent_cells := NightmarePlacementQuery.get_open_adjacent_cell_count(enemy, enemies, stomach.columns, stomach.rows)
 		damage += roundi(float(enemy.base_damage) * float(open_adjacent_cells))
-	if _has_nightmare_effect(enemy, 4) and enemy.is_active_in_stomach():
+	if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_BOTTOM_ATTACK) and enemy.is_active_in_stomach():
 		var bottom_cells := stomach.get_bottom_row_cell_count(enemy)
 		var upper_cells := maxi(0, enemy.get_size() - bottom_cells)
 		damage += roundi(float(enemy.base_damage) * float(bottom_cells - upper_cells) * 0.5)
@@ -301,7 +313,7 @@ func _apply_digest_damage_share(
 	damage: int,
 	shared_damage: Dictionary
 ) -> void:
-	if not _has_nightmare_effect(enemy, 2):
+	if not _has_nightmare_effect(enemy, NIGHTMARE_SKILL_DAMAGE_SHARE):
 		return
 	var adjacent_enemies := NightmarePlacementQuery.get_adjacent_enemies(enemy, enemies)
 	if adjacent_enemies.is_empty():
@@ -312,7 +324,7 @@ func _apply_digest_damage_share(
 
 
 func _get_final_digest_damage(enemy: Enemy, enemies: Array[Enemy], stomach: StomachBoard, raw_damage: int) -> int:
-	if not _has_nightmare_effect(enemy, 3):
+	if not _has_nightmare_effect(enemy, NIGHTMARE_SKILL_OPEN_CELL_DEFENSE):
 		return raw_damage
 	var open_adjacent_cells := NightmarePlacementQuery.get_open_adjacent_cell_count(enemy, enemies, stomach.columns, stomach.rows)
 	var damage_rate := maxf(
@@ -403,7 +415,7 @@ func _split_damage_values(raw_damage_values: Array[int], final_damage: int) -> A
 
 
 func _get_nightmare_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
-	if not has_active_nightmare_effect(enemies, 5) or minutes < 25 * 60:
+	if not has_active_nightmare_effect(enemies, NIGHTMARE_SKILL_LATE_DIGEST_WEAKEN) or minutes < 25 * 60:
 		return 0.0
 	var passed_hours := maxi(0, floori(float(minutes - 25 * 60) / 60.0))
 	return -minf(0.9, 0.3 + float(passed_hours) * 0.05)

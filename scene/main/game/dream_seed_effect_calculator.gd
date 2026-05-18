@@ -6,6 +6,10 @@ const SKILL_1_DIGEST_DAMAGE_RATE := 0.1
 const SKILL_3_TIME_REDUCTION_RATE := 0.05
 const SKILL_3_MAX_TIME_REDUCTION_RATE := 0.2
 const SKILL_4_REST_RECOVERY_BONUS_RATE := 0.5
+const DREAM_SEED_DIGEST_DAMAGE_UP := 1
+const DREAM_SEED_CLEAR_RECOVERY_UP := 2
+const DREAM_SEED_TIME_REDUCTION := 3
+const DREAM_SEED_REST_RECOVERY := 4
 
 var next_digest_damage_bonus_rate := 0.0
 var _planted_flowers: Array[FlowerDefinition] = []
@@ -56,7 +60,7 @@ func apply_player_damage(amount: int, _base_damage: int) -> int:
 func get_time_reduction_rate() -> float:
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
-		if _is_dream_flower_skill(skill, 3):
+		if _is_dream_flower_skill(skill, DREAM_SEED_TIME_REDUCTION):
 			rate += SKILL_3_TIME_REDUCTION_RATE
 	return minf(SKILL_3_MAX_TIME_REDUCTION_RATE, rate)
 
@@ -88,7 +92,7 @@ func get_seed_skill_id_text() -> String:
 func _get_digest_damage_rate() -> float:
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
-		if _is_dream_flower_skill(skill, 1):
+		if _is_dream_flower_skill(skill, DREAM_SEED_DIGEST_DAMAGE_UP):
 			rate += SKILL_1_DIGEST_DAMAGE_RATE
 	return rate
 
@@ -106,7 +110,7 @@ func _setup_skill_4_stocks() -> void:
 	for flower in _planted_flowers:
 		if flower == null or flower.dream_seed_skill == null:
 			continue
-		if _is_dream_flower_skill(flower.dream_seed_skill, 4):
+		if _is_dream_flower_skill(flower.dream_seed_skill, DREAM_SEED_REST_RECOVERY):
 			_skill_4_stock_by_flower[flower] = maxi(0, flower.dream_seed_skill.stock_count)
 
 

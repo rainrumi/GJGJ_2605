@@ -12,6 +12,7 @@
 shader = ExtResource("5_line_shader")
 shader_parameter/line_texture = ExtResource("6_line_texture")
 shader_parameter/line_texture_size = Vector2(6, 6)
+shader_parameter/line_texture_group_count = Vector2(6, 6)
 shader_parameter/mesh_size = Vector2(153, 54)
 shader_parameter/wave_amplitude = 1.0
 shader_parameter/wave_frequency = 15.0

@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="13_font"]
-[ext_resource type="Script" uid="uid://bm4w874wal4cv" path="res://scene/object/dreamseed/passive_flower_spawner.gd" id="16_passive_flower_spawner"]
 [ext_resource type="Texture2D" uid="uid://dpf6pkf1ttb3w" path="res://art/ui/button/ui_button_digestiveSTART.png" id="17_digestion"]
 [ext_resource type="Texture2D" uid="uid://cuxjxyxsrwydw" path="res://art/ui/icon/ui_icon_time.png" id="18_time_frame"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://sound/se/click.mp3" id="21_click_se"]
@@ -38,9 +37,6 @@ nightmare_skill_catalog = ExtResource("26_nightmare_skill_catalog")
 
 [node name="GameInputController" type="Node" parent="." unique_id=161686257]
 script = ExtResource("27_game_input_controller")
-
-[node name="PassiveFlower" type="Node2D" parent="." unique_id=1390278827]
-script = ExtResource("16_passive_flower_spawner")
 
 [node name="EnemyLeft" parent="." unique_id=1201043878 instance=ExtResource("2_enemy")]
 position = Vector2(425, 250)

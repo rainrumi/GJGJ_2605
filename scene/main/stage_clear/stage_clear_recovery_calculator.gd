@@ -4,6 +4,8 @@ extends RefCounted
 const CATEGORY_DREAM_FLOWER := "夢の花系統"
 const CATEGORY_SPECIAL_TIME := "時間系統"
 const SKILL_2_CLEAR_RECOVERY_BONUS_RATE := 0.1
+const DREAM_SEED_CLEAR_RECOVERY_UP := 2
+const DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE := 4
 
 
 static func can_plant_seed(seed: SeedOptionDefinition, planted_flowers: Array[FlowerDefinition], max_normal: int, max_high: int) -> bool:
@@ -67,7 +69,7 @@ static func get_seed_bonus_rate(planted_flowers: Array[FlowerDefinition]) -> flo
 		if flower == null or flower.dream_seed_skill == null:
 			continue
 		var skill := flower.dream_seed_skill
-		if skill.skill_id == 2 and skill.category == CATEGORY_DREAM_FLOWER:
+		if skill.skill_id == DREAM_SEED_CLEAR_RECOVERY_UP and skill.category == CATEGORY_DREAM_FLOWER:
 			bonus_rate += SKILL_2_CLEAR_RECOVERY_BONUS_RATE
 	return bonus_rate
 
@@ -77,6 +79,6 @@ static func is_clear_time_recovery_disabled(planted_flowers: Array[FlowerDefinit
 		if flower == null or flower.dream_seed_skill == null:
 			continue
 		var skill := flower.dream_seed_skill
-		if skill.skill_id == 4 and skill.category == CATEGORY_SPECIAL_TIME:
+		if skill.skill_id == DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE and skill.category == CATEGORY_SPECIAL_TIME:
 			return true
 	return false

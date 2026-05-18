@@ -9,6 +9,9 @@ extends Resource
 @export var reward_icon: Texture2D
 @export var is_rare := false
 @export var tags: Array[StringName] = []
+@export var enemy_pool: Array[EnemyDefinition] = []
+@export var stomach_columns := 4
+@export var stomach_rows := 5
 
 
 func get_difficulty_text() -> String:
