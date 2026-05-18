@@ -19,6 +19,7 @@ const ABANDON_BUTTON_DEFAULT_MODULATE := Color.WHITE
 @export var initial_flower: FlowerDefinition
 @export var seed_options: Array[Resource] = []
 @onready var hp_view: HpView = $CharacterArea/HpFrame
+@onready var dream_seed_skill_buttons: DreamSeedSkillButtonList = $CharacterArea/DreamSeedSkillButtons
 @onready var planted_info_text: Label = $CharacterArea/PlantedInfoFrame/PlantedInfoText
 @onready var guide_text: Label = $UI/GuideText
 @onready var seed_choices: Array[StageClearSeedChoice] = [
@@ -232,6 +233,13 @@ func _refresh_flower_slots() -> void:
 		texture_rect.texture = display_textures[i]
 		flower_slots[i].disabled = true
 	_update_planted_info_text()
+	_refresh_dream_seed_skill_buttons()
+
+
+func _refresh_dream_seed_skill_buttons() -> void:
+	if dream_seed_skill_buttons == null:
+		return
+	dream_seed_skill_buttons.set_seed_sources(get_planted_flowers())
 func _get_display_flower_textures() -> Array[Texture2D]:
 	var textures: Array[Texture2D] = []
 	for flower in planted_flowers:

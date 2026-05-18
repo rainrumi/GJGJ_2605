@@ -12,6 +12,7 @@
 [ext_resource type="Resource" path="res://data/resources/stage_clear/carnation_seed.tres" id="12_carnation_seed"]
 [ext_resource type="Resource" path="res://data/resources/stage_clear/chamomile_seed.tres" id="13_chamomile_seed"]
 [ext_resource type="Resource" uid="uid://bdc1rl2wr5u3c" path="res://data/resources/stage_clear/capuchi_seed.tres" id="14_capuchi_seed"]
+[ext_resource type="Script" path="res://scene/ui/dream_seed_skill_button/dream_seed_skill_button_list.gd" id="15_dream_seed_skill_button_list"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
@@ -31,6 +32,18 @@ offset_left = 29
 offset_top = 253
 offset_right = 157
 offset_bottom = 266
+
+[node name="DreamSeedSkillButtons" type="HFlowContainer" parent="CharacterArea" unique_id=1933210198]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 29
+offset_top = 270
+offset_right = 155
+offset_bottom = 342
+mouse_filter = 2
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
+script = ExtResource("15_dream_seed_skill_button_list")
 
 [node name="FlowerSlots" type="Control" parent="CharacterArea" unique_id=816859833]
 layout_mode = 3

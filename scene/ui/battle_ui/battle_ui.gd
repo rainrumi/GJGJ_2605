@@ -13,6 +13,7 @@ signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 @onready var digest_efficiency_icon: Control = $DigestiveINTERVAL/digestiveINTERVAL_icon
 @onready var digest_efficiency_value_label: Label = $DigestiveINTERVAL/digestiveINTERVAL_value
 @onready var hp_status: HpView = $HpFrame
+@onready var dream_seed_skill_buttons: DreamSeedSkillButtonList = $DreamSeedSkillButtons
 @onready var time_status: TimeStatusView = $Time
 @onready var digestion_button: DigestionButtonView = $DigestionFrame
 @onready var status_panel: StatusPanelView = $StatusPanel
@@ -68,6 +69,7 @@ func reset_for_battle(
 	time_tooltip.set_time_info()
 	set_message(message)
 	set_debug_message("")
+	set_dream_seed_skill_sources([])
 	set_debug_button_active(false)
 	set_digestion_count(0)
 	set_digestion_button_visible(true)
@@ -99,6 +101,10 @@ func set_message(message: String) -> void:
 
 func set_debug_message(message: String) -> void:
 	status_panel.set_debug_message(message)
+
+
+func set_dream_seed_skill_sources(sources: Array) -> void:
+	dream_seed_skill_buttons.set_seed_sources(sources)
 
 
 func show_nightmare_tooltip(enemy: Enemy, debug_number_text: String, debug_numbers_visible: bool) -> void:

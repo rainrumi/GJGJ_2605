@@ -1,14 +1,14 @@
 extends Node2D
 signal battle_finished(won: bool)
-const START_HOUR := 22
-const END_HOUR := 30
-const REST_MINUTES := 30
-const MAX_HP := 100
-const REST_HP_RATE := 0.1
-const TIME_OVER_HP_RECOVERY_RATE := 0.7
-const DIGEST_AUTO_INTERVAL := 0.05
-const REMOVE_FROM_STOMACH_DAMAGE_RATE := 0.05
-const START_MESSAGE := "６時までにすべての悪夢を消化しましょう"
+const START_HOUR: int = 22
+const END_HOUR: int = 30
+const REST_MINUTES: int = 30
+const MAX_HP: int = 100
+const REST_HP_RATE: float = 0.1
+const TIME_OVER_HP_RECOVERY_RATE: float = 0.7
+const DIGEST_AUTO_INTERVAL: float = 0.05
+const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
+const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 @export var enemy_definitions: Array[Resource] = []
 @export var nightmare_skill_catalog: NightmareSkillCatalog
 @onready var ui: BattleUI = $UI
@@ -70,6 +70,7 @@ func start_battle(context: BattleStartContext = null) -> void:
 		REST_HP_RATE,
 		digest_controller.get_rest_recovery_bonus_rate()
 	)
+	ui.set_dream_seed_skill_sources(battle_context.flowers)
 	stomach.hide_preview()
 	battle_active = true
 	input_controller.set_active(true)
