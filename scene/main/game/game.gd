@@ -49,7 +49,7 @@ func start_battle(starting_hp: int = MAX_HP, _day: int = 1, flowers: Array = [])
 	debug_numbers_visible = false
 	_set_battle_flags(false)
 	digest_controller.setup(flowers)
-	passive_flower.setup_flowers(flowers)
+	passive_flower.setup_flowers([])
 	dragging_enemy = null
 	hovered_enemy = null
 	enemy_setup.setup_enemies(enemies)
