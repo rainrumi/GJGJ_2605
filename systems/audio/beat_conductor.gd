@@ -7,7 +7,7 @@ signal scheduled_event_executed(event_id: int, song_time: float)
 signal playback_started()
 signal playback_stopped()
 
-@export var bpm: float = 120.0
+@export var bpm: float = 108.0
 @export var beat_offset: float = 0.0
 @export var subdivisions: int = 4
 @export var auto_play: bool = true
@@ -112,19 +112,19 @@ func get_current_subdivision_index() -> int:
 
 func get_next_beat_time() -> float:
 	var song_time := maxf(get_song_time(), 0.0)
-	return ceilf(song_time / _beat_interval) * _beat_interval
+	return _get_next_interval_time(song_time, _beat_interval)
 
 
 func get_next_subdivision_time() -> float:
 	var song_time := maxf(get_song_time(), 0.0)
-	return ceilf(song_time / _subdivision_interval) * _subdivision_interval
+	return _get_next_interval_time(song_time, _subdivision_interval)
 
 
 func get_next_grid_time(subdivision_count: int) -> float:
 	var safe_subdivision_count := maxi(subdivision_count, 1)
 	var interval := _beat_interval / float(safe_subdivision_count)
 	var song_time := maxf(get_song_time(), 0.0)
-	return ceilf(song_time / interval) * interval
+	return _get_next_interval_time(song_time, interval)
 
 
 func schedule_at_song_time(song_time: float, callback: Callable) -> int:
@@ -216,3 +216,10 @@ func _get_signal_event_id(signal_args: Variant) -> int:
 	if signal_args is Array and not signal_args.is_empty():
 		return int(signal_args[0])
 	return int(signal_args)
+
+
+func _get_next_interval_time(song_time: float, interval: float) -> float:
+	if interval <= 0.0:
+		return song_time
+	var interval_index := floori(song_time / interval) + 1
+	return float(interval_index) * interval
