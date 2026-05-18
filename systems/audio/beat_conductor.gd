@@ -145,6 +145,15 @@ func schedule_on_next_beat(callback: Callable) -> int:
 	return schedule_at_song_time(get_next_beat_time(), callback)
 
 
+func wait_until_next_beat() -> void:
+	var event_id := schedule_on_next_beat(Callable())
+	while true:
+		var signal_args = await scheduled_event_executed
+		var executed_event_id := _get_signal_event_id(signal_args)
+		if executed_event_id == event_id:
+			return
+
+
 func schedule_on_next_subdivision(callback: Callable) -> int:
 	return schedule_at_song_time(get_next_subdivision_time(), callback)
 
@@ -201,3 +210,9 @@ func _process_scheduled_events(song_time: float) -> void:
 	_scheduled_events = _scheduled_events.filter(func(event: Dictionary) -> bool:
 		return not executed_ids.has(int(event["id"]))
 	)
+
+
+func _get_signal_event_id(signal_args: Variant) -> int:
+	if signal_args is Array and not signal_args.is_empty():
+		return int(signal_args[0])
+	return int(signal_args)

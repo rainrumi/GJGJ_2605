@@ -102,8 +102,6 @@ func digest_nightmares(
 	for enemy in enemies:
 		_digest_enemy(enemy, enemies, stomach, digest_damage_per_cell, shared_damage, damage_display_values, received_digest_damage)
 	_apply_shared_damage(shared_damage, enemies, stomach, damage_display_values, received_digest_damage)
-	if not damage_display_values.is_empty():
-		await _wait_for_next_beat()
 	_apply_enemy_damage_values(damage_display_values, digested_enemies)
 	return _resolve_digested_enemy_effects(enemies, digested_enemies, received_digest_damage, turn_start_hp, enemy_setup)
 
@@ -162,6 +160,10 @@ func get_seed_skill_id_text() -> String:
 
 func apply_direct_player_damage(amount: int) -> int:
 	return seed_effects.apply_player_damage(amount, DIGEST_DAMAGE)
+
+
+func wait_for_next_beat() -> void:
+	await _wait_for_next_beat()
 
 
 func consume_pending_player_damage_values() -> Array[int]:
@@ -354,12 +356,7 @@ func _wait_for_next_beat() -> void:
 		return
 	if _beat_conductor.audio_player == null or not _beat_conductor.audio_player.playing:
 		return
-	var event_reached := false
-	_beat_conductor.schedule_on_next_beat(func() -> void:
-		event_reached = true
-	)
-	while not event_reached:
-		await _beat_conductor.scheduled_event_executed
+	await _beat_conductor.wait_until_next_beat()
 
 
 func _get_turn_start_hp(enemies: Array[Enemy]) -> Dictionary:

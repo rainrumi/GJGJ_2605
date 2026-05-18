@@ -241,21 +241,23 @@ func _advance_digest_turn() -> void:
 		return
 	digest_controller.apply_turn_start_effects(enemies)
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
-	var digested_enemies: Array[Enemy] = await digest_controller.digest_nightmares(enemies, stomach, minutes, enemy_setup)
+	await digest_controller.wait_for_next_beat()
+	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, minutes, enemy_setup)
 	var player_damage_values := digest_controller.apply_digest_damage_values(enemies, stomach)
 	if not player_damage_values.is_empty():
 		ui.show_hp_damage_values(player_damage_values)
 		hp = maxi(0, hp - _sum_damage_values(player_damage_values))
+	_apply_elapsed_time(elapsed_minutes)
 	if not digested_enemies.is_empty():
 		await get_tree().create_timer(Enemy.DIGESTED_TWEEN_DURATION).timeout
 		digest_controller.unlock_deferred_nuisance_gravity(enemies)
 		stomach.apply_gravity(enemies)
-	_finish_digest_turn(elapsed_minutes)
+	_finish_digest_turn()
 func _finish_empty_digest_turn() -> void:
 	auto_digest_enabled = false
 	_set_status_message("消化中の悪夢がありません")
 	digest_turn_in_progress = false
-func _finish_digest_turn(elapsed_minutes: int) -> void:
+func _apply_elapsed_time(elapsed_minutes: int) -> void:
 	minutes += elapsed_minutes
 	if hp <= 0:
 		hp = digest_controller.get_rest_hp(MAX_HP, REST_HP_RATE)
@@ -265,6 +267,9 @@ func _finish_digest_turn(elapsed_minutes: int) -> void:
 	else:
 		_set_status_message("")
 	ui.show_time_elapsed(elapsed_minutes)
+
+
+func _finish_digest_turn() -> void:
 	_check_battle_end()
 	_update_auto_digest_timer()
 	digest_controller.activate_deferred_nuisance_enemies(enemies)
