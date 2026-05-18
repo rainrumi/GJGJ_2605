@@ -27,6 +27,7 @@ var debug_numbers_visible := false
 var digestion_timer: Timer
 var enemy_setup := GameEnemySetupController.new()
 var digest_controller := NightmareDigestController.new()
+var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
 var drag_offset := Vector2.ZERO
 var drag_grab_cell := Vector2i.ZERO
@@ -38,16 +39,21 @@ var last_time_over_recovery_percent := 0
 func _ready() -> void:
 	randomize()
 	enemy_setup.setup(self, input_controller, stomach, enemy_definitions, nightmare_skill_catalog)
+	digest_controller.set_beat_conductor(beat_conductor)
 	_connect_ui()
 	_connect_input()
 	_create_digestion_timer()
 	ui.hide_nightmare_tooltip()
+func set_beat_conductor(conductor: BeatConductor) -> void:
+	beat_conductor = conductor
+	digest_controller.set_beat_conductor(beat_conductor)
 func start_battle(starting_hp: int = MAX_HP, _day: int = 1, flowers: Array = []) -> void:
 	minutes = START_HOUR * 60
 	hp = clampi(starting_hp, 0, MAX_HP)
 	last_time_over_recovery_percent = 0
 	debug_numbers_visible = false
 	_set_battle_flags(false)
+	digest_controller.clear_scheduled_events()
 	digest_controller.setup(flowers)
 	passive_flower.setup_flowers([])
 	dragging_enemy = null
@@ -178,10 +184,20 @@ func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> vo
 	ui.hide_hp_damage_preview()
 	_set_hovered_enemy(null)
 	stomach.set_grid_size(stomach.columns + delta_columns, stomach.rows + delta_rows)
-	digest_controller.reset_digest_order()
-	enemy_setup.setup_enemies(enemies)
-	input_controller.setup(enemies)
+	_refresh_enemy_stomach_display_sizes()
 	_refresh_ui()
+
+
+func _refresh_enemy_stomach_display_sizes() -> void:
+	for enemy in enemies:
+		if enemy.definition == null or enemy.digested:
+			continue
+		enemy.update_stomach_display_size(Vector2(
+			stomach.get_span_size(enemy.get_stomach_size().x),
+			stomach.get_span_size(enemy.get_stomach_size().y)
+		))
+		if enemy.is_active_in_stomach():
+			stomach.place_enemy(enemy, enemy.stomach_cell)
 func _try_start_digesting(enemy: Enemy, mouse_position: Vector2) -> void:
 	var next_fullness := stomach.get_current_fullness(enemies)
 	if not dragged_enemy_was_digesting:
@@ -225,7 +241,7 @@ func _advance_digest_turn() -> void:
 		return
 	digest_controller.apply_turn_start_effects(enemies)
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
-	var digested_enemies := digest_controller.digest_nightmares(enemies, stomach, minutes, enemy_setup)
+	var digested_enemies: Array[Enemy] = await digest_controller.digest_nightmares(enemies, stomach, minutes, enemy_setup)
 	var player_damage_values := digest_controller.apply_digest_damage_values(enemies, stomach)
 	if not player_damage_values.is_empty():
 		ui.show_hp_damage_values(player_damage_values)
@@ -264,6 +280,7 @@ func _finish_battle(won: bool, message: String) -> void:
 	battle_active = false
 	input_controller.set_active(false)
 	auto_digest_enabled = false
+	digest_controller.clear_scheduled_events()
 	_update_auto_digest_timer()
 	_set_status_message(message)
 	battle_finished.emit(won)

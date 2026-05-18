@@ -4,6 +4,8 @@ const HOVER_SCALE := 1.1
 const HOVER_TWEEN_DURATION := 0.1
 const COST_PULSE_SCALE := 1.1
 const COST_PULSE_DURATION := 0.2
+const DAMAGE_PULSE_SCALE := 1.12
+const DAMAGE_PULSE_DURATION := 0.18
 const DIGESTED_SCALE := 1.2
 const DIGESTED_TWEEN_DURATION := 0.5
 const DEFAULT_STATUS_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
@@ -32,6 +34,7 @@ var origin_position := Vector2.ZERO
 var _base_scale := Vector2.ONE
 var _hover_tween: Tween
 var _cost_pulse_tween: Tween
+var _damage_pulse_tween: Tween
 var _digested_tween: Tween
 var _hovered := false
 var _stomach_size_override := Vector2i.ZERO
@@ -139,6 +142,11 @@ func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
 	set_texture_override(ONE_CELL_STOMACH_TEXTURE, target_size)
 	gravity_locked = true
 	activation_deferred = true
+func update_stomach_display_size(target_size: Vector2) -> void:
+	if sprite == null or sprite.texture == null:
+		return
+	sprite.scale = target_size / sprite.texture.get_size()
+	_base_scale = sprite.scale
 func can_apply_gravity() -> bool:
 	return not gravity_locked
 func clear_gravity_lock() -> void:
@@ -175,6 +183,16 @@ func pulse_cost_label() -> void:
 	_cost_pulse_tween.set_ease(Tween.EASE_OUT)
 	_cost_pulse_tween.tween_property(hp_label, "scale", Vector2.ONE * COST_PULSE_SCALE, COST_PULSE_DURATION * 0.5)
 	_cost_pulse_tween.tween_property(hp_label, "scale", Vector2.ONE, COST_PULSE_DURATION * 0.5)
+func pulse_damage() -> void:
+	if sprite == null:
+		return
+	if _damage_pulse_tween != null and _damage_pulse_tween.is_valid():
+		_damage_pulse_tween.kill()
+	_damage_pulse_tween = create_tween()
+	_damage_pulse_tween.set_trans(Tween.TRANS_QUAD)
+	_damage_pulse_tween.set_ease(Tween.EASE_OUT)
+	_damage_pulse_tween.tween_property(sprite, "scale", _base_scale * DAMAGE_PULSE_SCALE, DAMAGE_PULSE_DURATION * 0.5)
+	_damage_pulse_tween.tween_property(sprite, "scale", _base_scale, DAMAGE_PULSE_DURATION * 0.5)
 func take_digest_damage(amount: int, show_popup := true) -> bool:
 	if show_popup:
 		EnemyDamagePopup.show_damage(self, hp_label, amount, MAIN_EFFECT_STATUS_COLOR)
@@ -240,6 +258,8 @@ func _reset_visuals() -> void:
 		_hover_tween.kill()
 	if _cost_pulse_tween != null and _cost_pulse_tween.is_valid():
 		_cost_pulse_tween.kill()
+	if _damage_pulse_tween != null and _damage_pulse_tween.is_valid():
+		_damage_pulse_tween.kill()
 	if _digested_tween != null and _digested_tween.is_valid():
 		_digested_tween.kill()
 	_hovered = false

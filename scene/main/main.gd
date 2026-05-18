@@ -17,7 +17,7 @@ enum NovelFlow {
 @onready var game: Node = $Game
 @onready var game_ui: CanvasLayer = $Game/UI
 @onready var stage_clear: Node = $StageClear
-@onready var bgm: AudioStreamPlayer = $BGM
+@onready var bgm: BeatConductor = $BGM
 
 var current_day := 1
 var selected_stage_id := 0
@@ -26,6 +26,8 @@ var active_novel_flow := NovelFlow.NONE
 
 
 func _ready() -> void:
+	if game.has_method("set_beat_conductor"):
+		game.set_beat_conductor(bgm)
 	_play_bgm()
 	show_title()
 
@@ -175,8 +177,8 @@ func _get_planted_flowers() -> Array[FlowerDefinition]:
 
 
 func _play_bgm() -> void:
-	if bgm.stream is AudioStreamMP3:
-		var mp3_stream := bgm.stream as AudioStreamMP3
+	if bgm.bgm_stream is AudioStreamMP3:
+		var mp3_stream := bgm.bgm_stream as AudioStreamMP3
 		mp3_stream.loop = true
-	if not bgm.playing:
+	if bgm.audio_player != null and not bgm.audio_player.playing:
 		bgm.play()

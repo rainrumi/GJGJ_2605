@@ -16,6 +16,7 @@ var digest_order := 0
 var _pending_player_damage_values: Array[int] = []
 var _skill_7_base_hp: Dictionary = {}
 var _skill_7_hp_rate: Dictionary = {}
+var _beat_conductor: BeatConductor
 
 
 func setup(flowers: Array) -> void:
@@ -24,6 +25,15 @@ func setup(flowers: Array) -> void:
 	_skill_7_base_hp.clear()
 	_skill_7_hp_rate.clear()
 	seed_effects.setup(flowers)
+
+
+func set_beat_conductor(beat_conductor: BeatConductor) -> void:
+	_beat_conductor = beat_conductor
+
+
+func clear_scheduled_events() -> void:
+	if _beat_conductor != null and is_instance_valid(_beat_conductor):
+		_beat_conductor.clear_scheduled_events()
 
 
 func reset_digest_order() -> void:
@@ -90,9 +100,11 @@ func digest_nightmares(
 	var turn_start_hp := _get_turn_start_hp(enemies)
 	var digest_damage_per_cell := int(get_digest_damage_breakdown(enemies, minutes, true)["total"])
 	for enemy in enemies:
-		_digest_enemy(enemy, enemies, stomach, digest_damage_per_cell, shared_damage, damage_display_values, received_digest_damage, digested_enemies)
-	_apply_shared_damage(shared_damage, enemies, stomach, damage_display_values, received_digest_damage, digested_enemies)
-	_show_enemy_damage_values(damage_display_values)
+		_digest_enemy(enemy, enemies, stomach, digest_damage_per_cell, shared_damage, damage_display_values, received_digest_damage)
+	_apply_shared_damage(shared_damage, enemies, stomach, damage_display_values, received_digest_damage)
+	if not damage_display_values.is_empty():
+		await _wait_for_next_beat()
+	_apply_enemy_damage_values(damage_display_values, digested_enemies)
 	return _resolve_digested_enemy_effects(enemies, digested_enemies, received_digest_damage, turn_start_hp, enemy_setup)
 
 
@@ -166,8 +178,7 @@ func _digest_enemy(
 	digest_damage_per_cell: int,
 	shared_damage: Dictionary,
 	damage_display_values: Dictionary,
-	received_digest_damage: Dictionary,
-	digested_enemies: Array[Enemy]
+	received_digest_damage: Dictionary
 ) -> void:
 	if not enemy.can_take_stomach_turn():
 		return
@@ -178,9 +189,6 @@ func _digest_enemy(
 	received_digest_damage[enemy] = received_digest_damage.get(enemy, 0) + damage
 	_append_damage_value(damage_display_values, enemy, damage)
 	_apply_digest_damage_share(enemy, enemies, damage, shared_damage)
-	if enemy.take_digest_damage(damage, false):
-		digested_enemies.append(enemy)
-	enemy.pulse_cost_label()
 
 
 func _apply_shared_damage(
@@ -188,8 +196,7 @@ func _apply_shared_damage(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
 	damage_display_values: Dictionary,
-	received_digest_damage: Dictionary,
-	digested_enemies: Array[Enemy]
+	received_digest_damage: Dictionary
 ) -> void:
 	for target in shared_damage.keys():
 		var target_enemy := target as Enemy
@@ -200,8 +207,6 @@ func _apply_shared_damage(
 		total_damage = _get_final_digest_damage(target_enemy, enemies, stomach, total_damage)
 		received_digest_damage[target_enemy] = received_digest_damage.get(target_enemy, 0) + total_damage
 		_append_damage_value(damage_display_values, target_enemy, total_damage)
-		if target_enemy.take_digest_damage(total_damage, false) and not digested_enemies.has(target_enemy):
-			digested_enemies.append(target_enemy)
 
 
 func _resolve_digested_enemy_effects(
@@ -331,13 +336,30 @@ func _apply_outside_stomach_hp_variation(enemy: Enemy) -> void:
 	enemy.set_hp_values(next_max_hp, maxi(1, enemy.current_hp + hp_delta))
 
 
-func _show_enemy_damage_values(damage_display_values: Dictionary) -> void:
+func _apply_enemy_damage_values(damage_display_values: Dictionary, digested_enemies: Array[Enemy]) -> void:
 	for target in damage_display_values.keys():
 		var enemy := target as Enemy
-		if enemy == null:
+		if enemy == null or enemy.digested:
 			continue
 		var damage_values: Array = damage_display_values[target]
+		var total_damage := _sum_damage_values(damage_values)
 		enemy.show_digest_damage_values(damage_values)
+		if enemy.take_digest_damage(total_damage, false) and not digested_enemies.has(enemy):
+			digested_enemies.append(enemy)
+		enemy.pulse_damage()
+
+
+func _wait_for_next_beat() -> void:
+	if _beat_conductor == null or not is_instance_valid(_beat_conductor):
+		return
+	if _beat_conductor.audio_player == null or not _beat_conductor.audio_player.playing:
+		return
+	var event_reached := false
+	_beat_conductor.schedule_on_next_beat(func() -> void:
+		event_reached = true
+	)
+	while not event_reached:
+		await _beat_conductor.scheduled_event_executed
 
 
 func _get_turn_start_hp(enemies: Array[Enemy]) -> Dictionary:
