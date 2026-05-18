@@ -5,10 +5,10 @@
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="3_font"]
 
 [node name="Enemy" type="Node2D" unique_id=1729494960]
+z_index = 10
 script = ExtResource("2_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=713877918]
-modulate = Color(1, 1, 1, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 texture = ExtResource("1_enemy")
 
