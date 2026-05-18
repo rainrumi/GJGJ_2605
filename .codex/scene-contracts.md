@@ -1,110 +1,119 @@
-- 以下のメモは書き方例のため読まなくて良い
-```
 # シーン・ノード・信号の契約
 
-## `main.tscn` / `main.gd`
+## 基本契約
 
-想定されるエクスポート変数・スクリプト内参照:
+- 親は子を直接参照してよい。
+- 子は親や兄弟を直接参照しない。必要な通知は signal で上げる。
+- 上位シーンは UI の内部ノード名を知らないようにする。
+- ノード名を変更した場合は、対応する `$NodePath` と `.tscn` の signal 接続を必ず更新する。
+- 既存の signal 名、入力アクション名、エクスポート変数は、明示指示がない限り変更しない。
+
+## `Main`
+
+責務:
+
+- 画面遷移の調停。
+- タイトル、ノベル、日付表示、ステージ選択、戦闘、クリア画面の表示切り替え。
+- 長期的には `RunState` を保持し、各画面へ渡す。
+
+避けること:
+
+- HP、花、ステージ、日数などのゲーム進行状態を直接増やし続ける。
+- 各画面の内部ノードを直接操作する。
+- `has_method()` による曖昧な契約を増やす。
+
+## `StageSelect`
+
+責務:
+
+- ステージ候補を表示する。
+- 選択されたステージを signal で通知する。
+- ランダム3択などの候補抽選を担う場合、選ばれた定義または ID を明確に保持する。
+
+推奨 signal:
 
 ```gdscript
-@export var mob_scene: PackedScene
-@onready var score_timer: Timer = $ScoreTimer
-@onready var mob_timer: Timer = $MobTimer
-@onready var start_timer: Timer = $StartTimer
-@onready var player: Area2D = $Player
-@onready var start_position: Marker2D = $StartPosition
-@onready var mob_path: Path2D = $MobPath
-@onready var hud: CanvasLayer = $HUD
-@onready var music: AudioStreamPlayer = $Music
-@onready var death_sound: AudioStreamPlayer = $DeathSound
+signal stage_selected(stage_id: int)
 ```
 
-必要な子ノード:
+長期的には以下を検討する。
 
-- `ColorRect`
-- `Player`
-- `MobTimer`
-- `ScoreTimer`
-- `StartTimer`
-- `StartPosition`
-- `MobPath/MobSpawnLocation`
-- `HUD`
-- `Music`
-- `DeathSound`
-
-現在の信号接続:
-
-- `Player.hit -> Main.game_over`
-- `MobTimer.timeout -> Main._on_mob_timer_timeout`
-- `ScoreTimer.timeout -> Main._on_score_timer_timeout`
-- `StartTimer.timeout -> Main._on_start_timer_timeout`
-- `HUD.start_game -> Main.new_game`
-
-## `player.tscn` / `player.gd`
-
-ルート型: `Area2D`。
-
-必要な子ノード:
-
-- `AnimatedSprite2D`
-- `CollisionShape2D`
-
-現在の信号接続:
-
-- `Player.body_entered -> Player._on_body_entered`
-
-契約:
-
-- ボディと衝突したら `hit` を発行する。
-- `start(pos: Vector2)` はプレイヤーを表示し、位置を設定し、コリジョンを再有効化する。
-- 移動範囲は現在のビューポートサイズ内に制限する。
-- 現在使われているアニメーション名は `walk` と `up`。
-
-## `mob.tscn` / `mob.gd`
-
-ルート型: `RigidBody2D`。
-
-必要な子ノード:
-
-- `AnimatedSprite2D`
-- `CollisionShape2D`
-- `VisibleOnScreenNotifier2D`
-
-現在の信号接続:
-
-- `VisibleOnScreenNotifier2D.screen_exited -> Mob._on_visible_on_screen_notifier_2d_screen_exited`
-
-契約:
-
-- `gravity_scale = 0.0` により重力を無効化している。
-- コリジョンマスクは現在 `0`。
-- 既存の `SpriteFrames` にあるアニメーション名からランダムに選ぶ。
-- Mobは画面外へ出たあと、自身を解放する。
-
-既知の注意点:
-
-- `main.gd` は `get_tree().call_group("mobs", "queue_free")` を呼ぶが、現在の `mob.tscn` には `mobs` グループ定義が見当たらない。再スタート時の掃除挙動を修正する場合は、`mob.tscn` 側で `mobs` グループに入れるか、インスタンス化後に `mob.add_to_group("mobs")` を呼ぶこと。意図された再スタート挙動を理解しないまま、掃除呼び出しを削除しない。
-
-## `hud.tscn` / `hud.gd`
-
-ルート型: `CanvasLayer`。
-
-必要な子ノード:
-
-- `ScoreLabel`
-- `Message`
-- `MessageTimer`
-- `StartButton`
-
-現在の信号接続:
-
-- `StartButton.pressed -> HUD._on_start_button_pressed`
-- `MessageTimer.timeout -> HUD._on_message_timer_timeout`
-
-契約:
-
-- スタートボタンが押されたら `start_game` を発行する。
-- `show_message(text)` はメッセージを表示し、`MessageTimer` を開始する。
-- `show_game_over()` は `Game Over` を表示し、メッセージタイマーを待ち、タイトルテキストを戻し、1秒後にスタートボタンを表示する。
-- `update_score(score)` はスコアをプレーンテキストとして表示する。
+```gdscript
+signal stage_selected(stage: StageDefinition)
 ```
+
+## `Game`
+
+責務:
+
+- 戦闘進行の司令塔。
+- 入力、敵、胃袋、消化処理、UI、音を調停する。
+- 戦闘結果を signal で通知する。
+
+避けること:
+
+- UI 内部ノードを直接触る。
+- 敵生成、消化計算、夢の種効果、配置判定をすべて自前で抱える。
+- `StageSelect` の結果を使わずに戦闘を開始する。
+- `PassiveFlowerSpawner` を戦闘画面に復活させる。
+
+## `StageClear`
+
+責務:
+
+- 戦闘後の HP 表示。
+- 夢の種選択。
+- 植えた花の更新。
+- 選択完了を signal で通知する。
+
+長期的には `RunState` の HP と花状態を更新する。
+
+## `BattleUI`
+
+責務:
+
+- 戦闘 UI の表示窓口。
+- HP、時刻、消化ダメージ、消化間隔、ツールチップ、デバッグ UI を表示する。
+- ユーザー操作を signal で `Game` に通知する。
+
+避けること:
+
+- 戦闘状態そのものを更新する。
+- `Game` の状態を直接変更する。
+- Tooltip の相互排他処理を無制限に肥大化させる。
+
+## `GameInputController`
+
+責務:
+
+- 入力を抽象イベントに変換する。
+- ドラッグ開始、移動、リリース、ホバー要求を signal で通知する。
+
+避けること:
+
+- 配置可否や HP ダメージを決定する。
+- 戦闘状態を直接更新する。
+
+## `NightmareDigestController`
+
+責務:
+
+- 悪夢の消化処理。
+- 消化ダメージ、被ダメージ、夢の種補正、悪夢スキル補正の計算。
+
+長期的に避けること:
+
+- scene tree への `add_child()` に繋がる生成処理へ直接依存する。
+- UI や音楽同期に直接依存する。
+- `skill_id` の数値直書きを増やす。
+
+## `BeatConductor`
+
+責務:
+
+- 音楽再生位置から beat / subdivision を通知する。
+- 音楽同期演出やタイミング制御の基盤になる。
+
+避けること:
+
+- 消化計算やスキル計算そのものへ侵入する。
