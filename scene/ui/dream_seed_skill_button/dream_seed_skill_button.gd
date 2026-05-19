@@ -2,7 +2,6 @@ class_name DreamSeedSkillButton
 extends Button
 
 const RARITY_NORMAL: StringName = &"normal"
-const SEED_DESCRIPTION := "悪夢を消化したら生まれた種。ドラッグですると食べられるものもあるらしい"
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
 const TOOLTIP_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_seed_skill_tooltip.tscn")
 
@@ -71,12 +70,11 @@ func _refresh_tooltip() -> void:
 func _get_tooltip_text() -> String:
 	var lines: Array[String] = [
 		_get_title_text(),
-		"使用可能数: %d" % seed_skill.stock_count,
 		"メインスキル: %s" % _get_or_empty(seed_skill.main_description),
 	]
 	if _is_rare_seed():
 		lines.append("サブスキル: %s" % _get_or_empty(seed_skill.sub_description))
-	lines.append("説明: %s" % SEED_DESCRIPTION)
+	lines.append("使用可能数: %d" % seed_skill.stock_count)
 	return "\n".join(lines)
 
 
