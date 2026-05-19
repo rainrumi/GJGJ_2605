@@ -138,7 +138,7 @@ func _get_frame_texture(seed: SeedOptionDefinition) -> Texture2D:
 func _is_special_dream_seed(seed: SeedOptionDefinition) -> bool:
 	if seed.dream_seed_skill == null:
 		return false
-	return seed.dream_seed_skill.rarity != RARITY_NORMAL
+	return seed.dream_seed_skill.group != DreamSeedSkillDefinition.GROUP_NORMAL
 
 
 func _get_or_empty(text: String) -> String:

@@ -5,9 +5,9 @@
 
 [resource]
 script = ExtResource("1_script")
-skill_id = 1
+skill_id = 5
 category = "花びら配置系統"
-rarity = &"special"
+group = &"rare"
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
 stock_count = 4

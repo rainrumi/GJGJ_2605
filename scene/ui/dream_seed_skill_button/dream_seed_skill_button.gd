@@ -108,7 +108,7 @@ func _get_title_text() -> String:
 
 
 func _is_rare_seed() -> bool:
-	return seed_skill != null and seed_skill.rarity != RARITY_NORMAL
+	return seed_skill != null and seed_skill.group != DreamSeedSkillDefinition.GROUP_NORMAL
 
 
 func _get_or_empty(text: String) -> String:

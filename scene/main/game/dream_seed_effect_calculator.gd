@@ -13,7 +13,7 @@ const DREAM_SEED_DIGEST_DAMAGE_UP := 1
 const DREAM_SEED_CLEAR_RECOVERY_UP := 2
 const DREAM_SEED_TIME_REDUCTION := 3
 const DREAM_SEED_REST_RECOVERY := 4
-const DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE := 4
+const DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE := 8
 
 var next_digest_damage_bonus_rate := 0.0
 var _planted_flowers: Array[FlowerDefinition] = []
