@@ -395,7 +395,7 @@ func _refresh_ui() -> void:
 func _refresh_after_battle_event() -> void:
 	_refresh_ui()
 func _get_tooltip_debug_number_text(enemy: Enemy) -> String:
-	return "悪夢:%s\n種:%s" % [_get_enemy_skill_id_text(enemy), digest_controller.get_seed_skill_id_text()]
+	return "悪夢:%s" % _get_enemy_skill_id_text(enemy)
 func _get_enemy_skill_id_text(enemy: Enemy) -> String:
 	if enemy.skill_definition == null:
 		return "-"

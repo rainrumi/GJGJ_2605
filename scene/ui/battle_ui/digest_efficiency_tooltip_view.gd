@@ -22,7 +22,7 @@ func set_efficiency_info(
 			"value": _format_minutes(amount_minutes),
 		},
 		{
-			"explanation": "基本の消化間隔",
+			"explanation": "基礎消化間隔",
 			"value": _format_minutes(base_minutes),
 		},
 		{
