@@ -91,7 +91,12 @@ func _create_tooltip_panel() -> void:
 func _on_mouse_entered() -> void:
 	if seed_skill == null or tooltip_panel == null:
 		return
-	tooltip_panel.global_position = global_position + TOOLTIP_OFFSET
+	tooltip_panel.global_position = TooltipPositioner.get_tooltip_position(
+		global_position,
+		tooltip_panel.size,
+		get_viewport().get_visible_rect(),
+		TOOLTIP_OFFSET
+	)
 	tooltip_panel.visible = true
 
 

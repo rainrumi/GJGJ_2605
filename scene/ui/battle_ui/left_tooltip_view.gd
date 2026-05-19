@@ -5,23 +5,36 @@ extends Panel
 @export_multiline var note_text := ""
 @export var note_visible := false
 
-const ENABLED_EXPLANATION_COLOR := Color.WHITE
-const ENABLED_VALUE_COLOR := Color(0.94, 0.88, 1.0, 1.0)
-const DISABLED_EXPLANATION_COLOR := Color(0.55, 0.55, 0.62, 1.0)
-const DISABLED_VALUE_COLOR := Color(0.45, 0.43, 0.5, 1.0)
+const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
+const TOOLTIP_WIDTH := 220.0
+const TOOLTIP_PADDING := 8.0
+const MIN_TOOLTIP_HEIGHT := 24.0
 
-@onready var title_label: Label = $Content/TitleLabel
-@onready var entry_container: VBoxContainer = $Content/EntryContainer
-@onready var note_slice: Label = $Content/NoteSlice
-@onready var note_label: Label = $Content/NoteLabel
+@onready var tooltip_label: Label = $TooltipLabel
+
+var _entries: Array = []
+var _note_text := ""
+var _note_visible := false
 
 
 func _ready() -> void:
-	set_title(tooltip_title)
-	set_note(note_text, note_visible)
+	_note_text = note_text
+	_note_visible = note_visible
+	_apply_text()
 
 
 func show_tooltip() -> void:
+	visible = true
+
+
+func show_tooltip_at(anchor_global_position: Vector2) -> void:
+	_apply_text()
+	global_position = TooltipPositioner.get_tooltip_position(
+		anchor_global_position,
+		size,
+		get_viewport().get_visible_rect(),
+		TOOLTIP_OFFSET
+	)
 	visible = true
 
 
@@ -30,57 +43,51 @@ func hide_tooltip() -> void:
 
 
 func set_title(text: String) -> void:
-	title_label.text = text
+	tooltip_title = text
+	_apply_text()
 
 
 func set_entries(entries: Array) -> void:
-	for child in entry_container.get_children():
-		child.free()
-	for entry in entries:
-		var explanation := ""
-		var value := ""
-		var enabled := true
-		if entry is Dictionary:
-			explanation = str(entry.get("explanation", ""))
-			value = str(entry.get("value", ""))
-			enabled = bool(entry.get("enabled", true))
-		_add_entry_block(explanation, value, enabled)
+	_entries = entries.duplicate()
+	_apply_text()
 
 
 func set_note(text: String, is_visible: bool) -> void:
 	if not text.is_empty():
-		note_label.text = text
-	note_label.visible = is_visible
-	note_slice.visible = is_visible
+		_note_text = text
+	_note_visible = is_visible
+	_apply_text()
 
 
-func _add_entry_block(explanation: String, value: String, enabled: bool) -> void:
-	var block := VBoxContainer.new()
-	block.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	block.add_theme_constant_override("separation", 3)
-	entry_container.add_child(block)
-	block.add_child(_create_entry_label(explanation, 13, _get_explanation_color(enabled)))
-	block.add_child(_create_entry_label(value, 10, _get_value_color(enabled)))
+func _apply_text() -> void:
+	if not is_node_ready():
+		return
+	var label_width := TOOLTIP_WIDTH - TOOLTIP_PADDING * 2.0
+	tooltip_label.text = _get_tooltip_text()
+	tooltip_label.position = Vector2(TOOLTIP_PADDING, TOOLTIP_PADDING)
+	tooltip_label.size = Vector2(label_width, 0.0)
+	var label_height := tooltip_label.get_combined_minimum_size().y
+	tooltip_label.size = Vector2(label_width, label_height)
+	size = Vector2(TOOLTIP_WIDTH, maxf(MIN_TOOLTIP_HEIGHT, label_height + TOOLTIP_PADDING * 2.0))
 
 
-func _create_entry_label(text: String, font_size: int, font_color: Color) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_color_override("font_color", font_color)
-	label.add_theme_color_override("font_outline_color", Color.BLACK)
-	label.add_theme_constant_override("outline_size", 2)
-	label.add_theme_font_override("font", title_label.get_theme_font("font"))
-	label.add_theme_font_size_override("font_size", font_size)
-	return label
-
-
-func _get_explanation_color(enabled: bool) -> Color:
-	return ENABLED_EXPLANATION_COLOR if enabled else DISABLED_EXPLANATION_COLOR
-
-
-func _get_value_color(enabled: bool) -> Color:
-	return ENABLED_VALUE_COLOR if enabled else DISABLED_VALUE_COLOR
+func _get_tooltip_text() -> String:
+	var lines: Array[String] = []
+	if not tooltip_title.is_empty():
+		lines.append(tooltip_title)
+	for entry in _entries:
+		if not (entry is Dictionary):
+			continue
+		var explanation := str(entry.get("explanation", ""))
+		var value := str(entry.get("value", ""))
+		if explanation.is_empty():
+			lines.append(value)
+		elif value.is_empty():
+			lines.append(explanation)
+		else:
+			lines.append("%s: %s" % [explanation, value])
+	if _note_visible and not _note_text.is_empty():
+		if not lines.is_empty():
+			lines.append("")
+		lines.append(_note_text)
+	return "\n".join(lines)

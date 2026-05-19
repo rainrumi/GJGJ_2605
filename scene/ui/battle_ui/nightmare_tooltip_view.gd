@@ -12,6 +12,16 @@ func show_enemy(enemy: Enemy, debug_number_text: String, debug_numbers_visible: 
 	visible = true
 
 
+func show_enemy_at(
+	enemy: Enemy,
+	debug_number_text: String,
+	debug_numbers_visible: bool,
+	anchor_global_position: Vector2
+) -> void:
+	show_enemy(enemy, debug_number_text, debug_numbers_visible)
+	show_tooltip_at(anchor_global_position)
+
+
 func hide_tooltip() -> void:
 	visible = false
 

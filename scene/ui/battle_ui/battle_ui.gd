@@ -118,7 +118,7 @@ func show_nightmare_tooltip(enemy: Enemy, debug_number_text: String, debug_numbe
 	hide_digest_efficiency_tooltip()
 	hide_time_tooltip()
 	hide_hp_tooltip()
-	nightmare_tooltip.show_enemy(enemy, debug_number_text, debug_numbers_visible)
+	nightmare_tooltip.show_enemy_at(enemy, debug_number_text, debug_numbers_visible, enemy.global_position)
 
 
 func hide_nightmare_tooltip() -> void:
@@ -130,7 +130,7 @@ func show_digest_damage_tooltip() -> void:
 	hide_digest_efficiency_tooltip()
 	hide_time_tooltip()
 	hide_hp_tooltip()
-	digest_tooltip.show_tooltip()
+	digest_tooltip.show_tooltip_at(digest_damage_panel.global_position)
 
 
 func hide_digest_damage_tooltip() -> void:
@@ -142,7 +142,7 @@ func show_digest_efficiency_tooltip() -> void:
 	hide_digest_damage_tooltip()
 	hide_time_tooltip()
 	hide_hp_tooltip()
-	efficiency_tooltip.show_tooltip()
+	efficiency_tooltip.show_tooltip_at(digest_efficiency_panel.global_position)
 
 
 func hide_digest_efficiency_tooltip() -> void:
@@ -154,7 +154,7 @@ func show_time_tooltip() -> void:
 	hide_digest_damage_tooltip()
 	hide_digest_efficiency_tooltip()
 	hide_hp_tooltip()
-	time_tooltip.show_tooltip()
+	time_tooltip.show_tooltip_at(time_status.global_position)
 
 
 func hide_time_tooltip() -> void:
@@ -166,7 +166,7 @@ func show_hp_tooltip() -> void:
 	hide_digest_damage_tooltip()
 	hide_digest_efficiency_tooltip()
 	hide_time_tooltip()
-	hp_tooltip.show_tooltip()
+	hp_tooltip.show_tooltip_at(hp_status.global_position)
 
 
 func hide_hp_tooltip() -> void:
