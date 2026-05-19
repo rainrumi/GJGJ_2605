@@ -6,5 +6,4 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "ひとつめの花"
-rarity = &"normal"
 texture = ExtResource("2_texture")

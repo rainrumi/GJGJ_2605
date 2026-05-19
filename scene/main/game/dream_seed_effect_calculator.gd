@@ -9,11 +9,11 @@ const SKILL_3_MAX_TIME_REDUCTION_RATE := 0.2
 const SKILL_4_REST_RECOVERY_BONUS_RATE := 0.5
 const SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_RATE := 2.0
 const SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_START_HOUR := 28
-const DREAM_SEED_DIGEST_DAMAGE_UP := 1
-const DREAM_SEED_CLEAR_RECOVERY_UP := 2
-const DREAM_SEED_TIME_REDUCTION := 3
-const DREAM_SEED_REST_RECOVERY := 4
-const DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE := 8
+const DREAM_SEED_DIGEST_DAMAGE_UP := 1001
+const DREAM_SEED_CLEAR_RECOVERY_UP := 1002
+const DREAM_SEED_TIME_REDUCTION := 1003
+const DREAM_SEED_REST_RECOVERY := 1004
+const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
 
 var next_digest_damage_bonus_rate := 0.0
 var _planted_flowers: Array[FlowerDefinition] = []
@@ -98,7 +98,7 @@ func _get_digest_damage_rate(minutes: int) -> float:
 	for skill in _get_planted_seed_skills():
 		if _is_dream_flower_skill(skill, DREAM_SEED_DIGEST_DAMAGE_UP):
 			rate += SKILL_1_DIGEST_DAMAGE_RATE
-		if _is_special_time_skill(skill, DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE) and minutes >= SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_START_HOUR * 60:
+		if _is_special_time_skill(skill, DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE) and minutes >= SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_START_HOUR * 60:
 			rate += SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_RATE
 	return rate
 

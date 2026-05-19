@@ -5,9 +5,9 @@
 
 [resource]
 script = ExtResource("1_script")
-skill_id = 3
+skill_id = 1003
 category = "夢の花系統"
-group = &"normal"
+rarity = 0
 display_name = "カプチーノ"
 texture = ExtResource("2_yn8ot")
 stock_count = 1

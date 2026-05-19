@@ -4,7 +4,6 @@ extends Button
 const HOVER_SCALE := 1.1
 const PRESSED_SCALE := 0.95
 const TWEEN_DURATION := 0.1
-const RARITY_NORMAL: StringName = &"normal"
 
 @onready var frame: NinePatchRect = $Frame
 @onready var valuable_icon: NinePatchRect = $ValuableIcon
@@ -37,7 +36,7 @@ func setup_choice(seed: SeedOptionDefinition) -> void:
 	effect_label.text = _get_seed_effect_text(seed)
 	seed_texture_rect.texture = _get_flower_texture(seed)
 	frame.texture = _get_frame_texture(seed)
-	valuable_icon.visible = _is_special_dream_seed(seed)
+	valuable_icon.visible = _is_rare_dream_seed(seed)
 
 
 func set_debug_numbers_visible(is_visible: bool) -> void:
@@ -130,15 +129,15 @@ func _get_flower_texture(seed: SeedOptionDefinition) -> Texture2D:
 
 
 func _get_frame_texture(seed: SeedOptionDefinition) -> Texture2D:
-	if seed.rarity != RARITY_NORMAL:
+	if _is_rare_dream_seed(seed):
 		return _base_frame_texture
 	return seed.frame_texture
 
 
-func _is_special_dream_seed(seed: SeedOptionDefinition) -> bool:
+func _is_rare_dream_seed(seed: SeedOptionDefinition) -> bool:
 	if seed.dream_seed_skill == null:
 		return false
-	return seed.dream_seed_skill.group != DreamSeedSkillDefinition.GROUP_NORMAL
+	return seed.dream_seed_skill.rarity == DreamSeedSkillDefinition.Rarity.RARE
 
 
 func _get_or_empty(text: String) -> String:

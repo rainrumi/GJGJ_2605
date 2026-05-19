@@ -4,9 +4,9 @@ extends Resource
 @export var skills: Array[DreamSeedSkillDefinition] = []
 
 
-func get_skills_by_group(group: StringName) -> Array[DreamSeedSkillDefinition]:
-	var grouped_skills: Array[DreamSeedSkillDefinition] = []
+func get_skills_by_rarity(rarity: int) -> Array[DreamSeedSkillDefinition]:
+	var rarity_skills: Array[DreamSeedSkillDefinition] = []
 	for skill in skills:
-		if skill != null and skill.group == group:
-			grouped_skills.append(skill)
-	return grouped_skills
+		if skill != null and skill.rarity == rarity:
+			rarity_skills.append(skill)
+	return rarity_skills

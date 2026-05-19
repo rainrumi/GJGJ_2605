@@ -4,31 +4,44 @@ extends RefCounted
 const CATEGORY_DREAM_FLOWER := "夢の花系統"
 const CATEGORY_SPECIAL_TIME := "時間系統"
 const SKILL_2_CLEAR_RECOVERY_BONUS_RATE := 0.1
-const DREAM_SEED_CLEAR_RECOVERY_UP := 2
-const DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE := 8
+const DREAM_SEED_CLEAR_RECOVERY_UP := 1002
+const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
 const DREAM_SEED_SPECIAL_EXTRA_CHOICE_START_HOUR := 28
 
 
-static func can_plant_seed(seed: SeedOptionDefinition, planted_flowers: Array[FlowerDefinition], max_normal: int, max_high: int) -> bool:
+static func can_plant_seed(seed: SeedOptionDefinition, planted_flowers: Array[FlowerDefinition], max_normal: int, max_rare: int) -> bool:
 	if seed.flower_definition == null:
 		return false
-	return count_planted_by_rarity(planted_flowers, seed.rarity) < get_max_flowers_by_rarity(seed.rarity, max_normal, max_high)
+	var rarity := get_seed_rarity(seed)
+	return count_planted_by_rarity(planted_flowers, rarity) < get_max_flowers_by_rarity(rarity, max_normal, max_rare)
 
 
-static func count_planted_by_rarity(planted_flowers: Array[FlowerDefinition], rarity: StringName) -> int:
+static func get_seed_rarity(seed: SeedOptionDefinition) -> int:
+	if seed == null or seed.dream_seed_skill == null:
+		return DreamSeedSkillDefinition.Rarity.NORMAL
+	return seed.dream_seed_skill.rarity
+
+
+static func get_flower_rarity(flower: FlowerDefinition) -> int:
+	if flower == null or flower.dream_seed_skill == null:
+		return DreamSeedSkillDefinition.Rarity.NORMAL
+	return flower.dream_seed_skill.rarity
+
+
+static func count_planted_by_rarity(planted_flowers: Array[FlowerDefinition], rarity: int) -> int:
 	var count := 0
 	for flower in planted_flowers:
-		if flower != null and flower.rarity == rarity:
+		if flower != null and get_flower_rarity(flower) == rarity:
 			count += 1
 	return count
 
 
-static func get_max_flowers_by_rarity(rarity: StringName, max_normal: int, max_high: int) -> int:
+static func get_max_flowers_by_rarity(rarity: int, max_normal: int, max_rare: int) -> int:
 	match rarity:
-		&"normal":
+		DreamSeedSkillDefinition.Rarity.NORMAL:
 			return max_normal
-		&"high":
-			return max_high
+		DreamSeedSkillDefinition.Rarity.RARE:
+			return max_rare
 	return 0
 
 
@@ -80,7 +93,7 @@ static func is_clear_time_recovery_disabled(planted_flowers: Array[FlowerDefinit
 		if flower == null or flower.dream_seed_skill == null:
 			continue
 		var skill := flower.dream_seed_skill
-		if skill.skill_id == DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE and skill.category == CATEGORY_SPECIAL_TIME:
+		if skill.skill_id == DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE and skill.category == CATEGORY_SPECIAL_TIME:
 			return true
 	return false
 

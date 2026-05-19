@@ -1,7 +1,6 @@
 class_name DreamSeedSkillButton
 extends Button
 
-const RARITY_NORMAL: StringName = &"normal"
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
 const TOOLTIP_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_seed_skill_tooltip.tscn")
 
@@ -108,7 +107,7 @@ func _get_title_text() -> String:
 
 
 func _is_rare_seed() -> bool:
-	return seed_skill != null and seed_skill.group != DreamSeedSkillDefinition.GROUP_NORMAL
+	return seed_skill != null and seed_skill.rarity == DreamSeedSkillDefinition.Rarity.RARE
 
 
 func _get_or_empty(text: String) -> String:

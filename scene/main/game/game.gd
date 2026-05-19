@@ -9,10 +9,6 @@ const TIME_OVER_HP_RECOVERY_RATE: float = 0.7
 const DIGEST_AUTO_INTERVAL: float = 0.05
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
-const RARITY_NORMAL: StringName = &"normal"
-const RARITY_HIGH: StringName = &"high"
-const DREAM_FLOWER_GROUP_NORMAL: StringName = &"normal"
-const DREAM_FLOWER_GROUP_RARE: StringName = &"rare"
 const DREAM_SEED_SKILL_CATALOG := preload("res://data/resources/dream_seed_skills/dream_seed_skill_catalog.tres")
 @export var enemy_definitions: Array[Resource] = []
 @export var nightmare_skill_catalog: NightmareSkillCatalog
@@ -230,25 +226,23 @@ func _get_random_debug_seed_flower() -> FlowerDefinition:
 
 func _get_debug_seed_flower_candidates() -> Array[FlowerDefinition]:
 	var candidates: Array[FlowerDefinition] = []
-	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG, DREAM_FLOWER_GROUP_NORMAL, RARITY_NORMAL)
-	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG, DREAM_FLOWER_GROUP_RARE, RARITY_HIGH)
+	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG, DreamSeedSkillDefinition.Rarity.NORMAL)
+	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG, DreamSeedSkillDefinition.Rarity.RARE)
 	return candidates
 
 
 func _append_debug_seed_flower_candidates(
 	candidates: Array[FlowerDefinition],
 	catalog: DreamSeedSkillCatalog,
-	group: StringName,
-	rarity: StringName
+	rarity: int
 ) -> void:
 	if catalog == null:
 		return
-	for skill in catalog.get_skills_by_group(group):
+	for skill in catalog.get_skills_by_rarity(rarity):
 		if skill == null:
 			continue
 		var flower := FlowerDefinition.new()
 		flower.display_name = skill.display_name
-		flower.rarity = rarity
 		flower.texture = skill.texture
 		flower.dream_seed_skill = skill
 		candidates.append(flower)

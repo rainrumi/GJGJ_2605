@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bohjr6l6tyw7q" path="res://art/dreamseed/tex_seed_1000_No_200.png" id="2_seed"]
 [ext_resource type="Texture2D" uid="uid://bf3b0ngamjwoc" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_100.png" id="3_frame"]
 [ext_resource type="Resource" path="res://data/resources/stage_clear/normal_flower.tres" id="4_flower"]
-[ext_resource type="Resource" uid="uid://bujf6qni8sb7" path="res://data/resources/dream_seed_skills/normal/dream_seed_skill_002.tres" id="5_skill"]
+[ext_resource type="Resource" uid="uid://bujf6qni8sb7" path="res://data/resources/dream_seed_skills/normal/seed_skill_1000_002.tres" id="5_skill"]
 
 [resource]
 script = ExtResource("1_script")
