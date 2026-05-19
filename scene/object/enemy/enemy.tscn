@@ -13,6 +13,7 @@ self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 texture = ExtResource("1_enemy")
 
 [node name="HPText" type="Label" parent="." unique_id=157147899]
+z_index = 5
 offset_left = -37.0
 offset_top = -25.0
 offset_right = 37.0
@@ -27,6 +28,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DamageText" type="Label" parent="." unique_id=937697251]
+z_index = 5
 offset_left = -37.0
 offset_top = -0.5
 offset_right = 37.0
