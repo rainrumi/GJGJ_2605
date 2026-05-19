@@ -13,6 +13,7 @@ var icon_source_data: Resource
 var seed_skill: DreamSeedSkillDefinition
 var rarity: StringName = RARITY_NORMAL
 var tooltip_panel: DreamSeedSkillTooltipView
+var debug_numbers_visible := false
 
 
 func _ready() -> void:
@@ -55,6 +56,11 @@ func get_seed_source() -> Resource:
 	return source_data
 
 
+func set_debug_numbers_visible(is_visible: bool) -> void:
+	debug_numbers_visible = is_visible
+	_refresh_tooltip()
+
+
 func _refresh_tooltip() -> void:
 	if seed_skill == null:
 		tooltip_text = ""
@@ -75,6 +81,8 @@ func _get_tooltip_text() -> String:
 	if _is_rare_seed():
 		lines.append("サブスキル: %s" % _get_or_empty(seed_skill.sub_description))
 	lines.append("使用可能数: %d" % seed_skill.stock_count)
+	if debug_numbers_visible:
+		lines.append("ID: %d" % seed_skill.skill_id)
 	return "\n".join(lines)
 
 

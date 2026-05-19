@@ -3,6 +3,8 @@ extends HFlowContainer
 
 const BUTTON_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_seed_skill_button.tscn")
 
+var debug_numbers_visible := false
+
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -17,10 +19,18 @@ func set_seed_sources(sources: Array) -> void:
 			_add_seed_button(source as Resource)
 
 
+func set_debug_numbers_visible(is_visible: bool) -> void:
+	debug_numbers_visible = is_visible
+	for child in get_children():
+		if child is DreamSeedSkillButton:
+			(child as DreamSeedSkillButton).set_debug_numbers_visible(debug_numbers_visible)
+
+
 func _add_seed_button(source: Resource) -> void:
 	var button := BUTTON_SCENE.instantiate() as DreamSeedSkillButton
 	add_child(button)
 	button.set_seed_source(source)
+	button.set_debug_numbers_visible(debug_numbers_visible)
 
 
 func _clear_buttons() -> void:

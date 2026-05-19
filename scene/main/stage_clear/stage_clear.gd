@@ -9,6 +9,11 @@ const MAX_HP := 100
 const RARITY_NORMAL: StringName = &"normal"
 const RARITY_HIGH: StringName = &"high"
 const HEAD_FLOWER_DISPLAY_COUNT := 0
+const DEBUG_BUTTON_NORMAL_FONT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
+const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
+const DEBUG_BUTTON_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
+const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
+const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @export var max_normal_flowers := 3
 @export var max_high_flowers := 2
 @export var initial_flower: FlowerDefinition
@@ -17,6 +22,7 @@ const HEAD_FLOWER_DISPLAY_COUNT := 0
 @onready var dream_seed_skill_buttons: DreamSeedSkillButtonList = $CharacterArea/DreamSeedSkillButtons
 @onready var planted_info_text: Label = $CharacterArea/PlantedInfoFrame/PlantedInfoText
 @onready var guide_text: Label = $UI/GuideText
+@onready var debug_button: Button = $UI/DebugButton
 @onready var seed_choices: Array[StageClearSeedChoice] = [
 	$UI/SeedChoices/SeedChoice1 as StageClearSeedChoice,
 	$UI/SeedChoices/SeedChoice2 as StageClearSeedChoice,
@@ -34,10 +40,12 @@ var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
 var _clear_recovery_applied := false
 var _remaining_extra_seed_choices := 0
 var _extra_seed_choice_granted := false
+var debug_numbers_visible := false
 func _ready() -> void:
 	_initialize_planted_flowers()
 	_setup_seed_choices()
 	_setup_flower_slots()
+	_setup_debug_button()
 	_set_hp(current_hp, false)
 	_show_select_mode()
 func setup_hp(value: int) -> void:
@@ -100,6 +108,54 @@ func _setup_seed_choices() -> void:
 func _setup_flower_slots() -> void:
 	for slot in flower_slots:
 		slot.disabled = true
+
+
+func _setup_debug_button() -> void:
+	debug_button.pressed.connect(_on_debug_button_pressed)
+	_apply_debug_button_state()
+	_update_debug_numbers_visible()
+
+
+func _on_debug_button_pressed() -> void:
+	debug_numbers_visible = not debug_numbers_visible
+	_apply_debug_button_state()
+	_update_debug_numbers_visible()
+
+
+func _update_debug_numbers_visible() -> void:
+	dream_seed_skill_buttons.set_debug_numbers_visible(debug_numbers_visible)
+	for seed_choice in seed_choices:
+		seed_choice.set_debug_numbers_visible(debug_numbers_visible)
+
+
+func _apply_debug_button_state() -> void:
+	if debug_numbers_visible:
+		debug_button.add_theme_color_override("font_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
+		debug_button.add_theme_color_override("font_hover_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
+		debug_button.add_theme_color_override("font_pressed_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
+		debug_button.add_theme_stylebox_override("normal", _create_debug_button_style(DEBUG_BUTTON_ACTIVE_COLOR))
+		debug_button.add_theme_stylebox_override("hover", _create_debug_button_style(DEBUG_BUTTON_ACTIVE_HOVER_COLOR))
+		debug_button.add_theme_stylebox_override("pressed", _create_debug_button_style(DEBUG_BUTTON_ACTIVE_PRESSED_COLOR))
+		debug_button.add_theme_stylebox_override("focus", _create_debug_button_style(DEBUG_BUTTON_ACTIVE_COLOR))
+		return
+	debug_button.add_theme_color_override("font_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
+	debug_button.add_theme_color_override("font_hover_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
+	debug_button.add_theme_color_override("font_pressed_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
+	debug_button.remove_theme_stylebox_override("normal")
+	debug_button.remove_theme_stylebox_override("hover")
+	debug_button.remove_theme_stylebox_override("pressed")
+	debug_button.remove_theme_stylebox_override("focus")
+
+
+func _create_debug_button_style(color: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.border_color = Color(0.0, 0.0, 0.0, 1.0)
+	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+		style.set_border_width(side, 2)
+	for corner in [CORNER_TOP_LEFT, CORNER_TOP_RIGHT, CORNER_BOTTOM_RIGHT, CORNER_BOTTOM_LEFT]:
+		style.set_corner_radius(corner, 2)
+	return style
 func _show_select_mode() -> void:
 	guide_text.text = "夢の種をひとつ選んでください"
 	abandon_button.disabled = false

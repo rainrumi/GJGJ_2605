@@ -71,6 +71,7 @@ func reset_for_battle(
 	set_message(message)
 	set_debug_message("")
 	set_dream_seed_skill_sources([])
+	set_dream_seed_debug_numbers_visible(false)
 	set_debug_button_active(false)
 	set_digestion_count(0)
 	set_digestion_button_visible(true)
@@ -106,6 +107,10 @@ func set_debug_message(message: String) -> void:
 
 func set_dream_seed_skill_sources(sources: Array) -> void:
 	dream_seed_skill_buttons.set_seed_sources(sources)
+
+
+func set_dream_seed_debug_numbers_visible(is_visible: bool) -> void:
+	dream_seed_skill_buttons.set_debug_numbers_visible(is_visible)
 
 
 func show_nightmare_tooltip(enemy: Enemy, debug_number_text: String, debug_numbers_visible: bool) -> void:

@@ -12,6 +12,8 @@ const RARITY_NORMAL: StringName = &"normal"
 @onready var name_label: Label = $NameLabel
 @onready var effect_label: Label = $EffectLabel
 
+var current_seed: SeedOptionDefinition
+var debug_numbers_visible := false
 var _base_scale := Vector2.ONE
 var _base_frame_texture: Texture2D
 var _hovered := false
@@ -30,11 +32,19 @@ func _ready() -> void:
 
 
 func setup_choice(seed: SeedOptionDefinition) -> void:
-	name_label.text = _get_seed_display_name(seed)
+	current_seed = seed
+	name_label.text = _get_seed_name_text(seed)
 	effect_label.text = _get_seed_effect_text(seed)
 	seed_texture_rect.texture = _get_flower_texture(seed)
 	frame.texture = _get_frame_texture(seed)
 	valuable_icon.visible = seed.rarity != RARITY_NORMAL
+
+
+func set_debug_numbers_visible(is_visible: bool) -> void:
+	debug_numbers_visible = is_visible
+	if current_seed != null:
+		name_label.text = _get_seed_name_text(current_seed)
+		effect_label.text = _get_seed_effect_text(current_seed)
 
 
 func set_choice_disabled(value: bool) -> void:
@@ -91,6 +101,13 @@ func _get_seed_display_name(seed: SeedOptionDefinition) -> String:
 	if seed.dream_seed_skill != null:
 		return seed.dream_seed_skill.display_name
 	return seed.display_name
+
+
+func _get_seed_name_text(seed: SeedOptionDefinition) -> String:
+	var display_name := _get_seed_display_name(seed)
+	if not debug_numbers_visible or seed.dream_seed_skill == null:
+		return display_name
+	return "%s ID:%d" % [display_name, seed.dream_seed_skill.skill_id]
 
 
 func _get_seed_effect_text(seed: SeedOptionDefinition) -> String:

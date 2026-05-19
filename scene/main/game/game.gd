@@ -77,6 +77,7 @@ func start_battle(context: BattleStartContext = null) -> void:
 		digest_controller.get_rest_recovery_bonus_rate()
 	)
 	ui.set_dream_seed_skill_sources(battle_flowers)
+	ui.set_dream_seed_debug_numbers_visible(debug_numbers_visible)
 	stomach.hide_preview()
 	battle_active = true
 	input_controller.set_active(true)
@@ -168,6 +169,7 @@ func _on_digestion_timer_timeout() -> void:
 	_advance_digest_turn()
 func _on_debug_message_requested(is_active: bool) -> void:
 	debug_numbers_visible = is_active
+	ui.set_dream_seed_debug_numbers_visible(debug_numbers_visible)
 	if hovered_enemy != null:
 		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 func _on_debug_reroll_requested() -> void:

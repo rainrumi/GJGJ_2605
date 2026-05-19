@@ -181,6 +181,19 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
+[node name="DebugButton" type="Button" parent="UI" unique_id=424038670]
+layout_mode = 0
+offset_left = 575.0
+offset_top = 96.0
+offset_right = 635.0
+offset_bottom = 118.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 10
+text = "Debug"
+
 [node name="SeedChoices" type="VBoxContainer" parent="UI" unique_id=42702980]
 layout_mode = 0
 offset_left = 300.0
