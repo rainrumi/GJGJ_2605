@@ -19,7 +19,6 @@ func set_hp_info(
 	var total_rest_recovery_percent := rest_hp_percent + rest_recovery_bonus_percent
 	set_entries([
 		{
-			"explanation": "ステータス",
 			"value": "HP: %d/%d" % [current_hp, max_hp],
 		},
 		{

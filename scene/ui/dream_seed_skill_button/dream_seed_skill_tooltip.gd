@@ -23,11 +23,11 @@ func set_text(text: String) -> void:
 
 
 func _apply_text() -> void:
-	tooltip_label.text = _pending_text
-	var label_width := _get_label_width(_pending_text)
+	var tooltip_text := _get_wrapped_text(_pending_text)
+	tooltip_label.text = tooltip_text
+	var label_width := _get_label_width(tooltip_text)
 	tooltip_label.position = Vector2(TOOLTIP_PADDING, TOOLTIP_PADDING)
-	tooltip_label.size = Vector2(label_width, 0.0)
-	var label_height := tooltip_label.get_combined_minimum_size().y
+	var label_height := _get_label_height(tooltip_text)
 	tooltip_label.size = Vector2(label_width, label_height)
 	size = Vector2(label_width + TOOLTIP_PADDING * 2.0, maxf(MIN_TOOLTIP_HEIGHT, label_height + TOOLTIP_PADDING * 2.0))
 
@@ -37,6 +37,26 @@ func _get_label_width(text: String) -> float:
 	var font_size := tooltip_label.get_theme_font_size("font_size")
 	var max_width := 0.0
 	for line in text.split("\n"):
-		var measured_text := line.substr(0, mini(line.length(), MAX_LINE_CHARACTERS))
-		max_width = maxf(max_width, font.get_string_size(measured_text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x)
+		max_width = maxf(max_width, font.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x)
 	return maxf(MIN_TOOLTIP_WIDTH - TOOLTIP_PADDING * 2.0, ceilf(max_width))
+
+
+func _get_label_height(text: String) -> float:
+	var font := tooltip_label.get_theme_font("font")
+	var font_size := tooltip_label.get_theme_font_size("font_size")
+	var line_spacing := tooltip_label.get_theme_constant("line_spacing")
+	var line_count := maxi(1, text.split("\n").size())
+	return ceilf(float(line_count) * font.get_height(font_size) + float(line_count - 1) * line_spacing)
+
+
+func _get_wrapped_text(text: String) -> String:
+	var wrapped_lines: Array[String] = []
+	for line in text.split("\n"):
+		if line.is_empty():
+			wrapped_lines.append("")
+			continue
+		var start := 0
+		while start < line.length():
+			wrapped_lines.append(line.substr(start, MAX_LINE_CHARACTERS))
+			start += MAX_LINE_CHARACTERS
+	return "\n".join(wrapped_lines)

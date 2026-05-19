@@ -65,29 +65,19 @@ script = ExtResource("3_battle_ui_script")
 
 [node name="NightmareTooltipPanel" parent="UI" unique_id=1766035489 instance=ExtResource("36_left_tooltip")]
 z_index = 50
-offset_right = 220.0
-offset_bottom = 24.0
 script = ExtResource("28_nightmare_tooltip_view")
 
 [node name="DigestDamageTooltipPanel" parent="UI" unique_id=1352488328 instance=ExtResource("36_left_tooltip")]
-offset_right = 220.0
-offset_bottom = 24.0
 script = ExtResource("30_digest_damage_tooltip_view")
 
 [node name="DigestEfficiencyTooltipPanel" parent="UI" unique_id=1285341923 instance=ExtResource("36_left_tooltip")]
-offset_right = 220.0
-offset_bottom = 24.0
 script = ExtResource("35_digest_efficiency_tooltip_view")
 note_visible = true
 
 [node name="TimeTooltipPanel" parent="UI" unique_id=1613855977 instance=ExtResource("36_left_tooltip")]
-offset_right = 220.0
-offset_bottom = 24.0
 script = ExtResource("39_time_tooltip_view")
 
 [node name="HpTooltipPanel" parent="UI" unique_id=1178298816 instance=ExtResource("36_left_tooltip")]
-offset_right = 220.0
-offset_bottom = 24.0
 script = ExtResource("40_hp_tooltip_view")
 
 [node name="DigestiveDMG" type="TextureRect" parent="UI" unique_id=633967596]
