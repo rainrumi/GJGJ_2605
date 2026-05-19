@@ -5,9 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://dvwpme4r85vqi" path="res://art/stage_select/ui_choise_stage_frame_1000_LV_100.png" id="3_frame"]
 
 [node name="StageChoice" type="Button" unique_id=188156610]
-custom_minimum_size = Vector2(124, 124)
-offset_right = 124.0
-offset_bottom = 124.0
+custom_minimum_size = Vector2(270, 70)
+offset_right = 270.0
+offset_bottom = 70.0
 flat = true
 script = ExtResource("1_script")
 
@@ -15,7 +15,7 @@ script = ExtResource("1_script")
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_right = 270.0
-offset_bottom = 90.0
+offset_bottom = 70.0
 texture = ExtResource("3_frame")
 patch_margin_left = 8
 patch_margin_top = 8
@@ -43,30 +43,30 @@ offset_right = 116.0
 offset_bottom = 29.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 16
 text = "難易度"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="LocationLabel" type="Label" parent="." unique_id=1473998700]
 layout_mode = 0
-offset_left = 12.0
-offset_top = 34.0
-offset_right = 112.0
-offset_bottom = 48.0
+offset_left = 155.0
+offset_top = 9.0
+offset_right = 255.0
+offset_bottom = 23.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
 text = "場所"
+horizontal_alignment = 2
 vertical_alignment = 1
 text_overrun_behavior = 3
 
 [node name="RewardLabel" type="Label" parent="." unique_id=1722941389]
 layout_mode = 0
-offset_left = 12.0
-offset_top = 52.0
-offset_right = 112.0
-offset_bottom = 66.0
+offset_left = 8.0
+offset_top = 35.0
+offset_right = 108.0
+offset_bottom = 49.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 10
@@ -76,10 +76,10 @@ vertical_alignment = 1
 [node name="RewardIcon" type="TextureRect" parent="." unique_id=1446009597]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = 12.0
-offset_top = 68.0
-offset_right = 32.0
-offset_bottom = 86.0
+offset_left = 34.0
+offset_top = 38.0
+offset_right = 261.0
+offset_bottom = 67.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
