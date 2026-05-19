@@ -13,12 +13,14 @@ const RARITY_NORMAL: StringName = &"normal"
 @onready var effect_label: Label = $EffectLabel
 
 var _base_scale := Vector2.ONE
+var _base_frame_texture: Texture2D
 var _hovered := false
 var _pressed := false
 var _scale_tween: Tween
 
 
 func _ready() -> void:
+	_base_frame_texture = frame.texture
 	frame.pivot_offset = frame.size * 0.5
 	_base_scale = frame.scale
 	button_down.connect(_on_button_down)
@@ -30,9 +32,8 @@ func _ready() -> void:
 func setup_choice(seed: SeedOptionDefinition) -> void:
 	name_label.text = _get_seed_display_name(seed)
 	effect_label.text = _get_seed_effect_text(seed)
-	effect_label.add_theme_font_size_override("font_size", seed.effect_font_size)
 	seed_texture_rect.texture = _get_flower_texture(seed)
-	frame.texture = seed.frame_texture
+	frame.texture = _get_frame_texture(seed)
 	valuable_icon.visible = seed.rarity != RARITY_NORMAL
 
 
@@ -109,6 +110,12 @@ func _get_flower_texture(seed: SeedOptionDefinition) -> Texture2D:
 	if seed.flower_definition != null:
 		return seed.flower_definition.texture
 	return seed.seed_texture
+
+
+func _get_frame_texture(seed: SeedOptionDefinition) -> Texture2D:
+	if seed.rarity != RARITY_NORMAL:
+		return _base_frame_texture
+	return seed.frame_texture
 
 
 func _get_or_empty(text: String) -> String:
