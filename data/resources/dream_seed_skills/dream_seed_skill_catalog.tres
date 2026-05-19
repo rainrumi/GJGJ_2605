@@ -14,4 +14,5 @@
 
 [resource]
 script = ExtResource("1_script")
-skills = Array[ExtResource("2_definition")]([ExtResource("3_normal_001"), ExtResource("4_normal_002"), ExtResource("5_normal_003"), ExtResource("6_normal_004"), ExtResource("7_rare_001"), ExtResource("8_rare_002"), ExtResource("9_rare_003"), ExtResource("10_rare_004"), ExtResource("11_rare_005")])
+normal_skills = Array[ExtResource("2_definition")]([ExtResource("3_normal_001"), ExtResource("4_normal_002"), ExtResource("5_normal_003"), ExtResource("6_normal_004")])
+rare_skills = Array[ExtResource("2_definition")]([ExtResource("7_rare_001"), ExtResource("8_rare_002"), ExtResource("9_rare_003"), ExtResource("10_rare_004"), ExtResource("11_rare_005")])

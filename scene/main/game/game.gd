@@ -226,19 +226,16 @@ func _get_random_debug_seed_flower() -> FlowerDefinition:
 
 func _get_debug_seed_flower_candidates() -> Array[FlowerDefinition]:
 	var candidates: Array[FlowerDefinition] = []
-	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG, DreamSeedSkillDefinition.Rarity.NORMAL)
-	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG, DreamSeedSkillDefinition.Rarity.RARE)
+	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG.normal_skills)
+	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG.rare_skills)
 	return candidates
 
 
 func _append_debug_seed_flower_candidates(
 	candidates: Array[FlowerDefinition],
-	catalog: DreamSeedSkillCatalog,
-	rarity: int
+	skills: Array[DreamSeedSkillDefinition]
 ) -> void:
-	if catalog == null:
-		return
-	for skill in catalog.get_skills_by_rarity(rarity):
+	for skill in skills:
 		if skill == null:
 			continue
 		var flower := FlowerDefinition.new()
