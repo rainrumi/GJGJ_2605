@@ -7,8 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://bohjr6l6tyw7q" path="res://art/dreamseed/tex_seed_1000_No_200.png" id="4_6ejp0"]
 
 [node name="SeedChoice" type="Button" unique_id=188041236]
-custom_minimum_size = Vector2(270, 70)
-offset_right = 270.0
+custom_minimum_size = Vector2(300, 70)
+offset_right = 300.0
 offset_bottom = 70.0
 flat = true
 script = ExtResource("1_script")
@@ -16,7 +16,7 @@ script = ExtResource("1_script")
 [node name="Frame" type="NinePatchRect" parent="." unique_id=227156952]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_right = 270.0
+offset_right = 300.0
 offset_bottom = 70.0
 texture = ExtResource("3_frame")
 patch_margin_left = 8
@@ -29,18 +29,18 @@ visible = false
 modulate = Color(0, 0, 0, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = 248.0
+offset_left = 278.0
 offset_top = 3.0
-offset_right = 267.0
+offset_right = 297.0
 offset_bottom = 22.0
 texture = ExtResource("3_6u1fo")
 
 [node name="Texture" type="TextureRect" parent="." unique_id=388718737]
 self_modulate = Color(0, 0, 0, 1)
 layout_mode = 0
-offset_left = 198.0
+offset_left = 228.0
 offset_top = 3.0
-offset_right = 262.0
+offset_right = 292.0
 offset_bottom = 67.0
 texture = ExtResource("4_6ejp0")
 expand_mode = 1
@@ -52,6 +52,8 @@ offset_top = 4.0
 offset_right = 196.0
 offset_bottom = 17.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 6
 text = "夢の種の名前"
@@ -60,9 +62,11 @@ text = "夢の種の名前"
 layout_mode = 0
 offset_left = 6.0
 offset_top = 16.0
-offset_right = 264.0
+offset_right = 294.0
 offset_bottom = 66.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 6
 text = "効果テキスト"
