@@ -9,5 +9,6 @@ skill_id = 4
 category = "時間系統"
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
-main_description = "クリア時刻によるHP回復が出来なくなる。クリア時刻が3/5時以降の場合追加で夢の種を1/2回獲得できる。"
-sub_description = "時刻が3時以降のとき消化ダメージが200%上昇する。"
+main_description = "ステージクリアでHPを回復出来なくなる。
+4時以降にステージをクリアすると夢の種を追加で1回獲得できる。"
+sub_description = "時刻が4時以降のとき消化ダメージが200%上昇する。"

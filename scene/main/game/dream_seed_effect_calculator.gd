@@ -2,14 +2,18 @@ class_name DreamSeedEffectCalculator
 extends RefCounted
 
 const CATEGORY_DREAM_FLOWER := "夢の花系統"
+const CATEGORY_SPECIAL_TIME := "時間系統"
 const SKILL_1_DIGEST_DAMAGE_RATE := 0.1
 const SKILL_3_TIME_REDUCTION_RATE := 0.05
 const SKILL_3_MAX_TIME_REDUCTION_RATE := 0.2
 const SKILL_4_REST_RECOVERY_BONUS_RATE := 0.5
+const SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_RATE := 2.0
+const SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_START_HOUR := 28
 const DREAM_SEED_DIGEST_DAMAGE_UP := 1
 const DREAM_SEED_CLEAR_RECOVERY_UP := 2
 const DREAM_SEED_TIME_REDUCTION := 3
 const DREAM_SEED_REST_RECOVERY := 4
+const DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE := 4
 
 var next_digest_damage_bonus_rate := 0.0
 var _planted_flowers: Array[FlowerDefinition] = []
@@ -28,10 +32,10 @@ func setup(flowers: Array) -> void:
 func get_digest_damage_breakdown(
 	base_damage: int,
 	nightmare_rate: float,
-	_minutes: int,
+	minutes: int,
 	consume_pending_bonus: bool = false
 ) -> Dictionary:
-	var seed_rate := _get_digest_damage_rate()
+	var seed_rate := _get_digest_damage_rate(minutes)
 	if next_digest_damage_bonus_rate > 0.0:
 		seed_rate += next_digest_damage_bonus_rate
 	if consume_pending_bonus:
@@ -89,11 +93,13 @@ func get_seed_skill_id_text() -> String:
 	return ",".join(seed_ids)
 
 
-func _get_digest_damage_rate() -> float:
+func _get_digest_damage_rate(minutes: int) -> float:
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
 		if _is_dream_flower_skill(skill, DREAM_SEED_DIGEST_DAMAGE_UP):
 			rate += SKILL_1_DIGEST_DAMAGE_RATE
+		if _is_special_time_skill(skill, DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE) and minutes >= SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_START_HOUR * 60:
+			rate += SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_RATE
 	return rate
 
 
@@ -135,3 +141,7 @@ func _get_planted_seed_skills() -> Array[DreamSeedSkillDefinition]:
 
 func _is_dream_flower_skill(skill: DreamSeedSkillDefinition, skill_id: int) -> bool:
 	return skill != null and skill.skill_id == skill_id and skill.category == CATEGORY_DREAM_FLOWER
+
+
+func _is_special_time_skill(skill: DreamSeedSkillDefinition, skill_id: int) -> bool:
+	return skill != null and skill.skill_id == skill_id and skill.category == CATEGORY_SPECIAL_TIME

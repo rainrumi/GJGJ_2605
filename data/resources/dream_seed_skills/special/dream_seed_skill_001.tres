@@ -9,5 +9,6 @@ skill_id = 1
 category = "花びら配置系統"
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
+stock_count = 4
 main_description = "3時までにステージをクリアすると残基が1回復する（上限は越えられない）"
 sub_description = "HP1マス1の花びらが生成される。消化しても何も起こらない"

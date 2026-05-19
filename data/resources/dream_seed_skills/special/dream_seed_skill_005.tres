@@ -12,4 +12,4 @@ texture = ExtResource("2_texture")
 main_description = "消化ダメージ量+10%
 消化中の消化ダメージアップ効果が200%上昇する。"
 sub_description = "HP1,マス1
-消化されたとき、隣接する花の受ける消化ダメージとHPを100%上昇する"
+消化時隣接する花のHPと受ける消化ダメージを100%上昇する"

@@ -6,6 +6,7 @@ const CATEGORY_SPECIAL_TIME := "時間系統"
 const SKILL_2_CLEAR_RECOVERY_BONUS_RATE := 0.1
 const DREAM_SEED_CLEAR_RECOVERY_UP := 2
 const DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE := 4
+const DREAM_SEED_SPECIAL_EXTRA_CHOICE_START_HOUR := 28
 
 
 static func can_plant_seed(seed: SeedOptionDefinition, planted_flowers: Array[FlowerDefinition], max_normal: int, max_high: int) -> bool:
@@ -82,3 +83,9 @@ static func is_clear_time_recovery_disabled(planted_flowers: Array[FlowerDefinit
 		if skill.skill_id == DREAM_SEED_SPECIAL_CLEAR_RECOVERY_DISABLE and skill.category == CATEGORY_SPECIAL_TIME:
 			return true
 	return false
+
+
+static func grants_extra_seed_choice(planted_flowers: Array[FlowerDefinition], clear_minutes: int) -> bool:
+	if clear_minutes < DREAM_SEED_SPECIAL_EXTRA_CHOICE_START_HOUR * 60:
+		return false
+	return is_clear_time_recovery_disabled(planted_flowers)

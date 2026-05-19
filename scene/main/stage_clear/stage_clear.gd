@@ -38,6 +38,8 @@ var planted_flowers: Array[FlowerDefinition] = []
 var current_hp := MAX_HP
 var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
 var _clear_recovery_applied := false
+var _remaining_extra_seed_choices := 0
+var _extra_seed_choice_granted := false
 var _abandon_button_base_scale := Vector2.ONE
 var _abandon_button_hover_tween: Tween
 var _abandon_button_hovered := false
@@ -57,6 +59,7 @@ func _ready() -> void:
 func setup_hp(value: int) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	_clear_recovery_applied = false
+	_reset_extra_seed_choices()
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
@@ -64,6 +67,8 @@ func setup_clear_result(value: int, cleared_minutes: int) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	clear_minutes = cleared_minutes
 	_clear_recovery_applied = false
+	_reset_extra_seed_choices()
+	_update_extra_seed_choices()
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
@@ -71,6 +76,7 @@ func reset_player_state() -> void:
 	current_hp = MAX_HP
 	clear_minutes = CLEAR_RECOVERY_START_HOUR * 60
 	_clear_recovery_applied = false
+	_reset_extra_seed_choices()
 	_initialize_planted_flowers()
 	if is_node_ready():
 		_set_hp(current_hp, false)
@@ -129,7 +135,7 @@ func _show_select_mode() -> void:
 	abandon_button.disabled = false
 	_reset_abandon_button_visual()
 	_reset_abandon_button_scale()
-	abandon_button.text = "放棄する　HP +%d%%回復" % roundi(ABANDON_HP_RECOVERY_RATE * 100.0)
+	abandon_button.text = "放棄する　HP +%d%%回復" % roundi(_get_abandon_extra_recovery_rate() * 100.0)
 	_update_hp_heal_plan()
 	for i in range(seed_choices.size()):
 		seed_choices[i].set_choice_disabled(_get_seed_option(i) == null)
@@ -145,20 +151,21 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 		planted_flowers.append(flower)
 		_refresh_flower_slots()
 		var recovered_rate := _apply_selection_recovery(0.0)
-		selection_finished.emit(recovered_rate)
-		_show_finished_mode("%sを植えました" % _get_seed_display_name(seed))
+		_finish_seed_choice(recovered_rate, "%sを植えました" % _get_seed_display_name(seed))
 		return
 	_replace_flower(seed, flower)
 	_refresh_flower_slots()
 	var replacement_recovered_rate := _apply_selection_recovery(0.0)
-	selection_finished.emit(replacement_recovered_rate)
-	_show_finished_mode("%sを植え替えました" % _get_seed_display_name(seed))
+	_finish_seed_choice(replacement_recovered_rate, "%sを植え替えました" % _get_seed_display_name(seed))
 func _on_abandon_button_pressed() -> void:
 	hp_view.set_planned_recovery_rate(_get_abandon_recovery_rate())
-	var recovery_rate := _apply_selection_recovery(ABANDON_HP_RECOVERY_RATE)
+	var recovery_rate := _apply_selection_recovery(_get_abandon_extra_recovery_rate())
 	selection_finished.emit(recovery_rate)
 	_reset_abandon_button_scale()
-	_show_finished_mode("種を放棄してHPを回復しました")
+	if recovery_rate > 0.0:
+		_show_finished_mode("種を放棄してHPを回復しました")
+	else:
+		_show_finished_mode("種を放棄しました")
 func _show_finished_mode(message: String) -> void:
 	guide_text.text = message
 	abandon_button.disabled = true
@@ -171,6 +178,15 @@ func _show_finished_mode(message: String) -> void:
 	_update_hp_heal_plan()
 func _can_plant_seed(seed: SeedOptionDefinition) -> bool:
 	return StageClearRecoveryCalculator.can_plant_seed(seed, planted_flowers, max_normal_flowers, max_high_flowers)
+
+
+func _finish_seed_choice(recovered_rate: float, message: String) -> void:
+	if _remaining_extra_seed_choices > 0:
+		_remaining_extra_seed_choices -= 1
+		_show_select_mode()
+		return
+	selection_finished.emit(recovered_rate)
+	_show_finished_mode(message)
 func _create_seed_flower(seed: SeedOptionDefinition) -> FlowerDefinition:
 	if seed.flower_definition == null:
 		return null
@@ -197,7 +213,15 @@ func _get_seed_choice_recovery_rate(seed_index: int) -> float:
 func _get_abandon_recovery_rate() -> float:
 	if _clear_recovery_applied:
 		return 0.0
-	return _get_planned_clear_recovery_rate() + ABANDON_HP_RECOVERY_RATE
+	return _get_planned_clear_recovery_rate() + _get_abandon_extra_recovery_rate()
+
+
+func _get_abandon_extra_recovery_rate() -> float:
+	if _clear_recovery_applied:
+		return 0.0
+	if StageClearRecoveryCalculator.is_clear_time_recovery_disabled(planted_flowers):
+		return 0.0
+	return ABANDON_HP_RECOVERY_RATE
 func _get_preview_flowers_for_seed(seed: SeedOptionDefinition) -> Array[FlowerDefinition]:
 	var preview_flowers: Array[FlowerDefinition] = []
 	for flower in planted_flowers:
@@ -214,6 +238,19 @@ func _get_preview_flowers_for_seed(seed: SeedOptionDefinition) -> Array[FlowerDe
 		preview_flowers[i] = flower
 		return preview_flowers
 	return preview_flowers
+
+
+func _reset_extra_seed_choices() -> void:
+	_remaining_extra_seed_choices = 0
+	_extra_seed_choice_granted = false
+
+
+func _update_extra_seed_choices() -> void:
+	if _extra_seed_choice_granted:
+		return
+	if StageClearRecoveryCalculator.grants_extra_seed_choice(planted_flowers, clear_minutes):
+		_remaining_extra_seed_choices += 1
+		_extra_seed_choice_granted = true
 func _apply_selection_recovery(extra_recovery_rate: float) -> float:
 	if _clear_recovery_applied:
 		return 0.0

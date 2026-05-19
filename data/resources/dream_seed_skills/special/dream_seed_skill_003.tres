@@ -9,6 +9,6 @@ skill_id = 3
 category = "時間系統"
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
-main_description = "1時までにステージをクリアすると永久に攻撃力が5%上昇する。（重複不可）"
+main_description = "1時までにステージをクリアすると消化ダメージが永久に5%上昇する。（重複不可）"
 sub_description = "即時発動型。
-消化が進むときの時間経過を通常の50%遅くする。この効果は4回発動すると消える。"
+時間経過を通常の50%遅くする。この効果は4回のみ"
