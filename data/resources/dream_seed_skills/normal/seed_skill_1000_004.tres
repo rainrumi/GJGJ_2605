@@ -12,5 +12,4 @@ display_name = "夢の花名"
 texture = ExtResource("2_texture")
 stock_count = 3
 main_description = "蘇生時の回復量がHP上限+50%増加。この効果が発動するごとに残基-1。"
-sub_description = "即時発動
-蘇生時の時間経過が発生しない。回数：1回"
+sub_description = "即時発動。蘇生時の時間経過が発生しない。回数：1回"

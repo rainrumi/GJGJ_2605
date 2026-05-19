@@ -11,7 +11,5 @@ rarity = 1
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
 stock_count = 1
-main_description = "消化ダメージ量+10%
-消化中の消化ダメージアップ効果が200%上昇する。"
-sub_description = "HP1,マス1
-消化時隣接する花のHPと受ける消化ダメージを100%上昇する"
+main_description = "消化ダメージ量+10%。消化中の消化ダメージアップ効果が200%上昇する。"
+sub_description = "HP1,マス1。消化時隣接する花のHPと受ける消化ダメージを100%上昇する"

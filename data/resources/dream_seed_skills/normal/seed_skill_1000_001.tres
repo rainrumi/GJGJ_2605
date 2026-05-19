@@ -12,5 +12,4 @@ display_name = "カーネーション"
 texture = ExtResource("2_gdfog")
 stock_count = 1
 main_description = "消化ダメージ+10%"
-sub_description = "即時発動
-消化ダメージ+20%"
+sub_description = "即時発動。消化ダメージ+20%"

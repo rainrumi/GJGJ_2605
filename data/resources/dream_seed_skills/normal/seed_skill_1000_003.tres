@@ -11,5 +11,4 @@ display_name = "カプチーノ"
 texture = ExtResource("2_yn8ot")
 stock_count = 1
 main_description = "消化間隔-5%（この効果はメインとサブ合わせて20%まで。この花はひとつしか持てない）"
-sub_description = "即時発動
-消化間隔-15%（この効果はメインとサブ合わせて20%まで。この花はひとつしか持てない）"
+sub_description = "即時発動。消化間隔-15%（この効果はメインとサブ合わせて20%まで。この花はひとつしか持てない）"

@@ -6,7 +6,8 @@ extends Panel
 @export var note_visible := false
 
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
-const TOOLTIP_WIDTH := 220.0
+const MAX_LINE_CHARACTERS := 35
+const MIN_TOOLTIP_WIDTH := 80.0
 const TOOLTIP_PADDING := 8.0
 const MIN_TOOLTIP_HEIGHT := 24.0
 
@@ -62,13 +63,14 @@ func set_note(text: String, is_visible: bool) -> void:
 func _apply_text() -> void:
 	if not is_node_ready():
 		return
-	var label_width := TOOLTIP_WIDTH - TOOLTIP_PADDING * 2.0
-	tooltip_label.text = _get_tooltip_text()
+	var tooltip_text := _get_tooltip_text()
+	tooltip_label.text = tooltip_text
+	var label_width := _get_label_width(tooltip_text)
 	tooltip_label.position = Vector2(TOOLTIP_PADDING, TOOLTIP_PADDING)
 	tooltip_label.size = Vector2(label_width, 0.0)
 	var label_height := tooltip_label.get_combined_minimum_size().y
 	tooltip_label.size = Vector2(label_width, label_height)
-	size = Vector2(TOOLTIP_WIDTH, maxf(MIN_TOOLTIP_HEIGHT, label_height + TOOLTIP_PADDING * 2.0))
+	size = Vector2(label_width + TOOLTIP_PADDING * 2.0, maxf(MIN_TOOLTIP_HEIGHT, label_height + TOOLTIP_PADDING * 2.0))
 
 
 func _get_tooltip_text() -> String:
@@ -91,3 +93,13 @@ func _get_tooltip_text() -> String:
 			lines.append("")
 		lines.append(_note_text)
 	return "\n".join(lines)
+
+
+func _get_label_width(text: String) -> float:
+	var font := tooltip_label.get_theme_font("font")
+	var font_size := tooltip_label.get_theme_font_size("font_size")
+	var max_width := 0.0
+	for line in text.split("\n"):
+		var measured_text := line.substr(0, mini(line.length(), MAX_LINE_CHARACTERS))
+		max_width = maxf(max_width, font.get_string_size(measured_text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x)
+	return maxf(MIN_TOOLTIP_WIDTH - TOOLTIP_PADDING * 2.0, ceilf(max_width))

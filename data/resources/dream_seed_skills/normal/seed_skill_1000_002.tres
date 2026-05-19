@@ -12,5 +12,4 @@ display_name = "カモミール"
 texture = ExtResource("2_48bk4")
 stock_count = 3
 main_description = "ステージクリア時HP10%回復"
-sub_description = "即時発動
-HP5%回復"
+sub_description = "即時発動。HP5%回復"
