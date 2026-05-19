@@ -12,4 +12,4 @@ display_name = "夢の花名"
 texture = ExtResource("2_texture")
 stock_count = 1
 main_description = "1時までにステージをクリアすると消化ダメージが永久に5%上昇する。（重複不可）"
-sub_description = "即時発動型。時間経過を通常の50%遅くする。この効果は4回のみ"
+sub_description = "即時発動型。時間経過を通常の50%遅くする。4回発動可能"

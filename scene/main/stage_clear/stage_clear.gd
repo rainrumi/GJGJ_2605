@@ -12,7 +12,7 @@ const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
 const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
-@export var max_flowers := 35
+@export var max_flowers := 50
 @export var initial_flower: FlowerDefinition
 @export var seed_options: Array[Resource] = []
 @onready var hp_view: HpView = $CharacterArea/HpFrame
