@@ -4,15 +4,15 @@
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://art/character/tex_character_portrate_1000.png" id="3_character"]
 [ext_resource type="Texture2D" uid="uid://cs7k0sbpnhylu" path="res://art/stage_clear/ui_seed_guide_frame_1000.png" id="4_guide_frame"]
-[ext_resource type="PackedScene" path="res://scene/main/stage_clear/seed_choice.tscn" id="5_seed_choice"]
+[ext_resource type="PackedScene" uid="uid://cdxfuey83p5f0" path="res://scene/main/stage_clear/seed_choice.tscn" id="5_seed_choice"]
 [ext_resource type="Texture2D" uid="uid://bvewbj2k87hga" path="res://art/stage_clear/ui_choise_cancel_frame_1000.png" id="7_cancel_frame"]
 [ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="8_clear_effect"]
-[ext_resource type="PackedScene" path="res://scene/ui/hp/hp.tscn" id="9_hp_scene"]
+[ext_resource type="PackedScene" uid="uid://cfjja3p43w2i0" path="res://scene/ui/hp/hp.tscn" id="9_hp_scene"]
 [ext_resource type="Resource" path="res://data/resources/stage_clear/normal_flower.tres" id="11_initial_flower"]
-[ext_resource type="Resource" path="res://data/resources/stage_clear/carnation_seed.tres" id="12_carnation_seed"]
-[ext_resource type="Resource" path="res://data/resources/stage_clear/chamomile_seed.tres" id="13_chamomile_seed"]
+[ext_resource type="Resource" uid="uid://c44odnlyosgxd" path="res://data/resources/stage_clear/carnation_seed.tres" id="12_carnation_seed"]
+[ext_resource type="Resource" uid="uid://bg6i2wg73s6mj" path="res://data/resources/stage_clear/chamomile_seed.tres" id="13_chamomile_seed"]
 [ext_resource type="Resource" uid="uid://bdc1rl2wr5u3c" path="res://data/resources/stage_clear/capuchi_seed.tres" id="14_capuchi_seed"]
-[ext_resource type="Script" path="res://scene/ui/dream_seed_skill_button/dream_seed_skill_button_list.gd" id="15_dream_seed_skill_button_list"]
+[ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/dream_seed_skill_button/dream_seed_skill_button_list.gd" id="15_dream_seed_skill_button_list"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
@@ -22,24 +22,21 @@ seed_options = Array[Resource]([ExtResource("12_carnation_seed"), ExtResource("1
 [node name="CharacterArea" type="Node2D" parent="." unique_id=1051992702]
 
 [node name="Character" type="Sprite2D" parent="CharacterArea" unique_id=837318386]
-modulate = Color(1, 1, 1, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 position = Vector2(95, 210)
 texture = ExtResource("3_character")
 
 [node name="HpFrame" parent="CharacterArea" unique_id=1355600101 instance=ExtResource("9_hp_scene")]
-offset_left = 29
-offset_top = 253
-offset_right = 155
-offset_bottom = 266
+offset_left = 29.0
+offset_top = 253.0
+offset_right = 155.0
+offset_bottom = 266.0
 
 [node name="DreamSeedSkillButtons" type="HFlowContainer" parent="CharacterArea" unique_id=1933210198]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 29
-offset_top = 270
-offset_right = 155
-offset_bottom = 342
+offset_left = 29.0
+offset_top = 270.0
+offset_right = 155.0
+offset_bottom = 342.0
 mouse_filter = 2
 theme_override_constants/h_separation = 2
 theme_override_constants/v_separation = 2
@@ -48,86 +45,82 @@ script = ExtResource("15_dream_seed_skill_button_list")
 [node name="FlowerSlots" type="Control" parent="CharacterArea" unique_id=816859833]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 50
-offset_top = 17
-offset_right = 153
-offset_bottom = 71
+offset_left = 50.0
+offset_top = 17.0
+offset_right = 153.0
+offset_bottom = 71.0
 mouse_filter = 2
 
 [node name="FlowerSlot1" type="Button" parent="CharacterArea/FlowerSlots" unique_id=1068812583]
 layout_mode = 0
-offset_top = 6
-offset_right = 32
-offset_bottom = 48
+offset_top = 6.0
+offset_right = 32.0
+offset_bottom = 48.0
 flat = true
 
 [node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot1" unique_id=739893816]
-modulate = Color(1, 1, 1, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = -18
-offset_top = -2
-offset_right = 50
-offset_bottom = 46
+offset_left = -18.0
+offset_top = -2.0
+offset_right = 50.0
+offset_bottom = 46.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="FlowerSlot2" type="Button" parent="CharacterArea/FlowerSlots" unique_id=1384755432]
 layout_mode = 0
-offset_left = 35
-offset_right = 67
-offset_bottom = 48
+offset_left = 35.0
+offset_right = 67.0
+offset_bottom = 48.0
 flat = true
 
 [node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot2" unique_id=1517214821]
-modulate = Color(1, 1, 1, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = -18
-offset_top = -2
-offset_right = 50
-offset_bottom = 46
+offset_left = -18.0
+offset_top = -2.0
+offset_right = 50.0
+offset_bottom = 46.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="FlowerSlot3" type="Button" parent="CharacterArea/FlowerSlots" unique_id=996341120]
 layout_mode = 0
-offset_left = 70
-offset_top = 7
-offset_right = 102
-offset_bottom = 49
+offset_left = 70.0
+offset_top = 7.0
+offset_right = 102.0
+offset_bottom = 49.0
 flat = true
 
 [node name="FlowerTexture" type="TextureRect" parent="CharacterArea/FlowerSlots/FlowerSlot3" unique_id=965076757]
-modulate = Color(1, 1, 1, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = -13
-offset_top = -6
-offset_right = 45
-offset_bottom = 44
+offset_left = -13.0
+offset_top = -6.0
+offset_right = 45.0
+offset_bottom = 44.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="PlantedInfoFrame" type="TextureRect" parent="CharacterArea" unique_id=2006200451]
-modulate = Color(1, 1, 1, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-offset_left = 160
-offset_top = 75
-offset_right = 283
-offset_bottom = 143
+offset_left = 160.0
+offset_top = 75.0
+offset_right = 283.0
+offset_bottom = 143.0
 mouse_filter = 2
 texture = ExtResource("4_guide_frame")
 
 [node name="PlantedInfoText" type="Label" parent="CharacterArea/PlantedInfoFrame" unique_id=1010225640]
 layout_mode = 0
-offset_left = 9
-offset_top = 8
-offset_right = 114
-offset_bottom = 58
+offset_left = 9.0
+offset_top = 8.0
+offset_right = 114.0
+offset_bottom = 58.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
@@ -141,17 +134,16 @@ vertical_alignment = 1
 [node name="UI" type="Control" parent="." unique_id=450061926]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 640
-offset_bottom = 360
+offset_right = 640.0
+offset_bottom = 360.0
 mouse_filter = 2
 
 [node name="TitleEffect" type="TextureRect" parent="UI" unique_id=1736404112]
-modulate = Color(1, 1, 1, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = 286
+offset_left = 300.0
 offset_top = 15.5
-offset_right = 562
+offset_right = 576.0
 offset_bottom = 111.5
 mouse_filter = 2
 texture = ExtResource("8_clear_effect")
@@ -160,25 +152,25 @@ stretch_mode = 5
 
 [node name="TitleLabel" type="Label" parent="UI" unique_id=968893526]
 layout_mode = 0
-offset_left = 354
-offset_top = 41
-offset_right = 529
-offset_bottom = 79.5
+offset_left = 300.0
+offset_top = 50.0
+offset_right = 570.0
+offset_bottom = 88.5
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 28
 text = "消化完了！"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="GuideText" type="Label" parent="UI" unique_id=1500483512]
 layout_mode = 0
-offset_left = 324.5
-offset_top = 107.5
-offset_right = 530
-offset_bottom = 155.5
+offset_left = 299.0
+offset_top = 98.0
+offset_right = 569.0
+offset_bottom = 114.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
@@ -189,33 +181,30 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="SeedChoices" type="Control" parent="UI" unique_id=42702980]
-anchors_preset = 0
-offset_left = 230
-offset_top = 167
-offset_right = 618
-offset_bottom = 293
+[node name="SeedChoices" type="VBoxContainer" parent="UI" unique_id=42702980]
+layout_mode = 0
+offset_left = 300.0
+offset_top = 122.0
+offset_right = 570.0
+offset_bottom = 348.0
 mouse_filter = 2
+theme_override_constants/separation = 8
 
 [node name="SeedChoice1" parent="UI/SeedChoices" unique_id=507694198 instance=ExtResource("5_seed_choice")]
-layout_mode = 0
+layout_mode = 2
 
 [node name="SeedChoice2" parent="UI/SeedChoices" unique_id=939057767 instance=ExtResource("5_seed_choice")]
-layout_mode = 0
-offset_left = 133
-offset_right = 257
+layout_mode = 2
 
 [node name="SeedChoice3" parent="UI/SeedChoices" unique_id=1608006173 instance=ExtResource("5_seed_choice")]
-layout_mode = 0
-offset_left = 266
-offset_right = 390
+layout_mode = 2
 
 [node name="AbandonButton" type="Button" parent="UI" unique_id=1850666034]
 layout_mode = 0
-offset_left = 310.5
-offset_top = 300
-offset_right = 540.5
-offset_bottom = 326
+offset_left = 175.0
+offset_top = 322.0
+offset_right = 295.0
+offset_bottom = 348.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_pressed_color = Color(0.15686275, 0.13333334, 0.5647059, 1)
 theme_override_colors/font_hover_color = Color(0.0352941, 0.027451, 0.211765, 1)
@@ -225,12 +214,14 @@ theme_override_font_sizes/font_size = 13
 text = "放棄する"
 flat = true
 
-[node name="Frame" type="TextureRect" parent="UI/AbandonButton" unique_id=1144243439]
-modulate = Color(1, 1, 1, 1)
+[node name="Frame" type="NinePatchRect" parent="UI/AbandonButton" unique_id=1597878282]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 show_behind_parent = true
 layout_mode = 0
-offset_right = 230
-offset_bottom = 26
-mouse_filter = 2
+offset_right = 120.0
+offset_bottom = 26.0
 texture = ExtResource("7_cancel_frame")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8

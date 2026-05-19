@@ -1,4 +1,4 @@
-﻿extends Node2D
+extends Node2D
 signal selection_finished(recovered_hp_rate: float)
 const ABANDON_HP_RECOVERY_RATE := 0.1
 const CLEAR_RECOVERY_START_HOUR := 22
@@ -28,7 +28,7 @@ const ABANDON_BUTTON_DEFAULT_MODULATE := Color.WHITE
 	$UI/SeedChoices/SeedChoice3 as StageClearSeedChoice,
 ]
 @onready var abandon_button: Button = $UI/AbandonButton
-@onready var abandon_button_frame: TextureRect = $UI/AbandonButton/Frame
+@onready var abandon_button_frame: NinePatchRect = $UI/AbandonButton/Frame
 @onready var flower_slots: Array[Button] = [
 	$CharacterArea/FlowerSlots/FlowerSlot1 as Button,
 	$CharacterArea/FlowerSlots/FlowerSlot2 as Button,
@@ -135,7 +135,7 @@ func _show_select_mode() -> void:
 	abandon_button.disabled = false
 	_reset_abandon_button_visual()
 	_reset_abandon_button_scale()
-	abandon_button.text = "放棄する　HP +%d%%回復" % roundi(_get_abandon_extra_recovery_rate() * 100.0)
+	abandon_button.text = "放棄(HP%d%%回復)" % roundi(_get_abandon_extra_recovery_rate() * 100.0)
 	_update_hp_heal_plan()
 	for i in range(seed_choices.size()):
 		seed_choices[i].set_choice_disabled(_get_seed_option(i) == null)

@@ -5,7 +5,7 @@ const HOVER_SCALE := 1.1
 const PRESSED_SCALE := 0.95
 const TWEEN_DURATION := 0.1
 
-@onready var frame: TextureRect = $Frame
+@onready var frame: NinePatchRect = $Frame
 @onready var seed_texture_rect: TextureRect = $SeedTexture
 @onready var name_label: Label = $NameLabel
 @onready var effect_label: Label = $EffectLabel
