@@ -3,6 +3,7 @@ extends Resource
 
 @export var skill_id := 0
 @export var category := ""
+@export var rarity: StringName = &"normal"
 @export var display_name := ""
 @export var texture: Texture2D
 @export var stock_count := 0

@@ -37,7 +37,7 @@ func setup_choice(seed: SeedOptionDefinition) -> void:
 	effect_label.text = _get_seed_effect_text(seed)
 	seed_texture_rect.texture = _get_flower_texture(seed)
 	frame.texture = _get_frame_texture(seed)
-	valuable_icon.visible = seed.rarity != RARITY_NORMAL
+	valuable_icon.visible = _is_special_dream_seed(seed)
 
 
 func set_debug_numbers_visible(is_visible: bool) -> void:
@@ -133,6 +133,12 @@ func _get_frame_texture(seed: SeedOptionDefinition) -> Texture2D:
 	if seed.rarity != RARITY_NORMAL:
 		return _base_frame_texture
 	return seed.frame_texture
+
+
+func _is_special_dream_seed(seed: SeedOptionDefinition) -> bool:
+	if seed.dream_seed_skill == null:
+		return false
+	return seed.dream_seed_skill.rarity != RARITY_NORMAL
 
 
 func _get_or_empty(text: String) -> String:

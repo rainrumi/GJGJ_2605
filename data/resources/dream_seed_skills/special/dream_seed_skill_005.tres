@@ -7,6 +7,7 @@
 script = ExtResource("1_script")
 skill_id = 5
 category = "反射系統"
+rarity = &"special"
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
 stock_count = 1

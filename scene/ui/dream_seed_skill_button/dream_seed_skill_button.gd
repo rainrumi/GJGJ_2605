@@ -11,7 +11,6 @@ const TOOLTIP_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_see
 var source_data: Resource
 var icon_source_data: Resource
 var seed_skill: DreamSeedSkillDefinition
-var rarity: StringName = RARITY_NORMAL
 var tooltip_panel: DreamSeedSkillTooltipView
 var debug_numbers_visible := false
 
@@ -31,11 +30,9 @@ func _ready() -> void:
 func set_seed_source(source: Resource) -> void:
 	source_data = source
 	seed_skill = null
-	rarity = RARITY_NORMAL
 	if source is FlowerDefinition:
 		var flower := source as FlowerDefinition
 		seed_skill = flower.dream_seed_skill
-		rarity = flower.rarity
 	elif source is DreamSeedSkillDefinition:
 		seed_skill = source as DreamSeedSkillDefinition
 	set_seed_icon_source(source)
@@ -111,7 +108,7 @@ func _get_title_text() -> String:
 
 
 func _is_rare_seed() -> bool:
-	return rarity != RARITY_NORMAL
+	return seed_skill != null and seed_skill.rarity != RARITY_NORMAL
 
 
 func _get_or_empty(text: String) -> String:

@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 category = "夢の花系統"
+rarity = &"special"
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
 main_description = "メインスキル"
