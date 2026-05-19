@@ -7,10 +7,9 @@
 script = ExtResource("1_script")
 skill_id = 1003
 category = "夢の花系統"
-rarity = 0
 display_name = "カプチーノ"
 texture = ExtResource("2_yn8ot")
 stock_count = 1
-main_description = "消化間隔-5%（この効果は最大20%まで。同種同名の花同士で有効な効果量上限は共有される。メイン効果とサブ効果は同じ上限を共有する。）"
+main_description = "消化間隔-5%（この効果はメインとサブ合わせて20%まで。この花はひとつしか持てない）"
 sub_description = "即時発動
-消化間隔-15%（この種類の花で有効な効果量は最大20%まで。メイン効果とサブ効果は同じ上限を共有する。）"
+消化間隔-15%（この効果はメインとサブ合わせて20%まで。この花はひとつしか持てない）"

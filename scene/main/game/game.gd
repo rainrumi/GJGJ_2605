@@ -9,7 +9,7 @@ const TIME_OVER_HP_RECOVERY_RATE: float = 0.7
 const DIGEST_AUTO_INTERVAL: float = 0.05
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
-const DREAM_SEED_SKILL_CATALOG := preload("res://data/resources/dream_seed_skills/dream_seed_skill_catalog.tres")
+const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/dream_seed_skills/dream_seed_skill_catalog.tres")
 @export var enemy_definitions: Array[Resource] = []
 @export var nightmare_skill_catalog: NightmareSkillCatalog
 @onready var ui: BattleUI = $UI
@@ -233,11 +233,12 @@ func _get_debug_seed_flower_candidates() -> Array[FlowerDefinition]:
 
 func _append_debug_seed_flower_candidates(
 	candidates: Array[FlowerDefinition],
-	skills: Array[DreamSeedSkillDefinition]
+	skills: Array
 ) -> void:
-	for skill in skills:
-		if skill == null:
+	for skill_resource in skills:
+		if not skill_resource is DreamSeedSkillDefinition:
 			continue
+		var skill := skill_resource as DreamSeedSkillDefinition
 		var flower := FlowerDefinition.new()
 		flower.display_name = skill.display_name
 		flower.texture = skill.texture

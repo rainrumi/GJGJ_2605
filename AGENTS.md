@@ -14,11 +14,6 @@
 - GDScript の書き方・命名: `.codex/gdscript-style.md`
 - シーン・ノード・信号の契約: `.codex/scene-contracts.md`
 - 確認手順と安全な変更方針: `.codex/workflow-checks.md`
-- 責務分離・依存方向・Godot シーン設計: `.codex/godot-scene-architecture.md`
-- ゲーム進行状態・戦闘開始 Context: `.codex/state-and-context.md`
-- ステージ・スキル・Resource 設計: `.codex/data-resource-design.md`
-- UI / Tooltip / 表示状態設計: `.codex/ui-view-guidelines.md`
-- 今回のリファクタリング方針: `.codex/refactor-roadmap.md`
 
 毎回すべての参照ファイルを読む必要はない。タスクに必要な範囲だけを読み、コンテキストを小さく保つこと。
 
