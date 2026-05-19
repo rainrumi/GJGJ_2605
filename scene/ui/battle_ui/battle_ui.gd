@@ -6,6 +6,9 @@ signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
+signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
+signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
+signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
 
 @onready var digest_damage_panel: Control = $DigestiveDMG
 @onready var digest_damage_icon: Control = $DigestiveDMG/digestiveDMG_icon
@@ -31,6 +34,7 @@ var _rest_recovery_bonus_rate := 0.0
 
 func _ready() -> void:
 	_prepare_digest_mouse_filters()
+	dream_seed_skill_buttons.set_sub_skill_drag_enabled(true)
 	_connect_child_signals()
 	hide_nightmare_tooltip()
 	hide_digest_damage_tooltip()
@@ -239,6 +243,9 @@ func _connect_child_signals() -> void:
 	status_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	status_panel.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
 	status_panel.debug_seed_requested.connect(_on_debug_seed_requested)
+	dream_seed_skill_buttons.seed_skill_drag_started.connect(_on_seed_skill_drag_started)
+	dream_seed_skill_buttons.seed_skill_drag_moved.connect(_on_seed_skill_drag_moved)
+	dream_seed_skill_buttons.seed_skill_drag_released.connect(_on_seed_skill_drag_released)
 	digest_damage_panel.mouse_entered.connect(show_digest_damage_tooltip)
 	digest_damage_panel.mouse_exited.connect(hide_digest_damage_tooltip)
 	digest_efficiency_panel.mouse_entered.connect(show_digest_efficiency_tooltip)
@@ -300,3 +307,27 @@ func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> vo
 
 func _on_debug_seed_requested() -> void:
 	debug_seed_requested.emit()
+
+
+func _on_seed_skill_drag_started(
+	button: DreamSeedSkillButton,
+	seed_skill: DreamSeedSkillDefinition,
+	mouse_position: Vector2
+) -> void:
+	seed_skill_drag_started.emit(button, seed_skill, mouse_position)
+
+
+func _on_seed_skill_drag_moved(
+	button: DreamSeedSkillButton,
+	seed_skill: DreamSeedSkillDefinition,
+	mouse_position: Vector2
+) -> void:
+	seed_skill_drag_moved.emit(button, seed_skill, mouse_position)
+
+
+func _on_seed_skill_drag_released(
+	button: DreamSeedSkillButton,
+	seed_skill: DreamSeedSkillDefinition,
+	mouse_position: Vector2
+) -> void:
+	seed_skill_drag_released.emit(button, seed_skill, mouse_position)

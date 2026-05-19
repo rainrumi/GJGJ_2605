@@ -1,8 +1,14 @@
 class_name DreamSeedSkillButton
 extends Button
 
+signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
+signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
+signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
+
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
 const TOOLTIP_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_seed_skill_tooltip.tscn")
+const LOW_STOCK_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
+const NORMAL_ICON_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 
 @onready var frame: TextureRect = $Frame
 @onready var icon_rect: TextureRect = $Icon
@@ -12,6 +18,9 @@ var icon_source_data: Resource
 var seed_skill: DreamSeedSkillDefinition
 var tooltip_panel: DreamSeedSkillTooltipView
 var debug_numbers_visible := false
+var sub_skill_drag_enabled := false
+var _remaining_stock := 0
+var _dragging := false
 
 
 func _ready() -> void:
@@ -35,12 +44,20 @@ func set_seed_source(source: Resource) -> void:
 	elif source is DreamSeedSkillDefinition:
 		seed_skill = source as DreamSeedSkillDefinition
 	set_seed_icon_source(source)
+	_remaining_stock = seed_skill.stock_count if seed_skill != null else 0
 	disabled = seed_skill == null
+	_update_drag_state()
 	_refresh_tooltip()
 
 
 func set_seed_icon_source(source: Resource) -> void:
 	icon_source_data = source
+	if source is FlowerDefinition:
+		set_seed_icon_texture((source as FlowerDefinition).texture)
+	elif source is DreamSeedSkillDefinition:
+		set_seed_icon_texture((source as DreamSeedSkillDefinition).texture)
+	else:
+		set_seed_icon_texture(null)
 
 
 func set_seed_icon_texture(texture: Texture2D) -> void:
@@ -55,6 +72,40 @@ func get_seed_source() -> Resource:
 func set_debug_numbers_visible(is_visible: bool) -> void:
 	debug_numbers_visible = is_visible
 	_refresh_tooltip()
+
+
+func set_sub_skill_drag_enabled(is_enabled: bool) -> void:
+	sub_skill_drag_enabled = is_enabled
+	_update_drag_state()
+
+
+func consume_stock() -> void:
+	_remaining_stock = maxi(0, _remaining_stock - 1)
+	_update_drag_state()
+	_refresh_tooltip()
+
+
+func _process(_delta: float) -> void:
+	if not _dragging or seed_skill == null:
+		return
+	seed_skill_drag_moved.emit(self, seed_skill, get_viewport().get_mouse_position())
+
+
+func _input(event: InputEvent) -> void:
+	if not _dragging:
+		return
+	if event is InputEventMouseButton:
+		var mouse_button := event as InputEventMouseButton
+		if mouse_button.button_index == MOUSE_BUTTON_LEFT and not mouse_button.pressed:
+			_dragging = false
+			seed_skill_drag_released.emit(self, seed_skill, mouse_button.position)
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mouse_button := event as InputEventMouseButton
+		if mouse_button.button_index == MOUSE_BUTTON_LEFT and mouse_button.pressed:
+			_try_start_drag(mouse_button.position)
 
 
 func _refresh_tooltip() -> void:
@@ -76,7 +127,7 @@ func _get_tooltip_text() -> String:
 	]
 	if _is_rare_seed():
 		lines.append("サブスキル: %s" % _get_or_empty(seed_skill.sub_description))
-	lines.append("使用可能数: %d" % seed_skill.stock_count)
+	lines.append("使用可能数: %d" % _remaining_stock)
 	if debug_numbers_visible:
 		lines.append("ID: %d" % seed_skill.skill_id)
 	return "\n".join(lines)
@@ -119,3 +170,24 @@ func _get_or_empty(text: String) -> String:
 	if text.is_empty():
 		return "-"
 	return text
+
+
+func _try_start_drag(mouse_position: Vector2) -> void:
+	if not _can_use_sub_skill():
+		return
+	_dragging = true
+	seed_skill_drag_started.emit(self, seed_skill, mouse_position)
+
+
+func _can_use_sub_skill() -> bool:
+	return sub_skill_drag_enabled and seed_skill != null and _has_sub_skill() and _remaining_stock > 0
+
+
+func _has_sub_skill() -> bool:
+	return seed_skill != null and not seed_skill.sub_description.strip_edges().is_empty()
+
+
+func _update_drag_state() -> void:
+	if icon_rect != null:
+		icon_rect.self_modulate = LOW_STOCK_COLOR if sub_skill_drag_enabled and seed_skill != null and _remaining_stock <= 1 else NORMAL_ICON_COLOR
+	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if _can_use_sub_skill() else Control.CURSOR_ARROW

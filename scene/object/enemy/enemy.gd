@@ -16,6 +16,7 @@ const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_100
 @onready var damage_label: Label = $DamageText
 var definition: EnemyDefinition
 var skill_definition: NightmareSkillDefinition
+var seed_skill_definition: DreamSeedSkillDefinition
 var has_main_effect := false
 var max_hp := 0
 var damage := 0
@@ -44,6 +45,7 @@ var _texture_override: Texture2D
 func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_skill: NightmareSkillDefinition = null, has_effect := false, start_position_override := Vector2.INF) -> void:
 	definition = enemy_definition
 	skill_definition = nightmare_skill
+	seed_skill_definition = null
 	has_main_effect = has_effect
 	max_hp = enemy_definition.max_hp
 	damage = enemy_definition.damage
@@ -142,6 +144,22 @@ func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
 	set_texture_override(ONE_CELL_STOMACH_TEXTURE, target_size)
 	gravity_locked = true
 	activation_deferred = true
+
+
+func setup_as_seed_stomach_block(seed_skill: DreamSeedSkillDefinition, target_size: Vector2) -> void:
+	setup_as_one_cell_stomach_block(target_size)
+	seed_skill_definition = seed_skill
+	max_hp = 1
+	current_hp = 1
+	damage = 0
+	base_damage = 0
+	display_damage_override = 0
+	_update_hp_label()
+	_update_damage_label()
+
+
+func is_seed_stomach_block() -> bool:
+	return seed_skill_definition != null
 func update_stomach_display_size(target_size: Vector2) -> void:
 	if sprite == null or sprite.texture == null:
 		return
