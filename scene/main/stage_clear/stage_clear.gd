@@ -12,13 +12,11 @@ const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
 const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
-@export var max_normal_flowers := 3
-@export var max_rare_flowers := 2
+@export var max_flowers := 35
 @export var initial_flower: FlowerDefinition
 @export var seed_options: Array[Resource] = []
 @onready var hp_view: HpView = $CharacterArea/HpFrame
 @onready var dream_seed_skill_buttons: DreamSeedSkillButtonList = $CharacterArea/DreamSeedSkillButtons
-@onready var planted_info_text: Label = $CharacterArea/PlantedInfoFrame/PlantedInfoText
 @onready var guide_text: Label = $UI/GuideText
 @onready var debug_button: Button = $UI/DebugButton
 @onready var seed_choices: Array[StageClearSeedChoice] = [
@@ -198,7 +196,7 @@ func _show_finished_mode(message: String) -> void:
 		slot.disabled = true
 	_update_hp_heal_plan()
 func _can_plant_seed(seed: SeedOptionDefinition) -> bool:
-	return StageClearRecoveryCalculator.can_plant_seed(seed, planted_flowers, max_normal_flowers, max_rare_flowers)
+	return StageClearRecoveryCalculator.can_plant_seed(seed, planted_flowers, max_flowers)
 
 
 func _finish_seed_choice(recovered_rate: float, message: String) -> void:
@@ -214,11 +212,11 @@ func _create_seed_flower(seed: SeedOptionDefinition) -> FlowerDefinition:
 	var flower := seed.flower_definition.duplicate() as FlowerDefinition
 	flower.dream_seed_skill = seed.dream_seed_skill
 	return flower
-func _replace_flower(seed: SeedOptionDefinition, flower: FlowerDefinition) -> void:
+func _replace_flower(_seed: SeedOptionDefinition, flower: FlowerDefinition) -> void:
 	if flower == null:
 		return
 	for i in range(planted_flowers.size()):
-		if StageClearRecoveryCalculator.get_flower_rarity(planted_flowers[i]) != StageClearRecoveryCalculator.get_seed_rarity(seed):
+		if planted_flowers[i] == null:
 			continue
 		planted_flowers[i] = flower
 		return
@@ -250,11 +248,11 @@ func _get_preview_flowers_for_seed(seed: SeedOptionDefinition) -> Array[FlowerDe
 	var flower := _create_seed_flower(seed)
 	if flower == null:
 		return preview_flowers
-	if StageClearRecoveryCalculator.can_plant_seed(seed, preview_flowers, max_normal_flowers, max_rare_flowers):
+	if StageClearRecoveryCalculator.can_plant_seed(seed, preview_flowers, max_flowers):
 		preview_flowers.append(flower)
 		return preview_flowers
 	for i in range(preview_flowers.size()):
-		if StageClearRecoveryCalculator.get_flower_rarity(preview_flowers[i]) != StageClearRecoveryCalculator.get_seed_rarity(seed):
+		if preview_flowers[i] == null:
 			continue
 		preview_flowers[i] = flower
 		return preview_flowers
@@ -290,7 +288,6 @@ func _refresh_flower_slots() -> void:
 			continue
 		texture_rect.texture = display_textures[i]
 		flower_slots[i].disabled = true
-	_update_planted_info_text()
 	_refresh_dream_seed_skill_buttons()
 
 
@@ -309,12 +306,6 @@ func _get_display_flower_texture(flower: FlowerDefinition) -> Texture2D:
 	if flower == null or flower.dream_seed_skill == null:
 		return null
 	return flower.dream_seed_skill.texture
-func _update_planted_info_text() -> void:
-	var normal_count := StageClearRecoveryCalculator.count_planted_by_rarity(planted_flowers, DreamSeedSkillDefinition.Rarity.NORMAL)
-	var rare_count := StageClearRecoveryCalculator.count_planted_by_rarity(planted_flowers, DreamSeedSkillDefinition.Rarity.RARE)
-	var normal_remaining := maxi(0, max_normal_flowers - normal_count)
-	var rare_remaining := maxi(0, max_rare_flowers - rare_count)
-	planted_info_text.text = "植えられる数\n通常　あと %d本\nレア　あと %d本" % [normal_remaining, rare_remaining]
 func _set_hp(value: int, animated: bool) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	hp_view.set_hp(current_hp, MAX_HP, animated)

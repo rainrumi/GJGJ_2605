@@ -9,40 +9,18 @@ const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
 const DREAM_SEED_SPECIAL_EXTRA_CHOICE_START_HOUR := 28
 
 
-static func can_plant_seed(seed: SeedOptionDefinition, planted_flowers: Array[FlowerDefinition], max_normal: int, max_rare: int) -> bool:
+static func can_plant_seed(seed: SeedOptionDefinition, planted_flowers: Array[FlowerDefinition], max_flowers: int) -> bool:
 	if seed.flower_definition == null:
 		return false
-	var rarity := get_seed_rarity(seed)
-	return count_planted_by_rarity(planted_flowers, rarity) < get_max_flowers_by_rarity(rarity, max_normal, max_rare)
+	return count_planted_flowers(planted_flowers) < max_flowers
 
 
-static func get_seed_rarity(seed: SeedOptionDefinition) -> int:
-	if seed == null or seed.dream_seed_skill == null:
-		return DreamSeedSkillDefinition.Rarity.NORMAL
-	return seed.dream_seed_skill.rarity
-
-
-static func get_flower_rarity(flower: FlowerDefinition) -> int:
-	if flower == null or flower.dream_seed_skill == null:
-		return DreamSeedSkillDefinition.Rarity.NORMAL
-	return flower.dream_seed_skill.rarity
-
-
-static func count_planted_by_rarity(planted_flowers: Array[FlowerDefinition], rarity: int) -> int:
+static func count_planted_flowers(planted_flowers: Array[FlowerDefinition]) -> int:
 	var count := 0
 	for flower in planted_flowers:
-		if flower != null and get_flower_rarity(flower) == rarity:
+		if flower != null:
 			count += 1
 	return count
-
-
-static func get_max_flowers_by_rarity(rarity: int, max_normal: int, max_rare: int) -> int:
-	match rarity:
-		DreamSeedSkillDefinition.Rarity.NORMAL:
-			return max_normal
-		DreamSeedSkillDefinition.Rarity.RARE:
-			return max_rare
-	return 0
 
 
 static func get_planned_recovery_rate(

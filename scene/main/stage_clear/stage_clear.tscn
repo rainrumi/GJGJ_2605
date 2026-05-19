@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://ccel0yj6xx277" path="res://scene/main/stage_clear/stage_clear.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://art/character/tex_character_portrate_1000.png" id="3_character"]
-[ext_resource type="Texture2D" uid="uid://cs7k0sbpnhylu" path="res://art/stage_clear/ui_seed_guide_frame_1000.png" id="4_guide_frame"]
 [ext_resource type="PackedScene" uid="uid://cdxfuey83p5f0" path="res://scene/main/stage_clear/seed_choice.tscn" id="5_seed_choice"]
 [ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="8_clear_effect"]
 [ext_resource type="PackedScene" uid="uid://cfjja3p43w2i0" path="res://scene/ui/hp/hp.tscn" id="9_hp_scene"]
@@ -105,31 +104,6 @@ offset_bottom = 44.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-
-[node name="PlantedInfoFrame" type="TextureRect" parent="CharacterArea" unique_id=2006200451]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-offset_left = 160.0
-offset_top = 75.0
-offset_right = 283.0
-offset_bottom = 143.0
-mouse_filter = 2
-texture = ExtResource("4_guide_frame")
-
-[node name="PlantedInfoText" type="Label" parent="CharacterArea/PlantedInfoFrame" unique_id=1010225640]
-layout_mode = 0
-offset_left = 9.0
-offset_top = 8.0
-offset_right = 114.0
-offset_bottom = 58.0
-theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 13
-text = "植えられる数
-通常 あと 0本
-高級 あと 0本"
-vertical_alignment = 1
 
 [node name="UI" type="Control" parent="." unique_id=450061926]
 layout_mode = 3
