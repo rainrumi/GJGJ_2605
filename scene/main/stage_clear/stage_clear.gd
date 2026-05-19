@@ -86,14 +86,6 @@ func _get_seed_display_name(seed: SeedOptionDefinition) -> String:
 	if seed.dream_seed_skill != null:
 		return seed.dream_seed_skill.display_name
 	return seed.display_name
-func _get_seed_effect_text(seed: SeedOptionDefinition) -> String:
-	if seed.dream_seed_skill != null:
-		return seed.dream_seed_skill.main_description
-	return seed.effect_text
-func _get_seed_texture(seed: SeedOptionDefinition) -> Texture2D:
-	if seed.dream_seed_skill != null:
-		return seed.dream_seed_skill.texture
-	return seed.seed_texture
 func _setup_seed_choices() -> void:
 	for i in range(seed_choices.size()):
 		var seed_choice := seed_choices[i]
@@ -101,13 +93,7 @@ func _setup_seed_choices() -> void:
 		if seed == null:
 			seed_choice.set_choice_disabled(true)
 			continue
-		seed_choice.setup_choice(
-			_get_seed_display_name(seed),
-			_get_seed_effect_text(seed),
-			_get_seed_texture(seed),
-			seed.frame_texture,
-			seed.effect_font_size
-		)
+		seed_choice.setup_choice(seed)
 		seed_choice.pressed.connect(_on_seed_choice_pressed.bind(i))
 		seed_choice.mouse_entered.connect(_on_seed_choice_mouse_entered.bind(i))
 		seed_choice.mouse_exited.connect(_on_seed_choice_mouse_exited)
