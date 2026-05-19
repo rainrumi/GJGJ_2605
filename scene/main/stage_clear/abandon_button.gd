@@ -1,14 +1,13 @@
-class_name StageClearSeedChoice
+class_name StageClearAbandonButton
 extends Button
 
 const HOVER_SCALE := 1.1
 const PRESSED_SCALE := 0.95
 const TWEEN_DURATION := 0.1
+const PRESSED_MODULATE := Color.WHITE
+const DEFAULT_MODULATE := Color.WHITE
 
 @onready var frame: NinePatchRect = $Frame
-@onready var seed_texture_rect: NinePatchRect = $SeedTexture
-@onready var name_label: Label = $NameLabel
-@onready var effect_label: Label = $EffectLabel
 
 var _base_scale := Vector2.ONE
 var _hovered := false
@@ -25,35 +24,29 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 
-func setup_choice(
-	title: String,
-	effect: String,
-	seed_texture: Texture2D,
-	frame_texture: Texture2D,
-	effect_font_size: int
-) -> void:
-	name_label.text = title
-	effect_label.text = effect
-	effect_label.add_theme_font_size_override("font_size", effect_font_size)
-	seed_texture_rect.texture = seed_texture
-	frame.texture = frame_texture
+func set_recovery_rate(recovery_rate: float) -> void:
+	text = "放棄(HP%d%%回復)" % roundi(recovery_rate * 100.0)
 
 
-func set_choice_disabled(value: bool) -> void:
-	disabled = value
-	if disabled:
-		_reset_scale_state()
+func reset_visual_state() -> void:
+	_hovered = false
+	_pressed = false
+	frame.modulate = DEFAULT_MODULATE
+	if _scale_tween != null and _scale_tween.is_valid():
+		_scale_tween.kill()
+	frame.scale = _base_scale
 
 
 func _on_button_down() -> void:
 	_pressed = true
+	frame.modulate = PRESSED_MODULATE
 	_update_scale()
 
 
 func _on_button_up() -> void:
 	_pressed = false
 	_hovered = false
-	_update_scale()
+	reset_visual_state()
 
 
 func _on_mouse_entered() -> void:
@@ -79,11 +72,3 @@ func _update_scale() -> void:
 	_scale_tween.set_trans(Tween.TRANS_QUAD)
 	_scale_tween.set_ease(Tween.EASE_OUT)
 	_scale_tween.tween_property(frame, "scale", target_scale, TWEEN_DURATION)
-
-
-func _reset_scale_state() -> void:
-	_hovered = false
-	_pressed = false
-	if _scale_tween != null and _scale_tween.is_valid():
-		_scale_tween.kill()
-	frame.scale = _base_scale

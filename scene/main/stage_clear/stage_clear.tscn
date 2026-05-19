@@ -5,7 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://art/character/tex_character_portrate_1000.png" id="3_character"]
 [ext_resource type="Texture2D" uid="uid://cs7k0sbpnhylu" path="res://art/stage_clear/ui_seed_guide_frame_1000.png" id="4_guide_frame"]
 [ext_resource type="PackedScene" uid="uid://cdxfuey83p5f0" path="res://scene/main/stage_clear/seed_choice.tscn" id="5_seed_choice"]
-[ext_resource type="Texture2D" uid="uid://bvewbj2k87hga" path="res://art/stage_clear/ui_choise_cancel_frame_1000.png" id="7_cancel_frame"]
 [ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="8_clear_effect"]
 [ext_resource type="PackedScene" uid="uid://cfjja3p43w2i0" path="res://scene/ui/hp/hp.tscn" id="9_hp_scene"]
 [ext_resource type="Resource" path="res://data/resources/stage_clear/normal_flower.tres" id="11_initial_flower"]
@@ -13,6 +12,7 @@
 [ext_resource type="Resource" uid="uid://bg6i2wg73s6mj" path="res://data/resources/stage_clear/chamomile_seed.tres" id="13_chamomile_seed"]
 [ext_resource type="Resource" uid="uid://bdc1rl2wr5u3c" path="res://data/resources/stage_clear/capuchi_seed.tres" id="14_capuchi_seed"]
 [ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/dream_seed_skill_button/dream_seed_skill_button_list.gd" id="15_dream_seed_skill_button_list"]
+[ext_resource type="PackedScene" uid="uid://bfh6kan0q3y4s" path="res://scene/main/stage_clear/abandon_button.tscn" id="16_abandon_button"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
@@ -199,29 +199,13 @@ layout_mode = 2
 [node name="SeedChoice3" parent="UI/SeedChoices" unique_id=1608006173 instance=ExtResource("5_seed_choice")]
 layout_mode = 2
 
-[node name="AbandonButton" type="Button" parent="UI" unique_id=1850666034]
+[node name="AbandonButton" parent="UI" unique_id=1850666034 instance=ExtResource("16_abandon_button")]
 layout_mode = 0
 offset_left = 175.0
 offset_top = 322.0
 offset_right = 295.0
 offset_bottom = 348.0
-theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_pressed_color = Color(0.15686275, 0.13333334, 0.5647059, 1)
-theme_override_colors/font_hover_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_colors/font_disabled_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 13
-text = "放棄する"
-flat = true
 
-[node name="Frame" type="NinePatchRect" parent="UI/AbandonButton" unique_id=1597878282]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-show_behind_parent = true
-layout_mode = 0
-offset_right = 120.0
-offset_bottom = 26.0
-texture = ExtResource("7_cancel_frame")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+[connection signal="mouse_entered" from="UI/AbandonButton" to="." method="_on_abandon_button_mouse_entered"]
+[connection signal="mouse_exited" from="UI/AbandonButton" to="." method="_on_abandon_button_mouse_exited"]
+[connection signal="pressed" from="UI/AbandonButton" to="." method="_on_abandon_button_pressed"]
