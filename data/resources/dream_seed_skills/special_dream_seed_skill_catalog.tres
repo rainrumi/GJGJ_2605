@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://ddp1sdlbaqo0t" path="res://data/definitions/dream_seed_skill_catalog.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="2_5yhrw"]
-[ext_resource type="Resource" uid="uid://c6ghye4faoqck" path="res://data/resources/dream_seed_skills/special/dream_seed_skill_000.tres" id="2_skill"]
 [ext_resource type="Resource" uid="uid://by72oo4mnni1l" path="res://data/resources/dream_seed_skills/special/dream_seed_skill_001.tres" id="3_skill"]
 [ext_resource type="Resource" uid="uid://cw5psdb31ijoc" path="res://data/resources/dream_seed_skills/special/dream_seed_skill_002.tres" id="4_skill"]
 [ext_resource type="Resource" uid="uid://xy0783ffixh6" path="res://data/resources/dream_seed_skills/special/dream_seed_skill_003.tres" id="5_skill"]
@@ -12,4 +11,4 @@
 [resource]
 script = ExtResource("1_script")
 is_special = true
-skills = Array[ExtResource("2_5yhrw")]([ExtResource("2_skill"), ExtResource("3_skill"), ExtResource("4_skill"), ExtResource("5_skill"), ExtResource("6_skill"), ExtResource("7_skill")])
+skills = Array[ExtResource("2_5yhrw")]([ExtResource("3_skill"), ExtResource("4_skill"), ExtResource("5_skill"), ExtResource("6_skill"), ExtResource("7_skill")])
