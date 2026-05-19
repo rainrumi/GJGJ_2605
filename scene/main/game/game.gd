@@ -9,6 +9,10 @@ const TIME_OVER_HP_RECOVERY_RATE: float = 0.7
 const DIGEST_AUTO_INTERVAL: float = 0.05
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
+const RARITY_NORMAL: StringName = &"normal"
+const RARITY_HIGH: StringName = &"high"
+const NORMAL_DREAM_SEED_SKILL_CATALOG := preload("res://data/resources/dream_seed_skills/normal_dream_seed_skill_catalog.tres")
+const SPECIAL_DREAM_SEED_SKILL_CATALOG := preload("res://data/resources/dream_seed_skills/special_dream_seed_skill_catalog.tres")
 @export var enemy_definitions: Array[Resource] = []
 @export var nightmare_skill_catalog: NightmareSkillCatalog
 @onready var ui: BattleUI = $UI
@@ -37,6 +41,7 @@ var dragged_enemy_original_cell := Vector2i.ZERO
 var dragged_enemy_original_global_position := Vector2.ZERO
 var hovered_enemy: Enemy
 var last_time_over_recovery_percent := 0
+var battle_flowers: Array[FlowerDefinition] = []
 func _ready() -> void:
 	randomize()
 	enemy_setup.setup(self, input_controller, stomach, enemy_definitions, nightmare_skill_catalog)
@@ -58,7 +63,8 @@ func start_battle(context: BattleStartContext = null) -> void:
 	debug_numbers_visible = false
 	_set_battle_flags(false)
 	digest_controller.clear_scheduled_events()
-	digest_controller.setup(battle_context.flowers)
+	_set_battle_flowers(battle_context.flowers)
+	digest_controller.setup(battle_flowers)
 	dragging_enemy = null
 	hovered_enemy = null
 	enemy_setup.setup_enemies(enemies)
@@ -70,7 +76,7 @@ func start_battle(context: BattleStartContext = null) -> void:
 		REST_HP_RATE,
 		digest_controller.get_rest_recovery_bonus_rate()
 	)
-	ui.set_dream_seed_skill_sources(battle_context.flowers)
+	ui.set_dream_seed_skill_sources(battle_flowers)
 	stomach.hide_preview()
 	battle_active = true
 	input_controller.set_active(true)
@@ -88,6 +94,7 @@ func _connect_ui() -> void:
 	ui.debug_message_requested.connect(_on_debug_message_requested)
 	ui.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	ui.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
+	ui.debug_seed_requested.connect(_on_debug_seed_requested)
 func _connect_input() -> void:
 	input_controller.setup(enemies)
 	input_controller.enemy_drag_started.connect(_on_enemy_drag_started)
@@ -190,6 +197,57 @@ func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> vo
 	stomach.set_grid_size(stomach.columns + delta_columns, stomach.rows + delta_rows)
 	_refresh_enemy_stomach_display_sizes()
 	_refresh_ui()
+
+
+func _on_debug_seed_requested() -> void:
+	if not battle_active or not debug_numbers_visible or digest_turn_in_progress or dragging_enemy != null:
+		return
+	var flower := _get_random_debug_seed_flower()
+	if flower == null:
+		return
+	battle_flowers.append(flower)
+	digest_controller.set_seed_effect_flowers(battle_flowers)
+	ui.set_dream_seed_skill_sources(battle_flowers)
+	_refresh_ui()
+
+
+func _set_battle_flowers(flowers: Array) -> void:
+	battle_flowers.clear()
+	for flower in flowers:
+		if flower is FlowerDefinition:
+			battle_flowers.append(flower as FlowerDefinition)
+
+
+func _get_random_debug_seed_flower() -> FlowerDefinition:
+	var candidates := _get_debug_seed_flower_candidates()
+	if candidates.is_empty():
+		return null
+	return candidates[randi() % candidates.size()]
+
+
+func _get_debug_seed_flower_candidates() -> Array[FlowerDefinition]:
+	var candidates: Array[FlowerDefinition] = []
+	_append_debug_seed_flower_candidates(candidates, NORMAL_DREAM_SEED_SKILL_CATALOG, RARITY_NORMAL)
+	_append_debug_seed_flower_candidates(candidates, SPECIAL_DREAM_SEED_SKILL_CATALOG, RARITY_HIGH)
+	return candidates
+
+
+func _append_debug_seed_flower_candidates(
+	candidates: Array[FlowerDefinition],
+	catalog: DreamSeedSkillCatalog,
+	rarity: StringName
+) -> void:
+	if catalog == null:
+		return
+	for skill in catalog.skills:
+		if skill == null:
+			continue
+		var flower := FlowerDefinition.new()
+		flower.display_name = skill.display_name
+		flower.rarity = rarity
+		flower.texture = skill.texture
+		flower.dream_seed_skill = skill
+		candidates.append(flower)
 
 
 func _refresh_enemy_stomach_display_sizes() -> void:

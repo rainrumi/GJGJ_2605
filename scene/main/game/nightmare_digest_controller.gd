@@ -39,6 +39,10 @@ func setup(flowers: Array) -> void:
 	seed_effects.setup(flowers)
 
 
+func set_seed_effect_flowers(flowers: Array) -> void:
+	seed_effects.setup(flowers)
+
+
 func set_beat_conductor(beat_conductor: BeatConductor) -> void:
 	_beat_conductor = beat_conductor
 

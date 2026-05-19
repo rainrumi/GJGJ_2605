@@ -277,6 +277,16 @@ theme_override_fonts/font = ExtResource("13_font")
 theme_override_font_sizes/font_size = 9
 text = "リロール"
 
+[node name="DebugSeedButton" type="Button" parent="UI/StatusPanel"]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 339.0
+offset_right = 221.5
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("13_font")
+theme_override_font_sizes/font_size = 9
+text = "種+1"
+
 [node name="DebugMessageButton" type="Button" parent="UI/StatusPanel" unique_id=2146876269]
 layout_mode = 0
 offset_left = 434.0

@@ -5,6 +5,7 @@ signal digestion_requested
 signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
+signal debug_seed_requested
 
 @onready var digest_damage_panel: Control = $DigestiveDMG
 @onready var digest_damage_icon: Control = $DigestiveDMG/digestiveDMG_icon
@@ -232,6 +233,7 @@ func _connect_child_signals() -> void:
 	status_panel.debug_message_requested.connect(_on_debug_message_requested)
 	status_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	status_panel.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
+	status_panel.debug_seed_requested.connect(_on_debug_seed_requested)
 	digest_damage_panel.mouse_entered.connect(show_digest_damage_tooltip)
 	digest_damage_panel.mouse_exited.connect(hide_digest_damage_tooltip)
 	digest_efficiency_panel.mouse_entered.connect(show_digest_efficiency_tooltip)
@@ -289,3 +291,7 @@ func _on_debug_reroll_requested() -> void:
 
 func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> void:
 	debug_stomach_size_requested.emit(delta_columns, delta_rows)
+
+
+func _on_debug_seed_requested() -> void:
+	debug_seed_requested.emit()
