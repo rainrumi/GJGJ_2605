@@ -12,12 +12,14 @@ const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
 const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
+const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/dream_seed_skills/dream_seed_skill_catalog.tres")
 @export var max_flowers := 50
 @export var initial_flower: FlowerDefinition
 @export var seed_options: Array[Resource] = []
 @onready var hp_view: HpView = $CharacterArea/HpFrame
 @onready var dream_seed_skill_buttons: DreamSeedSkillButtonList = $CharacterArea/DreamSeedSkillButtons
 @onready var guide_text: Label = $UI/GuideText
+@onready var reroll_button: Button = $UI/RerollButton
 @onready var debug_button: Button = $UI/DebugButton
 @onready var seed_choices: Array[StageClearSeedChoice] = [
 	$UI/SeedChoices/SeedChoice1 as StageClearSeedChoice,
@@ -36,8 +38,11 @@ var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
 var _clear_recovery_applied := false
 var _remaining_extra_seed_choices := 0
 var _extra_seed_choice_granted := false
+var _seed_choice_active := false
+var _base_seed_options: Array[Resource] = []
 var debug_numbers_visible := false
 func _ready() -> void:
+	_cache_base_seed_options()
 	_initialize_planted_flowers()
 	_setup_seed_choices()
 	_setup_flower_slots()
@@ -48,6 +53,7 @@ func setup_hp(value: int) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	_clear_recovery_applied = false
 	_reset_extra_seed_choices()
+	_restore_base_seed_options()
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
@@ -56,6 +62,7 @@ func setup_clear_result(value: int, cleared_minutes: int) -> void:
 	clear_minutes = cleared_minutes
 	_clear_recovery_applied = false
 	_reset_extra_seed_choices()
+	_restore_base_seed_options()
 	_update_extra_seed_choices()
 	if is_node_ready():
 		_set_hp(current_hp, false)
@@ -65,6 +72,7 @@ func reset_player_state() -> void:
 	clear_minutes = CLEAR_RECOVERY_START_HOUR * 60
 	_clear_recovery_applied = false
 	_reset_extra_seed_choices()
+	_restore_base_seed_options()
 	_initialize_planted_flowers()
 	if is_node_ready():
 		_set_hp(current_hp, false)
@@ -82,6 +90,14 @@ func _initialize_planted_flowers() -> void:
 	if initial_flower != null:
 		planted_flowers.append(initial_flower)
 	_refresh_flower_slots()
+func _cache_base_seed_options() -> void:
+	_base_seed_options = seed_options.duplicate()
+
+
+func _restore_base_seed_options() -> void:
+	if _base_seed_options.is_empty():
+		return
+	seed_options = _base_seed_options.duplicate()
 func _get_seed_option(seed_index: int) -> SeedOptionDefinition:
 	if seed_index < 0 or seed_index >= seed_options.size():
 		return null
@@ -93,29 +109,48 @@ func _get_seed_display_name(seed: SeedOptionDefinition) -> String:
 func _setup_seed_choices() -> void:
 	for i in range(seed_choices.size()):
 		var seed_choice := seed_choices[i]
+		seed_choice.pressed.connect(_on_seed_choice_pressed.bind(i))
+		seed_choice.mouse_entered.connect(_on_seed_choice_mouse_entered.bind(i))
+		seed_choice.mouse_exited.connect(_on_seed_choice_mouse_exited)
+	_refresh_seed_choices()
+
+
+func _refresh_seed_choices() -> void:
+	for i in range(seed_choices.size()):
+		var seed_choice := seed_choices[i]
 		var seed := _get_seed_option(i)
 		if seed == null:
 			seed_choice.set_choice_disabled(true)
 			continue
 		seed_choice.setup_choice(seed)
-		seed_choice.pressed.connect(_on_seed_choice_pressed.bind(i))
-		seed_choice.mouse_entered.connect(_on_seed_choice_mouse_entered.bind(i))
-		seed_choice.mouse_exited.connect(_on_seed_choice_mouse_exited)
+		seed_choice.set_debug_numbers_visible(debug_numbers_visible)
+		seed_choice.set_choice_disabled(not _seed_choice_active)
 func _setup_flower_slots() -> void:
 	for slot in flower_slots:
 		slot.disabled = true
 
 
 func _setup_debug_button() -> void:
+	reroll_button.pressed.connect(_on_reroll_button_pressed)
 	debug_button.pressed.connect(_on_debug_button_pressed)
 	_apply_debug_button_state()
 	_update_debug_numbers_visible()
+	_update_reroll_button_state()
 
 
 func _on_debug_button_pressed() -> void:
 	debug_numbers_visible = not debug_numbers_visible
 	_apply_debug_button_state()
 	_update_debug_numbers_visible()
+	_update_reroll_button_state()
+
+
+func _on_reroll_button_pressed() -> void:
+	if not debug_numbers_visible or not _seed_choice_active:
+		return
+	_reroll_seed_options()
+	_refresh_seed_choices()
+	_update_hp_heal_plan()
 
 
 func _update_debug_numbers_visible() -> void:
@@ -143,6 +178,38 @@ func _apply_debug_button_state() -> void:
 	debug_button.remove_theme_stylebox_override("focus")
 
 
+func _update_reroll_button_state() -> void:
+	reroll_button.visible = debug_numbers_visible
+	reroll_button.disabled = not debug_numbers_visible or not _seed_choice_active
+
+
+func _reroll_seed_options() -> void:
+	var skills := _get_reroll_seed_skill_candidates()
+	if skills.is_empty():
+		return
+	skills.shuffle()
+	var rerolled_options: Array[Resource] = []
+	for i in range(seed_choices.size()):
+		var seed := _get_seed_option(i)
+		if seed == null:
+			continue
+		var rerolled_seed := seed.duplicate() as SeedOptionDefinition
+		rerolled_seed.dream_seed_skill = skills[i % skills.size()]
+		rerolled_options.append(rerolled_seed)
+	seed_options = rerolled_options
+
+
+func _get_reroll_seed_skill_candidates() -> Array[DreamSeedSkillDefinition]:
+	var candidates: Array[DreamSeedSkillDefinition] = []
+	for skill in DREAM_SEED_SKILL_CATALOG.normal_skills:
+		if skill != null:
+			candidates.append(skill)
+	for skill in DREAM_SEED_SKILL_CATALOG.rare_skills:
+		if skill != null:
+			candidates.append(skill)
+	return candidates
+
+
 func _create_debug_button_style(color: Color) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
@@ -154,12 +221,13 @@ func _create_debug_button_style(color: Color) -> StyleBoxFlat:
 	return style
 func _show_select_mode() -> void:
 	guide_text.text = "夢の種をひとつ選んでください"
+	_seed_choice_active = true
 	abandon_button.disabled = false
 	abandon_button.reset_visual_state()
 	abandon_button.set_recovery_rate(_get_abandon_extra_recovery_rate())
 	_update_hp_heal_plan()
-	for i in range(seed_choices.size()):
-		seed_choices[i].set_choice_disabled(_get_seed_option(i) == null)
+	_refresh_seed_choices()
+	_update_reroll_button_state()
 	for slot in flower_slots:
 		slot.disabled = true
 func _on_seed_choice_pressed(seed_index: int) -> void:
@@ -188,12 +256,14 @@ func _on_abandon_button_pressed() -> void:
 		_show_finished_mode("種を放棄しました")
 func _show_finished_mode(message: String) -> void:
 	guide_text.text = message
+	_seed_choice_active = false
 	abandon_button.disabled = true
 	abandon_button.reset_visual_state()
 	for seed_choice in seed_choices:
 		seed_choice.set_choice_disabled(true)
 	for slot in flower_slots:
 		slot.disabled = true
+	_update_reroll_button_state()
 	_update_hp_heal_plan()
 func _can_plant_seed(seed: SeedOptionDefinition) -> bool:
 	return StageClearRecoveryCalculator.can_plant_seed(seed, planted_flowers, max_flowers)

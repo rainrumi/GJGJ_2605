@@ -11,5 +11,5 @@ rarity = 1
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
 stock_count = 1
-main_description = "ステージクリアでHPを回復出来なくなる。4時以降にステージをクリアすると夢の種を追加で1回獲得できる。"
+main_description = "クリア時にHPを回復出来なくなる。4時以降にクリア時夢の種を追加で1回獲得できる。"
 sub_description = "時刻が4時以降のとき消化ダメージが200%上昇する。"

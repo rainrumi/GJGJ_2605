@@ -11,5 +11,5 @@ rarity = 1
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
 stock_count = 1
-main_description = "受ける悪夢ダメージ+30%。ダメージを受けた時、30%分を次の消化ダメージに加算。"
+main_description = "受けるダメージ+30%。受けたダメージ30%分を次の消化ダメージに加算。"
 sub_description = "HP現在の消化ダメージ500%、く型マスの花びらを生成する。消化時、受けた総合消化ダメージ100%を隣接するモノに分配して与える。"
