@@ -8,6 +8,7 @@ const TYPE_INTERVAL := 0.04
 @export var novel_text: NovelTextResource
 
 @onready var screen: Control = $Screen
+@onready var opening_still: TextureRect = $Screen/OpeningStill
 @onready var text_label: Label = $Screen/TextBox/TextLabel
 @onready var next_label: Label = $Screen/TextBox/NextLabel
 
@@ -29,6 +30,7 @@ func start() -> void:
 	_page_index = 0
 	_is_showing = true
 	visible = true
+	opening_still.visible = true
 	layer = 100
 	_show_current_page()
 
@@ -38,6 +40,7 @@ func start_with_text(next_novel_text: NovelTextResource) -> void:
 	_page_index = 0
 	_is_showing = true
 	visible = true
+	opening_still.visible = false
 	layer = 100
 	_show_current_page()
 
@@ -86,6 +89,7 @@ func _advance_page() -> void:
 func _finish() -> void:
 	_is_showing = false
 	visible = false
+	opening_still.visible = false
 	finished.emit()
 
 

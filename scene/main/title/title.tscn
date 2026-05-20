@@ -16,6 +16,7 @@ position = Vector2(320, 180)
 texture = ExtResource("1_title")
 
 [node name="Logo" type="TextureRect" parent="." unique_id=757954433]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 offset_left = 40.0
 offset_top = 21.0
 offset_right = 360.0
@@ -24,6 +25,7 @@ mouse_filter = 2
 texture = ExtResource("4_5ajwd")
 
 [node name="Character" type="TextureRect" parent="." unique_id=70058215]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 offset_right = 640.0
 offset_bottom = 360.0
 mouse_filter = 2

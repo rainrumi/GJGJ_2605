@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b5om836obl82m" path="res://scene/main/opening_novel/opening_novel.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Resource" uid="uid://dpwdn5mwco1y8" path="res://data/resources/novel/opening_novel_text.tres" id="3_text"]
+[ext_resource type="Texture2D" uid="uid://cw37wjrw5yjos" path="res://art/texture/still/tex_still_1000.png" id="4_still"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text_box"]
 bg_color = Color(0.012145013, 0.009099999, 0.07, 0.7058824)
@@ -28,6 +29,20 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="OpeningStill" type="TextureRect" parent="Screen" unique_id=1624291706]
+visible = false
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_still")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="TextBox" type="Panel" parent="Screen" unique_id=1725155311]
 layout_mode = 1
