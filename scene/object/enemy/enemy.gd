@@ -147,13 +147,26 @@ func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
 
 
 func setup_as_seed_stomach_block(seed_skill: DreamSeedSkillDefinition, target_size: Vector2) -> void:
-	setup_as_one_cell_stomach_block(target_size)
+	var block_definition := seed_skill.drag_block_definition if seed_skill != null else null
+	if block_definition != null:
+		set_stomach_footprint_override(
+			block_definition.get_stomach_size(),
+			block_definition.get_stomach_shape(),
+			block_definition.get_cell_count()
+		)
+		set_texture_override(ONE_CELL_STOMACH_TEXTURE, target_size)
+		gravity_locked = true
+		activation_deferred = true
+	else:
+		setup_as_one_cell_stomach_block(target_size)
 	seed_skill_definition = seed_skill
-	max_hp = 1
-	current_hp = 1
-	damage = 0
-	base_damage = 0
-	display_damage_override = 0
+	if seed_skill_definition != null and seed_skill_definition.drag_texture != null:
+		set_texture_override(seed_skill_definition.drag_texture, target_size)
+	max_hp = block_definition.get_max_hp() if block_definition != null else 1
+	current_hp = max_hp
+	damage = block_definition.get_damage() if block_definition != null else 0
+	base_damage = damage
+	display_damage_override = damage
 	_update_hp_label()
 	_update_damage_label()
 

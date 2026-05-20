@@ -330,9 +330,20 @@ func _create_seed_block(seed_skill: DreamSeedSkillDefinition) -> Enemy:
 		return null
 	var seed_block := ENEMY_SCENE.instantiate() as Enemy
 	add_child(seed_block)
-	seed_block.setup(definition, Vector2.ONE * stomach.get_span_size(1), null, false, Vector2.ZERO)
-	seed_block.setup_as_seed_stomach_block(seed_skill, Vector2.ONE * stomach.get_span_size(1))
+	var block_size := _get_seed_block_stomach_size(seed_skill)
+	var target_size := Vector2(
+		stomach.get_span_size(block_size.x),
+		stomach.get_span_size(block_size.y)
+	)
+	seed_block.setup(definition, target_size, null, false, Vector2.ZERO)
+	seed_block.setup_as_seed_stomach_block(seed_skill, target_size)
 	return seed_block
+
+
+func _get_seed_block_stomach_size(seed_skill: DreamSeedSkillDefinition) -> Vector2i:
+	if seed_skill != null and seed_skill.drag_block_definition != null:
+		return seed_skill.drag_block_definition.get_stomach_size()
+	return Vector2i.ONE
 
 
 func _try_place_seed_block(seed_block: Enemy, mouse_position: Vector2) -> bool:

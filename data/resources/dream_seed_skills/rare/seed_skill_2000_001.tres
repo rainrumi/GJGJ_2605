@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://by72oo4mnni1l"]
 
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ceejcrunogkk" path="res://art/enemy/tex_stomach_block_1000.png" id="1_v8bib"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 
 [resource]
@@ -10,6 +11,7 @@ category = "花びら配置系統"
 rarity = 1
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
+drag_texture = ExtResource("1_v8bib")
 stock_count = 4
 main_description = "3時までにステージをクリアすると残基が1回復する（上限は越えられない）"
 sub_description = "HP1マス1の花びらが生成される。"

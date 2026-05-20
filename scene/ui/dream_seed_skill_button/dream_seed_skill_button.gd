@@ -180,7 +180,7 @@ func _try_start_drag(mouse_position: Vector2) -> void:
 
 
 func _can_use_sub_skill() -> bool:
-	return sub_skill_drag_enabled and seed_skill != null and _has_sub_skill() and _remaining_stock > 0
+	return sub_skill_drag_enabled and seed_skill != null and seed_skill.drag_enabled and _has_sub_skill() and _remaining_stock > 0
 
 
 func _has_sub_skill() -> bool:
@@ -189,5 +189,5 @@ func _has_sub_skill() -> bool:
 
 func _update_drag_state() -> void:
 	if icon_rect != null:
-		icon_rect.self_modulate = LOW_STOCK_COLOR if sub_skill_drag_enabled and seed_skill != null and _remaining_stock <= 1 else NORMAL_ICON_COLOR
+		icon_rect.self_modulate = LOW_STOCK_COLOR if _can_use_sub_skill() and _remaining_stock <= 1 else NORMAL_ICON_COLOR
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if _can_use_sub_skill() else Control.CURSOR_ARROW
