@@ -4,14 +4,30 @@
 [ext_resource type="Script" uid="uid://cmi8rdihucugk" path="res://scene/main/title/title.gd" id="3_script"]
 [ext_resource type="Texture2D" uid="uid://8cvikryskr5p" path="res://art/texture/logo/tex_logo.png" id="4_5ajwd"]
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="4_button"]
+[ext_resource type="Texture2D" uid="uid://w1ei7yf8hyj7" path="res://art/texture/character/tex_character_title.png" id="5_le7jh"]
 
 [node name="Title" type="Node2D" unique_id=2003881678]
 script = ExtResource("3_script")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=1083138993]
+visible = false
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 position = Vector2(320, 180)
 texture = ExtResource("1_title")
+
+[node name="Logo" type="TextureRect" parent="." unique_id=757954433]
+offset_left = 40.0
+offset_top = 21.0
+offset_right = 360.0
+offset_bottom = 133.0
+mouse_filter = 2
+texture = ExtResource("4_5ajwd")
+
+[node name="Character" type="TextureRect" parent="." unique_id=70058215]
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+texture = ExtResource("5_le7jh")
 
 [node name="Menu" type="Control" parent="." unique_id=1268464866]
 layout_mode = 3
@@ -59,13 +75,6 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
 text = "終了"
-
-[node name="Logo" type="TextureRect" parent="." unique_id=757954433]
-offset_left = 40.0
-offset_top = 21.0
-offset_right = 360.0
-offset_bottom = 133.0
-texture = ExtResource("4_5ajwd")
 
 [connection signal="pressed" from="Menu/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="Menu/ContinueButton" to="." method="_on_continue_button_pressed"]
