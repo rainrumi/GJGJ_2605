@@ -2,13 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://ssogygtnvw4e" path="res://art/title/tex_title_demo_1000.png" id="1_title"]
 [ext_resource type="Script" uid="uid://cmi8rdihucugk" path="res://scene/main/title/title.gd" id="3_script"]
+[ext_resource type="Texture2D" uid="uid://8cvikryskr5p" path="res://art/texture/logo/tex_logo.png" id="4_5ajwd"]
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="4_button"]
 
 [node name="Title" type="Node2D" unique_id=2003881678]
 script = ExtResource("3_script")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=1083138993]
-modulate = Color(1, 1, 1, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 position = Vector2(320, 180)
 texture = ExtResource("1_title")
@@ -16,15 +16,15 @@ texture = ExtResource("1_title")
 [node name="Menu" type="Control" parent="." unique_id=1268464866]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 13
+offset_left = 13.0
 offset_top = 153.5
-offset_right = 153
+offset_right = 153.0
 offset_bottom = 305.5
 
 [node name="StartButton" parent="Menu" unique_id=286137335 instance=ExtResource("4_button")]
 layout_mode = 0
-offset_right = 140
-offset_bottom = 29
+offset_right = 140.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -32,9 +32,9 @@ text = "最初から"
 
 [node name="ContinueButton" parent="Menu" unique_id=1693844036 instance=ExtResource("4_button")]
 layout_mode = 0
-offset_top = 40
-offset_right = 140
-offset_bottom = 69
+offset_top = 40.0
+offset_right = 140.0
+offset_bottom = 69.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -42,9 +42,9 @@ text = "続きから"
 
 [node name="SettingsButton" parent="Menu" unique_id=922349689 instance=ExtResource("4_button")]
 layout_mode = 0
-offset_top = 80
-offset_right = 140
-offset_bottom = 109
+offset_top = 80.0
+offset_right = 140.0
+offset_bottom = 109.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -52,13 +52,20 @@ text = "設定"
 
 [node name="QuitButton" parent="Menu" unique_id=1448078595 instance=ExtResource("4_button")]
 layout_mode = 0
-offset_top = 120
-offset_right = 140
-offset_bottom = 149
+offset_top = 120.0
+offset_right = 140.0
+offset_bottom = 149.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
 text = "終了"
+
+[node name="Logo" type="TextureRect" parent="." unique_id=757954433]
+offset_left = 40.0
+offset_top = 21.0
+offset_right = 360.0
+offset_bottom = 133.0
+texture = ExtResource("4_5ajwd")
 
 [connection signal="pressed" from="Menu/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="Menu/ContinueButton" to="." method="_on_continue_button_pressed"]
