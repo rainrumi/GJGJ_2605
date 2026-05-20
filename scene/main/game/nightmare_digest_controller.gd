@@ -77,16 +77,16 @@ func get_digest_damage_breakdown(
 
 
 func get_step_minutes(enemies: Array[Enemy]) -> int:
-	return int(get_step_minutes_breakdown(enemies)["total"])
+	return int(get_step_minutes_breakdown(enemies, true)["total"])
 
 
-func get_step_minutes_breakdown(enemies: Array[Enemy]) -> Dictionary:
+func get_step_minutes_breakdown(enemies: Array[Enemy], consume_pending_bonus := false) -> Dictionary:
 	var base_minutes := STEP_MINUTES
 	var nightmare_minutes := base_minutes
 	for enemy in enemies:
 		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_TIME_DELAY) and enemy.stomach_elapsed_minutes > 0 and enemy.stomach_elapsed_minutes % 60 == 0:
 			nightmare_minutes += 30
-	var seed_rate := -seed_effects.get_time_reduction_rate()
+	var seed_rate := -seed_effects.get_time_reduction_rate(consume_pending_bonus)
 	var total_minutes := maxi(1, roundi(float(nightmare_minutes) * (1.0 + seed_rate)))
 	return {
 		"total": total_minutes,
@@ -181,6 +181,10 @@ func get_seed_skill_id_text() -> String:
 
 func apply_direct_player_damage(amount: int) -> int:
 	return seed_effects.apply_player_damage(amount, DIGEST_DAMAGE)
+
+
+func add_seed_activation_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
+	return seed_effects.add_activation_effect(seed_skill)
 
 
 func wait_for_next_beat() -> void:

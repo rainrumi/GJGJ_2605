@@ -11,6 +11,9 @@ const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/dream_seed_skills/dream_seed_skill_catalog.tres")
 const SEED_BLOCK_DRAG_ALPHA := 0.58
+const DREAM_SEED_ACTIVATION_HP_RECOVERY := 1002
+const DREAM_SEED_ACTIVATION_HP_RECOVERY_RATE := 0.05
+const DREAM_SEED_ACTIVATION_SKIP_REST_TIME := 1004
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 @export var enemy_definitions: Array[Resource] = []
 @export var nightmare_skill_catalog: NightmareSkillCatalog
@@ -40,6 +43,7 @@ var dragged_enemy_original_cell := Vector2i.ZERO
 var dragged_enemy_original_global_position := Vector2.ZERO
 var hovered_enemy: Enemy
 var last_time_over_recovery_percent := 0
+var rest_time_skip_count := 0
 var battle_flowers: Array[FlowerDefinition] = []
 var dragging_seed_block: Enemy
 var dragging_seed_button: DreamSeedSkillButton
@@ -61,6 +65,7 @@ func start_battle(context: BattleStartContext = null) -> void:
 	current_day = battle_context.day
 	current_stage_id = battle_context.stage_id
 	last_time_over_recovery_percent = 0
+	rest_time_skip_count = 0
 	debug_numbers_visible = false
 	_set_battle_flags(false)
 	digest_controller.clear_scheduled_events()
@@ -102,6 +107,7 @@ func _connect_ui() -> void:
 	ui.seed_skill_drag_started.connect(_on_seed_skill_drag_started)
 	ui.seed_skill_drag_moved.connect(_on_seed_skill_drag_moved)
 	ui.seed_skill_drag_released.connect(_on_seed_skill_drag_released)
+	ui.seed_skill_activation_requested.connect(_on_seed_skill_activation_requested)
 func _connect_input() -> void:
 	input_controller.setup(enemies)
 	input_controller.enemy_drag_started.connect(_on_enemy_drag_started)
@@ -274,6 +280,32 @@ func _on_seed_skill_drag_released(
 	_update_auto_digest_timer()
 
 
+func _on_seed_skill_activation_requested(
+	button: DreamSeedSkillButton,
+	seed_skill: DreamSeedSkillDefinition
+) -> void:
+	if not battle_active or digest_turn_in_progress or dragging_enemy != null or dragging_seed_block != null:
+		return
+	if seed_skill == null or seed_skill.sub_skill_mode != DreamSeedSkillDefinition.SubSkillMode.Activation:
+		return
+	if not _apply_seed_skill_activation(seed_skill):
+		return
+	if button != null and is_instance_valid(button):
+		button.consume_stock()
+	_play_click_se()
+	_refresh_after_battle_event()
+
+
+func _apply_seed_skill_activation(seed_skill: DreamSeedSkillDefinition) -> bool:
+	if seed_skill.skill_id == DREAM_SEED_ACTIVATION_HP_RECOVERY:
+		hp = mini(MAX_HP, hp + ceili(float(MAX_HP) * DREAM_SEED_ACTIVATION_HP_RECOVERY_RATE))
+		return true
+	if seed_skill.skill_id == DREAM_SEED_ACTIVATION_SKIP_REST_TIME:
+		rest_time_skip_count += 1
+		return true
+	return digest_controller.add_seed_activation_effect(seed_skill)
+
+
 func _set_battle_flowers(flowers: Array) -> void:
 	battle_flowers.clear()
 	for flower in flowers:
@@ -436,8 +468,11 @@ func _apply_elapsed_time(elapsed_minutes: int) -> void:
 	minutes += elapsed_minutes
 	if hp <= 0:
 		hp = digest_controller.get_rest_hp(MAX_HP, REST_HP_RATE)
-		minutes += REST_MINUTES
-		elapsed_minutes += REST_MINUTES
+		if rest_time_skip_count > 0:
+			rest_time_skip_count -= 1
+		else:
+			minutes += REST_MINUTES
+			elapsed_minutes += REST_MINUTES
 		_refresh_after_battle_event()
 	else:
 		_refresh_after_battle_event()

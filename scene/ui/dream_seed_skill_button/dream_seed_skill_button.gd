@@ -4,6 +4,7 @@ extends Button
 signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
 signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
 signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
+signal seed_skill_activation_requested(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition)
 
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
 const TOOLTIP_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_seed_skill_tooltip.tscn")
@@ -105,7 +106,7 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse_button := event as InputEventMouseButton
 		if mouse_button.button_index == MOUSE_BUTTON_LEFT and mouse_button.pressed:
-			_try_start_drag(mouse_button.position)
+			_try_use_sub_skill(mouse_button.position)
 
 
 func _refresh_tooltip() -> void:
@@ -172,15 +173,18 @@ func _get_or_empty(text: String) -> String:
 	return text
 
 
-func _try_start_drag(mouse_position: Vector2) -> void:
+func _try_use_sub_skill(mouse_position: Vector2) -> void:
 	if not _can_use_sub_skill():
+		return
+	if seed_skill.sub_skill_mode == DreamSeedSkillDefinition.SubSkillMode.Activation:
+		seed_skill_activation_requested.emit(self, seed_skill)
 		return
 	_dragging = true
 	seed_skill_drag_started.emit(self, seed_skill, mouse_position)
 
 
 func _can_use_sub_skill() -> bool:
-	return sub_skill_drag_enabled and seed_skill != null and seed_skill.drag_enabled and _has_sub_skill() and _remaining_stock > 0
+	return sub_skill_drag_enabled and seed_skill != null and seed_skill.sub_skill_mode != DreamSeedSkillDefinition.SubSkillMode.None and _has_sub_skill() and _remaining_stock > 0
 
 
 func _has_sub_skill() -> bool:
