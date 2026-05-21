@@ -85,6 +85,24 @@ func get_planted_flowers() -> Array[FlowerDefinition]:
 		if flower != null:
 			flowers.append(flower)
 	return flowers
+
+
+func remove_planted_flower(source: Resource) -> void:
+	if source == null:
+		return
+	for i in range(planted_flowers.size() - 1, -1, -1):
+		var flower := planted_flowers[i]
+		if flower == source:
+			planted_flowers.remove_at(i)
+			continue
+		if source is DreamSeedSkillDefinition and flower != null and flower.dream_seed_skill == source:
+			planted_flowers.remove_at(i)
+	if is_node_ready():
+		_refresh_flower_slots()
+		_refresh_seed_choices()
+		_update_hp_heal_plan()
+
+
 func _initialize_planted_flowers() -> void:
 	planted_flowers.clear()
 	if initial_flower != null:

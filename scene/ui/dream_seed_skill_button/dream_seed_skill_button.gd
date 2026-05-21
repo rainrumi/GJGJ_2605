@@ -70,6 +70,10 @@ func get_seed_source() -> Resource:
 	return source_data
 
 
+func get_remaining_stock() -> int:
+	return _remaining_stock
+
+
 func set_debug_numbers_visible(is_visible: bool) -> void:
 	debug_numbers_visible = is_visible
 	_refresh_tooltip()

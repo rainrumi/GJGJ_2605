@@ -1,5 +1,6 @@
 extends Node2D
 signal battle_finished(won: bool)
+signal dream_seed_depleted(source: Resource)
 const START_HOUR: int = 22
 const END_HOUR: int = 30
 const REST_MINUTES: int = 30
@@ -284,6 +285,7 @@ func _on_seed_skill_drag_released(
 	if placed:
 		if seed_button != null and is_instance_valid(seed_button):
 			seed_button.consume_stock()
+			_remove_seed_source_if_depleted(seed_button)
 	else:
 		_cancel_seed_block(seed_block)
 	if auto_digest_enabled:
@@ -303,6 +305,7 @@ func _on_seed_skill_activation_requested(
 		return
 	if button != null and is_instance_valid(button):
 		button.consume_stock()
+		_remove_seed_source_if_depleted(button)
 	_play_click_se()
 	_refresh_after_battle_event()
 
@@ -322,6 +325,28 @@ func _set_battle_flowers(flowers: Array) -> void:
 	for flower in flowers:
 		if flower is FlowerDefinition:
 			battle_flowers.append(flower as FlowerDefinition)
+
+
+func _remove_seed_source_if_depleted(button: DreamSeedSkillButton) -> void:
+	if button == null or button.get_remaining_stock() > 0:
+		return
+	var source := button.get_seed_source()
+	if source == null:
+		return
+	_remove_battle_seed_source(source)
+	digest_controller.set_seed_effect_flowers(battle_flowers)
+	ui.set_dream_seed_skill_sources(battle_flowers)
+	dream_seed_depleted.emit(source)
+
+
+func _remove_battle_seed_source(source: Resource) -> void:
+	for i in range(battle_flowers.size() - 1, -1, -1):
+		var flower := battle_flowers[i]
+		if flower == source:
+			battle_flowers.remove_at(i)
+			continue
+		if source is DreamSeedSkillDefinition and flower != null and flower.dream_seed_skill == source:
+			battle_flowers.remove_at(i)
 
 
 func _get_random_debug_seed_flower() -> FlowerDefinition:

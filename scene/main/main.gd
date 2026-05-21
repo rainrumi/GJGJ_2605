@@ -27,6 +27,8 @@ var active_novel_flow := NovelFlow.NONE
 func _ready() -> void:
 	if game.has_method("set_beat_conductor"):
 		game.set_beat_conductor(bgm)
+	if game.has_signal("dream_seed_depleted"):
+		game.connect("dream_seed_depleted", Callable(self, "_on_game_dream_seed_depleted"))
 	_play_bgm()
 	show_title()
 
@@ -124,6 +126,11 @@ func _on_game_battle_finished(won: bool) -> void:
 		show_stage_clear()
 	else:
 		show_end_gameover_novel()
+
+
+func _on_game_dream_seed_depleted(source: Resource) -> void:
+	if stage_clear.has_method("remove_planted_flower"):
+		stage_clear.remove_planted_flower(source)
 
 
 func show_end_gameover_novel() -> void:
