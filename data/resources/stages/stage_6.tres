@@ -11,4 +11,3 @@ display_name = "夢の主 6"
 difficulty_level = 2
 level_text = "★2高級都市"
 location = "フェリス庭区"
-tags = Array[StringName]([&"高級都市"])

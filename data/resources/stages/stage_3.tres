@@ -11,4 +11,3 @@ display_name = "夢の主 3"
 difficulty_level = 3
 level_text = "★3大学校"
 location = "エルメナ大学"
-tags = Array[StringName]([&"大学校"])

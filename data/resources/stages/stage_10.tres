@@ -10,4 +10,3 @@ reachable_stage_areas = Array[int]([9, 4, 2, 7])
 display_name = "夢の主 10"
 level_text = "★1街B"
 location = "コロッタ街"
-tags = Array[StringName]([&"街B"])

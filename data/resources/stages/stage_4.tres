@@ -11,4 +11,3 @@ display_name = "夢の主 4"
 difficulty_level = 3
 level_text = "★3貧困"
 location = "ゴンサル地区"
-tags = Array[StringName]([&"貧困"])
