@@ -64,6 +64,7 @@ func start_battle(context: BattleStartContext = null) -> void:
 	hp = clampi(battle_context.starting_hp, 0, MAX_HP)
 	current_day = battle_context.day
 	current_stage_id = battle_context.stage_id
+	stomach.set_grid_size(battle_context.stomach_columns, battle_context.stomach_rows)
 	last_time_over_recovery_percent = 0
 	rest_time_skip_count = 0
 	debug_numbers_visible = false
@@ -98,6 +99,16 @@ func get_max_hp() -> int:
 	return MAX_HP
 func get_last_time_over_recovery_percent() -> int:
 	return last_time_over_recovery_percent
+
+
+func get_stomach_columns() -> int:
+	return stomach.columns
+
+
+func get_stomach_rows() -> int:
+	return stomach.rows
+
+
 func _connect_ui() -> void:
 	ui.digestion_requested.connect(_on_digestion_requested)
 	ui.debug_message_requested.connect(_on_debug_message_requested)

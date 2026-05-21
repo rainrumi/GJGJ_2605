@@ -119,6 +119,7 @@ func _on_stage_select_stage_selected(stage_id: int) -> void:
 
 
 func _on_game_battle_finished(won: bool) -> void:
+	_sync_player_stomach_size()
 	if won:
 		show_stage_clear()
 	else:
@@ -165,8 +166,17 @@ func _create_battle_start_context(reset_player_state: bool) -> BattleStartContex
 	context.starting_hp = _get_starting_hp(reset_player_state)
 	context.day = run_state.current_day
 	context.stage_id = run_state.selected_stage_id
+	context.stomach_columns = run_state.stomach_columns
+	context.stomach_rows = run_state.stomach_rows
 	context.flowers = _get_planted_flowers()
 	return context
+
+
+func _sync_player_stomach_size() -> void:
+	if game.has_method("get_stomach_columns"):
+		run_state.stomach_columns = game.get_stomach_columns()
+	if game.has_method("get_stomach_rows"):
+		run_state.stomach_rows = game.get_stomach_rows()
 
 
 func _get_starting_hp(reset_player_state: bool) -> int:
