@@ -10,10 +10,12 @@
 [ext_resource type="Resource" path="res://data/resources/novel/end_gameover_novel_text.tres" id="9_end_gameover_text"]
 [ext_resource type="AudioStream" uid="uid://dc8vyar0jf1e4" path="res://sound/bgm/Night_Dance.mp3" id="10_bgm"]
 [ext_resource type="PackedScene" path="res://systems/audio/beat_conductor.tscn" id="11_beat_conductor"]
+[ext_resource type="Resource" path="res://data/resources/novel/game_clear_novel_text.tres" id="12_game_clear_text"]
 
 [node name="Main" type="Node" unique_id=1753159910]
 script = ExtResource("1_6vuhr")
 end_gameover_novel_text = ExtResource("9_end_gameover_text")
+game_clear_novel_text = ExtResource("12_game_clear_text")
 
 [node name="BackgroundColor" type="ColorRect" parent="." unique_id=1477797917]
 z_index = -50

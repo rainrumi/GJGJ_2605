@@ -1,14 +1,17 @@
 extends Node
 
 const STAGE_CLEAR_RETURN_DELAY := 1.0
+const STORY_CLEAR_DAY := 20
 
 enum NovelFlow {
 	NONE,
 	OPENING,
 	END_GAMEOVER,
+	GAME_CLEAR,
 }
 
 @export var end_gameover_novel_text: NovelTextResource
+@export var game_clear_novel_text: NovelTextResource
 
 @onready var title: Node = $Title
 @onready var opening_novel: OpeningNovel = $OpeningNovel
@@ -96,6 +99,9 @@ func _on_opening_novel_finished() -> void:
 		NovelFlow.END_GAMEOVER:
 			active_novel_flow = NovelFlow.NONE
 			_finish_end_gameover_novel()
+		NovelFlow.GAME_CLEAR:
+			active_novel_flow = NovelFlow.NONE
+			show_title()
 		_:
 			active_novel_flow = NovelFlow.NONE
 			show_day_intro()
@@ -148,8 +154,7 @@ func show_end_gameover_novel() -> void:
 func _finish_end_gameover_novel() -> void:
 	if stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
 		stage_clear.setup_hp(game.get_current_hp())
-	run_state.current_day += 1
-	show_day_intro()
+	_finish_current_day()
 
 
 func _get_end_gameover_novel_text() -> NovelTextResource:
@@ -164,8 +169,35 @@ func _get_end_gameover_novel_text() -> NovelTextResource:
 
 func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
 	await get_tree().create_timer(STAGE_CLEAR_RETURN_DELAY).timeout
+	_finish_current_day()
+
+
+func _finish_current_day() -> void:
 	run_state.current_day += 1
+	if run_state.current_day > STORY_CLEAR_DAY:
+		show_game_clear_novel()
+		return
 	show_day_intro()
+
+
+func show_game_clear_novel() -> void:
+	title.visible = false
+	opening_novel.visible = false
+	day_intro.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+	active_novel_flow = NovelFlow.GAME_CLEAR
+	opening_novel.start_with_text(_get_game_clear_novel_text())
+
+
+func _get_game_clear_novel_text() -> NovelTextResource:
+	if game_clear_novel_text != null:
+		return game_clear_novel_text
+	var novel_text := NovelTextResource.new()
+	novel_text.text = "ゲームクリア！7"
+	return novel_text
 
 
 func _create_battle_start_context(reset_player_state: bool) -> BattleStartContext:
