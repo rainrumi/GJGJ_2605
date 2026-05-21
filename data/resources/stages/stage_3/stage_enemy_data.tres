@@ -1,0 +1,12 @@
+﻿[gd_resource type="Resource" script_class="StageEnemySetDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://clqarc0s67i01" path="res://data/definitions/stage_enemy_set_definition.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/resources/stages/stage_3/normal_enemy_preset_001.tres" id="2_normal"]
+[ext_resource type="Resource" path="res://data/resources/stages/stage_3/endless_enemy_preset_001.tres" id="3_endless"]
+[ext_resource type="Resource" path="res://data/resources/stages/stage_3/strengthened_enemy_preset_001.tres" id="4_strengthened"]
+
+[resource]
+script = ExtResource("1_script")
+normal_enemy_presets = Array[EnemyPresetDefinition]([ExtResource("2_normal")])
+endless_enemy_presets = Array[EnemyPresetDefinition]([ExtResource("3_endless")])
+strengthened_enemy_presets = Array[EnemyPresetDefinition]([ExtResource("4_strengthened")])

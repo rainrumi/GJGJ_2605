@@ -1,0 +1,16 @@
+﻿[gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://d4k64x6xx4wbi"]
+
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/resources/stages/stage_7/stage_enemy_data.tres" id="2_enemy_data"]
+
+[resource]
+script = ExtResource("1_script")
+stage_id = 7
+stage_area = 7
+reachable_stage_areas = Array[int]([2, 10, 3])
+display_name = "螟｢縺ｮ荳ｻ 7"
+difficulty_level = 2
+level_text = "笘・螟懷ｭｦ譬｡"
+location = "繝阪Μ繧ｯ繧ｹ鬲疲ｳ募ｭｦ譬｡"
+enemy_data = ExtResource("2_enemy_data")
+
