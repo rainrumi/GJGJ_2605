@@ -4,26 +4,24 @@ signal stage_selected(stage_id: int)
 
 @export var stage_catalog: StageCatalog
 @export var stage_definitions: Array[StageDefinition] = []
+@export var stage_choice_scene: PackedScene
 
-@onready var stage_choices: Array[StageSelectChoice] = [
-	$UI/StageChoices/StageChoice1 as StageSelectChoice,
-	$UI/StageChoices/StageChoice2 as StageSelectChoice,
-	$UI/StageChoices/StageChoice3 as StageSelectChoice,
-]
+@onready var stage_choice_list: VBoxContainer = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices
 
+var stage_choices: Array[StageSelectChoice] = []
 var _displayed_stage_definitions: Array[StageDefinition] = []
 var _current_stage_definition: StageDefinition
 
 
 func _ready() -> void:
-	for i in range(stage_choices.size()):
-		stage_choices[i].pressed.connect(_on_stage_choice_pressed.bind(i))
+	_collect_stage_choices()
 	setup_stage_choices()
 
 
 func setup_stage_choices(current_stage_definition: StageDefinition = null) -> void:
 	_current_stage_definition = current_stage_definition
 	_displayed_stage_definitions = _get_random_stage_definitions()
+	_ensure_stage_choice_count(_displayed_stage_definitions.size())
 	for i in range(stage_choices.size()):
 		if i >= _displayed_stage_definitions.size():
 			stage_choices[i].setup_choice(null)
@@ -59,9 +57,29 @@ func _get_random_stage_definitions() -> Array[StageDefinition]:
 		if _can_reach_stage(stage_definition):
 			definitions.append(stage_definition)
 	definitions.shuffle()
-	if definitions.size() > stage_choices.size():
-		definitions.resize(stage_choices.size())
 	return definitions
+
+
+func _collect_stage_choices() -> void:
+	stage_choices.clear()
+	for child in stage_choice_list.get_children():
+		if child is StageSelectChoice:
+			_add_stage_choice(child as StageSelectChoice)
+
+
+func _ensure_stage_choice_count(count: int) -> void:
+	while stage_choices.size() < count:
+		if stage_choice_scene == null:
+			return
+		var stage_choice := stage_choice_scene.instantiate() as StageSelectChoice
+		stage_choice_list.add_child(stage_choice)
+		_add_stage_choice(stage_choice)
+
+
+func _add_stage_choice(stage_choice: StageSelectChoice) -> void:
+	var choice_index := stage_choices.size()
+	stage_choices.append(stage_choice)
+	stage_choice.pressed.connect(_on_stage_choice_pressed.bind(choice_index))
 
 
 func _can_reach_stage(stage_definition: StageDefinition) -> bool:

@@ -10,6 +10,7 @@
 [node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
 stage_catalog = ExtResource("6_stage_catalog")
+stage_choice_scene = ExtResource("5_stage_choice")
 
 [node name="CharacterArea" type="Node2D" parent="." unique_id=691295669]
 
@@ -52,20 +53,32 @@ text = "夢の主を選択"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StageChoices" type="VBoxContainer" parent="UI" unique_id=1363958576]
+[node name="StageChoicesScroll" type="ScrollContainer" parent="UI" unique_id=104671176]
 layout_mode = 0
-offset_left = 300.0
-offset_top = 122.0
-offset_right = 570.0
-offset_bottom = 348.0
-mouse_filter = 2
+offset_left = 284.0
+offset_top = 114.0
+offset_right = 600.0
+offset_bottom = 356.0
+horizontal_scroll_mode = 0
+
+[node name="StageChoicesMargin" type="MarginContainer" parent="UI/StageChoicesScroll" unique_id=731860370]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="StageChoices" type="VBoxContainer" parent="UI/StageChoicesScroll/StageChoicesMargin" unique_id=1363958576]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="StageChoice1" parent="UI/StageChoices" unique_id=786245821 instance=ExtResource("5_stage_choice")]
+[node name="StageChoice1" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=786245821 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
 
-[node name="StageChoice2" parent="UI/StageChoices" unique_id=576244151 instance=ExtResource("5_stage_choice")]
+[node name="StageChoice2" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=576244151 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
 
-[node name="StageChoice3" parent="UI/StageChoices" unique_id=259931286 instance=ExtResource("5_stage_choice")]
+[node name="StageChoice3" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=259931286 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
