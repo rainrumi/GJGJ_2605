@@ -28,6 +28,7 @@ func _ready() -> void:
 
 func setup_choice(stage_definition: StageDefinition) -> void:
 	if stage_definition == null:
+		visible = false
 		disabled = true
 		difficulty_label.text = ""
 		name_label.text = ""
@@ -35,6 +36,7 @@ func setup_choice(stage_definition: StageDefinition) -> void:
 		location_label.text = ""
 		reward_icon.texture = null
 		return
+	visible = true
 	disabled = false
 	difficulty_label.text = stage_definition.get_difficulty_text()
 	name_label.text = ""
