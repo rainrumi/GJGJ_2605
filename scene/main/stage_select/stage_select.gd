@@ -1,6 +1,6 @@
 extends Node2D
 
-signal stage_selected(stage_id: int)
+signal stage_selected(stage: StageDefinition)
 
 @export var stage_catalog: StageCatalog
 @export var stage_definitions: Array[StageDefinition] = []
@@ -11,6 +11,7 @@ signal stage_selected(stage_id: int)
 var stage_choices: Array[StageSelectChoice] = []
 var _displayed_stage_definitions: Array[StageDefinition] = []
 var _current_stage_definition: StageDefinition
+var _current_day := 1
 
 
 func _ready() -> void:
@@ -18,8 +19,9 @@ func _ready() -> void:
 	setup_stage_choices()
 
 
-func setup_stage_choices(current_stage_definition: StageDefinition = null) -> void:
+func setup_stage_choices(current_stage_definition: StageDefinition = null, current_day: int = 1) -> void:
 	_current_stage_definition = current_stage_definition
+	_current_day = current_day
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	_ensure_stage_choice_count(_displayed_stage_definitions.size())
 	for i in range(stage_choices.size()):
@@ -35,7 +37,7 @@ func _on_stage_choice_pressed(choice_index: int) -> void:
 	var stage_definition := _displayed_stage_definitions[choice_index]
 	if stage_definition == null:
 		return
-	stage_selected.emit(stage_definition.stage_id)
+	stage_selected.emit(stage_definition)
 
 
 func _get_stage_definitions() -> Array[StageDefinition]:
@@ -46,13 +48,18 @@ func _get_stage_definitions() -> Array[StageDefinition]:
 
 func get_stage_definition_by_id(stage_id: int) -> StageDefinition:
 	for stage_definition in _get_stage_definitions():
-		if stage_definition != null and stage_definition.stage_id == stage_id:
-			return stage_definition
+		var found_stage := _find_stage_definition_by_id(stage_definition, stage_id)
+		if found_stage != null:
+			return found_stage
 	return null
 
 
 func _get_random_stage_definitions() -> Array[StageDefinition]:
 	var definitions: Array[StageDefinition] = []
+	if _is_high_difficulty_day():
+		definitions = _get_high_difficulty_stage_definitions()
+		definitions.shuffle()
+		return definitions
 	for stage_definition in _get_stage_definitions():
 		if _can_reach_stage(stage_definition):
 			definitions.append(stage_definition)
@@ -85,6 +92,50 @@ func _add_stage_choice(stage_choice: StageSelectChoice) -> void:
 func _can_reach_stage(stage_definition: StageDefinition) -> bool:
 	if stage_definition == null:
 		return false
+	if stage_definition.is_high_difficulty:
+		return false
 	if _current_stage_definition == null:
 		return true
 	return _current_stage_definition.reachable_stage_areas.has(stage_definition.stage_area)
+
+
+func _is_high_difficulty_day() -> bool:
+	return _current_day > 0 and _current_day % 4 == 0
+
+
+func _get_high_difficulty_stage_definitions() -> Array[StageDefinition]:
+	var definitions: Array[StageDefinition] = []
+	var source_stages := _get_high_difficulty_source_stages()
+	for source_stage in source_stages:
+		if source_stage == null:
+			continue
+		if source_stage.high_difficulty_stages.is_empty():
+			definitions.append(source_stage.create_high_difficulty_fallback())
+			continue
+		for high_stage in source_stage.high_difficulty_stages:
+			if high_stage != null:
+				definitions.append(high_stage)
+	return definitions
+
+
+func _get_high_difficulty_source_stages() -> Array[StageDefinition]:
+	var source_stages: Array[StageDefinition] = []
+	if _current_stage_definition == null:
+		for stage_definition in _get_stage_definitions():
+			if stage_definition != null and not stage_definition.is_high_difficulty:
+				source_stages.append(stage_definition)
+		return source_stages
+	source_stages.append(_current_stage_definition)
+	return source_stages
+
+
+func _find_stage_definition_by_id(stage_definition: StageDefinition, stage_id: int) -> StageDefinition:
+	if stage_definition == null:
+		return null
+	if stage_definition.stage_id == stage_id:
+		return stage_definition
+	for high_stage in stage_definition.high_difficulty_stages:
+		var found_stage := _find_stage_definition_by_id(high_stage, stage_id)
+		if found_stage != null:
+			return found_stage
+	return null

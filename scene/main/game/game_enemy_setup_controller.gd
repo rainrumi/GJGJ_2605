@@ -14,6 +14,7 @@ var _input_controller: GameInputController
 var _stomach: StomachBoard
 var _enemy_definitions: Array[Resource] = []
 var _nightmare_skill_catalog: NightmareSkillCatalog
+var _enemy_preset: EnemyPresetDefinition
 
 
 func setup(
@@ -21,16 +22,50 @@ func setup(
 	input_controller: GameInputController,
 	stomach: StomachBoard,
 	enemy_definitions: Array[Resource],
-	nightmare_skill_catalog: NightmareSkillCatalog
+	nightmare_skill_catalog: NightmareSkillCatalog,
+	enemy_preset: EnemyPresetDefinition = null
 ) -> void:
 	_owner = owner
 	_input_controller = input_controller
 	_stomach = stomach
 	_enemy_definitions = enemy_definitions
 	_nightmare_skill_catalog = nightmare_skill_catalog
+	_enemy_preset = enemy_preset
 
 
 func setup_enemies(enemies: Array[Enemy]) -> void:
+	if _enemy_preset != null and not _enemy_preset.enemies.is_empty():
+		_setup_preset_enemies(enemies)
+		return
+	_setup_legacy_random_enemies(enemies)
+
+
+func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
+	var enemy_positions := _get_enemy_positions(_enemy_preset.enemies.size())
+	for i in range(enemies.size()):
+		var enemy := enemies[i]
+		if i >= _enemy_preset.enemies.size():
+			enemy.visible = false
+			enemy.digested = true
+			enemy.digesting = false
+			enemy.has_main_effect = false
+			continue
+		var definition := _enemy_preset.enemies[i]
+		if definition == null:
+			continue
+		enemy.setup(
+			definition,
+			Vector2(
+				_stomach.get_span_size(definition.stomach_size.x),
+				_stomach.get_span_size(definition.stomach_size.y)
+			),
+			definition.nightmare_skill,
+			definition.nightmare_skill != null,
+			enemy_positions[i]
+		)
+
+
+func _setup_legacy_random_enemies(enemies: Array[Enemy]) -> void:
 	var selected_skills := _get_random_nightmare_skills()
 	var enemy_positions := _get_enemy_positions(selected_skills.size())
 	var main_effect_enemy_index := randi() % selected_skills.size() if not selected_skills.is_empty() else -1

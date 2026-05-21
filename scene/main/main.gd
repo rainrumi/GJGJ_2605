@@ -55,7 +55,7 @@ func show_stage_select() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	if stage_select.has_method("setup_stage_choices"):
-		stage_select.call("setup_stage_choices", run_state.selected_stage)
+		stage_select.call("setup_stage_choices", run_state.selected_stage, run_state.current_day)
 
 
 func show_game(reset_player_state: bool = true) -> void:
@@ -78,7 +78,7 @@ func show_stage_clear() -> void:
 	game.visible = false
 	game_ui.visible = false
 	if stage_clear.has_method("setup_clear_result") and game.has_method("get_current_hp") and game.has_method("get_clear_minutes"):
-		stage_clear.setup_clear_result(game.get_current_hp(), game.get_clear_minutes())
+		stage_clear.setup_clear_result(game.get_current_hp(), game.get_clear_minutes(), run_state.selected_stage)
 	elif stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
 		stage_clear.setup_hp(game.get_current_hp())
 	stage_clear.visible = true
@@ -118,10 +118,11 @@ func show_day_intro() -> void:
 	show_stage_select()
 
 
-func _on_stage_select_stage_selected(stage_id: int) -> void:
-	run_state.selected_stage_id = stage_id
-	if stage_select.has_method("get_stage_definition_by_id"):
-		run_state.selected_stage = stage_select.call("get_stage_definition_by_id", stage_id) as StageDefinition
+func _on_stage_select_stage_selected(stage: StageDefinition) -> void:
+	if stage == null:
+		return
+	run_state.selected_stage_id = stage.stage_id
+	run_state.selected_stage = stage
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
 
@@ -205,6 +206,7 @@ func _create_battle_start_context(reset_player_state: bool) -> BattleStartContex
 	context.starting_hp = _get_starting_hp(reset_player_state)
 	context.day = run_state.current_day
 	context.stage_id = run_state.selected_stage_id
+	context.stage = run_state.selected_stage
 	context.stomach_columns = run_state.stomach_columns
 	context.stomach_rows = run_state.stomach_rows
 	context.flowers = _get_planted_flowers()

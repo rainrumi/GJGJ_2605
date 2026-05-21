@@ -4,6 +4,8 @@ extends Button
 const HOVER_SCALE := 1.1
 const PRESSED_SCALE := 0.95
 const TWEEN_DURATION := 0.1
+const NORMAL_TEXT_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
+const HIGH_DIFFICULTY_TEXT_COLOR := Color(1.0, 0.027451, 0.211765, 1.0)
 
 @onready var frame: NinePatchRect = $Frame
 @onready var name_label: Label = $NameLabel
@@ -43,6 +45,7 @@ func setup_choice(stage_definition: StageDefinition) -> void:
 	name_label.visible = false
 	location_label.text = "%s" % stage_definition.location
 	reward_icon.texture = stage_definition.reward_icon
+	_apply_stage_text_color(stage_definition)
 
 
 func _on_button_down() -> void:
@@ -79,3 +82,10 @@ func _update_scale() -> void:
 	_scale_tween.set_trans(Tween.TRANS_QUAD)
 	_scale_tween.set_ease(Tween.EASE_OUT)
 	_scale_tween.tween_property(frame, "scale", target_scale, TWEEN_DURATION)
+
+
+func _apply_stage_text_color(stage_definition: StageDefinition) -> void:
+	var font_color := HIGH_DIFFICULTY_TEXT_COLOR if stage_definition.is_high_difficulty else NORMAL_TEXT_COLOR
+	difficulty_label.add_theme_color_override("font_color", font_color)
+	name_label.add_theme_color_override("font_color", font_color)
+	location_label.add_theme_color_override("font_color", font_color)

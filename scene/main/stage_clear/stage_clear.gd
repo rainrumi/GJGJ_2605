@@ -57,12 +57,13 @@ func setup_hp(value: int) -> void:
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
-func setup_clear_result(value: int, cleared_minutes: int) -> void:
+func setup_clear_result(value: int, cleared_minutes: int, cleared_stage: StageDefinition = null) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	clear_minutes = cleared_minutes
 	_clear_recovery_applied = false
 	_reset_extra_seed_choices()
 	_restore_base_seed_options()
+	_apply_stage_drop_options(cleared_stage)
 	_update_extra_seed_choices()
 	if is_node_ready():
 		_set_hp(current_hp, false)
@@ -116,6 +117,19 @@ func _restore_base_seed_options() -> void:
 	if _base_seed_options.is_empty():
 		return
 	seed_options = _base_seed_options.duplicate()
+
+
+func _apply_stage_drop_options(stage: StageDefinition) -> void:
+	if stage == null or stage.drop_item_pool.is_empty():
+		return
+	var stage_seed_options: Array[Resource] = []
+	for drop_item in stage.drop_item_pool:
+		if drop_item != null:
+			stage_seed_options.append(drop_item)
+	if not stage_seed_options.is_empty():
+		seed_options = stage_seed_options
+
+
 func _get_seed_option(seed_index: int) -> SeedOptionDefinition:
 	if seed_index < 0 or seed_index >= seed_options.size():
 		return null

@@ -26,7 +26,9 @@ const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 var minutes := START_HOUR * 60
 var hp := MAX_HP
 var current_stage_id := 0
+var current_stage: StageDefinition
 var current_day := 1
+var strengthened_enemy_preset_index := 0
 var battle_active := false
 var auto_digest_enabled := false
 var auto_digest_paused_for_drag := false
@@ -65,6 +67,8 @@ func start_battle(context: BattleStartContext = null) -> void:
 	hp = clampi(battle_context.starting_hp, 0, MAX_HP)
 	current_day = battle_context.day
 	current_stage_id = battle_context.stage_id
+	current_stage = battle_context.stage
+	strengthened_enemy_preset_index = 0
 	stomach.set_grid_size(battle_context.stomach_columns, battle_context.stomach_rows)
 	last_time_over_recovery_percent = 0
 	rest_time_skip_count = 0
@@ -77,6 +81,14 @@ func start_battle(context: BattleStartContext = null) -> void:
 	dragging_seed_block = null
 	dragging_seed_button = null
 	hovered_enemy = null
+	enemy_setup.setup(
+		self,
+		input_controller,
+		stomach,
+		_get_battle_enemy_definitions(),
+		nightmare_skill_catalog,
+		_get_battle_enemy_preset()
+	)
 	enemy_setup.setup_enemies(enemies)
 	ui.reset_for_battle(
 		MAX_HP,
@@ -435,10 +447,53 @@ func _cancel_seed_block(seed_block: Enemy) -> void:
 
 
 func _get_seed_block_template() -> EnemyDefinition:
-	for definition in enemy_definitions:
+	for definition in _get_battle_enemy_definitions():
 		if definition is EnemyDefinition:
 			return definition as EnemyDefinition
 	return null
+
+
+func _get_battle_enemy_definitions() -> Array[Resource]:
+	return enemy_definitions
+
+
+func _get_battle_enemy_preset() -> EnemyPresetDefinition:
+	if current_stage == null or current_stage.enemy_data == null:
+		return null
+	if current_stage.is_high_difficulty:
+		var strengthened_preset := current_stage.enemy_data.get_strengthened_enemy_preset(strengthened_enemy_preset_index)
+		if strengthened_preset != null:
+			return strengthened_preset
+	return current_stage.enemy_data.pick_normal_enemy_preset()
+
+
+func _try_start_next_stage_enemy_preset() -> bool:
+	if current_stage == null or current_stage.enemy_data == null:
+		return false
+	var next_preset: EnemyPresetDefinition
+	if current_stage.is_high_difficulty:
+		strengthened_enemy_preset_index += 1
+		next_preset = current_stage.enemy_data.get_strengthened_enemy_preset(strengthened_enemy_preset_index)
+	else:
+		next_preset = current_stage.enemy_data.pick_endless_enemy_preset()
+	if next_preset == null:
+		return false
+	_setup_enemy_preset(next_preset)
+	return true
+
+
+func _setup_enemy_preset(enemy_preset: EnemyPresetDefinition) -> void:
+	enemy_setup.setup(
+		self,
+		input_controller,
+		stomach,
+		_get_battle_enemy_definitions(),
+		nightmare_skill_catalog,
+		enemy_preset
+	)
+	enemy_setup.setup_enemies(enemies)
+	input_controller.setup(enemies)
+	_refresh_ui()
 
 
 func _try_start_digesting(enemy: Enemy, mouse_position: Vector2) -> void:
@@ -522,6 +577,8 @@ func _finish_digest_turn() -> void:
 	digest_turn_in_progress = false
 func _check_battle_end() -> void:
 	if _all_enemies_digested():
+		if _try_start_next_stage_enemy_preset():
+			return
 		_finish_battle(true, "すべての悪夢を消化しました")
 		return
 	if minutes >= END_HOUR * 60:

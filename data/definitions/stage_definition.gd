@@ -23,8 +23,21 @@ enum StageArea {
 @export var level_text := ""
 @export var location := ""
 @export var reward_icon: Texture2D
-@export var enemy_pool: Array[EnemyDefinition] = []
+@export var enemy_data: StageEnemySetDefinition
+@export var drop_item_pool: Array[SeedOptionDefinition] = []
+@export var high_difficulty_stages: Array[StageDefinition] = []
+@export var is_high_difficulty := false
 
 
 func get_difficulty_text() -> String:
+	if is_high_difficulty:
+		return "Lv.%d+α" % difficulty_level
 	return "Lv.%d" % difficulty_level
+
+
+func create_high_difficulty_fallback() -> StageDefinition:
+	var stage := duplicate(true) as StageDefinition
+	stage.is_high_difficulty = true
+	stage.high_difficulty_stages = []
+	stage.difficulty_level = difficulty_level + 1
+	return stage
