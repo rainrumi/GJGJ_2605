@@ -1,13 +1,14 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://bkvf8y2r5p72b"]
 
+[ext_resource type="Script" uid="uid://b6d4ok46ormpj" path="res://scene/object/enemy/enemy_definition.gd" id="1_ad2a6"]
 [ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
 stage_id = 1
-stage_area = 1
 reachable_stage_areas = Array[int]([8, 5])
 display_name = "夢の主 1"
 difficulty_level = 4
 level_text = "★4混沌"
 location = "ルノヴァ旧市街"
+enemy_pool = Array[ExtResource("1_ad2a6")]([null])
