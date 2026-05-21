@@ -50,7 +50,7 @@ func show_stage_select() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	if stage_select.has_method("setup_stage_choices"):
-		stage_select.call("setup_stage_choices")
+		stage_select.call("setup_stage_choices", run_state.selected_stage)
 
 
 func show_game(reset_player_state: bool = true) -> void:
@@ -112,6 +112,8 @@ func show_day_intro() -> void:
 
 func _on_stage_select_stage_selected(stage_id: int) -> void:
 	run_state.selected_stage_id = stage_id
+	if stage_select.has_method("get_stage_definition_by_id"):
+		run_state.selected_stage = stage_select.call("get_stage_definition_by_id", stage_id) as StageDefinition
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
 

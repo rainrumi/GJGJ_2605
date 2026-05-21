@@ -5,6 +5,8 @@
 [resource]
 script = ExtResource("1_script")
 stage_id = 11
+stage_area = 11
+reachable_stage_areas = Array[int]([10, 9, 7, 6, 5, 4, 3, 2, 1, 8])
 display_name = "夢の主 11"
 level_text = "★1洞窟"
 location = "イリユ洞窟"

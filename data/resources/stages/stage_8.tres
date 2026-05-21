@@ -5,6 +5,8 @@
 [resource]
 script = ExtResource("1_script")
 stage_id = 8
+stage_area = 8
+reachable_stage_areas = Array[int]([1, 6, 2])
 display_name = "夢の主 8"
 difficulty_level = 2
 level_text = "★2行政区"

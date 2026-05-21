@@ -12,6 +12,7 @@ signal stage_selected(stage_id: int)
 ]
 
 var _displayed_stage_definitions: Array[StageDefinition] = []
+var _current_stage_definition: StageDefinition
 
 
 func _ready() -> void:
@@ -20,7 +21,8 @@ func _ready() -> void:
 	setup_stage_choices()
 
 
-func setup_stage_choices() -> void:
+func setup_stage_choices(current_stage_definition: StageDefinition = null) -> void:
+	_current_stage_definition = current_stage_definition
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	for i in range(stage_choices.size()):
 		if i >= _displayed_stage_definitions.size():
@@ -44,12 +46,27 @@ func _get_stage_definitions() -> Array[StageDefinition]:
 	return stage_definitions
 
 
+func get_stage_definition_by_id(stage_id: int) -> StageDefinition:
+	for stage_definition in _get_stage_definitions():
+		if stage_definition != null and stage_definition.stage_id == stage_id:
+			return stage_definition
+	return null
+
+
 func _get_random_stage_definitions() -> Array[StageDefinition]:
 	var definitions: Array[StageDefinition] = []
 	for stage_definition in _get_stage_definitions():
-		if stage_definition != null:
+		if _can_reach_stage(stage_definition):
 			definitions.append(stage_definition)
 	definitions.shuffle()
 	if definitions.size() > stage_choices.size():
 		definitions.resize(stage_choices.size())
 	return definitions
+
+
+func _can_reach_stage(stage_definition: StageDefinition) -> bool:
+	if stage_definition == null:
+		return false
+	if _current_stage_definition == null:
+		return true
+	return _current_stage_definition.reachable_stage_areas.has(stage_definition.stage_area)
