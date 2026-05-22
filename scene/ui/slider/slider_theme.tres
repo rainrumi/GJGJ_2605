@@ -1,0 +1,21 @@
+[gd_resource type="Theme" load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://art/texture/slider/tex_slider_bar.png" id="1_bar"]
+[ext_resource type="Texture2D" path="res://art/texture/slider/tex_slider_knob.png" id="2_knob"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_bar"]
+texture = ExtResource("1_bar")
+texture_margin_left = 6.0
+texture_margin_top = 6.0
+texture_margin_right = 6.0
+texture_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_grabber_area"]
+
+[resource]
+HSlider/icons/grabber = ExtResource("2_knob")
+HSlider/icons/grabber_disabled = ExtResource("2_knob")
+HSlider/icons/grabber_highlight = ExtResource("2_knob")
+HSlider/styles/grabber_area = SubResource("StyleBoxEmpty_grabber_area")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxEmpty_grabber_area")
+HSlider/styles/slider = SubResource("StyleBoxTexture_slider_bar")
