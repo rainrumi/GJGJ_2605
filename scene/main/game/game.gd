@@ -10,12 +10,6 @@ const TIME_OVER_HP_RECOVERY_RATE: float = 0.7
 const DIGEST_AUTO_INTERVAL: float = 0.05
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
-const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/dream_seed_skills/dream_seed_skill_catalog.tres")
-const SEED_BLOCK_DRAG_ALPHA := 0.58
-const DREAM_SEED_ACTIVATION_HP_RECOVERY := 1002
-const DREAM_SEED_ACTIVATION_HP_RECOVERY_RATE := 0.05
-const DREAM_SEED_ACTIVATION_SKIP_REST_TIME := 1004
-const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 @export var enemy_definitions: Array[Resource] = []
 @export var nightmare_skill_catalog: NightmareSkillCatalog
 @onready var ui: BattleUI = $UI
@@ -37,6 +31,7 @@ var debug_numbers_visible := false
 var digestion_timer: Timer
 var enemy_setup := GameEnemySetupController.new()
 var digest_controller := NightmareDigestController.new()
+var dream_seed_controller := GameDreamSeedController.new()
 var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
 var drag_offset := Vector2.ZERO
@@ -46,8 +41,6 @@ var dragged_enemy_original_cell := Vector2i.ZERO
 var dragged_enemy_original_global_position := Vector2.ZERO
 var hovered_enemy: Enemy
 var last_time_over_recovery_percent := 0
-var rest_time_skip_count := 0
-var battle_flowers: Array[FlowerDefinition] = []
 var dragging_seed_block: Enemy
 var dragging_seed_button: DreamSeedSkillButton
 func _ready() -> void:
@@ -71,12 +64,11 @@ func start_battle(context: BattleStartContext = null) -> void:
 	strengthened_enemy_preset_index = 0
 	stomach.set_grid_size(battle_context.stomach_columns, battle_context.stomach_rows)
 	last_time_over_recovery_percent = 0
-	rest_time_skip_count = 0
 	debug_numbers_visible = false
 	_set_battle_flags(false)
 	digest_controller.clear_scheduled_events()
-	_set_battle_flowers(battle_context.flowers)
-	digest_controller.setup(battle_flowers)
+	dream_seed_controller.setup(battle_context.flowers)
+	digest_controller.setup(dream_seed_controller.get_flowers())
 	dragging_enemy = null
 	dragging_seed_block = null
 	dragging_seed_button = null
@@ -98,7 +90,7 @@ func start_battle(context: BattleStartContext = null) -> void:
 		REST_HP_RATE,
 		digest_controller.get_rest_recovery_bonus_rate()
 	)
-	ui.set_dream_seed_skill_sources(battle_flowers)
+	ui.set_dream_seed_skill_sources(dream_seed_controller.get_flowers())
 	ui.set_dream_seed_debug_numbers_visible(debug_numbers_visible)
 	stomach.hide_preview()
 	battle_active = true
@@ -240,12 +232,9 @@ func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> vo
 func _on_debug_seed_requested() -> void:
 	if not battle_active or not debug_numbers_visible or digest_turn_in_progress or dragging_enemy != null or dragging_seed_block != null:
 		return
-	var flower := _get_random_debug_seed_flower()
-	if flower == null:
+	if not dream_seed_controller.add_random_debug_seed():
 		return
-	battle_flowers.append(flower)
-	digest_controller.set_seed_effect_flowers(battle_flowers)
-	ui.set_dream_seed_skill_sources(battle_flowers)
+	_sync_dream_seed_sources()
 	_refresh_ui()
 
 
@@ -256,13 +245,13 @@ func _on_seed_skill_drag_started(
 ) -> void:
 	if not battle_active or digest_turn_in_progress or dragging_enemy != null or dragging_seed_block != null:
 		return
-	var seed_block := _create_seed_block(seed_skill)
+	var seed_block := dream_seed_controller.create_seed_block(self, stomach, _get_battle_enemy_definitions(), seed_skill)
 	if seed_block == null:
 		return
 	dragging_seed_button = button
 	dragging_seed_block = seed_block
 	dragging_seed_block.global_position = mouse_position
-	dragging_seed_block.modulate.a = SEED_BLOCK_DRAG_ALPHA
+	dragging_seed_block.modulate.a = GameDreamSeedController.SEED_BLOCK_DRAG_ALPHA
 	auto_digest_paused_for_drag = auto_digest_enabled
 	_update_auto_digest_timer()
 	_play_click_se()
@@ -293,13 +282,18 @@ func _on_seed_skill_drag_released(
 	dragging_seed_button = null
 	stomach.hide_preview()
 	_play_click_se()
-	var placed := battle_active and stomach.contains_global_position(mouse_position) and _try_place_seed_block(seed_block, mouse_position)
+	var placed := (
+		battle_active
+		and stomach.contains_global_position(mouse_position)
+		and dream_seed_controller.try_place_seed_block(seed_block, mouse_position, stomach, enemies, input_controller)
+	)
 	if placed:
+		_refresh_after_battle_event()
 		if seed_button != null and is_instance_valid(seed_button):
 			seed_button.consume_stock()
 			_remove_seed_source_if_depleted(seed_button)
 	else:
-		_cancel_seed_block(seed_block)
+		dream_seed_controller.cancel_seed_block(seed_block)
 	if auto_digest_enabled:
 		auto_digest_paused_for_drag = false
 	_update_auto_digest_timer()
@@ -313,8 +307,10 @@ func _on_seed_skill_activation_requested(
 		return
 	if seed_skill == null or seed_skill.sub_skill_mode != DreamSeedSkillDefinition.SubSkillMode.Activation:
 		return
-	if not _apply_seed_skill_activation(seed_skill):
+	var activation_result := dream_seed_controller.apply_activation(seed_skill, hp, MAX_HP, digest_controller)
+	if not bool(activation_result["applied"]):
 		return
+	hp = int(activation_result["hp"])
 	if button != null and is_instance_valid(button):
 		button.consume_stock()
 		_remove_seed_source_if_depleted(button)
@@ -322,72 +318,18 @@ func _on_seed_skill_activation_requested(
 	_refresh_after_battle_event()
 
 
-func _apply_seed_skill_activation(seed_skill: DreamSeedSkillDefinition) -> bool:
-	if seed_skill.skill_id == DREAM_SEED_ACTIVATION_HP_RECOVERY:
-		hp = mini(MAX_HP, hp + ceili(float(MAX_HP) * DREAM_SEED_ACTIVATION_HP_RECOVERY_RATE))
-		return true
-	if seed_skill.skill_id == DREAM_SEED_ACTIVATION_SKIP_REST_TIME:
-		rest_time_skip_count += 1
-		return true
-	return digest_controller.add_seed_activation_effect(seed_skill)
-
-
-func _set_battle_flowers(flowers: Array) -> void:
-	battle_flowers.clear()
-	for flower in flowers:
-		if flower is FlowerDefinition:
-			battle_flowers.append(flower as FlowerDefinition)
-
-
 func _remove_seed_source_if_depleted(button: DreamSeedSkillButton) -> void:
-	if button == null or button.get_remaining_stock() > 0:
-		return
-	var source := button.get_seed_source()
+	var source := dream_seed_controller.remove_source_if_button_depleted(button)
 	if source == null:
 		return
-	_remove_battle_seed_source(source)
-	digest_controller.set_seed_effect_flowers(battle_flowers)
-	ui.set_dream_seed_skill_sources(battle_flowers)
+	_sync_dream_seed_sources()
 	dream_seed_depleted.emit(source)
 
 
-func _remove_battle_seed_source(source: Resource) -> void:
-	for i in range(battle_flowers.size() - 1, -1, -1):
-		var flower := battle_flowers[i]
-		if flower == source:
-			battle_flowers.remove_at(i)
-			continue
-		if source is DreamSeedSkillDefinition and flower != null and flower.dream_seed_skill == source:
-			battle_flowers.remove_at(i)
-
-
-func _get_random_debug_seed_flower() -> FlowerDefinition:
-	var candidates := _get_debug_seed_flower_candidates()
-	if candidates.is_empty():
-		return null
-	return candidates[randi() % candidates.size()]
-
-
-func _get_debug_seed_flower_candidates() -> Array[FlowerDefinition]:
-	var candidates: Array[FlowerDefinition] = []
-	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG.normal_skills)
-	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG.rare_skills)
-	return candidates
-
-
-func _append_debug_seed_flower_candidates(
-	candidates: Array[FlowerDefinition],
-	skills: Array
-) -> void:
-	for skill_resource in skills:
-		if not skill_resource is DreamSeedSkillDefinition:
-			continue
-		var skill := skill_resource as DreamSeedSkillDefinition
-		var flower := FlowerDefinition.new()
-		flower.display_name = skill.display_name
-		flower.texture = skill.texture
-		flower.dream_seed_skill = skill
-		candidates.append(flower)
+func _sync_dream_seed_sources() -> void:
+	var flowers := dream_seed_controller.get_flowers()
+	digest_controller.set_seed_effect_flowers(flowers)
+	ui.set_dream_seed_skill_sources(flowers)
 
 
 func _refresh_enemy_stomach_display_sizes() -> void:
@@ -400,57 +342,6 @@ func _refresh_enemy_stomach_display_sizes() -> void:
 		))
 		if enemy.is_active_in_stomach():
 			stomach.place_enemy(enemy, enemy.stomach_cell)
-
-
-func _create_seed_block(seed_skill: DreamSeedSkillDefinition) -> Enemy:
-	if seed_skill == null:
-		return null
-	var definition := _get_seed_block_template()
-	if definition == null:
-		return null
-	var seed_block := ENEMY_SCENE.instantiate() as Enemy
-	add_child(seed_block)
-	var block_size := _get_seed_block_stomach_size(seed_skill)
-	var target_size := Vector2(
-		stomach.get_span_size(block_size.x),
-		stomach.get_span_size(block_size.y)
-	)
-	seed_block.setup(definition, target_size, null, false, Vector2.ZERO)
-	seed_block.setup_as_seed_stomach_block(seed_skill, target_size)
-	return seed_block
-
-
-func _get_seed_block_stomach_size(seed_skill: DreamSeedSkillDefinition) -> Vector2i:
-	if seed_skill != null and seed_skill.drag_block_definition != null:
-		return seed_skill.drag_block_definition.get_stomach_size()
-	return Vector2i.ONE
-
-
-func _try_place_seed_block(seed_block: Enemy, mouse_position: Vector2) -> bool:
-	if seed_block == null:
-		return false
-	var top_left := stomach.get_drop_cell(seed_block, mouse_position, Vector2i.ZERO, enemies)
-	if not stomach.can_place(seed_block, top_left, enemies):
-		return false
-	seed_block.modulate.a = 1.0
-	seed_block.set_digesting(true)
-	enemies.append(seed_block)
-	input_controller.setup(enemies)
-	stomach.place_enemy(seed_block, top_left)
-	_refresh_after_battle_event()
-	return true
-
-
-func _cancel_seed_block(seed_block: Enemy) -> void:
-	if seed_block != null:
-		seed_block.queue_free()
-
-
-func _get_seed_block_template() -> EnemyDefinition:
-	for definition in _get_battle_enemy_definitions():
-		if definition is EnemyDefinition:
-			return definition as EnemyDefinition
-	return null
 
 
 func _get_battle_enemy_definitions() -> Array[Resource]:
@@ -559,9 +450,7 @@ func _apply_elapsed_time(elapsed_minutes: int) -> void:
 	minutes += elapsed_minutes
 	if hp <= 0:
 		hp = digest_controller.get_rest_hp(MAX_HP, REST_HP_RATE)
-		if rest_time_skip_count > 0:
-			rest_time_skip_count -= 1
-		else:
+		if not dream_seed_controller.consume_rest_time_skip():
 			minutes += REST_MINUTES
 			elapsed_minutes += REST_MINUTES
 		_refresh_after_battle_event()
