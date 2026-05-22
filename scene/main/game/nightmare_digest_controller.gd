@@ -131,7 +131,7 @@ func apply_digest_damage_values(enemies: Array[Enemy], stomach: StomachBoard) ->
 	var raw_damage_values: Array[int] = []
 	var total_damage := 0
 	for enemy in enemies:
-		if enemy.can_take_stomach_turn():
+		if enemy.should_deal_player_damage() and enemy.can_take_stomach_turn():
 			var damage := _get_enemy_attack_damage(enemy, enemies, stomach)
 			if damage > 0:
 				raw_damage_values.append(damage)
@@ -481,4 +481,9 @@ func _get_seed_block_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> 
 
 
 func _has_nightmare_effect(enemy: Enemy, skill_id: int) -> bool:
-	return enemy.has_main_effect and enemy.skill_definition != null and enemy.skill_definition.skill_id == skill_id
+	return (
+		enemy.should_apply_nightmare_skill()
+		and enemy.has_main_effect
+		and enemy.skill_definition != null
+		and enemy.skill_definition.skill_id == skill_id
+	)

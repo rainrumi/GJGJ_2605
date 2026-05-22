@@ -1,6 +1,11 @@
 extends Node2D
 signal battle_finished(won: bool)
 signal dream_seed_depleted(source: Resource)
+enum DragMode {
+	NONE,
+	ENEMY,
+	DREAM_SEED,
+}
 const START_HOUR: int = 22
 const END_HOUR: int = 30
 const REST_MINUTES: int = 30
@@ -27,6 +32,7 @@ var battle_active := false
 var auto_digest_enabled := false
 var auto_digest_paused_for_drag := false
 var digest_turn_in_progress := false
+var drag_mode := DragMode.NONE
 var debug_numbers_visible := false
 var digestion_timer: Timer
 var enemy_setup := GameEnemySetupController.new()
@@ -41,11 +47,10 @@ var dragged_enemy_original_cell := Vector2i.ZERO
 var dragged_enemy_original_global_position := Vector2.ZERO
 var hovered_enemy: Enemy
 var last_time_over_recovery_percent := 0
-var dragging_seed_block: Enemy
-var dragging_seed_button: DreamSeedSkillButton
 func _ready() -> void:
 	randomize()
 	enemy_setup.setup(self, input_controller, stomach, enemy_definitions, nightmare_skill_catalog)
+	dream_seed_controller.setup(self, stomach, input_controller, _get_battle_enemy_definitions())
 	digest_controller.set_beat_conductor(beat_conductor)
 	_connect_ui()
 	_connect_input()
@@ -67,11 +72,11 @@ func start_battle(context: BattleStartContext = null) -> void:
 	debug_numbers_visible = false
 	_set_battle_flags(false)
 	digest_controller.clear_scheduled_events()
-	dream_seed_controller.setup(battle_context.flowers)
+	dream_seed_controller.set_flowers(battle_context.flowers)
 	digest_controller.setup(dream_seed_controller.get_flowers())
 	dragging_enemy = null
-	dragging_seed_block = null
-	dragging_seed_button = null
+	dream_seed_controller.cancel_drag()
+	drag_mode = DragMode.NONE
 	hovered_enemy = null
 	enemy_setup.setup(
 		self,
@@ -136,6 +141,8 @@ func _set_battle_flags(is_active: bool) -> void:
 	auto_digest_enabled = false
 	auto_digest_paused_for_drag = false
 	digest_turn_in_progress = false
+	drag_mode = DragMode.NONE
+	dream_seed_controller.cancel_drag()
 	if digestion_timer != null and not digestion_timer.is_stopped():
 		digestion_timer.stop()
 func _create_digestion_timer() -> void:
@@ -146,8 +153,10 @@ func _create_digestion_timer() -> void:
 	digestion_timer.timeout.connect(_on_digestion_timer_timeout)
 	add_child(digestion_timer)
 func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i) -> void:
-	if not battle_active or dragging_seed_block != null:
+	if not _can_start_enemy_drag():
+		input_controller.clear_drag()
 		return
+	drag_mode = DragMode.ENEMY
 	dragging_enemy = enemy
 	drag_offset = pointer_offset
 	drag_grab_cell = grab_cell
@@ -158,14 +167,14 @@ func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offs
 	_update_auto_digest_timer()
 	_play_click_se()
 func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i) -> void:
-	if not battle_active or enemy != dragging_enemy:
+	if not battle_active or drag_mode != DragMode.ENEMY or enemy != dragging_enemy:
 		return
 	dragging_enemy.global_position = mouse_position + pointer_offset
 	stomach.show_preview(dragging_enemy, mouse_position, grab_cell, enemies)
 	_update_hp_damage_preview(mouse_position)
 	_set_hovered_enemy(null)
 func _on_enemy_drag_released(enemy: Enemy, mouse_position: Vector2) -> void:
-	if not battle_active or dragging_enemy == null or enemy != dragging_enemy:
+	if not battle_active or drag_mode != DragMode.ENEMY or dragging_enemy == null or enemy != dragging_enemy:
 		return
 	dragging_enemy = null
 	_play_click_se()
@@ -177,6 +186,7 @@ func _on_enemy_drag_released(enemy: Enemy, mouse_position: Vector2) -> void:
 		_remove_enemy_from_stomach(enemy)
 	if auto_digest_enabled:
 		auto_digest_paused_for_drag = false
+	drag_mode = DragMode.NONE
 	_update_auto_digest_timer()
 func _on_digestion_requested() -> void:
 	if not battle_active:
@@ -201,7 +211,7 @@ func _on_debug_message_requested(is_active: bool) -> void:
 	if hovered_enemy != null:
 		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 func _on_debug_reroll_requested() -> void:
-	if not battle_active or not debug_numbers_visible or digest_turn_in_progress or dragging_enemy != null or dragging_seed_block != null:
+	if not _can_use_debug_controls():
 		return
 	auto_digest_enabled = false
 	auto_digest_paused_for_drag = false
@@ -216,7 +226,7 @@ func _on_debug_reroll_requested() -> void:
 
 
 func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> void:
-	if not battle_active or not debug_numbers_visible or digest_turn_in_progress or dragging_enemy != null or dragging_seed_block != null:
+	if not _can_use_debug_controls():
 		return
 	auto_digest_enabled = false
 	auto_digest_paused_for_drag = false
@@ -230,7 +240,7 @@ func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> vo
 
 
 func _on_debug_seed_requested() -> void:
-	if not battle_active or not debug_numbers_visible or digest_turn_in_progress or dragging_enemy != null or dragging_seed_block != null:
+	if not _can_use_debug_controls():
 		return
 	if not dream_seed_controller.add_random_debug_seed():
 		return
@@ -243,15 +253,12 @@ func _on_seed_skill_drag_started(
 	seed_skill: DreamSeedSkillDefinition,
 	mouse_position: Vector2
 ) -> void:
-	if not battle_active or digest_turn_in_progress or dragging_enemy != null or dragging_seed_block != null:
+	if not _can_start_seed_drag():
 		return
-	var seed_block := dream_seed_controller.create_seed_block(self, stomach, _get_battle_enemy_definitions(), seed_skill)
-	if seed_block == null:
+	var result := dream_seed_controller.start_drag(button, seed_skill, mouse_position)
+	if not result.started:
 		return
-	dragging_seed_button = button
-	dragging_seed_block = seed_block
-	dragging_seed_block.global_position = mouse_position
-	dragging_seed_block.modulate.a = GameDreamSeedController.SEED_BLOCK_DRAG_ALPHA
+	drag_mode = DragMode.DREAM_SEED
 	auto_digest_paused_for_drag = auto_digest_enabled
 	_update_auto_digest_timer()
 	_play_click_se()
@@ -262,10 +269,9 @@ func _on_seed_skill_drag_moved(
 	_seed_skill: DreamSeedSkillDefinition,
 	mouse_position: Vector2
 ) -> void:
-	if not battle_active or dragging_seed_block == null:
+	if not battle_active or drag_mode != DragMode.DREAM_SEED:
 		return
-	dragging_seed_block.global_position = mouse_position
-	stomach.show_preview(dragging_seed_block, mouse_position, Vector2i.ZERO, enemies)
+	dream_seed_controller.move_drag(mouse_position, enemies)
 	_set_hovered_enemy(null)
 
 
@@ -274,28 +280,19 @@ func _on_seed_skill_drag_released(
 	_seed_skill: DreamSeedSkillDefinition,
 	mouse_position: Vector2
 ) -> void:
-	if dragging_seed_block == null:
+	if drag_mode != DragMode.DREAM_SEED:
 		return
-	var seed_block := dragging_seed_block
-	var seed_button := dragging_seed_button
-	dragging_seed_block = null
-	dragging_seed_button = null
-	stomach.hide_preview()
-	_play_click_se()
-	var placed := (
-		battle_active
-		and stomach.contains_global_position(mouse_position)
-		and dream_seed_controller.try_place_seed_block(seed_block, mouse_position, stomach, enemies, input_controller)
-	)
-	if placed:
+	var result := dream_seed_controller.release_drag(mouse_position, enemies)
+	if result.started:
+		_play_click_se()
+	if result.placed:
 		_refresh_after_battle_event()
-		if seed_button != null and is_instance_valid(seed_button):
-			seed_button.consume_stock()
-			_remove_seed_source_if_depleted(seed_button)
-	else:
-		dream_seed_controller.cancel_seed_block(seed_block)
+		if result.source_button != null and is_instance_valid(result.source_button):
+			result.source_button.consume_stock()
+			_remove_seed_source_if_depleted(result.source_button)
 	if auto_digest_enabled:
 		auto_digest_paused_for_drag = false
+	drag_mode = DragMode.NONE
 	_update_auto_digest_timer()
 
 
@@ -303,7 +300,7 @@ func _on_seed_skill_activation_requested(
 	button: DreamSeedSkillButton,
 	seed_skill: DreamSeedSkillDefinition
 ) -> void:
-	if not battle_active or digest_turn_in_progress or dragging_enemy != null or dragging_seed_block != null:
+	if not _can_start_seed_drag():
 		return
 	if seed_skill == null or seed_skill.sub_skill_mode != DreamSeedSkillDefinition.SubSkillMode.Activation:
 		return
@@ -330,6 +327,18 @@ func _sync_dream_seed_sources() -> void:
 	var flowers := dream_seed_controller.get_flowers()
 	digest_controller.set_seed_effect_flowers(flowers)
 	ui.set_dream_seed_skill_sources(flowers)
+
+
+func _can_start_enemy_drag() -> bool:
+	return battle_active and drag_mode == DragMode.NONE and not digest_turn_in_progress
+
+
+func _can_start_seed_drag() -> bool:
+	return battle_active and drag_mode == DragMode.NONE and not digest_turn_in_progress
+
+
+func _can_use_debug_controls() -> bool:
+	return battle_active and debug_numbers_visible and drag_mode == DragMode.NONE and not digest_turn_in_progress
 
 
 func _refresh_enemy_stomach_display_sizes() -> void:
@@ -465,7 +474,7 @@ func _finish_digest_turn() -> void:
 	digest_controller.activate_deferred_nuisance_enemies(enemies)
 	digest_turn_in_progress = false
 func _check_battle_end() -> void:
-	if _all_enemies_digested():
+	if _all_nightmares_digested():
 		if _try_start_next_stage_enemy_preset():
 			return
 		_finish_battle(true, "すべての悪夢を消化しました")
@@ -534,15 +543,17 @@ func _get_enemy_skill_id_text(enemy: Enemy) -> String:
 	if enemy.skill_definition == null:
 		return "-"
 	return str(enemy.skill_definition.skill_id)
-func _all_enemies_digested() -> bool:
+func _all_nightmares_digested() -> bool:
 	for enemy in enemies:
+		if not enemy.should_count_for_battle_clear():
+			continue
 		if not enemy.digested:
 			return false
 	return true
 func _active_digest_count() -> int:
 	var count := 0
 	for enemy in enemies:
-		if enemy.is_active_in_stomach():
+		if enemy.is_stomach_piece():
 			count += 1
 	return count
 func _get_remove_from_stomach_damage() -> int:

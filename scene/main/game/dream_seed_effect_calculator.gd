@@ -16,6 +16,7 @@ const DREAM_SEED_DIGEST_DAMAGE_UP := 1001
 const DREAM_SEED_CLEAR_RECOVERY_UP := 1002
 const DREAM_SEED_TIME_REDUCTION := 1003
 const DREAM_SEED_REST_RECOVERY := 1004
+const DREAM_SEED_RARE_TIME_REDUCTION := 2003
 const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
 
 var next_digest_damage_bonus_rate := 0.0
@@ -87,7 +88,7 @@ func add_activation_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
 		DREAM_SEED_TIME_REDUCTION:
 			next_time_reduction_bonus_rate += SKILL_3_ACTIVATION_TIME_REDUCTION_RATE
 			return true
-		2003:
+		DREAM_SEED_RARE_TIME_REDUCTION:
 			next_time_reduction_bonus_rate += RARE_SKILL_3_ACTIVATION_TIME_REDUCTION_RATE
 			return true
 	return false

@@ -10,9 +10,28 @@ const DREAM_SEED_ACTIVATION_SKIP_REST_TIME := 1004
 
 var rest_time_skip_count := 0
 var _flowers: Array[FlowerDefinition] = []
+var _owner: Node
+var _stomach: StomachBoard
+var _input_controller: GameInputController
+var _enemy_definitions: Array[Resource] = []
+var _dragging_seed_block: Enemy
+var _dragging_seed_button: DreamSeedSkillButton
+var _dragging_seed_skill: DreamSeedSkillDefinition
 
 
-func setup(flowers: Array) -> void:
+func setup(
+	owner: Node,
+	stomach: StomachBoard,
+	input_controller: GameInputController,
+	enemy_definitions: Array[Resource]
+) -> void:
+	_owner = owner
+	_stomach = stomach
+	_input_controller = input_controller
+	_enemy_definitions = enemy_definitions
+
+
+func set_flowers(flowers: Array) -> void:
 	_flowers.clear()
 	rest_time_skip_count = 0
 	for flower in flowers:
@@ -52,46 +71,106 @@ func remove_source(source: Resource) -> void:
 			_flowers.remove_at(i)
 
 
-func create_seed_block(
-	owner: Node,
-	stomach: StomachBoard,
-	enemy_definitions: Array[Resource],
+func start_drag(
+	button: DreamSeedSkillButton,
+	seed_skill: DreamSeedSkillDefinition,
+	mouse_position: Vector2
+) -> DreamSeedDragResult:
+	var result := DreamSeedDragResult.new()
+	result.source_button = button
+	result.seed_skill = seed_skill
+	if is_dragging():
+		return result
+	var seed_block := _create_seed_block(seed_skill)
+	if seed_block == null:
+		return result
+	_dragging_seed_button = button
+	_dragging_seed_skill = seed_skill
+	_dragging_seed_block = seed_block
+	_dragging_seed_block.global_position = mouse_position
+	_dragging_seed_block.modulate.a = SEED_BLOCK_DRAG_ALPHA
+	result.started = true
+	result.seed_block = seed_block
+	return result
+
+
+func move_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> void:
+	if _dragging_seed_block == null:
+		return
+	_dragging_seed_block.global_position = mouse_position
+	_stomach.show_preview(_dragging_seed_block, mouse_position, Vector2i.ZERO, enemies)
+
+
+func release_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> DreamSeedDragResult:
+	var result := DreamSeedDragResult.new()
+	if _dragging_seed_block == null:
+		return result
+	result.started = true
+	result.seed_block = _dragging_seed_block
+	result.source_button = _dragging_seed_button
+	result.seed_skill = _dragging_seed_skill
+	result.source = _dragging_seed_button.get_seed_source() if _dragging_seed_button != null else null
+	_dragging_seed_block = null
+	_dragging_seed_button = null
+	_dragging_seed_skill = null
+	_stomach.hide_preview()
+	if _stomach.contains_global_position(mouse_position) and _try_place_seed_block(result.seed_block, mouse_position, enemies):
+		result.placed = true
+	else:
+		cancel_seed_block(result.seed_block)
+		result.cancelled = true
+	return result
+
+
+func cancel_drag() -> void:
+	if _dragging_seed_block != null:
+		cancel_seed_block(_dragging_seed_block)
+	_dragging_seed_block = null
+	_dragging_seed_button = null
+	_dragging_seed_skill = null
+	if _stomach != null:
+		_stomach.hide_preview()
+
+
+func is_dragging() -> bool:
+	return _dragging_seed_block != null
+
+
+func _create_seed_block(
 	seed_skill: DreamSeedSkillDefinition
 ) -> Enemy:
 	if seed_skill == null:
 		return null
-	var definition := _get_seed_block_template(enemy_definitions)
+	var definition := _get_seed_block_template(_enemy_definitions)
 	if definition == null:
 		return null
 	var seed_block := ENEMY_SCENE.instantiate() as Enemy
-	owner.add_child(seed_block)
+	_owner.add_child(seed_block)
 	var block_size := _get_seed_block_stomach_size(seed_skill)
 	var target_size := Vector2(
-		stomach.get_span_size(block_size.x),
-		stomach.get_span_size(block_size.y)
+		_stomach.get_span_size(block_size.x),
+		_stomach.get_span_size(block_size.y)
 	)
 	seed_block.setup(definition, target_size, null, false, Vector2.ZERO)
 	seed_block.setup_as_seed_stomach_block(seed_skill, target_size)
 	return seed_block
 
 
-func try_place_seed_block(
+func _try_place_seed_block(
 	seed_block: Enemy,
 	mouse_position: Vector2,
-	stomach: StomachBoard,
-	enemies: Array[Enemy],
-	input_controller: GameInputController
+	enemies: Array[Enemy]
 ) -> bool:
 	if seed_block == null:
 		return false
-	var top_left := stomach.get_drop_cell(seed_block, mouse_position, Vector2i.ZERO, enemies)
-	if not stomach.can_place(seed_block, top_left, enemies):
+	var top_left := _stomach.get_drop_cell(seed_block, mouse_position, Vector2i.ZERO, enemies)
+	if not _stomach.can_place(seed_block, top_left, enemies):
 		return false
 	seed_block.modulate.a = 1.0
 	seed_block.set_digesting(true)
 	enemies.append(seed_block)
-	input_controller.setup(enemies)
-	stomach.place_enemy(seed_block, top_left)
+	_input_controller.setup(enemies)
+	_stomach.place_enemy(seed_block, top_left)
 	return true
 
 

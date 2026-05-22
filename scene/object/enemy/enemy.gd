@@ -173,6 +173,16 @@ func setup_as_seed_stomach_block(seed_skill: DreamSeedSkillDefinition, target_si
 
 func is_seed_stomach_block() -> bool:
 	return seed_skill_definition != null
+func is_nightmare() -> bool:
+	return not is_seed_stomach_block()
+func is_stomach_piece() -> bool:
+	return is_active_in_stomach()
+func should_count_for_battle_clear() -> bool:
+	return is_nightmare()
+func should_apply_nightmare_skill() -> bool:
+	return is_nightmare()
+func should_deal_player_damage() -> bool:
+	return is_nightmare()
 func update_stomach_display_size(target_size: Vector2) -> void:
 	if sprite == null or sprite.texture == null:
 		return
