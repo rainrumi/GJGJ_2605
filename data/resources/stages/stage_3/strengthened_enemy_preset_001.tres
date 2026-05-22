@@ -1,4 +1,4 @@
-﻿[gd_resource type="Resource" script_class="EnemyPresetDefinition" format=3]
+[gd_resource type="Resource" script_class="EnemyPresetDefinition" format=3]
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://scene/object/enemy/enemy_preset_definition.gd" id="1_script"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_3/enemy_id_001.tres" id="2_enemy"]

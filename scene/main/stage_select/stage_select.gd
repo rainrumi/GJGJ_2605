@@ -8,7 +8,7 @@ signal stage_selected(stage: StageDefinition)
 
 @onready var stage_choice_list: VBoxContainer = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices
 
-var stage_choices: Array[StageSelectChoice] = []
+var stage_choices: Array[BaseButton] = []
 var _displayed_stage_definitions: Array[StageDefinition] = []
 var _current_stage_definition: StageDefinition
 var _current_day := 1
@@ -20,15 +20,17 @@ func _ready() -> void:
 
 
 func setup_stage_choices(current_stage_definition: StageDefinition = null, current_day: int = 1) -> void:
+	if stage_choices.is_empty():
+		_collect_stage_choices()
 	_current_stage_definition = current_stage_definition
 	_current_day = current_day
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	_ensure_stage_choice_count(_displayed_stage_definitions.size())
 	for i in range(stage_choices.size()):
 		if i >= _displayed_stage_definitions.size():
-			stage_choices[i].setup_choice(null)
+			stage_choices[i].call("setup_choice", null)
 			continue
-		stage_choices[i].setup_choice(_displayed_stage_definitions[i])
+		stage_choices[i].call("setup_choice", _displayed_stage_definitions[i])
 
 
 func _on_stage_choice_pressed(choice_index: int) -> void:
@@ -70,20 +72,23 @@ func _get_random_stage_definitions() -> Array[StageDefinition]:
 func _collect_stage_choices() -> void:
 	stage_choices.clear()
 	for child in stage_choice_list.get_children():
-		if child is StageSelectChoice:
-			_add_stage_choice(child as StageSelectChoice)
+		if child is BaseButton and child.has_method("setup_choice"):
+			_add_stage_choice(child as BaseButton)
 
 
 func _ensure_stage_choice_count(count: int) -> void:
 	while stage_choices.size() < count:
 		if stage_choice_scene == null:
 			return
-		var stage_choice := stage_choice_scene.instantiate() as StageSelectChoice
+		var stage_choice := stage_choice_scene.instantiate()
+		if not stage_choice is BaseButton or not stage_choice.has_method("setup_choice"):
+			stage_choice.queue_free()
+			return
 		stage_choice_list.add_child(stage_choice)
-		_add_stage_choice(stage_choice)
+		_add_stage_choice(stage_choice as BaseButton)
 
 
-func _add_stage_choice(stage_choice: StageSelectChoice) -> void:
+func _add_stage_choice(stage_choice: BaseButton) -> void:
 	var choice_index := stage_choices.size()
 	stage_choices.append(stage_choice)
 	stage_choice.pressed.connect(_on_stage_choice_pressed.bind(choice_index))

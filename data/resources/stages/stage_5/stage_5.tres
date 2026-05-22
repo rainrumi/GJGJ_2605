@@ -1,4 +1,4 @@
-﻿[gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://co88keexjcsl8"]
+[gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://co88keexjcsl8"]
 
 [ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_5/stage_enemy_data.tres" id="2_enemy_data"]
@@ -8,9 +8,8 @@ script = ExtResource("1_script")
 stage_id = 5
 stage_area = 5
 reachable_stage_areas = Array[int]([1, 11])
-display_name = "螟｢縺ｮ荳ｻ 5"
+display_name = "夢の主 5"
 difficulty_level = 3
-level_text = "笘・螟ｧ讓ｹ"
-location = "螟ｧ讓ｹ繝ｪ繝ｩ繝ｳ鬧仙ｱｯ蝨ｰ"
+level_text = "大樹"
+location = "大樹リラン駐屯地"
 enemy_data = ExtResource("2_enemy_data")
-

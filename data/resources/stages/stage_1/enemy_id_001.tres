@@ -1,4 +1,4 @@
-﻿[gd_resource type="Resource" script_class="EnemyDefinition" format=3]
+[gd_resource type="Resource" script_class="EnemyDefinition" format=3]
 
 [ext_resource type="Script" uid="uid://b6d4ok46ormpj" path="res://scene/object/enemy/enemy_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://ch5ohl873x4x4" path="res://art/enemy/tex_enemy_1000_No_100.png" id="2_texture"]

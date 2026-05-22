@@ -1,4 +1,4 @@
-﻿[gd_resource type="Resource" script_class="StageCatalog" load_steps=13 format=3]
+[gd_resource type="Resource" script_class="StageCatalog" load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://data/definitions/stage_catalog.gd" id="1_script"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_1/stage_1.tres" id="2_stage"]
