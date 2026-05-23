@@ -1,0 +1,39 @@
+[gd_resource type="Theme" format=3 uid="uid://cm0lw7rl4nypb"]
+
+[ext_resource type="Texture2D" uid="uid://bgoytkbysbv7m" path="res://art/texture/slider/tex_slider_bar.png" id="1_bar"]
+[ext_resource type="Texture2D" uid="uid://c8togd4vmvlqx" path="res://art/texture/slider/tex_slider_knob.png" id="2_knob"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pcko3"]
+texture = ExtResource("2_knob")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+region_rect = Rect2(0, 0, 12, 12)
+modulate_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_knob"]
+texture = ExtResource("2_knob")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+modulate_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_bar"]
+texture = ExtResource("1_bar")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
+expand_margin_left = 1.0
+expand_margin_right = 1.0
+modulate_color = Color(0.9411765, 0.8784314, 1, 1)
+
+[resource]
+VScrollBar/constants/scroll_width = 10
+VScrollBar/styles/grabber = SubResource("StyleBoxTexture_pcko3")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_slider_knob")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_slider_knob")
+VScrollBar/styles/scroll = SubResource("StyleBoxTexture_slider_bar")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxTexture_slider_bar")
