@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://btcwxk3b3mfv1" path="res://scene/main/stage_select/stage_choice.tscn" id="5_stage_choice"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_catalog.tres" id="6_stage_catalog"]
 [ext_resource type="Theme" uid="uid://cm0lw7rl4nypb" path="res://scene/main/stage_select/stage_choices_scroll_theme.tres" id="7_scroll_theme"]
+[ext_resource type="Script" uid="uid://dv6n8dr0mrkqg" path="res://scene/main/stage_select/stage_choices_scroll.gd" id="8_stage_choices_scroll"]
 
 [node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
@@ -60,11 +61,12 @@ vertical_alignment = 1
 layout_mode = 0
 offset_left = 284.0
 offset_top = 114.0
-offset_right = 628.0
+offset_right = 604.0
 offset_bottom = 356.0
 theme = ExtResource("7_scroll_theme")
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
+script = ExtResource("8_stage_choices_scroll")
 
 [node name="StageChoicesMargin" type="MarginContainer" parent="UI/StageChoicesScroll" unique_id=731860370]
 layout_mode = 2
