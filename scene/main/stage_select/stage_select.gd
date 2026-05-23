@@ -153,11 +153,11 @@ func _setup_beacon() -> void:
 
 
 func _show_beacon(map_position: Vector2) -> void:
+	var was_visible := beacon.visible
 	beacon.position = map_position
-	if not beacon.visible:
-		_reset_beacon_frame()
 	beacon.visible = true
-	_start_beacon_animation()
+	if not was_visible:
+		_start_beacon_animation()
 
 
 func _hide_beacon() -> void:
@@ -170,7 +170,7 @@ func _hide_beacon() -> void:
 
 func _start_beacon_animation() -> void:
 	if _beacon_tween != null and _beacon_tween.is_valid():
-		_beacon_tween.kill()
+		return
 	beacon.scale = Vector2.ONE
 	_beacon_tween = create_tween()
 	_beacon_tween.set_loops()
