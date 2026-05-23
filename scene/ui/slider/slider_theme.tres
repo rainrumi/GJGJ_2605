@@ -1,21 +1,34 @@
-[gd_resource type="Theme" load_steps=5 format=3]
+[gd_resource type="Theme" format=3 uid="uid://dm8y3onffije6"]
 
-[ext_resource type="Texture2D" path="res://art/texture/slider/tex_slider_bar.png" id="1_bar"]
-[ext_resource type="Texture2D" path="res://art/texture/slider/tex_slider_knob.png" id="2_knob"]
+[ext_resource type="Texture2D" uid="uid://bgoytkbysbv7m" path="res://art/texture/slider/tex_slider_bar.png" id="1_bar"]
+[ext_resource type="Texture2D" uid="uid://c8togd4vmvlqx" path="res://art/texture/slider/tex_slider_knob.png" id="2_knob"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_knob"]
+texture = ExtResource("2_knob")
+modulate_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_bar"]
 texture = ExtResource("1_bar")
-texture_margin_left = 6.0
-texture_margin_top = 6.0
-texture_margin_right = 6.0
-texture_margin_bottom = 6.0
+modulate_color = Color(0.9411765, 0.8784314, 1, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_grabber_area"]
 
 [resource]
+HScrollBar/constants/scroll_width = 12
+HScrollBar/styles/grabber = SubResource("StyleBoxTexture_slider_knob")
+HScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_slider_knob")
+HScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_slider_knob")
+HScrollBar/styles/scroll = SubResource("StyleBoxTexture_slider_bar")
+HScrollBar/styles/scroll_focus = SubResource("StyleBoxTexture_slider_bar")
 HSlider/icons/grabber = ExtResource("2_knob")
 HSlider/icons/grabber_disabled = ExtResource("2_knob")
 HSlider/icons/grabber_highlight = ExtResource("2_knob")
 HSlider/styles/grabber_area = SubResource("StyleBoxEmpty_grabber_area")
 HSlider/styles/grabber_area_highlight = SubResource("StyleBoxEmpty_grabber_area")
 HSlider/styles/slider = SubResource("StyleBoxTexture_slider_bar")
+VScrollBar/constants/scroll_width = 32
+VScrollBar/styles/grabber = SubResource("StyleBoxTexture_slider_knob")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_slider_knob")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_slider_knob")
+VScrollBar/styles/scroll = SubResource("StyleBoxTexture_slider_bar")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxTexture_slider_bar")
