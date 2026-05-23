@@ -12,4 +12,5 @@ display_name = "夢の主 3"
 difficulty_level = 3
 level_text = "大学"
 location = "エルメナ大学"
+map_position = Vector2(25, 40)
 enemy_data = ExtResource("2_enemy_data")

@@ -12,4 +12,5 @@ display_name = "夢の主 6"
 difficulty_level = 2
 level_text = "庭区"
 location = "フェリス庭区"
+map_position = Vector2(-10, -35)
 enemy_data = ExtResource("2_enemy_data")

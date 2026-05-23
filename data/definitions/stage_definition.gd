@@ -22,6 +22,7 @@ enum StageArea {
 @export var difficulty_level := 1
 @export var level_text := ""
 @export var location := ""
+@export var map_position := Vector2.ZERO
 @export var reward_icon: Texture2D
 @export var enemy_data: StageEnemySetDefinition
 @export var drop_item_pool: Array[SeedOptionDefinition] = []

@@ -12,4 +12,5 @@ display_name = "夢の主 5"
 difficulty_level = 3
 level_text = "大樹"
 location = "大樹リラン駐屯地"
+map_position = Vector2(100, -45)
 enemy_data = ExtResource("2_enemy_data")

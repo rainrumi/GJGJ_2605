@@ -11,4 +11,5 @@ reachable_stage_areas = Array[int]([10, 2])
 display_name = "夢の主 9"
 level_text = "街A"
 location = "ミルネ街"
+map_position = Vector2(-105, 105)
 enemy_data = ExtResource("2_enemy_data")

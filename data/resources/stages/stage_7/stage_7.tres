@@ -12,4 +12,5 @@ display_name = "夢の主 7"
 difficulty_level = 2
 level_text = "夜学校"
 location = "ネリクス魔法学校"
+map_position = Vector2(-20, 30)
 enemy_data = ExtResource("2_enemy_data")

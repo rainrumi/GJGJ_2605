@@ -8,11 +8,27 @@
 [ext_resource type="Resource" path="res://data/resources/stages/stage_catalog.tres" id="6_stage_catalog"]
 [ext_resource type="Theme" uid="uid://cm0lw7rl4nypb" path="res://scene/main/stage_select/stage_choices_scroll_theme.tres" id="7_scroll_theme"]
 [ext_resource type="Script" uid="uid://dv6n8dr0mrkqg" path="res://scene/main/stage_select/stage_choices_scroll.gd" id="8_stage_choices_scroll"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_outline_01.png" id="9_beacon_outline_01"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_outline_02.png" id="10_beacon_outline_02"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_outline_03.png" id="11_beacon_outline_03"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_outline_04.png" id="12_beacon_outline_04"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_outline_05.png" id="13_beacon_outline_05"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_outline_06.png" id="14_beacon_outline_06"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_outline_07.png" id="15_beacon_outline_07"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_01.png" id="16_beacon_01"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_02.png" id="17_beacon_02"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_03.png" id="18_beacon_03"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_04.png" id="19_beacon_04"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_05.png" id="20_beacon_05"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_06.png" id="21_beacon_06"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/select/ui_icon_select_beacon_07.png" id="22_beacon_07"]
 
 [node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
 stage_catalog = ExtResource("6_stage_catalog")
 stage_choice_scene = ExtResource("5_stage_choice")
+beacon_outline_frames = Array[Texture2D]([ExtResource("9_beacon_outline_01"), ExtResource("10_beacon_outline_02"), ExtResource("11_beacon_outline_03"), ExtResource("12_beacon_outline_04"), ExtResource("13_beacon_outline_05"), ExtResource("14_beacon_outline_06"), ExtResource("15_beacon_outline_07")])
+beacon_fill_frames = Array[Texture2D]([ExtResource("16_beacon_01"), ExtResource("17_beacon_02"), ExtResource("18_beacon_03"), ExtResource("19_beacon_04"), ExtResource("20_beacon_05"), ExtResource("21_beacon_06"), ExtResource("22_beacon_07")])
 
 [node name="CharacterArea" type="Node2D" parent="." unique_id=691295669]
 
@@ -20,6 +36,16 @@ stage_choice_scene = ExtResource("5_stage_choice")
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 position = Vector2(149, 206)
 texture = ExtResource("3_map")
+
+[node name="Beacon" type="Node2D" parent="CharacterArea/Map"]
+visible = false
+
+[node name="Outline" type="Sprite2D" parent="CharacterArea/Map/Beacon"]
+texture = ExtResource("9_beacon_outline_01")
+
+[node name="Fill" type="Sprite2D" parent="CharacterArea/Map/Beacon"]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+texture = ExtResource("16_beacon_01")
 
 [node name="UI" type="Control" parent="." unique_id=299033329]
 layout_mode = 3
