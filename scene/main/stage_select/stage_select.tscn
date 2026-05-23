@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ghs00rpe7llg" path="res://scene/main/stage_select/stage_select.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
-[ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://art/character/tex_character_portrate_1000.png" id="3_character"]
+[ext_resource type="Texture2D" uid="uid://bg43vndumibc7" path="res://art/texture/map/tex_map.png" id="3_map"]
 [ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="4_title_effect"]
 [ext_resource type="PackedScene" uid="uid://btcwxk3b3mfv1" path="res://scene/main/stage_select/stage_choice.tscn" id="5_stage_choice"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_catalog.tres" id="6_stage_catalog"]
@@ -16,10 +16,10 @@ stage_choice_scene = ExtResource("5_stage_choice")
 
 [node name="CharacterArea" type="Node2D" parent="." unique_id=691295669]
 
-[node name="Character" type="Sprite2D" parent="CharacterArea" unique_id=1350771073]
+[node name="Map" type="Sprite2D" parent="CharacterArea" unique_id=1350771073]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-position = Vector2(95, 210)
-texture = ExtResource("3_character")
+position = Vector2(149, 206)
+texture = ExtResource("3_map")
 
 [node name="UI" type="Control" parent="." unique_id=299033329]
 layout_mode = 3
