@@ -1,7 +1,7 @@
 class_name StageSelectChoice
 extends Button
 
-const HOVER_SCALE := 1.1
+const HOVER_SCALE := 1.05
 const PRESSED_SCALE := 0.95
 const TWEEN_DURATION := 0.1
 const NORMAL_TEXT_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
