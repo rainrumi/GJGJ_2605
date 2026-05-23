@@ -3,35 +3,31 @@
 [ext_resource type="Texture2D" uid="uid://bgoytkbysbv7m" path="res://art/texture/slider/tex_slider_bar.png" id="1_bar"]
 [ext_resource type="Texture2D" uid="uid://c8togd4vmvlqx" path="res://art/texture/slider/tex_slider_knob.png" id="2_knob"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pcko3"]
-texture = ExtResource("2_knob")
-texture_margin_left = 5.0
-texture_margin_top = 5.0
-texture_margin_right = 5.0
-texture_margin_bottom = 5.0
-modulate_color = Color(0, 0, 0, 1)
+[sub_resource type="AtlasTexture" id="AtlasTexture_slider_knob_inset"]
+atlas = ExtResource("2_knob")
+region = Rect2(0, 0, 8, 8)
+margin = Rect2(1, 0, 1, 0)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_knob"]
-texture = ExtResource("2_knob")
-texture_margin_left = 8.0
-texture_margin_top = 8.0
-texture_margin_right = 8.0
-texture_margin_bottom = 8.0
+texture = SubResource("AtlasTexture_slider_knob_inset")
+texture_margin_left = 4.0
+texture_margin_top = 3.0
+texture_margin_right = 4.0
+texture_margin_bottom = 3.0
+region_rect = Rect2(1, 1, 8, 6)
 modulate_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_bar"]
 texture = ExtResource("1_bar")
 texture_margin_left = 4.0
-texture_margin_top = 3.0
+texture_margin_top = 4.0
 texture_margin_right = 4.0
-texture_margin_bottom = 3.0
-expand_margin_left = 1.0
-expand_margin_right = 1.0
+texture_margin_bottom = 4.0
 modulate_color = Color(0.9411765, 0.8784314, 1, 1)
 
 [resource]
 VScrollBar/constants/scroll_width = 10
-VScrollBar/styles/grabber = SubResource("StyleBoxTexture_pcko3")
+VScrollBar/styles/grabber = SubResource("StyleBoxTexture_slider_knob")
 VScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_slider_knob")
 VScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_slider_knob")
 VScrollBar/styles/scroll = SubResource("StyleBoxTexture_slider_bar")
