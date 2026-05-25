@@ -53,7 +53,8 @@ func _add_seed_button(source: Resource) -> void:
 
 func _clear_buttons() -> void:
 	for child in get_children():
-		child.free()
+		remove_child(child)
+		child.queue_free()
 
 
 func _has_seed_skill(source: Resource) -> bool:
