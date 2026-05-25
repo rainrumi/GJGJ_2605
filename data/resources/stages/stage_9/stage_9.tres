@@ -8,7 +8,7 @@
 script = ExtResource("1_script")
 stage_id = 9
 stage_area = 9
-reachable_stage_areas = Array[int]([10, 2])
+reachable_stage_areas = Array[int]([10, 2, 9])
 display_name = "夢の主 9"
 level_text = "街A"
 location = "ミルネ街"
