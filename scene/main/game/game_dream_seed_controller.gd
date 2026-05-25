@@ -1,7 +1,7 @@
 class_name GameDreamSeedController
 extends RefCounted
 
-const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/dream_seed_skills/dream_seed_skill_catalog.tres")
+const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/seeds/dream_seed_skill_catalog.tres")
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 const SEED_BLOCK_DRAG_ALPHA := 0.58
 const DREAM_SEED_ACTIVATION_HP_RECOVERY := 1002

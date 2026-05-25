@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="DreamSeedSkillCatalog" format=3 uid="uid://dxxe2kgk1c6yu"]
+
+[ext_resource type="Script" uid="uid://ddp1sdlbaqo0t" path="res://data/definitions/dream_seed_skill_catalog.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="2_definition"]
+[ext_resource type="Resource" uid="uid://csw3037sd7vtl" path="res://data/resources/seeds/normal/seed_skill_1000_001.tres" id="3_normal_001"]
+[ext_resource type="Resource" uid="uid://bujf6qni8sb7" path="res://data/resources/seeds/normal/seed_skill_1000_002.tres" id="4_normal_002"]
+[ext_resource type="Resource" uid="uid://bmtmv5tea634" path="res://data/resources/seeds/normal/seed_skill_1000_003.tres" id="5_normal_003"]
+[ext_resource type="Resource" uid="uid://bqysunbl32t5i" path="res://data/resources/seeds/normal/seed_skill_1000_004.tres" id="6_normal_004"]
+[ext_resource type="Resource" uid="uid://by72oo4mnni1l" path="res://data/resources/seeds/rare/seed_skill_2000_001.tres" id="7_rare_001"]
+[ext_resource type="Resource" uid="uid://cw5psdb31ijoc" path="res://data/resources/seeds/rare/seed_skill_2000_002.tres" id="8_rare_002"]
+[ext_resource type="Resource" uid="uid://xy0783ffixh6" path="res://data/resources/seeds/rare/seed_skill_2000_003.tres" id="9_rare_003"]
+[ext_resource type="Resource" uid="uid://du8hfryf11cl4" path="res://data/resources/seeds/rare/seed_skill_2000_004.tres" id="10_rare_004"]
+[ext_resource type="Resource" uid="uid://cq3y5p5ecyr01" path="res://data/resources/seeds/rare/seed_skill_2000_005.tres" id="11_rare_005"]
+
+[resource]
+script = ExtResource("1_script")
+normal_skills = Array[ExtResource("2_definition")]([ExtResource("3_normal_001"), ExtResource("4_normal_002"), ExtResource("5_normal_003"), ExtResource("6_normal_004")])
+rare_skills = Array[ExtResource("2_definition")]([ExtResource("7_rare_001"), ExtResource("8_rare_002"), ExtResource("9_rare_003"), ExtResource("10_rare_004"), ExtResource("11_rare_005")])
