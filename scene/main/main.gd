@@ -207,6 +207,7 @@ func _create_battle_start_context(reset_player_state: bool) -> BattleStartContex
 	context.day = run_state.current_day
 	context.stage_id = run_state.selected_stage_id
 	context.stage = run_state.selected_stage
+	context.enemy_preset = run_state.pick_enemy_preset(run_state.selected_stage)
 	context.stomach_columns = run_state.stomach_columns
 	context.stomach_rows = run_state.stomach_rows
 	context.flowers = _get_planted_flowers()

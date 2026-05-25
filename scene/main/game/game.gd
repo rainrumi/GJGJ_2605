@@ -27,7 +27,7 @@ var hp := MAX_HP
 var current_stage_id := 0
 var current_stage: StageDefinition
 var current_day := 1
-var strengthened_enemy_preset_index := 0
+var current_enemy_preset: EnemyPresetDefinition
 var battle_active := false
 var auto_digest_enabled := false
 var auto_digest_paused_for_drag := false
@@ -66,7 +66,7 @@ func start_battle(context: BattleStartContext = null) -> void:
 	current_day = battle_context.day
 	current_stage_id = battle_context.stage_id
 	current_stage = battle_context.stage
-	strengthened_enemy_preset_index = 0
+	current_enemy_preset = battle_context.enemy_preset
 	stomach.set_grid_size(battle_context.stomach_columns, battle_context.stomach_rows)
 	last_time_over_recovery_percent = 0
 	debug_numbers_visible = false
@@ -358,27 +358,7 @@ func _get_battle_enemy_definitions() -> Array[Resource]:
 
 
 func _get_battle_enemy_preset() -> EnemyPresetDefinition:
-	if current_stage == null or current_stage.enemy_data == null:
-		return null
-	if current_stage.is_high_difficulty:
-		var strengthened_preset := current_stage.enemy_data.get_strengthened_enemy_preset(strengthened_enemy_preset_index)
-		if strengthened_preset != null:
-			return strengthened_preset
-	return current_stage.enemy_data.pick_normal_enemy_preset()
-
-
-func _try_start_next_stage_enemy_preset() -> bool:
-	if current_stage == null or current_stage.enemy_data == null:
-		return false
-	if not current_stage.is_high_difficulty:
-		return false
-	var next_preset: EnemyPresetDefinition
-	strengthened_enemy_preset_index += 1
-	next_preset = current_stage.enemy_data.get_strengthened_enemy_preset(strengthened_enemy_preset_index)
-	if next_preset == null:
-		return false
-	_setup_enemy_preset(next_preset)
-	return true
+	return current_enemy_preset
 
 
 func _setup_enemy_preset(enemy_preset: EnemyPresetDefinition) -> void:
@@ -474,8 +454,6 @@ func _finish_digest_turn() -> void:
 	digest_turn_in_progress = false
 func _check_battle_end() -> void:
 	if _all_nightmares_digested():
-		if _try_start_next_stage_enemy_preset():
-			return
 		_finish_battle(true, "すべての悪夢を消化しました")
 		return
 	if minutes >= END_HOUR * 60:

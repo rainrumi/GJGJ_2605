@@ -10,6 +10,12 @@ func pick_normal_enemy_preset() -> EnemyPresetDefinition:
 	return _pick_random_preset(normal_enemy_presets)
 
 
+func get_normal_enemy_preset(index: int) -> EnemyPresetDefinition:
+	if index < 0 or index >= normal_enemy_presets.size():
+		return null
+	return normal_enemy_presets[index]
+
+
 func pick_endless_enemy_preset() -> EnemyPresetDefinition:
 	return _pick_random_preset(endless_enemy_presets)
 
@@ -18,6 +24,14 @@ func get_strengthened_enemy_preset(index: int) -> EnemyPresetDefinition:
 	if index < 0 or index >= strengthened_enemy_presets.size():
 		return null
 	return strengthened_enemy_presets[index]
+
+
+func get_last_strengthened_enemy_preset() -> EnemyPresetDefinition:
+	for i in range(strengthened_enemy_presets.size() - 1, -1, -1):
+		var preset := strengthened_enemy_presets[i]
+		if preset != null and not preset.enemies.is_empty():
+			return preset
+	return null
 
 
 func _pick_random_preset(presets: Array[EnemyPresetDefinition]) -> EnemyPresetDefinition:
