@@ -9,11 +9,16 @@ const BEACON_FRAME_DURATION := 0.1
 @export var stage_choice_scene: PackedScene
 @export var beacon_outline_frames: Array[Texture2D] = []
 @export var beacon_fill_frames: Array[Texture2D] = []
+@export var location_outline_texture: Texture2D
+@export var location_fill_texture: Texture2D
 
 @onready var stage_choice_list: VBoxContainer = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices
 @onready var beacon: Node2D = $CharacterArea/Map/Beacon
 @onready var beacon_outline: Sprite2D = $CharacterArea/Map/Beacon/Outline
 @onready var beacon_fill: Sprite2D = $CharacterArea/Map/Beacon/Fill
+@onready var location_marker: Node2D = $CharacterArea/Map/LocationMarker
+@onready var location_marker_outline: Sprite2D = $CharacterArea/Map/LocationMarker/Outline
+@onready var location_marker_fill: Sprite2D = $CharacterArea/Map/LocationMarker/Fill
 
 var stage_choices: Array[BaseButton] = []
 var _displayed_stage_definitions: Array[StageDefinition] = []
@@ -27,6 +32,7 @@ var _beacon_frame_elapsed := 0.0
 
 func _ready() -> void:
 	_setup_beacon()
+	_setup_location_marker()
 	_collect_stage_choices()
 	setup_stage_choices()
 
@@ -52,6 +58,7 @@ func setup_stage_choices(current_stage_definition: StageDefinition = null, curre
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	_ensure_stage_choice_count(_displayed_stage_definitions.size())
 	_hide_beacon()
+	_update_location_marker()
 	for i in range(stage_choices.size()):
 		if i >= _displayed_stage_definitions.size():
 			stage_choices[i].call("setup_choice", null)
@@ -201,6 +208,25 @@ func _apply_beacon_frame() -> void:
 		beacon_outline.texture = beacon_outline_frames[_beacon_frame_index % beacon_outline_frames.size()]
 	if not beacon_fill_frames.is_empty():
 		beacon_fill.texture = beacon_fill_frames[_beacon_frame_index % beacon_fill_frames.size()]
+
+
+func _setup_location_marker() -> void:
+	location_marker.visible = false
+	location_marker.scale = Vector2.ONE
+	location_marker_outline.self_modulate = _get_background_color()
+	location_marker_fill.self_modulate = Color(0.9411765, 0.8784314, 1.0, 1.0)
+	if location_outline_texture != null:
+		location_marker_outline.texture = location_outline_texture
+	if location_fill_texture != null:
+		location_marker_fill.texture = location_fill_texture
+
+
+func _update_location_marker() -> void:
+	if _current_stage_definition == null:
+		location_marker.visible = false
+		return
+	location_marker.position = _current_stage_definition.map_position
+	location_marker.visible = true
 
 
 func _can_reach_stage(stage_definition: StageDefinition) -> bool:

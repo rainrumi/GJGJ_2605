@@ -22,6 +22,8 @@
 [ext_resource type="Texture2D" uid="uid://bfbhwpkryym72" path="res://art/ui/icon/select/ui_icon_select_beacon_05.png" id="20_beacon_05"]
 [ext_resource type="Texture2D" uid="uid://b6e4f8ur53n17" path="res://art/ui/icon/select/ui_icon_select_beacon_06.png" id="21_beacon_06"]
 [ext_resource type="Texture2D" uid="uid://n6dm8iyo40gq" path="res://art/ui/icon/select/ui_icon_select_beacon_07.png" id="22_beacon_07"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_outline.png" id="23_location_outline"]
+[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location.png" id="24_location"]
 
 [node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
@@ -29,6 +31,8 @@ stage_catalog = ExtResource("6_stage_catalog")
 stage_choice_scene = ExtResource("5_stage_choice")
 beacon_outline_frames = Array[Texture2D]([ExtResource("9_beacon_outline_01"), ExtResource("10_beacon_outline_02"), ExtResource("11_beacon_outline_03"), ExtResource("12_beacon_outline_04"), ExtResource("13_beacon_outline_05"), ExtResource("14_beacon_outline_06"), ExtResource("15_beacon_outline_07")])
 beacon_fill_frames = Array[Texture2D]([ExtResource("16_beacon_01"), ExtResource("17_beacon_02"), ExtResource("18_beacon_03"), ExtResource("19_beacon_04"), ExtResource("20_beacon_05"), ExtResource("21_beacon_06"), ExtResource("22_beacon_07")])
+location_outline_texture = ExtResource("23_location_outline")
+location_fill_texture = ExtResource("24_location")
 
 [node name="CharacterArea" type="Node2D" parent="." unique_id=691295669]
 
@@ -46,6 +50,16 @@ texture = ExtResource("9_beacon_outline_01")
 [node name="Fill" type="Sprite2D" parent="CharacterArea/Map/Beacon" unique_id=1711503467]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 texture = ExtResource("16_beacon_01")
+
+[node name="LocationMarker" type="Node2D" parent="CharacterArea/Map"]
+visible = false
+
+[node name="Outline" type="Sprite2D" parent="CharacterArea/Map/LocationMarker"]
+texture = ExtResource("23_location_outline")
+
+[node name="Fill" type="Sprite2D" parent="CharacterArea/Map/LocationMarker"]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+texture = ExtResource("24_location")
 
 [node name="UI" type="Control" parent="." unique_id=299033329]
 layout_mode = 3

@@ -2,6 +2,7 @@ extends Node
 
 const STAGE_CLEAR_RETURN_DELAY := 1.0
 const STORY_CLEAR_DAY := 20
+const INITIAL_STAGE_ID := 11
 
 enum NovelFlow {
 	NONE,
@@ -86,6 +87,7 @@ func show_stage_clear() -> void:
 
 func _on_title_start_game() -> void:
 	run_state.reset()
+	_setup_initial_stage_position()
 	should_reset_player_state = true
 	if stage_clear.has_method("reset_player_state"):
 		stage_clear.reset_player_state()
@@ -179,6 +181,16 @@ func _finish_current_day() -> void:
 		show_game_clear_novel()
 		return
 	show_day_intro()
+
+
+func _setup_initial_stage_position() -> void:
+	if not stage_select.has_method("get_stage_definition_by_id"):
+		return
+	var initial_stage := stage_select.call("get_stage_definition_by_id", INITIAL_STAGE_ID) as StageDefinition
+	if initial_stage == null:
+		return
+	run_state.selected_stage_id = initial_stage.stage_id
+	run_state.selected_stage = initial_stage
 
 
 func show_game_clear_novel() -> void:
