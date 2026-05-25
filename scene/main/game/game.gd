@@ -370,12 +370,11 @@ func _get_battle_enemy_preset() -> EnemyPresetDefinition:
 func _try_start_next_stage_enemy_preset() -> bool:
 	if current_stage == null or current_stage.enemy_data == null:
 		return false
+	if not current_stage.is_high_difficulty:
+		return false
 	var next_preset: EnemyPresetDefinition
-	if current_stage.is_high_difficulty:
-		strengthened_enemy_preset_index += 1
-		next_preset = current_stage.enemy_data.get_strengthened_enemy_preset(strengthened_enemy_preset_index)
-	else:
-		next_preset = current_stage.enemy_data.pick_endless_enemy_preset()
+	strengthened_enemy_preset_index += 1
+	next_preset = current_stage.enemy_data.get_strengthened_enemy_preset(strengthened_enemy_preset_index)
 	if next_preset == null:
 		return false
 	_setup_enemy_preset(next_preset)
