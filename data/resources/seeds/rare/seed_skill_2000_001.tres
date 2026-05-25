@@ -14,4 +14,4 @@ texture = ExtResource("2_texture")
 drag_texture = ExtResource("1_v8bib")
 stock_count = 4
 main_description = "3時までにステージをクリアすると残基が1回復する（上限は越えられない）"
-sub_description = "HP1マス1の花びらが生成される。"
+sub_description = "この花を食べる。（HP1,消化ダメージ0）"
