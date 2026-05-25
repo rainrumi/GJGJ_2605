@@ -60,7 +60,7 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 				_stomach.get_span_size(definition.stomach_size.y)
 			),
 			definition.nightmare_skill,
-			definition.nightmare_skill != null,
+			definition.nightmare_skill != null and definition.nightmare_skill_enabled,
 			enemy_positions[i]
 		)
 

@@ -18,6 +18,7 @@ var definition: EnemyDefinition
 var skill_definition: NightmareSkillDefinition
 var seed_skill_definition: DreamSeedSkillDefinition
 var has_main_effect := false
+var nightmare_skill_enabled := true
 var max_hp := 0
 var damage := 0
 var base_damage := 0
@@ -46,7 +47,8 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 	definition = enemy_definition
 	skill_definition = nightmare_skill
 	seed_skill_definition = null
-	has_main_effect = has_effect
+	nightmare_skill_enabled = enemy_definition.nightmare_skill_enabled
+	has_main_effect = has_effect and nightmare_skill_enabled
 	max_hp = enemy_definition.max_hp
 	damage = enemy_definition.damage
 	base_damage = enemy_definition.damage
@@ -180,7 +182,7 @@ func is_stomach_piece() -> bool:
 func should_count_for_battle_clear() -> bool:
 	return is_nightmare()
 func should_apply_nightmare_skill() -> bool:
-	return is_nightmare()
+	return is_nightmare() and nightmare_skill_enabled
 func should_deal_player_damage() -> bool:
 	return is_nightmare()
 func update_stomach_display_size(target_size: Vector2) -> void:
