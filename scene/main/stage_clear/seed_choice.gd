@@ -114,11 +114,11 @@ func _get_seed_effect_text(seed: SeedOptionDefinition) -> String:
 		return seed.effect_text
 	var skill := seed.dream_seed_skill
 	var lines: Array[String] = [
-		"メインスキル: %s" % _get_or_empty(skill.main_description),
+		"メインスキル: %s" % DreamSeedSkillDescriptionFormatter.get_main_description(skill),
 	]
-	if not skill.sub_description.is_empty():
-		lines.append("サブスキル: %s" % skill.sub_description)
-	lines.append("残基: %d" % skill.stock_count)
+	if DreamSeedSkillDescriptionFormatter.has_sub_description(skill):
+		lines.append("サブスキル: %s" % DreamSeedSkillDescriptionFormatter.get_sub_description(skill))
+	lines.append(DreamSeedSkillDescriptionFormatter.get_reward_stock_text(skill))
 	return "\n".join(lines)
 
 
@@ -139,8 +139,3 @@ func _is_rare_dream_seed(seed: SeedOptionDefinition) -> bool:
 		return false
 	return seed.dream_seed_skill.rarity == DreamSeedSkillDefinition.Rarity.RARE
 
-
-func _get_or_empty(text: String) -> String:
-	if text.is_empty():
-		return "-"
-	return text

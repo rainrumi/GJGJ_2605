@@ -128,11 +128,11 @@ func _refresh_tooltip() -> void:
 func _get_tooltip_text() -> String:
 	var lines: Array[String] = [
 		_get_title_text(),
-		"メインスキル: %s" % _get_or_empty(seed_skill.main_description),
+		"メインスキル: %s" % DreamSeedSkillDescriptionFormatter.get_main_description(seed_skill),
 	]
 	if _is_rare_seed():
-		lines.append("サブスキル: %s" % _get_or_empty(seed_skill.sub_description))
-	lines.append("使用可能数: %d" % _remaining_stock)
+		lines.append("サブスキル: %s" % DreamSeedSkillDescriptionFormatter.get_sub_description(seed_skill))
+	lines.append(DreamSeedSkillDescriptionFormatter.get_stock_text(seed_skill, _remaining_stock))
 	if debug_numbers_visible:
 		lines.append("ID: %d" % seed_skill.skill_id)
 	return "\n".join(lines)
@@ -171,12 +171,6 @@ func _is_rare_seed() -> bool:
 	return seed_skill != null and seed_skill.rarity == DreamSeedSkillDefinition.Rarity.RARE
 
 
-func _get_or_empty(text: String) -> String:
-	if text.is_empty():
-		return "-"
-	return text
-
-
 func _try_use_sub_skill(mouse_position: Vector2) -> void:
 	if not _can_use_sub_skill():
 		return
@@ -192,7 +186,7 @@ func _can_use_sub_skill() -> bool:
 
 
 func _has_sub_skill() -> bool:
-	return seed_skill != null and not seed_skill.sub_description.strip_edges().is_empty()
+	return DreamSeedSkillDescriptionFormatter.has_sub_description(seed_skill)
 
 
 func _update_drag_state() -> void:
