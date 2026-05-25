@@ -6,3 +6,4 @@ extends Resource
 @export var display_name := ""
 @export var texture: Texture2D
 @export_multiline var description := ""
+@export var nightmare_skill_enabled := true

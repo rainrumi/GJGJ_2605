@@ -10,10 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://dpf6pkf1ttb3w" path="res://art/ui/button/ui_button_digestiveSTART.png" id="17_digestion"]
 [ext_resource type="Texture2D" uid="uid://cuxjxyxsrwydw" path="res://art/ui/icon/ui_icon_time.png" id="18_time_frame"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://sound/se/click.mp3" id="21_click_se"]
-[ext_resource type="Resource" uid="uid://yp6l8yj5aais" path="res://data/resources/enemies/adult_nightmare.tres" id="23_adult"]
-[ext_resource type="Resource" uid="uid://0vj26vry850v" path="res://data/resources/enemies/overeating_nightmare.tres" id="24_overeating"]
-[ext_resource type="Resource" uid="uid://c7sgbrklhmetg" path="res://data/resources/enemies/chased_nightmare.tres" id="25_chased"]
-[ext_resource type="Resource" path="res://data/resources/nightmare_skills/nightmare_skill_catalog.tres" id="26_nightmare_skill_catalog"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_catalog.tres" id="26_nightmare_skill_catalog"]
 [ext_resource type="Script" uid="uid://dqfh2rsac6b2h" path="res://scene/main/game/game_input_controller.gd" id="27_game_input_controller"]
 [ext_resource type="Script" uid="uid://cadvjfvgq6ltr" path="res://scene/ui/battle_ui/nightmare_tooltip_view.gd" id="28_nightmare_tooltip_view"]
 [ext_resource type="Script" uid="uid://bguqd5rsu6rco" path="res://scene/ui/battle_ui/digest_damage_tooltip_view.gd" id="30_digest_damage_tooltip_view"]
@@ -31,7 +28,6 @@
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
-enemy_definitions = Array[Resource]([ExtResource("23_adult"), ExtResource("24_overeating"), ExtResource("25_chased")])
 nightmare_skill_catalog = ExtResource("26_nightmare_skill_catalog")
 
 [node name="Background" parent="." unique_id=1278647446 instance=ExtResource("1_background")]

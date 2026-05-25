@@ -8,6 +8,19 @@ const ENEMY_LEFT_X := 425.0
 const ENEMY_CENTER_X := 500.0
 const ENEMY_RIGHT_X := 575.0
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
+const DEFAULT_NIGHTMARE_MAX_HP := 1400
+const DEFAULT_NIGHTMARE_SIZE := 6
+const DEFAULT_NIGHTMARE_DAMAGE := 2
+const STAGE_NIGHTMARE_SKILL_ENABLED := false
+const DEFAULT_NIGHTMARE_STOMACH_SIZE := Vector2i(2, 3)
+const DEFAULT_NIGHTMARE_STOMACH_SHAPE: Array[Vector2i] = [
+	Vector2i(0, 0),
+	Vector2i(1, 0),
+	Vector2i(0, 1),
+	Vector2i(1, 1),
+	Vector2i(0, 2),
+	Vector2i(1, 2),
+]
 
 var _owner: Node
 var _input_controller: GameInputController
@@ -50,17 +63,19 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 			enemy.digesting = false
 			enemy.has_main_effect = false
 			continue
-		var definition := _enemy_preset.enemies[i]
-		if definition == null:
+		var source_skill := _enemy_preset.enemies[i]
+		if source_skill == null:
 			continue
+		var skill := _create_stage_nightmare_skill(source_skill)
+		var definition := _create_nightmare_definition(skill)
 		enemy.setup(
 			definition,
 			Vector2(
 				_stomach.get_span_size(definition.stomach_size.x),
 				_stomach.get_span_size(definition.stomach_size.y)
 			),
-			definition.nightmare_skill,
-			definition.nightmare_skill != null and definition.nightmare_skill_enabled,
+			skill,
+			skill.nightmare_skill_enabled,
 			enemy_positions[i]
 		)
 
@@ -171,6 +186,26 @@ func _get_enemy_template(enemy_index: int) -> EnemyDefinition:
 	if _enemy_definitions.is_empty():
 		return null
 	return _enemy_definitions[enemy_index % _enemy_definitions.size()] as EnemyDefinition
+
+
+func _create_nightmare_definition(skill: NightmareSkillDefinition) -> EnemyDefinition:
+	var definition := EnemyDefinition.new()
+	definition.display_name = skill.display_name
+	definition.texture = skill.texture
+	definition.max_hp = DEFAULT_NIGHTMARE_MAX_HP
+	definition.size = DEFAULT_NIGHTMARE_SIZE
+	definition.damage = DEFAULT_NIGHTMARE_DAMAGE
+	definition.nightmare_skill = skill
+	definition.nightmare_skill_enabled = skill.nightmare_skill_enabled
+	definition.stomach_size = DEFAULT_NIGHTMARE_STOMACH_SIZE
+	definition.stomach_shape = DEFAULT_NIGHTMARE_STOMACH_SHAPE.duplicate()
+	return definition
+
+
+func _create_stage_nightmare_skill(source_skill: NightmareSkillDefinition) -> NightmareSkillDefinition:
+	var skill := source_skill.duplicate(true) as NightmareSkillDefinition
+	skill.nightmare_skill_enabled = STAGE_NIGHTMARE_SKILL_ENABLED
+	return skill
 
 
 func _get_enemy_positions(enemy_count: int) -> Array[Vector2]:
