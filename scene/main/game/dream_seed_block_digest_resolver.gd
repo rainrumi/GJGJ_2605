@@ -20,7 +20,7 @@ func get_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
 	return rate
 
 
-func apply_digested_effect(
+func apply_digested_effect_and_append_new_digested(
 	seed_block: Enemy,
 	enemies: Array[Enemy],
 	received_digest_damage: Dictionary,

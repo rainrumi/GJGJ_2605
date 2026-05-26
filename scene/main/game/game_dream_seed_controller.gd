@@ -42,14 +42,6 @@ func get_flowers() -> Array[FlowerDefinition]:
 	return _flowers
 
 
-func add_random_debug_seed() -> bool:
-	var flower := debug_factory.create_random_debug_seed_flower()
-	if flower == null:
-		return false
-	_flowers.append(flower)
-	return true
-
-
 func remove_source_while_in_stomach(button: DreamSeedSkillButton, seed_block: Enemy) -> void:
 	if button == null or button.get_remaining_sub_skill_uses() > 0:
 		return
@@ -191,6 +183,40 @@ func cancel_seed_block(seed_block: Enemy) -> void:
 		seed_block.queue_free()
 
 
+func _get_seed_block_stomach_size(seed_skill: DreamSeedSkillDefinition) -> Vector2i:
+	if seed_skill != null and seed_skill.drag_block_definition != null:
+		return seed_skill.drag_block_definition.get_stomach_size()
+	return Vector2i.ONE
+
+
+func _get_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
+	return _create_seed_block_template(seed_skill)
+
+
+func _create_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
+	if seed_skill == null:
+		return null
+	var block_definition := seed_skill.drag_block_definition
+	var definition := EnemyDefinition.new()
+	definition.display_name = seed_skill.display_name
+	definition.texture = seed_skill.texture
+	definition.max_hp = 1
+	definition.size = 1
+	definition.damage = 0
+	definition.nightmare_skill_enabled = false
+	definition.stomach_size = Vector2i.ONE
+	definition.stomach_shape = [Vector2i.ZERO]
+	if block_definition != null:
+		if block_definition.texture != null:
+			definition.texture = block_definition.texture
+		definition.max_hp = block_definition.get_max_hp()
+		definition.size = block_definition.get_cell_count()
+		definition.damage = block_definition.get_damage()
+		definition.stomach_size = block_definition.get_stomach_size()
+		definition.stomach_shape = block_definition.get_stomach_shape()
+	return definition
+
+
 func apply_direct_digested_seed_effects(
 	digested_enemies: Array[Enemy],
 	current_hp: int,
@@ -235,35 +261,9 @@ func _is_direct_controller_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
 	)
 
 
-func _get_seed_block_stomach_size(seed_skill: DreamSeedSkillDefinition) -> Vector2i:
-	if seed_skill != null and seed_skill.drag_block_definition != null:
-		return seed_skill.drag_block_definition.get_stomach_size()
-	return Vector2i.ONE
-
-
-func _get_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
-	return _create_seed_block_template(seed_skill)
-
-
-func _create_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
-	if seed_skill == null:
-		return null
-	var block_definition := seed_skill.drag_block_definition
-	var definition := EnemyDefinition.new()
-	definition.display_name = seed_skill.display_name
-	definition.texture = seed_skill.texture
-	definition.max_hp = 1
-	definition.size = 1
-	definition.damage = 0
-	definition.nightmare_skill_enabled = false
-	definition.stomach_size = Vector2i.ONE
-	definition.stomach_shape = [Vector2i.ZERO]
-	if block_definition != null:
-		if block_definition.texture != null:
-			definition.texture = block_definition.texture
-		definition.max_hp = block_definition.get_max_hp()
-		definition.size = block_definition.get_cell_count()
-		definition.damage = block_definition.get_damage()
-		definition.stomach_size = block_definition.get_stomach_size()
-		definition.stomach_shape = block_definition.get_stomach_shape()
-	return definition
+func add_random_debug_seed() -> bool:
+	var flower := debug_factory.create_random_debug_seed_flower()
+	if flower == null:
+		return false
+	_flowers.append(flower)
+	return true

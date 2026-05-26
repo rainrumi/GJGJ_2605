@@ -393,22 +393,35 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	hp = maxi(0, hp - damage)
 	_refresh_after_battle_event()
 func _advance_digest_turn() -> void:
-	if digest_turn_in_progress:
-		return
-	digest_turn_in_progress = true
-	if _active_digest_count() == 0:
-		_finish_empty_digest_turn()
+	if not _begin_digest_turn():
 		return
 	digest_controller.apply_turn_start_effects(enemies)
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
 	await _wait_for_next_digest_beat()
-	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, minutes)
-	_apply_digest_spawn_requests(digest_controller.consume_spawn_requests())
+	var digested_enemies := _run_digest_core(minutes)
 	_apply_digested_seed_effects(digested_enemies)
 	_apply_player_damage_values()
 	_apply_elapsed_time(elapsed_minutes)
 	await _resolve_post_digest_visuals(digested_enemies)
 	_finish_digest_turn()
+
+
+func _begin_digest_turn() -> bool:
+	if digest_turn_in_progress:
+		return false
+	digest_turn_in_progress = true
+	if _active_digest_count() == 0:
+		_finish_empty_digest_turn()
+		return false
+	return true
+
+
+func _run_digest_core(current_minutes: int) -> Array[Enemy]:
+	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, current_minutes)
+	_apply_digest_spawn_requests(digest_controller.consume_spawn_requests())
+	return digested_enemies
+
+
 func _finish_empty_digest_turn() -> void:
 	auto_digest_enabled = false
 	_refresh_after_battle_event()

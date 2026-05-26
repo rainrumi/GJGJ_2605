@@ -26,6 +26,7 @@ const NIGHTMARE_SKILL_SINGLE_DIGEST_SPAWN := 12
 var seed_effects := DreamSeedEffectCalculator.new()
 var seed_block_resolver := DreamSeedBlockDigestResolver.new()
 var digest_order := 0
+# 将来 DigestSideEffects / DigestTurnResult へまとめる副作用。
 var _pending_player_damage_values: Array[int] = []
 var _pending_spawn_requests: Array[DigestSpawnRequest] = []
 var _skill_7_base_hp: Dictionary = {}
@@ -250,7 +251,12 @@ func _resolve_digested_enemy_effects(
 			)
 			enemy.revive_with_hp_rate(revive_rate)
 			continue
-		seed_block_resolver.apply_digested_effect(enemy, enemies, received_digest_damage, digested_enemies)
+		seed_block_resolver.apply_digested_effect_and_append_new_digested(
+			enemy,
+			enemies,
+			received_digest_damage,
+			digested_enemies
+		)
 		final_digested.append(enemy)
 	var digested_nightmares := _get_digested_nightmares(final_digested)
 	_apply_chain_reactions(enemies, digested_nightmares)

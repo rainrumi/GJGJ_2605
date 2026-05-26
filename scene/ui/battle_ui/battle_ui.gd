@@ -36,11 +36,7 @@ func _ready() -> void:
 	_prepare_digest_mouse_filters()
 	dream_seed_skill_buttons.set_sub_skill_drag_enabled(true)
 	_connect_child_signals()
-	hide_nightmare_tooltip()
-	hide_digest_damage_tooltip()
-	hide_digest_efficiency_tooltip()
-	hide_time_tooltip()
-	hide_hp_tooltip()
+	_hide_all_tooltips()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -81,11 +77,7 @@ func reset_for_battle(
 	set_digestion_button_visible(true)
 	hide_hp_damage_preview()
 	hide_time_elapsed()
-	hide_nightmare_tooltip()
-	hide_digest_damage_tooltip()
-	hide_digest_efficiency_tooltip()
-	hide_time_tooltip()
-	hide_hp_tooltip()
+	_hide_all_tooltips()
 
 
 func set_hp(current_hp: int, max_hp: int) -> void:
@@ -118,10 +110,7 @@ func set_dream_seed_debug_numbers_visible(is_visible: bool) -> void:
 
 
 func show_nightmare_tooltip(enemy: Enemy, debug_number_text: String, debug_numbers_visible: bool) -> void:
-	hide_digest_damage_tooltip()
-	hide_digest_efficiency_tooltip()
-	hide_time_tooltip()
-	hide_hp_tooltip()
+	_hide_all_tooltips()
 	nightmare_tooltip.show_enemy_at(enemy, debug_number_text, debug_numbers_visible, enemy.global_position)
 
 
@@ -130,10 +119,7 @@ func hide_nightmare_tooltip() -> void:
 
 
 func show_digest_damage_tooltip() -> void:
-	hide_nightmare_tooltip()
-	hide_digest_efficiency_tooltip()
-	hide_time_tooltip()
-	hide_hp_tooltip()
+	_hide_all_tooltips()
 	digest_tooltip.show_tooltip_at(digest_damage_panel.global_position)
 
 
@@ -142,10 +128,7 @@ func hide_digest_damage_tooltip() -> void:
 
 
 func show_digest_efficiency_tooltip() -> void:
-	hide_nightmare_tooltip()
-	hide_digest_damage_tooltip()
-	hide_time_tooltip()
-	hide_hp_tooltip()
+	_hide_all_tooltips()
 	efficiency_tooltip.show_tooltip_at(digest_efficiency_panel.global_position)
 
 
@@ -154,10 +137,7 @@ func hide_digest_efficiency_tooltip() -> void:
 
 
 func show_time_tooltip() -> void:
-	hide_nightmare_tooltip()
-	hide_digest_damage_tooltip()
-	hide_digest_efficiency_tooltip()
-	hide_hp_tooltip()
+	_hide_all_tooltips()
 	time_tooltip.show_tooltip_at(time_status.global_position)
 
 
@@ -166,15 +146,20 @@ func hide_time_tooltip() -> void:
 
 
 func show_hp_tooltip() -> void:
-	hide_nightmare_tooltip()
-	hide_digest_damage_tooltip()
-	hide_digest_efficiency_tooltip()
-	hide_time_tooltip()
+	_hide_all_tooltips()
 	hp_tooltip.show_tooltip_at(hp_status.global_position)
 
 
 func hide_hp_tooltip() -> void:
 	hp_tooltip.hide_tooltip()
+
+
+func _hide_all_tooltips() -> void:
+	hide_nightmare_tooltip()
+	hide_digest_damage_tooltip()
+	hide_digest_efficiency_tooltip()
+	hide_time_tooltip()
+	hide_hp_tooltip()
 
 
 func set_digest_damage_info(

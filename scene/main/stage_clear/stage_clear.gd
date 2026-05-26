@@ -273,12 +273,12 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 	var flower := reward_service.create_seed_flower(seed)
 	if _can_plant_seed(seed):
 		planted_flowers.append(flower)
-		_refresh_flower_slots()
+		_refresh_after_reward_state_changed()
 		var recovered_rate := _apply_selection_recovery(0.0)
 		_finish_seed_choice(recovered_rate, "%sを植えました" % _get_seed_display_name(seed))
 		return
 	reward_service.replace_first_flower(planted_flowers, flower)
-	_refresh_flower_slots()
+	_refresh_after_reward_state_changed()
 	var replacement_recovered_rate := _apply_selection_recovery(0.0)
 	_finish_seed_choice(replacement_recovered_rate, "%sを植え替えました" % _get_seed_display_name(seed))
 func _on_abandon_button_pressed() -> void:
