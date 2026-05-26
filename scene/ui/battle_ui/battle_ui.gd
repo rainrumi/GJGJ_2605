@@ -155,11 +155,19 @@ func hide_hp_tooltip() -> void:
 
 
 func _hide_all_tooltips() -> void:
-	hide_nightmare_tooltip()
-	hide_digest_damage_tooltip()
-	hide_digest_efficiency_tooltip()
-	hide_time_tooltip()
-	hide_hp_tooltip()
+	for tooltip in _get_tooltip_views():
+		if tooltip != null and tooltip.has_method("hide_tooltip"):
+			tooltip.hide_tooltip()
+
+
+func _get_tooltip_views() -> Array[Object]:
+	return [
+		nightmare_tooltip,
+		digest_tooltip,
+		efficiency_tooltip,
+		time_tooltip,
+		hp_tooltip,
+	]
 
 
 func set_digest_damage_info(

@@ -26,7 +26,7 @@ const NIGHTMARE_SKILL_SINGLE_DIGEST_SPAWN := 12
 var seed_effects := DreamSeedEffectCalculator.new()
 var seed_block_resolver := DreamSeedBlockDigestResolver.new()
 var digest_order := 0
-# 将来 DigestSideEffects / DigestTurnResult へまとめる副作用。
+# Side effects that can later move into DigestSideEffects / DigestTurnResult.
 var _pending_player_damage_values: Array[int] = []
 var _pending_spawn_requests: Array[DigestSpawnRequest] = []
 var _skill_7_base_hp: Dictionary = {}
@@ -173,6 +173,13 @@ func apply_direct_player_damage(amount: int) -> int:
 
 func add_digested_seed_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
 	return seed_effects.add_digested_seed_effect(seed_skill)
+
+
+func build_turn_result(digested_enemies: Array[Enemy]) -> DigestTurnResult:
+	var result := DigestTurnResult.new()
+	result.digested_enemies = digested_enemies
+	result.spawn_requests = consume_spawn_requests()
+	return result
 
 
 func consume_pending_player_damage_values() -> Array[int]:
@@ -398,7 +405,7 @@ func _apply_enemy_damage_values(damage_display_values: Dictionary, digested_enem
 func _get_turn_start_hp(enemies: Array[Enemy]) -> Dictionary:
 	var turn_start_hp := {}
 	for enemy in enemies:
-		turn_start_hp[enemy] = enemy.current_hp
+		turn_start_hp[enemy] = enemy.get_current_hp()
 	return turn_start_hp
 
 

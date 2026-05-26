@@ -375,9 +375,15 @@ func _refresh_dream_seed_skill_buttons() -> void:
 
 
 func _refresh_after_reward_state_changed() -> void:
+	_refresh_reward_ui()
+
+
+func _refresh_reward_ui() -> void:
 	_refresh_flower_slots()
 	_refresh_seed_choices()
 	_update_hp_heal_plan()
+
+
 func _get_display_flower_textures() -> Array[Texture2D]:
 	var textures: Array[Texture2D] = []
 	for flower in planted_flowers:

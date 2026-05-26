@@ -38,6 +38,7 @@ var digestion_timer: Timer
 var enemy_setup := GameEnemySetupController.new()
 var digest_controller := NightmareDigestController.new()
 var dream_seed_controller := GameDreamSeedController.new()
+var digest_spawn_request_applier := DigestSpawnRequestApplier.new()
 var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
 var drag_offset := Vector2.ZERO
@@ -418,8 +419,9 @@ func _begin_digest_turn() -> bool:
 
 func _run_digest_core(current_minutes: int) -> Array[Enemy]:
 	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, current_minutes)
-	_apply_digest_spawn_requests(digest_controller.consume_spawn_requests())
-	return digested_enemies
+	var digest_result := digest_controller.build_turn_result(digested_enemies)
+	_apply_digest_spawn_requests(digest_result.spawn_requests)
+	return digest_result.digested_enemies
 
 
 func _finish_empty_digest_turn() -> void:
@@ -573,15 +575,7 @@ func _clear_scheduled_digest_events() -> void:
 
 
 func _apply_digest_spawn_requests(spawn_requests: Array[DigestSpawnRequest]) -> void:
-	for request in spawn_requests:
-		if not enemy_setup.spawn_nuisance_nightmare(
-			enemies,
-			request.source_enemy,
-			request.cell,
-			request.hp_rate,
-			request.damage
-		):
-			break
+	digest_spawn_request_applier.apply_requests(spawn_requests, enemies, enemy_setup)
 
 
 func _apply_digested_seed_effects(digested_enemies: Array[Enemy]) -> void:
