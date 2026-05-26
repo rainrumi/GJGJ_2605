@@ -3,6 +3,11 @@
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://ceejcrunogkk" path="res://art/enemy/tex_stomach_block_1000.png" id="1_v8bib"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/dream_seed_drag_block_definition.gd" id="3_block_script"]
+
+[sub_resource type="Resource" id="Resource_drag_block"]
+script = ExtResource("3_block_script")
+texture = ExtResource("1_v8bib")
 
 [resource]
 script = ExtResource("1_script")
@@ -11,6 +16,6 @@ category = "花びら配置系統"
 rarity = 1
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
-drag_texture = ExtResource("1_v8bib")
+drag_block_definition = SubResource("Resource_drag_block")
 main_description = "3時までにステージをクリアすると追加で夢の種を1回獲得できる。"
 sub_description = "この花を食べる。（HP1,消化ダメージ0）"

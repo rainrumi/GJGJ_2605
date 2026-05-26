@@ -3,6 +3,11 @@
 [ext_resource type="Texture2D" uid="uid://lbir737ahogk" path="res://art/enemy/tex_enemy_1000_No_300.png" id="1_ry83w"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/dream_seed_drag_block_definition.gd" id="3_block_script"]
+
+[sub_resource type="Resource" id="Resource_drag_block"]
+script = ExtResource("3_block_script")
+texture = ExtResource("1_ry83w")
 
 [resource]
 script = ExtResource("1_script")
@@ -11,6 +16,6 @@ category = "反射系統"
 rarity = 1
 display_name = "夢の花名"
 texture = ExtResource("2_texture")
-drag_texture = ExtResource("1_ry83w")
+drag_block_definition = SubResource("Resource_drag_block")
 main_description = "受けるダメージ+30%。受けたダメージ30%分を次の消化ダメージに加算。"
 sub_description = "この花を食べる。消化時に受けた総合消化ダメージ100%を隣接するモノに分配して与える。（HP%d(現在の消化ダメージの500%),消化ダメージ0）"
