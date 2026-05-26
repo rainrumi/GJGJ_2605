@@ -9,7 +9,6 @@ enum Rarity {
 enum SubSkillMode {
 	None,
 	Drag,
-	Activation,
 }
 
 @export var skill_id := 0

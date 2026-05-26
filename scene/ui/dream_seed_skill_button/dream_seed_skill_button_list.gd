@@ -4,7 +4,6 @@ extends HFlowContainer
 signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
 signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
 signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
-signal seed_skill_activation_requested(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition)
 
 const BUTTON_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_seed_skill_button.tscn")
 
@@ -48,7 +47,6 @@ func _add_seed_button(source: Resource) -> void:
 	button.seed_skill_drag_started.connect(_on_seed_skill_drag_started)
 	button.seed_skill_drag_moved.connect(_on_seed_skill_drag_moved)
 	button.seed_skill_drag_released.connect(_on_seed_skill_drag_released)
-	button.seed_skill_activation_requested.connect(_on_seed_skill_activation_requested)
 
 
 func _clear_buttons() -> void:
@@ -85,10 +83,3 @@ func _on_seed_skill_drag_released(
 	mouse_position: Vector2
 ) -> void:
 	seed_skill_drag_released.emit(button, seed_skill, mouse_position)
-
-
-func _on_seed_skill_activation_requested(
-	button: DreamSeedSkillButton,
-	seed_skill: DreamSeedSkillDefinition
-) -> void:
-	seed_skill_activation_requested.emit(button, seed_skill)

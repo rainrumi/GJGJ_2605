@@ -4,12 +4,12 @@ extends RefCounted
 const CATEGORY_DREAM_FLOWER := "夢の花系統"
 const CATEGORY_SPECIAL_TIME := "時間系統"
 const SKILL_1_DIGEST_DAMAGE_RATE := 0.1
-const SKILL_1_ACTIVATION_DIGEST_DAMAGE_RATE := 0.2
+const SKILL_1_BLOCK_DIGEST_DAMAGE_RATE := 0.2
 const SKILL_3_TIME_REDUCTION_RATE := 0.05
-const SKILL_3_ACTIVATION_TIME_REDUCTION_RATE := 0.15
+const SKILL_3_BLOCK_TIME_REDUCTION_RATE := 0.15
 const SKILL_3_MAX_TIME_REDUCTION_RATE := 0.2
 const SKILL_4_REST_RECOVERY_BONUS_RATE := 0.5
-const RARE_SKILL_3_ACTIVATION_TIME_REDUCTION_RATE := 0.5
+const RARE_SKILL_3_BLOCK_TIME_REDUCTION_RATE := 0.5
 const SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_RATE := 2.0
 const SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_START_HOUR := 28
 const DREAM_SEED_DIGEST_DAMAGE_UP := 1001
@@ -76,18 +76,18 @@ func get_time_reduction_rate(consume_pending_bonus := false) -> float:
 	return minf(0.9, maxf(0.0, rate))
 
 
-func add_activation_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
+func add_digested_seed_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
 	if seed_skill == null:
 		return false
 	match seed_skill.skill_id:
 		DREAM_SEED_DIGEST_DAMAGE_UP:
-			next_digest_damage_bonus_rate += SKILL_1_ACTIVATION_DIGEST_DAMAGE_RATE
+			next_digest_damage_bonus_rate += SKILL_1_BLOCK_DIGEST_DAMAGE_RATE
 			return true
 		DREAM_SEED_TIME_REDUCTION:
-			next_time_reduction_bonus_rate += SKILL_3_ACTIVATION_TIME_REDUCTION_RATE
+			next_time_reduction_bonus_rate += SKILL_3_BLOCK_TIME_REDUCTION_RATE
 			return true
 		DREAM_SEED_RARE_TIME_REDUCTION:
-			next_time_reduction_bonus_rate += RARE_SKILL_3_ACTIVATION_TIME_REDUCTION_RATE
+			next_time_reduction_bonus_rate += RARE_SKILL_3_BLOCK_TIME_REDUCTION_RATE
 			return true
 	return false
 

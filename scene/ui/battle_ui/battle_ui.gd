@@ -9,7 +9,6 @@ signal debug_seed_requested
 signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
 signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
 signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
-signal seed_skill_activation_requested(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition)
 
 @onready var digest_damage_panel: Control = $DigestiveDMG
 @onready var digest_damage_icon: Control = $DigestiveDMG/digestiveDMG_icon
@@ -247,7 +246,6 @@ func _connect_child_signals() -> void:
 	dream_seed_skill_buttons.seed_skill_drag_started.connect(_on_seed_skill_drag_started)
 	dream_seed_skill_buttons.seed_skill_drag_moved.connect(_on_seed_skill_drag_moved)
 	dream_seed_skill_buttons.seed_skill_drag_released.connect(_on_seed_skill_drag_released)
-	dream_seed_skill_buttons.seed_skill_activation_requested.connect(_on_seed_skill_activation_requested)
 	digest_damage_panel.mouse_entered.connect(show_digest_damage_tooltip)
 	digest_damage_panel.mouse_exited.connect(hide_digest_damage_tooltip)
 	digest_efficiency_panel.mouse_entered.connect(show_digest_efficiency_tooltip)
@@ -333,10 +331,3 @@ func _on_seed_skill_drag_released(
 	mouse_position: Vector2
 ) -> void:
 	seed_skill_drag_released.emit(button, seed_skill, mouse_position)
-
-
-func _on_seed_skill_activation_requested(
-	button: DreamSeedSkillButton,
-	seed_skill: DreamSeedSkillDefinition
-) -> void:
-	seed_skill_activation_requested.emit(button, seed_skill)

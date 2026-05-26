@@ -4,7 +4,6 @@ extends Button
 signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
 signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
 signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
-signal seed_skill_activation_requested(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition)
 
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
 const TOOLTIP_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_seed_skill_tooltip.tscn")
@@ -131,7 +130,7 @@ func _get_tooltip_text() -> String:
 		_get_title_text(),
 		"メインスキル: %s" % DreamSeedSkillDescriptionFormatter.get_main_description(seed_skill),
 	]
-	if _is_rare_seed():
+	if _has_sub_skill():
 		lines.append("サブスキル: %s" % DreamSeedSkillDescriptionFormatter.get_sub_description(seed_skill))
 	if _has_sub_skill():
 		lines.append(DreamSeedSkillDescriptionFormatter.get_sub_skill_use_text(_remaining_sub_skill_uses))
@@ -176,9 +175,6 @@ func _is_rare_seed() -> bool:
 func _try_use_sub_skill(mouse_position: Vector2) -> void:
 	if not _can_use_sub_skill():
 		return
-	if seed_skill.sub_skill_mode == DreamSeedSkillDefinition.SubSkillMode.Activation:
-		seed_skill_activation_requested.emit(self, seed_skill)
-		return
 	_dragging = true
 	seed_skill_drag_started.emit(self, seed_skill, mouse_position)
 
@@ -188,7 +184,7 @@ func _can_use_sub_skill() -> bool:
 
 
 func _has_sub_skill() -> bool:
-	return DreamSeedSkillDescriptionFormatter.has_sub_description(seed_skill)
+	return DreamSeedSkillDescriptionFormatter.has_sub_skill(seed_skill)
 
 
 func _update_drag_state() -> void:

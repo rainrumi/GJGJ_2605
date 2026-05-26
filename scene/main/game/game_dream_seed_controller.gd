@@ -4,9 +4,9 @@ extends RefCounted
 const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/seeds/dream_seed_skill_catalog.tres")
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 const SEED_BLOCK_DRAG_ALPHA := 0.58
-const DREAM_SEED_ACTIVATION_HP_RECOVERY := 1002
-const DREAM_SEED_ACTIVATION_HP_RECOVERY_RATE := 0.05
-const DREAM_SEED_ACTIVATION_SKIP_REST_TIME := 1004
+const DREAM_SEED_DIGEST_HP_RECOVERY := 1002
+const DREAM_SEED_DIGEST_HP_RECOVERY_RATE := 0.05
+const DREAM_SEED_DIGEST_SKIP_REST_TIME := 1004
 
 var rest_time_skip_count := 0
 var _flowers: Array[FlowerDefinition] = []
@@ -51,16 +51,6 @@ func add_random_debug_seed() -> bool:
 		return false
 	_flowers.append(flower)
 	return true
-
-
-func remove_source_for_immediate_sub_skill(button: DreamSeedSkillButton) -> Resource:
-	if button == null or button.get_remaining_sub_skill_uses() > 0:
-		return null
-	var source := button.get_seed_source()
-	if source == null:
-		return null
-	remove_source(source)
-	return source
 
 
 func remove_source_while_in_stomach(button: DreamSeedSkillButton, seed_block: Enemy) -> void:
@@ -166,7 +156,7 @@ func _create_seed_block(
 ) -> Enemy:
 	if seed_skill == null:
 		return null
-	var definition := _get_seed_block_template(_enemy_definitions)
+	var definition := _get_seed_block_template(_enemy_definitions, seed_skill)
 	if definition == null:
 		return null
 	var seed_block := ENEMY_SCENE.instantiate() as Enemy
@@ -204,27 +194,25 @@ func cancel_seed_block(seed_block: Enemy) -> void:
 		seed_block.queue_free()
 
 
-func apply_activation(
-	seed_skill: DreamSeedSkillDefinition,
+func apply_digested_seed_effects(
+	digested_enemies: Array[Enemy],
 	current_hp: int,
 	max_hp: int,
 	digest_controller: NightmareDigestController
-) -> Dictionary:
-	if seed_skill.skill_id == DREAM_SEED_ACTIVATION_HP_RECOVERY:
-		return {
-			"applied": true,
-			"hp": mini(max_hp, current_hp + ceili(float(max_hp) * DREAM_SEED_ACTIVATION_HP_RECOVERY_RATE)),
-		}
-	if seed_skill.skill_id == DREAM_SEED_ACTIVATION_SKIP_REST_TIME:
-		rest_time_skip_count += 1
-		return {
-			"applied": true,
-			"hp": current_hp,
-		}
-	return {
-		"applied": digest_controller.add_seed_activation_effect(seed_skill),
-		"hp": current_hp,
-	}
+) -> int:
+	var next_hp := current_hp
+	for enemy in digested_enemies:
+		if enemy == null or enemy.seed_skill_definition == null:
+			continue
+		var seed_skill := enemy.seed_skill_definition
+		if seed_skill.skill_id == DREAM_SEED_DIGEST_HP_RECOVERY:
+			next_hp = mini(max_hp, next_hp + ceili(float(max_hp) * DREAM_SEED_DIGEST_HP_RECOVERY_RATE))
+			continue
+		if seed_skill.skill_id == DREAM_SEED_DIGEST_SKIP_REST_TIME:
+			rest_time_skip_count += 1
+			continue
+		digest_controller.add_digested_seed_effect(seed_skill)
+	return next_hp
 
 
 func consume_rest_time_skip() -> bool:
@@ -240,11 +228,35 @@ func _get_seed_block_stomach_size(seed_skill: DreamSeedSkillDefinition) -> Vecto
 	return Vector2i.ONE
 
 
-func _get_seed_block_template(enemy_definitions: Array[Resource]) -> EnemyDefinition:
+func _get_seed_block_template(enemy_definitions: Array[Resource], seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
 	for definition in enemy_definitions:
 		if definition is EnemyDefinition:
 			return definition as EnemyDefinition
-	return null
+	return _create_seed_block_template(seed_skill)
+
+
+func _create_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
+	if seed_skill == null:
+		return null
+	var block_definition := seed_skill.drag_block_definition
+	var definition := EnemyDefinition.new()
+	definition.display_name = seed_skill.display_name
+	definition.texture = seed_skill.texture
+	definition.max_hp = 1
+	definition.size = 1
+	definition.damage = 0
+	definition.nightmare_skill_enabled = false
+	definition.stomach_size = Vector2i.ONE
+	definition.stomach_shape = [Vector2i.ZERO]
+	if block_definition != null:
+		if block_definition.texture != null:
+			definition.texture = block_definition.texture
+		definition.max_hp = block_definition.get_max_hp()
+		definition.size = block_definition.get_cell_count()
+		definition.damage = block_definition.get_damage()
+		definition.stomach_size = block_definition.get_stomach_size()
+		definition.stomach_shape = block_definition.get_stomach_shape()
+	return definition
 
 
 func _get_random_debug_seed_flower() -> FlowerDefinition:

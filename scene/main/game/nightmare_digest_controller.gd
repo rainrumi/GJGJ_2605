@@ -183,8 +183,8 @@ func apply_direct_player_damage(amount: int) -> int:
 	return seed_effects.apply_player_damage(amount, DIGEST_DAMAGE)
 
 
-func add_seed_activation_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
-	return seed_effects.add_activation_effect(seed_skill)
+func add_digested_seed_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
+	return seed_effects.add_digested_seed_effect(seed_skill)
 
 
 func wait_for_next_beat() -> void:

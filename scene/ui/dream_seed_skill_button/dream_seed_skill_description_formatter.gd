@@ -24,12 +24,16 @@ static func has_sub_description(skill: DreamSeedSkillDefinition) -> bool:
 	return skill != null and not skill.sub_description.strip_edges().is_empty()
 
 
+static func has_sub_skill(skill: DreamSeedSkillDefinition) -> bool:
+	return has_sub_description(skill) or is_block_generation_skill(skill)
+
+
 static func get_sub_skill_use_text(remaining_uses: int) -> String:
 	return "使用可能数: %d" % remaining_uses
 
 
 static func get_reward_sub_skill_use_text(skill: DreamSeedSkillDefinition) -> String:
-	if not has_sub_description(skill):
+	if not has_sub_skill(skill):
 		return "使用可能数: 0"
 	return "使用可能数: 1"
 

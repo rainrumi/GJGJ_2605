@@ -1,13 +1,13 @@
 [gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://cq3y5p5ecyr01"]
 
-[ext_resource type="Texture2D" uid="uid://ceejcrunogkk" path="res://art/enemy/tex_stomach_block_1000.png" id="1_k0g36"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/dream_seed_drag_block_definition.gd" id="3_block_script"]
+[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
 
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("3_block_script")
-texture = ExtResource("1_k0g36")
+texture = ExtResource("4_block_texture")
 
 [resource]
 script = ExtResource("1_script")
@@ -18,4 +18,4 @@ display_name = "夢の花名"
 texture = ExtResource("2_texture")
 drag_block_definition = SubResource("Resource_drag_block")
 main_description = "消化ダメージ量+10%。消化中の消化ダメージアップ効果が200%上昇する。"
-sub_description = "この花を食べる。消化時に隣接する花のHPと受ける消化ダメージを100%上昇する"
+sub_description = "この花を消化すると消化時に隣接する花のHPと受ける消化ダメージを100%上昇する"

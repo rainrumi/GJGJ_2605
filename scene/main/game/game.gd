@@ -128,7 +128,6 @@ func _connect_ui() -> void:
 	ui.seed_skill_drag_started.connect(_on_seed_skill_drag_started)
 	ui.seed_skill_drag_moved.connect(_on_seed_skill_drag_moved)
 	ui.seed_skill_drag_released.connect(_on_seed_skill_drag_released)
-	ui.seed_skill_activation_requested.connect(_on_seed_skill_activation_requested)
 func _connect_input() -> void:
 	input_controller.setup(enemies)
 	input_controller.enemy_drag_started.connect(_on_enemy_drag_started)
@@ -297,33 +296,6 @@ func _on_seed_skill_drag_released(
 	_update_auto_digest_timer()
 
 
-func _on_seed_skill_activation_requested(
-	button: DreamSeedSkillButton,
-	seed_skill: DreamSeedSkillDefinition
-) -> void:
-	if not _can_start_seed_drag():
-		return
-	if seed_skill == null or seed_skill.sub_skill_mode != DreamSeedSkillDefinition.SubSkillMode.Activation:
-		return
-	var activation_result := dream_seed_controller.apply_activation(seed_skill, hp, MAX_HP, digest_controller)
-	if not bool(activation_result["applied"]):
-		return
-	hp = int(activation_result["hp"])
-	if button != null and is_instance_valid(button):
-		button.consume_sub_skill_use()
-		_remove_seed_source_for_immediate_sub_skill(button)
-	_play_click_se()
-	_refresh_after_battle_event()
-
-
-func _remove_seed_source_for_immediate_sub_skill(button: DreamSeedSkillButton) -> void:
-	var source := dream_seed_controller.remove_source_for_immediate_sub_skill(button)
-	if source == null:
-		return
-	_sync_dream_seed_sources()
-	dream_seed_depleted.emit(source)
-
-
 func _sync_dream_seed_sources() -> void:
 	var flowers := dream_seed_controller.get_flowers()
 	digest_controller.set_seed_effect_flowers(flowers)
@@ -421,6 +393,7 @@ func _advance_digest_turn() -> void:
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
 	await digest_controller.wait_for_next_beat()
 	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, minutes, enemy_setup)
+	hp = dream_seed_controller.apply_digested_seed_effects(digested_enemies, hp, MAX_HP, digest_controller)
 	_emit_depleted_dream_seed_sources(digested_enemies)
 	var player_damage_values := digest_controller.apply_digest_damage_values(enemies, stomach)
 	if not player_damage_values.is_empty():
@@ -524,8 +497,12 @@ func _refresh_ui() -> void:
 func _refresh_after_battle_event() -> void:
 	_refresh_ui()
 func _get_tooltip_debug_number_text(enemy: Enemy) -> String:
+	if enemy.seed_skill_definition != null:
+		return "ID:%s" % _get_enemy_skill_id_text(enemy)
 	return "悪夢:%s" % _get_enemy_skill_id_text(enemy)
 func _get_enemy_skill_id_text(enemy: Enemy) -> String:
+	if enemy.seed_skill_definition != null:
+		return str(enemy.seed_skill_definition.skill_id)
 	if enemy.skill_definition == null:
 		return "-"
 	return str(enemy.skill_definition.skill_id)
