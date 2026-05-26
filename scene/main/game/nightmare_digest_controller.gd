@@ -258,7 +258,7 @@ func _resolve_digested_enemy_effects(
 			)
 			enemy.revive_with_hp_rate(revive_rate)
 			continue
-		seed_block_resolver.apply_digested_effect_and_append_new_digested(
+		seed_block_resolver.append_digested_by_seed_block_effects(
 			enemy,
 			enemies,
 			received_digest_damage,

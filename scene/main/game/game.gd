@@ -174,6 +174,11 @@ func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, pointer_offset:
 func _on_enemy_drag_released(enemy: Enemy, mouse_position: Vector2) -> void:
 	if not battle_active or drag_mode != DragMode.ENEMY or dragging_enemy == null or enemy != dragging_enemy:
 		return
+	_finish_enemy_drag_release(enemy, mouse_position)
+	_finish_drag_operation()
+
+
+func _finish_enemy_drag_release(enemy: Enemy, mouse_position: Vector2) -> void:
 	dragging_enemy = null
 	_play_click_se()
 	stomach.hide_preview()
@@ -182,10 +187,8 @@ func _on_enemy_drag_released(enemy: Enemy, mouse_position: Vector2) -> void:
 		_try_start_digesting(enemy, mouse_position)
 	else:
 		_remove_enemy_from_stomach(enemy)
-	if auto_digest_enabled:
-		auto_digest_paused_for_drag = false
-	drag_mode = DragMode.NONE
-	_update_auto_digest_timer()
+
+
 func _on_digestion_requested() -> void:
 	if not battle_active:
 		return
@@ -399,11 +402,11 @@ func _advance_digest_turn() -> void:
 	digest_controller.apply_turn_start_effects(enemies)
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
 	await _wait_for_next_digest_beat()
-	var digested_enemies := _run_digest_core(minutes)
-	_apply_digested_seed_effects(digested_enemies)
+	var digest_result := _run_digest_core(minutes)
+	_apply_digested_seed_effects(digest_result.digested_enemies)
 	_apply_player_damage_values()
 	_apply_elapsed_time(elapsed_minutes)
-	await _resolve_post_digest_visuals(digested_enemies)
+	await _resolve_post_digest_visuals(digest_result.digested_enemies)
 	_finish_digest_turn()
 
 
@@ -417,11 +420,11 @@ func _begin_digest_turn() -> bool:
 	return true
 
 
-func _run_digest_core(current_minutes: int) -> Array[Enemy]:
+func _run_digest_core(current_minutes: int) -> DigestTurnResult:
 	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, current_minutes)
 	var digest_result := digest_controller.build_turn_result(digested_enemies)
 	_apply_digest_spawn_requests(digest_result.spawn_requests)
-	return digest_result.digested_enemies
+	return digest_result
 
 
 func _finish_empty_digest_turn() -> void:

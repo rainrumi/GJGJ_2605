@@ -260,8 +260,7 @@ func _show_select_mode() -> void:
 	abandon_button.disabled = false
 	abandon_button.reset_visual_state()
 	abandon_button.set_recovery_rate(_get_abandon_extra_recovery_rate())
-	_update_hp_heal_plan()
-	_refresh_seed_choices()
+	_refresh_reward_ui()
 	_update_reroll_button_state()
 	for slot in flower_slots:
 		slot.disabled = true

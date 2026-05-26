@@ -38,13 +38,21 @@ var stage_selection_service := StageSelectionService.new()
 
 
 func _ready() -> void:
-	_setup_beacon()
-	_setup_location_marker()
+	_setup_map_view()
 	_collect_stage_choices()
 	setup_stage_choices()
 
 
 func _process(delta: float) -> void:
+	_process_map_view(delta)
+
+
+func _setup_map_view() -> void:
+	_setup_beacon()
+	_setup_location_marker()
+
+
+func _process_map_view(delta: float) -> void:
 	_process_beacon_frame(delta)
 	_process_location_marker_frame(delta)
 
@@ -102,9 +110,13 @@ func _on_stage_choice_pressed(choice_index: int) -> void:
 
 func _on_stage_choice_hovered(choice_index: int) -> void:
 	if choice_index >= _displayed_stage_definitions.size():
-		_hide_beacon()
+		_show_map_hover(null)
 		return
 	var stage_definition := _displayed_stage_definitions[choice_index]
+	_show_map_hover(stage_definition)
+
+
+func _show_map_hover(stage_definition: StageDefinition) -> void:
 	if stage_definition == null:
 		_hide_beacon()
 		return

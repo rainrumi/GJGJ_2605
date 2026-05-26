@@ -20,7 +20,7 @@ func get_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
 	return rate
 
 
-func apply_digested_effect_and_append_new_digested(
+func append_digested_by_seed_block_effects(
 	seed_block: Enemy,
 	enemies: Array[Enemy],
 	received_digest_damage: Dictionary,
@@ -36,6 +36,15 @@ func apply_digested_effect_and_append_new_digested(
 				int(received_digest_damage.get(seed_block, 0)),
 				digested_enemies
 			)
+
+
+func apply_digested_effect_and_append_new_digested(
+	seed_block: Enemy,
+	enemies: Array[Enemy],
+	received_digest_damage: Dictionary,
+	digested_enemies: Array[Enemy]
+) -> void:
+	append_digested_by_seed_block_effects(seed_block, enemies, received_digest_damage, digested_enemies)
 
 
 func _apply_adjacent_damage(
