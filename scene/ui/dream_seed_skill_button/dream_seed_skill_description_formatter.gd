@@ -45,7 +45,7 @@ static func is_block_generation_skill(skill: DreamSeedSkillDefinition) -> bool:
 	return (
 		skill != null
 		and skill.sub_skill_mode == DreamSeedSkillDefinition.SubSkillMode.Drag
-		and (skill.drag_block_definition != null or skill.drag_texture != null)
+		and skill.drag_block_definition != null
 	)
 
 

@@ -162,8 +162,8 @@ func setup_as_seed_stomach_block(seed_skill: DreamSeedSkillDefinition, target_si
 	else:
 		setup_as_one_cell_stomach_block(target_size)
 	seed_skill_definition = seed_skill
-	if seed_skill_definition != null and seed_skill_definition.drag_texture != null:
-		set_texture_override(seed_skill_definition.drag_texture, target_size)
+	if block_definition != null and block_definition.texture != null:
+		set_texture_override(block_definition.texture, target_size)
 	max_hp = block_definition.get_max_hp() if block_definition != null else 1
 	current_hp = max_hp
 	damage = block_definition.get_damage() if block_definition != null else 0

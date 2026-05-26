@@ -3,6 +3,7 @@ extends Resource
 
 @export var max_hp := 1
 @export var damage := 0
+@export var texture: Texture2D
 @export var stomach_size := Vector2i.ONE
 @export var stomach_shape: Array[Vector2i] = [Vector2i.ZERO]
 
