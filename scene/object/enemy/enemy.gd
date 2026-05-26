@@ -160,9 +160,9 @@ func setup_as_seed_stomach_block(seed_skill: DreamSeedSkillDefinition, target_si
 		)
 		set_texture_override(ONE_CELL_STOMACH_TEXTURE, target_size)
 		gravity_locked = true
-		activation_deferred = true
 	else:
 		setup_as_one_cell_stomach_block(target_size)
+		activation_deferred = false
 	seed_skill_definition = seed_skill
 	if block_definition != null and block_definition.texture != null:
 		set_texture_override(block_definition.texture, target_size)
