@@ -51,18 +51,13 @@ func _ready() -> void:
 	_set_hp(current_hp, false)
 	_show_select_mode()
 func setup_hp(value: int) -> void:
-	current_hp = clampi(value, 0, MAX_HP)
-	_clear_recovery_applied = false
-	_reset_extra_seed_choices()
+	_set_clear_hp_state(value)
 	_restore_base_seed_options()
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
 func setup_clear_result(value: int, cleared_minutes: int, cleared_stage: StageDefinition = null) -> void:
-	current_hp = clampi(value, 0, MAX_HP)
-	clear_minutes = cleared_minutes
-	_clear_recovery_applied = false
-	_reset_extra_seed_choices()
+	_set_clear_result_state(value, cleared_minutes)
 	_restore_base_seed_options()
 	_apply_stage_drop_options(cleared_stage)
 	_update_extra_seed_choices()
@@ -70,10 +65,7 @@ func setup_clear_result(value: int, cleared_minutes: int, cleared_stage: StageDe
 		_set_hp(current_hp, false)
 		_show_select_mode()
 func reset_player_state() -> void:
-	current_hp = MAX_HP
-	clear_minutes = CLEAR_RECOVERY_START_HOUR * 60
-	_clear_recovery_applied = false
-	_reset_extra_seed_choices()
+	_reset_clear_state()
 	_restore_base_seed_options()
 	_initialize_planted_flowers()
 	if is_node_ready():
@@ -110,6 +102,26 @@ func _initialize_planted_flowers() -> void:
 	if initial_flower != null:
 		planted_flowers.append(initial_flower)
 	_refresh_flower_slots()
+
+
+func _reset_clear_state() -> void:
+	current_hp = MAX_HP
+	clear_minutes = CLEAR_RECOVERY_START_HOUR * 60
+	_clear_recovery_applied = false
+	_reset_extra_seed_choices()
+
+
+func _set_clear_hp_state(value: int) -> void:
+	current_hp = clampi(value, 0, MAX_HP)
+	_clear_recovery_applied = false
+	_reset_extra_seed_choices()
+
+
+func _set_clear_result_state(value: int, cleared_minutes: int) -> void:
+	current_hp = clampi(value, 0, MAX_HP)
+	clear_minutes = cleared_minutes
+	_clear_recovery_applied = false
+	_reset_extra_seed_choices()
 func _cache_base_seed_options() -> void:
 	_base_seed_options = seed_options.duplicate()
 

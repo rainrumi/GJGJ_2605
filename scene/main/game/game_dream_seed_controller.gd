@@ -12,7 +12,6 @@ var _flowers: Array[FlowerDefinition] = []
 var _owner: Node
 var _stomach: StomachBoard
 var _input_controller: GameInputController
-var _enemy_definitions: Array[Resource] = []
 var _dragging_seed_block: Enemy
 var _dragging_seed_button: DreamSeedSkillButton
 var _dragging_seed_skill: DreamSeedSkillDefinition
@@ -23,13 +22,11 @@ var debug_factory := DreamSeedDebugFactory.new()
 func setup(
 	owner: Node,
 	stomach: StomachBoard,
-	input_controller: GameInputController,
-	enemy_definitions: Array[Resource]
+	input_controller: GameInputController
 ) -> void:
 	_owner = owner
 	_stomach = stomach
 	_input_controller = input_controller
-	_enemy_definitions = enemy_definitions
 
 
 func set_flowers(flowers: Array) -> void:
@@ -156,7 +153,7 @@ func _create_seed_block(
 ) -> Enemy:
 	if seed_skill == null:
 		return null
-	var definition := _get_seed_block_template(_enemy_definitions, seed_skill)
+	var definition := _get_seed_block_template(seed_skill)
 	if definition == null:
 		return null
 	var seed_block := ENEMY_SCENE.instantiate() as Enemy
@@ -228,14 +225,8 @@ func _get_seed_block_stomach_size(seed_skill: DreamSeedSkillDefinition) -> Vecto
 	return Vector2i.ONE
 
 
-func _get_seed_block_template(enemy_definitions: Array[Resource], seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
-	var seed_definition := _create_seed_block_template(seed_skill)
-	if seed_definition != null:
-		return seed_definition
-	for definition in enemy_definitions:
-		if definition is EnemyDefinition:
-			return definition as EnemyDefinition
-	return null
+func _get_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
+	return _create_seed_block_template(seed_skill)
 
 
 func _create_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:

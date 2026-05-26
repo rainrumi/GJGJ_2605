@@ -92,16 +92,56 @@ func get_display_name() -> String:
 	if skill_definition != null and not skill_definition.display_name.is_empty():
 		return skill_definition.display_name
 	return definition.display_name
+
+
+func is_seed_stomach_block() -> bool:
+	return seed_skill_definition != null
+
+
+func is_nightmare() -> bool:
+	return not is_seed_stomach_block()
+
+
+func is_stomach_piece() -> bool:
+	return is_active_in_stomach()
+
+
+func should_count_for_battle_clear() -> bool:
+	return is_nightmare()
+
+
+func should_apply_nightmare_skill() -> bool:
+	return is_nightmare() and nightmare_skill_enabled
+
+
+func should_deal_player_damage() -> bool:
+	return is_nightmare()
+
+
+func should_count_for_digest_order() -> bool:
+	return is_nightmare()
+
+
+func should_trigger_nightmare_reactions() -> bool:
+	return is_nightmare()
+
+
 func get_damage() -> int: return maxi(0, roundi(float(damage) * attack_multiplier))
 func get_display_damage() -> int: return display_damage_override if display_damage_override >= 0 else get_damage()
+
+
 func get_size() -> int:
 	if _size_override > 0:
 		return _size_override
 	return definition.size
+
+
 func get_stomach_size() -> Vector2i:
 	if _stomach_size_override != Vector2i.ZERO:
 		return _stomach_size_override
 	return definition.stomach_size
+
+
 func get_stomach_shape() -> Array[Vector2i]:
 	if not _stomach_shape_override.is_empty():
 		return _stomach_shape_override.duplicate()
@@ -112,10 +152,16 @@ func get_stomach_shape() -> Array[Vector2i]:
 		if cell is Vector2i:
 			shape.append(cell)
 	return shape
+
+
 func can_drag() -> bool:
 	return not digested
+
+
 func is_active_in_stomach() -> bool:
 	return digesting and not digested
+
+
 func can_take_stomach_turn() -> bool:
 	return is_active_in_stomach() and not activation_deferred
 func set_digesting(value: bool) -> void:
@@ -160,6 +206,7 @@ func setup_as_seed_stomach_block(seed_skill: DreamSeedSkillDefinition, target_si
 		)
 		set_texture_override(ONE_CELL_STOMACH_TEXTURE, target_size)
 		gravity_locked = true
+		activation_deferred = false
 	else:
 		setup_as_one_cell_stomach_block(target_size)
 		activation_deferred = false
@@ -175,22 +222,6 @@ func setup_as_seed_stomach_block(seed_skill: DreamSeedSkillDefinition, target_si
 	_update_damage_label()
 
 
-func is_seed_stomach_block() -> bool:
-	return seed_skill_definition != null
-func is_nightmare() -> bool:
-	return not is_seed_stomach_block()
-func is_stomach_piece() -> bool:
-	return is_active_in_stomach()
-func should_count_for_battle_clear() -> bool:
-	return is_nightmare()
-func should_apply_nightmare_skill() -> bool:
-	return is_nightmare() and nightmare_skill_enabled
-func should_deal_player_damage() -> bool:
-	return is_nightmare()
-func should_count_for_digest_order() -> bool:
-	return is_nightmare()
-func should_trigger_nightmare_reactions() -> bool:
-	return is_nightmare()
 func update_stomach_display_size(target_size: Vector2) -> void:
 	if sprite == null or sprite.texture == null:
 		return

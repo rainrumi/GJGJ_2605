@@ -50,7 +50,7 @@ var last_time_over_recovery_percent := 0
 func _ready() -> void:
 	randomize()
 	enemy_setup.setup(self, input_controller, stomach, enemy_definitions, nightmare_skill_catalog)
-	dream_seed_controller.setup(self, stomach, input_controller, _get_battle_enemy_definitions())
+	dream_seed_controller.setup(self, stomach, input_controller)
 	digest_controller.set_beat_conductor(beat_conductor)
 	_connect_ui()
 	_connect_input()
@@ -210,14 +210,9 @@ func _on_debug_message_requested(is_active: bool) -> void:
 	if hovered_enemy != null:
 		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 func _on_debug_reroll_requested() -> void:
-	if not _can_use_debug_controls():
+	if not _can_use_debug_action():
 		return
-	auto_digest_enabled = false
-	auto_digest_paused_for_drag = false
-	_update_auto_digest_timer()
-	stomach.hide_preview()
-	ui.hide_hp_damage_preview()
-	_set_hovered_enemy(null)
+	_prepare_debug_battle_change()
 	digest_controller.reset_digest_order()
 	enemy_setup.setup_enemies(enemies)
 	input_controller.setup(enemies)
@@ -225,21 +220,16 @@ func _on_debug_reroll_requested() -> void:
 
 
 func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> void:
-	if not _can_use_debug_controls():
+	if not _can_use_debug_action():
 		return
-	auto_digest_enabled = false
-	auto_digest_paused_for_drag = false
-	_update_auto_digest_timer()
-	stomach.hide_preview()
-	ui.hide_hp_damage_preview()
-	_set_hovered_enemy(null)
+	_prepare_debug_battle_change()
 	stomach.set_grid_size(stomach.columns + delta_columns, stomach.rows + delta_rows)
 	_refresh_enemy_stomach_display_sizes()
 	_refresh_ui()
 
 
 func _on_debug_seed_requested() -> void:
-	if not _can_use_debug_controls():
+	if not _can_use_debug_action():
 		return
 	if not dream_seed_controller.add_random_debug_seed():
 		return
@@ -323,8 +313,17 @@ func _can_start_seed_drag() -> bool:
 	return battle_active and drag_mode == DragMode.NONE and not digest_turn_in_progress
 
 
-func _can_use_debug_controls() -> bool:
+func _can_use_debug_action() -> bool:
 	return battle_active and debug_numbers_visible and drag_mode == DragMode.NONE and not digest_turn_in_progress
+
+
+func _prepare_debug_battle_change() -> void:
+	auto_digest_enabled = false
+	auto_digest_paused_for_drag = false
+	_update_auto_digest_timer()
+	stomach.hide_preview()
+	ui.hide_hp_damage_preview()
+	_set_hovered_enemy(null)
 
 
 func _refresh_enemy_stomach_display_sizes() -> void:
