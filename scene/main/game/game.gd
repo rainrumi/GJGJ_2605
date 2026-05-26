@@ -288,8 +288,9 @@ func _on_seed_skill_drag_released(
 	if result.placed:
 		_refresh_after_battle_event()
 		if result.source_button != null and is_instance_valid(result.source_button):
-			result.source_button.consume_stock()
-			_remove_seed_source_if_depleted(result.source_button)
+			result.source_button.consume_sub_skill_use()
+			dream_seed_controller.remove_source_while_in_stomach(result.source_button, result.seed_block)
+			_sync_dream_seed_sources()
 	if auto_digest_enabled:
 		auto_digest_paused_for_drag = false
 	drag_mode = DragMode.NONE
@@ -309,14 +310,14 @@ func _on_seed_skill_activation_requested(
 		return
 	hp = int(activation_result["hp"])
 	if button != null and is_instance_valid(button):
-		button.consume_stock()
-		_remove_seed_source_if_depleted(button)
+		button.consume_sub_skill_use()
+		_remove_seed_source_for_immediate_sub_skill(button)
 	_play_click_se()
 	_refresh_after_battle_event()
 
 
-func _remove_seed_source_if_depleted(button: DreamSeedSkillButton) -> void:
-	var source := dream_seed_controller.remove_source_if_button_depleted(button)
+func _remove_seed_source_for_immediate_sub_skill(button: DreamSeedSkillButton) -> void:
+	var source := dream_seed_controller.remove_source_for_immediate_sub_skill(button)
 	if source == null:
 		return
 	_sync_dream_seed_sources()
@@ -420,6 +421,7 @@ func _advance_digest_turn() -> void:
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
 	await digest_controller.wait_for_next_beat()
 	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, minutes, enemy_setup)
+	_emit_depleted_dream_seed_sources(digested_enemies)
 	var player_damage_values := digest_controller.apply_digest_damage_values(enemies, stomach)
 	if not player_damage_values.is_empty():
 		ui.show_hp_damage_values(player_damage_values)
@@ -452,6 +454,13 @@ func _finish_digest_turn() -> void:
 	_update_auto_digest_timer()
 	digest_controller.activate_deferred_nuisance_enemies(enemies)
 	digest_turn_in_progress = false
+
+
+func _emit_depleted_dream_seed_sources(digested_enemies: Array[Enemy]) -> void:
+	for source in dream_seed_controller.collect_depleted_sources(digested_enemies):
+		dream_seed_depleted.emit(source)
+
+
 func _check_battle_end() -> void:
 	if _all_nightmares_digested():
 		_finish_battle(true, "すべての悪夢を消化しました")

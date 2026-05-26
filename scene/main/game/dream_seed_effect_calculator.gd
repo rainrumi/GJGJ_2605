@@ -22,7 +22,6 @@ const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
 var next_digest_damage_bonus_rate := 0.0
 var next_time_reduction_bonus_rate := 0.0
 var _planted_flowers: Array[FlowerDefinition] = []
-var _skill_4_stock_by_flower: Dictionary = {}
 
 
 func setup(flowers: Array) -> void:
@@ -32,7 +31,6 @@ func setup(flowers: Array) -> void:
 			_planted_flowers.append(flower as FlowerDefinition)
 	next_digest_damage_bonus_rate = 0.0
 	next_time_reduction_bonus_rate = 0.0
-	_setup_skill_4_stocks()
 
 
 func get_digest_damage_breakdown(
@@ -101,8 +99,8 @@ func get_rest_hp(max_hp: int, base_recovery_rate: float) -> int:
 
 func get_rest_recovery_bonus_rate() -> float:
 	var bonus_rate := 0.0
-	for flower in _skill_4_stock_by_flower.keys():
-		if int(_skill_4_stock_by_flower[flower]) > 0:
+	for skill in _get_planted_seed_skills():
+		if _is_dream_flower_skill(skill, DREAM_SEED_REST_RECOVERY):
 			bonus_rate += SKILL_4_REST_RECOVERY_BONUS_RATE
 	return bonus_rate
 
@@ -136,23 +134,11 @@ func _get_reflect_digest_rate(_taken_damage: int) -> float:
 	return 0.0
 
 
-func _setup_skill_4_stocks() -> void:
-	_skill_4_stock_by_flower.clear()
-	for flower in _planted_flowers:
-		if flower == null or flower.dream_seed_skill == null:
-			continue
-		if _is_dream_flower_skill(flower.dream_seed_skill, DREAM_SEED_REST_RECOVERY):
-			_skill_4_stock_by_flower[flower] = maxi(0, flower.dream_seed_skill.stock_count)
-
-
 func _consume_rest_recovery_bonus_rate() -> float:
 	var bonus_rate := 0.0
-	for flower in _skill_4_stock_by_flower.keys():
-		var stock := int(_skill_4_stock_by_flower[flower])
-		if stock <= 0:
-			continue
-		bonus_rate += SKILL_4_REST_RECOVERY_BONUS_RATE
-		_skill_4_stock_by_flower[flower] = stock - 1
+	for skill in _get_planted_seed_skills():
+		if _is_dream_flower_skill(skill, DREAM_SEED_REST_RECOVERY):
+			bonus_rate += SKILL_4_REST_RECOVERY_BONUS_RATE
 	return bonus_rate
 
 

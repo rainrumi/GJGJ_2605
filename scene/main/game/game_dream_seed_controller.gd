@@ -17,6 +17,7 @@ var _enemy_definitions: Array[Resource] = []
 var _dragging_seed_block: Enemy
 var _dragging_seed_button: DreamSeedSkillButton
 var _dragging_seed_skill: DreamSeedSkillDefinition
+var _pending_depleted_sources_by_block: Dictionary = {}
 
 
 func setup(
@@ -33,6 +34,7 @@ func setup(
 
 func set_flowers(flowers: Array) -> void:
 	_flowers.clear()
+	_pending_depleted_sources_by_block.clear()
 	rest_time_skip_count = 0
 	for flower in flowers:
 		if flower is FlowerDefinition:
@@ -51,14 +53,37 @@ func add_random_debug_seed() -> bool:
 	return true
 
 
-func remove_source_if_button_depleted(button: DreamSeedSkillButton) -> Resource:
-	if button == null or button.get_remaining_stock() > 0:
+func remove_source_for_immediate_sub_skill(button: DreamSeedSkillButton) -> Resource:
+	if button == null or button.get_remaining_sub_skill_uses() > 0:
 		return null
 	var source := button.get_seed_source()
 	if source == null:
 		return null
 	remove_source(source)
 	return source
+
+
+func remove_source_while_in_stomach(button: DreamSeedSkillButton, seed_block: Enemy) -> void:
+	if button == null or button.get_remaining_sub_skill_uses() > 0:
+		return
+	var source := button.get_seed_source()
+	if source == null:
+		return
+	remove_source(source)
+	if seed_block != null:
+		_pending_depleted_sources_by_block[seed_block] = source
+
+
+func collect_depleted_sources(digested_enemies: Array[Enemy]) -> Array[Resource]:
+	var sources: Array[Resource] = []
+	for enemy in digested_enemies:
+		if not _pending_depleted_sources_by_block.has(enemy):
+			continue
+		var source := _pending_depleted_sources_by_block[enemy] as Resource
+		_pending_depleted_sources_by_block.erase(enemy)
+		if source != null:
+			sources.append(source)
+	return sources
 
 
 func remove_source(source: Resource) -> void:

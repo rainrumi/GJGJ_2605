@@ -8,8 +8,9 @@ signal seed_skill_activation_requested(button: DreamSeedSkillButton, seed_skill:
 
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
 const TOOLTIP_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_seed_skill_tooltip.tscn")
-const LOW_STOCK_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
+const LOW_SUB_SKILL_USES_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
 const NORMAL_ICON_COLOR := Color(1.0, 1.0, 1.0, 1.0)
+const SUB_SKILL_USE_COUNT := 1
 
 @onready var frame: TextureRect = $Frame
 @onready var icon_rect: TextureRect = $Icon
@@ -20,7 +21,7 @@ var seed_skill: DreamSeedSkillDefinition
 var tooltip_panel: DreamSeedSkillTooltipView
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
-var _remaining_stock := 0
+var _remaining_sub_skill_uses := 0
 var _dragging := false
 
 
@@ -45,7 +46,7 @@ func set_seed_source(source: Resource) -> void:
 	elif source is DreamSeedSkillDefinition:
 		seed_skill = source as DreamSeedSkillDefinition
 	set_seed_icon_source(source)
-	_remaining_stock = seed_skill.stock_count if seed_skill != null else 0
+	_remaining_sub_skill_uses = SUB_SKILL_USE_COUNT if _has_sub_skill() else 0
 	disabled = seed_skill == null
 	_update_drag_state()
 	_refresh_tooltip()
@@ -70,8 +71,8 @@ func get_seed_source() -> Resource:
 	return source_data
 
 
-func get_remaining_stock() -> int:
-	return _remaining_stock
+func get_remaining_sub_skill_uses() -> int:
+	return _remaining_sub_skill_uses
 
 
 func set_debug_numbers_visible(is_visible: bool) -> void:
@@ -84,8 +85,8 @@ func set_sub_skill_drag_enabled(is_enabled: bool) -> void:
 	_update_drag_state()
 
 
-func consume_stock() -> void:
-	_remaining_stock = maxi(0, _remaining_stock - 1)
+func consume_sub_skill_use() -> void:
+	_remaining_sub_skill_uses = maxi(0, _remaining_sub_skill_uses - 1)
 	_update_drag_state()
 	_refresh_tooltip()
 
@@ -132,7 +133,8 @@ func _get_tooltip_text() -> String:
 	]
 	if _is_rare_seed():
 		lines.append("サブスキル: %s" % DreamSeedSkillDescriptionFormatter.get_sub_description(seed_skill))
-	lines.append(DreamSeedSkillDescriptionFormatter.get_stock_text(seed_skill, _remaining_stock))
+	if _has_sub_skill():
+		lines.append(DreamSeedSkillDescriptionFormatter.get_sub_skill_use_text(_remaining_sub_skill_uses))
 	if debug_numbers_visible:
 		lines.append("ID: %d" % seed_skill.skill_id)
 	return "\n".join(lines)
@@ -182,7 +184,7 @@ func _try_use_sub_skill(mouse_position: Vector2) -> void:
 
 
 func _can_use_sub_skill() -> bool:
-	return sub_skill_drag_enabled and seed_skill != null and seed_skill.sub_skill_mode != DreamSeedSkillDefinition.SubSkillMode.None and _has_sub_skill() and _remaining_stock > 0
+	return sub_skill_drag_enabled and seed_skill != null and seed_skill.sub_skill_mode != DreamSeedSkillDefinition.SubSkillMode.None and _has_sub_skill() and _remaining_sub_skill_uses > 0
 
 
 func _has_sub_skill() -> bool:
@@ -191,5 +193,5 @@ func _has_sub_skill() -> bool:
 
 func _update_drag_state() -> void:
 	if icon_rect != null:
-		icon_rect.self_modulate = LOW_STOCK_COLOR if _can_use_sub_skill() and _remaining_stock <= 1 else NORMAL_ICON_COLOR
+		icon_rect.self_modulate = LOW_SUB_SKILL_USES_COLOR if _can_use_sub_skill() and _remaining_sub_skill_uses <= 1 else NORMAL_ICON_COLOR
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if _can_use_sub_skill() else Control.CURSOR_ARROW

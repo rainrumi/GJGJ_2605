@@ -24,16 +24,14 @@ static func has_sub_description(skill: DreamSeedSkillDefinition) -> bool:
 	return skill != null and not skill.sub_description.strip_edges().is_empty()
 
 
-static func get_stock_text(skill: DreamSeedSkillDefinition, remaining_stock: int) -> String:
-	if skill == null:
+static func get_sub_skill_use_text(remaining_uses: int) -> String:
+	return "使用可能数: %d" % remaining_uses
+
+
+static func get_reward_sub_skill_use_text(skill: DreamSeedSkillDefinition) -> String:
+	if not has_sub_description(skill):
 		return "使用可能数: 0"
-	return "使用可能数: %d" % remaining_stock
-
-
-static func get_reward_stock_text(skill: DreamSeedSkillDefinition) -> String:
-	if skill == null:
-		return "残基: 0"
-	return "残基: %d" % skill.stock_count
+	return "使用可能数: 1"
 
 
 static func get_block_status_text(skill: DreamSeedSkillDefinition) -> String:

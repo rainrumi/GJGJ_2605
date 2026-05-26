@@ -10,6 +10,5 @@ category = "夢の花系統"
 display_name = "カプチーノ"
 texture = ExtResource("2_yn8ot")
 sub_skill_mode = 2
-stock_count = 1
 main_description = "消化間隔-5%。この花はひとつしか持てない"
 sub_description = "即時発動。消化間隔-15%"

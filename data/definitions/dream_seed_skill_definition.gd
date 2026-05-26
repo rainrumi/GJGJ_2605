@@ -20,6 +20,5 @@ enum SubSkillMode {
 @export var drag_texture: Texture2D
 @export var sub_skill_mode: SubSkillMode = SubSkillMode.Drag
 @export var drag_block_definition: DreamSeedDragBlockDefinition
-@export var stock_count := 0
 @export_multiline var main_description := ""
 @export_multiline var sub_description := ""

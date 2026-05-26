@@ -118,7 +118,7 @@ func _get_seed_effect_text(seed: SeedOptionDefinition) -> String:
 	]
 	if DreamSeedSkillDescriptionFormatter.has_sub_description(skill):
 		lines.append("サブスキル: %s" % DreamSeedSkillDescriptionFormatter.get_sub_description(skill))
-	lines.append(DreamSeedSkillDescriptionFormatter.get_reward_stock_text(skill))
+		lines.append(DreamSeedSkillDescriptionFormatter.get_reward_sub_skill_use_text(skill))
 	return "\n".join(lines)
 
 
@@ -138,4 +138,3 @@ func _is_rare_dream_seed(seed: SeedOptionDefinition) -> bool:
 	if seed.dream_seed_skill == null:
 		return false
 	return seed.dream_seed_skill.rarity == DreamSeedSkillDefinition.Rarity.RARE
-
