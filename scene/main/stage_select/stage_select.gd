@@ -3,12 +3,15 @@ extends Node2D
 signal stage_selected(stage: StageDefinition)
 
 const BEACON_FRAME_DURATION := 0.1
+const LOCATION_MARKER_FRAME_DURATION := 0.1
 
 @export var stage_catalog: StageCatalog
 @export var stage_definitions: Array[StageDefinition] = []
 @export var stage_choice_scene: PackedScene
 @export var beacon_outline_frames: Array[Texture2D] = []
 @export var beacon_fill_frames: Array[Texture2D] = []
+@export var location_outline_frames: Array[Texture2D] = []
+@export var location_fill_frames: Array[Texture2D] = []
 @export var location_outline_texture: Texture2D
 @export var location_fill_texture: Texture2D
 
@@ -28,6 +31,9 @@ var _hovered_stage_definition: StageDefinition
 var _beacon_tween: Tween
 var _beacon_frame_index := 0
 var _beacon_frame_elapsed := 0.0
+var _location_marker_frame_index := 0
+var _location_marker_frame_elapsed := 0.0
+var _location_marker_playing := false
 
 
 func _ready() -> void:
@@ -38,6 +44,11 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_process_beacon_frame(delta)
+	_process_location_marker_frame(delta)
+
+
+func _process_beacon_frame(delta: float) -> void:
 	if not beacon.visible:
 		return
 	if beacon_outline_frames.is_empty() or beacon_fill_frames.is_empty():
@@ -48,6 +59,19 @@ func _process(delta: float) -> void:
 	_beacon_frame_elapsed -= BEACON_FRAME_DURATION
 	_beacon_frame_index = (_beacon_frame_index + 1) % mini(beacon_outline_frames.size(), beacon_fill_frames.size())
 	_apply_beacon_frame()
+
+
+func _process_location_marker_frame(delta: float) -> void:
+	if not location_marker.visible or not _location_marker_playing:
+		return
+	if location_outline_frames.is_empty() or location_fill_frames.is_empty():
+		return
+	_location_marker_frame_elapsed += delta
+	if _location_marker_frame_elapsed < LOCATION_MARKER_FRAME_DURATION:
+		return
+	_location_marker_frame_elapsed -= LOCATION_MARKER_FRAME_DURATION
+	_location_marker_frame_index = (_location_marker_frame_index + 1) % mini(location_outline_frames.size(), location_fill_frames.size())
+	_apply_location_marker_frame()
 
 
 func setup_stage_choices(current_stage_definition: StageDefinition = null, current_day: int = 1) -> void:
@@ -84,6 +108,10 @@ func _on_stage_choice_hovered(choice_index: int) -> void:
 		_hide_beacon()
 		return
 	_hovered_stage_definition = stage_definition
+	if _is_current_location(stage_definition):
+		_hide_beacon()
+		_play_location_marker()
+		return
 	_show_beacon(stage_definition.map_position)
 
 
@@ -163,6 +191,7 @@ func _show_beacon(map_position: Vector2) -> void:
 	var was_visible := beacon.visible
 	beacon.position = map_position
 	beacon.visible = true
+	_pause_location_marker()
 	if not was_visible:
 		_start_beacon_animation()
 
@@ -173,6 +202,7 @@ func _hide_beacon() -> void:
 	beacon.scale = Vector2.ONE
 	if _beacon_tween != null and _beacon_tween.is_valid():
 		_beacon_tween.kill()
+	_play_location_marker()
 
 
 func _start_beacon_animation() -> void:
@@ -215,18 +245,57 @@ func _setup_location_marker() -> void:
 	location_marker.scale = Vector2.ONE
 	location_marker_outline.self_modulate = _get_background_color()
 	location_marker_fill.self_modulate = Color(0.9411765, 0.8784314, 1.0, 1.0)
-	if location_outline_texture != null:
+	if not location_outline_frames.is_empty():
+		location_marker_outline.texture = location_outline_frames[0]
+	elif location_outline_texture != null:
 		location_marker_outline.texture = location_outline_texture
-	if location_fill_texture != null:
+	if not location_fill_frames.is_empty():
+		location_marker_fill.texture = location_fill_frames[0]
+	elif location_fill_texture != null:
 		location_marker_fill.texture = location_fill_texture
 
 
 func _update_location_marker() -> void:
 	if _current_stage_definition == null:
 		location_marker.visible = false
+		_location_marker_playing = false
 		return
 	location_marker.position = _current_stage_definition.map_position
 	location_marker.visible = true
+	_reset_location_marker_frame()
+	_play_location_marker()
+
+
+func _pause_location_marker() -> void:
+	_location_marker_playing = false
+	_reset_location_marker_frame()
+
+
+func _play_location_marker() -> void:
+	if not location_marker.visible:
+		return
+	_location_marker_playing = true
+
+
+func _reset_location_marker_frame() -> void:
+	_location_marker_frame_index = 0
+	_location_marker_frame_elapsed = 0.0
+	_apply_location_marker_frame()
+
+
+func _apply_location_marker_frame() -> void:
+	if not location_outline_frames.is_empty():
+		location_marker_outline.texture = location_outline_frames[_location_marker_frame_index % location_outline_frames.size()]
+	if not location_fill_frames.is_empty():
+		location_marker_fill.texture = location_fill_frames[_location_marker_frame_index % location_fill_frames.size()]
+
+
+func _is_current_location(stage_definition: StageDefinition) -> bool:
+	if _current_stage_definition == null or stage_definition == null:
+		return false
+	if stage_definition == _current_stage_definition:
+		return true
+	return stage_definition.map_position.distance_squared_to(_current_stage_definition.map_position) < 0.01
 
 
 func _can_reach_stage(stage_definition: StageDefinition) -> bool:
