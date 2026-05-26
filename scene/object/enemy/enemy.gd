@@ -87,6 +87,8 @@ func reset_for_battle() -> void:
 	_update_damage_label()
 	_update_status_label_colors()
 func get_display_name() -> String:
+	if seed_skill_definition != null and not seed_skill_definition.display_name.is_empty():
+		return seed_skill_definition.display_name
 	if skill_definition != null and not skill_definition.display_name.is_empty():
 		return skill_definition.display_name
 	return definition.display_name
