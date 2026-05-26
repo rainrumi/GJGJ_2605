@@ -1,7 +1,7 @@
 class_name TooltipTextLayout
 extends RefCounted
 
-const MAX_LINE_CHARACTERS := 40
+const MAX_LINE_CHARACTERS := 60
 const MIN_TOOLTIP_WIDTH := 80.0
 const TOOLTIP_PADDING := 8.0
 const MIN_TOOLTIP_HEIGHT := 24.0
