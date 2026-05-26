@@ -191,25 +191,34 @@ func cancel_seed_block(seed_block: Enemy) -> void:
 		seed_block.queue_free()
 
 
-func apply_digested_seed_effects(
+func apply_direct_digested_seed_effects(
 	digested_enemies: Array[Enemy],
 	current_hp: int,
-	max_hp: int,
-	digest_controller: NightmareDigestController
+	max_hp: int
 ) -> int:
 	var next_hp := current_hp
 	for enemy in digested_enemies:
-		if enemy == null or enemy.seed_skill_definition == null:
+		if enemy == null or not enemy.has_seed_skill():
 			continue
-		var seed_skill := enemy.seed_skill_definition
+		var seed_skill := enemy.get_seed_skill()
 		if seed_skill.skill_id == DREAM_SEED_DIGEST_HP_RECOVERY:
 			next_hp = mini(max_hp, next_hp + ceili(float(max_hp) * DREAM_SEED_DIGEST_HP_RECOVERY_RATE))
 			continue
 		if seed_skill.skill_id == DREAM_SEED_DIGEST_SKIP_REST_TIME:
 			rest_time_skip_count += 1
-			continue
-		digest_controller.add_digested_seed_effect(seed_skill)
 	return next_hp
+
+
+func collect_digested_seed_skills(digested_enemies: Array[Enemy]) -> Array[DreamSeedSkillDefinition]:
+	var skills: Array[DreamSeedSkillDefinition] = []
+	for enemy in digested_enemies:
+		if enemy == null or not enemy.has_seed_skill():
+			continue
+		var seed_skill := enemy.get_seed_skill()
+		if _is_direct_controller_effect(seed_skill):
+			continue
+		skills.append(seed_skill)
+	return skills
 
 
 func consume_rest_time_skip() -> bool:
@@ -217,6 +226,13 @@ func consume_rest_time_skip() -> bool:
 		return false
 	rest_time_skip_count -= 1
 	return true
+
+
+func _is_direct_controller_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
+	return (
+		seed_skill.skill_id == DREAM_SEED_DIGEST_HP_RECOVERY
+		or seed_skill.skill_id == DREAM_SEED_DIGEST_SKIP_REST_TIME
+	)
 
 
 func _get_seed_block_stomach_size(seed_skill: DreamSeedSkillDefinition) -> Vector2i:

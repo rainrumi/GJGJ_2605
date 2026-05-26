@@ -51,14 +51,12 @@ func _ready() -> void:
 	randomize()
 	enemy_setup.setup(self, input_controller, stomach, enemy_definitions, nightmare_skill_catalog)
 	dream_seed_controller.setup(self, stomach, input_controller)
-	digest_controller.set_beat_conductor(beat_conductor)
 	_connect_ui()
 	_connect_input()
 	_create_digestion_timer()
 	ui.hide_nightmare_tooltip()
 func set_beat_conductor(conductor: BeatConductor) -> void:
 	beat_conductor = conductor
-	digest_controller.set_beat_conductor(beat_conductor)
 func start_battle(context: BattleStartContext = null) -> void:
 	var battle_context := context if context != null else BattleStartContext.new()
 	minutes = START_HOUR * 60
@@ -71,7 +69,7 @@ func start_battle(context: BattleStartContext = null) -> void:
 	last_time_over_recovery_percent = 0
 	debug_numbers_visible = false
 	_set_battle_flags(false)
-	digest_controller.clear_scheduled_events()
+	_clear_scheduled_digest_events()
 	dream_seed_controller.set_flowers(battle_context.flowers)
 	digest_controller.setup(dream_seed_controller.get_flowers())
 	dragging_enemy = null
@@ -159,7 +157,7 @@ func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offs
 	dragging_enemy = enemy
 	drag_offset = pointer_offset
 	drag_grab_cell = grab_cell
-	dragged_enemy_was_digesting = enemy.digesting
+	dragged_enemy_was_digesting = enemy.is_digesting()
 	dragged_enemy_original_cell = enemy.stomach_cell
 	dragged_enemy_original_global_position = enemy.global_position
 	auto_digest_paused_for_drag = auto_digest_enabled
@@ -328,7 +326,7 @@ func _prepare_debug_battle_change() -> void:
 
 func _refresh_enemy_stomach_display_sizes() -> void:
 	for enemy in enemies:
-		if enemy.definition == null or enemy.digested:
+		if enemy.definition == null or enemy.is_digested():
 			continue
 		enemy.update_stomach_display_size(Vector2(
 			stomach.get_span_size(enemy.get_stomach_size().x),
@@ -403,19 +401,13 @@ func _advance_digest_turn() -> void:
 		return
 	digest_controller.apply_turn_start_effects(enemies)
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
-	await digest_controller.wait_for_next_beat()
-	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, minutes, enemy_setup)
-	hp = dream_seed_controller.apply_digested_seed_effects(digested_enemies, hp, MAX_HP, digest_controller)
-	_emit_depleted_dream_seed_sources(digested_enemies)
-	var player_damage_values := digest_controller.apply_digest_damage_values(enemies, stomach)
-	if not player_damage_values.is_empty():
-		ui.show_hp_damage_values(player_damage_values)
-		hp = maxi(0, hp - _sum_damage_values(player_damage_values))
+	await _wait_for_next_digest_beat()
+	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, minutes)
+	_apply_digest_spawn_requests(digest_controller.consume_spawn_requests())
+	_apply_digested_seed_effects(digested_enemies)
+	_apply_player_damage_values()
 	_apply_elapsed_time(elapsed_minutes)
-	if not digested_enemies.is_empty():
-		await get_tree().create_timer(Enemy.DIGESTED_TWEEN_DURATION).timeout
-		digest_controller.unlock_deferred_nuisance_gravity(enemies)
-		stomach.apply_gravity(enemies)
+	await _resolve_post_digest_visuals(digested_enemies)
 	_finish_digest_turn()
 func _finish_empty_digest_turn() -> void:
 	auto_digest_enabled = false
@@ -457,7 +449,7 @@ func _finish_battle(won: bool, _message: String) -> void:
 	battle_active = false
 	input_controller.set_active(false)
 	auto_digest_enabled = false
-	digest_controller.clear_scheduled_events()
+	_clear_scheduled_digest_events()
 	_update_auto_digest_timer()
 	_refresh_after_battle_event()
 	battle_finished.emit(won)
@@ -495,34 +487,46 @@ func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 		ui.hide_hp_damage_preview()
 func _refresh_ui() -> void:
 	digest_controller.refresh_enemy_status_display(enemies, stomach)
-	var digest_damage := digest_controller.get_digest_damage_breakdown(enemies, minutes)
-	var digest_efficiency := digest_controller.get_step_minutes_breakdown(enemies)
+	_refresh_digest_ui()
+	_refresh_status_ui()
+	_refresh_hover_tooltip()
+
+
+func _refresh_digest_ui() -> void:
+	var digest_damage := _get_digest_damage_info()
+	var digest_efficiency := _get_digest_efficiency_info()
 	ui.set_digest_damage_info(int(digest_damage["total"]), int(digest_damage["base"]), int(digest_damage["seed_buff"]), float(digest_damage["seed_rate"]), int(digest_damage["nightmare_buff"]), float(digest_damage["nightmare_rate"]))
 	ui.set_digest_efficiency_minutes(float(digest_efficiency["total"]), float(digest_efficiency["base"]), int(digest_efficiency["seed_buff"]), float(digest_efficiency["seed_rate"]), int(digest_efficiency["nightmare_buff"]), float(digest_efficiency["nightmare_rate"]))
 	ui.set_rest_recovery_bonus_rate(digest_controller.get_rest_recovery_bonus_rate())
+
+
+func _refresh_status_ui() -> void:
 	ui.set_hp(hp, MAX_HP)
 	ui.set_time(minutes)
 	ui.set_digestion_count(_active_digest_count())
 	ui.set_digestion_button_visible(battle_active and not auto_digest_enabled)
+
+
+func _refresh_hover_tooltip() -> void:
 	if hovered_enemy != null:
 		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 func _refresh_after_battle_event() -> void:
 	_refresh_ui()
 func _get_tooltip_debug_number_text(enemy: Enemy) -> String:
-	if enemy.seed_skill_definition != null:
+	if enemy.has_seed_skill():
 		return "ID:%s" % _get_enemy_skill_id_text(enemy)
 	return "悪夢:%s" % _get_enemy_skill_id_text(enemy)
 func _get_enemy_skill_id_text(enemy: Enemy) -> String:
-	if enemy.seed_skill_definition != null:
-		return str(enemy.seed_skill_definition.skill_id)
-	if enemy.skill_definition == null:
+	if enemy.has_seed_skill():
+		return str(enemy.get_seed_skill().skill_id)
+	if not enemy.has_nightmare_skill():
 		return "-"
-	return str(enemy.skill_definition.skill_id)
+	return str(enemy.get_nightmare_skill().skill_id)
 func _all_nightmares_digested() -> bool:
 	for enemy in enemies:
 		if not enemy.should_count_for_battle_clear():
 			continue
-		if not enemy.digested:
+		if not enemy.is_digested():
 			return false
 	return true
 func _active_digest_count() -> int:
@@ -538,6 +542,64 @@ func _sum_damage_values(damage_values: Array[int]) -> int:
 	for damage in damage_values:
 		total += damage
 	return total
+
+
+func _wait_for_next_digest_beat() -> void:
+	if beat_conductor == null or not is_instance_valid(beat_conductor):
+		await get_tree().process_frame
+		return
+	if beat_conductor.audio_player == null or not beat_conductor.audio_player.playing:
+		await get_tree().process_frame
+		return
+	await beat_conductor.wait_until_next_beat()
+
+
+func _clear_scheduled_digest_events() -> void:
+	if beat_conductor != null and is_instance_valid(beat_conductor):
+		beat_conductor.clear_scheduled_events()
+
+
+func _apply_digest_spawn_requests(spawn_requests: Array[DigestSpawnRequest]) -> void:
+	for request in spawn_requests:
+		if not enemy_setup.spawn_nuisance_nightmare(
+			enemies,
+			request.source_enemy,
+			request.cell,
+			request.hp_rate,
+			request.damage
+		):
+			break
+
+
+func _apply_digested_seed_effects(digested_enemies: Array[Enemy]) -> void:
+	hp = dream_seed_controller.apply_direct_digested_seed_effects(digested_enemies, hp, MAX_HP)
+	for seed_skill in dream_seed_controller.collect_digested_seed_skills(digested_enemies):
+		digest_controller.add_digested_seed_effect(seed_skill)
+	_emit_depleted_dream_seed_sources(digested_enemies)
+
+
+func _apply_player_damage_values() -> void:
+	var player_damage_values := digest_controller.apply_digest_damage_values(enemies, stomach)
+	if player_damage_values.is_empty():
+		return
+	ui.show_hp_damage_values(player_damage_values)
+	hp = maxi(0, hp - _sum_damage_values(player_damage_values))
+
+
+func _resolve_post_digest_visuals(digested_enemies: Array[Enemy]) -> void:
+	if digested_enemies.is_empty():
+		return
+	await get_tree().create_timer(Enemy.DIGESTED_TWEEN_DURATION).timeout
+	digest_controller.unlock_deferred_nuisance_gravity(enemies)
+	stomach.apply_gravity(enemies)
+
+
+func _get_digest_damage_info() -> Dictionary:
+	return digest_controller.get_digest_damage_breakdown(enemies, minutes)
+
+
+func _get_digest_efficiency_info() -> Dictionary:
+	return digest_controller.get_step_minutes_breakdown(enemies)
 func _play_click_se() -> void:
 	if click_se == null:
 		return

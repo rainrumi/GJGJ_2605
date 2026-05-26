@@ -13,9 +13,9 @@ func get_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
 		return 0.0
 	var rate := 0.0
 	for enemy in enemies:
-		if enemy == null or not enemy.is_active_in_stomach() or enemy.seed_skill_definition == null:
+		if enemy == null or not enemy.is_active_in_stomach() or not enemy.has_seed_skill():
 			continue
-		if enemy.seed_skill_definition.skill_id == DREAM_SEED_RARE_LATE_DIGEST_DAMAGE:
+		if enemy.get_seed_skill().skill_id == DREAM_SEED_RARE_LATE_DIGEST_DAMAGE:
 			rate += LATE_DIGEST_DAMAGE_RATE
 	return rate
 
@@ -26,9 +26,9 @@ func apply_digested_effect(
 	received_digest_damage: Dictionary,
 	digested_enemies: Array[Enemy]
 ) -> void:
-	if seed_block == null or seed_block.seed_skill_definition == null:
+	if seed_block == null or not seed_block.has_seed_skill():
 		return
-	match seed_block.seed_skill_definition.skill_id:
+	match seed_block.get_seed_skill().skill_id:
 		DREAM_SEED_RARE_REFLECT_DIGEST_DAMAGE, DREAM_SEED_RARE_ADJACENT_DAMAGE_UP:
 			_apply_adjacent_damage(
 				seed_block,
@@ -51,7 +51,7 @@ func _apply_adjacent_damage(
 		return
 	var split_damage := maxi(1, roundi(float(damage) / float(adjacent_enemies.size())))
 	for adjacent_enemy in adjacent_enemies:
-		if adjacent_enemy == seed_block or adjacent_enemy.digested:
+		if adjacent_enemy == seed_block or adjacent_enemy.is_digested():
 			continue
 		adjacent_enemy.show_digest_damage_values([split_damage])
 		if adjacent_enemy.take_digest_damage(split_damage, false) and not digested_enemies.has(adjacent_enemy):

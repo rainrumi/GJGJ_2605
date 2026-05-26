@@ -98,6 +98,22 @@ func is_seed_stomach_block() -> bool:
 	return seed_skill_definition != null
 
 
+func has_seed_skill() -> bool:
+	return seed_skill_definition != null
+
+
+func get_seed_skill() -> DreamSeedSkillDefinition:
+	return seed_skill_definition
+
+
+func has_nightmare_skill() -> bool:
+	return skill_definition != null
+
+
+func get_nightmare_skill() -> NightmareSkillDefinition:
+	return skill_definition
+
+
 func is_nightmare() -> bool:
 	return not is_seed_stomach_block()
 
@@ -128,6 +144,13 @@ func should_trigger_nightmare_reactions() -> bool:
 
 func get_damage() -> int: return maxi(0, roundi(float(damage) * attack_multiplier))
 func get_display_damage() -> int: return display_damage_override if display_damage_override >= 0 else get_damage()
+func get_base_damage() -> int: return base_damage
+func get_max_hp() -> int: return max_hp
+func get_current_hp() -> int: return current_hp
+func get_revive_count() -> int: return revive_count
+func is_digested() -> bool: return digested
+func is_digesting() -> bool: return digesting
+func is_activation_deferred() -> bool: return activation_deferred
 
 
 func get_size() -> int:

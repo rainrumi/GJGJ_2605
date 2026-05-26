@@ -92,9 +92,7 @@ func remove_planted_flower(source: Resource) -> void:
 		if source is DreamSeedSkillDefinition and flower != null and flower.dream_seed_skill == source:
 			planted_flowers.remove_at(i)
 	if is_node_ready():
-		_refresh_flower_slots()
-		_refresh_seed_choices()
-		_update_hp_heal_plan()
+		_refresh_after_reward_state_changed()
 
 
 func _initialize_planted_flowers() -> void:
@@ -187,8 +185,7 @@ func _on_reroll_button_pressed() -> void:
 	if not debug_numbers_visible or not _seed_choice_active:
 		return
 	_reroll_seed_options()
-	_refresh_seed_choices()
-	_update_hp_heal_plan()
+	_refresh_after_reward_state_changed()
 
 
 func _update_debug_numbers_visible() -> void:
@@ -375,6 +372,12 @@ func _refresh_dream_seed_skill_buttons() -> void:
 	if dream_seed_skill_buttons == null:
 		return
 	dream_seed_skill_buttons.set_seed_sources(get_planted_flowers())
+
+
+func _refresh_after_reward_state_changed() -> void:
+	_refresh_flower_slots()
+	_refresh_seed_choices()
+	_update_hp_heal_plan()
 func _get_display_flower_textures() -> Array[Texture2D]:
 	var textures: Array[Texture2D] = []
 	for flower in planted_flowers:
