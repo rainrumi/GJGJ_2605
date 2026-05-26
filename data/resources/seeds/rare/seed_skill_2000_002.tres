@@ -18,4 +18,4 @@ display_name = "夢の花名"
 texture = ExtResource("2_texture")
 drag_block_definition = SubResource("Resource_drag_block")
 main_description = "受けるダメージ+30%。受けたダメージ30%分を次の消化ダメージに加算。"
-sub_description = "この花を消化すると消化時に受けた総合消化ダメージ100%を隣接するモノに分配して与える。（HP%d(現在の消化ダメージの500%),消化ダメージ0）"
+sub_description = "この花を消化すると消化時に受けた総合消化ダメージ100%を隣接するモノに分配して与える。"
