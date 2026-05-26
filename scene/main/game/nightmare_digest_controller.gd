@@ -22,13 +22,9 @@ const NIGHTMARE_SKILL_CHAIN_GROWTH := 9
 const NIGHTMARE_SKILL_ODD_ORDER_DAMAGE := 10
 const NIGHTMARE_SKILL_EVEN_ORDER_REVIVE := 11
 const NIGHTMARE_SKILL_SINGLE_DIGEST_SPAWN := 12
-const DREAM_SEED_RARE_REFLECT_DIGEST_DAMAGE := 2002
-const DREAM_SEED_RARE_LATE_DIGEST_DAMAGE := 2004
-const DREAM_SEED_RARE_ADJACENT_DAMAGE_UP := 2005
-const SEED_BLOCK_LATE_DIGEST_DAMAGE_RATE := 1.0
-const SEED_BLOCK_LATE_DIGEST_DAMAGE_START_HOUR := 28
 
 var seed_effects := DreamSeedEffectCalculator.new()
+var seed_block_resolver := DreamSeedBlockDigestResolver.new()
 var digest_order := 0
 var _pending_player_damage_values: Array[int] = []
 var _skill_7_base_hp: Dictionary = {}
@@ -258,7 +254,7 @@ func _resolve_digested_enemy_effects(
 			)
 			enemy.revive_with_hp_rate(revive_rate)
 			continue
-		_apply_seed_block_digested_effect(enemy, enemies, received_digest_damage, digested_enemies)
+		seed_block_resolver.apply_digested_effect(enemy, enemies, received_digest_damage, digested_enemies)
 		final_digested.append(enemy)
 	_apply_chain_reactions(enemies, final_digested)
 	_apply_spawn_reactions(enemies, final_digested, received_digest_damage, enemy_setup)
@@ -307,39 +303,6 @@ func _apply_spawn_reactions(
 			var spawn_cells := enemy.get_occupied_cells(enemy.stomach_cell)
 			if not spawn_cells.is_empty():
 				enemy_setup.spawn_nuisance_nightmare(enemies, enemy, spawn_cells[0], 0.3, 0)
-
-
-func _apply_seed_block_digested_effect(
-	seed_block: Enemy,
-	enemies: Array[Enemy],
-	received_digest_damage: Dictionary,
-	digested_enemies: Array[Enemy]
-) -> void:
-	if seed_block == null or seed_block.seed_skill_definition == null:
-		return
-	match seed_block.seed_skill_definition.skill_id:
-		DREAM_SEED_RARE_REFLECT_DIGEST_DAMAGE, DREAM_SEED_RARE_ADJACENT_DAMAGE_UP:
-			_apply_seed_block_adjacent_damage(seed_block, enemies, int(received_digest_damage.get(seed_block, 0)), digested_enemies)
-
-
-func _apply_seed_block_adjacent_damage(
-	seed_block: Enemy,
-	enemies: Array[Enemy],
-	damage: int,
-	digested_enemies: Array[Enemy]
-) -> void:
-	if damage <= 0:
-		return
-	var adjacent_enemies := NightmarePlacementQuery.get_adjacent_enemies(seed_block, enemies)
-	if adjacent_enemies.is_empty():
-		return
-	var split_damage := maxi(1, roundi(float(damage) / float(adjacent_enemies.size())))
-	for adjacent_enemy in adjacent_enemies:
-		if adjacent_enemy == seed_block or adjacent_enemy.digested:
-			continue
-		adjacent_enemy.show_digest_damage_values([split_damage])
-		if adjacent_enemy.take_digest_damage(split_damage, false) and not digested_enemies.has(adjacent_enemy):
-			digested_enemies.append(adjacent_enemy)
 
 
 func _get_enemy_attack_damage(enemy: Enemy, enemies: Array[Enemy], stomach: StomachBoard) -> int:
@@ -469,15 +432,7 @@ func _get_nightmare_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> f
 
 
 func _get_seed_block_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
-	if minutes < SEED_BLOCK_LATE_DIGEST_DAMAGE_START_HOUR * 60:
-		return 0.0
-	var rate := 0.0
-	for enemy in enemies:
-		if enemy == null or not enemy.is_active_in_stomach() or enemy.seed_skill_definition == null:
-			continue
-		if enemy.seed_skill_definition.skill_id == DREAM_SEED_RARE_LATE_DIGEST_DAMAGE:
-			rate += SEED_BLOCK_LATE_DIGEST_DAMAGE_RATE
-	return rate
+	return seed_block_resolver.get_digest_damage_rate(enemies, minutes)
 
 
 func _has_nightmare_effect(enemy: Enemy, skill_id: int) -> bool:
