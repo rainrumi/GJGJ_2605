@@ -282,14 +282,27 @@ func _on_seed_skill_drag_released(
 	if drag_mode != DragMode.DREAM_SEED:
 		return
 	var result := dream_seed_controller.release_drag(mouse_position, enemies)
+	_handle_seed_drag_result(result)
+	_finish_drag_operation()
+
+
+func _handle_seed_drag_result(result: DreamSeedDragResult) -> void:
 	if result.started:
 		_play_click_se()
 	if result.placed:
-		_refresh_after_battle_event()
-		if result.source_button != null and is_instance_valid(result.source_button):
-			result.source_button.consume_sub_skill_use()
-			dream_seed_controller.remove_source_while_in_stomach(result.source_button, result.seed_block)
-			_sync_dream_seed_sources()
+		_apply_placed_seed_drag_result(result)
+
+
+func _apply_placed_seed_drag_result(result: DreamSeedDragResult) -> void:
+	_refresh_after_battle_event()
+	if result.source_button == null or not is_instance_valid(result.source_button):
+		return
+	result.source_button.consume_sub_skill_use()
+	dream_seed_controller.remove_source_while_in_stomach(result.source_button, result.seed_block)
+	_sync_dream_seed_sources()
+
+
+func _finish_drag_operation() -> void:
 	if auto_digest_enabled:
 		auto_digest_paused_for_drag = false
 	drag_mode = DragMode.NONE

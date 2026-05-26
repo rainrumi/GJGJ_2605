@@ -41,6 +41,7 @@ var _extra_seed_choice_granted := false
 var _seed_choice_active := false
 var _base_seed_options: Array[Resource] = []
 var debug_numbers_visible := false
+var reward_service := StageClearRewardService.new()
 func _ready() -> void:
 	_cache_base_seed_options()
 	_initialize_planted_flowers()
@@ -116,18 +117,11 @@ func _cache_base_seed_options() -> void:
 func _restore_base_seed_options() -> void:
 	if _base_seed_options.is_empty():
 		return
-	seed_options = _base_seed_options.duplicate()
+	seed_options = reward_service.get_stage_seed_options(_base_seed_options, null)
 
 
 func _apply_stage_drop_options(stage: StageDefinition) -> void:
-	if stage == null or stage.drop_item_pool.is_empty():
-		return
-	var stage_seed_options: Array[Resource] = []
-	for drop_item in stage.drop_item_pool:
-		if drop_item != null:
-			stage_seed_options.append(drop_item)
-	if not stage_seed_options.is_empty():
-		seed_options = stage_seed_options
+	seed_options = reward_service.get_stage_seed_options(_base_seed_options, stage)
 
 
 func _get_seed_option(seed_index: int) -> SeedOptionDefinition:
@@ -267,14 +261,14 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 	if seed == null:
 		return
 	hp_view.set_planned_recovery_rate(_get_seed_choice_recovery_rate(seed_index))
-	var flower := _create_seed_flower(seed)
+	var flower := reward_service.create_seed_flower(seed)
 	if _can_plant_seed(seed):
 		planted_flowers.append(flower)
 		_refresh_flower_slots()
 		var recovered_rate := _apply_selection_recovery(0.0)
 		_finish_seed_choice(recovered_rate, "%sを植えました" % _get_seed_display_name(seed))
 		return
-	_replace_flower(seed, flower)
+	reward_service.replace_first_flower(planted_flowers, flower)
 	_refresh_flower_slots()
 	var replacement_recovered_rate := _apply_selection_recovery(0.0)
 	_finish_seed_choice(replacement_recovered_rate, "%sを植え替えました" % _get_seed_display_name(seed))
@@ -298,7 +292,7 @@ func _show_finished_mode(message: String) -> void:
 	_update_reroll_button_state()
 	_update_hp_heal_plan()
 func _can_plant_seed(seed: SeedOptionDefinition) -> bool:
-	return StageClearRecoveryCalculator.can_plant_seed(seed, planted_flowers, max_flowers)
+	return reward_service.can_plant_seed(seed, planted_flowers, max_flowers)
 
 
 func _finish_seed_choice(recovered_rate: float, message: String) -> void:
@@ -308,20 +302,6 @@ func _finish_seed_choice(recovered_rate: float, message: String) -> void:
 		return
 	selection_finished.emit(recovered_rate)
 	_show_finished_mode(message)
-func _create_seed_flower(seed: SeedOptionDefinition) -> FlowerDefinition:
-	if seed.flower_definition == null:
-		return null
-	var flower := seed.flower_definition.duplicate() as FlowerDefinition
-	flower.dream_seed_skill = seed.dream_seed_skill
-	return flower
-func _replace_flower(_seed: SeedOptionDefinition, flower: FlowerDefinition) -> void:
-	if flower == null:
-		return
-	for i in range(planted_flowers.size()):
-		if planted_flowers[i] == null:
-			continue
-		planted_flowers[i] = flower
-		return
 func _get_planned_clear_recovery_rate() -> float:
 	return StageClearRecoveryCalculator.get_planned_recovery_rate(planted_flowers, clear_minutes, _clear_recovery_applied, CLEAR_RECOVERY_START_HOUR, CLEAR_RECOVERY_END_HOUR, CLEAR_RECOVERY_BASE_RATE, CLEAR_RECOVERY_HOURLY_LOSS_RATE)
 func _get_seed_choice_recovery_rate(seed_index: int) -> float:
@@ -344,21 +324,7 @@ func _get_abandon_extra_recovery_rate() -> float:
 		return 0.0
 	return ABANDON_HP_RECOVERY_RATE
 func _get_preview_flowers_for_seed(seed: SeedOptionDefinition) -> Array[FlowerDefinition]:
-	var preview_flowers: Array[FlowerDefinition] = []
-	for flower in planted_flowers:
-		preview_flowers.append(flower)
-	var flower := _create_seed_flower(seed)
-	if flower == null:
-		return preview_flowers
-	if StageClearRecoveryCalculator.can_plant_seed(seed, preview_flowers, max_flowers):
-		preview_flowers.append(flower)
-		return preview_flowers
-	for i in range(preview_flowers.size()):
-		if preview_flowers[i] == null:
-			continue
-		preview_flowers[i] = flower
-		return preview_flowers
-	return preview_flowers
+	return reward_service.get_preview_flowers_for_seed(seed, planted_flowers, max_flowers)
 
 
 func _reset_extra_seed_choices() -> void:

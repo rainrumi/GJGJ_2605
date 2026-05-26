@@ -20,7 +20,8 @@ var seed_skill: DreamSeedSkillDefinition
 var tooltip_panel: DreamSeedSkillTooltipView
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
-var _remaining_sub_skill_uses := 0
+# 現状はUI表示を兼ねた一時的な使用回数。永続状態が必要になったらRuntimeStateへ移す。
+var _display_remaining_sub_skill_uses := 0
 var _dragging := false
 
 
@@ -45,7 +46,7 @@ func set_seed_source(source: Resource) -> void:
 	elif source is DreamSeedSkillDefinition:
 		seed_skill = source as DreamSeedSkillDefinition
 	set_seed_icon_source(source)
-	_remaining_sub_skill_uses = SUB_SKILL_USE_COUNT if _has_sub_skill() else 0
+	_display_remaining_sub_skill_uses = SUB_SKILL_USE_COUNT if _has_sub_skill() else 0
 	disabled = seed_skill == null
 	_update_drag_state()
 	_refresh_tooltip()
@@ -71,7 +72,7 @@ func get_seed_source() -> Resource:
 
 
 func get_remaining_sub_skill_uses() -> int:
-	return _remaining_sub_skill_uses
+	return _display_remaining_sub_skill_uses
 
 
 func set_debug_numbers_visible(is_visible: bool) -> void:
@@ -85,7 +86,7 @@ func set_sub_skill_drag_enabled(is_enabled: bool) -> void:
 
 
 func consume_sub_skill_use() -> void:
-	_remaining_sub_skill_uses = maxi(0, _remaining_sub_skill_uses - 1)
+	_display_remaining_sub_skill_uses = maxi(0, _display_remaining_sub_skill_uses - 1)
 	_update_drag_state()
 	_refresh_tooltip()
 
@@ -133,7 +134,7 @@ func _get_tooltip_text() -> String:
 	if _has_sub_skill():
 		lines.append("サブスキル: %s" % DreamSeedSkillDescriptionFormatter.get_sub_description(seed_skill))
 	if _has_sub_skill():
-		lines.append(DreamSeedSkillDescriptionFormatter.get_sub_skill_use_text(_remaining_sub_skill_uses))
+		lines.append(DreamSeedSkillDescriptionFormatter.get_sub_skill_use_text(_display_remaining_sub_skill_uses))
 	if debug_numbers_visible:
 		lines.append("ID: %d" % seed_skill.skill_id)
 	return "\n".join(lines)
@@ -180,7 +181,7 @@ func _try_use_sub_skill(mouse_position: Vector2) -> void:
 
 
 func _can_use_sub_skill() -> bool:
-	return sub_skill_drag_enabled and seed_skill != null and seed_skill.sub_skill_mode != DreamSeedSkillDefinition.SubSkillMode.None and _has_sub_skill() and _remaining_sub_skill_uses > 0
+	return sub_skill_drag_enabled and seed_skill != null and seed_skill.sub_skill_mode != DreamSeedSkillDefinition.SubSkillMode.None and _has_sub_skill() and _display_remaining_sub_skill_uses > 0
 
 
 func _has_sub_skill() -> bool:
@@ -189,5 +190,5 @@ func _has_sub_skill() -> bool:
 
 func _update_drag_state() -> void:
 	if icon_rect != null:
-		icon_rect.self_modulate = LOW_SUB_SKILL_USES_COLOR if _can_use_sub_skill() and _remaining_sub_skill_uses <= 1 else NORMAL_ICON_COLOR
+		icon_rect.self_modulate = LOW_SUB_SKILL_USES_COLOR if _can_use_sub_skill() and _display_remaining_sub_skill_uses <= 1 else NORMAL_ICON_COLOR
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if _can_use_sub_skill() else Control.CURSOR_ARROW

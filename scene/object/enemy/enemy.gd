@@ -187,6 +187,10 @@ func should_apply_nightmare_skill() -> bool:
 	return is_nightmare() and nightmare_skill_enabled
 func should_deal_player_damage() -> bool:
 	return is_nightmare()
+func should_count_for_digest_order() -> bool:
+	return is_nightmare()
+func should_trigger_nightmare_reactions() -> bool:
+	return is_nightmare()
 func update_stomach_display_size(target_size: Vector2) -> void:
 	if sprite == null or sprite.texture == null:
 		return

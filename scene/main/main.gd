@@ -91,6 +91,7 @@ func _on_title_start_game() -> void:
 	should_reset_player_state = true
 	if stage_clear.has_method("reset_player_state"):
 		stage_clear.reset_player_state()
+	_sync_run_state_from_stage_clear()
 	title.visible = false
 	active_novel_flow = NovelFlow.OPENING
 	opening_novel.start()
@@ -140,6 +141,7 @@ func _on_game_battle_finished(won: bool) -> void:
 func _on_game_dream_seed_depleted(source: Resource) -> void:
 	if stage_clear.has_method("remove_planted_flower"):
 		stage_clear.remove_planted_flower(source)
+	_sync_run_state_from_stage_clear()
 
 
 func show_end_gameover_novel() -> void:
@@ -157,6 +159,7 @@ func show_end_gameover_novel() -> void:
 func _finish_end_gameover_novel() -> void:
 	if stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
 		stage_clear.setup_hp(game.get_current_hp())
+	_sync_run_state_from_stage_clear()
 	_finish_current_day()
 
 
@@ -171,6 +174,7 @@ func _get_end_gameover_novel_text() -> NovelTextResource:
 
 
 func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
+	_sync_run_state_from_stage_clear()
 	await get_tree().create_timer(STAGE_CLEAR_RETURN_DELAY).timeout
 	_finish_current_day()
 
@@ -233,20 +237,26 @@ func _sync_player_stomach_size() -> void:
 		run_state.stomach_rows = game.get_stomach_rows()
 
 
+func _sync_run_state_from_stage_clear() -> void:
+	if stage_clear.has_method("get_current_hp"):
+		run_state.current_hp = stage_clear.get_current_hp()
+	if stage_clear.has_method("get_planted_flowers"):
+		run_state.planted_flowers = stage_clear.get_planted_flowers()
+
+
 func _get_starting_hp(reset_player_state: bool) -> int:
 	if reset_player_state:
 		if game.has_method("get_max_hp"):
 			return game.get_max_hp()
 		return 100
-	if stage_clear.has_method("get_current_hp"):
-		return stage_clear.get_current_hp()
-	return game.get_current_hp()
+	return run_state.current_hp
 
 
 func _get_planted_flowers() -> Array[FlowerDefinition]:
-	if stage_clear.has_method("get_planted_flowers"):
-		return stage_clear.get_planted_flowers()
 	var flowers: Array[FlowerDefinition] = []
+	for flower in run_state.planted_flowers:
+		if flower != null:
+			flowers.append(flower)
 	return flowers
 
 

@@ -242,12 +242,15 @@ func _resolve_digested_enemy_effects(
 	var final_digested: Array[Enemy] = []
 	_sort_digested_enemies(enemies, digested_enemies, received_digest_damage, turn_start_hp)
 	for enemy in digested_enemies:
-		digest_order += 1
-		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_ODD_ORDER_DAMAGE) and digest_order % 2 == 1:
+		var current_order := -1
+		if enemy.should_count_for_digest_order():
+			digest_order += 1
+			current_order = digest_order
+		if current_order >= 0 and _has_nightmare_effect(enemy, NIGHTMARE_SKILL_ODD_ORDER_DAMAGE) and current_order % 2 == 1:
 			var damage := seed_effects.apply_player_damage(enemy.get_damage() * 3, DIGEST_DAMAGE)
 			if damage > 0:
 				_pending_player_damage_values.append(damage)
-		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_EVEN_ORDER_REVIVE) and digest_order % 2 == 0:
+		if current_order >= 0 and _has_nightmare_effect(enemy, NIGHTMARE_SKILL_EVEN_ORDER_REVIVE) and current_order % 2 == 0:
 			var revive_rate := maxf(
 				SKILL_11_MIN_REVIVE_RATE,
 				SKILL_11_REVIVE_START_RATE - float(enemy.revive_count) * SKILL_11_REVIVE_DECAY_RATE
@@ -256,8 +259,9 @@ func _resolve_digested_enemy_effects(
 			continue
 		seed_block_resolver.apply_digested_effect(enemy, enemies, received_digest_damage, digested_enemies)
 		final_digested.append(enemy)
-	_apply_chain_reactions(enemies, final_digested)
-	_apply_spawn_reactions(enemies, final_digested, received_digest_damage, enemy_setup)
+	var digested_nightmares := _get_digested_nightmares(final_digested)
+	_apply_chain_reactions(enemies, digested_nightmares)
+	_apply_spawn_reactions(enemies, final_digested, digested_nightmares, received_digest_damage, enemy_setup)
 	return final_digested
 
 
@@ -290,6 +294,7 @@ func _apply_chain_reactions(enemies: Array[Enemy], digested_enemies: Array[Enemy
 func _apply_spawn_reactions(
 	enemies: Array[Enemy],
 	digested_enemies: Array[Enemy],
+	digested_nightmares: Array[Enemy],
 	received_digest_damage: Dictionary,
 	enemy_setup: GameEnemySetupController
 ) -> void:
@@ -299,10 +304,18 @@ func _apply_spawn_reactions(
 			for cell in enemy.get_occupied_cells(enemy.stomach_cell):
 				if not enemy_setup.spawn_nuisance_nightmare(enemies, enemy, cell, 0.5, nuisance_damage):
 					break
-		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_SINGLE_DIGEST_SPAWN) and digested_enemies.size() == 1:
+		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_SINGLE_DIGEST_SPAWN) and digested_nightmares.size() == 1:
 			var spawn_cells := enemy.get_occupied_cells(enemy.stomach_cell)
 			if not spawn_cells.is_empty():
 				enemy_setup.spawn_nuisance_nightmare(enemies, enemy, spawn_cells[0], 0.3, 0)
+
+
+func _get_digested_nightmares(digested_enemies: Array[Enemy]) -> Array[Enemy]:
+	var nightmares: Array[Enemy] = []
+	for enemy in digested_enemies:
+		if enemy != null and enemy.should_trigger_nightmare_reactions():
+			nightmares.append(enemy)
+	return nightmares
 
 
 func _get_enemy_attack_damage(enemy: Enemy, enemies: Array[Enemy], stomach: StomachBoard) -> int:

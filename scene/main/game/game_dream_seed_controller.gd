@@ -1,7 +1,6 @@
 class_name GameDreamSeedController
 extends RefCounted
 
-const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/seeds/dream_seed_skill_catalog.tres")
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 const SEED_BLOCK_DRAG_ALPHA := 0.58
 const DREAM_SEED_DIGEST_HP_RECOVERY := 1002
@@ -18,6 +17,7 @@ var _dragging_seed_block: Enemy
 var _dragging_seed_button: DreamSeedSkillButton
 var _dragging_seed_skill: DreamSeedSkillDefinition
 var _pending_depleted_sources_by_block: Dictionary = {}
+var debug_factory := DreamSeedDebugFactory.new()
 
 
 func setup(
@@ -46,7 +46,7 @@ func get_flowers() -> Array[FlowerDefinition]:
 
 
 func add_random_debug_seed() -> bool:
-	var flower := _get_random_debug_seed_flower()
+	var flower := debug_factory.create_random_debug_seed_flower()
 	if flower == null:
 		return false
 	_flowers.append(flower)
@@ -229,10 +229,13 @@ func _get_seed_block_stomach_size(seed_skill: DreamSeedSkillDefinition) -> Vecto
 
 
 func _get_seed_block_template(enemy_definitions: Array[Resource], seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
+	var seed_definition := _create_seed_block_template(seed_skill)
+	if seed_definition != null:
+		return seed_definition
 	for definition in enemy_definitions:
 		if definition is EnemyDefinition:
 			return definition as EnemyDefinition
-	return _create_seed_block_template(seed_skill)
+	return null
 
 
 func _create_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
@@ -257,32 +260,3 @@ func _create_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyD
 		definition.stomach_size = block_definition.get_stomach_size()
 		definition.stomach_shape = block_definition.get_stomach_shape()
 	return definition
-
-
-func _get_random_debug_seed_flower() -> FlowerDefinition:
-	var candidates := _get_debug_seed_flower_candidates()
-	if candidates.is_empty():
-		return null
-	return candidates[randi() % candidates.size()]
-
-
-func _get_debug_seed_flower_candidates() -> Array[FlowerDefinition]:
-	var candidates: Array[FlowerDefinition] = []
-	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG.normal_skills)
-	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG.rare_skills)
-	return candidates
-
-
-func _append_debug_seed_flower_candidates(
-	candidates: Array[FlowerDefinition],
-	skills: Array
-) -> void:
-	for skill_resource in skills:
-		if not skill_resource is DreamSeedSkillDefinition:
-			continue
-		var skill := skill_resource as DreamSeedSkillDefinition
-		var flower := FlowerDefinition.new()
-		flower.display_name = skill.display_name
-		flower.texture = skill.texture
-		flower.dream_seed_skill = skill
-		candidates.append(flower)
