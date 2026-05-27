@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://art/enemy/tex_stomach_block_1000.png" id="2_texture"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 20042
+category = "強敵"
+display_name = "強敵 ゴンサル地区 002"
+texture = ExtResource("2_texture")
+max_hp = 1000
+damage = 15
+size = 1
+stomach_size = Vector2i(1, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
+description = "消化されると受けた最大消化ダメージ分の攻撃力を持つ中級寄生型悪夢を生成する"
