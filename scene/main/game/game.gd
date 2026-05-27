@@ -402,7 +402,7 @@ func _advance_digest_turn() -> void:
 	digest_controller.apply_turn_start_effects(enemies, stomach, minutes)
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
 	await _wait_for_next_digest_beat()
-	var digest_result := _run_digest_core(minutes)
+	var digest_result := _run_digest_core(minutes, elapsed_minutes)
 	_apply_digested_seed_effects(digest_result.digested_enemies)
 	_apply_player_damage_values()
 	_apply_elapsed_time(elapsed_minutes + digest_result.extra_elapsed_minutes)
@@ -423,8 +423,8 @@ func _begin_digest_turn() -> bool:
 	return true
 
 
-func _run_digest_core(current_minutes: int) -> DigestTurnResult:
-	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, current_minutes)
+func _run_digest_core(current_minutes: int, elapsed_minutes: int) -> DigestTurnResult:
+	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, current_minutes, elapsed_minutes)
 	var digest_result := digest_controller.build_turn_result(digested_enemies)
 	_apply_digest_spawn_requests(digest_result.spawn_requests)
 	return digest_result

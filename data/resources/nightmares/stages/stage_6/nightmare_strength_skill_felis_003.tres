@@ -14,4 +14,4 @@ damage = 15
 size = 1
 stomach_size = Vector2i(1, 1)
 stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
-description = "5が含まれる時刻のときに受ける消化ダメージが100%増加する"
+description = "5が含まれる時刻のときに受ける消化ダメージが400%増加する"

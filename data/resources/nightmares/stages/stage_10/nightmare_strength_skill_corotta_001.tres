@@ -14,4 +14,4 @@ damage = 15
 size = 1
 stomach_size = Vector2i(1, 1)
 stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
-description = "時間経過回数をカウントする。胃袋内で10回時間が経過するたびにHPが100%、攻撃力が100%上昇する。"
+description = "時間経過回数をカウントする。胃袋内で10回時間が経過するたびにHPが200%、攻撃力が100%上昇する。"

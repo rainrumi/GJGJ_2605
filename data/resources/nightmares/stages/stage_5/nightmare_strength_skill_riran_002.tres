@@ -14,4 +14,4 @@ damage = 15
 size = 1
 stomach_size = Vector2i(1, 1)
 stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
-description = "消化ダメージを受けるとHPが1%増加する。この効果はHP上限を超える"
+description = "消化ダメージを受けるとHPが5%増加する。この効果はHP上限を超える"

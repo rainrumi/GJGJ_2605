@@ -14,4 +14,4 @@ damage = 15
 size = 1
 stomach_size = Vector2i(1, 1)
 stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
-description = "消化されると消化ダメージを50%軽減する上級寄生型悪夢を生成する"
+description = "消化されると消化ダメージを20%軽減する上級寄生型悪夢を生成する"

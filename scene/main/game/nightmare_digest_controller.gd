@@ -10,6 +10,8 @@ const SKILL_7_MAX_HP_RATE := 2.0
 const SKILL_11_REVIVE_START_RATE := 0.5
 const SKILL_11_REVIVE_DECAY_RATE := 0.1
 const SKILL_11_MIN_REVIVE_RATE := 0.1
+const STRENGTH_RIRAN_REVIVE_START_RATE := 0.8
+const TWO_OCLOCK_MINUTES := 26 * 60
 const NIGHTMARE_SKILL_OPEN_CELL_ATTACK := 1
 const NIGHTMARE_SKILL_DAMAGE_SHARE := 2
 const NIGHTMARE_SKILL_OPEN_CELL_DEFENSE := 3
@@ -68,6 +70,8 @@ var _strength_turn_counts: Dictionary = {}
 var _strength_hit_counts: Dictionary = {}
 var _strength_line_minutes: Dictionary = {}
 var _strength_once_keys: Dictionary = {}
+var _strength_base_max_hp: Dictionary = {}
+var _strength_hp_modifiers: Dictionary = {}
 
 
 func setup(flowers: Array) -> void:
@@ -82,6 +86,8 @@ func setup(flowers: Array) -> void:
 	_strength_hit_counts.clear()
 	_strength_line_minutes.clear()
 	_strength_once_keys.clear()
+	_strength_base_max_hp.clear()
+	_strength_hp_modifiers.clear()
 	seed_effects.setup(flowers)
 
 
@@ -97,6 +103,8 @@ func reset_digest_order() -> void:
 	_strength_hit_counts.clear()
 	_strength_line_minutes.clear()
 	_strength_once_keys.clear()
+	_strength_base_max_hp.clear()
+	_strength_hp_modifiers.clear()
 
 
 func get_digest_damage_breakdown(
@@ -148,23 +156,25 @@ func apply_turn_start_effects(enemies: Array[Enemy], stomach: StomachBoard, minu
 func digest_nightmares(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
-	minutes: int
+	minutes: int,
+	elapsed_minutes: int = STEP_MINUTES
 ) -> Array[Enemy]:
 	var digested_enemies: Array[Enemy] = []
 	var shared_damage: Dictionary = {}
 	var damage_display_values: Dictionary = {}
 	var received_digest_damage: Dictionary = {}
+	var max_received_digest_damage: Dictionary = {}
 	var turn_start_hp := _get_turn_start_hp(enemies)
 	var digest_damage_per_cell := int(get_digest_damage_breakdown(enemies, minutes, true)["total"])
 	for enemy in enemies:
-		_digest_enemy(enemy, enemies, stomach, minutes, digest_damage_per_cell, shared_damage, damage_display_values, received_digest_damage)
-	_apply_shared_damage(shared_damage, enemies, stomach, minutes, damage_display_values, received_digest_damage)
+		_digest_enemy(enemy, enemies, stomach, minutes, elapsed_minutes, digest_damage_per_cell, shared_damage, damage_display_values, received_digest_damage, max_received_digest_damage)
+	_apply_shared_damage(shared_damage, enemies, stomach, minutes, elapsed_minutes, damage_display_values, received_digest_damage, max_received_digest_damage)
 	var forced_digested := _apply_strength_after_damage_reactions(enemies, received_digest_damage)
 	_apply_enemy_damage_values(damage_display_values, digested_enemies)
 	for enemy in forced_digested:
 		if not digested_enemies.has(enemy):
 			digested_enemies.append(enemy)
-	return _resolve_digested_enemy_effects(enemies, digested_enemies, received_digest_damage, turn_start_hp)
+	return _resolve_digested_enemy_effects(enemies, digested_enemies, received_digest_damage, max_received_digest_damage, turn_start_hp)
 
 
 func apply_digest_damage_values(enemies: Array[Enemy], stomach: StomachBoard, minutes: int) -> Array[int]:
@@ -260,10 +270,12 @@ func _digest_enemy(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
 	minutes: int,
+	elapsed_minutes: int,
 	digest_damage_per_cell: int,
 	shared_damage: Dictionary,
 	damage_display_values: Dictionary,
-	received_digest_damage: Dictionary
+	received_digest_damage: Dictionary,
+	max_received_digest_damage: Dictionary
 ) -> void:
 	if not enemy.can_take_stomach_turn():
 		return
@@ -274,7 +286,8 @@ func _digest_enemy(
 		return
 	var damage := _get_final_digest_damage(enemy, enemies, stomach, minutes, digest_damage_per_cell * bottom_cell_count)
 	received_digest_damage[enemy] = received_digest_damage.get(enemy, 0) + damage
-	_apply_strength_damage_received_effects(enemy, enemies, damage, minutes, stomach)
+	_record_max_digest_damage(max_received_digest_damage, enemy, damage)
+	_apply_strength_damage_received_effects(enemy, enemies, damage, minutes, elapsed_minutes, stomach)
 	_append_damage_value(damage_display_values, enemy, damage)
 	_apply_digest_damage_share(enemy, enemies, damage, shared_damage)
 
@@ -284,8 +297,10 @@ func _apply_shared_damage(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
 	minutes: int,
+	elapsed_minutes: int,
 	damage_display_values: Dictionary,
-	received_digest_damage: Dictionary
+	received_digest_damage: Dictionary,
+	max_received_digest_damage: Dictionary
 ) -> void:
 	for target in shared_damage.keys():
 		var target_enemy := target as Enemy
@@ -295,7 +310,8 @@ func _apply_shared_damage(
 		var total_damage := _sum_damage_values(damage_values)
 		total_damage = _get_final_digest_damage(target_enemy, enemies, stomach, minutes, total_damage)
 		received_digest_damage[target_enemy] = received_digest_damage.get(target_enemy, 0) + total_damage
-		_apply_strength_damage_received_effects(target_enemy, enemies, total_damage, minutes, stomach)
+		_record_max_digest_damage(max_received_digest_damage, target_enemy, total_damage)
+		_apply_strength_damage_received_effects(target_enemy, enemies, total_damage, minutes, elapsed_minutes, stomach)
 		_append_damage_value(damage_display_values, target_enemy, total_damage)
 
 
@@ -303,6 +319,7 @@ func _resolve_digested_enemy_effects(
 	enemies: Array[Enemy],
 	digested_enemies: Array[Enemy],
 	received_digest_damage: Dictionary,
+	max_received_digest_damage: Dictionary,
 	turn_start_hp: Dictionary
 ) -> Array[Enemy]:
 	var final_digested: Array[Enemy] = []
@@ -313,10 +330,10 @@ func _resolve_digested_enemy_effects(
 			digest_order += 1
 			current_order = digest_order
 		if _has_nightmare_effect(enemy, STRENGTH_RIRAN_SINGLE_REVIVE) and _get_digested_nightmares(digested_enemies).size() == 1:
-			var riran_rate := maxf(
-				SKILL_11_MIN_REVIVE_RATE,
-				SKILL_11_REVIVE_START_RATE - float(enemy.get_revive_count()) * SKILL_11_REVIVE_DECAY_RATE
-			)
+			var riran_rate := STRENGTH_RIRAN_REVIVE_START_RATE - float(enemy.get_revive_count()) * SKILL_11_REVIVE_DECAY_RATE
+			if riran_rate <= 0.0:
+				final_digested.append(enemy)
+				continue
 			enemy.revive_with_hp_rate(riran_rate)
 			continue
 		if current_order >= 0 and _has_nightmare_effect(enemy, NIGHTMARE_SKILL_ODD_ORDER_DAMAGE) and current_order % 2 == 1:
@@ -336,7 +353,7 @@ func _resolve_digested_enemy_effects(
 			received_digest_damage,
 			digested_enemies
 		)
-		_apply_strength_digested_effect(enemy, enemies, received_digest_damage)
+		_apply_strength_digested_effect(enemy, enemies, received_digest_damage, max_received_digest_damage)
 		final_digested.append(enemy)
 	var digested_nightmares := _get_digested_nightmares(final_digested)
 	_apply_chain_reactions(enemies, digested_nightmares)
@@ -397,7 +414,8 @@ func _create_spawn_request(
 	cell: Vector2i,
 	hp_rate: float,
 	damage: int,
-	digest_damage_rate: float = 1.0
+	digest_damage_rate: float = 1.0,
+	global_digest_damage_rate: float = 1.0
 ) -> DigestSpawnRequest:
 	var request := DigestSpawnRequest.new()
 	request.source_enemy = source_enemy
@@ -405,6 +423,7 @@ func _create_spawn_request(
 	request.hp_rate = hp_rate
 	request.damage = damage
 	request.digest_damage_rate = digest_damage_rate
+	request.global_digest_damage_rate = global_digest_damage_rate
 	return request
 
 
@@ -435,7 +454,7 @@ func _get_enemy_attack_damage(enemy: Enemy, enemies: Array[Enemy], stomach: Stom
 func _get_enemy_attack_damage_values(enemy: Enemy, damage: int) -> Array[int]:
 	if _has_nightmare_effect(enemy, STRENGTH_MIRUNE_MULTI_ATTACK):
 		var values: Array[int] = []
-		var split_damage := maxi(1, roundi(float(damage) * 0.5))
+		var split_damage := maxi(1, roundi(float(damage) * 0.1))
 		for i in range(10):
 			values.append(split_damage)
 		return values
@@ -468,10 +487,10 @@ func _get_final_digest_damage(enemy: Enemy, enemies: Array[Enemy], stomach: Stom
 			0.0,
 			1.0 - float(open_adjacent_cells) * SKILL_3_DAMAGE_REDUCTION_PER_OPEN_FACE
 		)
-	if _has_nightmare_effect(enemy, STRENGTH_ERAMIA_BIG_HIT_GUARD) and raw_damage >= ceili(float(enemy.get_current_hp()) * 0.33):
-		damage_rate *= 0.5
+	if _has_nightmare_effect(enemy, STRENGTH_ERAMIA_BIG_HIT_GUARD) and raw_damage >= ceili(float(enemy.get_max_hp()) * 0.33):
+		damage_rate *= 0.1
 	if _has_nightmare_effect(enemy, STRENGTH_FELIS_FIVE_DAMAGE) and _time_text_contains_digit(minutes, "5"):
-		damage_rate *= 2.0
+		damage_rate *= 5.0
 	return roundi(float(raw_damage) * damage_rate)
 
 
@@ -523,6 +542,12 @@ func _append_damage_value(damage_values_by_enemy: Dictionary, enemy: Enemy, dama
 	damage_values_by_enemy[enemy] = damage_values
 
 
+func _record_max_digest_damage(max_damage_by_enemy: Dictionary, enemy: Enemy, damage: int) -> void:
+	if enemy == null or damage <= 0:
+		return
+	max_damage_by_enemy[enemy] = maxi(int(max_damage_by_enemy.get(enemy, 0)), damage)
+
+
 func _sum_damage_values(damage_values: Array) -> int:
 	var total := 0
 	for damage in damage_values:
@@ -553,24 +578,26 @@ func _apply_strength_turn_start_effect(enemy: Enemy, enemies: Array[Enemy], stom
 	if not enemy.can_take_stomach_turn():
 		return
 	if _has_nightmare_effect(enemy, STRENGTH_ELMENA_LINE_ATTACK):
-		_add_line_minutes(enemy, stomach)
+		var line_elapsed_minutes := int(get_step_minutes_breakdown(enemies)["total"])
+		_add_line_minutes(enemy, stomach, line_elapsed_minutes)
 		if int(_strength_line_minutes.get(enemy, 0)) >= 60:
 			_strength_line_minutes[enemy] = 0
 			_pending_player_damage_values.append(seed_effects.apply_player_damage(enemy.get_base_damage() * 5, DIGEST_DAMAGE))
 	if _has_nightmare_effect(enemy, STRENGTH_ELMENA_HIT_COUNT_HEAL) and enemy.stomach_elapsed_minutes > 0 and enemy.stomach_elapsed_minutes % 60 == 0:
-		if int(_strength_hit_counts.get(enemy, 0)) > 0:
-			enemy.heal(ceili(float(enemy.get_max_hp()) * 0.33))
+		var hit_count := int(_strength_hit_counts.get(enemy, 0))
+		if hit_count > 0:
+			enemy.heal(ceili(float(enemy.get_max_hp()) * 0.1 * float(hit_count)))
 		_strength_hit_counts[enemy] = 0
 	if _has_nightmare_effect(enemy, STRENGTH_FELIS_SEVEN_ATTACK) and _time_text_contains_digit(minutes, "7"):
 		enemy.add_damage(enemy.get_base_damage())
 	if _has_nightmare_effect(enemy, STRENGTH_FELIS_RANDOM_ATTACK):
-		enemy.set_attack_multiplier(float(randi_range(20, 200)) / 100.0)
-	if _has_nightmare_effect(enemy, STRENGTH_NERIX_LOW_ATTACK_HP) and _has_lower_attack_than_other_nightmare(enemy, enemies):
-		_apply_once_max_hp_bonus(enemy, "nerix_low_attack", enemy.get_max_hp())
-	if _has_nightmare_effect(enemy, STRENGTH_ZAIKA_EDGE_HP) and _is_adjacent_to_stomach_edge(enemy, stomach):
-		_apply_once_max_hp_bonus(enemy, "zaika_edge", enemy.get_max_hp())
-	if _has_nightmare_effect(enemy, STRENGTH_ZAIKA_LINE_HP_DOWN) and stomach.get_bottom_row_cell_count(enemy) >= 3:
-		_apply_once_max_hp_bonus(enemy, "zaika_line_down", -ceili(float(enemy.get_max_hp()) * 0.5))
+		enemy.set_attack_multiplier(float(randi_range(10, 300)) / 100.0)
+	if _has_nightmare_effect(enemy, STRENGTH_NERIX_LOW_ATTACK_HP):
+		_apply_max_hp_modifier(enemy, "nerix_low_attack", 5.0, _has_lower_attack_than_other_nightmare(enemy, enemies))
+	if _has_nightmare_effect(enemy, STRENGTH_ZAIKA_EDGE_HP):
+		_apply_max_hp_modifier(enemy, "zaika_edge", 4.0, _is_adjacent_to_stomach_edge(enemy, stomach))
+	if _has_nightmare_effect(enemy, STRENGTH_ZAIKA_LINE_HP_DOWN):
+		_apply_max_hp_modifier(enemy, "zaika_line_down", 0.2, stomach.get_bottom_row_cell_count(enemy) >= 3)
 	if _has_nightmare_effect(enemy, STRENGTH_MIRUNE_DELAYED_ATTACK):
 		var count := _increment_strength_turn_count(enemy)
 		if count % 3 == 0:
@@ -578,19 +605,23 @@ func _apply_strength_turn_start_effect(enemy: Enemy, enemies: Array[Enemy], stom
 	if _has_nightmare_effect(enemy, STRENGTH_COROTTA_TEN_TURNS):
 		var count := _increment_strength_turn_count(enemy)
 		if count % 10 == 0:
-			enemy.add_max_hp(enemy.get_max_hp())
+			enemy.add_max_hp(enemy.get_max_hp() * 2)
 			enemy.add_damage(enemy.get_base_damage())
 	if _has_nightmare_effect(enemy, STRENGTH_IRIYU_ADJACENT_WEAKEN):
 		_apply_iriyu_adjacent_weaken(enemy, enemies)
 
 
 func _apply_strength_attack_timing_effect(enemy: Enemy, minutes: int) -> bool:
-	if _has_nightmare_effect(enemy, STRENGTH_ELMENA_THREE_OCLOCK_ATTACK) and minutes >= THREE_OCLOCK_MINUTES:
+	if (
+		_has_nightmare_effect(enemy, STRENGTH_ELMENA_THREE_OCLOCK_ATTACK)
+		and minutes >= TWO_OCLOCK_MINUTES
+		and enemy.get_current_hp() >= ceili(float(enemy.get_max_hp()) * 0.5)
+		and not _strength_once_keys.has("%s:elmena_two_oclock" % enemy.get_instance_id())
+	):
+		_strength_once_keys["%s:elmena_two_oclock" % enemy.get_instance_id()] = true
 		var damage := seed_effects.apply_player_damage(enemy.get_base_damage() * 100, DIGEST_DAMAGE)
 		if damage > 0:
 			_pending_player_damage_values.append(damage)
-		enemy.set_digested(true)
-		return true
 	return false
 
 
@@ -599,11 +630,12 @@ func _apply_strength_damage_received_effects(
 	enemies: Array[Enemy],
 	damage: int,
 	minutes: int,
+	elapsed_minutes: int,
 	_stomach: StomachBoard
 ) -> void:
 	if damage <= 0:
 		return
-	if _has_nightmare_effect(enemy, STRENGTH_ERAMIA_DAMAGE_TO_ATTACK) and _is_even_hour(minutes):
+	if _has_nightmare_effect(enemy, STRENGTH_ERAMIA_DAMAGE_TO_ATTACK) and _has_even_time_part(minutes):
 		enemy.add_damage(damage)
 	if _has_nightmare_effect(enemy, STRENGTH_ERAMIA_COUNT_BUFF):
 		var active_count := _get_active_nightmare_count(enemies)
@@ -612,7 +644,7 @@ func _apply_strength_damage_received_effects(
 	if _has_nightmare_effect(enemy, STRENGTH_ELMENA_HIT_COUNT_HEAL):
 		_strength_hit_counts[enemy] = int(_strength_hit_counts.get(enemy, 0)) + 1
 	if _has_nightmare_effect(enemy, STRENGTH_RIRAN_EXTRA_TIME):
-		_pending_extra_elapsed_minutes += STEP_MINUTES
+		_pending_extra_elapsed_minutes += elapsed_minutes
 	if _has_nightmare_effect(enemy, STRENGTH_IRIYU_DAMAGE_TO_ATTACK):
 		enemy.add_damage(floori(float(damage) * 0.1))
 
@@ -637,17 +669,22 @@ func _apply_strength_after_damage_reactions(enemies: Array[Enemy], received_dige
 	return forced_digested
 
 
-func _apply_strength_digested_effect(enemy: Enemy, enemies: Array[Enemy], received_digest_damage: Dictionary) -> void:
+func _apply_strength_digested_effect(
+	enemy: Enemy,
+	enemies: Array[Enemy],
+	_received_digest_damage: Dictionary,
+	max_received_digest_damage: Dictionary
+) -> void:
 	if _has_nightmare_effect(enemy, STRENGTH_GONSAL_LOW_PARASITE):
-		for cell in _get_spawn_cells(enemy, enemies, 2):
+		for cell in enemy.get_occupied_cells(enemy.stomach_cell):
 			_pending_spawn_requests.append(_create_spawn_request(enemy, cell, 0.5, 0))
 	if _has_nightmare_effect(enemy, STRENGTH_GONSAL_MID_PARASITE):
-		var damage := maxi(0, int(received_digest_damage.get(enemy, 0)))
-		for cell in _get_spawn_cells(enemy, enemies, 1):
-			_pending_spawn_requests.append(_create_spawn_request(enemy, cell, 0.5, damage))
+		var damage := maxi(0, int(max_received_digest_damage.get(enemy, 0)))
+		for cell in enemy.get_occupied_cells(enemy.stomach_cell):
+			_pending_spawn_requests.append(_create_spawn_request(enemy, cell, 1.0, damage))
 	if _has_nightmare_effect(enemy, STRENGTH_GONSAL_HIGH_PARASITE):
-		for cell in _get_spawn_cells(enemy, enemies, 1):
-			_pending_spawn_requests.append(_create_spawn_request(enemy, cell, 0.5, 0, 0.5))
+		for cell in enemy.get_occupied_cells(enemy.stomach_cell):
+			_pending_spawn_requests.append(_create_spawn_request(enemy, cell, 1.0, 0, 1.0, 0.8))
 	if _has_nightmare_effect(enemy, STRENGTH_COROTTA_SET_THREE_OCLOCK):
 		_pending_time_override_minutes = THREE_OCLOCK_MINUTES
 
@@ -661,11 +698,11 @@ func _is_seed_kept_by_iriyu(enemy: Enemy, enemies: Array[Enemy]) -> bool:
 	return false
 
 
-func _add_line_minutes(enemy: Enemy, stomach: StomachBoard) -> void:
+func _add_line_minutes(enemy: Enemy, stomach: StomachBoard, elapsed_minutes: int) -> void:
 	if stomach.get_bottom_row_cell_count(enemy) <= 0:
 		_strength_line_minutes[enemy] = 0
 		return
-	_strength_line_minutes[enemy] = int(_strength_line_minutes.get(enemy, 0)) + STEP_MINUTES
+	_strength_line_minutes[enemy] = int(_strength_line_minutes.get(enemy, 0)) + elapsed_minutes
 
 
 func _increment_strength_turn_count(enemy: Enemy) -> int:
@@ -674,12 +711,24 @@ func _increment_strength_turn_count(enemy: Enemy) -> int:
 	return count
 
 
-func _apply_once_max_hp_bonus(enemy: Enemy, key: String, amount: int) -> void:
-	var once_key := "%s:%s" % [enemy.get_instance_id(), key]
-	if _strength_once_keys.has(once_key):
-		return
-	_strength_once_keys[once_key] = true
-	enemy.add_max_hp(amount)
+func _apply_max_hp_modifier(enemy: Enemy, key: String, multiplier: float, enabled: bool) -> void:
+	if not _strength_base_max_hp.has(enemy):
+		_strength_base_max_hp[enemy] = enemy.get_max_hp()
+	var modifiers: Dictionary = {}
+	if _strength_hp_modifiers.has(enemy):
+		modifiers = _strength_hp_modifiers[enemy]
+	if enabled:
+		modifiers[key] = multiplier
+	else:
+		modifiers.erase(key)
+	_strength_hp_modifiers[enemy] = modifiers
+	var next_multiplier := 1.0
+	for modifier in modifiers.values():
+		next_multiplier *= float(modifier)
+	var current_max_hp := enemy.get_max_hp()
+	var hp_rate := 1.0 if current_max_hp <= 0 else float(enemy.get_current_hp()) / float(current_max_hp)
+	var next_max_hp := maxi(1, roundi(float(int(_strength_base_max_hp[enemy])) * next_multiplier))
+	enemy.set_hp_values(next_max_hp, roundi(float(next_max_hp) * hp_rate))
 
 
 func _apply_iriyu_adjacent_weaken(source: Enemy, enemies: Array[Enemy]) -> void:
@@ -690,24 +739,8 @@ func _apply_iriyu_adjacent_weaken(source: Enemy, enemies: Array[Enemy]) -> void:
 		if _strength_once_keys.has(once_key):
 			continue
 		_strength_once_keys[once_key] = true
-		adjacent.add_damage(adjacent.get_base_damage())
-		adjacent.set_hp_values(adjacent.get_max_hp(), maxi(1, ceili(float(adjacent.get_max_hp()) * 0.1)))
-
-
-func _get_spawn_cells(source_enemy: Enemy, _enemies: Array[Enemy], count: int) -> Array[Vector2i]:
-	var cells: Array[Vector2i] = []
-	for cell in source_enemy.get_occupied_cells(source_enemy.stomach_cell):
-		cells.append(cell)
-	var directions: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(0, 1)]
-	for cell in source_enemy.get_occupied_cells(source_enemy.stomach_cell):
-		for direction in directions:
-			var next_cell := cell + direction
-			if cells.has(next_cell):
-				continue
-			cells.append(next_cell)
-	while cells.size() > count:
-		cells.pop_back()
-	return cells
+		adjacent.add_damage(adjacent.get_base_damage() * 4)
+		adjacent.set_hp_values(adjacent.get_max_hp(), maxi(1, ceili(float(adjacent.get_max_hp()) * 0.5)))
 
 
 func _get_active_nightmare_count(enemies: Array[Enemy]) -> int:
@@ -752,8 +785,8 @@ func _is_adjacent_to_stomach_edge(enemy: Enemy, stomach: StomachBoard) -> bool:
 	return false
 
 
-func _is_even_hour(minutes: int) -> bool:
-	return int(minutes / 60) % 2 == 0
+func _has_even_time_part(minutes: int) -> bool:
+	return int(minutes / 60) % 2 == 0 or minutes % 60 % 2 == 0
 
 
 func _time_text_contains_digit(minutes: int, digit: String) -> bool:
@@ -763,10 +796,19 @@ func _time_text_contains_digit(minutes: int, digit: String) -> bool:
 
 
 func _get_nightmare_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
+	var damage_rate := _get_global_digest_damage_multiplier(enemies) - 1.0
 	if not has_active_nightmare_effect(enemies, NIGHTMARE_SKILL_LATE_DIGEST_WEAKEN) or minutes < 25 * 60:
-		return 0.0
+		return damage_rate
 	var passed_hours := maxi(0, floori(float(minutes - 25 * 60) / 60.0))
-	return -minf(0.9, 0.3 + float(passed_hours) * 0.05)
+	return damage_rate - minf(0.9, 0.3 + float(passed_hours) * 0.05)
+
+
+func _get_global_digest_damage_multiplier(enemies: Array[Enemy]) -> float:
+	var multiplier := 1.0
+	for enemy in enemies:
+		if enemy != null and enemy.is_active_in_stomach():
+			multiplier *= enemy.digest_damage_global_multiplier
+	return multiplier
 
 
 func _get_seed_block_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:

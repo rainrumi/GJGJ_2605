@@ -25,6 +25,7 @@ var base_damage := 0
 var display_damage_override := -1
 var attack_multiplier := 1.0
 var digest_damage_taken_multiplier := 1.0
+var digest_damage_global_multiplier := 1.0
 var stomach_elapsed_minutes := 0
 var revive_count := 0
 var current_hp := 0
@@ -56,6 +57,7 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 	display_damage_override = -1
 	attack_multiplier = 1.0
 	digest_damage_taken_multiplier = 1.0
+	digest_damage_global_multiplier = 1.0
 	stomach_elapsed_minutes = 0
 	revive_count = 0
 	gravity_locked = false
@@ -416,6 +418,8 @@ func set_attack_multiplier(value: float) -> void:
 	attack_multiplier = clampf(value, 0.0, 3.0); _update_damage_label()
 func set_digest_damage_taken_multiplier(value: float) -> void:
 	digest_damage_taken_multiplier = maxf(0.0, value)
+func set_digest_damage_global_multiplier(value: float) -> void:
+	digest_damage_global_multiplier = maxf(0.0, value)
 func revive_with_half_hp() -> void:
 	revive_with_hp_rate(0.5)
 func revive_with_hp_rate(hp_rate: float) -> void:

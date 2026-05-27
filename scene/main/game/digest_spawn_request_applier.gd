@@ -16,6 +16,7 @@ func apply_requests(
 			request.cell,
 			request.hp_rate,
 			request.damage,
-			request.digest_damage_rate
+			request.digest_damage_rate,
+			request.global_digest_damage_rate
 		):
 			break

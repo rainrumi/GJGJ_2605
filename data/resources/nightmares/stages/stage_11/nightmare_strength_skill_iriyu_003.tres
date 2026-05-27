@@ -14,4 +14,4 @@ damage = 15
 size = 1
 stomach_size = Vector2i(1, 1)
 stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
-description = "消化ダメージを受けた時、受けたダメージの10%を自身の攻撃力に上乗せする"
+description = "消化ダメージを受けた時、受けた攻撃量の10%を自身の攻撃力を上昇する"

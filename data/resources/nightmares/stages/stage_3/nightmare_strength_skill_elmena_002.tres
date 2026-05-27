@@ -14,4 +14,4 @@ damage = 15
 size = 1
 stomach_size = Vector2i(1, 1)
 stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
-description = "ダメージを受けた回数をカウントする。胃袋内で1時間経過するたびに33%のHPを回復し、カウントをリセットする"
+description = "ダメージを受けた回数をカウントする。胃袋内で1時間経過するたびにカウント数×10%のHPを回復し、カウントをリセットする"

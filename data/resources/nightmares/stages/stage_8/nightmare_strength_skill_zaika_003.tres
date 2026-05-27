@@ -14,4 +14,4 @@ damage = 15
 size = 1
 stomach_size = Vector2i(1, 1)
 stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
-description = "自身の体が3か所以上消化ラインに触れているときHPが50%減少する"
+description = "自身の体が3か所以上消化ラインに触れているとき最大HPが80%減少する"

@@ -14,4 +14,4 @@ damage = 15
 size = 1
 stomach_size = Vector2i(1, 1)
 stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
-description = "時間が経過するたびに攻撃力が20%〜200%の間でランダムに変動する"
+description = "時間が経過するたびに攻撃力が10%〜300%の間でランダムに変動する"

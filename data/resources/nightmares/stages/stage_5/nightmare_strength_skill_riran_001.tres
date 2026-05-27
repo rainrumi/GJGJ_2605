@@ -14,4 +14,4 @@ damage = 15
 size = 1
 stomach_size = Vector2i(1, 1)
 stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
-description = "同時に消化されたものが存在しない場合、50%のHPで復活する。復活時のHPは10%ずつ低下する"
+description = "同時に消化されたものが存在しない場合、80%のHPで復活する。復活時のHPは10%ずつ低下する"

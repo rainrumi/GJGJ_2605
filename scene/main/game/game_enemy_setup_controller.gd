@@ -113,7 +113,8 @@ func spawn_nuisance_nightmare(
 	spawn_cell: Vector2i,
 	hp_rate: float,
 	damage_value: int,
-	digest_damage_rate: float = 1.0
+	digest_damage_rate: float = 1.0,
+	global_digest_damage_rate: float = 1.0
 ) -> bool:
 	var nuisance_enemy := _get_available_nuisance_enemy(enemies, source_enemy)
 	if nuisance_enemy == null:
@@ -133,6 +134,7 @@ func spawn_nuisance_nightmare(
 	nuisance_enemy.current_hp = nuisance_enemy.max_hp
 	nuisance_enemy.set_damage_value(maxi(0, damage_value))
 	nuisance_enemy.set_digest_damage_taken_multiplier(digest_damage_rate)
+	nuisance_enemy.set_digest_damage_global_multiplier(global_digest_damage_rate)
 	nuisance_enemy.set_digesting(true)
 	_stomach.place_enemy(nuisance_enemy, spawn_cell)
 	return true

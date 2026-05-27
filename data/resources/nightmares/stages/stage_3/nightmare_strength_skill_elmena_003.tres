@@ -14,4 +14,4 @@ damage = 15
 size = 1
 stomach_size = Vector2i(1, 1)
 stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
-description = "3時になると10000%の攻撃を1回行い、自動で消化される"
+description = "2時までにHPが50%を切っていないとき10000%の攻撃を1回行う"
