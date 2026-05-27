@@ -24,6 +24,7 @@ var damage := 0
 var base_damage := 0
 var display_damage_override := -1
 var attack_multiplier := 1.0
+var digest_damage_taken_multiplier := 1.0
 var stomach_elapsed_minutes := 0
 var revive_count := 0
 var current_hp := 0
@@ -54,6 +55,7 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 	base_damage = enemy_definition.damage
 	display_damage_override = -1
 	attack_multiplier = 1.0
+	digest_damage_taken_multiplier = 1.0
 	stomach_elapsed_minutes = 0
 	revive_count = 0
 	gravity_locked = false
@@ -394,8 +396,16 @@ func get_sub_effect_text() -> String:
 	return "-"
 func heal(amount: int) -> void:
 	current_hp = mini(max_hp, current_hp + amount); _update_hp_label()
+func heal_over_max(amount: int) -> void:
+	current_hp = maxi(0, current_hp + amount); _update_hp_label()
 func change_max_hp(new_max_hp: int) -> void:
 	max_hp = maxi(1, new_max_hp); current_hp = mini(current_hp, max_hp); _update_hp_label()
+func add_max_hp(amount: int, also_heal := true) -> void:
+	max_hp = maxi(1, max_hp + amount)
+	if also_heal:
+		current_hp += amount
+	current_hp = maxi(0, current_hp)
+	_update_hp_label()
 func set_hp_values(next_max_hp: int, next_current_hp: int) -> void:
 	max_hp = maxi(1, next_max_hp); current_hp = clampi(next_current_hp, 0, max_hp); _update_hp_label()
 func add_damage(amount: int) -> void:
@@ -404,6 +414,8 @@ func set_damage_value(value: int) -> void:
 	damage = maxi(0, value); base_damage = damage; _update_damage_label()
 func set_attack_multiplier(value: float) -> void:
 	attack_multiplier = clampf(value, 0.0, 3.0); _update_damage_label()
+func set_digest_damage_taken_multiplier(value: float) -> void:
+	digest_damage_taken_multiplier = maxf(0.0, value)
 func revive_with_half_hp() -> void:
 	revive_with_hp_rate(0.5)
 func revive_with_hp_rate(hp_rate: float) -> void:

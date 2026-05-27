@@ -15,6 +15,7 @@ func apply_requests(
 			request.source_enemy,
 			request.cell,
 			request.hp_rate,
-			request.damage
+			request.damage,
+			request.digest_damage_rate
 		):
 			break

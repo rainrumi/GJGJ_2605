@@ -399,13 +399,16 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 func _advance_digest_turn() -> void:
 	if not _begin_digest_turn():
 		return
-	digest_controller.apply_turn_start_effects(enemies)
+	digest_controller.apply_turn_start_effects(enemies, stomach, minutes)
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
 	await _wait_for_next_digest_beat()
 	var digest_result := _run_digest_core(minutes)
 	_apply_digested_seed_effects(digest_result.digested_enemies)
 	_apply_player_damage_values()
-	_apply_elapsed_time(elapsed_minutes)
+	_apply_elapsed_time(elapsed_minutes + digest_result.extra_elapsed_minutes)
+	if digest_result.time_override_minutes >= 0:
+		minutes = digest_result.time_override_minutes
+		_refresh_after_battle_event()
 	await _resolve_post_digest_visuals(digest_result.digested_enemies)
 	_finish_digest_turn()
 
@@ -589,7 +592,7 @@ func _apply_digested_seed_effects(digested_enemies: Array[Enemy]) -> void:
 
 
 func _apply_player_damage_values() -> void:
-	var player_damage_values := digest_controller.apply_digest_damage_values(enemies, stomach)
+	var player_damage_values := digest_controller.apply_digest_damage_values(enemies, stomach, minutes)
 	if player_damage_values.is_empty():
 		return
 	ui.show_hp_damage_values(player_damage_values)
