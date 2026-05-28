@@ -55,6 +55,7 @@ position = Vector2(95, 210)
 
 [node name="ClickSe" type="AudioStreamPlayer" parent="." unique_id=163842910]
 stream = ExtResource("21_click_se")
+bus = &"SE"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]
 script = ExtResource("3_battle_ui_script")

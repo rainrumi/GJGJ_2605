@@ -3,8 +3,6 @@ extends CanvasLayer
 
 signal finished
 
-const TYPE_INTERVAL := 0.04
-
 @export var novel_text: NovelTextResource
 
 @onready var screen: Control = $Screen
@@ -59,11 +57,15 @@ func _start_typing(page_text: String) -> void:
 	text_label.text = ""
 	next_label.visible = false
 	_is_typing = true
+	var type_interval := GameSettings.get_text_interval()
+	if type_interval <= 0.0:
+		_complete_typing()
+		return
 	for i in range(page_text.length()):
 		if request_id != _typing_request_id:
 			return
 		text_label.text += page_text[i]
-		await get_tree().create_timer(TYPE_INTERVAL).timeout
+		await get_tree().create_timer(type_interval).timeout
 	if request_id != _typing_request_id:
 		return
 	_complete_typing()

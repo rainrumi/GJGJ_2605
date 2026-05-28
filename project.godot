@@ -21,6 +21,10 @@ window/size/viewport_width=640
 window/size/viewport_height=360
 window/stretch/mode="canvas_items"
 
+[autoload]
+
+GameSettings="*res://systems/settings/game_settings.gd"
+
 [gui]
 
 theme/custom="res://scene/ui/slider/slider_theme.tres"

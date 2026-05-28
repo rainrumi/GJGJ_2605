@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://8cvikryskr5p" path="res://art/texture/logo/tex_logo.png" id="4_5ajwd"]
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="4_button"]
 [ext_resource type="Texture2D" uid="uid://w1ei7yf8hyj7" path="res://art/texture/character/tex_character_title.png" id="5_le7jh"]
+[ext_resource type="PackedScene" path="res://scene/main/settings/settings_screen.tscn" id="6_settings"]
 
 [node name="Title" type="Node2D" unique_id=2003881678]
 script = ExtResource("3_script")
@@ -77,6 +78,8 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
 text = "終了"
+
+[node name="SettingsScreen" parent="." instance=ExtResource("6_settings")]
 
 [connection signal="pressed" from="Menu/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="Menu/ContinueButton" to="." method="_on_continue_button_pressed"]
