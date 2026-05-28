@@ -13,6 +13,7 @@ enum StageArea {
 	MIRUNE_STREET = 9,
 	COROTTA_STREET = 10,
 	IRIYU_CAVE = 11,
+	huwahuwaSchool = 12,
 }
 
 @export var stage_id := 0
@@ -28,6 +29,7 @@ enum StageArea {
 @export var drop_item_pool: Array[SeedOptionDefinition] = []
 @export var high_difficulty_stages: Array[StageDefinition] = []
 @export var is_high_difficulty := false
+@export var has_normal_stage := true
 
 
 func get_difficulty_text() -> String:

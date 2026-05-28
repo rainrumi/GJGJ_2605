@@ -27,6 +27,7 @@ var stage_choices: Array[BaseButton] = []
 var _displayed_stage_definitions: Array[StageDefinition] = []
 var _current_stage_definition: StageDefinition
 var _current_day := 1
+var _unlocked_high_difficulty_stage_ids: Array[int] = []
 var _hovered_stage_definition: StageDefinition
 var _beacon_tween: Tween
 var _beacon_frame_index := 0
@@ -83,11 +84,16 @@ func _process_location_marker_frame(delta: float) -> void:
 	_apply_location_marker_frame()
 
 
-func setup_stage_choices(current_stage_definition: StageDefinition = null, current_day: int = 1) -> void:
+func setup_stage_choices(
+	current_stage_definition: StageDefinition = null,
+	current_day: int = 1,
+	unlocked_high_difficulty_stage_ids: Array[int] = []
+) -> void:
 	if stage_choices.is_empty():
 		_collect_stage_choices()
 	_current_stage_definition = current_stage_definition
 	_current_day = current_day
+	_unlocked_high_difficulty_stage_ids = unlocked_high_difficulty_stage_ids.duplicate()
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	_ensure_stage_choice_count(_displayed_stage_definitions.size())
 	_hide_beacon()
@@ -146,11 +152,16 @@ func get_stage_definition_by_id(stage_id: int) -> StageDefinition:
 	return stage_selection_service.get_stage_definition_by_id(_get_stage_definitions(), stage_id)
 
 
+func get_stage_definitions_for_progress() -> Array[StageDefinition]:
+	return _get_stage_definitions()
+
+
 func _get_random_stage_definitions() -> Array[StageDefinition]:
 	var definitions := stage_selection_service.get_candidate_stages(
 		_get_stage_definitions(),
 		_current_stage_definition,
-		_current_day
+		_current_day,
+		_unlocked_high_difficulty_stage_ids
 	)
 	definitions.shuffle()
 	return definitions

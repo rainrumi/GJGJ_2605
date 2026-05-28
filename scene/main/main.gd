@@ -3,12 +3,17 @@ extends Node
 const STAGE_CLEAR_RETURN_DELAY := 1.0
 const STORY_CLEAR_DAY := 20
 const INITIAL_STAGE_ID := 11
+const HIGH_DIFFICULTY_DAY_INTERVAL := 4
+const RECURRING_STAGE_NOVEL_STAGE_ID := 0
+const RECURRING_STAGE_NOVEL_SCENARIO_INDEX := 1
+const STAGE_NOVEL_PATH_FORMAT := "res://data/resources/novel/stages/stage_%d/scenario_%03d.tres"
 
 enum NovelFlow {
 	NONE,
 	OPENING,
 	END_GAMEOVER,
 	GAME_CLEAR,
+	STAGE_UNLOCK,
 }
 
 @export var end_gameover_novel_text: NovelTextResource
@@ -26,6 +31,7 @@ enum NovelFlow {
 var run_state := RunState.new()
 var should_reset_player_state := true
 var active_novel_flow := NovelFlow.NONE
+var pending_stage_novel_texts: Array[NovelTextResource] = []
 
 
 func _ready() -> void:
@@ -56,7 +62,7 @@ func show_stage_select() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	if stage_select.has_method("setup_stage_choices"):
-		stage_select.call("setup_stage_choices", run_state.selected_stage, run_state.current_day)
+		stage_select.call("setup_stage_choices", run_state.selected_stage, run_state.current_day, _get_unlocked_high_difficulty_stage_ids())
 
 
 func show_game(reset_player_state: bool = true) -> void:
@@ -105,6 +111,9 @@ func _on_opening_novel_finished() -> void:
 		NovelFlow.GAME_CLEAR:
 			active_novel_flow = NovelFlow.NONE
 			show_title()
+		NovelFlow.STAGE_UNLOCK:
+			if not _play_next_stage_unlock_novel():
+				show_stage_select()
 		_:
 			active_novel_flow = NovelFlow.NONE
 			show_day_intro()
@@ -118,6 +127,8 @@ func show_day_intro() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	await day_intro.show_day(run_state.current_day)
+	if _try_show_stage_unlock_novels():
+		return
 	show_stage_select()
 
 
@@ -133,6 +144,7 @@ func _on_stage_select_stage_selected(stage: StageDefinition) -> void:
 func _on_game_battle_finished(won: bool) -> void:
 	_sync_player_stomach_size()
 	if won:
+		run_state.record_normal_stage_clear(run_state.selected_stage)
 		show_stage_clear()
 	else:
 		show_end_gameover_novel()
@@ -215,6 +227,94 @@ func _get_game_clear_novel_text() -> NovelTextResource:
 	var novel_text := NovelTextResource.new()
 	novel_text.text = "ゲームクリア！7"
 	return novel_text
+
+
+func _try_show_stage_unlock_novels() -> bool:
+	if not _is_high_difficulty_day(run_state.current_day):
+		return false
+	pending_stage_novel_texts = _collect_unplayed_stage_unlock_novels()
+	if pending_stage_novel_texts.is_empty():
+		return false
+	title.visible = false
+	opening_novel.visible = false
+	day_intro.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+	active_novel_flow = NovelFlow.STAGE_UNLOCK
+	return _play_next_stage_unlock_novel()
+
+
+func _play_next_stage_unlock_novel() -> bool:
+	if pending_stage_novel_texts.is_empty():
+		active_novel_flow = NovelFlow.NONE
+		return false
+	var novel_text := pending_stage_novel_texts.pop_front() as NovelTextResource
+	opening_novel.start_with_text(novel_text)
+	return true
+
+
+func _collect_unplayed_stage_unlock_novels() -> Array[NovelTextResource]:
+	var novel_texts: Array[NovelTextResource] = []
+	var recurring_novel_text := _get_recurring_stage_unlock_novel_text()
+	if recurring_novel_text != null:
+		novel_texts.append(recurring_novel_text)
+	for stage in _get_stage_definitions_for_progress():
+		if stage == null or stage.is_high_difficulty:
+			continue
+		if stage.stage_id == RECURRING_STAGE_NOVEL_STAGE_ID:
+			continue
+		for scenario_index in run_state.get_unplayed_unlocked_stage_novel_indices(stage):
+			var novel_text := _load_stage_unlock_novel_text(stage.stage_id, scenario_index)
+			if novel_text == null:
+				continue
+			novel_texts.append(novel_text)
+			run_state.mark_stage_novel_played(stage, scenario_index)
+	return novel_texts
+
+
+func _get_recurring_stage_unlock_novel_text() -> NovelTextResource:
+	var template := _load_stage_unlock_novel_text(RECURRING_STAGE_NOVEL_STAGE_ID, RECURRING_STAGE_NOVEL_SCENARIO_INDEX)
+	if template == null:
+		return null
+	var novel_text := NovelTextResource.new()
+	var high_difficulty_count := int(run_state.current_day / HIGH_DIFFICULTY_DAY_INTERVAL)
+	novel_text.text = template.text % high_difficulty_count
+	return novel_text
+
+
+func _load_stage_unlock_novel_text(stage_id: int, scenario_index: int) -> NovelTextResource:
+	var path := STAGE_NOVEL_PATH_FORMAT % [stage_id, scenario_index]
+	if not ResourceLoader.exists(path):
+		return null
+	return load(path) as NovelTextResource
+
+
+func _get_stage_definitions_for_progress() -> Array[StageDefinition]:
+	if stage_select.has_method("get_stage_definitions_for_progress"):
+		var raw_definitions: Array = stage_select.call("get_stage_definitions_for_progress")
+		var definitions: Array[StageDefinition] = []
+		for stage in raw_definitions:
+			if stage is StageDefinition:
+				definitions.append(stage as StageDefinition)
+		return definitions
+	var definitions: Array[StageDefinition] = []
+	return definitions
+
+
+func _get_unlocked_high_difficulty_stage_ids() -> Array[int]:
+	var stage_ids: Array[int] = []
+	for stage in _get_stage_definitions_for_progress():
+		if stage == null or stage.is_high_difficulty:
+			continue
+		if run_state.get_strengthened_enemy_unlock_count(stage) > 0:
+			stage_ids.append(stage.stage_id)
+	return stage_ids
+
+
+func _is_high_difficulty_day(day: int) -> bool:
+	return day > 0 and day % HIGH_DIFFICULTY_DAY_INTERVAL == 0
 
 
 func _create_battle_start_context(reset_player_state: bool) -> BattleStartContext:

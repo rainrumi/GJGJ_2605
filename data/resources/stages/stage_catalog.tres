@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="StageCatalog" load_steps=13 format=3]
+[gd_resource type="Resource" script_class="StageCatalog" load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://data/definitions/stage_catalog.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/resources/stages/stage_0/stage_0.tres" id="13_stage"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_1/stage_1.tres" id="2_stage"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_2/stage_2.tres" id="3_stage"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_3/stage_3.tres" id="4_stage"]
@@ -15,4 +16,4 @@
 
 [resource]
 script = ExtResource("1_script")
-stages = Array[StageDefinition]([ExtResource("2_stage"), ExtResource("3_stage"), ExtResource("4_stage"), ExtResource("5_stage"), ExtResource("6_stage"), ExtResource("7_stage"), ExtResource("8_stage"), ExtResource("9_stage"), ExtResource("10_stage"), ExtResource("11_stage"), ExtResource("12_stage")])
+stages = Array[StageDefinition]([ExtResource("13_stage"), ExtResource("2_stage"), ExtResource("3_stage"), ExtResource("4_stage"), ExtResource("5_stage"), ExtResource("6_stage"), ExtResource("7_stage"), ExtResource("8_stage"), ExtResource("9_stage"), ExtResource("10_stage"), ExtResource("11_stage"), ExtResource("12_stage")])
