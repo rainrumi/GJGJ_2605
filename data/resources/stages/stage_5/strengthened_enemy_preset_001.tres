@@ -3,9 +3,7 @@
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://scene/object/enemy/enemy_preset_definition.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_u8c6a"]
 [ext_resource type="Resource" path="res://data/resources/nightmares/stages/stage_5/nightmare_strength_skill_riran_001.tres" id="2_enemy_001"]
-[ext_resource type="Resource" path="res://data/resources/nightmares/stages/stage_5/nightmare_strength_skill_riran_002.tres" id="2_enemy_002"]
-[ext_resource type="Resource" path="res://data/resources/nightmares/stages/stage_5/nightmare_strength_skill_riran_003.tres" id="2_enemy_003"]
 
 [resource]
 script = ExtResource("1_script")
-enemies = Array[ExtResource("1_u8c6a")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_002"), ExtResource("2_enemy_003")])
+enemies = Array[ExtResource("1_u8c6a")]([ExtResource("2_enemy_001")])
