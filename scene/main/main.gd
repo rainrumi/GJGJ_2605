@@ -27,20 +27,34 @@ enum NovelFlow {
 @onready var game_ui: CanvasLayer = $Game/UI
 @onready var stage_clear: Node = $StageClear
 @onready var bgm: BeatConductor = $BGM
+@onready var settings_screen: SettingsScreen = $SettingsScreen
 
 var run_state := RunState.new()
 var should_reset_player_state := true
 var active_novel_flow := NovelFlow.NONE
 var pending_stage_novel_texts: Array[NovelTextResource] = []
+var _settings_paused_tree := false
 
 
 func _ready() -> void:
+	settings_screen.closed.connect(_on_settings_screen_closed)
 	if game.has_method("set_beat_conductor"):
 		game.set_beat_conductor(bgm)
 	if game.has_signal("dream_seed_depleted"):
 		game.connect("dream_seed_depleted", Callable(self, "_on_game_dream_seed_depleted"))
 	_play_bgm()
 	show_title()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if key_event.keycode == KEY_ESCAPE and key_event.pressed and not key_event.echo:
+			get_viewport().set_input_as_handled()
+			if settings_screen.visible:
+				settings_screen.close()
+			else:
+				_open_settings_screen()
 
 
 func show_title() -> void:
@@ -101,6 +115,24 @@ func _on_title_start_game() -> void:
 	title.visible = false
 	active_novel_flow = NovelFlow.OPENING
 	opening_novel.start()
+
+
+func _on_settings_requested() -> void:
+	_open_settings_screen()
+
+
+func _open_settings_screen() -> void:
+	if settings_screen.visible:
+		return
+	_settings_paused_tree = not get_tree().paused
+	get_tree().paused = true
+	settings_screen.open()
+
+
+func _on_settings_screen_closed() -> void:
+	if _settings_paused_tree:
+		get_tree().paused = false
+	_settings_paused_tree = false
 
 
 func _on_opening_novel_finished() -> void:

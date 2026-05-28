@@ -19,8 +19,19 @@ var _is_refreshing := false
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 	_setup_options()
 	_refresh_values()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if key_event.keycode == KEY_ESCAPE and key_event.pressed and not key_event.echo:
+			get_viewport().set_input_as_handled()
+			close()
 
 
 func open() -> void:
