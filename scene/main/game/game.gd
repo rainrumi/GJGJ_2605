@@ -110,6 +110,16 @@ func get_last_time_over_recovery_percent() -> int:
 	return last_time_over_recovery_percent
 
 
+func cancel_battle() -> void:
+	battle_active = false
+	input_controller.set_active(false)
+	auto_digest_enabled = false
+	auto_digest_paused_for_drag = false
+	digest_turn_in_progress = false
+	_clear_scheduled_digest_events()
+	_update_auto_digest_timer()
+
+
 func get_stomach_columns() -> int:
 	return stomach.columns
 

@@ -257,13 +257,23 @@ theme_override_font_sizes/font_size = 12
 
 [node name="ResetButton" type="Button" parent="Screen/Panel"]
 layout_mode = 0
+offset_left = 96.0
+offset_top = 270.0
+offset_right = 198.0
+offset_bottom = 300.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "初期化"
+
+[node name="TitleButton" type="Button" parent="Screen/Panel"]
+layout_mode = 0
 offset_left = 206.0
 offset_top = 270.0
 offset_right = 318.0
 offset_bottom = 300.0
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
-text = "初期化"
+text = "タイトル"
 
 [node name="BackButton" type="Button" parent="Screen/Panel"]
 layout_mode = 0
@@ -283,4 +293,5 @@ text = "戻る"
 [connection signal="toggled" from="Screen/Panel/Rows/Fullscreen/Value" to="." method="_on_fullscreen_toggled"]
 [connection signal="item_selected" from="Screen/Panel/Rows/Difficulty/Value" to="." method="_on_difficulty_item_selected"]
 [connection signal="pressed" from="Screen/Panel/ResetButton" to="." method="_on_reset_button_pressed"]
+[connection signal="pressed" from="Screen/Panel/TitleButton" to="." method="_on_title_button_pressed"]
 [connection signal="pressed" from="Screen/Panel/BackButton" to="." method="_on_back_button_pressed"]

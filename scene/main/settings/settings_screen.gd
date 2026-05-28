@@ -2,6 +2,7 @@ class_name SettingsScreen
 extends CanvasLayer
 
 signal closed
+signal title_requested
 
 @onready var panel: Panel = $Screen/Panel
 @onready var master_slider: HSlider = $Screen/Panel/Rows/MasterVolume/Value
@@ -132,3 +133,7 @@ func _on_reset_button_pressed() -> void:
 
 func _on_back_button_pressed() -> void:
 	close()
+
+
+func _on_title_button_pressed() -> void:
+	title_requested.emit()

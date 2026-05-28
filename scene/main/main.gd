@@ -34,10 +34,12 @@ var should_reset_player_state := true
 var active_novel_flow := NovelFlow.NONE
 var pending_stage_novel_texts: Array[NovelTextResource] = []
 var _settings_paused_tree := false
+var _screen_flow_id := 0
 
 
 func _ready() -> void:
 	settings_screen.closed.connect(_on_settings_screen_closed)
+	settings_screen.title_requested.connect(_on_settings_title_requested)
 	if game.has_method("set_beat_conductor"):
 		game.set_beat_conductor(bgm)
 	if game.has_signal("dream_seed_depleted"):
@@ -106,6 +108,7 @@ func show_stage_clear() -> void:
 
 
 func _on_title_start_game() -> void:
+	_screen_flow_id += 1
 	run_state.reset()
 	_setup_initial_stage_position()
 	should_reset_player_state = true
@@ -135,7 +138,26 @@ func _on_settings_screen_closed() -> void:
 	_settings_paused_tree = false
 
 
+func _on_settings_title_requested() -> void:
+	_return_to_title()
+
+
+func _return_to_title() -> void:
+	_screen_flow_id += 1
+	active_novel_flow = NovelFlow.NONE
+	pending_stage_novel_texts.clear()
+	if game.has_method("cancel_battle"):
+		game.cancel_battle()
+	if settings_screen.visible:
+		settings_screen.close()
+	elif _settings_paused_tree:
+		_on_settings_screen_closed()
+	show_title()
+
+
 func _on_opening_novel_finished() -> void:
+	if title.visible and active_novel_flow == NovelFlow.NONE:
+		return
 	match active_novel_flow:
 		NovelFlow.END_GAMEOVER:
 			active_novel_flow = NovelFlow.NONE
@@ -152,6 +174,7 @@ func _on_opening_novel_finished() -> void:
 
 
 func show_day_intro() -> void:
+	var flow_id := _screen_flow_id
 	title.visible = false
 	opening_novel.visible = false
 	stage_select.visible = false
@@ -159,6 +182,8 @@ func show_day_intro() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	await day_intro.show_day(run_state.current_day)
+	if flow_id != _screen_flow_id:
+		return
 	if _try_show_stage_unlock_novels():
 		return
 	show_stage_select()
@@ -218,8 +243,11 @@ func _get_end_gameover_novel_text() -> NovelTextResource:
 
 
 func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
+	var flow_id := _screen_flow_id
 	_sync_run_state_from_stage_clear()
 	await get_tree().create_timer(STAGE_CLEAR_RETURN_DELAY).timeout
+	if flow_id != _screen_flow_id:
+		return
 	_finish_current_day()
 
 
