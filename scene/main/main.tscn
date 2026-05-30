@@ -55,6 +55,7 @@ visible = false
 
 [connection signal="start_game" from="Title" to="." method="_on_title_start_game"]
 [connection signal="settings_requested" from="Title" to="." method="_on_settings_requested"]
+[connection signal="quit_requested" from="Title" to="." method="_on_quit_requested"]
 [connection signal="finished" from="OpeningNovel" to="." method="_on_opening_novel_finished"]
 [connection signal="stage_selected" from="StageSelect" to="." method="_on_stage_select_stage_selected"]
 [connection signal="battle_finished" from="Game" to="." method="_on_game_battle_finished"]

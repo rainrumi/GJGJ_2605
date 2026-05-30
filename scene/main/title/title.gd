@@ -2,6 +2,7 @@ extends Node2D
 
 signal start_game
 signal settings_requested
+signal quit_requested
 
 
 func _on_start_button_pressed() -> void:
@@ -17,4 +18,4 @@ func _on_settings_button_pressed() -> void:
 
 
 func _on_quit_button_pressed() -> void:
-	pass
+	quit_requested.emit()

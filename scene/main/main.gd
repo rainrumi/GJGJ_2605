@@ -124,6 +124,10 @@ func _on_settings_requested() -> void:
 	_open_settings_screen()
 
 
+func _on_quit_requested() -> void:
+	get_tree().quit()
+
+
 func _open_settings_screen() -> void:
 	if settings_screen.visible:
 		return

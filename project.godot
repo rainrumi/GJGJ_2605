@@ -15,15 +15,15 @@ run/main_scene="res://scene/main/main.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GameSettings="*res://systems/settings/game_settings.gd"
+
 [display]
 
 window/size/viewport_width=640
 window/size/viewport_height=360
 window/stretch/mode="canvas_items"
-
-[autoload]
-
-GameSettings="*res://systems/settings/game_settings.gd"
 
 [gui]
 
