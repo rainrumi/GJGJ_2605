@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://wsdjjcostaq8"]
 
-[ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://art/character/tex_character_portrate_1000.png" id="1_character"]
+[ext_resource type="Texture2D" uid="uid://dyux7ahv35bmf" path="res://art/character/tex_character_100_portrate_1000.png" id="1_character"]
 
 [node name="Character" type="Node2D" unique_id=1173042167]
 
