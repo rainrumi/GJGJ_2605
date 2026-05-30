@@ -15,12 +15,14 @@ signal title_requested
 @onready var window_size_option: OptionButton = $Screen/Panel/Rows/WindowSize/Value
 @onready var fullscreen_check: CheckBox = $Screen/Panel/Rows/Fullscreen/Value
 @onready var difficulty_option: OptionButton = $Screen/Panel/Rows/Difficulty/Value
+@onready var se_player: AudioStreamPlayer = $SePlayer
 
 var _is_refreshing := false
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+	se_player.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 	_setup_options()
 	_refresh_values()
 
@@ -100,40 +102,55 @@ func _on_se_value_changed(value: float) -> void:
 		return
 	GameSettings.set_se_volume(value)
 	_update_volume_labels()
+	_play_se()
 
 
 func _on_text_speed_item_selected(index: int) -> void:
 	if _is_refreshing:
 		return
 	GameSettings.set_text_speed(index)
+	_play_se()
 
 
 func _on_window_size_item_selected(index: int) -> void:
 	if _is_refreshing:
 		return
 	GameSettings.set_window_size(index)
+	_play_se()
 
 
 func _on_fullscreen_toggled(toggled_on: bool) -> void:
 	if _is_refreshing:
 		return
 	GameSettings.set_fullscreen(toggled_on)
+	_play_se()
 
 
 func _on_difficulty_item_selected(index: int) -> void:
 	if _is_refreshing:
 		return
 	GameSettings.set_difficulty(index)
+	_play_se()
 
 
 func _on_reset_button_pressed() -> void:
 	GameSettings.reset_to_defaults()
 	_refresh_values()
+	_play_se()
 
 
 func _on_back_button_pressed() -> void:
+	_play_se()
 	close()
 
 
 func _on_title_button_pressed() -> void:
+	_play_se()
 	title_requested.emit()
+
+
+func _play_se() -> void:
+	if se_player.stream == null:
+		return
+	se_player.stop()
+	se_player.play()

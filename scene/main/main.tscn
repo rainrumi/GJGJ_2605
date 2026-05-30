@@ -31,6 +31,7 @@ mouse_filter = 2
 color = Color(0.1254902, 0.1254902, 0.1254902, 1)
 
 [node name="BGM" parent="." unique_id=984718531 instance=ExtResource("11_beat_conductor")]
+process_mode = 3
 auto_play = false
 bgm_stream = ExtResource("10_bgm")
 
