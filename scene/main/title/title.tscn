@@ -1,10 +1,9 @@
 [gd_scene format=3 uid="uid://duqrptvdqkp7l"]
 
-[ext_resource type="Texture2D" uid="uid://ssogygtnvw4e" path="res://art/title/tex_title_demo_1000.png" id="1_title"]
+[ext_resource type="Texture2D" path="res://art/texture/still/tex_still_title_1000.png" id="1_title"]
 [ext_resource type="Script" uid="uid://cmi8rdihucugk" path="res://scene/main/title/title.gd" id="3_script"]
 [ext_resource type="Texture2D" uid="uid://8cvikryskr5p" path="res://art/texture/logo/tex_logo.png" id="4_5ajwd"]
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="4_button"]
-[ext_resource type="Texture2D" uid="uid://w1ei7yf8hyj7" path="res://art/texture/character/tex_character_title.png" id="5_le7jh"]
 
 [node name="Title" type="Node2D" unique_id=2003881678]
 script = ExtResource("3_script")
@@ -29,7 +28,7 @@ self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 offset_right = 640.0
 offset_bottom = 360.0
 mouse_filter = 2
-texture = ExtResource("5_le7jh")
+texture = ExtResource("1_title")
 
 [node name="Menu" type="Control" parent="." unique_id=1268464866]
 layout_mode = 3
