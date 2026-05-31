@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://cmi8rdihucugk" path="res://scene/main/title/title.gd" id="3_script"]
 [ext_resource type="Texture2D" uid="uid://8cvikryskr5p" path="res://art/texture/logo/tex_logo.png" id="4_5ajwd"]
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="4_button"]
+[ext_resource type="Script" path="res://scene/main/title/title_character.gd" id="5_title_character"]
 
 [node name="Title" type="Node2D" unique_id=2003881678]
 script = ExtResource("3_script")
@@ -29,6 +30,7 @@ offset_right = 640.0
 offset_bottom = 360.0
 mouse_filter = 2
 texture = ExtResource("1_title")
+script = ExtResource("5_title_character")
 
 [node name="Menu" type="Control" parent="." unique_id=1268464866]
 layout_mode = 3
