@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://co88keexjcsl8"]
+
+[ext_resource type="Script" uid="uid://k6gwji460bpe" path="res://data/definitions/seed_option_definition.gd" id="1_oktif"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/resources/stages/stage_RiranTreeGarrison/stage_enemy_data.tres" id="2_enemy_data"]
+
+[ext_resource type="Resource" path="res://data/resources/novel/stages/stage_RiranTreeGarrison/scenario_001.tres" id="3_stage_novel_001"]
+[ext_resource type="Resource" path="res://data/resources/novel/stages/stage_RiranTreeGarrison/scenario_002.tres" id="3_stage_novel_002"]
+[ext_resource type="Resource" path="res://data/resources/novel/stages/stage_RiranTreeGarrison/scenario_003.tres" id="3_stage_novel_003"]
+
+[resource]
+script = ExtResource("1_script")
+stage_id = 5
+stage_area = 5
+reachable_stage_areas = Array[int]([1, 11, 5])
+display_name = "夢の主 5"
+difficulty_level = 3
+level_text = "大樹"
+location = "大樹リラン駐屯地"
+map_position = Vector2(100, -45)
+enemy_data = ExtResource("2_enemy_data")
+stage_unlock_novel_texts = Array[NovelTextResource]([ExtResource("3_stage_novel_001"), ExtResource("3_stage_novel_002"), ExtResource("3_stage_novel_003")])
