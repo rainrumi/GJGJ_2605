@@ -90,7 +90,9 @@ func get_stage_novel_unlock_count(stage: StageDefinition) -> int:
 	if stage == null:
 		return 0
 	var defeat_count := int(normal_enemy_defeat_counts.get(_get_stage_progress_key(stage), 0))
-	return mini(MAX_STAGE_NOVEL_INDEX, int(defeat_count / STAGE_NOVEL_UNLOCK_DEFEAT_INTERVAL))
+	var available_novel_count := stage.stage_unlock_novel_texts.size()
+	var max_novel_count := mini(MAX_STAGE_NOVEL_INDEX, available_novel_count)
+	return mini(max_novel_count, int(defeat_count / STAGE_NOVEL_UNLOCK_DEFEAT_INTERVAL))
 
 
 func get_unplayed_unlocked_stage_novel_indices(stage: StageDefinition) -> Array[int]:

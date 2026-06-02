@@ -6,7 +6,6 @@ const INITIAL_STAGE_ID := 11
 const HIGH_DIFFICULTY_DAY_INTERVAL := 4
 const RECURRING_STAGE_NOVEL_STAGE_ID := 0
 const RECURRING_STAGE_NOVEL_SCENARIO_INDEX := 1
-const STAGE_NOVEL_PATH_FORMAT := "res://data/resources/novel/stages/stage_%d/scenario_%03d.tres"
 
 enum NovelFlow {
 	NONE,
@@ -349,10 +348,15 @@ func _get_recurring_stage_unlock_novel_text() -> NovelTextResource:
 
 
 func _load_stage_unlock_novel_text(stage_id: int, scenario_index: int) -> NovelTextResource:
-	var path := STAGE_NOVEL_PATH_FORMAT % [stage_id, scenario_index]
-	if not ResourceLoader.exists(path):
+	if not stage_select.has_method("get_stage_definition_by_id"):
 		return null
-	return load(path) as NovelTextResource
+	var stage := stage_select.call("get_stage_definition_by_id", stage_id) as StageDefinition
+	if stage == null:
+		return null
+	var novel_index := scenario_index - 1
+	if novel_index < 0 or novel_index >= stage.stage_unlock_novel_texts.size():
+		return null
+	return stage.stage_unlock_novel_texts[novel_index]
 
 
 func _get_stage_definitions_for_progress() -> Array[StageDefinition]:
