@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_dhrs8"]
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://scene/object/enemy/enemy_preset_definition.gd" id="1_script"]
-[ext_resource type="Resource" uid="uid://dpdkn8257ebfk" path="res://data/resources/nightmares/nightmare_skill_001.tres" id="2_enemy"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/stages/stage_1/nightmare_strength_skill_lunova_001.tres" id="2_enemy_001"]
 
 [resource]
 script = ExtResource("1_script")
-enemies = Array[ExtResource("1_dhrs8")]([ExtResource("2_enemy")])
+enemies = Array[ExtResource("1_dhrs8")]([ExtResource("2_enemy_001")])
