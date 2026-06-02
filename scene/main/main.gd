@@ -320,9 +320,17 @@ func _play_next_stage_unlock_novel() -> bool:
 
 func _collect_unplayed_stage_unlock_novels() -> Array[NovelTextResource]:
 	var novel_texts: Array[NovelTextResource] = []
+	var unlocked_stage_novel_texts := _collect_unplayed_non_recurring_stage_unlock_novels()
+	if not unlocked_stage_novel_texts.is_empty():
+		return unlocked_stage_novel_texts
 	var recurring_novel_text := _get_recurring_stage_unlock_novel_text()
 	if recurring_novel_text != null:
 		novel_texts.append(recurring_novel_text)
+	return novel_texts
+
+
+func _collect_unplayed_non_recurring_stage_unlock_novels() -> Array[NovelTextResource]:
+	var novel_texts: Array[NovelTextResource] = []
 	for stage in _get_stage_definitions_for_progress():
 		if stage == null or stage.is_high_difficulty:
 			continue

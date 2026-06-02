@@ -168,7 +168,18 @@ func _get_random_stage_definitions() -> Array[StageDefinition]:
 		_unlocked_high_difficulty_stage_ids
 	)
 	definitions.shuffle()
+	_move_current_location_to_front(definitions)
 	return definitions
+
+
+func _move_current_location_to_front(definitions: Array[StageDefinition]) -> void:
+	for i in range(definitions.size()):
+		if not _is_current_location(definitions[i]):
+			continue
+		var current_location := definitions[i]
+		definitions.remove_at(i)
+		definitions.insert(0, current_location)
+		return
 
 
 func _collect_stage_choices() -> void:
