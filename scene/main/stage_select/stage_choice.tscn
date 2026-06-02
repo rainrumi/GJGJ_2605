@@ -40,10 +40,10 @@ layout_mode = 0
 offset_left = 8.0
 offset_top = 9.0
 offset_right = 116.0
-offset_bottom = 29.0
+offset_bottom = 23.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 9
 text = "難易度"
 vertical_alignment = 1
 
@@ -78,22 +78,22 @@ text_overrun_behavior = 3
 [node name="RewardLabel" type="Label" parent="." unique_id=1722941389]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 35.0
+offset_top = 22.0
 offset_right = 108.0
-offset_bottom = 49.0
+offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 12
 text = "報酬"
 vertical_alignment = 1
 
 [node name="RewardIcon" type="TextureRect" parent="." unique_id=1446009597]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = 34.0
-offset_top = 38.0
-offset_right = 261.0
-offset_bottom = 67.0
+offset_left = 8.0
+offset_top = 36.0
+offset_right = 239.0
+offset_bottom = 69.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
