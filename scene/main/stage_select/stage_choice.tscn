@@ -37,27 +37,27 @@ text_overrun_behavior = 3
 
 [node name="DifficultyLabel" type="Label" parent="." unique_id=863256926]
 layout_mode = 0
-offset_left = 8.0
+offset_left = 146.23
 offset_top = 9.0
-offset_right = 116.0
+offset_right = 254.23
 offset_bottom = 23.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
 text = "難易度"
+horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="LocationLabel" type="Label" parent="." unique_id=1473998700]
 layout_mode = 0
-offset_left = 155.0
+offset_left = 8.0
 offset_top = 9.0
-offset_right = 255.0
+offset_right = 108.0
 offset_bottom = 23.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 12
 text = "場所"
-horizontal_alignment = 2
 vertical_alignment = 1
 text_overrun_behavior = 3
 
@@ -83,7 +83,7 @@ offset_right = 108.0
 offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 9
 text = "報酬"
 vertical_alignment = 1
 
