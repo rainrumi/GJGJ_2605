@@ -77,7 +77,7 @@ func show_stage_select() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	if stage_select.has_method("setup_stage_choices"):
-		stage_select.call("setup_stage_choices", run_state.selected_stage, run_state.current_day, _get_unlocked_high_difficulty_stage_ids())
+		stage_select.call("setup_stage_choices", run_state.selected_stage, run_state.current_day, _get_unlocked_high_difficulty_stage_ids(), run_state)
 
 
 func show_game(reset_player_state: bool = true) -> void:
@@ -204,7 +204,7 @@ func _on_stage_select_stage_selected(stage: StageDefinition) -> void:
 func _on_game_battle_finished(won: bool) -> void:
 	_sync_player_stomach_size()
 	if won:
-		run_state.record_normal_stage_clear(run_state.selected_stage)
+		run_state.record_stage_clear(run_state.selected_stage)
 		show_stage_clear()
 	else:
 		show_end_gameover_novel()

@@ -28,6 +28,7 @@ var _displayed_stage_definitions: Array[StageDefinition] = []
 var _current_stage_definition: StageDefinition
 var _current_day := 1
 var _unlocked_high_difficulty_stage_ids: Array[int] = []
+var _run_state: RunState
 var _hovered_stage_definition: StageDefinition
 var _beacon_tween: Tween
 var _beacon_frame_index := 0
@@ -87,13 +88,15 @@ func _process_location_marker_frame(delta: float) -> void:
 func setup_stage_choices(
 	current_stage_definition: StageDefinition = null,
 	current_day: int = 1,
-	unlocked_high_difficulty_stage_ids: Array[int] = []
+	unlocked_high_difficulty_stage_ids: Array[int] = [],
+	run_state: RunState = null
 ) -> void:
 	if stage_choices.is_empty():
 		_collect_stage_choices()
 	_current_stage_definition = current_stage_definition
 	_current_day = current_day
 	_unlocked_high_difficulty_stage_ids = unlocked_high_difficulty_stage_ids.duplicate()
+	_run_state = run_state
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	_ensure_stage_choice_count(_displayed_stage_definitions.size())
 	_hide_beacon()
@@ -102,7 +105,8 @@ func setup_stage_choices(
 		if i >= _displayed_stage_definitions.size():
 			stage_choices[i].call("setup_choice", null)
 			continue
-		stage_choices[i].call("setup_choice", _displayed_stage_definitions[i])
+		var stage_definition := _displayed_stage_definitions[i]
+		stage_choices[i].call("setup_choice", stage_definition, _get_exploration_percent(stage_definition))
 
 
 func _on_stage_choice_pressed(choice_index: int) -> void:
@@ -313,3 +317,9 @@ func _is_current_location(stage_definition: StageDefinition) -> bool:
 	if stage_definition == _current_stage_definition:
 		return true
 	return stage_definition.map_position.distance_squared_to(_current_stage_definition.map_position) < 0.01
+
+
+func _get_exploration_percent(stage_definition: StageDefinition) -> int:
+	if _run_state == null:
+		return 0
+	return _run_state.get_stage_exploration_percent(stage_definition)

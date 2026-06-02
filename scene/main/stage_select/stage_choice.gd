@@ -11,6 +11,7 @@ const HIGH_DIFFICULTY_TEXT_COLOR := Color(1.0, 0.027451, 0.211765, 1.0)
 @onready var name_label: Label = $NameLabel
 @onready var difficulty_label: Label = $DifficultyLabel
 @onready var location_label: Label = $LocationLabel
+@onready var exploration_label: Label = $ExplorationLabel
 @onready var reward_icon: TextureRect = $RewardIcon
 
 var _base_scale := Vector2.ONE
@@ -28,7 +29,7 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 
-func setup_choice(stage_definition: StageDefinition) -> void:
+func setup_choice(stage_definition: StageDefinition, exploration_percent: int = 0) -> void:
 	if stage_definition == null:
 		visible = false
 		disabled = true
@@ -36,6 +37,7 @@ func setup_choice(stage_definition: StageDefinition) -> void:
 		name_label.text = ""
 		name_label.visible = false
 		location_label.text = ""
+		exploration_label.text = ""
 		reward_icon.texture = null
 		return
 	visible = true
@@ -44,6 +46,7 @@ func setup_choice(stage_definition: StageDefinition) -> void:
 	name_label.text = ""
 	name_label.visible = false
 	location_label.text = "%s" % stage_definition.location
+	exploration_label.text = "探索率 %d%%" % exploration_percent
 	reward_icon.texture = stage_definition.reward_icon
 	_apply_stage_text_color(stage_definition)
 
@@ -89,3 +92,4 @@ func _apply_stage_text_color(stage_definition: StageDefinition) -> void:
 	difficulty_label.add_theme_color_override("font_color", font_color)
 	name_label.add_theme_color_override("font_color", font_color)
 	location_label.add_theme_color_override("font_color", font_color)
+	exploration_label.add_theme_color_override("font_color", font_color)
