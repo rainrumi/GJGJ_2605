@@ -19,7 +19,7 @@ const DREAM_SEED_REST_RECOVERY := 1004
 const DREAM_SEED_RARE_TIME_REDUCTION := 2003
 const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
 const PROPOSAL_RARE_ID_MIN := 2101
-const PROPOSAL_RARE_ID_MAX := 2136
+const PROPOSAL_RARE_ID_MAX := 2138
 const PROPOSAL_RARE_DIGEST_DAMAGE_TIME := 2101
 const PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE := 2102
 const PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE_BIG := 2103
@@ -56,6 +56,8 @@ const PROPOSAL_RARE_RANDOM_INTERVAL_DAILY := 2133
 const PROPOSAL_RARE_TWO_OCLOCK_INTERVAL := 2134
 const PROPOSAL_RARE_DAILY_INTERVAL_UP := 2135
 const PROPOSAL_RARE_GROWING_INTERVAL_DOWN := 2136
+const PROPOSAL_RARE_SAFE_RETURN := 2137
+const PROPOSAL_RARE_RETURN_DAMAGE_AND_DISABLE := 2138
 
 var next_digest_damage_bonus_rate := 0.0
 var next_time_reduction_bonus_rate := 0.0
@@ -68,6 +70,7 @@ var last_digest_damage_total := 0
 var last_hp_loss := 0
 var revive_count := 0
 var day := 1
+var remove_from_stomach_disabled := false
 var _planted_flowers: Array[FlowerDefinition] = []
 
 
@@ -86,6 +89,7 @@ func setup(flowers: Array) -> void:
 	last_digest_damage_total = 0
 	last_hp_loss = 0
 	revive_count = 0
+	remove_from_stomach_disabled = false
 
 
 func get_digest_damage_breakdown(
@@ -219,6 +223,10 @@ func add_digested_seed_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
 			return true
 		PROPOSAL_RARE_GROWING_INTERVAL_DOWN:
 			next_time_reduction_bonus_rate += -minf(0.80, 0.04 * _get_elapsed_step_count(0))
+			return true
+		PROPOSAL_RARE_RETURN_DAMAGE_AND_DISABLE:
+			remove_from_stomach_disabled = true
+			next_digest_damage_bonus_rate += 1.0
 			return true
 	return false
 
@@ -403,6 +411,32 @@ func get_digest_target_multiplier() -> float:
 				if randi() % 5 == 0:
 					multiplier *= 2.0
 	return multiplier
+
+
+func get_remove_from_stomach_damage_rate(default_rate: float) -> float:
+	var rate := default_rate
+	var safe_return_enabled := false
+	for skill in _get_planted_seed_skills():
+		match skill.skill_id:
+			PROPOSAL_RARE_SAFE_RETURN:
+				safe_return_enabled = true
+			PROPOSAL_RARE_RETURN_DAMAGE_AND_DISABLE:
+				rate = maxf(rate, 0.50)
+	if safe_return_enabled:
+		return 0.0
+	return rate
+
+
+func get_remove_from_stomach_digest_damage_rate() -> float:
+	var rate := 0.0
+	for skill in _get_planted_seed_skills():
+		if skill.skill_id == PROPOSAL_RARE_RETURN_DAMAGE_AND_DISABLE:
+			rate += 0.33
+	return rate
+
+
+func is_remove_from_stomach_disabled() -> bool:
+	return remove_from_stomach_disabled
 
 
 func add_max_hp_bonus_rate(rate: float) -> void:

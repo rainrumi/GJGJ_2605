@@ -288,6 +288,18 @@ func get_enemy_attack_delta(current_minutes: int) -> int:
 	return seed_effects.get_enemy_attack_delta(current_minutes)
 
 
+func get_remove_from_stomach_damage_rate(default_rate: float) -> float:
+	return seed_effects.get_remove_from_stomach_damage_rate(default_rate)
+
+
+func get_remove_from_stomach_digest_damage_rate() -> float:
+	return seed_effects.get_remove_from_stomach_digest_damage_rate()
+
+
+func is_remove_from_stomach_disabled() -> bool:
+	return seed_effects.is_remove_from_stomach_disabled()
+
+
 func build_turn_result(digested_enemies: Array[Enemy]) -> DigestTurnResult:
 	var result := DigestTurnResult.new()
 	result.digested_enemies = digested_enemies

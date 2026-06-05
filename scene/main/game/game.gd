@@ -201,6 +201,10 @@ func _finish_enemy_drag_release(enemy: Enemy, mouse_position: Vector2) -> void:
 	if stomach.contains_global_position(mouse_position):
 		_try_start_digesting(enemy, mouse_position)
 	else:
+		if digest_controller.is_remove_from_stomach_disabled():
+			_return_dragged_enemy(enemy)
+			_refresh_after_battle_event()
+			return
 		_remove_enemy_from_stomach(enemy)
 
 
@@ -406,10 +410,12 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 		return
 	enemy.set_digesting(false)
 	enemy.return_to_origin()
+	_apply_remove_from_stomach_digest_damage(enemy)
 	var damage := _get_remove_from_stomach_damage()
 	var damage_values: Array[int] = [damage]
-	ui.show_hp_damage_values(damage_values)
-	hp = maxi(0, hp - damage)
+	if damage > 0:
+		ui.show_hp_damage_values(damage_values)
+		hp = maxi(0, hp - damage)
 	_refresh_after_battle_event()
 func _advance_digest_turn() -> void:
 	if not _begin_digest_turn():
@@ -522,7 +528,11 @@ func _set_hovered_enemy(enemy: Enemy) -> void:
 	else:
 		ui.hide_nightmare_tooltip()
 func _update_hp_damage_preview(mouse_position: Vector2) -> void:
-	if dragged_enemy_was_digesting and not stomach.contains_global_position(mouse_position):
+	if (
+		dragged_enemy_was_digesting
+		and not digest_controller.is_remove_from_stomach_disabled()
+		and not stomach.contains_global_position(mouse_position)
+	):
 		ui.show_hp_damage_preview(_get_remove_from_stomach_damage())
 	else:
 		ui.hide_hp_damage_preview()
@@ -577,7 +587,8 @@ func _active_digest_count() -> int:
 			count += 1
 	return count
 func _get_remove_from_stomach_damage() -> int:
-	return ceili(float(effective_max_hp) * REMOVE_FROM_STOMACH_DAMAGE_RATE)
+	var damage_rate := digest_controller.get_remove_from_stomach_damage_rate(REMOVE_FROM_STOMACH_DAMAGE_RATE)
+	return ceili(float(effective_max_hp) * damage_rate)
 func _sum_damage_values(damage_values: Array[int]) -> int:
 	var total := 0
 	for damage in damage_values:
@@ -647,6 +658,21 @@ func _apply_digest_damage_seed_heal() -> void:
 		return
 	heal_amount += digest_controller.add_heal_event(heal_amount)
 	hp = mini(effective_max_hp, hp + heal_amount)
+
+
+func _apply_remove_from_stomach_digest_damage(enemy: Enemy) -> void:
+	if enemy == null or enemy.is_digested():
+		return
+	var damage_rate := digest_controller.get_remove_from_stomach_digest_damage_rate()
+	if damage_rate <= 0.0:
+		return
+	var digest_damage := int(_get_digest_damage_info().get("total", 0))
+	var damage := maxi(1, roundi(float(digest_damage) * damage_rate))
+	enemy.show_digest_damage_values([damage])
+	if enemy.take_digest_damage(damage, false):
+		_check_battle_end()
+	else:
+		enemy.pulse_damage()
 
 
 func _apply_digested_seed_hp_effects(digested_enemies: Array[Enemy]) -> void:

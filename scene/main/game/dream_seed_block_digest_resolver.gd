@@ -22,6 +22,7 @@ const PROPOSAL_RARE_HP_INTERVAL_UP := 2127
 const PROPOSAL_RARE_HEAL_TO_LINE_DAMAGE := 2129
 const PROPOSAL_RARE_ATTACK_UP := 2130
 const PROPOSAL_RARE_HP_LOSS_INTERVAL_UP := 2132
+const PROPOSAL_RARE_SAFE_RETURN := 2137
 const LATE_DIGEST_DAMAGE_RATE := 1.0
 const LATE_DIGEST_DAMAGE_START_HOUR := 28
 const BASE_DIGEST_DAMAGE := 300
@@ -73,6 +74,8 @@ func append_digested_by_seed_block_effects(
 			_apply_adjacent_damage(seed_block, enemies, 1000, digested_enemies, false)
 		PROPOSAL_RARE_HEAL_TO_LINE_DAMAGE:
 			_apply_adjacent_damage(seed_block, enemies, 300, digested_enemies, true)
+		PROPOSAL_RARE_SAFE_RETURN:
+			_return_adjacent_nightmares(seed_block, enemies)
 
 
 func apply_digested_effect_and_append_new_digested(
@@ -151,6 +154,14 @@ func _apply_line_damage(
 		target.show_digest_damage_values([target_damage])
 		if target.take_digest_damage(target_damage, false) and not digested_enemies.has(target):
 			digested_enemies.append(target)
+
+
+func _return_adjacent_nightmares(seed_block: Enemy, enemies: Array[Enemy]) -> void:
+	for adjacent_enemy in NightmarePlacementQuery.get_adjacent_enemies(seed_block, enemies):
+		if adjacent_enemy == null or adjacent_enemy.is_digested() or not adjacent_enemy.is_nightmare():
+			continue
+		adjacent_enemy.set_digesting(false)
+		adjacent_enemy.return_to_origin()
 
 
 func _get_hour_damage(minutes: int) -> int:
