@@ -48,6 +48,7 @@ var dragged_enemy_original_cell := Vector2i.ZERO
 var dragged_enemy_original_global_position := Vector2.ZERO
 var hovered_enemy: Enemy
 var last_time_over_recovery_percent := 0
+var effective_max_hp := MAX_HP
 func _ready() -> void:
 	randomize()
 	enemy_setup.setup(self, input_controller, stomach, enemy_definitions, nightmare_skill_catalog)
@@ -61,7 +62,8 @@ func set_beat_conductor(conductor: BeatConductor) -> void:
 func start_battle(context: BattleStartContext = null) -> void:
 	var battle_context := context if context != null else BattleStartContext.new()
 	minutes = START_HOUR * 60
-	hp = clampi(battle_context.starting_hp, 0, MAX_HP)
+	effective_max_hp = MAX_HP
+	hp = clampi(battle_context.starting_hp, 0, effective_max_hp)
 	current_day = battle_context.day
 	current_stage_id = battle_context.stage_id
 	current_stage = battle_context.stage
@@ -72,7 +74,10 @@ func start_battle(context: BattleStartContext = null) -> void:
 	_set_battle_flags(false)
 	_clear_scheduled_digest_events()
 	dream_seed_controller.set_flowers(battle_context.flowers)
+	_apply_seed_stomach_size_effects()
 	digest_controller.setup(dream_seed_controller.get_flowers())
+	digest_controller.set_day(current_day)
+	_refresh_effective_max_hp(false)
 	dragging_enemy = null
 	dream_seed_controller.cancel_drag()
 	drag_mode = DragMode.NONE
@@ -105,7 +110,7 @@ func get_current_hp() -> int:
 func get_clear_minutes() -> int:
 	return minutes
 func get_max_hp() -> int:
-	return MAX_HP
+	return effective_max_hp
 func get_last_time_over_recovery_percent() -> int:
 	return last_time_over_recovery_percent
 
@@ -409,10 +414,13 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 func _advance_digest_turn() -> void:
 	if not _begin_digest_turn():
 		return
+	_apply_time_seed_hp_recovery()
 	digest_controller.apply_turn_start_effects(enemies, stomach, minutes)
-	var elapsed_minutes := digest_controller.get_step_minutes(enemies)
+	var elapsed_minutes := digest_controller.get_step_minutes(enemies, minutes)
 	await _wait_for_next_digest_beat()
 	var digest_result := _run_digest_core(minutes, elapsed_minutes)
+	_apply_digest_damage_seed_heal()
+	_apply_digested_nightmare_seed_effects(digest_result.digested_enemies)
 	_apply_digested_seed_effects(digest_result.digested_enemies)
 	_apply_player_damage_values()
 	_apply_elapsed_time(elapsed_minutes + digest_result.extra_elapsed_minutes)
@@ -447,7 +455,9 @@ func _finish_empty_digest_turn() -> void:
 func _apply_elapsed_time(elapsed_minutes: int) -> void:
 	minutes += elapsed_minutes
 	if hp <= 0:
-		hp = digest_controller.get_rest_hp(MAX_HP, REST_HP_RATE)
+		digest_controller.add_revive_event()
+		_refresh_effective_max_hp(true)
+		hp = digest_controller.get_rest_hp(effective_max_hp, REST_HP_RATE)
 		if not dream_seed_controller.consume_rest_time_skip():
 			minutes += REST_MINUTES
 			elapsed_minutes += REST_MINUTES
@@ -486,8 +496,8 @@ func _finish_battle(won: bool, _message: String) -> void:
 	battle_finished.emit(won)
 func _apply_time_over_recovery() -> void:
 	var previous_hp := hp
-	hp = mini(MAX_HP, hp + ceili(float(MAX_HP) * TIME_OVER_HP_RECOVERY_RATE))
-	last_time_over_recovery_percent = roundi(float(hp - previous_hp) / float(MAX_HP) * 100.0)
+	hp = mini(effective_max_hp, hp + ceili(float(effective_max_hp) * TIME_OVER_HP_RECOVERY_RATE))
+	last_time_over_recovery_percent = roundi(float(hp - previous_hp) / float(effective_max_hp) * 100.0)
 func _update_auto_digest_timer() -> void:
 	var active_digest_count := _active_digest_count()
 	if auto_digest_enabled and active_digest_count == 0:
@@ -517,7 +527,7 @@ func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 	else:
 		ui.hide_hp_damage_preview()
 func _refresh_ui() -> void:
-	digest_controller.refresh_enemy_status_display(enemies, stomach)
+	digest_controller.refresh_enemy_status_display(enemies, stomach, minutes)
 	_refresh_digest_ui()
 	_refresh_status_ui()
 	_refresh_hover_tooltip()
@@ -532,7 +542,7 @@ func _refresh_digest_ui() -> void:
 
 
 func _refresh_status_ui() -> void:
-	ui.set_hp(hp, MAX_HP)
+	ui.set_hp(hp, effective_max_hp)
 	ui.set_time(minutes)
 	ui.set_digestion_count(_active_digest_count())
 	ui.set_digestion_button_visible(battle_active and not auto_digest_enabled)
@@ -567,7 +577,7 @@ func _active_digest_count() -> int:
 			count += 1
 	return count
 func _get_remove_from_stomach_damage() -> int:
-	return ceili(float(MAX_HP) * REMOVE_FROM_STOMACH_DAMAGE_RATE)
+	return ceili(float(effective_max_hp) * REMOVE_FROM_STOMACH_DAMAGE_RATE)
 func _sum_damage_values(damage_values: Array[int]) -> int:
 	var total := 0
 	for damage in damage_values:
@@ -595,9 +605,13 @@ func _apply_digest_spawn_requests(spawn_requests: Array[DigestSpawnRequest]) -> 
 
 
 func _apply_digested_seed_effects(digested_enemies: Array[Enemy]) -> void:
-	hp = dream_seed_controller.apply_direct_digested_seed_effects(digested_enemies, hp, MAX_HP)
+	var previous_hp := hp
+	hp = dream_seed_controller.apply_direct_digested_seed_effects(digested_enemies, hp, effective_max_hp)
+	if hp > previous_hp:
+		hp = mini(effective_max_hp, hp + digest_controller.add_heal_event(hp - previous_hp))
 	for seed_skill in dream_seed_controller.collect_digested_seed_skills(digested_enemies):
 		digest_controller.add_digested_seed_effect(seed_skill)
+	_apply_digested_seed_hp_effects(digested_enemies)
 	_emit_depleted_dream_seed_sources(digested_enemies)
 
 
@@ -607,6 +621,93 @@ func _apply_player_damage_values() -> void:
 		return
 	ui.show_hp_damage_values(player_damage_values)
 	hp = maxi(0, hp - _sum_damage_values(player_damage_values))
+
+
+func _refresh_effective_max_hp(keep_rate: bool) -> void:
+	var previous_max := effective_max_hp
+	var hp_rate := 1.0 if previous_max <= 0 else float(hp) / float(previous_max)
+	effective_max_hp = maxi(1, roundi(float(MAX_HP) * (1.0 + digest_controller.get_max_hp_bonus_rate())))
+	if keep_rate:
+		hp = clampi(roundi(float(effective_max_hp) * hp_rate), 0, effective_max_hp)
+	else:
+		hp = clampi(hp, 0, effective_max_hp)
+
+
+func _apply_time_seed_hp_recovery() -> void:
+	var recovery_rate := digest_controller.get_time_hp_recovery_rate(_active_digest_count())
+	recovery_rate += digest_controller.get_hour_hp_recovery_rate(minutes)
+	if recovery_rate <= 0.0:
+		return
+	_heal_player_by_rate(recovery_rate)
+
+
+func _apply_digest_damage_seed_heal() -> void:
+	var heal_amount := digest_controller.consume_digest_damage_heal_amount()
+	if heal_amount <= 0:
+		return
+	heal_amount += digest_controller.add_heal_event(heal_amount)
+	hp = mini(effective_max_hp, hp + heal_amount)
+
+
+func _apply_digested_seed_hp_effects(digested_enemies: Array[Enemy]) -> void:
+	for enemy in digested_enemies:
+		if enemy == null or not enemy.has_seed_skill():
+			continue
+		var seed_skill := enemy.get_seed_skill()
+		match seed_skill.skill_id:
+			2121:
+				_heal_player_by_rate(0.05 * float(enemy.get_size()))
+			2125:
+				_heal_player_by_rate(clampf(float(minutes % 60), 1.0, 60.0) / 100.0)
+			2126:
+				digest_controller.add_max_hp_bonus_rate(0.10)
+				_refresh_effective_max_hp(false)
+			2127:
+				_heal_player_by_rate(0.50)
+			2128:
+				_heal_player_by_rate(1.00)
+
+
+func _apply_digested_nightmare_seed_effects(digested_enemies: Array[Enemy]) -> void:
+	var heal_rate := digest_controller.get_digested_nightmare_heal_rate()
+	var max_hp_rate := digest_controller.get_digested_nightmare_max_hp_rate()
+	if heal_rate <= 0.0 and max_hp_rate <= 0.0:
+		return
+	for enemy in digested_enemies:
+		if enemy == null or enemy.has_seed_skill():
+			continue
+		if heal_rate > 0.0:
+			var heal_amount := ceili(float(enemy.get_max_hp()) * heal_rate)
+			heal_amount += digest_controller.add_heal_event(heal_amount)
+			hp = mini(effective_max_hp, hp + heal_amount)
+		if max_hp_rate > 0.0:
+			digest_controller.add_max_hp_bonus_rate(max_hp_rate)
+			_refresh_effective_max_hp(false)
+
+
+func _heal_player_by_rate(rate: float) -> void:
+	if rate <= 0.0:
+		return
+	var heal_amount := ceili(float(effective_max_hp) * rate)
+	heal_amount += digest_controller.add_heal_event(heal_amount)
+	hp = mini(effective_max_hp, hp + heal_amount)
+
+
+func _apply_seed_stomach_size_effects() -> void:
+	var has_column_bonus := false
+	var has_row_bonus := false
+	for flower in dream_seed_controller.get_flowers():
+		if flower == null or flower.dream_seed_skill == null:
+			continue
+		match flower.dream_seed_skill.skill_id:
+			2118:
+				has_column_bonus = true
+			2119:
+				has_row_bonus = true
+	var next_columns := stomach.columns + (1 if has_column_bonus else 0)
+	var next_rows := stomach.rows + (1 if has_row_bonus else 0)
+	if next_columns != stomach.columns or next_rows != stomach.rows:
+		stomach.set_grid_size(next_columns, next_rows)
 
 
 func _resolve_post_digest_visuals(digested_enemies: Array[Enemy]) -> void:
@@ -622,7 +723,7 @@ func _get_digest_damage_info() -> Dictionary:
 
 
 func _get_digest_efficiency_info() -> Dictionary:
-	return digest_controller.get_step_minutes_breakdown(enemies)
+	return digest_controller.get_step_minutes_breakdown(enemies, false, minutes)
 func _play_click_se() -> void:
 	if click_se == null:
 		return
