@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://by72oo4mnni1l"]
+
+[ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/dream_seed_drag_block_definition.gd" id="1_x2j1n"]
+[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_4ac6f"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="3_toeb6"]
+[ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="4_jl635"]
+
+[sub_resource type="Resource" id="Resource_drag_block"]
+script = ExtResource("1_x2j1n")
+texture = ExtResource("2_4ac6f")
+
+[resource]
+script = ExtResource("3_toeb6")
+skill_id = 2001
+category = "花びら配置系統"
+rarity = 1
+display_name = "夢の花名"
+texture = ExtResource("4_jl635")
+drag_block_definition = SubResource("Resource_drag_block")
+main_description = "3時までにステージをクリアすると追加でこの夢の種を1つ獲得できる。"
+sub_description = "この花を消化しても何も起きない（HP1,消化ダメージ0）"

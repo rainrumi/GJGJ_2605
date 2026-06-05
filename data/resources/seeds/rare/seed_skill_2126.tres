@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://cjx18fqcvejof"]
 
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
@@ -16,7 +16,6 @@ category = "HP・回復・HP上限系"
 rarity = 1
 display_name = "夢の花26"
 texture = ExtResource("2_texture")
-sub_skill_mode = 1
 drag_block_definition = SubResource("Resource_drag_block")
 main_description = "悪夢を消化すると試合中のHP上限+5%"
 sub_description = "この花を消化するとHP上限+10％"

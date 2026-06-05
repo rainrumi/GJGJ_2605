@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://c1naxvm64arpo"]
 
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
@@ -16,7 +16,6 @@ category = "消化間隔・時刻・日数変動系"
 rarity = 1
 display_name = "夢の花33"
 texture = ExtResource("2_texture")
-sub_skill_mode = 1
 drag_block_definition = SubResource("Resource_drag_block")
 main_description = "消化間隔が-80%～+80%されるバフをランダムに提供する。この値は1日経過するごとに変動する。(n%の確率で上昇)"
 sub_description = "消化間隔が-80%～+160%されるバフを提供する。この値は1日経過するごとに変動する。(n%の確率で上昇)"
