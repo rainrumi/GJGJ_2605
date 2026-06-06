@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://cq3y5p5ecyr01"]
+
+[ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/dream_seed_drag_block_definition.gd" id="1_cih0n"]
+[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_lfupt"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="3_b6ipl"]
+[ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="4_phtvx"]
+
+[sub_resource type="Resource" id="Resource_drag_block"]
+script = ExtResource("1_cih0n")
+texture = ExtResource("2_lfupt")
+
+[resource]
+script = ExtResource("3_b6ipl")
+skill_id = 2005
+category = "反射系統"
+rarity = 1
+display_name = "フジ"
+texture = ExtResource("4_phtvx")
+drag_block_definition = SubResource("Resource_drag_block")
+main_description = "消化ダメージ量+10%。消化中の消化ダメージアップ効果が200%上昇する。"
+sub_description = "この花を消化すると消化時に隣接する花のHPと受ける消化ダメージを100%上昇する"

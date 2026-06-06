@@ -1,13 +1,12 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://b6tbcorsqf4gt"]
 
-[ext_resource type="Script" uid="uid://k6gwji460bpe" path="res://data/definitions/seed_option_definition.gd" id="1_s470v"]
 [ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_ElmenaUniversity/stage_enemy_data.tres" id="2_enemy_data"]
-[ext_resource type="Resource" path="res://data/resources/seeds/location_pools/elmena_university_seed_pool.tres" id="4_seed_pool"]
-
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ElmenaUniversity/scenario_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ElmenaUniversity/scenario_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ElmenaUniversity/scenario_003.tres" id="3_stage_novel_003"]
+[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel_text_resource.gd" id="4_0cujr"]
+[ext_resource type="Resource" path="res://data/resources/seeds/location_pools/elmena_university_seed_pool.tres" id="4_seed_pool"]
 
 [resource]
 script = ExtResource("1_script")
@@ -20,5 +19,5 @@ level_text = "大学"
 location = "エルメナ大学"
 map_position = Vector2(25, 40)
 enemy_data = ExtResource("2_enemy_data")
-dream_seed_skill_pool = ExtResource("4_seed_pool")
-stage_unlock_novel_texts = Array[NovelTextResource]([ExtResource("3_stage_novel_001"), ExtResource("3_stage_novel_002"), ExtResource("3_stage_novel_003")])
+drop_seed_skill_pool = ExtResource("4_seed_pool")
+stage_unlock_novel_texts = Array[ExtResource("4_0cujr")]([ExtResource("3_stage_novel_001"), ExtResource("3_stage_novel_002"), ExtResource("3_stage_novel_003")])

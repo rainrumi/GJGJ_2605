@@ -2,20 +2,22 @@ class_name StageClearRewardService
 extends RefCounted
 
 
-func create_seed_flower(seed: SeedOptionDefinition) -> FlowerDefinition:
-	if seed == null or seed.flower_definition == null:
+func create_seed_flower(seed_skill: DreamSeedSkillDefinition) -> FlowerDefinition:
+	if seed_skill == null:
 		return null
-	var flower := seed.flower_definition.duplicate() as FlowerDefinition
-	flower.dream_seed_skill = seed.dream_seed_skill
+	var flower := FlowerDefinition.new()
+	flower.display_name = seed_skill.display_name
+	flower.texture = seed_skill.texture
+	flower.dream_seed_skill = seed_skill
 	return flower
 
 
 func can_plant_seed(
-	seed: SeedOptionDefinition,
+	seed_skill: DreamSeedSkillDefinition,
 	planted_flowers: Array[FlowerDefinition],
 	max_flowers: int
 ) -> bool:
-	return StageClearRecoveryCalculator.can_plant_seed(seed, planted_flowers, max_flowers)
+	return StageClearRecoveryCalculator.can_plant_seed(seed_skill, planted_flowers, max_flowers)
 
 
 func replace_first_flower(planted_flowers: Array[FlowerDefinition], flower: FlowerDefinition) -> void:
@@ -29,17 +31,17 @@ func replace_first_flower(planted_flowers: Array[FlowerDefinition], flower: Flow
 
 
 func get_preview_flowers_for_seed(
-	seed: SeedOptionDefinition,
+	seed_skill: DreamSeedSkillDefinition,
 	planted_flowers: Array[FlowerDefinition],
 	max_flowers: int
 ) -> Array[FlowerDefinition]:
 	var preview_flowers: Array[FlowerDefinition] = []
 	for flower in planted_flowers:
 		preview_flowers.append(flower)
-	var flower := create_seed_flower(seed)
+	var flower := create_seed_flower(seed_skill)
 	if flower == null:
 		return preview_flowers
-	if can_plant_seed(seed, preview_flowers, max_flowers):
+	if can_plant_seed(seed_skill, preview_flowers, max_flowers):
 		preview_flowers.append(flower)
 		return preview_flowers
 	replace_first_flower(preview_flowers, flower)
@@ -47,23 +49,36 @@ func get_preview_flowers_for_seed(
 
 
 func get_stage_seed_options(
-	base_seed_options: Array[Resource],
+	base_seed_options: Array[DreamSeedSkillDefinition],
 	stage: StageDefinition
-) -> Array[Resource]:
-	if stage == null or stage.drop_item_pool.is_empty():
-		return _duplicate_resource_array(base_seed_options)
-	var stage_seed_options: Array[Resource] = []
-	for drop_item in stage.drop_item_pool:
-		if drop_item != null:
-			stage_seed_options.append(drop_item)
+) -> Array[DreamSeedSkillDefinition]:
+	if stage == null or stage.drop_seed_skill_pool == null or stage.drop_seed_skill_pool.skills.is_empty():
+		return _duplicate_seed_skill_array(base_seed_options)
+	var stage_seed_options: Array[DreamSeedSkillDefinition] = []
+	for seed_skill in stage.drop_seed_skill_pool.skills:
+		if seed_skill != null:
+			stage_seed_options.append(seed_skill)
 	if stage_seed_options.is_empty():
-		return _duplicate_resource_array(base_seed_options)
-	return stage_seed_options
+		return _duplicate_seed_skill_array(base_seed_options)
+	stage_seed_options.shuffle()
+	return _limit_seed_skill_options(stage_seed_options, base_seed_options.size())
 
 
-func _duplicate_resource_array(resources: Array[Resource]) -> Array[Resource]:
-	var duplicated: Array[Resource] = []
-	for resource in resources:
-		if resource != null:
-			duplicated.append(resource)
+func _duplicate_seed_skill_array(seed_skills: Array[DreamSeedSkillDefinition]) -> Array[DreamSeedSkillDefinition]:
+	var duplicated: Array[DreamSeedSkillDefinition] = []
+	for seed_skill in seed_skills:
+		if seed_skill != null:
+			duplicated.append(seed_skill)
 	return duplicated
+
+
+func _limit_seed_skill_options(
+	seed_skills: Array[DreamSeedSkillDefinition],
+	max_count: int
+) -> Array[DreamSeedSkillDefinition]:
+	if max_count <= 0:
+		return seed_skills
+	var limited: Array[DreamSeedSkillDefinition] = []
+	for i in range(mini(seed_skills.size(), max_count)):
+		limited.append(seed_skills[i])
+	return limited

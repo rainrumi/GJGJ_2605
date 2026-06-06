@@ -1,13 +1,12 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://dbix0t0o43tuy"]
 
-[ext_resource type="Script" uid="uid://k6gwji460bpe" path="res://data/definitions/seed_option_definition.gd" id="1_klc24"]
 [ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_ZaikaAdminDistrict/stage_enemy_data.tres" id="2_enemy_data"]
-[ext_resource type="Resource" path="res://data/resources/seeds/location_pools/zaika_admin_district_seed_pool.tres" id="4_seed_pool"]
-
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ZaikaAdminDistrict/scenario_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ZaikaAdminDistrict/scenario_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ZaikaAdminDistrict/scenario_003.tres" id="3_stage_novel_003"]
+[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel_text_resource.gd" id="4_b85j6"]
+[ext_resource type="Resource" path="res://data/resources/seeds/location_pools/zaika_admin_district_seed_pool.tres" id="4_seed_pool"]
 
 [resource]
 script = ExtResource("1_script")
@@ -20,5 +19,5 @@ level_text = "行政区"
 location = "ザイカ行政区"
 map_position = Vector2(-100, -125)
 enemy_data = ExtResource("2_enemy_data")
-dream_seed_skill_pool = ExtResource("4_seed_pool")
-stage_unlock_novel_texts = Array[NovelTextResource]([ExtResource("3_stage_novel_001"), ExtResource("3_stage_novel_002"), ExtResource("3_stage_novel_003")])
+drop_seed_skill_pool = ExtResource("4_seed_pool")
+stage_unlock_novel_texts = Array[ExtResource("4_b85j6")]([ExtResource("3_stage_novel_001"), ExtResource("3_stage_novel_002"), ExtResource("3_stage_novel_003")])

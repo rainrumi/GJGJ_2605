@@ -15,7 +15,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/seeds/dream_seed_skill_catalog.tres")
 @export var max_flowers := 50
 @export var initial_flower: FlowerDefinition
-@export var seed_options: Array[Resource] = []
+@export var seed_options: Array[DreamSeedSkillDefinition] = []
 @onready var hp_view: HpView = $CharacterArea/HpFrame
 @onready var dream_seed_skill_buttons: DreamSeedSkillButtonList = $CharacterArea/DreamSeedSkillButtons
 @onready var guide_text: Label = $UI/GuideText
@@ -39,7 +39,7 @@ var _clear_recovery_applied := false
 var _remaining_extra_seed_choices := 0
 var _extra_seed_choice_granted := false
 var _seed_choice_active := false
-var _base_seed_options: Array[Resource] = []
+var _base_seed_options: Array[DreamSeedSkillDefinition] = []
 var debug_numbers_visible := false
 var reward_service := StageClearRewardService.new()
 func _ready() -> void:
@@ -134,13 +134,11 @@ func _apply_stage_drop_options(stage: StageDefinition) -> void:
 	seed_options = reward_service.get_stage_seed_options(_base_seed_options, stage)
 
 
-func _get_seed_option(seed_index: int) -> SeedOptionDefinition:
+func _get_seed_option(seed_index: int) -> DreamSeedSkillDefinition:
 	if seed_index < 0 or seed_index >= seed_options.size():
 		return null
-	return seed_options[seed_index] as SeedOptionDefinition
-func _get_seed_display_name(seed: SeedOptionDefinition) -> String:
-	if seed.dream_seed_skill != null:
-		return seed.dream_seed_skill.display_name
+	return seed_options[seed_index]
+func _get_seed_display_name(seed: DreamSeedSkillDefinition) -> String:
 	return seed.display_name
 func _setup_seed_choices() -> void:
 	for i in range(seed_choices.size()):
@@ -223,14 +221,12 @@ func _reroll_seed_options() -> void:
 	if skills.is_empty():
 		return
 	skills.shuffle()
-	var rerolled_options: Array[Resource] = []
+	var rerolled_options: Array[DreamSeedSkillDefinition] = []
 	for i in range(seed_choices.size()):
 		var seed := _get_seed_option(i)
 		if seed == null:
 			continue
-		var rerolled_seed := seed.duplicate() as SeedOptionDefinition
-		rerolled_seed.dream_seed_skill = skills[i % skills.size()]
-		rerolled_options.append(rerolled_seed)
+		rerolled_options.append(skills[i % skills.size()])
 	seed_options = rerolled_options
 
 
@@ -299,7 +295,7 @@ func _show_finished_mode(message: String) -> void:
 		slot.disabled = true
 	_update_reroll_button_state()
 	_update_hp_heal_plan()
-func _can_plant_seed(seed: SeedOptionDefinition) -> bool:
+func _can_plant_seed(seed: DreamSeedSkillDefinition) -> bool:
 	return reward_service.can_plant_seed(seed, planted_flowers, max_flowers)
 
 
@@ -331,7 +327,7 @@ func _get_abandon_extra_recovery_rate() -> float:
 	if StageClearRecoveryCalculator.is_clear_time_recovery_disabled(planted_flowers):
 		return 0.0
 	return ABANDON_HP_RECOVERY_RATE
-func _get_preview_flowers_for_seed(seed: SeedOptionDefinition) -> Array[FlowerDefinition]:
+func _get_preview_flowers_for_seed(seed: DreamSeedSkillDefinition) -> Array[FlowerDefinition]:
 	return reward_service.get_preview_flowers_for_seed(seed, planted_flowers, max_flowers)
 
 

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://df5npf34f7ne8"]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://b3q4rem5x0qg0"]
 
 [ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/dream_seed_drag_block_definition.gd" id="1_d4c55"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_1dpiv"]

@@ -9,8 +9,8 @@ const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
 const DREAM_SEED_SPECIAL_EXTRA_CHOICE_START_HOUR := 28
 
 
-static func can_plant_seed(seed: SeedOptionDefinition, planted_flowers: Array[FlowerDefinition], max_flowers: int) -> bool:
-	if seed.flower_definition == null:
+static func can_plant_seed(seed_skill: DreamSeedSkillDefinition, planted_flowers: Array[FlowerDefinition], max_flowers: int) -> bool:
+	if seed_skill == null:
 		return false
 	return count_planted_flowers(planted_flowers) < max_flowers
 
