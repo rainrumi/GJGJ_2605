@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bgoytkbysbv7m" path="res://art/texture/slider/tex_slider_bar.png" id="1_bar"]
 [ext_resource type="Texture2D" uid="uid://c8togd4vmvlqx" path="res://art/texture/slider/tex_slider_knob.png" id="2_knob"]
+[ext_resource type="Texture2D" uid="uid://b5ykmjsyosep0" path="res://art/texture/slider/tex_slider_knob_large.png" id="3_knob_large"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_knob"]
 texture = ExtResource("2_knob")
@@ -10,6 +11,10 @@ modulate_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_bar"]
 texture = ExtResource("1_bar")
 modulate_color = Color(0.9411765, 0.8784314, 1, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_slider_range"]
+color = Color(1, 1, 1, 0.92)
+thickness = 2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_grabber_area"]
 
@@ -20,12 +25,12 @@ HScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_slider_knob")
 HScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_slider_knob")
 HScrollBar/styles/scroll = SubResource("StyleBoxTexture_slider_bar")
 HScrollBar/styles/scroll_focus = SubResource("StyleBoxTexture_slider_bar")
-HSlider/icons/grabber = ExtResource("2_knob")
-HSlider/icons/grabber_disabled = ExtResource("2_knob")
-HSlider/icons/grabber_highlight = ExtResource("2_knob")
+HSlider/icons/grabber = ExtResource("3_knob_large")
+HSlider/icons/grabber_disabled = ExtResource("3_knob_large")
+HSlider/icons/grabber_highlight = ExtResource("3_knob_large")
 HSlider/styles/grabber_area = SubResource("StyleBoxEmpty_grabber_area")
 HSlider/styles/grabber_area_highlight = SubResource("StyleBoxEmpty_grabber_area")
-HSlider/styles/slider = SubResource("StyleBoxTexture_slider_bar")
+HSlider/styles/slider = SubResource("StyleBoxLine_slider_range")
 VScrollBar/constants/scroll_width = 32
 VScrollBar/styles/grabber = SubResource("StyleBoxTexture_slider_knob")
 VScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_slider_knob")

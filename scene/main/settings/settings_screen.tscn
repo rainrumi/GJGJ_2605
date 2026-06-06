@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scene/main/settings/settings_screen.gd" id="1_script"]
 [ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Texture2D" path="res://art/texture/still/tex_still_1000.png" id="3_texture"]
+[ext_resource type="Theme" uid="uid://dm8y3onffije6" path="res://scene/ui/slider/slider_theme.tres" id="4_slider_theme"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://sound/se/click.mp3" id="5_click_se"]
 
 [node name="SettingsScreen" type="CanvasLayer"]
@@ -90,9 +91,11 @@ text = "マスタ音量"
 vertical_alignment = 1
 
 [node name="Value" type="HSlider" parent="Screen/Panel/Rows/MasterVolume"]
+texture_filter = 1
 custom_minimum_size = Vector2(190, 22)
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("4_slider_theme")
 max_value = 100.0
 step = 1.0
 
@@ -123,9 +126,11 @@ text = "BGM音量"
 vertical_alignment = 1
 
 [node name="Value" type="HSlider" parent="Screen/Panel/Rows/BgmVolume"]
+texture_filter = 1
 custom_minimum_size = Vector2(190, 22)
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("4_slider_theme")
 max_value = 100.0
 step = 1.0
 
@@ -156,9 +161,11 @@ text = "SE音量"
 vertical_alignment = 1
 
 [node name="Value" type="HSlider" parent="Screen/Panel/Rows/SeVolume"]
+texture_filter = 1
 custom_minimum_size = Vector2(190, 22)
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("4_slider_theme")
 max_value = 100.0
 step = 1.0
 
