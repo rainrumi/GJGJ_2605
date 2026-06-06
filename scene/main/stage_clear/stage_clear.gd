@@ -12,7 +12,6 @@ const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
 const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
-const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/seeds/dream_seed_skill_catalog.tres")
 @export var max_flowers := 50
 @export var initial_flower: FlowerDefinition
 @export var seed_options: Array[DreamSeedSkillDefinition] = []
@@ -40,6 +39,7 @@ var _remaining_extra_seed_choices := 0
 var _extra_seed_choice_granted := false
 var _seed_choice_active := false
 var _base_seed_options: Array[DreamSeedSkillDefinition] = []
+var _current_clear_stage: StageDefinition
 var debug_numbers_visible := false
 var reward_service := StageClearRewardService.new()
 func _ready() -> void:
@@ -52,12 +52,14 @@ func _ready() -> void:
 	_show_select_mode()
 func setup_hp(value: int) -> void:
 	_set_clear_hp_state(value)
+	_current_clear_stage = null
 	_restore_base_seed_options()
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
 func setup_clear_result(value: int, cleared_minutes: int, cleared_stage: StageDefinition = null) -> void:
 	_set_clear_result_state(value, cleared_minutes)
+	_current_clear_stage = cleared_stage
 	_restore_base_seed_options()
 	_apply_stage_drop_options(cleared_stage)
 	_update_extra_seed_choices()
@@ -66,6 +68,7 @@ func setup_clear_result(value: int, cleared_minutes: int, cleared_stage: StageDe
 		_show_select_mode()
 func reset_player_state() -> void:
 	_reset_clear_state()
+	_current_clear_stage = null
 	_restore_base_seed_options()
 	_initialize_planted_flowers()
 	if is_node_ready():
@@ -231,14 +234,7 @@ func _reroll_seed_options() -> void:
 
 
 func _get_reroll_seed_skill_candidates() -> Array[DreamSeedSkillDefinition]:
-	var candidates: Array[DreamSeedSkillDefinition] = []
-	for skill in DREAM_SEED_SKILL_CATALOG.normal_skills:
-		if skill != null:
-			candidates.append(skill)
-	for skill in DREAM_SEED_SKILL_CATALOG.rare_skills:
-		if skill != null:
-			candidates.append(skill)
-	return candidates
+	return reward_service.get_stage_seed_options(_base_seed_options, _current_clear_stage)
 
 
 func _create_debug_button_style(color: Color) -> StyleBoxFlat:
