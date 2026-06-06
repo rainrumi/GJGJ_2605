@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://k6gwji460bpe" path="res://data/definitions/seed_option_definition.gd" id="1_6uyg7"]
 [ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
 [ext_resource type="Resource" path="res://data/resources/stages/stage_LunovaOldCity/stage_enemy_data.tres" id="2_enemy_data"]
+[ext_resource type="Resource" path="res://data/resources/seeds/location_pools/lunova_old_city_seed_pool.tres" id="4_seed_pool"]
 
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_LunovaOldCity/scenario_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_LunovaOldCity/scenario_002.tres" id="3_stage_novel_002"]
@@ -18,4 +19,5 @@ level_text = "混沌"
 location = "ルノヴァ旧市街"
 map_position = Vector2(35, -130)
 enemy_data = ExtResource("2_enemy_data")
+dream_seed_skill_pool = ExtResource("4_seed_pool")
 stage_unlock_novel_texts = Array[NovelTextResource]([ExtResource("3_stage_novel_001"), ExtResource("3_stage_novel_002"), ExtResource("3_stage_novel_003")])
