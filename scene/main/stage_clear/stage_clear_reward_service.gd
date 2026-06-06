@@ -52,10 +52,10 @@ func get_stage_seed_options(
 	base_seed_options: Array[DreamSeedSkillDefinition],
 	stage: StageDefinition
 ) -> Array[DreamSeedSkillDefinition]:
-	if stage == null or stage.drop_seed_skill_pool == null or stage.drop_seed_skill_pool.skills.is_empty():
+	if stage == null or stage.drop_seed_skill_pool == null:
 		return _duplicate_seed_skill_array(base_seed_options)
 	var stage_seed_options: Array[DreamSeedSkillDefinition] = []
-	for seed_skill in stage.drop_seed_skill_pool.skills:
+	for seed_skill in stage.drop_seed_skill_pool.get_all_skills():
 		if seed_skill != null:
 			stage_seed_options.append(seed_skill)
 	if stage_seed_options.is_empty():

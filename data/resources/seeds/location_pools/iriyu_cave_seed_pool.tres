@@ -2,9 +2,15 @@
 
 [ext_resource type="Script" path="res://data/definitions/dream_seed_skill_pool_definition.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="2_definition"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_001.tres" id="1001_skill"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_002.tres" id="1002_skill"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_003.tres" id="1003_skill"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_004.tres" id="1004_skill"]
 [ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_2107.tres" id="2107_skill"]
 [ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_2119.tres" id="2119_skill"]
 
 [resource]
 script = ExtResource("1_script")
-skills = Array[ExtResource("2_definition")]([ExtResource("2107_skill"), ExtResource("2119_skill")])
+common_skills = Array[ExtResource("2_definition")]([ExtResource("1001_skill"), ExtResource("1002_skill"), ExtResource("1003_skill"), ExtResource("1004_skill")])
+rare_skills = Array[ExtResource("2_definition")]([ExtResource("2107_skill"), ExtResource("2119_skill")])
+super_rare_skills = Array[ExtResource("2_definition")]([])

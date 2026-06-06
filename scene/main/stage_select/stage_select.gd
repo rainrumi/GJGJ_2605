@@ -426,7 +426,7 @@ func _get_debug_seed_pool_skills(stage_definition: StageDefinition) -> Array[Dre
 	var seeds: Array[DreamSeedSkillDefinition] = []
 	if stage_definition == null or stage_definition.drop_seed_skill_pool == null:
 		return seeds
-	for seed in stage_definition.drop_seed_skill_pool.skills:
+	for seed in stage_definition.drop_seed_skill_pool.get_all_skills():
 		if seed != null:
 			seeds.append(seed)
 	return seeds
