@@ -1,7 +1,7 @@
 class_name StageClearSeedChoice
 extends Button
 
-const HOVER_SCALE := 1.1
+const HOVER_SCALE := 1.05
 const PRESSED_SCALE := 0.95
 const TWEEN_DURATION := 0.1
 
