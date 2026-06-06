@@ -48,6 +48,8 @@ func _ready() -> void:
 	_setup_seed_choices()
 	_setup_flower_slots()
 	_setup_debug_button()
+	_connect_debug_state()
+	_set_debug_numbers_visible(DebugState.debug_enabled)
 	_set_hp(current_hp, false)
 	_show_select_mode()
 func setup_hp(value: int) -> void:
@@ -176,7 +178,20 @@ func _setup_debug_button() -> void:
 
 
 func _on_debug_button_pressed() -> void:
-	debug_numbers_visible = not debug_numbers_visible
+	DebugState.toggle_debug_enabled()
+
+
+func _connect_debug_state() -> void:
+	if not DebugState.debug_enabled_changed.is_connected(_on_debug_enabled_changed):
+		DebugState.debug_enabled_changed.connect(_on_debug_enabled_changed)
+
+
+func _on_debug_enabled_changed(is_enabled: bool) -> void:
+	_set_debug_numbers_visible(is_enabled)
+
+
+func _set_debug_numbers_visible(is_visible: bool) -> void:
+	debug_numbers_visible = is_visible
 	_apply_debug_button_state()
 	_update_debug_numbers_visible()
 	_update_reroll_button_state()

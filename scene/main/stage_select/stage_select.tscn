@@ -22,20 +22,32 @@
 [ext_resource type="Texture2D" uid="uid://bfbhwpkryym72" path="res://art/ui/icon/select/ui_icon_select_beacon_05.png" id="20_beacon_05"]
 [ext_resource type="Texture2D" uid="uid://b6e4f8ur53n17" path="res://art/ui/icon/select/ui_icon_select_beacon_06.png" id="21_beacon_06"]
 [ext_resource type="Texture2D" uid="uid://n6dm8iyo40gq" path="res://art/ui/icon/select/ui_icon_select_beacon_07.png" id="22_beacon_07"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_outline_01.png" id="23_location_outline_01"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_01.png" id="24_location_01"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_outline_02.png" id="25_location_outline_02"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_outline_03.png" id="26_location_outline_03"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_outline_04.png" id="27_location_outline_04"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_outline_05.png" id="28_location_outline_05"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_outline_06.png" id="29_location_outline_06"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_outline_07.png" id="30_location_outline_07"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_02.png" id="31_location_02"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_03.png" id="32_location_03"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_04.png" id="33_location_04"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_05.png" id="34_location_05"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_06.png" id="35_location_06"]
-[ext_resource type="Texture2D" path="res://art/ui/icon/location/ui_icon_location_07.png" id="36_location_07"]
+[ext_resource type="Texture2D" uid="uid://c8wj77g7r27xu" path="res://art/ui/icon/location/ui_icon_location_outline_01.png" id="23_location_outline_01"]
+[ext_resource type="Texture2D" uid="uid://bc0hbq127wgw7" path="res://art/ui/icon/location/ui_icon_location_01.png" id="24_location_01"]
+[ext_resource type="Texture2D" uid="uid://dix5nm5twocjy" path="res://art/ui/icon/location/ui_icon_location_outline_02.png" id="25_location_outline_02"]
+[ext_resource type="Texture2D" uid="uid://2juwbhpysedi" path="res://art/ui/icon/location/ui_icon_location_outline_03.png" id="26_location_outline_03"]
+[ext_resource type="Texture2D" uid="uid://b1lnm3pttmim6" path="res://art/ui/icon/location/ui_icon_location_outline_04.png" id="27_location_outline_04"]
+[ext_resource type="Texture2D" uid="uid://b47kn8wq665kl" path="res://art/ui/icon/location/ui_icon_location_outline_05.png" id="28_location_outline_05"]
+[ext_resource type="Texture2D" uid="uid://bm5o4ft31oadj" path="res://art/ui/icon/location/ui_icon_location_outline_06.png" id="29_location_outline_06"]
+[ext_resource type="Texture2D" uid="uid://c2ymhjnbnn01g" path="res://art/ui/icon/location/ui_icon_location_outline_07.png" id="30_location_outline_07"]
+[ext_resource type="Texture2D" uid="uid://brqcxy6m2vf7h" path="res://art/ui/icon/location/ui_icon_location_02.png" id="31_location_02"]
+[ext_resource type="Texture2D" uid="uid://7wntfm800xnt" path="res://art/ui/icon/location/ui_icon_location_03.png" id="32_location_03"]
+[ext_resource type="Texture2D" uid="uid://uiyjowad5tit" path="res://art/ui/icon/location/ui_icon_location_04.png" id="33_location_04"]
+[ext_resource type="Texture2D" uid="uid://b3wgnduijbf4x" path="res://art/ui/icon/location/ui_icon_location_05.png" id="34_location_05"]
+[ext_resource type="Texture2D" uid="uid://b4r4q0rq841dw" path="res://art/ui/icon/location/ui_icon_location_06.png" id="35_location_06"]
+[ext_resource type="Texture2D" uid="uid://br16sseuu25m3" path="res://art/ui/icon/location/ui_icon_location_07.png" id="36_location_07"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_debug_seed_pool"]
+bg_color = Color(0, 0, 0, 0.78)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.94, 0.88, 1, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
@@ -63,13 +75,13 @@ texture = ExtResource("9_beacon_outline_01")
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 texture = ExtResource("16_beacon_01")
 
-[node name="LocationMarker" type="Node2D" parent="CharacterArea/Map"]
+[node name="LocationMarker" type="Node2D" parent="CharacterArea/Map" unique_id=515253295]
 visible = false
 
-[node name="Outline" type="Sprite2D" parent="CharacterArea/Map/LocationMarker"]
+[node name="Outline" type="Sprite2D" parent="CharacterArea/Map/LocationMarker" unique_id=163030934]
 texture = ExtResource("23_location_outline_01")
 
-[node name="Fill" type="Sprite2D" parent="CharacterArea/Map/LocationMarker"]
+[node name="Fill" type="Sprite2D" parent="CharacterArea/Map/LocationMarker" unique_id=1417365329]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 texture = ExtResource("24_location_01")
 
@@ -140,3 +152,61 @@ layout_mode = 2
 
 [node name="StageChoice3" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=259931286 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
+
+[node name="DebugSeedPoolPanel" type="PanelContainer" parent="UI" unique_id=1235384540]
+visible = false
+layout_mode = 0
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 452.0
+offset_bottom = 352.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_debug_seed_pool")
+
+[node name="Margin" type="MarginContainer" parent="UI/DebugSeedPoolPanel" unique_id=876047967]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Items" type="VBoxContainer" parent="UI/DebugSeedPoolPanel/Margin" unique_id=1355754087]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="TitleLabel" type="Label" parent="UI/DebugSeedPoolPanel/Margin/Items" unique_id=1600233487]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 10
+text = "Seed Pool"
+text_overrun_behavior = 3
+
+[node name="DebugSeedScroll" type="ScrollContainer" parent="UI/DebugSeedPoolPanel/Margin/Items" unique_id=232839403]
+custom_minimum_size = Vector2(440, 318)
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="SeedPoolText" type="Label" parent="UI/DebugSeedPoolPanel/Margin/Items/DebugSeedScroll" unique_id=128661934]
+custom_minimum_size = Vector2(440, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 7
+autowrap_mode = 1
+
+[node name="DebugButton" type="Button" parent="UI" unique_id=673340750]
+layout_mode = 0
+offset_left = 560.0
+offset_top = 44.0
+offset_right = 632.0
+offset_bottom = 70.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 10
+text = "Debug"

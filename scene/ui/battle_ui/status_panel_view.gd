@@ -36,6 +36,8 @@ func _ready() -> void:
 	debug_reroll_button.pressed.connect(_on_debug_reroll_button_pressed)
 	debug_seed_button.pressed.connect(_on_debug_seed_button_pressed)
 	debug_message_button.pressed.connect(_on_debug_message_button_pressed)
+	_connect_debug_state()
+	set_debug_button_active(DebugState.debug_enabled)
 
 
 # 文言を反映
@@ -59,8 +61,17 @@ func set_debug_button_active(is_active: bool) -> void:
 
 # Debug切替
 func toggle_debug_message() -> void:
-	set_debug_button_active(not debug_button_active)
-	debug_message_requested.emit(debug_button_active)
+	DebugState.toggle_debug_enabled()
+
+
+func _connect_debug_state() -> void:
+	if not DebugState.debug_enabled_changed.is_connected(_on_debug_enabled_changed):
+		DebugState.debug_enabled_changed.connect(_on_debug_enabled_changed)
+
+
+func _on_debug_enabled_changed(is_enabled: bool) -> void:
+	set_debug_button_active(is_enabled)
+	debug_message_requested.emit(is_enabled)
 
 
 # Reroll要求

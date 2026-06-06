@@ -70,7 +70,7 @@ func start_battle(context: BattleStartContext = null) -> void:
 	current_enemy_preset = battle_context.enemy_preset
 	stomach.set_grid_size(battle_context.stomach_columns, battle_context.stomach_rows)
 	last_time_over_recovery_percent = 0
-	debug_numbers_visible = false
+	debug_numbers_visible = DebugState.debug_enabled
 	_set_battle_flags(false)
 	_clear_scheduled_digest_events()
 	dream_seed_controller.set_flowers(battle_context.flowers)

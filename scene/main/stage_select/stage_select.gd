@@ -4,6 +4,14 @@ signal stage_selected(stage: StageDefinition)
 
 const BEACON_FRAME_DURATION := 0.1
 const LOCATION_MARKER_FRAME_DURATION := 0.1
+const DEBUG_BUTTON_NORMAL_FONT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
+const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
+const DEBUG_BUTTON_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
+const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
+const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
+const DEBUG_SEED_POOL_MAX_FONT_SIZE := 7
+const DEBUG_SEED_POOL_MIN_FONT_SIZE := 4
+const DEBUG_SEED_POOL_VISIBLE_LINE_BUDGET := 52
 
 @export var stage_catalog: StageCatalog
 @export var stage_definitions: Array[StageDefinition] = []
@@ -22,6 +30,10 @@ const LOCATION_MARKER_FRAME_DURATION := 0.1
 @onready var location_marker: Node2D = $CharacterArea/Map/LocationMarker
 @onready var location_marker_outline: Sprite2D = $CharacterArea/Map/LocationMarker/Outline
 @onready var location_marker_fill: Sprite2D = $CharacterArea/Map/LocationMarker/Fill
+@onready var debug_button: Button = $UI/DebugButton
+@onready var debug_seed_pool_panel: PanelContainer = $UI/DebugSeedPoolPanel
+@onready var debug_seed_pool_title: Label = $UI/DebugSeedPoolPanel/Margin/Items/TitleLabel
+@onready var debug_seed_pool_text: Label = $UI/DebugSeedPoolPanel/Margin/Items/DebugSeedScroll/SeedPoolText
 
 var stage_choices: Array[BaseButton] = []
 var _displayed_stage_definitions: Array[StageDefinition] = []
@@ -42,6 +54,9 @@ var stage_selection_service := StageSelectionService.new()
 func _ready() -> void:
 	_setup_map_view()
 	_collect_stage_choices()
+	_setup_debug_button()
+	_setup_debug_seed_pool_panel()
+	_connect_debug_state()
 	setup_stage_choices()
 
 
@@ -127,12 +142,13 @@ func _on_stage_choice_hovered(choice_index: int) -> void:
 
 
 func _show_map_hover(stage_definition: StageDefinition) -> void:
+	_hovered_stage_definition = stage_definition
+	_update_debug_seed_pool_panel()
 	if stage_definition == null:
 		_hide_beacon()
 		return
-	_hovered_stage_definition = stage_definition
 	if _is_current_location(stage_definition):
-		_hide_beacon()
+		_hide_beacon(false)
 		_play_location_marker()
 		return
 	_show_beacon(stage_definition.map_position)
@@ -228,8 +244,10 @@ func _show_beacon(map_position: Vector2) -> void:
 		_start_beacon_animation()
 
 
-func _hide_beacon() -> void:
-	_hovered_stage_definition = null
+func _hide_beacon(clear_hover: bool = true) -> void:
+	if clear_hover:
+		_hovered_stage_definition = null
+		_update_debug_seed_pool_panel()
 	beacon.visible = false
 	beacon.scale = Vector2.ONE
 	if _beacon_tween != null and _beacon_tween.is_valid():
@@ -334,3 +352,135 @@ func _get_exploration_percent(stage_definition: StageDefinition) -> int:
 	if _run_state == null:
 		return 0
 	return _run_state.get_stage_exploration_percent(stage_definition)
+
+
+func _setup_debug_button() -> void:
+	debug_button.pressed.connect(_on_debug_button_pressed)
+	debug_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	_apply_debug_button_state()
+
+
+func _setup_debug_seed_pool_panel() -> void:
+	debug_seed_pool_panel.visible = false
+	debug_seed_pool_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+func _connect_debug_state() -> void:
+	if not DebugState.debug_enabled_changed.is_connected(_on_debug_enabled_changed):
+		DebugState.debug_enabled_changed.connect(_on_debug_enabled_changed)
+
+
+func _on_debug_button_pressed() -> void:
+	DebugState.toggle_debug_enabled()
+
+
+func _on_debug_enabled_changed(_is_enabled: bool) -> void:
+	_apply_debug_button_state()
+	_update_debug_seed_pool_panel()
+
+
+func _apply_debug_button_state() -> void:
+	if DebugState.debug_enabled:
+		debug_button.add_theme_color_override("font_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
+		debug_button.add_theme_color_override("font_hover_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
+		debug_button.add_theme_color_override("font_pressed_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
+		debug_button.add_theme_stylebox_override("normal", _create_debug_button_style(DEBUG_BUTTON_ACTIVE_COLOR))
+		debug_button.add_theme_stylebox_override("hover", _create_debug_button_style(DEBUG_BUTTON_ACTIVE_HOVER_COLOR))
+		debug_button.add_theme_stylebox_override("pressed", _create_debug_button_style(DEBUG_BUTTON_ACTIVE_PRESSED_COLOR))
+		debug_button.add_theme_stylebox_override("focus", _create_debug_button_style(DEBUG_BUTTON_ACTIVE_COLOR))
+		return
+	debug_button.add_theme_color_override("font_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
+	debug_button.add_theme_color_override("font_hover_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
+	debug_button.add_theme_color_override("font_pressed_color", DEBUG_BUTTON_NORMAL_FONT_COLOR)
+	debug_button.remove_theme_stylebox_override("normal")
+	debug_button.remove_theme_stylebox_override("hover")
+	debug_button.remove_theme_stylebox_override("pressed")
+	debug_button.remove_theme_stylebox_override("focus")
+
+
+func _create_debug_button_style(color: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.border_color = Color(0.0, 0.0, 0.0, 1.0)
+	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+		style.set_border_width(side, 2)
+	for corner in [CORNER_TOP_LEFT, CORNER_TOP_RIGHT, CORNER_BOTTOM_RIGHT, CORNER_BOTTOM_LEFT]:
+		style.set_corner_radius(corner, 2)
+	return style
+
+
+func _update_debug_seed_pool_panel() -> void:
+	debug_seed_pool_text.text = ""
+	if not DebugState.debug_enabled or _hovered_stage_definition == null:
+		debug_seed_pool_panel.visible = false
+		return
+	debug_seed_pool_title.text = "%s" % _hovered_stage_definition.location
+	var seeds := _get_debug_seed_pool_skills(_hovered_stage_definition)
+	debug_seed_pool_text.text = _get_debug_seed_pool_text(seeds)
+	_apply_debug_seed_pool_text_size(seeds)
+	debug_seed_pool_panel.visible = true
+
+
+func _get_debug_seed_pool_skills(stage_definition: StageDefinition) -> Array[DreamSeedSkillDefinition]:
+	var seeds: Array[DreamSeedSkillDefinition] = []
+	if stage_definition == null or stage_definition.drop_seed_skill_pool == null:
+		return seeds
+	for seed in stage_definition.drop_seed_skill_pool.skills:
+		if seed != null:
+			seeds.append(seed)
+	return seeds
+
+
+func _get_debug_seed_pool_text(seeds: Array[DreamSeedSkillDefinition]) -> String:
+	if seeds.is_empty():
+		return "No seed pool"
+	var blocks: Array[String] = []
+	for seed in seeds:
+		blocks.append(_get_debug_seed_pool_item_text(seed))
+	return "\n".join(blocks)
+
+
+func _apply_debug_seed_pool_text_size(seeds: Array[DreamSeedSkillDefinition]) -> void:
+	var font_size := DEBUG_SEED_POOL_MAX_FONT_SIZE
+	var line_count := _get_debug_seed_pool_estimated_line_count(seeds)
+	if line_count > DEBUG_SEED_POOL_VISIBLE_LINE_BUDGET:
+		font_size = max(
+			DEBUG_SEED_POOL_MIN_FONT_SIZE,
+			floori(float(DEBUG_SEED_POOL_MAX_FONT_SIZE) * float(DEBUG_SEED_POOL_VISIBLE_LINE_BUDGET) / float(line_count))
+		)
+	debug_seed_pool_text.add_theme_font_size_override("font_size", font_size)
+
+
+func _get_debug_seed_pool_estimated_line_count(seeds: Array[DreamSeedSkillDefinition]) -> int:
+	if seeds.is_empty():
+		return 1
+	var line_count := 0
+	for seed in seeds:
+		line_count += 2
+		line_count += _get_wrapped_extra_line_count(DreamSeedSkillDescriptionFormatter.get_main_description(seed), 74)
+		if DreamSeedSkillDescriptionFormatter.has_sub_skill(seed):
+			line_count += _get_wrapped_extra_line_count(DreamSeedSkillDescriptionFormatter.get_sub_description(seed), 74)
+	return line_count
+
+
+func _get_wrapped_extra_line_count(text: String, characters_per_line: int) -> int:
+	var text_length := text.strip_edges().length()
+	if text_length <= characters_per_line:
+		return 0
+	return int(floori(float(text_length - 1) / float(characters_per_line)))
+
+
+func _get_debug_seed_pool_item_text(seed: DreamSeedSkillDefinition) -> String:
+	var lines: Array[String] = [
+		"%s  ID:%d" % [_get_debug_seed_title_text(seed), seed.skill_id],
+		"M:%s" % DreamSeedSkillDescriptionFormatter.get_main_description(seed),
+	]
+	if DreamSeedSkillDescriptionFormatter.has_sub_skill(seed):
+		lines.append("S:%s" % DreamSeedSkillDescriptionFormatter.get_sub_description(seed))
+	return "\n".join(lines)
+
+
+func _get_debug_seed_title_text(seed: DreamSeedSkillDefinition) -> String:
+	if seed != null and seed.rarity == DreamSeedSkillDefinition.Rarity.RARE:
+		return "%s [Rare]" % seed.display_name
+	return seed.display_name
