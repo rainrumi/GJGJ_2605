@@ -49,6 +49,12 @@ func _get_enemy_entries(enemy: Enemy, debug_numbers_visible: bool) -> Array:
 	entries.append({
 		"value": "HP: %d/%d\n攻撃力: %d" % [enemy.current_hp, enemy.max_hp, enemy.get_display_damage()],
 	})
+	var tag_text := enemy.get_tag_text()
+	entries.append({
+		"explanation": "タグ",
+		"value": tag_text,
+		"enabled": not tag_text.is_empty(),
+	})
 	entries.append({
 		"explanation": "メイン効果",
 		"value": _get_effect_text(main_effect_text),

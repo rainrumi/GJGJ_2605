@@ -7,3 +7,4 @@ var hp_rate := 0.5
 var damage := 0
 var digest_damage_rate := 1.0
 var global_digest_damage_rate := 1.0
+var spawned_nightmare: NightmareSkillDefinition

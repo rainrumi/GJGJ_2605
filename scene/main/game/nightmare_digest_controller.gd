@@ -481,7 +481,8 @@ func _create_spawn_request(
 	hp_rate: float,
 	damage: int,
 	digest_damage_rate: float = 1.0,
-	global_digest_damage_rate: float = 1.0
+	global_digest_damage_rate: float = 1.0,
+	spawned_nightmare: NightmareSkillDefinition = null
 ) -> DigestSpawnRequest:
 	var request := DigestSpawnRequest.new()
 	request.source_enemy = source_enemy
@@ -490,7 +491,19 @@ func _create_spawn_request(
 	request.damage = damage
 	request.digest_damage_rate = digest_damage_rate
 	request.global_digest_damage_rate = global_digest_damage_rate
+	request.spawned_nightmare = _get_spawned_nightmare(source_enemy, spawned_nightmare)
 	return request
+
+
+func _get_spawned_nightmare(source_enemy: Enemy, override_nightmare: NightmareSkillDefinition) -> NightmareSkillDefinition:
+	if override_nightmare != null:
+		return override_nightmare
+	if source_enemy == null or not source_enemy.has_nightmare_skill():
+		return null
+	var candidates := source_enemy.get_nightmare_skill().spawned_nightmares
+	if candidates.is_empty():
+		return null
+	return candidates[0] as NightmareSkillDefinition
 
 
 func _get_digested_nightmares(digested_enemies: Array[Enemy]) -> Array[Enemy]:

@@ -394,6 +394,8 @@ func get_category_detail() -> String:
 	return EnemyTooltipFormatter.get_category_detail(has_main_effect, skill_definition)
 func get_main_effect_text() -> String:
 	return EnemyTooltipFormatter.get_main_effect_text(has_main_effect, skill_definition)
+func get_tag_text() -> String:
+	return EnemyTooltipFormatter.get_tag_text(skill_definition)
 func get_sub_effect_text() -> String:
 	return "-"
 func heal(amount: int) -> void:
