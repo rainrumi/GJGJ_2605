@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bg43vndumibc7" path="res://art/texture/map/tex_map.png" id="3_map"]
 [ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="4_title_effect"]
 [ext_resource type="PackedScene" uid="uid://btcwxk3b3mfv1" path="res://scene/main/stage_select/stage_choice.tscn" id="5_stage_choice"]
-[ext_resource type="Resource" path="res://data/resources/area/stage_catalog.tres" id="6_stage_catalog"]
+[ext_resource type="Resource" uid="uid://ce68va3k1t1xq" path="res://data/resources/area/stage_catalog.tres" id="6_stage_catalog"]
 [ext_resource type="Theme" uid="uid://cm0lw7rl4nypb" path="res://scene/main/stage_select/stage_choices_scroll_theme.tres" id="7_scroll_theme"]
 [ext_resource type="Script" uid="uid://dv6n8dr0mrkqg" path="res://scene/main/stage_select/stage_choices_scroll.gd" id="8_stage_choices_scroll"]
 [ext_resource type="Texture2D" uid="uid://cmniaifasgm5b" path="res://art/ui/icon/select/ui_icon_select_beacon_outline_01.png" id="9_beacon_outline_01"]

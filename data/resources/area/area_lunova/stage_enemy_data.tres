@@ -1,12 +1,13 @@
-[gd_resource type="Resource" script_class="StageEnemySetDefinition" format=3]
+[gd_resource type="Resource" script_class="StageEnemySetDefinition" format=3 uid="uid://d13pkmlf6heb0"]
 
-[ext_resource type="Script" uid="uid://clqarc0s67i01" path="res://data/definitions/stage_enemy_set_definition.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/normal/area_lunova_enemy_normal_001.tres" id="2_normal"]
-[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/endless/area_lunova_enemy_endless_001.tres" id="3_endless"]
-[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/boss/area_lunova_enemy_boss_001.tres" id="4_strengthened"]
+[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://scene/object/enemy/enemy_preset_definition.gd" id="1_nyi61"]
+[ext_resource type="Script" path="res://data/definitions/stage_enemy_set_definition.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://dggm5pyinjgci" path="res://data/resources/area/area_lunova/enemy/normal/area_lunova_enemy_normal_001.tres" id="2_normal"]
+[ext_resource type="Resource" uid="uid://dvfx3ir0egw38" path="res://data/resources/area/area_lunova/enemy/endless/area_lunova_enemy_endless_001.tres" id="3_endless"]
+[ext_resource type="Resource" uid="uid://cbwvilyvxt05o" path="res://data/resources/area/area_lunova/enemy/boss/area_lunova_enemy_boss_001.tres" id="4_strengthened"]
 
 [resource]
 script = ExtResource("1_script")
-normal_enemy_presets = Array[EnemyPresetDefinition]([ExtResource("2_normal")])
-endless_enemy_presets = Array[EnemyPresetDefinition]([ExtResource("3_endless")])
-strengthened_enemy_presets = Array[EnemyPresetDefinition]([ExtResource("4_strengthened")])
+normal_enemy_presets = Array[ExtResource("1_nyi61")]([ExtResource("2_normal")])
+endless_enemy_presets = Array[ExtResource("1_nyi61")]([ExtResource("3_endless")])
+strengthened_enemy_presets = Array[ExtResource("1_nyi61")]([ExtResource("4_strengthened")])

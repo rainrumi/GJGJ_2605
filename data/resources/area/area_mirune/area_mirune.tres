@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://bk8l73pakx1da"]
 
-[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/resources/area/area_mirune/stage_enemy_data.tres" id="2_enemy_data"]
+[ext_resource type="Script" path="res://data/definitions/stage_definition.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://dw78420ujyi4f" path="res://data/resources/area/area_mirune/stage_enemy_data.tres" id="2_enemy_data"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_MiruneStreet/scenario_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_MiruneStreet/scenario_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_MiruneStreet/scenario_003.tres" id="3_stage_novel_003"]
@@ -13,8 +13,6 @@ script = ExtResource("1_script")
 stage_id = 9
 stage_area = 9
 reachable_stage_areas = Array[int]([10, 2, 9])
-display_name = "夢の主 9"
-level_text = "街A"
 location = "ミルネ街"
 map_position = Vector2(-105, 105)
 enemy_data = ExtResource("2_enemy_data")

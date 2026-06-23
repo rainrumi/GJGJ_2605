@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://b6tbcorsqf4gt"]
 
-[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/resources/area/area_elmena/stage_enemy_data.tres" id="2_enemy_data"]
+[ext_resource type="Script" path="res://data/definitions/stage_definition.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://d142fuchtyk4s" path="res://data/resources/area/area_elmena/stage_enemy_data.tres" id="2_enemy_data"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ElmenaUniversity/scenario_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ElmenaUniversity/scenario_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ElmenaUniversity/scenario_003.tres" id="3_stage_novel_003"]
@@ -13,9 +13,7 @@ script = ExtResource("1_script")
 stage_id = 3
 stage_area = 3
 reachable_stage_areas = Array[int]([6, 7, 4, 3])
-display_name = "夢の主 3"
 difficulty_level = 3
-level_text = "大学"
 location = "エルメナ大学"
 map_position = Vector2(25, 40)
 enemy_data = ExtResource("2_enemy_data")

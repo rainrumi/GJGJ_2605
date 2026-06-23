@@ -19,9 +19,7 @@ enum StageArea {
 @export var stage_id := 0
 @export var stage_area: StageArea = StageArea.LUNOVA_OLD_CITY
 @export var reachable_stage_areas: Array[StageArea] = []
-@export var display_name := ""
 @export var difficulty_level := 1
-@export var level_text := ""
 @export var location := ""
 @export var map_position := Vector2.ZERO
 @export var reward_icon: Texture2D
