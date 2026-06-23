@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://850u5gs2cuyv"]
 
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/seed_skill_definition.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/seed/seed_drag_block_definition.gd" id="1_t0ep0"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/seed_drag_block_definition.gd" id="3_block_script"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/seed/seed_skill_definition.gd" id="3_wjbm7"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
 
 [sub_resource type="Resource" id="Resource_drag_block"]
-script = ExtResource("3_block_script")
+script = ExtResource("1_t0ep0")
 texture = ExtResource("4_block_texture")
 
 [resource]
-script = ExtResource("1_script")
+script = ExtResource("3_wjbm7")
 skill_id = 2113
 category = "消化ライン・胃袋盤面系"
 rarity = 1

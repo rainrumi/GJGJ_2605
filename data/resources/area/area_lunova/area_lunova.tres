@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://bkvf8y2r5p72b"]
 
-[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
-[ext_resource type="Resource" uid="uid://d13pkmlf6heb0" path="res://data/resources/area/area_lunova/area_lunova_enemy_data.tres" id="2_enemy_data"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage/stage_definition.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://d13pkmlf6heb0" path="res://data/resources/area/area_lunova/area_lunova_enemy.tres" id="2_enemy_data"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_LunovaOldCity/scenario_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_LunovaOldCity/scenario_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_LunovaOldCity/scenario_003.tres" id="3_stage_novel_003"]
 [ext_resource type="Resource" path="res://data/resources/seeds/location_pools/lunova_old_city_seed_pool.tres" id="4_seed_pool"]
-[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel_text_resource.gd" id="4_yjbut"]
+[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel/novel_text_resource.gd" id="4_yjbut"]
 
 [resource]
 script = ExtResource("1_script")

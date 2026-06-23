@@ -161,7 +161,7 @@ func _get_random_nightmare_skills() -> Array[NightmareSkillDefinition]:
 	for skill in _nightmare_skill_catalog.skills:
 		if skill == null:
 			continue
-		var category := skill.category
+		var category: String = skill.category
 		if category.is_empty():
 			category = "通常"
 		if not skills_by_category.has(category):

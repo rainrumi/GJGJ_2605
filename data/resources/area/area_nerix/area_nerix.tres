@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://d4k64x6xx4wbi"]
 
-[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
-[ext_resource type="Resource" uid="uid://fi062piydaps" path="res://data/resources/area/area_nerix/area_nerix_enemy_data.tres" id="2_enemy_data"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage/stage_definition.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://fi062piydaps" path="res://data/resources/area/area_nerix/area_nerix_enemy.tres" id="2_enemy_data"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_NerixMagicSchool/scenario_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_NerixMagicSchool/scenario_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_NerixMagicSchool/scenario_003.tres" id="3_stage_novel_003"]
-[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel_text_resource.gd" id="4_amnf7"]
+[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel/novel_text_resource.gd" id="4_amnf7"]
 [ext_resource type="Resource" path="res://data/resources/seeds/location_pools/nerix_magic_school_seed_pool.tres" id="4_seed_pool"]
 
 [resource]
