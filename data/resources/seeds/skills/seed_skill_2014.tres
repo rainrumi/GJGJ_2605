@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://cnnnquqy8yju"]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://docrxg8jkutqq"]
 
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
@@ -11,11 +11,11 @@ texture = ExtResource("4_block_texture")
 
 [resource]
 script = ExtResource("1_script")
-skill_id = 2118
-category = "消化ライン・胃袋盤面系"
+skill_id = 2014
+category = "HP・回復・HP上限系"
 rarity = 1
-display_name = "ユウガオ"
+display_name = "ヤドリギ"
 texture = ExtResource("2_texture")
 drag_block_definition = SubResource("Resource_drag_block")
-main_description = "胃袋マスが横に1マス増える。この花は重複不可"
-sub_description = "消化間隔-10%"
+main_description = "胃の中にいるモノに与えた消化ダメージ2%のHPを回復する。"
+sub_description = "この花を消化すると隣接するモノが受ける消化ダメージ+10%"

@@ -11,7 +11,7 @@ texture = ExtResource("2_1dpiv")
 
 [resource]
 script = ExtResource("3_qfgd3")
-skill_id = 2138
+skill_id = 2022
 category = "消化間隔・時刻・日数変動系"
 rarity = 1
 display_name = "ドクダミ"

@@ -11,7 +11,7 @@ texture = ExtResource("2_jeyfd")
 
 [resource]
 script = ExtResource("3_s5smy")
-skill_id = 2137
+skill_id = 2021
 category = "消化間隔・時刻・日数変動系"
 rarity = 1
 display_name = "トコン"
