@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="StageEnemySetDefinition" format=3 uid="uid://dm6rx4bvdg8e5"]
+
+[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://scene/object/enemy/enemy_preset_definition.gd" id="1_odt3h"]
+[ext_resource type="Script" uid="uid://clqarc0s67i01" path="res://data/definitions/stage_enemy_set_definition.gd" id="2_2qypg"]
+
+[resource]
+script = ExtResource("2_2qypg")
