@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 302051
+category = "大樹リラン駐屯地 ST5"
+display_name = "大樹リラン駐屯地 ST5-E1"
+max_hp = 64
+damage = 8
+size = 1
+stomach_size = Vector2i(1, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
+description = "消化された時、埋まってない胃袋マスに自身の最大HP-16の体力と自身の攻撃力を持った寄生型悪夢を生成する。（最大4マス）"
+tags = Array[int]([])

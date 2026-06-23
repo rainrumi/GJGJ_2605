@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 304051
+category = "ルノヴァ旧市街 ST5"
+display_name = "ルノヴァ旧市街 ST5-E1"
+max_hp = 8118
+damage = 24
+size = 5
+stomach_size = Vector2i(3, 2)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(0, 1), Vector2i(1, 1)])
+description = "胃袋の中で時間が経過するたびに、胃袋マスに存在する他のモノひとつに攻撃時に追加で攻撃を1回行う効果[災禍]を付与する。この効果は重複しない。"
+tags = Array[int]([2])

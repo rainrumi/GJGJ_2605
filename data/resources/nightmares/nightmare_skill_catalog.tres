@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="NightmareSkillCatalog" load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://data/definitions/nightmare/nightmare_skill_catalog.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_001.tres" id="2_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_002.tres" id="3_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_003.tres" id="4_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_004.tres" id="5_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_005.tres" id="6_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_006.tres" id="7_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_007.tres" id="8_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_008.tres" id="9_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_009.tres" id="10_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_010.tres" id="11_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_011.tres" id="12_skill"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_012.tres" id="13_skill"]
+
+[resource]
+script = ExtResource("1_script")
+skills = Array[NightmareSkillDefinition]([ExtResource("2_skill"), ExtResource("3_skill"), ExtResource("4_skill"), ExtResource("5_skill"), ExtResource("6_skill"), ExtResource("7_skill"), ExtResource("8_skill"), ExtResource("9_skill"), ExtResource("10_skill"), ExtResource("11_skill"), ExtResource("12_skill"), ExtResource("13_skill")])

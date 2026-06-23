@@ -24,9 +24,11 @@ enum StageArea {
 @export var level_text := ""
 @export var location := ""
 @export var map_position := Vector2.ZERO
+@export var reward_icon: Texture2D
 @export var enemy_data: StageEnemySetDefinition
 @export var drop_seed_skill_pool: DreamSeedSkillPoolDefinition
 @export var stage_unlock_novel_texts: Array[NovelTextResource] = []
+@export var high_difficulty_stages: Array[StageDefinition] = []
 @export var is_high_difficulty := false
 @export var has_normal_stage := true
 

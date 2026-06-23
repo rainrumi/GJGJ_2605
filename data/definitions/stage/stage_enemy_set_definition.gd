@@ -2,6 +2,7 @@ class_name StageEnemySetDefinition
 extends Resource
 
 @export var normal_enemy_presets: Array[EnemyPresetDefinition] = []
+@export var endless_enemy_presets: Array[EnemyPresetDefinition] = []
 @export var strengthened_enemy_presets: Array[EnemyPresetDefinition] = []
 
 

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 304121
+category = "ルノヴァ旧市街 ST12"
+display_name = "ルノヴァ旧市街 ST12-E1"
+max_hp = 1200
+damage = 8
+size = 1
+stomach_size = Vector2i(1, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
+description = "消化されたとき、胃袋内から吐き出されて新しい悪夢[E2]に生まれ変わる。胃袋の端に隣接しているとき、時間が経過するたびに胃袋マスに接触している何らかのモノに200消化ダメージを与える。"
+tags = Array[int]([2])

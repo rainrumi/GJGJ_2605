@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 302044
+category = "大樹リラン駐屯地 ST4"
+display_name = "大樹リラン駐屯地 ST4-E4"
+max_hp = 3
+damage = 5
+size = 1
+stomach_size = Vector2i(1, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
+description = "HP参照: E3消化経過時間（分）"
+tags = Array[int]([0])

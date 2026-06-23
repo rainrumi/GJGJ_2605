@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://dxuaadwlh5qe4" path="res://data/definitions/seed/dream_seed_skill_pool_definition.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/seed/dream_seed_skill_definition.gd" id="2_definition"]
-[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_001.tres" id="1001_skill"]
-[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_002.tres" id="1002_skill"]
-[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_003.tres" id="1003_skill"]
-[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_004.tres" id="1004_skill"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1001.tres" id="1001_skill"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1002.tres" id="1002_skill"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1003.tres" id="1003_skill"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1004.tres" id="1004_skill"]
 [ext_resource type="Resource" uid="uid://ctuumsirterjb" path="res://data/resources/seeds/skills/seed_skill_2005.tres" id="2005_skill"]
 [ext_resource type="Resource" uid="uid://0xwcd5hbw4wo" path="res://data/resources/seeds/skills/seed_skill_2012.tres" id="2012_skill"]
 

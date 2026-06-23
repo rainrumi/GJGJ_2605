@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 302099
+category = "大樹リラン駐屯地 ST9"
+display_name = "大樹リラン駐屯地 ST9-E9"
+max_hp = 8
+damage = 6
+size = 1
+stomach_size = Vector2i(1, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
+description = "HP参照: 生成時のE8体力"
+tags = Array[int]([0])

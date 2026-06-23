@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 301103
+category = "イリユ洞窟 ST10"
+display_name = "イリユ洞窟 ST10-E3"
+max_hp = 350
+damage = 8
+size = 2
+stomach_size = Vector2i(2, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0)])
+description = "自身と隣接するモノが受けた消化ダメージを等分する。"
+tags = Array[int]([])
