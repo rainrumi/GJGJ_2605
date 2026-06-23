@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="DreamSeedSkillCatalog" format=3 uid="uid://dxxe2kgk1c6yu"]
 
-[ext_resource type="Script" uid="uid://ddp1sdlbaqo0t" path="res://data/definitions/dream_seed_skill_catalog.gd" id="1_script"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="2_definition"]
+[ext_resource type="Script" uid="uid://ddp1sdlbaqo0t" path="res://data/definitions/seed/dream_seed_skill_catalog.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/seed/dream_seed_skill_definition.gd" id="2_definition"]
 [ext_resource type="Resource" uid="uid://csw3037sd7vtl" path="res://data/resources/seeds/skills/seed_skill_1001.tres" id="3_normal_001"]
 [ext_resource type="Resource" uid="uid://bujf6qni8sb7" path="res://data/resources/seeds/skills/seed_skill_1002.tres" id="4_normal_002"]
 [ext_resource type="Resource" uid="uid://bmtmv5tea634" path="res://data/resources/seeds/skills/seed_skill_1003.tres" id="5_normal_003"]

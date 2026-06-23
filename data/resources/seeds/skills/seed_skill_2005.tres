@@ -1,18 +1,17 @@
 [gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://ctuumsirterjb"]
 
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/seed/dream_seed_drag_block_definition.gd" id="1_kr1fv"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/dream_seed_drag_block_definition.gd" id="3_block_script"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/seed/dream_seed_skill_definition.gd" id="3_q8lej"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
 
 [sub_resource type="Resource" id="Resource_drag_block"]
-script = ExtResource("3_block_script")
+script = ExtResource("1_kr1fv")
 texture = ExtResource("4_block_texture")
 
 [resource]
-script = ExtResource("1_script")
+script = ExtResource("3_q8lej")
 skill_id = 2005
-category = "消化ダメージ系"
 rarity = 1
 display_name = "モウセンゴケ"
 texture = ExtResource("2_texture")
