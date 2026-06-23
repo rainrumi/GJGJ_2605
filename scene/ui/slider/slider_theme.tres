@@ -12,11 +12,11 @@ modulate_color = Color(0, 0, 0, 1)
 texture = ExtResource("1_bar")
 modulate_color = Color(0.9411765, 0.8784314, 1, 1)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_grabber_area"]
+
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_slider_range"]
 color = Color(1, 1, 1, 0.92)
 thickness = 2
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_grabber_area"]
 
 [resource]
 HScrollBar/constants/scroll_width = 12

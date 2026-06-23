@@ -52,11 +52,11 @@ visible = false
 [node name="StageClear" parent="." unique_id=742663998 instance=ExtResource("5_stage_clear")]
 visible = false
 
-[node name="SettingsScreen" parent="." instance=ExtResource("13_settings")]
+[node name="SettingsScreen" parent="." unique_id=20343102 instance=ExtResource("13_settings")]
 
-[connection signal="start_game" from="Title" to="." method="_on_title_start_game"]
-[connection signal="settings_requested" from="Title" to="." method="_on_settings_requested"]
 [connection signal="quit_requested" from="Title" to="." method="_on_quit_requested"]
+[connection signal="settings_requested" from="Title" to="." method="_on_settings_requested"]
+[connection signal="start_game" from="Title" to="." method="_on_title_start_game"]
 [connection signal="finished" from="OpeningNovel" to="." method="_on_opening_novel_finished"]
 [connection signal="stage_selected" from="StageSelect" to="." method="_on_stage_select_stage_selected"]
 [connection signal="battle_finished" from="Game" to="." method="_on_game_battle_finished"]
