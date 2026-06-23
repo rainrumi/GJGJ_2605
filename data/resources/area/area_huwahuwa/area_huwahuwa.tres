@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3]
 
 [ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/resources/stages/stage_HuwahuwaSchool/stage_enemy_data.tres" id="2_enemy_data"]
+[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/stage_enemy_data.tres" id="2_enemy_data"]
 
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_HuwahuwaSchool/scenario_001.tres" id="3_stage_novel_001"]
 

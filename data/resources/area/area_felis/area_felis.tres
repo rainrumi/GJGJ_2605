@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://dowauut6ow0bc"]
 
 [ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage_definition.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/resources/stages/stage_FelisGardenDistrict/stage_enemy_data.tres" id="2_enemy_data"]
+[ext_resource type="Resource" path="res://data/resources/area/area_felis/stage_enemy_data.tres" id="2_enemy_data"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_FelisGardenDistrict/scenario_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_FelisGardenDistrict/scenario_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_FelisGardenDistrict/scenario_003.tres" id="3_stage_novel_003"]
