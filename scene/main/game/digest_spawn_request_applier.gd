@@ -17,7 +17,6 @@ func apply_requests(
 			request.hp_rate,
 			request.damage,
 			request.digest_damage_rate,
-			request.global_digest_damage_rate,
-			request.spawned_nightmare
+			request.global_digest_damage_rate
 		):
 			break

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EnemyPresetDefinition" format=3 uid="uid://dy5ndvgc07yfr"]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_ma3wv"]
+[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://scene/object/enemy/enemy_preset_definition.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/stages/stage_8/nightmare_strength_skill_zaika_001.tres" id="2_enemy_001"]
+
+[resource]
+script = ExtResource("1_script")
+enemies = Array[ExtResource("1_ma3wv")]([ExtResource("2_enemy_001")])

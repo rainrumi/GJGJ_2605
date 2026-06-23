@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="NightmareSkillCatalog" load_steps=14 format=3]
 
-[ext_resource type="Script" path="res://data/definitions/nightmare/nightmare_skill_catalog.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/definitions/nightmare_skill_catalog.gd" id="1_script"]
 [ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_001.tres" id="2_skill"]
 [ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_002.tres" id="3_skill"]
 [ext_resource type="Resource" path="res://data/resources/nightmares/nightmare_skill_003.tres" id="4_skill"]

@@ -114,8 +114,7 @@ func spawn_nuisance_nightmare(
 	hp_rate: float,
 	damage_value: int,
 	digest_damage_rate: float = 1.0,
-	global_digest_damage_rate: float = 1.0,
-	spawned_nightmare: NightmareSkillDefinition = null
+	global_digest_damage_rate: float = 1.0
 ) -> bool:
 	var nuisance_enemy := _get_available_nuisance_enemy(enemies, source_enemy)
 	if nuisance_enemy == null:
@@ -123,30 +122,14 @@ func spawn_nuisance_nightmare(
 	var source_definition := source_enemy.definition
 	var source_origin_position := source_enemy.origin_position
 	var source_max_hp := source_enemy.max_hp
-	var spawned_skill: NightmareSkillDefinition = null
-	if spawned_nightmare != null:
-		spawned_skill = spawned_nightmare.duplicate(true) as NightmareSkillDefinition
-	if spawned_skill != null:
-		source_definition = _create_nightmare_definition(spawned_skill)
-		source_max_hp = source_definition.max_hp
-		hp_rate = 1.0
-		if damage_value <= 0:
-			damage_value = source_definition.damage
-	var target_size := Vector2.ONE * _stomach.get_span_size(1)
-	if spawned_skill != null:
-		target_size = Vector2(
-			_stomach.get_span_size(source_definition.stomach_size.x),
-			_stomach.get_span_size(source_definition.stomach_size.y)
-		)
 	nuisance_enemy.setup(
 		source_definition,
-		target_size,
-		spawned_skill,
-		spawned_skill != null and spawned_skill.nightmare_skill_enabled,
+		Vector2.ONE * _stomach.get_span_size(1),
+		null,
+		false,
 		source_origin_position
 	)
-	if spawned_skill == null:
-		nuisance_enemy.setup_as_one_cell_stomach_block(Vector2.ONE * _stomach.get_span_size(1))
+	nuisance_enemy.setup_as_one_cell_stomach_block(Vector2.ONE * _stomach.get_span_size(1))
 	nuisance_enemy.change_max_hp(maxi(1, roundi(float(source_max_hp) * hp_rate)))
 	nuisance_enemy.current_hp = nuisance_enemy.max_hp
 	nuisance_enemy.set_damage_value(maxi(0, damage_value))
