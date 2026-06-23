@@ -1,0 +1,16 @@
+﻿[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 301053
+category = "イリユ洞窟 ST5"
+display_name = "イリユ洞窟 ST5-E3"
+max_hp = 200
+damage = 8
+size = 3
+stomach_size = Vector2i(3, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0)])
+description = "モノが隣接している時、自身が受けた消化ダメージの半分をその対象物代わりに受けさせる。\nPR: 隣接数（一体辺りが受ける消化ダメージ割合）"
+tags = Array[int]([])

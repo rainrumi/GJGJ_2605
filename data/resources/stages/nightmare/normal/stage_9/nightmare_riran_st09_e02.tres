@@ -1,0 +1,16 @@
+﻿[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 302092
+category = "大樹リラン駐屯地 ST9"
+display_name = "大樹リラン駐屯地 ST9-E2"
+max_hp = 80
+damage = 6
+size = 1
+stomach_size = Vector2i(1, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
+description = "ダメージを受けた時、埋まってない胃袋マスに自身の現在のHPを持った寄生型悪夢を生成する。（最大4マス）"
+tags = Array[int]([0])

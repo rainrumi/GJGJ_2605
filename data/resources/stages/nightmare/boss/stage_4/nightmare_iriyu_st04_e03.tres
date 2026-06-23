@@ -1,0 +1,16 @@
+﻿[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 301043
+category = "イリユ洞窟 ST4"
+display_name = "イリユ洞窟 ST4-E3"
+max_hp = 84
+damage = 8
+size = 1
+stomach_size = Vector2i(1, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0)])
+description = "何も設置されていない胃袋マスに隣接している時、自身の消化ダメージを8×隣接数増やす。"
+tags = Array[int]([])

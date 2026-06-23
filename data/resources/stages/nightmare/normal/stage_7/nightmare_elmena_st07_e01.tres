@@ -1,0 +1,16 @@
+﻿[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 303071
+category = "エルメナ大学 ST7"
+display_name = "エルメナ大学 ST7-E1"
+max_hp = 1200
+damage = 8
+size = 6
+stomach_size = Vector2i(3, 2)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1)])
+description = "胃袋の中で30分経過するたびに自身の最大HPを200増やし、HPを200回復する。\nPR: 時間経過（hms）"
+tags = Array[int]([1])

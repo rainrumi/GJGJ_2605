@@ -1,0 +1,16 @@
+﻿[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 301083
+category = "イリユ洞窟 ST8"
+display_name = "イリユ洞窟 ST8-E3"
+max_hp = 510
+damage = 3
+size = 4
+stomach_size = Vector2i(2, 2)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)])
+description = "消化ラインに接触している時、自身の体力が190増える。"
+tags = Array[int]([])

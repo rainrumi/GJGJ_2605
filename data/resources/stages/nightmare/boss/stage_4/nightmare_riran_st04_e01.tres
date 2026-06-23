@@ -1,0 +1,16 @@
+﻿[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 302041
+category = "大樹リラン駐屯地 ST4"
+display_name = "大樹リラン駐屯地 ST4-E1"
+max_hp = 64
+damage = 16
+size = 4
+stomach_size = Vector2i(2, 2)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)])
+description = "消化された時、消化時に時刻を10分経過させるスキルを持った寄生型悪夢を生成する。"
+tags = Array[int]([])

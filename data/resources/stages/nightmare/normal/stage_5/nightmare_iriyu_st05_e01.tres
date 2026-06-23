@@ -1,0 +1,16 @@
+﻿[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 301051
+category = "イリユ洞窟 ST5"
+display_name = "イリユ洞窟 ST5-E1"
+max_hp = 480
+damage = 5
+size = 5
+stomach_size = Vector2i(3, 2)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(0, 1), Vector2i(1, 1)])
+description = "隣接する悪夢が消化ダメージを受けた時、その悪夢と自身のHPを隣接数×30回復する。\nPR: 隣接数（回復量）"
+tags = Array[int]([])

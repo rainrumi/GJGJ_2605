@@ -1,0 +1,16 @@
+﻿[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 301072
+category = "イリユ洞窟 ST7"
+display_name = "イリユ洞窟 ST7-E2"
+max_hp = 100
+damage = 5
+size = 2
+stomach_size = Vector2i(2, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0)])
+description = "隣接するモノの攻撃力を5減らす。10%の確率で効果が2倍。"
+tags = Array[int]([])

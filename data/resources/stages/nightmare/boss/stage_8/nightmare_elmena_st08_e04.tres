@@ -1,0 +1,16 @@
+﻿[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare_skill_definition.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+skill_id = 303084
+category = "エルメナ大学 ST8"
+display_name = "エルメナ大学 ST8-E4"
+max_hp = 200
+damage = 10
+size = 3
+stomach_size = Vector2i(3, 1)
+stomach_shape = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0)])
+description = "胃袋の中で30分経過するたびに攻撃力が5上がる。\nPR: 経過時間（hms）"
+tags = Array[int]([1])
