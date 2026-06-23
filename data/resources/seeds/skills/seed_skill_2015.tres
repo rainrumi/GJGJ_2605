@@ -11,7 +11,7 @@ texture = ExtResource("4_block_texture")
 
 [resource]
 script = ExtResource("1_script")
-skill_id = 2124
+skill_id = 2015
 category = "HP・回復・HP上限系"
 rarity = 1
 display_name = "ラフレシア"

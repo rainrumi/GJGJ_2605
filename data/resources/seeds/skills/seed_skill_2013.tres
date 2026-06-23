@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://dddqux5c3nj7q"]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://haqaoggy5onh"]
 
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
@@ -11,11 +11,11 @@ texture = ExtResource("4_block_texture")
 
 [resource]
 script = ExtResource("1_script")
-skill_id = 2130
-category = "攻撃力・攻防変換系"
+skill_id = 2013
+category = "HP・回復・HP上限系"
 rarity = 1
-display_name = "夢の花30"
+display_name = "ウイキョウ"
 texture = ExtResource("2_texture")
 drag_block_definition = SubResource("Resource_drag_block")
-main_description = "胃の中にいるモノの攻撃力+10%,自身が与える攻撃力+10%"
-sub_description = "隣接するモノの攻撃力+20%"
+main_description = "時間が経過したときHP+1%×胃の中にいるモノの数"
+sub_description = "この花を消化するとHP+5%×占有マスの数"

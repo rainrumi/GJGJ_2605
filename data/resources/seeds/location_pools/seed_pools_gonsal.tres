@@ -6,12 +6,12 @@
 [ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_002.tres" id="1002_skill"]
 [ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_003.tres" id="1003_skill"]
 [ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_1000_004.tres" id="1004_skill"]
-[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_2121.tres" id="2121_skill"]
-[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_2124.tres" id="2124_skill"]
-[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_2129.tres" id="2129_skill"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_2013.tres" id="2013_skill"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_2015.tres" id="2015_skill"]
+[ext_resource type="Resource" path="res://data/resources/seeds/skills/seed_skill_2017.tres" id="2017_skill"]
 
 [resource]
 script = ExtResource("1_script")
 common_skills = Array[ExtResource("2_definition")]([ExtResource("1001_skill"), ExtResource("1002_skill"), ExtResource("1003_skill"), ExtResource("1004_skill")])
-rare_skills = Array[ExtResource("2_definition")]([ExtResource("2121_skill"), ExtResource("2124_skill"), ExtResource("2129_skill")])
+rare_skills = Array[ExtResource("2_definition")]([ExtResource("2013_skill"), ExtResource("2015_skill"), ExtResource("2017_skill")])
 super_rare_skills = Array[ExtResource("2_definition")]([])

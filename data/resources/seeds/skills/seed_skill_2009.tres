@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://btos004kmprp4"]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://dn1c5lqoleyvo"]
 
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
@@ -11,11 +11,11 @@ texture = ExtResource("4_block_texture")
 
 [resource]
 script = ExtResource("1_script")
-skill_id = 2135
-category = "消化間隔・時刻・日数変動系"
+skill_id = 2009
+category = "消化ライン・胃袋盤面系"
 rarity = 1
-display_name = "夢の花35"
+display_name = "アマリリス"
 texture = ExtResource("2_texture")
 drag_block_definition = SubResource("Resource_drag_block")
-main_description = "消化間隔+50%。この値は1日経過するごとに0~10%上昇する。"
-sub_description = "この花を消化すると消化間隔-50%。この値は1日経過するごとに0~10%下降する。"
+main_description = "消化ラインのマス数×10の値消化ダメージを上昇"
+sub_description = "この花を消化すると消化ライン内の敵に1000消化ダメージを与える。"

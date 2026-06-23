@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://cgi0j0q6sdlq4"]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://cncfxedrwc1gn"]
 
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
@@ -11,11 +11,11 @@ texture = ExtResource("4_block_texture")
 
 [resource]
 script = ExtResource("1_script")
-skill_id = 2103
-category = "消化ダメージ系"
+skill_id = 2020
+category = "消化間隔・時刻・日数変動系"
 rarity = 1
-display_name = "夢の花03"
+display_name = "クレマチス"
 texture = ExtResource("2_texture")
 drag_block_definition = SubResource("Resource_drag_block")
-main_description = "蘇生するたびに消化ダメージが5%"
-sub_description = "この花を消化すると消化ライン下のモノに500の消化ダメージを与える。"
+main_description = "消化間隔-2%。時間が経過するたびに効果が2%ずつ上昇する。最大40%。"
+sub_description = "消化間隔-4%。時間が経過するたびに効果が4%ずつ上昇する。最大80%。"

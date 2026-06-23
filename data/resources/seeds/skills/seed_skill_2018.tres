@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://gdx2m4po656q"]
+[gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://bfhxftclksoh8"]
 
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/dream_seed_skill_definition.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
@@ -11,11 +11,11 @@ texture = ExtResource("4_block_texture")
 
 [resource]
 script = ExtResource("1_script")
-skill_id = 2117
-category = "消化ライン・胃袋盤面系"
+skill_id = 2018
+category = "攻撃力・攻防変換系"
 rarity = 1
-display_name = "夢の花17"
+display_name = "トリカブト"
 texture = ExtResource("2_texture")
 drag_block_definition = SubResource("Resource_drag_block")
-main_description = "胃の中にいるモノに与えた消化ダメージ1%のダメージを自身が追加で受ける。"
-sub_description = "この花を消化すると自身が占有していたマスを消化ラインに変化させる。"
+main_description = "HPが減るたびに消化間隔+1%。最大200%。"
+sub_description = "この花を消化すると隣接する敵の攻撃力-40%"
