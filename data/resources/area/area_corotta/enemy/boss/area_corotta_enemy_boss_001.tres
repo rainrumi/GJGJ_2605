@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyPresetDefinition" format=3 uid="uid://csgkqhpku6lor"]
+[gd_resource type="Resource" script_class="NightmarePresetInfo" format=3 uid="uid://csgkqhpku6lor"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_info.gd" id="1_403fo"]
 [ext_resource type="Resource" uid="uid://bvd2vggcsdbcj" path="res://data/resources/nightmares/stages/stage_10/area_corotta_enemy_boss_001.tres" id="2_g2ngn"]
