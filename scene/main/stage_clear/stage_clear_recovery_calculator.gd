@@ -1,8 +1,6 @@
 class_name StageClearRecoveryCalculator
 extends RefCounted
 
-const CATEGORY_DREAM_FLOWER := "夢の花系統"
-const CATEGORY_SPECIAL_TIME := "時間系統"
 const SKILL_2_CLEAR_RECOVERY_BONUS_RATE := 0.1
 const DREAM_SEED_CLEAR_RECOVERY_UP := 1002
 const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
@@ -60,7 +58,7 @@ static func get_seed_bonus_rate(planted_flowers: Array[SeedInfo]) -> float:
 	for flower in planted_flowers:
 		if flower == null:
 			continue
-		if flower.skill_id == DREAM_SEED_CLEAR_RECOVERY_UP and flower.category == CATEGORY_DREAM_FLOWER:
+		if flower.skill_id == DREAM_SEED_CLEAR_RECOVERY_UP:
 			bonus_rate += SKILL_2_CLEAR_RECOVERY_BONUS_RATE
 	return bonus_rate
 
@@ -69,7 +67,7 @@ static func is_clear_time_recovery_disabled(planted_flowers: Array[SeedInfo]) ->
 	for flower in planted_flowers:
 		if flower == null:
 			continue
-		if flower.skill_id == DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE and flower.category == CATEGORY_SPECIAL_TIME:
+		if flower.skill_id == DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE:
 			return true
 	return false
 

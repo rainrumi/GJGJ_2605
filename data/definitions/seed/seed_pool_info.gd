@@ -1,4 +1,4 @@
-class_name DreamSeedSkillPoolDefinition
+class_name SeedPoolInfo
 extends Resource
 
 @export var common_skills: Array[SeedInfo] = []
