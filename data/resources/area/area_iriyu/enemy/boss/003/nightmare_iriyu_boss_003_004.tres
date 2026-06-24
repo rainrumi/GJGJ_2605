@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3]
+[gd_resource type="Resource" script_class="NightmareInfo" format=3]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_info.gd" id="1_script"]
 
