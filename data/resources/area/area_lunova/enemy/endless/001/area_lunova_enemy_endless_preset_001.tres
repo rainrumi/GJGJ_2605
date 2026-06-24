@@ -1,17 +1,8 @@
 [gd_resource type="Resource" script_class="NightmarePresetInfo" format=3 uid="uid://dvfx3ir0egw38"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/nightmare/nightmare_info.gd" id="1_etbcs"]
-[ext_resource type="Texture2D" uid="uid://ch5ohl873x4x4" path="res://art/enemy/tex_enemy_1000_No_100.png" id="2_fxaws"]
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/nightmare/nightmare_preset_info.gd" id="3_534e4"]
-
-[sub_resource type="Resource" id="Resource_rasq0"]
-script = ExtResource("1_etbcs")
-skill_id = 1
-display_name = "悪夢名"
-texture = ExtResource("2_fxaws")
-description = "悪夢が隣接しない隣接マス×基礎攻撃力分、攻撃力が増加する"
-nightmare_skill_enabled = false
 
 [resource]
 script = ExtResource("3_534e4")
-enemies = Array[ExtResource("1_etbcs")]([SubResource("Resource_rasq0")])
+enemies = Array[ExtResource("1_etbcs")]([])

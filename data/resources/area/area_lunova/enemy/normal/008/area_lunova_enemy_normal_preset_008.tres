@@ -3,7 +3,9 @@
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/nightmare/nightmare_preset_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/nightmare/nightmare_info.gd" id="1_skill_script"]
 [ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/normal/008/area_lunova_enemy_normal_008_001.tres" id="2_enemy_001"]
+[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/normal/008/area_lunova_enemy_normal_008_002.tres" id="2_enemy_002"]
+[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/normal/008/area_lunova_enemy_normal_008_003.tres" id="2_enemy_003"]
 
 [resource]
 script = ExtResource("1_script")
-enemies = Array[ExtResource("1_skill_script")]([ExtResource("2_enemy_001")])
+enemies = Array[ExtResource("1_skill_script")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_002"), ExtResource("2_enemy_003")])

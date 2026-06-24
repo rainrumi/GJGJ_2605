@@ -3,7 +3,9 @@
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/nightmare/nightmare_preset_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/nightmare/nightmare_info.gd" id="1_u8c6a"]
 [ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/boss/001/area_riran_enemy_boss_001_001.tres" id="2_enemy_001"]
+[ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/boss/001/area_riran_enemy_boss_001_002.tres" id="2_enemy_002"]
+[ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/boss/001/area_riran_enemy_boss_001_003.tres" id="2_enemy_003"]
 
 [resource]
 script = ExtResource("1_script")
-enemies = Array[ExtResource("1_u8c6a")]([ExtResource("2_enemy_001")])
+enemies = Array[ExtResource("1_u8c6a")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_002"), ExtResource("2_enemy_003")])
