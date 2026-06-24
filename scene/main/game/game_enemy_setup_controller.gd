@@ -26,7 +26,6 @@ var _owner: Node
 var _input_controller: GameInputController
 var _stomach: StomachBoard
 var _enemy_definitions: Array[Resource] = []
-var _nightmare_skill_catalog: NightmareSkillCatalog
 var _enemy_preset: EnemyPresetDefinition
 
 
@@ -153,18 +152,7 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 
 
 func _get_random_nightmare_skills() -> Array[NightmareSkillDefinition]:
-	if _nightmare_skill_catalog == null or _nightmare_skill_catalog.skills.is_empty():
-		return []
 	var skills_by_category: Dictionary = {}
-	for skill in _nightmare_skill_catalog.skills:
-		if skill == null:
-			continue
-		var category: String = skill.category
-		if category.is_empty():
-			category = "通常"
-		if not skills_by_category.has(category):
-			skills_by_category[category] = []
-		skills_by_category[category].append(skill)
 	return _pick_skills_from_category(skills_by_category)
 
 
