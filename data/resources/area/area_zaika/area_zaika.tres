@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage/stage_definition.gd" id="1_script"]
 [ext_resource type="Resource" uid="uid://dvyl5oxr3dvns" path="res://data/resources/area/area_zaika/area_zaika_enemy.tres" id="2_enemy_data"]
-[ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ZaikaAdminDistrict/scenario_001.tres" id="3_stage_novel_001"]
-[ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ZaikaAdminDistrict/scenario_002.tres" id="3_stage_novel_002"]
-[ext_resource type="Resource" path="res://data/resources/novel/stages/stage_ZaikaAdminDistrict/scenario_003.tres" id="3_stage_novel_003"]
+[ext_resource type="Resource" path="res://data/resources/novel/area/area_zaika/novel_area_zaika_event_001.tres" id="3_stage_novel_001"]
+[ext_resource type="Resource" path="res://data/resources/novel/area/area_zaika/novel_area_zaika_event_002.tres" id="3_stage_novel_002"]
+[ext_resource type="Resource" path="res://data/resources/novel/area/area_zaika/novel_area_zaika_event_003.tres" id="3_stage_novel_003"]
 [ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel/novel_text_resource.gd" id="4_b85j6"]
 [ext_resource type="Resource" path="res://data/resources/seeds/location_pool/area_zaika_seed_pool.tres" id="4_seed_pool"]
 

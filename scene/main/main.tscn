@@ -7,10 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://cw5upfry3m3nf" path="res://scene/main/opening_novel/opening_novel.tscn" id="6_opening_novel"]
 [ext_resource type="PackedScene" uid="uid://durkvvfl2418x" path="res://scene/main/stage_select/stage_select.tscn" id="7_stage_select"]
 [ext_resource type="PackedScene" uid="uid://deupqxttm1xa8" path="res://scene/main/day_intro/day_intro.tscn" id="8_day_intro"]
-[ext_resource type="Resource" path="res://data/resources/novel/end_gameover_novel_text.tres" id="9_end_gameover_text"]
+[ext_resource type="Resource" path="res://data/resources/novel/novel_ending_gameover.tres" id="9_end_gameover_text"]
 [ext_resource type="AudioStream" uid="uid://dc8vyar0jf1e4" path="res://sound/bgm/Night_Dance.mp3" id="10_bgm"]
 [ext_resource type="PackedScene" path="res://systems/audio/beat_conductor.tscn" id="11_beat_conductor"]
-[ext_resource type="Resource" path="res://data/resources/novel/game_clear_novel_text.tres" id="12_game_clear_text"]
+[ext_resource type="Resource" path="res://data/resources/novel/novel_ending_gameclear.tres" id="12_game_clear_text"]
 [ext_resource type="PackedScene" path="res://scene/main/settings/settings_screen.tscn" id="13_settings"]
 
 [node name="Main" type="Node" unique_id=1753159910]

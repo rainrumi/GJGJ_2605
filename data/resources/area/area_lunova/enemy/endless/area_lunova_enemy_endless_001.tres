@@ -7,7 +7,6 @@
 [sub_resource type="Resource" id="Resource_rasq0"]
 script = ExtResource("1_etbcs")
 skill_id = 1
-category = "隣接・配置系（悪夢の周囲にあるものを参照する系統。）"
 display_name = "悪夢名"
 texture = ExtResource("2_fxaws")
 description = "悪夢が隣接しない隣接マス×基礎攻撃力分、攻撃力が増加する"
