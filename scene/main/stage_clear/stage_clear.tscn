@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://cdxfuey83p5f0" path="res://scene/main/stage_clear/seed_choice.tscn" id="5_seed_choice"]
 [ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="8_clear_effect"]
 [ext_resource type="PackedScene" uid="uid://cfjja3p43w2i0" path="res://scene/ui/hp/hp.tscn" id="9_hp_scene"]
-[ext_resource type="Resource" path="res://data/resources/stage_clear/normal_flower.tres" id="11_initial_flower"]
 [ext_resource type="Resource" uid="uid://bxcifnl46c450" path="res://data/resources/seeds/skills/seed_skill_1000_001.tres" id="12_seed_skill_1001"]
 [ext_resource type="Resource" uid="uid://cve63i3l8a6g4" path="res://data/resources/seeds/skills/seed_skill_1000_002.tres" id="13_seed_skill_1002"]
 [ext_resource type="Resource" uid="uid://bg1b12x08p6jm" path="res://data/resources/seeds/skills/seed_skill_1000_003.tres" id="14_seed_skill_1003"]
@@ -16,7 +15,6 @@
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
-initial_flower = ExtResource("11_initial_flower")
 seed_options = Array[ExtResource("17_seed_skill_definition")]([ExtResource("12_seed_skill_1001"), ExtResource("13_seed_skill_1002"), ExtResource("14_seed_skill_1003")])
 
 [node name="CharacterArea" type="Node2D" parent="." unique_id=1051992702]
