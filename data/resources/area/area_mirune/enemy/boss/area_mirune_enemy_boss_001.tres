@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_info.gd" id="1_4wcvk"]
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/definitions/nightmare/nightmare_preset_info.gd" id="1_script"]
-[ext_resource type="Resource" uid="uid://cev5ik2k6xdlh" path="res://data/resources/nightmares/stages/stage_9/nightmare_strength_skill_mirune_001.tres" id="2_enemy_001"]
+[ext_resource type="Resource" uid="uid://cev5ik2k6xdlh" path="res://data/resources/nightmares/stages/stage_9/area_mirune_enemy_boss_001.tres" id="2_enemy_001"]
 
 [resource]
 script = ExtResource("1_script")
