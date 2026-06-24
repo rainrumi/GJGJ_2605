@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/nightmare/nightmare_preset_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/nightmare/nightmare_info.gd" id="1_vhklq"]
-[ext_resource type="Resource" uid="uid://db8yqlismsb53" path="res://data/resources/area/area_iriyu/enemy/boss/002/area_iriyu_enemy_boss_002.tres" id="2_enemy_002"]
+[ext_resource type="Resource" path="res://data/resources/area/area_iriyu/enemy/boss/002/area_iriyu_enemy_boss_002_001.tres" id="2_enemy_002"]
 
 [resource]
 script = ExtResource("1_script")

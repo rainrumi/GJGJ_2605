@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyPresetDefinition" format=3 uid="uid://bjvgwg81q5i27"]
+[gd_resource type="Resource" script_class="NightmarePresetInfo" format=3 uid="uid://bjvgwg81q5i27"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/nightmare/nightmare_info.gd" id="1_mfn3k"]
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/nightmare/nightmare_preset_info.gd" id="1_script"]
