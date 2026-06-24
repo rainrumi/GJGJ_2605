@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/definitions/nightmare/nightmare_preset_info.gd" id="1_em1by"]
 [ext_resource type="Script" uid="uid://clqarc0s67i01" path="res://data/definitions/stage/stage_enemy_set_definition.gd" id="1_script"]
-[ext_resource type="Resource" uid="uid://dlx07m46n8g50" path="res://data/resources/area/area_iriyu/enemy/normal/normal_enemy_normal_001.tres" id="2_normal"]
-[ext_resource type="Resource" uid="uid://3lgjt68slqom" path="res://data/resources/area/area_iriyu/enemy/endless/001/area_iriyu_enemy_endless_001.tres" id="3_endless"]
-[ext_resource type="Resource" uid="uid://cg7qu54hlqjgw" path="res://data/resources/area/area_iriyu/enemy/boss/001/area_iriyu_enemy_boss_001.tres" id="4_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_iriyu/enemy/normal/normal_enemy_normal_001.tres" id="2_normal"]
+[ext_resource type="Resource" path="res://data/resources/area/area_iriyu/enemy/endless/001/area_iriyu_enemy_endless_001.tres" id="3_endless"]
+[ext_resource type="Resource" path="res://data/resources/area/area_iriyu/enemy/boss/001/area_iriyu_enemy_boss_001.tres" id="4_strengthened"]
 [ext_resource type="Resource" path="res://data/resources/area/area_iriyu/enemy/boss/002/area_iriyu_enemy_boss_002.tres" id="5_strengthened"]
 [ext_resource type="Resource" path="res://data/resources/area/area_iriyu/enemy/boss/003/area_iriyu_enemy_boss_003.tres" id="6_strengthened"]
 

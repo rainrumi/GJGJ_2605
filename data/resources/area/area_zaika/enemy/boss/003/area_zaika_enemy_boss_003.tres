@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_info.gd" id="1_ma3wv"]
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/definitions/nightmare/nightmare_preset_info.gd" id="1_script"]
-[ext_resource type="Resource" uid="uid://7iuop8rj64u0" path="res://data/resources/nightmares/stages/stage_8/area_zaika_enemy_boss_003.tres" id="2_enemy_003"]
+[ext_resource type="Resource" path="res://data/resources/nightmares/stages/stage_8/area_zaika_enemy_boss_003.tres" id="2_enemy_003"]
 
 [resource]
 script = ExtResource("1_script")

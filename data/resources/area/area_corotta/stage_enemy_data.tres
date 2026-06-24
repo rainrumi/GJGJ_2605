@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="StageEnemySetDefinition" format=3 uid="uid://d3ib0i87dwlme"]
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/definitions/nightmare/nightmare_preset_info.gd" id="1_0pamv"]
-[ext_resource type="Resource" uid="uid://gy5jrarsjpeo" path="res://data/resources/area/area_corotta/enemy/endless/001/area_corotta_enemy_endless_001.tres" id="2_ke3yk"]
-[ext_resource type="Resource" uid="uid://ch2jsndwbrvcj" path="res://data/resources/area/area_corotta/enemy/normal/001/area_corotta_enemy_normal_001.tres" id="3_xnny5"]
+[ext_resource type="Resource" path="res://data/resources/area/area_corotta/enemy/endless/001/area_corotta_enemy_endless_001.tres" id="2_ke3yk"]
+[ext_resource type="Resource" path="res://data/resources/area/area_corotta/enemy/normal/001/area_corotta_enemy_normal_001.tres" id="3_xnny5"]
 [ext_resource type="Script" uid="uid://clqarc0s67i01" path="res://data/definitions/stage/stage_enemy_set_definition.gd" id="4_u5tbj"]
-[ext_resource type="Resource" uid="uid://csgkqhpku6lor" path="res://data/resources/area/area_corotta/enemy/boss/001/area_corotta_enemy_boss_001.tres" id="5_ukcf2"]
+[ext_resource type="Resource" path="res://data/resources/area/area_corotta/enemy/boss/001/area_corotta_enemy_boss_001.tres" id="5_ukcf2"]
 [ext_resource type="Resource" path="res://data/resources/area/area_corotta/enemy/boss/002/area_corotta_enemy_boss_002.tres" id="6_ywbkv"]
 [ext_resource type="Resource" path="res://data/resources/area/area_corotta/enemy/boss/003/area_corotta_enemy_boss_003.tres" id="7_cuc3t"]
 
