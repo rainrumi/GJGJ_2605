@@ -35,14 +35,12 @@ func setup(
 	input_controller: GameInputController,
 	stomach: StomachBoard,
 	enemy_definitions: Array[Resource],
-	nightmare_skill_catalog: NightmareSkillCatalog,
 	enemy_preset: EnemyPresetDefinition = null
 ) -> void:
 	_owner = owner
 	_input_controller = input_controller
 	_stomach = stomach
 	_enemy_definitions = enemy_definitions
-	_nightmare_skill_catalog = nightmare_skill_catalog
 	_enemy_preset = enemy_preset
 
 

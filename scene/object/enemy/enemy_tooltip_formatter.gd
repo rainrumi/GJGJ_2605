@@ -1,4 +1,4 @@
-﻿class_name EnemyTooltipFormatter
+class_name EnemyTooltipFormatter
 extends RefCounted
 
 
@@ -33,4 +33,3 @@ static func _get_category_text(skill_definition: NightmareSkillDefinition) -> St
 	if skill_definition == null or skill_definition.category.is_empty():
 		return "通常"
 	return skill_definition.category
-

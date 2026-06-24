@@ -16,7 +16,6 @@ const DIGEST_AUTO_INTERVAL: float = 0.05
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 @export var enemy_definitions: Array[Resource] = []
-@export var nightmare_skill_catalog: NightmareSkillCatalog
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
@@ -51,7 +50,7 @@ var last_time_over_recovery_percent := 0
 var effective_max_hp := MAX_HP
 func _ready() -> void:
 	randomize()
-	enemy_setup.setup(self, input_controller, stomach, enemy_definitions, nightmare_skill_catalog)
+	enemy_setup.setup(self, input_controller, stomach, enemy_definitions)
 	dream_seed_controller.setup(self, stomach, input_controller)
 	_connect_ui()
 	_connect_input()
@@ -87,7 +86,6 @@ func start_battle(context: BattleStartContext = null) -> void:
 		input_controller,
 		stomach,
 		_get_battle_enemy_definitions(),
-		nightmare_skill_catalog,
 		_get_battle_enemy_preset()
 	)
 	enemy_setup.setup_enemies(enemies)
@@ -373,7 +371,6 @@ func _setup_enemy_preset(enemy_preset: EnemyPresetDefinition) -> void:
 		input_controller,
 		stomach,
 		_get_battle_enemy_definitions(),
-		nightmare_skill_catalog,
 		enemy_preset
 	)
 	enemy_setup.setup_enemies(enemies)
