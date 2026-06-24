@@ -1,4 +1,4 @@
-class_name NightmareSkillDefinition
+class_name NightmareSkillInfo
 extends Resource
 
 @export var skill_id := 0

@@ -15,8 +15,8 @@ const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_100
 @onready var hp_label: Label = $HPText
 @onready var damage_label: Label = $DamageText
 var definition: EnemyDefinition
-var skill_definition: NightmareSkillDefinition
-var seed_skill_definition: DreamSeedSkillDefinition
+var skill_info: NightmareSkillInfo
+var seed_skill_info: DreamSeedSkillDefinition
 var has_main_effect := false
 var nightmare_skill_enabled := true
 var max_hp := 0
@@ -45,10 +45,10 @@ var _stomach_size_override := Vector2i.ZERO
 var _stomach_shape_override: Array[Vector2i] = []
 var _size_override := 0
 var _texture_override: Texture2D
-func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_skill: NightmareSkillDefinition = null, has_effect := false, start_position_override := Vector2.INF) -> void:
+func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_skill: NightmareSkillInfo = null, has_effect := false, start_position_override := Vector2.INF) -> void:
 	definition = enemy_definition
-	skill_definition = nightmare_skill
-	seed_skill_definition = null
+	skill_info = nightmare_skill
+	seed_skill_info = null
 	nightmare_skill_enabled = enemy_definition.nightmare_skill_enabled
 	has_main_effect = has_effect and nightmare_skill_enabled
 	max_hp = enemy_definition.max_hp
@@ -91,31 +91,31 @@ func reset_for_battle() -> void:
 	_update_damage_label()
 	_update_status_label_colors()
 func get_display_name() -> String:
-	if seed_skill_definition != null and not seed_skill_definition.display_name.is_empty():
-		return seed_skill_definition.display_name
-	if skill_definition != null and not skill_definition.display_name.is_empty():
-		return skill_definition.display_name
+	if seed_skill_info != null and not seed_skill_info.display_name.is_empty():
+		return seed_skill_info.display_name
+	if skill_info != null and not skill_info.display_name.is_empty():
+		return skill_info.display_name
 	return definition.display_name
 
 
 func is_seed_stomach_block() -> bool:
-	return seed_skill_definition != null
+	return seed_skill_info != null
 
 
 func has_seed_skill() -> bool:
-	return seed_skill_definition != null
+	return seed_skill_info != null
 
 
 func get_seed_skill() -> DreamSeedSkillDefinition:
-	return seed_skill_definition
+	return seed_skill_info
 
 
 func has_nightmare_skill() -> bool:
-	return skill_definition != null
+	return skill_info != null
 
 
-func get_nightmare_skill() -> NightmareSkillDefinition:
-	return skill_definition
+func get_nightmare_skill() -> NightmareSkillInfo:
+	return skill_info
 
 
 func is_nightmare() -> bool:
@@ -237,7 +237,7 @@ func setup_as_seed_stomach_block(seed_skill: DreamSeedSkillDefinition, target_si
 	else:
 		setup_as_one_cell_stomach_block(target_size)
 		activation_deferred = false
-	seed_skill_definition = seed_skill
+	seed_skill_info = seed_skill
 	if block_definition != null and block_definition.texture != null:
 		set_texture_override(block_definition.texture, target_size)
 	max_hp = block_definition.get_max_hp() if block_definition != null else 1
@@ -389,11 +389,11 @@ func _get_texture() -> Texture2D:
 		return _texture_override
 	return definition.texture
 func get_category_name() -> String:
-	return EnemyTooltipFormatter.get_category_name(has_main_effect, skill_definition)
+	return EnemyTooltipFormatter.get_category_name(has_main_effect, skill_info)
 func get_category_detail() -> String:
-	return EnemyTooltipFormatter.get_category_detail(has_main_effect, skill_definition)
+	return EnemyTooltipFormatter.get_category_detail(has_main_effect, skill_info)
 func get_main_effect_text() -> String:
-	return EnemyTooltipFormatter.get_main_effect_text(has_main_effect, skill_definition)
+	return EnemyTooltipFormatter.get_main_effect_text(has_main_effect, skill_info)
 func get_sub_effect_text() -> String:
 	return "-"
 func heal(amount: int) -> void:

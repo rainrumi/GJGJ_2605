@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="EnemyPresetDefinition" format=3 uid="uid://dggm5pyinjgci"]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_skill_definition.gd" id="1_dxkx5"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_skill_info.gd" id="1_dxkx5"]
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://scene/object/enemy/enemy_preset_definition.gd" id="1_script"]
 [ext_resource type="Resource" uid="uid://dpdkn8257ebfk" path="res://data/resources/nightmares/nightmare_skill_001.tres" id="2_enemy"]
 

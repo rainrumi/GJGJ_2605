@@ -151,12 +151,12 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 	return enemy
 
 
-func _get_random_nightmare_skills() -> Array[NightmareSkillDefinition]:
+func _get_random_nightmare_skills() -> Array[NightmareSkillInfo]:
 	var skills_by_category: Dictionary = {}
 	return _pick_skills_from_category(skills_by_category)
 
 
-func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[NightmareSkillDefinition]:
+func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[NightmareSkillInfo]:
 	var categories := skills_by_category.keys()
 	if categories.is_empty():
 		return []
@@ -166,9 +166,9 @@ func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[Nightma
 	var max_count := mini(4, category_skills.size())
 	var min_count := mini(2, max_count)
 	var count := randi_range(min_count, max_count)
-	var selected: Array[NightmareSkillDefinition] = []
+	var selected: Array[NightmareSkillInfo] = []
 	for i in range(count):
-		selected.append(category_skills[i] as NightmareSkillDefinition)
+		selected.append(category_skills[i] as NightmareSkillInfo)
 	return selected
 
 
@@ -178,7 +178,7 @@ func _get_enemy_template(enemy_index: int) -> EnemyDefinition:
 	return _enemy_definitions[enemy_index % _enemy_definitions.size()] as EnemyDefinition
 
 
-func _create_nightmare_definition(skill: NightmareSkillDefinition) -> EnemyDefinition:
+func _create_nightmare_definition(skill: NightmareSkillInfo) -> EnemyDefinition:
 	var definition := EnemyDefinition.new()
 	definition.display_name = skill.display_name
 	definition.texture = skill.texture
@@ -192,19 +192,19 @@ func _create_nightmare_definition(skill: NightmareSkillDefinition) -> EnemyDefin
 	return definition
 
 
-func _create_stage_nightmare_skill(source_skill: NightmareSkillDefinition) -> NightmareSkillDefinition:
-	var skill := source_skill.duplicate(true) as NightmareSkillDefinition
+func _create_stage_nightmare_skill(source_skill: NightmareSkillInfo) -> NightmareSkillInfo:
+	var skill := source_skill.duplicate(true) as NightmareSkillInfo
 	skill.nightmare_skill_enabled = skill.skill_id >= STRENGTHENED_NIGHTMARE_SKILL_ID_MIN
 	return skill
 
 
-func _get_nightmare_stomach_size(skill: NightmareSkillDefinition) -> Vector2i:
+func _get_nightmare_stomach_size(skill: NightmareSkillInfo) -> Vector2i:
 	if skill.stomach_size.x > 0 and skill.stomach_size.y > 0:
 		return skill.stomach_size
 	return DEFAULT_NIGHTMARE_STOMACH_SIZE
 
 
-func _get_nightmare_stomach_shape(skill: NightmareSkillDefinition) -> Array[Vector2i]:
+func _get_nightmare_stomach_shape(skill: NightmareSkillInfo) -> Array[Vector2i]:
 	var shape: Array[Vector2i] = []
 	for cell in skill.stomach_shape:
 		if cell is Vector2i:
