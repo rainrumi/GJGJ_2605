@@ -39,7 +39,7 @@ var _remaining_extra_seed_choices := 0
 var _extra_seed_choice_granted := false
 var _seed_choice_active := false
 var _base_seed_options: Array[SeedInfo] = []
-var _current_clear_stage: StageDefinition
+var _current_clear_stage: StageInfo
 var debug_numbers_visible := false
 var reward_service := StageClearRewardService.new()
 func _ready() -> void:
@@ -59,7 +59,7 @@ func setup_hp(value: int) -> void:
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
-func setup_clear_result(value: int, cleared_minutes: int, cleared_stage: StageDefinition = null) -> void:
+func setup_clear_result(value: int, cleared_minutes: int, cleared_stage: StageInfo = null) -> void:
 	_set_clear_result_state(value, cleared_minutes)
 	_current_clear_stage = cleared_stage
 	_restore_base_seed_options()
@@ -135,7 +135,7 @@ func _restore_base_seed_options() -> void:
 	seed_options = reward_service.get_stage_seed_options(_base_seed_options, null)
 
 
-func _apply_stage_drop_options(stage: StageDefinition) -> void:
+func _apply_stage_drop_options(stage: StageInfo) -> void:
 	seed_options = reward_service.get_stage_seed_options(_base_seed_options, stage)
 
 

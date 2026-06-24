@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="StageCatalog" format=3 uid="uid://ce68va3k1t1xq"]
 
-[ext_resource type="Script" uid="uid://da3llhh44qyrx" path="res://data/definitions/stage/stage_catalog.gd" id="1_wn2yr"]
-[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage/stage_definition.gd" id="2_edlaw"]
-[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/area_huwahuwa.tres" id="3_bi1qx"]
-[ext_resource type="Resource" path="res://data/resources/area/area_lunova/area_lunova.tres" id="4_hos5p"]
-[ext_resource type="Resource" path="res://data/resources/area/area_elmena/area_elmena.tres" id="6_ys04v"]
-[ext_resource type="Resource" path="res://data/resources/area/area_riran/area_riran.tres" id="8_gpld7"]
-[ext_resource type="Resource" path="res://data/resources/area/area_iriyu/area_iriyu.tres" id="14_y461l"]
+[ext_resource type="Script" uid="uid://da3llhh44qyrx" path="res://data/definitions/stage/stage_catalog_info.gd" id="1_wn2yr"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage/stage_info.gd" id="2_edlaw"]
+[ext_resource type="Resource" uid="uid://dq2v34y6rie5c" path="res://data/resources/area/area_huwahuwa/area_huwahuwa.tres" id="3_bi1qx"]
+[ext_resource type="Resource" uid="uid://bkvf8y2r5p72b" path="res://data/resources/area/area_lunova/area_lunova.tres" id="4_hos5p"]
+[ext_resource type="Resource" uid="uid://b6tbcorsqf4gt" path="res://data/resources/area/area_elmena/area_elmena.tres" id="6_ys04v"]
+[ext_resource type="Resource" uid="uid://co88keexjcsl8" path="res://data/resources/area/area_riran/area_riran.tres" id="8_gpld7"]
+[ext_resource type="Resource" uid="uid://b7f2dqt8cxtw1" path="res://data/resources/area/area_iriyu/area_iriyu.tres" id="14_y461l"]
 
 [resource]
 script = ExtResource("1_wn2yr")

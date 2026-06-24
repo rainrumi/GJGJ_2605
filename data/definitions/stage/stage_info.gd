@@ -1,4 +1,4 @@
-class_name StageDefinition
+class_name StageInfo
 extends Resource
 
 enum StageArea {
@@ -23,10 +23,10 @@ enum StageArea {
 @export var location := ""
 @export var map_position := Vector2.ZERO
 @export var reward_icon: Texture2D
-@export var enemy_data: StageEnemySetDefinition
+@export var enemy_data: StageEnemyInfo
 @export var drop_seed_skill_pool: SeedPoolInfo
 @export var stage_unlock_novel_texts: Array[NovelTextResource] = []
-@export var high_difficulty_stages: Array[StageDefinition] = []
+@export var high_difficulty_stages: Array[StageInfo] = []
 @export var is_high_difficulty := false
 @export var has_normal_stage := true
 
@@ -37,8 +37,8 @@ func get_difficulty_text() -> String:
 	return "Lv.%d" % difficulty_level
 
 
-func create_high_difficulty_fallback() -> StageDefinition:
-	var stage := duplicate(true) as StageDefinition
+func create_high_difficulty_fallback() -> StageInfo:
+	var stage := duplicate(true) as StageInfo
 	stage.is_high_difficulty = true
 	stage.high_difficulty_stages = []
 	stage.difficulty_level = difficulty_level + 1

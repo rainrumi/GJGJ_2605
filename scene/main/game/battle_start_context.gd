@@ -4,7 +4,7 @@ extends RefCounted
 var starting_hp := 100
 var day := 1
 var stage_id := 0
-var stage: StageDefinition
+var stage: StageInfo
 var enemy_preset: NightmarePresetInfo
 var stomach_columns := RunState.DEFAULT_STOMACH_COLUMNS
 var stomach_rows := RunState.DEFAULT_STOMACH_ROWS

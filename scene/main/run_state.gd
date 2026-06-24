@@ -15,7 +15,7 @@ var max_hp := 100
 var stomach_columns := DEFAULT_STOMACH_COLUMNS
 var stomach_rows := DEFAULT_STOMACH_ROWS
 var selected_stage_id := 0
-var selected_stage: StageDefinition
+var selected_stage: StageInfo
 var planted_flowers: Array[SeedInfo] = []
 var last_time_over_recovery_percent := 0
 var normal_enemy_preset_indices := {}
@@ -41,7 +41,7 @@ func reset() -> void:
 	played_stage_novel_indices.clear()
 
 
-func pick_enemy_preset(stage: StageDefinition) -> NightmarePresetInfo:
+func pick_enemy_preset(stage: StageInfo) -> NightmarePresetInfo:
 	if stage == null or stage.enemy_data == null:
 		return null
 	if stage.is_high_difficulty:
@@ -49,7 +49,7 @@ func pick_enemy_preset(stage: StageDefinition) -> NightmarePresetInfo:
 	return _pick_normal_enemy_preset(stage)
 
 
-func _pick_normal_enemy_preset(stage: StageDefinition) -> NightmarePresetInfo:
+func _pick_normal_enemy_preset(stage: StageInfo) -> NightmarePresetInfo:
 	var key := _get_stage_progress_key(stage)
 	var index := int(normal_enemy_preset_indices.get(key, 0))
 	var preset := stage.enemy_data.get_normal_enemy_preset(index)
@@ -59,7 +59,7 @@ func _pick_normal_enemy_preset(stage: StageDefinition) -> NightmarePresetInfo:
 	return stage.enemy_data.pick_endless_enemy_preset()
 
 
-func _pick_strengthened_enemy_preset(stage: StageDefinition) -> NightmarePresetInfo:
+func _pick_strengthened_enemy_preset(stage: StageInfo) -> NightmarePresetInfo:
 	var key := _get_stage_progress_key(stage)
 	var index := int(strengthened_enemy_preset_indices.get(key, 0))
 	var unlocked_count := get_strengthened_enemy_unlock_count(stage)
@@ -75,14 +75,14 @@ func _pick_strengthened_enemy_preset(stage: StageDefinition) -> NightmarePresetI
 	return stage.enemy_data.get_last_strengthened_enemy_preset()
 
 
-func record_normal_stage_clear(stage: StageDefinition) -> void:
+func record_normal_stage_clear(stage: StageInfo) -> void:
 	if stage == null or stage.is_high_difficulty:
 		return
 	var key := _get_stage_progress_key(stage)
 	normal_enemy_defeat_counts[key] = int(normal_enemy_defeat_counts.get(key, 0)) + 1
 
 
-func record_stage_clear(stage: StageDefinition) -> void:
+func record_stage_clear(stage: StageInfo) -> void:
 	if stage == null:
 		return
 	if stage.is_high_difficulty:
@@ -91,14 +91,14 @@ func record_stage_clear(stage: StageDefinition) -> void:
 	record_normal_stage_clear(stage)
 
 
-func record_strengthened_stage_clear(stage: StageDefinition) -> void:
+func record_strengthened_stage_clear(stage: StageInfo) -> void:
 	if stage == null or not stage.is_high_difficulty:
 		return
 	var key := _get_stage_progress_key(stage)
 	strengthened_enemy_defeat_counts[key] = int(strengthened_enemy_defeat_counts.get(key, 0)) + 1
 
 
-func get_stage_exploration_percent(stage: StageDefinition) -> int:
+func get_stage_exploration_percent(stage: StageInfo) -> int:
 	if stage == null or stage.enemy_data == null:
 		return 0
 	var normal_count := _get_exploration_normal_enemy_count(stage)
@@ -113,13 +113,13 @@ func get_stage_exploration_percent(stage: StageDefinition) -> int:
 	return clampi(roundi(float(cleared_weight) / float(total_weight) * 100.0), 0, 100)
 
 
-func get_strengthened_enemy_unlock_count(stage: StageDefinition) -> int:
+func get_strengthened_enemy_unlock_count(stage: StageInfo) -> int:
 	if stage != null and stage.stage_id == HUWAHUWA_SCHOOL_STAGE_ID:
 		return mini(MAX_HUWAHUWA_SCHOOL_STRENGTHENED_ENEMY_INDEX, int(current_day / HUWAHUWA_SCHOOL_UNLOCK_DAY_INTERVAL))
 	return get_stage_novel_unlock_count(stage)
 
 
-func get_stage_novel_unlock_count(stage: StageDefinition) -> int:
+func get_stage_novel_unlock_count(stage: StageInfo) -> int:
 	if stage == null:
 		return 0
 	var defeat_count := int(normal_enemy_defeat_counts.get(_get_stage_progress_key(stage), 0))
@@ -128,7 +128,7 @@ func get_stage_novel_unlock_count(stage: StageDefinition) -> int:
 	return mini(max_novel_count, int(defeat_count / STAGE_NOVEL_UNLOCK_DEFEAT_INTERVAL))
 
 
-func get_unplayed_unlocked_stage_novel_indices(stage: StageDefinition) -> Array[int]:
+func get_unplayed_unlocked_stage_novel_indices(stage: StageInfo) -> Array[int]:
 	var indices: Array[int] = []
 	var unlocked_count := get_stage_novel_unlock_count(stage)
 	var played_count := int(played_stage_novel_indices.get(_get_stage_progress_key(stage), 0))
@@ -137,18 +137,18 @@ func get_unplayed_unlocked_stage_novel_indices(stage: StageDefinition) -> Array[
 	return indices
 
 
-func mark_stage_novel_played(stage: StageDefinition, scenario_index: int) -> void:
+func mark_stage_novel_played(stage: StageInfo, scenario_index: int) -> void:
 	if stage == null:
 		return
 	var key := _get_stage_progress_key(stage)
 	played_stage_novel_indices[key] = maxi(int(played_stage_novel_indices.get(key, 0)), scenario_index)
 
 
-func _get_exploration_normal_enemy_count(stage: StageDefinition) -> int:
+func _get_exploration_normal_enemy_count(stage: StageInfo) -> int:
 	if not stage.has_normal_stage:
 		return 0
 	return mini(MAX_STAGE_NOVEL_INDEX, stage.stage_unlock_novel_texts.size()) * STAGE_NOVEL_UNLOCK_DEFEAT_INTERVAL
 
 
-func _get_stage_progress_key(stage: StageDefinition) -> String:
+func _get_stage_progress_key(stage: StageInfo) -> String:
 	return "%d:%d" % [stage.stage_id, stage.stage_area]

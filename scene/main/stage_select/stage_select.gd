@@ -1,6 +1,6 @@
 extends Node2D
 
-signal stage_selected(stage: StageDefinition)
+signal stage_selected(stage: StageInfo)
 
 const BEACON_FRAME_DURATION := 0.1
 const LOCATION_MARKER_FRAME_DURATION := 0.1
@@ -14,8 +14,8 @@ const DEBUG_SEED_POOL_MIN_FONT_SIZE := 4
 const DEBUG_SEED_POOL_VISIBLE_LINE_BUDGET := 52
 const DEBUG_SEED_POOL_NAME_COLOR := "#ff4040"
 
-@export var stage_catalog: StageCatalog
-@export var stage_definitions: Array[StageDefinition] = []
+@export var stage_catalog: StageCatalogInfo
+@export var stage_definitions: Array[StageInfo] = []
 @export var stage_choice_scene: PackedScene
 @export var beacon_outline_frames: Array[Texture2D] = []
 @export var beacon_fill_frames: Array[Texture2D] = []
@@ -37,12 +37,12 @@ const DEBUG_SEED_POOL_NAME_COLOR := "#ff4040"
 @onready var debug_seed_pool_text: RichTextLabel = $UI/DebugSeedPoolPanel/Margin/Items/DebugSeedScroll/SeedPoolText
 
 var stage_choices: Array[BaseButton] = []
-var _displayed_stage_definitions: Array[StageDefinition] = []
-var _current_stage_definition: StageDefinition
+var _displayed_stage_definitions: Array[StageInfo] = []
+var _current_stage_definition: StageInfo
 var _current_day := 1
 var _unlocked_high_difficulty_stage_ids: Array[int] = []
 var _run_state: RunState
-var _hovered_stage_definition: StageDefinition
+var _hovered_stage_definition: StageInfo
 var _beacon_tween: Tween
 var _beacon_frame_index := 0
 var _beacon_frame_elapsed := 0.0
@@ -102,7 +102,7 @@ func _process_location_marker_frame(delta: float) -> void:
 
 
 func setup_stage_choices(
-	current_stage_definition: StageDefinition = null,
+	current_stage_definition: StageInfo = null,
 	current_day: int = 1,
 	unlocked_high_difficulty_stage_ids: Array[int] = [],
 	run_state: RunState = null
@@ -142,7 +142,7 @@ func _on_stage_choice_hovered(choice_index: int) -> void:
 	_show_map_hover(stage_definition)
 
 
-func _show_map_hover(stage_definition: StageDefinition) -> void:
+func _show_map_hover(stage_definition: StageInfo) -> void:
 	_hovered_stage_definition = stage_definition
 	_update_debug_seed_pool_panel()
 	if stage_definition == null:
@@ -163,21 +163,21 @@ func _on_stage_choice_unhovered(choice_index: int) -> void:
 	_hide_beacon()
 
 
-func _get_stage_definitions() -> Array[StageDefinition]:
+func _get_stage_definitions() -> Array[StageInfo]:
 	if stage_catalog != null:
 		return stage_catalog.stages
 	return stage_definitions
 
 
-func get_stage_definition_by_id(stage_id: int) -> StageDefinition:
+func get_stage_definition_by_id(stage_id: int) -> StageInfo:
 	return stage_selection_service.get_stage_definition_by_id(_get_stage_definitions(), stage_id)
 
 
-func get_stage_definitions_for_progress() -> Array[StageDefinition]:
+func get_stage_definitions_for_progress() -> Array[StageInfo]:
 	return _get_stage_definitions()
 
 
-func _get_random_stage_definitions() -> Array[StageDefinition]:
+func _get_random_stage_definitions() -> Array[StageInfo]:
 	var definitions := stage_selection_service.get_candidate_stages(
 		_get_stage_definitions(),
 		_current_stage_definition,
@@ -189,7 +189,7 @@ func _get_random_stage_definitions() -> Array[StageDefinition]:
 	return definitions
 
 
-func _move_current_location_to_front(definitions: Array[StageDefinition]) -> void:
+func _move_current_location_to_front(definitions: Array[StageInfo]) -> void:
 	for i in range(definitions.size()):
 		if not _is_current_location(definitions[i]):
 			continue
@@ -341,7 +341,7 @@ func _apply_location_marker_frame() -> void:
 		location_marker_fill.texture = location_fill_frames[_location_marker_frame_index % location_fill_frames.size()]
 
 
-func _is_current_location(stage_definition: StageDefinition) -> bool:
+func _is_current_location(stage_definition: StageInfo) -> bool:
 	if _current_stage_definition == null or stage_definition == null:
 		return false
 	if stage_definition == _current_stage_definition:
@@ -349,7 +349,7 @@ func _is_current_location(stage_definition: StageDefinition) -> bool:
 	return stage_definition.map_position.distance_squared_to(_current_stage_definition.map_position) < 0.01
 
 
-func _get_exploration_percent(stage_definition: StageDefinition) -> int:
+func _get_exploration_percent(stage_definition: StageInfo) -> int:
 	if _run_state == null:
 		return 0
 	return _run_state.get_stage_exploration_percent(stage_definition)
@@ -422,7 +422,7 @@ func _update_debug_seed_pool_panel() -> void:
 	debug_seed_pool_panel.visible = true
 
 
-func _get_debug_seed_pool_skills(stage_definition: StageDefinition) -> Array[SeedInfo]:
+func _get_debug_seed_pool_skills(stage_definition: StageInfo) -> Array[SeedInfo]:
 	var seeds: Array[SeedInfo] = []
 	if stage_definition == null or stage_definition.drop_seed_skill_pool == null:
 		return seeds

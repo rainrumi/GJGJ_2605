@@ -192,7 +192,7 @@ func show_day_intro() -> void:
 	show_stage_select()
 
 
-func _on_stage_select_stage_selected(stage: StageDefinition) -> void:
+func _on_stage_select_stage_selected(stage: StageInfo) -> void:
 	if stage == null:
 		return
 	run_state.selected_stage_id = stage.stage_id
@@ -265,7 +265,7 @@ func _finish_current_day() -> void:
 func _setup_initial_stage_position() -> void:
 	if not stage_select.has_method("get_stage_definition_by_id"):
 		return
-	var initial_stage := stage_select.call("get_stage_definition_by_id", INITIAL_STAGE_ID) as StageDefinition
+	var initial_stage := stage_select.call("get_stage_definition_by_id", INITIAL_STAGE_ID) as StageInfo
 	if initial_stage == null:
 		return
 	run_state.selected_stage_id = initial_stage.stage_id
@@ -358,7 +358,7 @@ func _get_recurring_stage_unlock_novel_text() -> NovelTextResource:
 func _load_stage_unlock_novel_text(stage_id: int, scenario_index: int) -> NovelTextResource:
 	if not stage_select.has_method("get_stage_definition_by_id"):
 		return null
-	var stage := stage_select.call("get_stage_definition_by_id", stage_id) as StageDefinition
+	var stage := stage_select.call("get_stage_definition_by_id", stage_id) as StageInfo
 	if stage == null:
 		return null
 	var novel_index := scenario_index - 1
@@ -367,15 +367,15 @@ func _load_stage_unlock_novel_text(stage_id: int, scenario_index: int) -> NovelT
 	return stage.stage_unlock_novel_texts[novel_index]
 
 
-func _get_stage_definitions_for_progress() -> Array[StageDefinition]:
+func _get_stage_definitions_for_progress() -> Array[StageInfo]:
 	if stage_select.has_method("get_stage_definitions_for_progress"):
 		var raw_definitions: Array = stage_select.call("get_stage_definitions_for_progress")
-		var definitions: Array[StageDefinition] = []
+		var definitions: Array[StageInfo] = []
 		for stage in raw_definitions:
-			if stage is StageDefinition:
-				definitions.append(stage as StageDefinition)
+			if stage is StageInfo:
+				definitions.append(stage as StageInfo)
 		return definitions
-	var definitions: Array[StageDefinition] = []
+	var definitions: Array[StageInfo] = []
 	return definitions
 
 

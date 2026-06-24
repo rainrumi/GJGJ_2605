@@ -29,7 +29,7 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 
-func setup_choice(stage_definition: StageDefinition, exploration_percent: int = 0) -> void:
+func setup_choice(stage_definition: StageInfo, exploration_percent: int = 0) -> void:
 	if stage_definition == null:
 		visible = false
 		disabled = true
@@ -87,7 +87,7 @@ func _update_scale() -> void:
 	_scale_tween.tween_property(frame, "scale", target_scale, TWEEN_DURATION)
 
 
-func _apply_stage_text_color(stage_definition: StageDefinition) -> void:
+func _apply_stage_text_color(stage_definition: StageInfo) -> void:
 	var font_color := HIGH_DIFFICULTY_TEXT_COLOR if stage_definition.is_high_difficulty else NORMAL_TEXT_COLOR
 	difficulty_label.add_theme_color_override("font_color", font_color)
 	name_label.add_theme_color_override("font_color", font_color)

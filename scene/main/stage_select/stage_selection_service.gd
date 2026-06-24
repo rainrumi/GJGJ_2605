@@ -3,9 +3,9 @@ extends RefCounted
 
 
 func get_stage_definition_by_id(
-	stage_definitions: Array[StageDefinition],
+	stage_definitions: Array[StageInfo],
 	stage_id: int
-) -> StageDefinition:
+) -> StageInfo:
 	for stage_definition in stage_definitions:
 		var found_stage := _find_stage_definition_by_id(stage_definition, stage_id)
 		if found_stage != null:
@@ -14,14 +14,14 @@ func get_stage_definition_by_id(
 
 
 func get_candidate_stages(
-	stage_definitions: Array[StageDefinition],
-	current_stage_definition: StageDefinition,
+	stage_definitions: Array[StageInfo],
+	current_stage_definition: StageInfo,
 	current_day: int,
 	unlocked_high_difficulty_stage_ids: Array[int] = []
-) -> Array[StageDefinition]:
+) -> Array[StageInfo]:
 	if _is_high_difficulty_day(current_day):
 		return _get_high_difficulty_stage_definitions(stage_definitions, current_stage_definition, unlocked_high_difficulty_stage_ids)
-	var definitions: Array[StageDefinition] = []
+	var definitions: Array[StageInfo] = []
 	for stage_definition in stage_definitions:
 		if _can_reach_stage(stage_definition, current_stage_definition):
 			definitions.append(stage_definition)
@@ -29,8 +29,8 @@ func get_candidate_stages(
 
 
 func _can_reach_stage(
-	stage_definition: StageDefinition,
-	current_stage_definition: StageDefinition
+	stage_definition: StageInfo,
+	current_stage_definition: StageInfo
 ) -> bool:
 	if stage_definition == null:
 		return false
@@ -48,11 +48,11 @@ func _is_high_difficulty_day(current_day: int) -> bool:
 
 
 func _get_high_difficulty_stage_definitions(
-	stage_definitions: Array[StageDefinition],
-	current_stage_definition: StageDefinition,
+	stage_definitions: Array[StageInfo],
+	current_stage_definition: StageInfo,
 	unlocked_high_difficulty_stage_ids: Array[int]
-) -> Array[StageDefinition]:
-	var definitions: Array[StageDefinition] = []
+) -> Array[StageInfo]:
+	var definitions: Array[StageInfo] = []
 	var source_stages := _get_high_difficulty_source_stages(stage_definitions, current_stage_definition, unlocked_high_difficulty_stage_ids)
 	for source_stage in source_stages:
 		if source_stage == null:
@@ -67,11 +67,11 @@ func _get_high_difficulty_stage_definitions(
 
 
 func _get_high_difficulty_source_stages(
-	stage_definitions: Array[StageDefinition],
-	current_stage_definition: StageDefinition,
+	stage_definitions: Array[StageInfo],
+	current_stage_definition: StageInfo,
 	unlocked_high_difficulty_stage_ids: Array[int]
-) -> Array[StageDefinition]:
-	var source_stages: Array[StageDefinition] = []
+) -> Array[StageInfo]:
+	var source_stages: Array[StageInfo] = []
 	if current_stage_definition == null:
 		for stage_definition in stage_definitions:
 			if _is_unlocked_high_difficulty_source_stage(stage_definition, unlocked_high_difficulty_stage_ids):
@@ -88,7 +88,7 @@ func _get_high_difficulty_source_stages(
 
 
 func _is_unlocked_high_difficulty_source_stage(
-	stage_definition: StageDefinition,
+	stage_definition: StageInfo,
 	unlocked_high_difficulty_stage_ids: Array[int]
 ) -> bool:
 	if stage_definition == null or stage_definition.is_high_difficulty:
@@ -97,7 +97,7 @@ func _is_unlocked_high_difficulty_source_stage(
 
 
 func _is_unlocked_high_difficulty_only_stage(
-	stage_definition: StageDefinition,
+	stage_definition: StageInfo,
 	unlocked_high_difficulty_stage_ids: Array[int]
 ) -> bool:
 	if not _is_unlocked_high_difficulty_source_stage(stage_definition, unlocked_high_difficulty_stage_ids):
@@ -105,7 +105,7 @@ func _is_unlocked_high_difficulty_only_stage(
 	return not stage_definition.has_normal_stage
 
 
-func _find_stage_definition_by_id(stage_definition: StageDefinition, stage_id: int) -> StageDefinition:
+func _find_stage_definition_by_id(stage_definition: StageInfo, stage_id: int) -> StageInfo:
 	if stage_definition == null:
 		return null
 	if stage_definition.stage_id == stage_id:

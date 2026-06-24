@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://dbix0t0o43tuy"]
 
-[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage/stage_definition.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/resources/area/area_zaika/area_zaika_enemy.tres" id="2_enemy_data"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage/stage_info.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://dvyl5oxr3dvns" path="res://data/resources/area/area_zaika/area_zaika_enemy.tres" id="2_enemy_data"]
 [ext_resource type="Resource" path="res://data/resources/novel/area/area_zaika/novel_area_zaika_event_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/area/area_zaika/novel_area_zaika_event_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/area/area_zaika/novel_area_zaika_event_003.tres" id="3_stage_novel_003"]

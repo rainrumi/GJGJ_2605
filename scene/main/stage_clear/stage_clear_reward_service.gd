@@ -39,7 +39,7 @@ func get_preview_flowers_for_seed(
 
 func get_stage_seed_options(
 	base_seed_options: Array[SeedInfo],
-	stage: StageDefinition
+	stage: StageInfo
 ) -> Array[SeedInfo]:
 	if stage == null or stage.drop_seed_skill_pool == null:
 		return _duplicate_seed_skill_array(base_seed_options)

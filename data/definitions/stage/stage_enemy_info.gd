@@ -1,4 +1,4 @@
-class_name StageEnemySetDefinition
+class_name StageEnemyInfo
 extends Resource
 
 @export var normal_enemy_presets: Array[NightmarePresetInfo] = []
