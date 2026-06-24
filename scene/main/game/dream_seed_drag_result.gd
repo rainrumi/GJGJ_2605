@@ -7,4 +7,4 @@ var cancelled := false
 var seed_block: Enemy
 var source_button: DreamSeedSkillButton
 var source: Resource
-var seed_skill: DreamSeedSkillDefinition
+var seed_skill: SeedInfo

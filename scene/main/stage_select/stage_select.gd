@@ -422,8 +422,8 @@ func _update_debug_seed_pool_panel() -> void:
 	debug_seed_pool_panel.visible = true
 
 
-func _get_debug_seed_pool_skills(stage_definition: StageDefinition) -> Array[DreamSeedSkillDefinition]:
-	var seeds: Array[DreamSeedSkillDefinition] = []
+func _get_debug_seed_pool_skills(stage_definition: StageDefinition) -> Array[SeedInfo]:
+	var seeds: Array[SeedInfo] = []
 	if stage_definition == null or stage_definition.drop_seed_skill_pool == null:
 		return seeds
 	for seed in stage_definition.drop_seed_skill_pool.get_all_skills():
@@ -432,7 +432,7 @@ func _get_debug_seed_pool_skills(stage_definition: StageDefinition) -> Array[Dre
 	return seeds
 
 
-func _get_debug_seed_pool_text(seeds: Array[DreamSeedSkillDefinition]) -> String:
+func _get_debug_seed_pool_text(seeds: Array[SeedInfo]) -> String:
 	if seeds.is_empty():
 		return "No seed pool"
 	var blocks: Array[String] = []
@@ -441,7 +441,7 @@ func _get_debug_seed_pool_text(seeds: Array[DreamSeedSkillDefinition]) -> String
 	return "\n".join(blocks)
 
 
-func _apply_debug_seed_pool_text_size(seeds: Array[DreamSeedSkillDefinition]) -> void:
+func _apply_debug_seed_pool_text_size(seeds: Array[SeedInfo]) -> void:
 	var font_size := DEBUG_SEED_POOL_MAX_FONT_SIZE
 	var line_count := _get_debug_seed_pool_estimated_line_count(seeds)
 	if line_count > DEBUG_SEED_POOL_VISIBLE_LINE_BUDGET:
@@ -452,7 +452,7 @@ func _apply_debug_seed_pool_text_size(seeds: Array[DreamSeedSkillDefinition]) ->
 	debug_seed_pool_text.add_theme_font_size_override("normal_font_size", font_size)
 
 
-func _get_debug_seed_pool_estimated_line_count(seeds: Array[DreamSeedSkillDefinition]) -> int:
+func _get_debug_seed_pool_estimated_line_count(seeds: Array[SeedInfo]) -> int:
 	if seeds.is_empty():
 		return 1
 	var line_count := 0
@@ -471,7 +471,7 @@ func _get_wrapped_extra_line_count(text: String, characters_per_line: int) -> in
 	return int(floori(float(text_length - 1) / float(characters_per_line)))
 
 
-func _get_debug_seed_pool_item_text(seed: DreamSeedSkillDefinition) -> String:
+func _get_debug_seed_pool_item_text(seed: SeedInfo) -> String:
 	var lines: Array[String] = [
 		"%s  ID:%d" % [_get_debug_seed_title_text(seed), seed.skill_id],
 		"M:%s" % _get_debug_seed_pool_bbcode_text(DreamSeedSkillDescriptionFormatter.get_main_description(seed)),
@@ -481,12 +481,12 @@ func _get_debug_seed_pool_item_text(seed: DreamSeedSkillDefinition) -> String:
 	return "\n".join(lines)
 
 
-func _get_debug_seed_title_text(seed: DreamSeedSkillDefinition) -> String:
+func _get_debug_seed_title_text(seed: SeedInfo) -> String:
 	var seed_name := ""
 	if seed != null:
 		seed_name = _get_debug_seed_pool_bbcode_text(seed.display_name)
 	var colored_name := "[color=%s]%s[/color]" % [DEBUG_SEED_POOL_NAME_COLOR, seed_name]
-	if seed != null and seed.rarity == DreamSeedSkillDefinition.Rarity.RARE:
+	if seed != null and seed.rarity == SeedInfo.Rarity.RARE:
 		return "%s [lb]Rare]" % colored_name
 	return colored_name
 

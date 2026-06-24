@@ -236,7 +236,7 @@ func apply_direct_player_damage(amount: int) -> int:
 	return seed_effects.apply_player_damage(amount, DIGEST_DAMAGE)
 
 
-func add_digested_seed_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
+func add_digested_seed_effect(seed_skill: SeedInfo) -> bool:
 	return seed_effects.add_digested_seed_effect(seed_skill)
 
 

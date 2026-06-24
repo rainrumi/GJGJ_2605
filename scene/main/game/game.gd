@@ -258,7 +258,7 @@ func _on_debug_seed_requested() -> void:
 
 func _on_seed_skill_drag_started(
 	button: DreamSeedSkillButton,
-	seed_skill: DreamSeedSkillDefinition,
+	seed_skill: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
 	if not _can_start_seed_drag():
@@ -274,7 +274,7 @@ func _on_seed_skill_drag_started(
 
 func _on_seed_skill_drag_moved(
 	_button: DreamSeedSkillButton,
-	_seed_skill: DreamSeedSkillDefinition,
+	_seed_skill: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
 	if not battle_active or drag_mode != DragMode.DREAM_SEED:
@@ -285,7 +285,7 @@ func _on_seed_skill_drag_moved(
 
 func _on_seed_skill_drag_released(
 	_button: DreamSeedSkillButton,
-	_seed_skill: DreamSeedSkillDefinition,
+	_seed_skill: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
 	if drag_mode != DragMode.DREAM_SEED:
@@ -720,9 +720,9 @@ func _apply_seed_stomach_size_effects() -> void:
 	var has_column_bonus := false
 	var has_row_bonus := false
 	for flower in dream_seed_controller.get_flowers():
-		if flower == null or flower.dream_seed_skill == null:
+		if flower == null:
 			continue
-		match flower.dream_seed_skill.skill_id:
+		match flower.skill_id:
 			2118:
 				has_column_bonus = true
 			2119:

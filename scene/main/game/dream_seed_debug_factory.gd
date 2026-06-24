@@ -23,11 +23,10 @@ func _append_debug_seed_flower_candidates(
 	skills: Array
 ) -> void:
 	for skill_resource in skills:
-		if not skill_resource is DreamSeedSkillDefinition:
+		if not skill_resource is SeedInfo:
 			continue
-		var skill := skill_resource as DreamSeedSkillDefinition
+		var skill := skill_resource as SeedInfo
 		var flower := SeedInfo.new()
 		flower.display_name = skill.display_name
 		flower.texture = skill.texture
-		flower.dream_seed_skill = skill
 		candidates.append(flower)

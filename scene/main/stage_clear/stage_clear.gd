@@ -14,7 +14,7 @@ const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
 const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @export var max_flowers := 50
 @export var initial_flower: SeedInfo
-@export var seed_options: Array[DreamSeedSkillDefinition] = []
+@export var seed_options: Array[SeedInfo] = []
 @onready var hp_view: HpView = $CharacterArea/HpFrame
 @onready var dream_seed_skill_buttons: DreamSeedSkillButtonList = $CharacterArea/DreamSeedSkillButtons
 @onready var guide_text: Label = $UI/GuideText
@@ -38,7 +38,7 @@ var _clear_recovery_applied := false
 var _remaining_extra_seed_choices := 0
 var _extra_seed_choice_granted := false
 var _seed_choice_active := false
-var _base_seed_options: Array[DreamSeedSkillDefinition] = []
+var _base_seed_options: Array[SeedInfo] = []
 var _current_clear_stage: StageDefinition
 var debug_numbers_visible := false
 var reward_service := StageClearRewardService.new()
@@ -94,7 +94,7 @@ func remove_planted_flower(source: Resource) -> void:
 		if flower == source:
 			planted_flowers.remove_at(i)
 			continue
-		if source is DreamSeedSkillDefinition and flower != null and flower.dream_seed_skill == source:
+		if source is SeedInfo and flower != null and flower.dream_seed_skill == source:
 			planted_flowers.remove_at(i)
 	if is_node_ready():
 		_refresh_after_reward_state_changed()
@@ -139,11 +139,11 @@ func _apply_stage_drop_options(stage: StageDefinition) -> void:
 	seed_options = reward_service.get_stage_seed_options(_base_seed_options, stage)
 
 
-func _get_seed_option(seed_index: int) -> DreamSeedSkillDefinition:
+func _get_seed_option(seed_index: int) -> SeedInfo:
 	if seed_index < 0 or seed_index >= seed_options.size():
 		return null
 	return seed_options[seed_index]
-func _get_seed_display_name(seed: DreamSeedSkillDefinition) -> String:
+func _get_seed_display_name(seed: SeedInfo) -> String:
 	return seed.display_name
 func _setup_seed_choices() -> void:
 	for i in range(seed_choices.size()):
@@ -239,7 +239,7 @@ func _reroll_seed_options() -> void:
 	if skills.is_empty():
 		return
 	skills.shuffle()
-	var rerolled_options: Array[DreamSeedSkillDefinition] = []
+	var rerolled_options: Array[SeedInfo] = []
 	for i in range(seed_choices.size()):
 		var seed := _get_seed_option(i)
 		if seed == null:
@@ -248,7 +248,7 @@ func _reroll_seed_options() -> void:
 	seed_options = rerolled_options
 
 
-func _get_reroll_seed_skill_candidates() -> Array[DreamSeedSkillDefinition]:
+func _get_reroll_seed_skill_candidates() -> Array[SeedInfo]:
 	return reward_service.get_stage_seed_options(_base_seed_options, _current_clear_stage)
 
 
@@ -276,14 +276,13 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 	if seed == null:
 		return
 	hp_view.set_planned_recovery_rate(_get_seed_choice_recovery_rate(seed_index))
-	var flower := reward_service.create_seed_flower(seed)
 	if _can_plant_seed(seed):
-		planted_flowers.append(flower)
+		planted_flowers.append(seed)
 		_refresh_after_reward_state_changed()
 		var recovered_rate := _apply_selection_recovery(0.0)
 		_finish_seed_choice(recovered_rate, "%sを植えました" % _get_seed_display_name(seed))
 		return
-	reward_service.replace_first_flower(planted_flowers, flower)
+	reward_service.replace_first_flower(planted_flowers, seed)
 	_refresh_after_reward_state_changed()
 	var replacement_recovered_rate := _apply_selection_recovery(0.0)
 	_finish_seed_choice(replacement_recovered_rate, "%sを植え替えました" % _get_seed_display_name(seed))
@@ -306,7 +305,7 @@ func _show_finished_mode(message: String) -> void:
 		slot.disabled = true
 	_update_reroll_button_state()
 	_update_hp_heal_plan()
-func _can_plant_seed(seed: DreamSeedSkillDefinition) -> bool:
+func _can_plant_seed(seed: SeedInfo) -> bool:
 	return reward_service.can_plant_seed(seed, planted_flowers, max_flowers)
 
 
@@ -338,7 +337,7 @@ func _get_abandon_extra_recovery_rate() -> float:
 	if StageClearRecoveryCalculator.is_clear_time_recovery_disabled(planted_flowers):
 		return 0.0
 	return ABANDON_HP_RECOVERY_RATE
-func _get_preview_flowers_for_seed(seed: DreamSeedSkillDefinition) -> Array[SeedInfo]:
+func _get_preview_flowers_for_seed(seed: SeedInfo) -> Array[SeedInfo]:
 	return reward_service.get_preview_flowers_for_seed(seed, planted_flowers, max_flowers)
 
 
@@ -398,9 +397,9 @@ func _get_display_flower_textures() -> Array[Texture2D]:
 			textures.append(texture)
 	return textures
 func _get_display_flower_texture(flower: SeedInfo) -> Texture2D:
-	if flower == null or flower.dream_seed_skill == null:
+	if flower == null:
 		return null
-	return flower.dream_seed_skill.texture
+	return flower.texture
 func _set_hp(value: int, animated: bool) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	hp_view.set_hp(current_hp, MAX_HP, animated)

@@ -9,7 +9,7 @@ const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
 const DREAM_SEED_SPECIAL_EXTRA_CHOICE_START_HOUR := 28
 
 
-static func can_plant_seed(seed_skill: DreamSeedSkillDefinition, planted_flowers: Array[SeedInfo], max_flowers: int) -> bool:
+static func can_plant_seed(seed_skill: SeedInfo, planted_flowers: Array[SeedInfo], max_flowers: int) -> bool:
 	if seed_skill == null:
 		return false
 	return count_planted_flowers(planted_flowers) < max_flowers
@@ -58,20 +58,18 @@ static func get_clear_time_recovery_rate(
 static func get_seed_bonus_rate(planted_flowers: Array[SeedInfo]) -> float:
 	var bonus_rate := 0.0
 	for flower in planted_flowers:
-		if flower == null or flower.dream_seed_skill == null:
+		if flower == null:
 			continue
-		var skill := flower.dream_seed_skill
-		if skill.skill_id == DREAM_SEED_CLEAR_RECOVERY_UP and skill.category == CATEGORY_DREAM_FLOWER:
+		if flower.skill_id == DREAM_SEED_CLEAR_RECOVERY_UP and flower.category == CATEGORY_DREAM_FLOWER:
 			bonus_rate += SKILL_2_CLEAR_RECOVERY_BONUS_RATE
 	return bonus_rate
 
 
 static func is_clear_time_recovery_disabled(planted_flowers: Array[SeedInfo]) -> bool:
 	for flower in planted_flowers:
-		if flower == null or flower.dream_seed_skill == null:
+		if flower == null:
 			continue
-		var skill := flower.dream_seed_skill
-		if skill.skill_id == DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE and skill.category == CATEGORY_SPECIAL_TIME:
+		if flower.skill_id == DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE and flower.category == CATEGORY_SPECIAL_TIME:
 			return true
 	return false
 

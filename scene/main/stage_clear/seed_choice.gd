@@ -11,7 +11,7 @@ const TWEEN_DURATION := 0.1
 @onready var name_label: Label = $NameLabel
 @onready var effect_label: Label = $EffectLabel
 
-var current_seed: DreamSeedSkillDefinition
+var current_seed: SeedInfo
 var debug_numbers_visible := false
 var _base_scale := Vector2.ONE
 var _base_frame_texture: Texture2D
@@ -30,7 +30,7 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 
-func setup_choice(seed: DreamSeedSkillDefinition) -> void:
+func setup_choice(seed: SeedInfo) -> void:
 	current_seed = seed
 	name_label.text = _get_seed_name_text(seed)
 	effect_label.text = _get_seed_effect_text(seed)
@@ -96,18 +96,18 @@ func _reset_scale_state() -> void:
 	frame.scale = _base_scale
 
 
-func _get_seed_display_name(seed: DreamSeedSkillDefinition) -> String:
+func _get_seed_display_name(seed: SeedInfo) -> String:
 	return seed.display_name
 
 
-func _get_seed_name_text(seed: DreamSeedSkillDefinition) -> String:
+func _get_seed_name_text(seed: SeedInfo) -> String:
 	var display_name := _get_seed_display_name(seed)
 	if not debug_numbers_visible:
 		return display_name
 	return "%s ID:%d" % [display_name, seed.skill_id]
 
 
-func _get_seed_effect_text(seed: DreamSeedSkillDefinition) -> String:
+func _get_seed_effect_text(seed: SeedInfo) -> String:
 	var lines: Array[String] = [
 		"メインスキル: %s" % DreamSeedSkillDescriptionFormatter.get_main_description(seed),
 	]
@@ -117,5 +117,5 @@ func _get_seed_effect_text(seed: DreamSeedSkillDefinition) -> String:
 	return "\n".join(lines)
 
 
-func _is_rare_dream_seed(seed: DreamSeedSkillDefinition) -> bool:
-	return seed.rarity == DreamSeedSkillDefinition.Rarity.RARE
+func _is_rare_dream_seed(seed: SeedInfo) -> bool:
+	return seed.rarity == SeedInfo.Rarity.RARE

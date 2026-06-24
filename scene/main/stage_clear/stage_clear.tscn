@@ -11,7 +11,7 @@
 [ext_resource type="Resource" uid="uid://bg1b12x08p6jm" path="res://data/resources/seeds/skills/seed_skill_1000_003.tres" id="14_seed_skill_1003"]
 [ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/dream_seed_skill_button/dream_seed_skill_button_list.gd" id="15_dream_seed_skill_button_list"]
 [ext_resource type="PackedScene" uid="uid://bfh6kan0q3y4s" path="res://scene/main/stage_clear/abandon_button.tscn" id="16_abandon_button"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/seed/seed_skill_definition.gd" id="17_seed_skill_definition"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/seed/seed_info.gd" id="17_seed_skill_definition"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")

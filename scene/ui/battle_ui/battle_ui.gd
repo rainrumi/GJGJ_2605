@@ -6,9 +6,9 @@ signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
-signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
-signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
-signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
+signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
+signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
+signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
 
 @onready var digest_damage_panel: Control = $DigestiveDMG
 @onready var digest_damage_icon: Control = $DigestiveDMG/digestiveDMG_icon
@@ -304,7 +304,7 @@ func _on_debug_seed_requested() -> void:
 
 func _on_seed_skill_drag_started(
 	button: DreamSeedSkillButton,
-	seed_skill: DreamSeedSkillDefinition,
+	seed_skill: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
 	seed_skill_drag_started.emit(button, seed_skill, mouse_position)
@@ -312,7 +312,7 @@ func _on_seed_skill_drag_started(
 
 func _on_seed_skill_drag_moved(
 	button: DreamSeedSkillButton,
-	seed_skill: DreamSeedSkillDefinition,
+	seed_skill: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
 	seed_skill_drag_moved.emit(button, seed_skill, mouse_position)
@@ -320,7 +320,7 @@ func _on_seed_skill_drag_moved(
 
 func _on_seed_skill_drag_released(
 	button: DreamSeedSkillButton,
-	seed_skill: DreamSeedSkillDefinition,
+	seed_skill: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
 	seed_skill_drag_released.emit(button, seed_skill, mouse_position)

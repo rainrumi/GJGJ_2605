@@ -1,9 +1,9 @@
 class_name DreamSeedSkillButton
 extends Button
 
-signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
-signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
-signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: DreamSeedSkillDefinition, mouse_position: Vector2)
+signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
+signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
+signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
 
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
 const TOOLTIP_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_seed_skill_tooltip.tscn")
@@ -16,7 +16,7 @@ const SUB_SKILL_USE_COUNT := 1
 
 var source_data: Resource
 var icon_source_data: Resource
-var seed_skill: DreamSeedSkillDefinition
+var seed_skill: SeedInfo
 var tooltip_panel: DreamSeedSkillTooltipView
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
@@ -41,10 +41,7 @@ func set_seed_source(source: Resource) -> void:
 	source_data = source
 	seed_skill = null
 	if source is SeedInfo:
-		var flower := source as SeedInfo
-		seed_skill = flower.dream_seed_skill
-	elif source is DreamSeedSkillDefinition:
-		seed_skill = source as DreamSeedSkillDefinition
+		seed_skill = source as SeedInfo
 	set_seed_icon_source(source)
 	_display_remaining_sub_skill_uses = SUB_SKILL_USE_COUNT if _has_sub_skill() else 0
 	disabled = seed_skill == null
@@ -56,8 +53,8 @@ func set_seed_icon_source(source: Resource) -> void:
 	icon_source_data = source
 	if source is SeedInfo:
 		set_seed_icon_texture((source as SeedInfo).texture)
-	elif source is DreamSeedSkillDefinition:
-		set_seed_icon_texture((source as DreamSeedSkillDefinition).texture)
+	elif source is SeedInfo:
+		set_seed_icon_texture((source as SeedInfo).texture)
 	else:
 		set_seed_icon_texture(null)
 
@@ -170,7 +167,7 @@ func _get_title_text() -> String:
 
 
 func _is_rare_seed() -> bool:
-	return seed_skill != null and seed_skill.rarity == DreamSeedSkillDefinition.Rarity.RARE
+	return seed_skill != null and seed_skill.rarity == SeedInfo.Rarity.RARE
 
 
 func _try_use_sub_skill(mouse_position: Vector2) -> void:
@@ -181,7 +178,7 @@ func _try_use_sub_skill(mouse_position: Vector2) -> void:
 
 
 func _can_use_sub_skill() -> bool:
-	return sub_skill_drag_enabled and seed_skill != null and seed_skill.sub_skill_mode != DreamSeedSkillDefinition.SubSkillMode.None and _has_sub_skill() and _display_remaining_sub_skill_uses > 0
+	return sub_skill_drag_enabled and seed_skill != null and seed_skill.sub_skill_mode != SeedInfo.SubSkillMode.None and _has_sub_skill() and _display_remaining_sub_skill_uses > 0
 
 
 func _has_sub_skill() -> bool:

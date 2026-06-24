@@ -157,7 +157,7 @@ func get_time_reduction_rate(consume_pending_bonus := false, minutes := 0) -> fl
 	return clampf(rate, -2.0, 0.9)
 
 
-func add_digested_seed_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
+func add_digested_seed_effect(seed_skill: SeedInfo) -> bool:
 	if seed_skill == null:
 		return false
 	match seed_skill.skill_id:
@@ -247,9 +247,9 @@ func get_rest_recovery_bonus_rate() -> float:
 func get_seed_skill_id_text() -> String:
 	var seed_ids: Array[String] = []
 	for flower in _planted_flowers:
-		if flower == null or flower.dream_seed_skill == null:
+		if flower == null:
 			continue
-		seed_ids.append(str(flower.dream_seed_skill.skill_id))
+		seed_ids.append(str(flower.skill_id))
 	if seed_ids.is_empty():
 		return "-"
 	return ",".join(seed_ids)
@@ -504,17 +504,17 @@ func _get_daily_growth_rate(source_day: int) -> float:
 	return rate
 
 
-func _get_planted_seed_skills() -> Array[DreamSeedSkillDefinition]:
-	var skills: Array[DreamSeedSkillDefinition] = []
+func _get_planted_seed_skills() -> Array[SeedInfo]:
+	var skills: Array[SeedInfo] = []
 	for flower in _planted_flowers:
-		if flower != null and flower.dream_seed_skill != null:
-			skills.append(flower.dream_seed_skill)
+		if flower != null:
+			skills.append(flower)
 	return skills
 
 
-func _is_dream_flower_skill(skill: DreamSeedSkillDefinition, skill_id: int) -> bool:
+func _is_dream_flower_skill(skill: SeedInfo, skill_id: int) -> bool:
 	return skill != null and skill.skill_id == skill_id and skill.category == CATEGORY_DREAM_FLOWER
 
 
-func _is_special_time_skill(skill: DreamSeedSkillDefinition, skill_id: int) -> bool:
+func _is_special_time_skill(skill: SeedInfo, skill_id: int) -> bool:
 	return skill != null and skill.skill_id == skill_id and skill.category == CATEGORY_SPECIAL_TIME

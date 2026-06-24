@@ -16,7 +16,7 @@ const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_100
 @onready var damage_label: Label = $DamageText
 var definition: EnemyDefinition
 var skill_info: NightmareInfo
-var seed_skill_info: DreamSeedSkillDefinition
+var seed_skill_info: SeedInfo
 var has_main_effect := false
 var nightmare_skill_enabled := true
 var max_hp := 0
@@ -106,7 +106,7 @@ func has_seed_skill() -> bool:
 	return seed_skill_info != null
 
 
-func get_seed_skill() -> DreamSeedSkillDefinition:
+func get_seed_skill() -> SeedInfo:
 	return seed_skill_info
 
 
@@ -223,7 +223,7 @@ func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
 	activation_deferred = true
 
 
-func setup_as_seed_stomach_block(seed_skill: DreamSeedSkillDefinition, target_size: Vector2) -> void:
+func setup_as_seed_stomach_block(seed_skill: SeedInfo, target_size: Vector2) -> void:
 	var block_definition := seed_skill.drag_block_definition if seed_skill != null else null
 	if block_definition != null:
 		set_stomach_footprint_override(

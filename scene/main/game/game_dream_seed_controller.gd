@@ -14,7 +14,7 @@ var _stomach: StomachBoard
 var _input_controller: GameInputController
 var _dragging_seed_block: Enemy
 var _dragging_seed_button: DreamSeedSkillButton
-var _dragging_seed_skill: DreamSeedSkillDefinition
+var _dragging_seed_skill: SeedInfo
 var _pending_depleted_sources_by_block: Dictionary = {}
 var debug_factory := DreamSeedDebugFactory.new()
 
@@ -71,13 +71,13 @@ func remove_source(source: Resource) -> void:
 		if flower == source:
 			_flowers.remove_at(i)
 			continue
-		if source is DreamSeedSkillDefinition and flower != null and flower.dream_seed_skill == source:
+		if source is SeedInfo:
 			_flowers.remove_at(i)
 
 
 func start_drag(
 	button: DreamSeedSkillButton,
-	seed_skill: DreamSeedSkillDefinition,
+	seed_skill: SeedInfo,
 	mouse_position: Vector2
 ) -> DreamSeedDragResult:
 	var result := DreamSeedDragResult.new()
@@ -141,7 +141,7 @@ func is_dragging() -> bool:
 
 
 func _create_seed_block(
-	seed_skill: DreamSeedSkillDefinition
+	seed_skill: SeedInfo
 ) -> Enemy:
 	if seed_skill == null:
 		return null
@@ -183,17 +183,17 @@ func cancel_seed_block(seed_block: Enemy) -> void:
 		seed_block.queue_free()
 
 
-func _get_seed_block_stomach_size(seed_skill: DreamSeedSkillDefinition) -> Vector2i:
+func _get_seed_block_stomach_size(seed_skill: SeedInfo) -> Vector2i:
 	if seed_skill != null and seed_skill.drag_block_definition != null:
 		return seed_skill.drag_block_definition.get_stomach_size()
 	return Vector2i.ONE
 
 
-func _get_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
+func _get_seed_block_template(seed_skill: SeedInfo) -> EnemyDefinition:
 	return _create_seed_block_template(seed_skill)
 
 
-func _create_seed_block_template(seed_skill: DreamSeedSkillDefinition) -> EnemyDefinition:
+func _create_seed_block_template(seed_skill: SeedInfo) -> EnemyDefinition:
 	if seed_skill == null:
 		return null
 	var block_definition := seed_skill.drag_block_definition
@@ -235,8 +235,8 @@ func apply_direct_digested_seed_effects(
 	return next_hp
 
 
-func collect_digested_seed_skills(digested_enemies: Array[Enemy]) -> Array[DreamSeedSkillDefinition]:
-	var skills: Array[DreamSeedSkillDefinition] = []
+func collect_digested_seed_skills(digested_enemies: Array[Enemy]) -> Array[SeedInfo]:
+	var skills: Array[SeedInfo] = []
 	for enemy in digested_enemies:
 		if enemy == null or not enemy.has_seed_skill():
 			continue
@@ -254,7 +254,7 @@ func consume_rest_time_skip() -> bool:
 	return true
 
 
-func _is_direct_controller_effect(seed_skill: DreamSeedSkillDefinition) -> bool:
+func _is_direct_controller_effect(seed_skill: SeedInfo) -> bool:
 	return (
 		seed_skill.skill_id == DREAM_SEED_DIGEST_HP_RECOVERY
 		or seed_skill.skill_id == DREAM_SEED_DIGEST_SKIP_REST_TIME
