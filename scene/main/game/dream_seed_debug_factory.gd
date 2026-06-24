@@ -1,7 +1,7 @@
 class_name DreamSeedDebugFactory
 extends RefCounted
 
-const seed_catalog: SeedCatalog = preload("res://data/resources/seeds/seed_catalog.tres")
+const seed_catalog: SeedCatalogInfo = preload("res://data/resources/seeds/seed_catalog.tres")
 
 
 func create_random_debug_seed_flower() -> SeedInfo:

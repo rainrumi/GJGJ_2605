@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://dq2v34y6rie5c"]
 
-[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage/stage_info.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/info/stage/stage_info.gd" id="1_script"]
 [ext_resource type="Resource" uid="uid://phhhewkn457p" path="res://data/resources/area/area_huwahuwa/area_huwahuwa_enemy.tres" id="2_enemy_data"]
-[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel/novel_text_info.gd" id="3_5av6i"]
+[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/info/novel/novel_text_info.gd" id="3_5av6i"]
 [ext_resource type="Resource" path="res://data/resources/novel/area/area_huwahuwa/novel_area_huwahuwa_event_001.tres" id="3_stage_novel_001"]
 
 [resource]

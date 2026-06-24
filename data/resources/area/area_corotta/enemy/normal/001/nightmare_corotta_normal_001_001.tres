@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="NightmareInfo" format=3 uid="uid://wwkjr82376xj"]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_info.gd" id="1_b63sc"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/nightmare/nightmare_info.gd" id="1_b63sc"]
 
 [resource]
 script = ExtResource("1_b63sc")

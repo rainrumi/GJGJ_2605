@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="StageDefinition" format=3 uid="uid://dywec106nntv"]
 
-[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/definitions/stage/stage_info.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/info/stage/stage_info.gd" id="1_script"]
 [ext_resource type="Resource" uid="uid://d2iiau6l3gnrl" path="res://data/resources/area/area_eramia/area_eramia_enemy.tres" id="2_enemy_data"]
 [ext_resource type="Resource" path="res://data/resources/novel/area/area_eramia/novel_area_eramia_event_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/area/area_eramia/novel_area_eramia_event_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/area/area_eramia/novel_area_eramia_event_003.tres" id="3_stage_novel_003"]
-[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel/novel_text_info.gd" id="4_4a8ew"]
+[ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/info/novel/novel_text_info.gd" id="4_4a8ew"]
 [ext_resource type="Resource" path="res://data/resources/seeds/location_pool/area_eramia_seed_pool.tres" id="4_seed_pool"]
 
 [resource]

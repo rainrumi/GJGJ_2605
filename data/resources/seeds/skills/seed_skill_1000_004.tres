@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://fbm4hc4uq0w5"]
 
-[ext_resource type="Script" uid="uid://b6q2jv8m5n1xs" path="res://data/definitions/seed/seed_block_info.gd" id="1_3n8c3"]
+[ext_resource type="Script" uid="uid://b6q2jv8m5n1xs" path="res://data/info/seed/seed_block_info.gd" id="1_3n8c3"]
 [ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/seed/seed_info.gd" id="3_g5ndj"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_g5ndj"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
 
 [sub_resource type="Resource" id="Resource_drag_block"]
@@ -12,7 +12,6 @@ texture = ExtResource("4_block_texture")
 [resource]
 script = ExtResource("3_g5ndj")
 skill_id = 1004
-category = "夢の花系統"
 display_name = "アネモネ"
 texture = ExtResource("2_texture")
 drag_block_definition = SubResource("Resource_drag_block")

@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="NightmarePresetInfo" format=3]
 
-[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/definitions/nightmare/nightmare_preset_info.gd" id="1_script"]
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_info.gd" id="1_vhklq"]
-[ext_resource type="Resource" path="res://data/resources/nightmares/stages/stage_11/area_iriyu_enemy_boss_003.tres" id="2_enemy_003"]
+[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/nightmare/nightmare_preset_info.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/nightmare/nightmare_info.gd" id="1_vhklq"]
+[ext_resource type="Resource" uid="uid://bqg7ip1qho5h" path="res://data/resources/nightmares/stages/stage_11/area_iriyu_enemy_boss_003.tres" id="2_enemy_003"]
 
 [resource]
 script = ExtResource("1_script")

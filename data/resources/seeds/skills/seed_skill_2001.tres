@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://by72oo4mnni1l"]
 
-[ext_resource type="Script" uid="uid://b6q2jv8m5n1xs" path="res://data/definitions/seed/seed_block_info.gd" id="1_x2j1n"]
+[ext_resource type="Script" uid="uid://b6q2jv8m5n1xs" path="res://data/info/seed/seed_block_info.gd" id="1_x2j1n"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_4ac6f"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/seed/seed_info.gd" id="3_toeb6"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_toeb6"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="4_jl635"]
 
 [sub_resource type="Resource" id="Resource_drag_block"]
