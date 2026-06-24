@@ -6,7 +6,7 @@
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_CorottaStreet/scenario_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/stages/stage_CorottaStreet/scenario_003.tres" id="3_stage_novel_003"]
 [ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/definitions/novel/novel_text_resource.gd" id="4_fnsc3"]
-[ext_resource type="Resource" path="res://data/resources/seeds/location_pools/corotta_street_seed_pool.tres" id="5_seed_pool"]
+[ext_resource type="Resource" path="res://data/resources/seeds/location_pool/area_corotta_seed_pool.tres" id="5_seed_pool"]
 
 [resource]
 script = ExtResource("1_script")
