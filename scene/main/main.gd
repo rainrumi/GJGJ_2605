@@ -15,8 +15,8 @@ enum NovelFlow {
 	STAGE_UNLOCK,
 }
 
-@export var end_gameover_novel_text: NovelTextResource
-@export var game_clear_novel_text: NovelTextResource
+@export var end_gameover_novel_text: NovelTextInfo
+@export var game_clear_novel_text: NovelTextInfo
 
 @onready var title: Node = $Title
 @onready var opening_novel: OpeningNovel = $OpeningNovel
@@ -31,7 +31,7 @@ enum NovelFlow {
 var run_state := RunState.new()
 var should_reset_player_state := true
 var active_novel_flow := NovelFlow.NONE
-var pending_stage_novel_texts: Array[NovelTextResource] = []
+var pending_stage_novel_texts: Array[NovelTextInfo] = []
 var _settings_paused_tree := false
 var _screen_flow_id := 0
 
@@ -235,8 +235,8 @@ func _finish_end_gameover_novel() -> void:
 	_finish_current_day()
 
 
-func _get_end_gameover_novel_text() -> NovelTextResource:
-	var novel_text := NovelTextResource.new()
+func _get_end_gameover_novel_text() -> NovelTextInfo:
+	var novel_text := NovelTextInfo.new()
 	novel_text.text = end_gameover_novel_text.text if end_gameover_novel_text != null else ""
 	var recovery_percent := 0
 	if game.has_method("get_last_time_over_recovery_percent"):
@@ -284,10 +284,10 @@ func show_game_clear_novel() -> void:
 	opening_novel.start_with_text(_get_game_clear_novel_text())
 
 
-func _get_game_clear_novel_text() -> NovelTextResource:
+func _get_game_clear_novel_text() -> NovelTextInfo:
 	if game_clear_novel_text != null:
 		return game_clear_novel_text
-	var novel_text := NovelTextResource.new()
+	var novel_text := NovelTextInfo.new()
 	novel_text.text = "ゲームクリア！7"
 	return novel_text
 
@@ -313,13 +313,13 @@ func _play_next_stage_unlock_novel() -> bool:
 	if pending_stage_novel_texts.is_empty():
 		active_novel_flow = NovelFlow.NONE
 		return false
-	var novel_text := pending_stage_novel_texts.pop_front() as NovelTextResource
+	var novel_text := pending_stage_novel_texts.pop_front() as NovelTextInfo
 	opening_novel.start_with_text(novel_text)
 	return true
 
 
-func _collect_unplayed_stage_unlock_novels() -> Array[NovelTextResource]:
-	var novel_texts: Array[NovelTextResource] = []
+func _collect_unplayed_stage_unlock_novels() -> Array[NovelTextInfo]:
+	var novel_texts: Array[NovelTextInfo] = []
 	var unlocked_stage_novel_texts := _collect_unplayed_non_recurring_stage_unlock_novels()
 	if not unlocked_stage_novel_texts.is_empty():
 		return unlocked_stage_novel_texts
@@ -329,8 +329,8 @@ func _collect_unplayed_stage_unlock_novels() -> Array[NovelTextResource]:
 	return novel_texts
 
 
-func _collect_unplayed_non_recurring_stage_unlock_novels() -> Array[NovelTextResource]:
-	var novel_texts: Array[NovelTextResource] = []
+func _collect_unplayed_non_recurring_stage_unlock_novels() -> Array[NovelTextInfo]:
+	var novel_texts: Array[NovelTextInfo] = []
 	for stage in _get_stage_definitions_for_progress():
 		if stage == null or stage.is_high_difficulty:
 			continue
@@ -345,17 +345,17 @@ func _collect_unplayed_non_recurring_stage_unlock_novels() -> Array[NovelTextRes
 	return novel_texts
 
 
-func _get_recurring_stage_unlock_novel_text() -> NovelTextResource:
+func _get_recurring_stage_unlock_novel_text() -> NovelTextInfo:
 	var template := _load_stage_unlock_novel_text(RECURRING_STAGE_NOVEL_STAGE_ID, RECURRING_STAGE_NOVEL_SCENARIO_INDEX)
 	if template == null:
 		return null
-	var novel_text := NovelTextResource.new()
+	var novel_text := NovelTextInfo.new()
 	var high_difficulty_count := int(run_state.current_day / HIGH_DIFFICULTY_DAY_INTERVAL)
 	novel_text.text = template.text % high_difficulty_count
 	return novel_text
 
 
-func _load_stage_unlock_novel_text(stage_id: int, scenario_index: int) -> NovelTextResource:
+func _load_stage_unlock_novel_text(stage_id: int, scenario_index: int) -> NovelTextInfo:
 	if not stage_select.has_method("get_stage_definition_by_id"):
 		return null
 	var stage := stage_select.call("get_stage_definition_by_id", stage_id) as StageInfo

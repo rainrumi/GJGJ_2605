@@ -3,7 +3,7 @@ extends CanvasLayer
 
 signal finished
 
-@export var novel_text: NovelTextResource
+@export var novel_text: NovelTextInfo
 
 @onready var screen: Control = $Screen
 @onready var opening_still: TextureRect = $Screen/OpeningStill
@@ -33,7 +33,7 @@ func start() -> void:
 	_show_current_page()
 
 
-func start_with_text(next_novel_text: NovelTextResource) -> void:
+func start_with_text(next_novel_text: NovelTextInfo) -> void:
 	_pages = next_novel_text.get_pages() if next_novel_text != null else []
 	_page_index = 0
 	_is_showing = true

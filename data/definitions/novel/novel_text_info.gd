@@ -1,4 +1,4 @@
-class_name NovelTextResource
+class_name NovelTextInfo
 extends Resource
 
 @export_multiline var text := ""
