@@ -1,7 +1,7 @@
 class_name DreamSeedDebugFactory
 extends RefCounted
 
-const DREAM_SEED_SKILL_CATALOG: DreamSeedSkillCatalog = preload("res://data/resources/seeds/dream_seed_skill_catalog.tres")
+const seed_catalog: SeedCatalog = preload("res://data/resources/seeds/seed_catalog.tres")
 
 
 func create_random_debug_seed_flower() -> SeedInfo:
@@ -13,8 +13,8 @@ func create_random_debug_seed_flower() -> SeedInfo:
 
 func _get_debug_seed_flower_candidates() -> Array[SeedInfo]:
 	var candidates: Array[SeedInfo] = []
-	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG.normal_skills)
-	_append_debug_seed_flower_candidates(candidates, DREAM_SEED_SKILL_CATALOG.rare_skills)
+	_append_debug_seed_flower_candidates(candidates, seed_catalog.normal_skills)
+	_append_debug_seed_flower_candidates(candidates, seed_catalog.rare_skills)
 	return candidates
 
 

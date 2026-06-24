@@ -1,4 +1,4 @@
-class_name DreamSeedSkillCatalog
+class_name SeedCatalog
 extends Resource
 
 @export var normal_skills: Array[SeedInfo] = []

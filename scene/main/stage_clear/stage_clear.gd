@@ -94,7 +94,7 @@ func remove_planted_flower(source: Resource) -> void:
 		if flower == source:
 			planted_flowers.remove_at(i)
 			continue
-		if source is SeedInfo and flower != null and flower.dream_seed_skill == source:
+		if source is SeedInfo:
 			planted_flowers.remove_at(i)
 	if is_node_ready():
 		_refresh_after_reward_state_changed()
