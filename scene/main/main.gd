@@ -428,8 +428,8 @@ func _get_starting_hp(reset_player_state: bool) -> int:
 	return run_state.current_hp
 
 
-func _get_planted_flowers() -> Array[FlowerDefinition]:
-	var flowers: Array[FlowerDefinition] = []
+func _get_planted_flowers() -> Array[SeedInfo]:
+	var flowers: Array[SeedInfo] = []
 	for flower in run_state.planted_flowers:
 		if flower != null:
 			flowers.append(flower)

@@ -1,4 +1,4 @@
-class_name DreamSeedDragBlockDefinition
+class_name SeedBlockInfo
 extends Resource
 
 @export var max_hp := 1

@@ -40,8 +40,8 @@ func _ready() -> void:
 func set_seed_source(source: Resource) -> void:
 	source_data = source
 	seed_skill = null
-	if source is FlowerDefinition:
-		var flower := source as FlowerDefinition
+	if source is SeedInfo:
+		var flower := source as SeedInfo
 		seed_skill = flower.dream_seed_skill
 	elif source is DreamSeedSkillDefinition:
 		seed_skill = source as DreamSeedSkillDefinition
@@ -54,8 +54,8 @@ func set_seed_source(source: Resource) -> void:
 
 func set_seed_icon_source(source: Resource) -> void:
 	icon_source_data = source
-	if source is FlowerDefinition:
-		set_seed_icon_texture((source as FlowerDefinition).texture)
+	if source is SeedInfo:
+		set_seed_icon_texture((source as SeedInfo).texture)
 	elif source is DreamSeedSkillDefinition:
 		set_seed_icon_texture((source as DreamSeedSkillDefinition).texture)
 	else:

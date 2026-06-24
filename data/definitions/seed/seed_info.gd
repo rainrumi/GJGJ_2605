@@ -1,4 +1,4 @@
-class_name FlowerDefinition
+class_name SeedInfo
 extends Resource
 
 @export var display_name := ""

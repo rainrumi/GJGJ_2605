@@ -16,7 +16,7 @@ var stomach_columns := DEFAULT_STOMACH_COLUMNS
 var stomach_rows := DEFAULT_STOMACH_ROWS
 var selected_stage_id := 0
 var selected_stage: StageDefinition
-var planted_flowers: Array[FlowerDefinition] = []
+var planted_flowers: Array[SeedInfo] = []
 var last_time_over_recovery_percent := 0
 var normal_enemy_preset_indices := {}
 var strengthened_enemy_preset_indices := {}

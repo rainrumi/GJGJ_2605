@@ -8,7 +8,7 @@ const DREAM_SEED_DIGEST_HP_RECOVERY_RATE := 0.05
 const DREAM_SEED_DIGEST_SKIP_REST_TIME := 1004
 
 var rest_time_skip_count := 0
-var _flowers: Array[FlowerDefinition] = []
+var _flowers: Array[SeedInfo] = []
 var _owner: Node
 var _stomach: StomachBoard
 var _input_controller: GameInputController
@@ -34,11 +34,11 @@ func set_flowers(flowers: Array) -> void:
 	_pending_depleted_sources_by_block.clear()
 	rest_time_skip_count = 0
 	for flower in flowers:
-		if flower is FlowerDefinition:
-			_flowers.append(flower as FlowerDefinition)
+		if flower is SeedInfo:
+			_flowers.append(flower as SeedInfo)
 
 
-func get_flowers() -> Array[FlowerDefinition]:
+func get_flowers() -> Array[SeedInfo]:
 	return _flowers
 
 

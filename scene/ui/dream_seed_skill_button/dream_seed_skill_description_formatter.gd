@@ -72,7 +72,7 @@ static func _should_append_block_status(skill: DreamSeedSkillDefinition, descrip
 	)
 
 
-static func _get_block_definition(skill: DreamSeedSkillDefinition) -> DreamSeedDragBlockDefinition:
+static func _get_block_definition(skill: DreamSeedSkillDefinition) -> SeedBlockInfo:
 	if skill == null:
 		return null
 	return skill.drag_block_definition

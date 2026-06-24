@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="DreamSeedSkillDefinition" format=3 uid="uid://bdka8ug6a342k"]
 
-[ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/seed/seed_drag_block_definition.gd" id="1_h4lmg"]
+[ext_resource type="Script" uid="uid://dixt8ivg20mmc" path="res://data/definitions/seed/seed_block_info.gd" id="1_h4lmg"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/definitions/seed/seed_skill_definition.gd" id="3_t12jc"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]

@@ -2,10 +2,10 @@ class_name StageClearRewardService
 extends RefCounted
 
 
-func create_seed_flower(seed_skill: DreamSeedSkillDefinition) -> FlowerDefinition:
+func create_seed_flower(seed_skill: DreamSeedSkillDefinition) -> SeedInfo:
 	if seed_skill == null:
 		return null
-	var flower := FlowerDefinition.new()
+	var flower := SeedInfo.new()
 	flower.display_name = seed_skill.display_name
 	flower.texture = seed_skill.texture
 	flower.dream_seed_skill = seed_skill
@@ -14,13 +14,13 @@ func create_seed_flower(seed_skill: DreamSeedSkillDefinition) -> FlowerDefinitio
 
 func can_plant_seed(
 	seed_skill: DreamSeedSkillDefinition,
-	planted_flowers: Array[FlowerDefinition],
+	planted_flowers: Array[SeedInfo],
 	max_flowers: int
 ) -> bool:
 	return StageClearRecoveryCalculator.can_plant_seed(seed_skill, planted_flowers, max_flowers)
 
 
-func replace_first_flower(planted_flowers: Array[FlowerDefinition], flower: FlowerDefinition) -> void:
+func replace_first_flower(planted_flowers: Array[SeedInfo], flower: SeedInfo) -> void:
 	if flower == null:
 		return
 	for i in range(planted_flowers.size()):
@@ -32,10 +32,10 @@ func replace_first_flower(planted_flowers: Array[FlowerDefinition], flower: Flow
 
 func get_preview_flowers_for_seed(
 	seed_skill: DreamSeedSkillDefinition,
-	planted_flowers: Array[FlowerDefinition],
+	planted_flowers: Array[SeedInfo],
 	max_flowers: int
-) -> Array[FlowerDefinition]:
-	var preview_flowers: Array[FlowerDefinition] = []
+) -> Array[SeedInfo]:
+	var preview_flowers: Array[SeedInfo] = []
 	for flower in planted_flowers:
 		preview_flowers.append(flower)
 	var flower := create_seed_flower(seed_skill)

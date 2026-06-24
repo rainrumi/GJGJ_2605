@@ -71,14 +71,14 @@ var last_hp_loss := 0
 var revive_count := 0
 var day := 1
 var remove_from_stomach_disabled := false
-var _planted_flowers: Array[FlowerDefinition] = []
+var _planted_flowers: Array[SeedInfo] = []
 
 
 func setup(flowers: Array) -> void:
 	_planted_flowers.clear()
 	for flower in flowers:
-		if flower is FlowerDefinition:
-			_planted_flowers.append(flower as FlowerDefinition)
+		if flower is SeedInfo:
+			_planted_flowers.append(flower as SeedInfo)
 	next_digest_damage_bonus_rate = 0.0
 	next_time_reduction_bonus_rate = 0.0
 	next_digest_damage_flat_bonus = 0

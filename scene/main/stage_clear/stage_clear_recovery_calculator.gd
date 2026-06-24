@@ -9,13 +9,13 @@ const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
 const DREAM_SEED_SPECIAL_EXTRA_CHOICE_START_HOUR := 28
 
 
-static func can_plant_seed(seed_skill: DreamSeedSkillDefinition, planted_flowers: Array[FlowerDefinition], max_flowers: int) -> bool:
+static func can_plant_seed(seed_skill: DreamSeedSkillDefinition, planted_flowers: Array[SeedInfo], max_flowers: int) -> bool:
 	if seed_skill == null:
 		return false
 	return count_planted_flowers(planted_flowers) < max_flowers
 
 
-static func count_planted_flowers(planted_flowers: Array[FlowerDefinition]) -> int:
+static func count_planted_flowers(planted_flowers: Array[SeedInfo]) -> int:
 	var count := 0
 	for flower in planted_flowers:
 		if flower != null:
@@ -24,7 +24,7 @@ static func count_planted_flowers(planted_flowers: Array[FlowerDefinition]) -> i
 
 
 static func get_planned_recovery_rate(
-	planted_flowers: Array[FlowerDefinition],
+	planted_flowers: Array[SeedInfo],
 	clear_minutes: int,
 	recovery_applied: bool,
 	start_hour: int,
@@ -38,7 +38,7 @@ static func get_planned_recovery_rate(
 
 
 static func get_clear_time_recovery_rate(
-	planted_flowers: Array[FlowerDefinition],
+	planted_flowers: Array[SeedInfo],
 	clear_minutes: int,
 	start_hour: int,
 	end_hour: int,
@@ -55,7 +55,7 @@ static func get_clear_time_recovery_rate(
 	return maxf(0.0, base_rate - float(clear_hour - start_hour) * hourly_loss_rate)
 
 
-static func get_seed_bonus_rate(planted_flowers: Array[FlowerDefinition]) -> float:
+static func get_seed_bonus_rate(planted_flowers: Array[SeedInfo]) -> float:
 	var bonus_rate := 0.0
 	for flower in planted_flowers:
 		if flower == null or flower.dream_seed_skill == null:
@@ -66,7 +66,7 @@ static func get_seed_bonus_rate(planted_flowers: Array[FlowerDefinition]) -> flo
 	return bonus_rate
 
 
-static func is_clear_time_recovery_disabled(planted_flowers: Array[FlowerDefinition]) -> bool:
+static func is_clear_time_recovery_disabled(planted_flowers: Array[SeedInfo]) -> bool:
 	for flower in planted_flowers:
 		if flower == null or flower.dream_seed_skill == null:
 			continue
@@ -76,7 +76,7 @@ static func is_clear_time_recovery_disabled(planted_flowers: Array[FlowerDefinit
 	return false
 
 
-static func grants_extra_seed_choice(planted_flowers: Array[FlowerDefinition], clear_minutes: int) -> bool:
+static func grants_extra_seed_choice(planted_flowers: Array[SeedInfo], clear_minutes: int) -> bool:
 	if clear_minutes < DREAM_SEED_SPECIAL_EXTRA_CHOICE_START_HOUR * 60:
 		return false
 	return is_clear_time_recovery_disabled(planted_flowers)

@@ -56,8 +56,8 @@ func _clear_buttons() -> void:
 
 
 func _has_seed_skill(source: Resource) -> bool:
-	if source is FlowerDefinition:
-		return (source as FlowerDefinition).dream_seed_skill != null
+	if source is SeedInfo:
+		return (source as SeedInfo).dream_seed_skill != null
 	return source is DreamSeedSkillDefinition
 
 

@@ -13,7 +13,7 @@ const DEBUG_BUTTON_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
 const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @export var max_flowers := 50
-@export var initial_flower: FlowerDefinition
+@export var initial_flower: SeedInfo
 @export var seed_options: Array[DreamSeedSkillDefinition] = []
 @onready var hp_view: HpView = $CharacterArea/HpFrame
 @onready var dream_seed_skill_buttons: DreamSeedSkillButtonList = $CharacterArea/DreamSeedSkillButtons
@@ -31,7 +31,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 	$CharacterArea/FlowerSlots/FlowerSlot2 as Button,
 	$CharacterArea/FlowerSlots/FlowerSlot3 as Button,
 ]
-var planted_flowers: Array[FlowerDefinition] = []
+var planted_flowers: Array[SeedInfo] = []
 var current_hp := MAX_HP
 var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
 var _clear_recovery_applied := false
@@ -78,8 +78,8 @@ func reset_player_state() -> void:
 		_show_select_mode()
 func get_current_hp() -> int:
 	return current_hp
-func get_planted_flowers() -> Array[FlowerDefinition]:
-	var flowers: Array[FlowerDefinition] = []
+func get_planted_flowers() -> Array[SeedInfo]:
+	var flowers: Array[SeedInfo] = []
 	for flower in planted_flowers:
 		if flower != null:
 			flowers.append(flower)
@@ -338,7 +338,7 @@ func _get_abandon_extra_recovery_rate() -> float:
 	if StageClearRecoveryCalculator.is_clear_time_recovery_disabled(planted_flowers):
 		return 0.0
 	return ABANDON_HP_RECOVERY_RATE
-func _get_preview_flowers_for_seed(seed: DreamSeedSkillDefinition) -> Array[FlowerDefinition]:
+func _get_preview_flowers_for_seed(seed: DreamSeedSkillDefinition) -> Array[SeedInfo]:
 	return reward_service.get_preview_flowers_for_seed(seed, planted_flowers, max_flowers)
 
 
@@ -397,7 +397,7 @@ func _get_display_flower_textures() -> Array[Texture2D]:
 		if texture != null:
 			textures.append(texture)
 	return textures
-func _get_display_flower_texture(flower: FlowerDefinition) -> Texture2D:
+func _get_display_flower_texture(flower: SeedInfo) -> Texture2D:
 	if flower == null or flower.dream_seed_skill == null:
 		return null
 	return flower.dream_seed_skill.texture
