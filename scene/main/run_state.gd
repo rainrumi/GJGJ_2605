@@ -41,7 +41,7 @@ func reset() -> void:
 	played_stage_novel_indices.clear()
 
 
-func pick_enemy_preset(stage: StageDefinition) -> EnemyPresetDefinition:
+func pick_enemy_preset(stage: StageDefinition) -> NightmarePresetInfo:
 	if stage == null or stage.enemy_data == null:
 		return null
 	if stage.is_high_difficulty:
@@ -49,7 +49,7 @@ func pick_enemy_preset(stage: StageDefinition) -> EnemyPresetDefinition:
 	return _pick_normal_enemy_preset(stage)
 
 
-func _pick_normal_enemy_preset(stage: StageDefinition) -> EnemyPresetDefinition:
+func _pick_normal_enemy_preset(stage: StageDefinition) -> NightmarePresetInfo:
 	var key := _get_stage_progress_key(stage)
 	var index := int(normal_enemy_preset_indices.get(key, 0))
 	var preset := stage.enemy_data.get_normal_enemy_preset(index)
@@ -59,7 +59,7 @@ func _pick_normal_enemy_preset(stage: StageDefinition) -> EnemyPresetDefinition:
 	return stage.enemy_data.pick_endless_enemy_preset()
 
 
-func _pick_strengthened_enemy_preset(stage: StageDefinition) -> EnemyPresetDefinition:
+func _pick_strengthened_enemy_preset(stage: StageDefinition) -> NightmarePresetInfo:
 	var key := _get_stage_progress_key(stage)
 	var index := int(strengthened_enemy_preset_indices.get(key, 0))
 	var unlocked_count := get_strengthened_enemy_unlock_count(stage)

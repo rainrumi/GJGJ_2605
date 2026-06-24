@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="StageEnemySetDefinition" format=3 uid="uid://t3lu6n1fnus0"]
 
-[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://scene/object/enemy/enemy_preset_definition.gd" id="1_0yywi"]
+[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/definitions/nightmare/nightmare_preset_info.gd" id="1_0yywi"]
 [ext_resource type="Script" uid="uid://clqarc0s67i01" path="res://data/definitions/stage/stage_enemy_set_definition.gd" id="1_script"]
 [ext_resource type="Resource" uid="uid://dwq3ggvhoqobn" path="res://data/resources/area/area_felis/enemy/normal/area_felis_enemy_normal_001.tres" id="2_normal"]
 [ext_resource type="Resource" uid="uid://i0scv5ctnhxy" path="res://data/resources/area/area_felis/enemy/endless/area_felis_enemy_endless_001.tres" id="3_endless"]

@@ -6,7 +6,7 @@ extends Resource
 @export var max_hp := 0
 @export var size := 0
 @export var damage := 0
-@export var nightmare_skill: NightmareSkillInfo
+@export var nightmare_skill: NightmareInfo
 @export var nightmare_skill_enabled := true
 @export var start_position := Vector2.ZERO
 @export var stomach_size := Vector2i.ONE

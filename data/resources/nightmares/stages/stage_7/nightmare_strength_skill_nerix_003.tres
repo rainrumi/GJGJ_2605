@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="NightmareSkillDefinition" format=3 uid="uid://c1f6m45ejjcft"]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_skill_info.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/definitions/nightmare/nightmare_info.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://ceejcrunogkk" path="res://art/enemy/tex_stomach_block_1000.png" id="2_texture"]
 
 [resource]

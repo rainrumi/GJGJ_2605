@@ -26,7 +26,7 @@ var hp := MAX_HP
 var current_stage_id := 0
 var current_stage: StageDefinition
 var current_day := 1
-var current_enemy_preset: EnemyPresetDefinition
+var current_enemy_preset: NightmarePresetInfo
 var battle_active := false
 var auto_digest_enabled := false
 var auto_digest_paused_for_drag := false
@@ -361,11 +361,11 @@ func _get_battle_enemy_definitions() -> Array[Resource]:
 	return enemy_definitions
 
 
-func _get_battle_enemy_preset() -> EnemyPresetDefinition:
+func _get_battle_enemy_preset() -> NightmarePresetInfo:
 	return current_enemy_preset
 
 
-func _setup_enemy_preset(enemy_preset: EnemyPresetDefinition) -> void:
+func _setup_enemy_preset(enemy_preset: NightmarePresetInfo) -> void:
 	enemy_setup.setup(
 		self,
 		input_controller,

@@ -26,7 +26,7 @@ var _owner: Node
 var _input_controller: GameInputController
 var _stomach: StomachBoard
 var _enemy_definitions: Array[Resource] = []
-var _enemy_preset: EnemyPresetDefinition
+var _enemy_preset: NightmarePresetInfo
 
 
 func setup(
@@ -34,7 +34,7 @@ func setup(
 	input_controller: GameInputController,
 	stomach: StomachBoard,
 	enemy_definitions: Array[Resource],
-	enemy_preset: EnemyPresetDefinition = null
+	enemy_preset: NightmarePresetInfo = null
 ) -> void:
 	_owner = owner
 	_input_controller = input_controller
@@ -151,12 +151,12 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 	return enemy
 
 
-func _get_random_nightmare_skills() -> Array[NightmareSkillInfo]:
+func _get_random_nightmare_skills() -> Array[NightmareInfo]:
 	var skills_by_category: Dictionary = {}
 	return _pick_skills_from_category(skills_by_category)
 
 
-func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[NightmareSkillInfo]:
+func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[NightmareInfo]:
 	var categories := skills_by_category.keys()
 	if categories.is_empty():
 		return []
@@ -166,9 +166,9 @@ func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[Nightma
 	var max_count := mini(4, category_skills.size())
 	var min_count := mini(2, max_count)
 	var count := randi_range(min_count, max_count)
-	var selected: Array[NightmareSkillInfo] = []
+	var selected: Array[NightmareInfo] = []
 	for i in range(count):
-		selected.append(category_skills[i] as NightmareSkillInfo)
+		selected.append(category_skills[i] as NightmareInfo)
 	return selected
 
 
@@ -178,7 +178,7 @@ func _get_enemy_template(enemy_index: int) -> EnemyDefinition:
 	return _enemy_definitions[enemy_index % _enemy_definitions.size()] as EnemyDefinition
 
 
-func _create_nightmare_definition(skill: NightmareSkillInfo) -> EnemyDefinition:
+func _create_nightmare_definition(skill: NightmareInfo) -> EnemyDefinition:
 	var definition := EnemyDefinition.new()
 	definition.display_name = skill.display_name
 	definition.texture = skill.texture
@@ -192,19 +192,19 @@ func _create_nightmare_definition(skill: NightmareSkillInfo) -> EnemyDefinition:
 	return definition
 
 
-func _create_stage_nightmare_skill(source_skill: NightmareSkillInfo) -> NightmareSkillInfo:
-	var skill := source_skill.duplicate(true) as NightmareSkillInfo
+func _create_stage_nightmare_skill(source_skill: NightmareInfo) -> NightmareInfo:
+	var skill := source_skill.duplicate(true) as NightmareInfo
 	skill.nightmare_skill_enabled = skill.skill_id >= STRENGTHENED_NIGHTMARE_SKILL_ID_MIN
 	return skill
 
 
-func _get_nightmare_stomach_size(skill: NightmareSkillInfo) -> Vector2i:
+func _get_nightmare_stomach_size(skill: NightmareInfo) -> Vector2i:
 	if skill.stomach_size.x > 0 and skill.stomach_size.y > 0:
 		return skill.stomach_size
 	return DEFAULT_NIGHTMARE_STOMACH_SIZE
 
 
-func _get_nightmare_stomach_shape(skill: NightmareSkillInfo) -> Array[Vector2i]:
+func _get_nightmare_stomach_shape(skill: NightmareInfo) -> Array[Vector2i]:
 	var shape: Array[Vector2i] = []
 	for cell in skill.stomach_shape:
 		if cell is Vector2i:

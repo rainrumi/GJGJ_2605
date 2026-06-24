@@ -15,7 +15,7 @@ const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_100
 @onready var hp_label: Label = $HPText
 @onready var damage_label: Label = $DamageText
 var definition: EnemyDefinition
-var skill_info: NightmareSkillInfo
+var skill_info: NightmareInfo
 var seed_skill_info: DreamSeedSkillDefinition
 var has_main_effect := false
 var nightmare_skill_enabled := true
@@ -45,7 +45,7 @@ var _stomach_size_override := Vector2i.ZERO
 var _stomach_shape_override: Array[Vector2i] = []
 var _size_override := 0
 var _texture_override: Texture2D
-func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_skill: NightmareSkillInfo = null, has_effect := false, start_position_override := Vector2.INF) -> void:
+func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_skill: NightmareInfo = null, has_effect := false, start_position_override := Vector2.INF) -> void:
 	definition = enemy_definition
 	skill_info = nightmare_skill
 	seed_skill_info = null
@@ -114,7 +114,7 @@ func has_nightmare_skill() -> bool:
 	return skill_info != null
 
 
-func get_nightmare_skill() -> NightmareSkillInfo:
+func get_nightmare_skill() -> NightmareInfo:
 	return skill_info
 
 
