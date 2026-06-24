@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/nightmare/nightmare_preset_info.gd" id="1_b8gld"]
 [ext_resource type="Script" uid="uid://clqarc0s67i01" path="res://data/info/stage/stage_enemy_info.gd" id="1_script"]
-[ext_resource type="Resource" uid="uid://c3asb66olydod" path="res://data/resources/area/area_elmena/enemy/normal/001/area_elmena_enemy_normal_001.tres" id="2_normal"]
-[ext_resource type="Resource" uid="uid://c1xjfds8rcklw" path="res://data/resources/area/area_elmena/enemy/endless/001/area_elmena_enemy_endless_001.tres" id="3_endless"]
-[ext_resource type="Resource" uid="uid://bs7kauvq4thnl" path="res://data/resources/area/area_elmena/enemy/boss/001/area_elmena_enemy_boss_001.tres" id="4_strengthened"]
-[ext_resource type="Resource" path="res://data/resources/area/area_elmena/enemy/boss/002/area_elmena_enemy_boss_002.tres" id="5_strengthened"]
-[ext_resource type="Resource" path="res://data/resources/area/area_elmena/enemy/boss/003/area_elmena_enemy_boss_003.tres" id="6_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_elmena/enemy/normal/001/area_elmena_enemy_normal_preset_001.tres" id="2_normal"]
+[ext_resource type="Resource" path="res://data/resources/area/area_elmena/enemy/endless/001/area_elmena_enemy_endless_preset_001.tres" id="3_endless"]
+[ext_resource type="Resource" path="res://data/resources/area/area_elmena/enemy/boss/001/area_elmena_enemy_boss_preset_001.tres" id="4_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_elmena/enemy/boss/002/area_elmena_enemy_boss_preset_002.tres" id="5_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_elmena/enemy/boss/003/area_elmena_enemy_boss_preset_003.tres" id="6_strengthened"]
 
 [resource]
 script = ExtResource("1_script")

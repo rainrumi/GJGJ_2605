@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/nightmare/nightmare_preset_info.gd" id="1_hyqkw"]
 [ext_resource type="Script" uid="uid://clqarc0s67i01" path="res://data/info/stage/stage_enemy_info.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/enemy/boss/001/area_huwahuwa_enemy_boss_001.tres" id="2_strengthened"]
-[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/enemy/boss/002/area_huwahuwa_enemy_boss_002.tres" id="3_strengthened"]
-[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/enemy/boss/003/area_huwahuwa_enemy_boss_003.tres" id="4_strengthened"]
-[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/enemy/boss/004/area_huwahuwa_enemy_boss_004.tres" id="5_strengthened"]
-[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/enemy/boss/005/area_huwahuwa_enemy_boss_005.tres" id="6_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/enemy/boss/001/area_huwahuwa_enemy_boss_preset_001.tres" id="2_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/enemy/boss/002/area_huwahuwa_enemy_boss_preset_002.tres" id="3_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/enemy/boss/003/area_huwahuwa_enemy_boss_preset_003.tres" id="4_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/enemy/boss/004/area_huwahuwa_enemy_boss_preset_004.tres" id="5_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_huwahuwa/enemy/boss/005/area_huwahuwa_enemy_boss_preset_005.tres" id="6_strengthened"]
 
 [resource]
 script = ExtResource("1_script")
