@@ -41,6 +41,9 @@ func _ready() -> void:
 	settings_screen.title_requested.connect(_on_settings_title_requested)
 	if game.has_method("set_beat_conductor"):
 		game.set_beat_conductor(bgm)
+	var battle_finished_callback := Callable(self, "_on_game_battle_finished")
+	if game.has_signal("battle_finished") and not game.is_connected("battle_finished", battle_finished_callback):
+		game.connect("battle_finished", battle_finished_callback)
 	if game.has_signal("dream_seed_depleted"):
 		game.connect("dream_seed_depleted", Callable(self, "_on_game_dream_seed_depleted"))
 	_play_bgm()

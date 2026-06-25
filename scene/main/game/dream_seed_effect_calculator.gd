@@ -1,8 +1,6 @@
 class_name DreamSeedEffectCalculator
 extends RefCounted
 
-const CATEGORY_DREAM_FLOWER := "夢の花系統"
-const CATEGORY_SPECIAL_TIME := "時間系統"
 const SKILL_1_DIGEST_DAMAGE_RATE := 0.1
 const SKILL_1_BLOCK_DIGEST_DAMAGE_RATE := 0.2
 const SKILL_3_TIME_REDUCTION_RATE := 0.05
@@ -513,8 +511,8 @@ func _get_planted_seed_skills() -> Array[SeedInfo]:
 
 
 func _is_dream_flower_skill(skill: SeedInfo, skill_id: int) -> bool:
-	return skill != null and skill.skill_id == skill_id and skill.category == CATEGORY_DREAM_FLOWER
+	return skill != null and skill.skill_id == skill_id
 
 
 func _is_special_time_skill(skill: SeedInfo, skill_id: int) -> bool:
-	return skill != null and skill.skill_id == skill_id and skill.category == CATEGORY_SPECIAL_TIME
+	return skill != null and skill.skill_id == skill_id
