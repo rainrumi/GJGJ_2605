@@ -22,7 +22,7 @@ enum SubSkillMode {
 # サブスキルの仕様
 @export var sub_skill_mode: SubSkillMode = SubSkillMode.Drag
 # 消化状態の情報
-@export var drag_block_definition: SeedBlockInfo
+@export var acid_block: AcidBlockInfo
 # メイン効果の説明
 @export_multiline var main_description := ""
 # サブ効果の説明

@@ -184,8 +184,8 @@ func cancel_seed_block(seed_block: Enemy) -> void:
 
 
 func _get_seed_block_stomach_size(seed_skill: SeedInfo) -> Vector2i:
-	if seed_skill != null and seed_skill.drag_block_definition != null:
-		return seed_skill.drag_block_definition.get_stomach_size()
+	if seed_skill != null and seed_skill.acid_block != null:
+		return seed_skill.acid_block.get_stomach_size()
 	return Vector2i.ONE
 
 
@@ -196,7 +196,7 @@ func _get_seed_block_template(seed_skill: SeedInfo) -> EnemyDefinition:
 func _create_seed_block_template(seed_skill: SeedInfo) -> EnemyDefinition:
 	if seed_skill == null:
 		return null
-	var block_definition := seed_skill.drag_block_definition
+	var block_definition := seed_skill.acid_block
 	var definition := EnemyDefinition.new()
 	definition.display_name = seed_skill.display_name
 	definition.texture = seed_skill.texture

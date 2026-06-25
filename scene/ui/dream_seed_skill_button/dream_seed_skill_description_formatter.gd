@@ -39,7 +39,7 @@ static func is_block_generation_skill(skill: SeedInfo) -> bool:
 	return (
 		skill != null
 		and skill.sub_skill_mode == SeedInfo.SubSkillMode.Drag
-		and skill.drag_block_definition != null
+		and skill.acid_block != null
 	)
 
 
@@ -62,10 +62,10 @@ static func _should_append_block_status(skill: SeedInfo, description: String) ->
 	)
 
 
-static func _get_block_definition(skill: SeedInfo) -> SeedBlockInfo:
+static func _get_block_definition(skill: SeedInfo) -> AcidBlockInfo:
 	if skill == null:
 		return null
-	return skill.drag_block_definition
+	return skill.acid_block
 
 
 static func _get_or_empty(text: String) -> String:

@@ -1,4 +1,4 @@
-class_name SeedBlockInfo
+class_name AcidBlockInfo
 extends Resource
 
 @export var max_hp := 1

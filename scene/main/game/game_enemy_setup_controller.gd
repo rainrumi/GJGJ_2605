@@ -180,15 +180,29 @@ func _get_enemy_template(enemy_index: int) -> EnemyDefinition:
 
 func _create_nightmare_definition(skill: NightmareInfo) -> EnemyDefinition:
 	var definition := EnemyDefinition.new()
+	if skill == null:
+		return definition
+	
 	definition.display_name = skill.display_name
-	definition.texture = skill.texture
-	definition.max_hp = skill.max_hp if skill.max_hp > 0 else DEFAULT_NIGHTMARE_MAX_HP
-	definition.size = skill.size if skill.size > 0 else DEFAULT_NIGHTMARE_SIZE
-	definition.damage = skill.damage if skill.damage >= 0 else DEFAULT_NIGHTMARE_DAMAGE
 	definition.nightmare_skill = skill
 	definition.nightmare_skill_enabled = skill.nightmare_skill_enabled
-	definition.stomach_size = _get_nightmare_stomach_size(skill)
-	definition.stomach_shape = _get_nightmare_stomach_shape(skill)
+	
+	var block := skill.acid_block
+	if block == null:
+		definition.max_hp = DEFAULT_NIGHTMARE_MAX_HP
+		definition.size = DEFAULT_NIGHTMARE_SIZE
+		definition.damage = DEFAULT_NIGHTMARE_DAMAGE
+		definition.stomach_size = DEFAULT_NIGHTMARE_STOMACH_SIZE
+		definition.stomach_shape = DEFAULT_NIGHTMARE_STOMACH_SHAPE.duplicate()
+		return definition
+
+	definition.texture = block.texture
+	definition.max_hp = block.get_max_hp()
+	definition.size = block.get_cell_count()
+	definition.damage = block.get_damage()
+	definition.stomach_size = block.get_stomach_size()
+	definition.stomach_shape = block.get_stomach_shape()
+
 	return definition
 
 

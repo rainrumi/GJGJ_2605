@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://bg1b12x08p6jm"]
 
-[ext_resource type="Script" uid="uid://b6q2jv8m5n1xs" path="res://data/info/seed/seed_block_info.gd" id="1_8s68j"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_8s68j"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_yn8ot"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_wfiqv"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
@@ -14,6 +14,6 @@ script = ExtResource("3_wfiqv")
 skill_id = 1003
 display_name = "トケイソウ"
 texture = ExtResource("2_yn8ot")
-drag_block_definition = SubResource("Resource_drag_block")
+acid_block = SubResource("Resource_drag_block")
 main_description = "消化間隔-5%。この花はひとつしか持てない"
 sub_description = "この花を消化すると消化間隔-15%"

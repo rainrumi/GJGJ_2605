@@ -1,13 +1,13 @@
 class_name NightmareInfo
 extends Resource
 
+# ID
 @export var skill_id := 0
+# 名前
 @export var display_name := ""
-@export var texture: Texture2D
-@export var max_hp := 0
-@export var damage := 0
-@export var size := 0
-@export var stomach_size := Vector2i.ZERO
-@export var stomach_shape: Array[Vector2i] = []
+# 消化状態の情報
+@export var acid_block: AcidBlockInfo
+# 説明
 @export_multiline var description := ""
+# スキル有無
 @export var nightmare_skill_enabled := true

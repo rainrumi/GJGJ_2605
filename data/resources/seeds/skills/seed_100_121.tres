@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://diletj41k5qgm"]
 
-[ext_resource type="Script" uid="uid://b6q2jv8m5n1xs" path="res://data/info/seed/seed_block_info.gd" id="1_kaibi"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_kaibi"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_agyyv"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
@@ -15,6 +15,6 @@ skill_id = 2129
 rarity = 1
 display_name = "オトギリソウ"
 texture = ExtResource("2_texture")
-drag_block_definition = SubResource("Resource_drag_block")
+acid_block = SubResource("Resource_drag_block")
 main_description = "HPを回復したとき回復量33%を消化ダメージに変換し消化ラインに触れている悪夢に与える。"
 sub_description = "この花を消化すると現在のHP300%の数値を隣接する悪夢に消化ダメージとして与える。"

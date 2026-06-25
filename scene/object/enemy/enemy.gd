@@ -224,7 +224,7 @@ func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
 
 
 func setup_as_seed_stomach_block(seed_skill: SeedInfo, target_size: Vector2) -> void:
-	var block_definition := seed_skill.drag_block_definition if seed_skill != null else null
+	var block_definition := seed_skill.acid_block if seed_skill != null else null
 	if block_definition != null:
 		set_stomach_footprint_override(
 			block_definition.get_stomach_size(),

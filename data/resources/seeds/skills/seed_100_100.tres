@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dmjobxqg7aetu"]
 
-[ext_resource type="Script" uid="uid://b6q2jv8m5n1xs" path="res://data/info/seed/seed_block_info.gd" id="1_4mctb"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_4mctb"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_y2jrs"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_4620a"]
 [ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="4_0d1if"]
@@ -14,6 +14,6 @@ script = ExtResource("3_4620a")
 skill_id = 1000
 display_name = "夢の花名"
 texture = ExtResource("4_0d1if")
-drag_block_definition = SubResource("Resource_drag_block")
+acid_block = SubResource("Resource_drag_block")
 main_description = "メインスキル"
 sub_description = "サブスキル"

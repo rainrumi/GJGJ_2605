@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://l8nf342fjl7s"]
 
-[ext_resource type="Script" uid="uid://b6q2jv8m5n1xs" path="res://data/info/seed/seed_block_info.gd" id="1_7ne22"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_7ne22"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_557bf"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
@@ -15,6 +15,6 @@ skill_id = 2114
 rarity = 1
 display_name = "アマリリス"
 texture = ExtResource("2_texture")
-drag_block_definition = SubResource("Resource_drag_block")
+acid_block = SubResource("Resource_drag_block")
 main_description = "消化ラインのマス数×10の値消化ダメージを上昇"
 sub_description = "この花を消化すると消化ライン内の敵に1000消化ダメージを与える。"
