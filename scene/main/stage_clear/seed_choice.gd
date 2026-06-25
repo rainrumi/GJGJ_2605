@@ -113,7 +113,6 @@ func _get_seed_effect_text(seed: SeedInfo) -> String:
 	]
 	if DreamSeedSkillDescriptionFormatter.has_sub_skill(seed):
 		lines.append("サブスキル: %s" % DreamSeedSkillDescriptionFormatter.get_sub_description(seed))
-		lines.append(DreamSeedSkillDescriptionFormatter.get_reward_sub_skill_use_text(seed))
 	return "\n".join(lines)
 
 

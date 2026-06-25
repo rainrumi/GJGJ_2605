@@ -28,16 +28,6 @@ static func has_sub_skill(skill: SeedInfo) -> bool:
 	return has_sub_description(skill) or is_block_generation_skill(skill)
 
 
-static func get_sub_skill_use_text(remaining_uses: int) -> String:
-	return "使用可能数: %d" % remaining_uses
-
-
-static func get_reward_sub_skill_use_text(skill: SeedInfo) -> String:
-	if not has_sub_skill(skill):
-		return "使用可能数: 0"
-	return "使用可能数: 1"
-
-
 static func get_block_status_text(skill: SeedInfo) -> String:
 	var block_definition := _get_block_definition(skill)
 	var max_hp := block_definition.get_max_hp() if block_definition != null else 1

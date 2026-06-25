@@ -130,8 +130,6 @@ func _get_tooltip_text() -> String:
 	]
 	if _has_sub_skill():
 		lines.append("サブスキル: %s" % DreamSeedSkillDescriptionFormatter.get_sub_description(seed_skill))
-	if _has_sub_skill():
-		lines.append(DreamSeedSkillDescriptionFormatter.get_sub_skill_use_text(_display_remaining_sub_skill_uses))
 	if debug_numbers_visible:
 		lines.append("ID: %d" % seed_skill.skill_id)
 	return "\n".join(lines)
