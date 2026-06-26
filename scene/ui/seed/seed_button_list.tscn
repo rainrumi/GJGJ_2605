@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://dnxj6x3i60rbc"]
+
+[ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/seed/seed_button_list.gd" id="1_seed_button_list"]
+
+[node name="SeedButtonList" type="HFlowContainer"]
+mouse_filter = 2
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
+script = ExtResource("1_seed_button_list")

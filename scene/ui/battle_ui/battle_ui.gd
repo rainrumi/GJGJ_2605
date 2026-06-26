@@ -16,7 +16,7 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 @onready var acid_interval_panel: Control = $AcidIntervalView
 @onready var acid_interval_icon: Control = $AcidIntervalView/AcidIntervalView_icon
 @onready var acid_interval_value_label: Label = $AcidIntervalView/AcidIntervalView_value
-@onready var hp_status: HpView = $HpView
+@onready var hp_view: HpView = $HpView
 @onready var seed_button_list: SeedButtonList = $SeedButtonList
 @onready var time_view: TimeView = $TimeView
 @onready var acid_button: AcidButton = $AcidButton
@@ -86,7 +86,7 @@ func reset_for_battle(
 
 # HP設定
 func set_hp(current_hp: int, max_hp: int) -> void:
-	hp_status.set_hp(current_hp, max_hp)
+	hp_view.set_hp(current_hp, max_hp)
 	hp_tooltip.set_hp_info(current_hp, max_hp, _rest_minutes, _rest_hp_rate, _rest_recovery_bonus_rate)
 
 
@@ -170,7 +170,7 @@ func hide_time_tooltip() -> void:
 # HPツール表示
 func show_hp_tooltip() -> void:
 	_hide_all_tooltips()
-	hp_tooltip.show_tooltip_at(hp_status.global_position)
+	hp_tooltip.show_tooltip_at(hp_view.global_position)
 
 
 # HPツール非表示
@@ -254,17 +254,17 @@ func hide_time_elapsed() -> void:
 
 # HPダメージpreview表示
 func show_hp_damage_preview(amount: int) -> void:
-	hp_status.show_damage_preview(amount)
+	hp_view.show_damage_preview(amount)
 
 
 # HPダメージpreview非表示
 func hide_hp_damage_preview() -> void:
-	hp_status.hide_damage_preview()
+	hp_view.hide_damage_preview()
 
 
 # HPダメージvalues表示
 func show_hp_damage_values(damage_values: Array[int]) -> void:
-	hp_status.show_damage_values(damage_values)
+	hp_view.show_damage_values(damage_values)
 
 
 # childsignals接続
@@ -283,8 +283,8 @@ func _connect_child_signals() -> void:
 	acid_interval_panel.mouse_exited.connect(hide_acid_acid_interval_view_tooltip)
 	time_view.mouse_entered.connect(show_time_tooltip)
 	time_view.mouse_exited.connect(hide_time_tooltip)
-	hp_status.mouse_entered.connect(show_hp_tooltip)
-	hp_status.mouse_exited.connect(hide_hp_tooltip)
+	hp_view.mouse_entered.connect(show_hp_tooltip)
+	hp_view.mouse_exited.connect(hide_hp_tooltip)
 
 
 # 消化マウスfilters準備
@@ -296,7 +296,7 @@ func _prepare_acid_mouse_filters() -> void:
 	acid_interval_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	acid_interval_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	time_view.mouse_filter = Control.MOUSE_FILTER_STOP
-	hp_status.mouse_filter = Control.MOUSE_FILTER_STOP
+	hp_view.mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 # 消化ダメージ設定

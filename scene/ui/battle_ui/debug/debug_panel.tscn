@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://wiaj3pchfaj2" path="res://scene/ui/battle_ui/debug/debug_panel.gd" id="1_status_panel_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 
-[node name="StatusPanel" type="Control" unique_id=1605446388]
+[node name="DebugPanel" type="Control" unique_id=1605446388]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 640.0

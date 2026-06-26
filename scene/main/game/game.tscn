@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://bk0m5bk7vnrh8" path="res://scene/ui/view/time_view.tscn" id="32_time_view_scene"]
 [ext_resource type="PackedScene" uid="uid://dmb2qmc7m87fa" path="res://scene/ui/battle_ui/button/acid/acid_button.tscn" id="33_acid_button_scene"]
 [ext_resource type="PackedScene" uid="uid://b6fh1poo6sv5f" path="res://scene/ui/battle_ui/debug/debug_panel.tscn" id="34_status_panel_scene"]
-[ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/seed/seed_button_list.gd" id="41_dream_seed_skill_button_list"]
+[ext_resource type="PackedScene" uid="uid://dnxj6x3i60rbc" path="res://scene/ui/seed/seed_button_list.tscn" id="41_seed_button_list_scene"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
@@ -72,15 +72,11 @@ offset_top = 253.0
 offset_right = 155.0
 offset_bottom = 266.0
 
-[node name="SeedButtonList" type="HFlowContainer" parent="UI" unique_id=1206675277]
+[node name="SeedButtonList" parent="UI" unique_id=1206675277 instance=ExtResource("41_seed_button_list_scene")]
 offset_left = 29.0
 offset_top = 270.0
 offset_right = 155.0
 offset_bottom = 342.0
-mouse_filter = 2
-theme_override_constants/h_separation = 2
-theme_override_constants/v_separation = 2
-script = ExtResource("41_dream_seed_skill_button_list")
 
 [node name="AcidButton" parent="UI" unique_id=75896202 instance=ExtResource("33_acid_button_scene")]
 
