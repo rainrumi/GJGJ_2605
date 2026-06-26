@@ -10,21 +10,13 @@ signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vec
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 
-@onready var acid_damage_panel: Control = $AcidDamageView
-@onready var acid_damage_icon: Control = $AcidDamageView/AcidDamageView_icon
-@onready var acid_damage_value_label: Label = $AcidDamageView/AcidDamageView_value
-@onready var acid_interval_panel: Control = $AcidIntervalView
-@onready var acid_interval_icon: Control = $AcidIntervalView/AcidIntervalView_icon
-@onready var acid_interval_value_label: Label = $AcidIntervalView/AcidIntervalView_value
+@onready var acid_damage_view: AcidDamageView = $AcidDamageView
+@onready var acid_interval_view: AcidIntervalView = $AcidIntervalView
 @onready var hp_view: HpView = $HpView
 @onready var seed_button_list: SeedButtonList = $SeedButtonList
 @onready var time_view: TimeView = $TimeView
 @onready var acid_button: AcidButton = $AcidButton
 @onready var debug_panel: DebugPanel = $DebugPanel
-@onready var acid_damage_view_tooltip: AcidDamageViewTooltip = $AcidDamageView/AcidDamageView_tooltip
-@onready var acid_interval_view_tooltip: AcidIntervalViewTooltip = $AcidIntervalView/AcidIntervalView_tooltip
-@onready var time_tooltip: TimeTooltip = $TimeView/TimeView_tooltip
-@onready var hp_tooltip: HpTooltip = $HpView/HpView_tooltip
 
 var _rest_minutes := 30
 var _rest_hp_rate := 0.1
@@ -34,7 +26,6 @@ var _tooltip_enemy: Enemy
 
 # 初期化
 func _ready() -> void:
-	_prepare_acid_mouse_filters()
 	seed_button_list.set_sub_skill_drag_enabled(true)
 	_connect_child_signals()
 	_hide_all_tooltips()
@@ -67,11 +58,9 @@ func reset_for_battle(
 	_rest_recovery_bonus_rate = rest_recovery_bonus_rate
 	set_hp(max_hp, max_hp)
 	set_time(minutes)
-	set_acid_damage(0)
-	set_acid_interval_value(30.0)
-	acid_damage_view_tooltip.set_damage_info(0, 0, 0, 0.0, 0, 0.0)
-	acid_interval_view_tooltip.set_interval_info(30.0)
-	time_tooltip.set_time_info()
+	set_acid_damage_info(0, 0, 0, 0.0, 0, 0.0)
+	set_acid_interval_minutes(30.0)
+	time_view.set_tooltip_info()
 	set_message(message)
 	set_debug_message("")
 	set_seed_sources([])
@@ -86,8 +75,7 @@ func reset_for_battle(
 
 # HP設定
 func set_hp(current_hp: int, max_hp: int) -> void:
-	hp_view.set_hp(current_hp, max_hp)
-	hp_tooltip.set_hp_info(current_hp, max_hp, _rest_minutes, _rest_hp_rate, _rest_recovery_bonus_rate)
+	hp_view.set_battle_hp_info(current_hp, max_hp, _rest_minutes, _rest_hp_rate, _rest_recovery_bonus_rate)
 
 
 # 休憩回復補正率設定
@@ -136,64 +124,51 @@ func hide_enemy_tooltip() -> void:
 
 # 消化ダメージツール表示
 func show_acid_damage_view_tooltip() -> void:
-	_hide_all_tooltips()
-	acid_damage_view_tooltip.show_tooltip_at(acid_damage_panel.global_position)
+	_on_acid_damage_tooltip_requested(acid_damage_view)
 
 
 # 消化ダメージツール非表示
 func hide_acid_damage_view_tooltip() -> void:
-	acid_damage_view_tooltip.hide_tooltip()
+	acid_damage_view.hide_tooltip()
 
 
 # 消化intervalツール表示
 func show_acid_acid_interval_view_tooltip() -> void:
-	_hide_all_tooltips()
-	acid_interval_view_tooltip.show_tooltip_at(acid_interval_panel.global_position)
+	_on_acid_interval_tooltip_requested(acid_interval_view)
 
 
 # 消化intervalツール非表示
 func hide_acid_acid_interval_view_tooltip() -> void:
-	acid_interval_view_tooltip.hide_tooltip()
+	acid_interval_view.hide_tooltip()
 
 
 # 時間ツール表示
 func show_time_tooltip() -> void:
-	_hide_all_tooltips()
-	time_tooltip.show_tooltip_at(time_view.global_position)
+	_on_time_tooltip_requested(time_view)
 
 
 # 時間ツール非表示
 func hide_time_tooltip() -> void:
-	time_tooltip.hide_tooltip()
+	time_view.hide_tooltip()
 
 
 # HPツール表示
 func show_hp_tooltip() -> void:
-	_hide_all_tooltips()
-	hp_tooltip.show_tooltip_at(hp_view.global_position)
+	_on_hp_tooltip_requested(hp_view)
 
 
 # HPツール非表示
 func hide_hp_tooltip() -> void:
-	hp_tooltip.hide_tooltip()
+	hp_view.hide_tooltip()
 
 
-# alltooltips非表示
+# 全ツール非表示
 func _hide_all_tooltips() -> void:
 	hide_enemy_tooltip()
-	for tooltip in _get_tooltip_views():
-		if tooltip != null and tooltip.has_method("hide_tooltip"):
-			tooltip.hide_tooltip()
-
-
-# ツールviews取得
-func _get_tooltip_views() -> Array[Object]:
-	return [
-		acid_damage_view_tooltip,
-		acid_interval_view_tooltip,
-		time_tooltip,
-		hp_tooltip,
-	]
+	acid_damage_view.hide_tooltip()
+	acid_interval_view.hide_tooltip()
+	time_view.hide_tooltip()
+	hp_view.hide_tooltip()
 
 
 # 消化ダメージ情報設定
@@ -205,8 +180,7 @@ func set_acid_damage_info(
 	nightmare_buff: int,
 	nightmare_rate: float
 ) -> void:
-	set_acid_damage(total_damage)
-	acid_damage_view_tooltip.set_damage_info(total_damage, base_damage, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
+	acid_damage_view.set_damage_info(total_damage, base_damage, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
 
 
 # 消化interval分数設定
@@ -218,8 +192,7 @@ func set_acid_interval_minutes(
 	nightmare_buff: int = 0,
 	nightmare_rate: float = 0.0
 ) -> void:
-	set_acid_interval_value(amount_minutes)
-	acid_interval_view_tooltip.set_interval_info(amount_minutes, base_minutes, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
+	acid_interval_view.set_interval_info(amount_minutes, base_minutes, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
 
 
 # デバッグボタンactive設定
@@ -277,55 +250,34 @@ func _connect_child_signals() -> void:
 	seed_button_list.seed_drag_started.connect(_on_seed_drag_started)
 	seed_button_list.seed_drag_moved.connect(_on_seed_drag_moved)
 	seed_button_list.seed_drag_released.connect(_on_seed_drag_released)
-	acid_damage_panel.mouse_entered.connect(show_acid_damage_view_tooltip)
-	acid_damage_panel.mouse_exited.connect(hide_acid_damage_view_tooltip)
-	acid_interval_panel.mouse_entered.connect(show_acid_acid_interval_view_tooltip)
-	acid_interval_panel.mouse_exited.connect(hide_acid_acid_interval_view_tooltip)
-	time_view.mouse_entered.connect(show_time_tooltip)
-	time_view.mouse_exited.connect(hide_time_tooltip)
-	hp_view.mouse_entered.connect(show_hp_tooltip)
-	hp_view.mouse_exited.connect(hide_hp_tooltip)
+	acid_damage_view.tooltip_requested.connect(_on_acid_damage_tooltip_requested)
+	acid_interval_view.tooltip_requested.connect(_on_acid_interval_tooltip_requested)
+	time_view.tooltip_requested.connect(_on_time_tooltip_requested)
+	hp_view.tooltip_requested.connect(_on_hp_tooltip_requested)
 
 
-# 消化マウスfilters準備
-func _prepare_acid_mouse_filters() -> void:
-	acid_damage_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	acid_damage_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	acid_damage_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	acid_interval_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	acid_interval_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	acid_interval_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	time_view.mouse_filter = Control.MOUSE_FILTER_STOP
-	hp_view.mouse_filter = Control.MOUSE_FILTER_STOP
+# 消化ダメtooltip要求
+func _on_acid_damage_tooltip_requested(view: AcidDamageView) -> void:
+	_hide_all_tooltips()
+	view.show_tooltip()
 
 
-# 消化ダメージ設定
-func set_acid_damage(total_damage: int) -> void:
-	acid_damage_value_label.text = "%d" % total_damage
+# 消化間隔tooltip要求
+func _on_acid_interval_tooltip_requested(view: AcidIntervalView) -> void:
+	_hide_all_tooltips()
+	view.show_tooltip()
 
 
-# 消化interval値設定
-func set_acid_interval_value(amount_minutes: float) -> void:
-	acid_interval_value_label.text = _format_acid_interval(amount_minutes)
+# 時間tooltip要求
+func _on_time_tooltip_requested(view: TimeView) -> void:
+	_hide_all_tooltips()
+	view.show_tooltip()
 
 
-# 消化interval整形
-func _format_acid_interval(amount_minutes: float) -> String:
-	# 合計seconds
-	var total_seconds := maxi(1, roundi(amount_minutes * 60.0))
-	if total_seconds < 60:
-		return "%dsec" % total_seconds
-	# 合計分数
-	var total_minutes := int(total_seconds / 60)
-	# hours
-	var hours := int(total_minutes / 60)
-	# 分数only
-	var minutes_only := total_minutes % 60
-	if hours <= 0:
-		return "%dmin" % total_minutes
-	if minutes_only == 0:
-		return "%dh" % hours
-	return "%dh%dm" % [hours, minutes_only]
+# HPtooltip要求
+func _on_hp_tooltip_requested(view: HpView) -> void:
+	_hide_all_tooltips()
+	view.show_tooltip()
 
 
 # 要求処理

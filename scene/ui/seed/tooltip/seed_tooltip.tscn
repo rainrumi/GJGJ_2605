@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bsxyd8fke3wr2"]
 
-[ext_resource type="Script" uid="uid://cp1o8ie35jl3j" path="res://scene/ui/seed/seed_tooltip.gd" id="1_go3nn"]
+[ext_resource type="Script" uid="uid://cp1o8ie35jl3j" path="res://scene/ui/seed/tooltip/seed_tooltip.gd" id="1_go3nn"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_opm7q"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_seed_skill_tooltip"]

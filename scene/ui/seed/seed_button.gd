@@ -6,7 +6,7 @@ signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vecto
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
-const TOOLTIP_SCENE := preload("res://scene/ui/seed/seed_tooltip.tscn")
+const TOOLTIP_SCENE := preload("res://scene/ui/seed/tooltip/seed_tooltip.tscn")
 const LOW_SUB_SKILL_USES_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
 const NORMAL_ICON_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const SUB_SKILL_USE_COUNT := 1

@@ -7,7 +7,10 @@ const TIME_ELAPSED_FLOAT_DISTANCE := 5.0
 const TIME_ELAPSED_TWEEN_DURATION := 0.3
 const TIME_ELAPSED_HIDE_DELAY := 0.2
 
+signal tooltip_requested(view: TimeView)
+
 @onready var time_text: Label = $TimeText
+@onready var time_tooltip: TimeTooltip = $TimeView_tooltip
 
 var _time_text_base_scale := Vector2.ONE
 var _time_text_pulse_tween: Tween
@@ -21,6 +24,9 @@ func _ready() -> void:
 	_prepare_mouse_filters()
 	_capture_sizes()
 	_create_time_elapsed_label()
+	time_tooltip.set_time_info()
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
 
 
 # Set time
@@ -67,9 +73,24 @@ func hide_elapsed() -> void:
 	_time_elapsed_label.modulate.a = 0.0
 
 
+# ツール情報設定
+func set_tooltip_info() -> void:
+	time_tooltip.set_time_info()
+
+
+# ツール表示
+func show_tooltip() -> void:
+	time_tooltip.show_tooltip_at(global_position)
+
+
+# ツール非表示
+func hide_tooltip() -> void:
+	time_tooltip.hide_tooltip()
+
+
 # Mouse setup
 func _prepare_mouse_filters() -> void:
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mouse_filter = Control.MOUSE_FILTER_STOP
 	time_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
@@ -125,3 +146,13 @@ func _format_elapsed_time(amount_minutes: int) -> String:
 	if minutes_only == 0:
 		return "+%dh" % hours
 	return "+%dh%02dm" % [hours, minutes_only]
+
+
+# hover開始
+func _on_mouse_entered() -> void:
+	tooltip_requested.emit(self)
+
+
+# hover終了
+func _on_mouse_exited() -> void:
+	hide_tooltip()

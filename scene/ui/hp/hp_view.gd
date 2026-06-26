@@ -6,9 +6,12 @@ const HP_DAMAGE_TWEEN_DURATION := 0.35
 const HP_DAMAGE_HIDE_DELAY := 0.15
 const HP_GAUGE_TWEEN_DURATION := 0.2
 
+signal tooltip_requested(view: HpView)
+
 @onready var hp_gauge: HpGaugeView = $HpGauge
 @onready var hp_heal_plan: HpHealPlanView = $HpHealPlan
 @onready var hp_text: HpTextView = $HpText
+@onready var hp_tooltip: HpTooltip = $HpView_tooltip
 
 var _current_hp := 0
 var _max_hp := 1
@@ -26,6 +29,8 @@ func _ready() -> void:
 	hp_gauge.capture_full_width()
 	_create_hp_damage_preview()
 	_update_hp_heal_plan()
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
 
 
 # HP設定
@@ -61,6 +66,18 @@ func set_hp(current_hp: int, max_hp: int, animated: bool = true) -> void:
 	hp_gauge.animate_width(target_width, HP_GAUGE_TWEEN_DURATION, _current_hp == 0)
 
 
+# 戦闘HP設定
+func set_battle_hp_info(
+	current_hp: int,
+	max_hp: int,
+	rest_minutes: int,
+	rest_hp_rate: float,
+	rest_recovery_bonus_rate: float
+) -> void:
+	set_hp(current_hp, max_hp)
+	hp_tooltip.set_hp_info(current_hp, max_hp, rest_minutes, rest_hp_rate, rest_recovery_bonus_rate)
+
+
 # 予定回復率設定
 func set_planned_recovery_rate(recovery_rate: float) -> void:
 	_planned_recovery_rate = maxf(0.0, recovery_rate)
@@ -94,6 +111,16 @@ func show_damage_values(damage_values: Array[int]) -> void:
 	_play_damage_value_tween(label)
 
 
+# ツール表示
+func show_tooltip() -> void:
+	hp_tooltip.show_tooltip_at(global_position)
+
+
+# ツール非表示
+func hide_tooltip() -> void:
+	hp_tooltip.hide_tooltip()
+
+
 # 回復値表示
 func _show_heal_value(amount: int) -> void:
 	if amount <= 0:
@@ -106,7 +133,7 @@ func _show_heal_value(amount: int) -> void:
 
 # マウス入力準備
 func _prepare_mouse_filter() -> void:
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 # 描画順準備
@@ -180,3 +207,13 @@ func _show_hp_heal_plan(target_width: float) -> void:
 func _on_hp_gauge_width_tween_finished() -> void:
 	_is_hp_recovering = false
 	_update_hp_heal_plan()
+
+
+# hover開始
+func _on_mouse_entered() -> void:
+	tooltip_requested.emit(self)
+
+
+# hover終了
+func _on_mouse_exited() -> void:
+	hide_tooltip()

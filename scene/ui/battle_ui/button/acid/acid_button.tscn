@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dmb2qmc7m87fa"]
 
 [ext_resource type="Texture2D" uid="uid://dpf6pkf1ttb3w" path="res://art/ui/button/ui_button_digestiveSTART.png" id="1_digestion"]
-[ext_resource type="Script" uid="uid://cb3ps8imae8l4" path="res://scene/ui/battle_ui/acid_button.gd" id="2_acid_button_script"]
+[ext_resource type="Script" uid="uid://cb3ps8imae8l4" path="res://scene/ui/battle_ui/button/acid/acid_button.gd" id="2_acid_button_script"]
 
 [node name="AcidButton" type="TextureRect"]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)

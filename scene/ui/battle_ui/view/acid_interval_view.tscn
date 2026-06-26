@@ -1,13 +1,15 @@
-[gd_scene format=3 uid="uid://bd1mkyol6nw5h"]
+[gd_scene load_steps=6 format=3 uid="uid://bd1mkyol6nw5h"]
 
 [ext_resource type="Texture2D" uid="uid://cv2lt30r8m0jq" path="res://art/ui/icon/ui_icon_digestiveINTERVAL.png" id="1_digestive_interval_icon"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left/left_tooltip.tscn" id="3_left_tooltip"]
 [ext_resource type="Script" uid="uid://d36mcwrf0i80" path="res://scene/ui/battle_ui/tooltip/acid_interval_view_tooltip.gd" id="4_acid_interval_tooltip"]
+[ext_resource type="Script" uid="uid://bqt5lj7jk8i3k" path="res://scene/ui/battle_ui/view/acid_interval_view.gd" id="5_acid_interval_view_script"]
 
 [node name="AcidIntervalView" type="TextureRect"]
 offset_right = 100.0
 offset_bottom = 34.0
+script = ExtResource("5_acid_interval_view_script")
 
 [node name="AcidIntervalView_icon" type="TextureRect" parent="."]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)

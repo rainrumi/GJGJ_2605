@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dnxj6x3i60rbc"]
 
-[ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/seed/seed_button_list.gd" id="1_seed_button_list"]
+[ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/seed/seed_button_list/seed_button_list.gd" id="1_seed_button_list"]
 
 [node name="SeedButtonList" type="HFlowContainer"]
 mouse_filter = 2
