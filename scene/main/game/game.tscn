@@ -3,11 +3,11 @@
 [ext_resource type="PackedScene" path="res://scene/object/background/background.tscn" id="1_background"]
 [ext_resource type="PackedScene" uid="uid://bdwlmrqlmsor3" path="res://scene/object/enemy/enemy.tscn" id="2_enemy"]
 [ext_resource type="Script" uid="uid://dptae2htd5ca5" path="res://scene/ui/battle_ui/battle_ui.gd" id="3_battle_ui_script"]
-[ext_resource type="PackedScene" uid="uid://cmy4qy4b7c2dg" path="res://scene/ui/battle_ui/view/acid_damage_view.tscn" id="4_acid_damage_view_scene"]
+[ext_resource type="PackedScene" path="res://scene/ui/battle_ui/view/acid_damage_view.tscn" id="4_acid_damage_view_scene"]
 [ext_resource type="PackedScene" uid="uid://cai1mrucqy6v5" path="res://scene/object/stomach/stomach.tscn" id="5_stomach"]
 [ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
-[ext_resource type="PackedScene" uid="uid://bd1mkyol6nw5h" path="res://scene/ui/battle_ui/view/acid_interval_view.tscn" id="7_acid_interval_view_scene"]
-[ext_resource type="PackedScene" uid="uid://cki5epcjxetrf" path="res://scene/ui/battle_ui/view/nightmare_tooltip_layer.tscn" id="8_nightmare_tooltip_layer_scene"]
+[ext_resource type="PackedScene" path="res://scene/ui/battle_ui/view/acid_interval_view.tscn" id="7_acid_interval_view_scene"]
+[ext_resource type="PackedScene" uid="uid://cki5epcjxetrf" path="res://scene/ui/battle_ui/tooltip/nightmare_tooltip_view.tscn" id="8_nightmare_tooltip_layer_scene"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://sound/se/click.mp3" id="21_click_se"]
 [ext_resource type="Script" uid="uid://dqfh2rsac6b2h" path="res://scene/main/game/game_input_controller.gd" id="27_game_input_controller"]
@@ -49,7 +49,7 @@ stream = ExtResource("21_click_se")
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]
 script = ExtResource("3_battle_ui_script")
 
-[node name="NightmareTooltipLayer" parent="UI" unique_id=718579545 instance=ExtResource("8_nightmare_tooltip_layer_scene")]
+[node name="NightmareTooltipView" parent="UI" unique_id=718579545 instance=ExtResource("8_nightmare_tooltip_layer_scene")]
 
 [node name="AcidDamageView" parent="UI" unique_id=633967596 instance=ExtResource("4_acid_damage_view_scene")]
 offset_left = 159.0
