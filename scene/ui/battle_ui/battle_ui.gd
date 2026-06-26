@@ -70,7 +70,7 @@ func reset_for_battle(
 	set_seed_sources([])
 	set_seed_debug_numbers_visible(DebugState.debug_enabled)
 	set_debug_button_active(DebugState.debug_enabled)
-	set_Acidion_count(0)
+	set_acidion_count(0)
 	set_acid_button_visible(true)
 	hide_hp_damage_preview()
 	hide_time_elapsed()
@@ -131,50 +131,6 @@ func hide_enemy_tooltip(enemy: Enemy = null) -> void:
 
 # -----------------------------------------------------------
 
-# 消化ダメージツール表示
-func show_acid_damage_view_tooltip() -> void:
-	_on_view_tooltip_requested(acid_damage_view)
-
-
-# 消化ダメージツール非表示
-func hide_acid_damage_view_tooltip() -> void:
-	_hide_current_tooltip(acid_damage_view)
-
-# -----------------------------------------------------------
-
-# 消化intervalツール表示
-func show_acid_interval_view_tooltip() -> void:
-	_on_view_tooltip_requested(acid_interval_view)
-
-
-# 消化intervalツール非表示
-func hide_acid_interval_view_tooltip() -> void:
-	_hide_current_tooltip(acid_interval_view)
-
-# -----------------------------------------------------------
-
-# 時間ツール表示
-func show_time_tooltip() -> void:
-	_on_view_tooltip_requested(time_view)
-
-
-# 時間ツール非表示
-func hide_time_tooltip() -> void:
-	_hide_current_tooltip(time_view)
-
-# -----------------------------------------------------------
-
-# HPツール表示
-func show_hp_tooltip() -> void:
-	_on_view_tooltip_requested(hp_view)
-
-
-# HPツール非表示
-func hide_hp_tooltip() -> void:
-	_hide_current_tooltip(hp_view)
-
-# -----------------------------------------------------------
-
 # 全ツール非表示
 func _hide_all_tooltips() -> void:
 	_hide_current_tooltip()
@@ -212,7 +168,7 @@ func set_debug_button_active(is_active: bool) -> void:
 
 
 # 消化数設定
-func set_Acidion_count(count: int) -> void:
+func set_acidion_count(count: int) -> void:
 	acid_button.set_count(count)
 
 # -----------------------------------------------------------
@@ -258,20 +214,27 @@ func show_hp_damage_values(damage_values: Array[int]) -> void:
 
 # childsignals接続
 func _connect_child_signals() -> void:
+	
 	acid_button.Acidion_requested.connect(_on_Acidion_requested)
+	
 	debug_panel.debug_message_requested.connect(_on_debug_message_requested)
 	debug_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	debug_panel.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
 	debug_panel.debug_seed_requested.connect(_on_debug_seed_requested)
+	
 	seed_button_list.seed_drag_started.connect(_on_seed_drag_started)
 	seed_button_list.seed_drag_moved.connect(_on_seed_drag_moved)
 	seed_button_list.seed_drag_released.connect(_on_seed_drag_released)
+	
 	acid_damage_view.tooltip_requested.connect(_on_view_tooltip_requested)
 	acid_damage_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
+	
 	acid_interval_view.tooltip_requested.connect(_on_view_tooltip_requested)
 	acid_interval_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
+	
 	time_view.tooltip_requested.connect(_on_view_tooltip_requested)
 	time_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
+	
 	hp_view.tooltip_requested.connect(_on_view_tooltip_requested)
 	hp_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
 
@@ -368,7 +331,7 @@ func _on_seed_drag_started(
 
 # -----------------------------------------------------------
 
-# 移動処理
+# 種移動処理
 func _on_seed_drag_moved(
 	button: SeedButton,
 	seed: SeedInfo,

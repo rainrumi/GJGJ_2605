@@ -626,7 +626,7 @@ func _refresh_acid_ui() -> void:
 func _refresh_status_ui() -> void:
 	ui.set_hp(hp, effective_max_hp)
 	ui.set_time(minutes)
-	ui.set_Acidion_count(_active_acid_count())
+	ui.set_acidion_count(_active_acid_count())
 	ui.set_acid_button_visible(battle_active and not auto_acid_enabled)
 
 
