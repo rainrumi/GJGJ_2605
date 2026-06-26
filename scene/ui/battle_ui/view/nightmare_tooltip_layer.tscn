@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cki5epcjxetrf"]
+
+[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left_tooltip.tscn" id="1_left_tooltip"]
+[ext_resource type="Script" uid="uid://cadvjfvgq6ltr" path="res://scene/ui/battle_ui/tooltip/nightmare_tooltip.gd" id="2_nightmare_tooltip"]
+
+[node name="NightmareTooltipLayer" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="Nightmare_tooltip" parent="." instance=ExtResource("1_left_tooltip")]
+z_index = 50
+layout_mode = 0
+script = ExtResource("2_nightmare_tooltip")
+tooltip_title = null
+note_text = null
+note_visible = null

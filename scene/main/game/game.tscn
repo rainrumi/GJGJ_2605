@@ -3,24 +3,18 @@
 [ext_resource type="PackedScene" path="res://scene/object/background/background.tscn" id="1_background"]
 [ext_resource type="PackedScene" uid="uid://bdwlmrqlmsor3" path="res://scene/object/enemy/enemy.tscn" id="2_enemy"]
 [ext_resource type="Script" uid="uid://dptae2htd5ca5" path="res://scene/ui/battle_ui/battle_ui.gd" id="3_battle_ui_script"]
+[ext_resource type="PackedScene" uid="uid://cmy4qy4b7c2dg" path="res://scene/ui/battle_ui/view/acid_damage_view.tscn" id="4_acid_damage_view_scene"]
 [ext_resource type="PackedScene" uid="uid://cai1mrucqy6v5" path="res://scene/object/stomach/stomach.tscn" id="5_stomach"]
 [ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
+[ext_resource type="PackedScene" uid="uid://bd1mkyol6nw5h" path="res://scene/ui/battle_ui/view/acid_interval_view.tscn" id="7_acid_interval_view_scene"]
+[ext_resource type="PackedScene" uid="uid://cki5epcjxetrf" path="res://scene/ui/battle_ui/view/nightmare_tooltip_layer.tscn" id="8_nightmare_tooltip_layer_scene"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
-[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="13_font"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://sound/se/click.mp3" id="21_click_se"]
 [ext_resource type="Script" uid="uid://dqfh2rsac6b2h" path="res://scene/main/game/game_input_controller.gd" id="27_game_input_controller"]
-[ext_resource type="Script" uid="uid://cadvjfvgq6ltr" path="res://scene/ui/battle_ui/tooltip/nightmare_tooltip.gd" id="28_nightmare_tooltip_view"]
-[ext_resource type="Script" uid="uid://bguqd5rsu6rco" path="res://scene/ui/battle_ui/tooltip/acid_damage_tooltip.gd" id="30_digest_damage_tooltip_view"]
 [ext_resource type="PackedScene" uid="uid://cfjja3p43w2i0" path="res://scene/ui/hp/hp.tscn" id="31_hp_scene"]
 [ext_resource type="PackedScene" uid="uid://bk0m5bk7vnrh8" path="res://scene/ui/view/time_view.tscn" id="32_time_view_scene"]
 [ext_resource type="PackedScene" uid="uid://dmb2qmc7m87fa" path="res://scene/ui/battle_ui/button/acid/acid_button.tscn" id="33_acid_button_scene"]
 [ext_resource type="PackedScene" uid="uid://b6fh1poo6sv5f" path="res://scene/ui/battle_ui/debug/debug_panel.tscn" id="34_status_panel_scene"]
-[ext_resource type="Script" uid="uid://d36mcwrf0i80" path="res://scene/ui/battle_ui/tooltip/acid_efficiency_tooltip.gd" id="35_digest_efficiency_tooltip_view"]
-[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left_tooltip.tscn" id="36_left_tooltip"]
-[ext_resource type="Texture2D" uid="uid://cgefols2qgnfi" path="res://art/ui/icon/ui_icon_digestiveDMG.png" id="37_digestive_dmg_icon"]
-[ext_resource type="Texture2D" uid="uid://cv2lt30r8m0jq" path="res://art/ui/icon/ui_icon_digestiveINTERVAL.png" id="38_digestive_interval_icon"]
-[ext_resource type="Script" uid="uid://b05fwmrw470hd" path="res://scene/ui/battle_ui/tooltip/time_tooltip.gd" id="39_time_tooltip_view"]
-[ext_resource type="Script" uid="uid://e7h4ik0nntom" path="res://scene/ui/battle_ui/tooltip/hp_tooltip.gd" id="40_hp_tooltip_view"]
 [ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/seed/seed_button_list.gd" id="41_dream_seed_skill_button_list"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
@@ -55,83 +49,19 @@ stream = ExtResource("21_click_se")
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]
 script = ExtResource("3_battle_ui_script")
 
-[node name="NightmareTooltipLayer" type="Control" parent="UI" unique_id=718579545]
-layout_mode = 3
-anchors_preset = 0
-mouse_filter = 2
+[node name="NightmareTooltipLayer" parent="UI" unique_id=718579545 instance=ExtResource("8_nightmare_tooltip_layer_scene")]
 
-[node name="NightmareTooltip" parent="UI/NightmareTooltipLayer" unique_id=1766035489 instance=ExtResource("36_left_tooltip")]
-z_index = 50
-layout_mode = 0
-script = ExtResource("28_nightmare_tooltip_view")
-tooltip_title = null
-note_text = null
-note_visible = null
-
-[node name="AcidDamageView" type="TextureRect" parent="UI" unique_id=633967596]
+[node name="AcidDamageView" parent="UI" unique_id=633967596 instance=ExtResource("4_acid_damage_view_scene")]
 offset_left = 159.0
 offset_top = 12.0
 offset_right = 239.0
 offset_bottom = 46.0
-expand_mode = 2
 
-[node name="AcidDamageView_icon" type="TextureRect" parent="UI/AcidDamageView" unique_id=997175241]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-layout_mode = 0
-offset_right = 28.0
-offset_bottom = 34.0
-texture = ExtResource("37_digestive_dmg_icon")
-
-[node name="AcidDamageView_value" type="Label" parent="UI/AcidDamageView" unique_id=1335802653]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-layout_mode = 0
-offset_left = 35.0
-offset_top = 3.0
-offset_right = 95.0
-offset_bottom = 28.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 24
-text = "300"
-vertical_alignment = 1
-
-[node name="AcidDamageView_tooltip" parent="UI/AcidDamageView" unique_id=1352488328 instance=ExtResource("36_left_tooltip")]
-layout_mode = 0
-script = ExtResource("30_digest_damage_tooltip_view")
-
-[node name="AcidIntervalView" type="TextureRect" parent="UI" unique_id=1021503093]
+[node name="AcidIntervalView" parent="UI" unique_id=1021503093 instance=ExtResource("7_acid_interval_view_scene")]
 offset_left = 259.0
 offset_top = 12.0
 offset_right = 359.0
 offset_bottom = 46.0
-
-[node name="AcidIntervalView_icon" type="TextureRect" parent="UI/AcidIntervalView" unique_id=1402067713]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-layout_mode = 0
-offset_right = 28.0
-offset_bottom = 34.0
-texture = ExtResource("38_digestive_interval_icon")
-
-[node name="AcidIntervalView_value" type="Label" parent="UI/AcidIntervalView" unique_id=790039167]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-layout_mode = 0
-offset_left = 35.0
-offset_top = 3.0
-offset_right = 135.0
-offset_bottom = 28.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("13_font")
-theme_override_font_sizes/font_size = 24
-text = "30min"
-vertical_alignment = 1
-
-[node name="AcidIntervalView_tooltip" parent="UI/AcidIntervalView" unique_id=1285341923 instance=ExtResource("36_left_tooltip")]
-layout_mode = 0
-script = ExtResource("35_digest_efficiency_tooltip_view")
-note_visible = true
 
 [node name="TimeView" parent="UI" unique_id=1489256391 instance=ExtResource("32_time_view_scene")]
 offset_left = 513.0
@@ -139,22 +69,11 @@ offset_top = 12.0
 offset_right = 621.0
 offset_bottom = 46.0
 
-[node name="TimeView_tooltip" parent="UI/TimeView" unique_id=1613855977 instance=ExtResource("36_left_tooltip")]
-layout_mode = 0
-script = ExtResource("39_time_tooltip_view")
-
 [node name="HpFrame" parent="UI" unique_id=756334925 instance=ExtResource("31_hp_scene")]
 offset_left = 29.0
 offset_top = 253.0
 offset_right = 155.0
 offset_bottom = 266.0
-
-[node name="HpFrame_tooltip" parent="UI/HpFrame" unique_id=1178298816 instance=ExtResource("36_left_tooltip")]
-layout_mode = 0
-script = ExtResource("40_hp_tooltip_view")
-tooltip_title = null
-note_text = null
-note_visible = null
 
 [node name="SeedButtonList" type="HFlowContainer" parent="UI" unique_id=1206675277]
 offset_left = 29.0

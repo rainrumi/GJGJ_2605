@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://bd1mkyol6nw5h"]
+
+[ext_resource type="Texture2D" uid="uid://cv2lt30r8m0jq" path="res://art/ui/icon/ui_icon_digestiveINTERVAL.png" id="1_digestive_interval_icon"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left_tooltip.tscn" id="3_left_tooltip"]
+[ext_resource type="Script" uid="uid://d36mcwrf0i80" path="res://scene/ui/battle_ui/tooltip/acid_efficiency_tooltip.gd" id="4_acid_interval_tooltip"]
+
+[node name="AcidIntervalView" type="TextureRect"]
+offset_right = 100.0
+offset_bottom = 34.0
+
+[node name="AcidIntervalView_icon" type="TextureRect" parent="."]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+layout_mode = 0
+offset_right = 28.0
+offset_bottom = 34.0
+texture = ExtResource("1_digestive_interval_icon")
+
+[node name="AcidIntervalView_value" type="Label" parent="."]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+layout_mode = 0
+offset_left = 35.0
+offset_top = 3.0
+offset_right = 135.0
+offset_bottom = 28.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "30min"
+vertical_alignment = 1
+
+[node name="AcidIntervalView_tooltip" parent="." instance=ExtResource("3_left_tooltip")]
+layout_mode = 0
+script = ExtResource("4_acid_interval_tooltip")
+note_visible = true
