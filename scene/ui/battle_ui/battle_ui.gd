@@ -24,6 +24,7 @@ var _rest_recovery_bonus_rate := 0.0
 var _current_tooltip_owner: Object = null
 var _current_tooltip_hide: Callable = Callable()
 
+# -----------------------------------------------------------
 
 # 初期化
 func _ready() -> void:
@@ -31,6 +32,7 @@ func _ready() -> void:
 	_connect_child_signals()
 	_hide_all_tooltips()
 
+# -----------------------------------------------------------
 
 # 未処理入力
 func _unhandled_input(event: InputEvent) -> void:
@@ -44,6 +46,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if key_event.keycode == KEY_R:
 			debug_panel.request_debug_reroll()
 
+# -----------------------------------------------------------
 
 # for戦闘初期化
 func reset_for_battle(
@@ -73,6 +76,7 @@ func reset_for_battle(
 	hide_time_elapsed()
 	_hide_all_tooltips()
 
+# -----------------------------------------------------------
 
 # HP設定
 func set_hp(current_hp: int, max_hp: int) -> void:
@@ -108,6 +112,7 @@ func set_seed_sources(sources: Array) -> void:
 func set_seed_debug_numbers_visible(is_visible: bool) -> void:
 	seed_button_list.set_debug_numbers_visible(is_visible)
 
+# -----------------------------------------------------------
 
 # 悪夢ツール表示
 func show_enemy_tooltip(enemy: Enemy, debug_number_text: String, debug_numbers_visible: bool) -> void:
@@ -124,6 +129,7 @@ func show_enemy_tooltip(enemy: Enemy, debug_number_text: String, debug_numbers_v
 func hide_enemy_tooltip(enemy: Enemy = null) -> void:
 	_hide_current_tooltip(enemy)
 
+# -----------------------------------------------------------
 
 # 消化ダメージツール表示
 func show_acid_damage_view_tooltip() -> void:
@@ -134,6 +140,7 @@ func show_acid_damage_view_tooltip() -> void:
 func hide_acid_damage_view_tooltip() -> void:
 	_hide_current_tooltip(acid_damage_view)
 
+# -----------------------------------------------------------
 
 # 消化intervalツール表示
 func show_acid_interval_view_tooltip() -> void:
@@ -144,6 +151,7 @@ func show_acid_interval_view_tooltip() -> void:
 func hide_acid_interval_view_tooltip() -> void:
 	_hide_current_tooltip(acid_interval_view)
 
+# -----------------------------------------------------------
 
 # 時間ツール表示
 func show_time_tooltip() -> void:
@@ -154,6 +162,7 @@ func show_time_tooltip() -> void:
 func hide_time_tooltip() -> void:
 	_hide_current_tooltip(time_view)
 
+# -----------------------------------------------------------
 
 # HPツール表示
 func show_hp_tooltip() -> void:
@@ -164,11 +173,13 @@ func show_hp_tooltip() -> void:
 func hide_hp_tooltip() -> void:
 	_hide_current_tooltip(hp_view)
 
+# -----------------------------------------------------------
 
 # 全ツール非表示
 func _hide_all_tooltips() -> void:
 	_hide_current_tooltip()
 
+# -----------------------------------------------------------
 
 # 消化ダメージ情報設定
 func set_acid_damage_info(
@@ -193,6 +204,7 @@ func set_acid_interval_minutes(
 ) -> void:
 	acid_interval_view.set_interval_info(amount_minutes, base_minutes, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
 
+# -----------------------------------------------------------
 
 # デバッグボタンactive設定
 func set_debug_button_active(is_active: bool) -> void:
@@ -203,6 +215,7 @@ func set_debug_button_active(is_active: bool) -> void:
 func set_Acidion_count(count: int) -> void:
 	acid_button.set_count(count)
 
+# -----------------------------------------------------------
 
 # 消化ボタンvisible設定
 func set_acid_button_visible(is_visible: bool) -> void:
@@ -213,6 +226,7 @@ func set_acid_button_visible(is_visible: bool) -> void:
 func is_acid_button_hit(mouse_position: Vector2) -> bool:
 	return acid_button.is_hit(mouse_position)
 
+# -----------------------------------------------------------
 
 # 時間elapsed表示
 func show_time_elapsed(amount_minutes: int) -> void:
@@ -223,6 +237,7 @@ func show_time_elapsed(amount_minutes: int) -> void:
 func hide_time_elapsed() -> void:
 	time_view.hide_elapsed()
 
+# -----------------------------------------------------------
 
 # HPダメージpreview表示
 func show_hp_damage_preview(amount: int) -> void:
@@ -233,11 +248,13 @@ func show_hp_damage_preview(amount: int) -> void:
 func hide_hp_damage_preview() -> void:
 	hp_view.hide_damage_preview()
 
+# -----------------------------------------------------------
 
 # HPダメージvalues表示
 func show_hp_damage_values(damage_values: Array[int]) -> void:
 	hp_view.show_damage_values(damage_values)
 
+# -----------------------------------------------------------
 
 # childsignals接続
 func _connect_child_signals() -> void:
@@ -258,6 +275,7 @@ func _connect_child_signals() -> void:
 	hp_view.tooltip_requested.connect(_on_view_tooltip_requested)
 	hp_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
 
+# -----------------------------------------------------------
 
 # 排他ツール表示
 func _show_exclusive_tooltip(
@@ -274,6 +292,7 @@ func _show_exclusive_tooltip(
 	if show_callable.is_valid():
 		show_callable.call()
 
+# -----------------------------------------------------------
 
 # ツール非表示
 func _hide_current_tooltip(owner: Object = null) -> void:
@@ -299,6 +318,7 @@ func _show_view_tooltip(view: Object) -> void:
 				hide_callable.call()
 	_show_exclusive_tooltip(view, show_func, hide_func)
 
+# -----------------------------------------------------------
 
 # ツール表示要求
 func _on_view_tooltip_requested(view: Object) -> void:
@@ -309,11 +329,13 @@ func _on_view_tooltip_requested(view: Object) -> void:
 func _on_tooltip_hide_requested(view: Object) -> void:
 	_hide_current_tooltip(view)
 
+# -----------------------------------------------------------
 
 # 消化開始要求
 func _on_Acidion_requested() -> void:
 	Acidion_requested.emit()
 
+# -----------------------------------------------------------
 
 # デバッグ開始要求
 func _on_debug_message_requested(is_active: bool) -> void:
@@ -334,6 +356,7 @@ func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> vo
 func _on_debug_seed_requested() -> void:
 	debug_seed_requested.emit()
 
+# -----------------------------------------------------------
 
 # 種移動開始
 func _on_seed_drag_started(
@@ -343,6 +366,7 @@ func _on_seed_drag_started(
 ) -> void:
 	seed_drag_started.emit(button, seed, mouse_position)
 
+# -----------------------------------------------------------
 
 # 移動処理
 func _on_seed_drag_moved(
