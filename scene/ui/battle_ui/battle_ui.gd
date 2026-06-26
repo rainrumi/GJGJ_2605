@@ -275,7 +275,7 @@ func _show_exclusive_tooltip(
 		show_callable.call()
 
 
-# 現ツール非表示
+# ツール非表示
 func _hide_current_tooltip(owner: Object = null) -> void:
 	if owner != null and owner != _current_tooltip_owner:
 		return
@@ -285,7 +285,7 @@ func _hide_current_tooltip(owner: Object = null) -> void:
 	_current_tooltip_hide = Callable()
 
 
-# viewツール表示
+# ツール表示
 func _show_view_tooltip(view: Object) -> void:
 	var show_func := func() -> void:
 		if is_instance_valid(view):
@@ -300,7 +300,7 @@ func _show_view_tooltip(view: Object) -> void:
 	_show_exclusive_tooltip(view, show_func, hide_func)
 
 
-# viewtooltip要求
+# ツール表示要求
 func _on_view_tooltip_requested(view: Object) -> void:
 	_show_view_tooltip(view)
 
