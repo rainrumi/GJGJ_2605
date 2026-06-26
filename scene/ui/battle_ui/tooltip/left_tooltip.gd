@@ -1,4 +1,4 @@
-class_name LeftTooltipView
+class_name LeftTooltip
 extends Panel
 
 @export var tooltip_title := ""

@@ -1,5 +1,5 @@
-class_name HpTooltipView
-extends LeftTooltipView
+class_name HpTooltip
+extends LeftTooltip
 
 
 # 初期化

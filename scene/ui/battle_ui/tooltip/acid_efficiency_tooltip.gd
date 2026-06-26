@@ -1,5 +1,5 @@
-class_name DigestEfficiencyTooltipView
-extends LeftTooltipView
+class_name AcidEfficiencyTooltip
+extends LeftTooltip
 
 
 # 初期化

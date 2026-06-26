@@ -1,5 +1,5 @@
-class_name NightmareTooltipView
-extends LeftTooltipView
+class_name NightmareTooltip
+extends LeftTooltip
 
 var _debug_number_text := ""
 

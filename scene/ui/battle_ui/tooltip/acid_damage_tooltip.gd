@@ -1,5 +1,5 @@
-class_name DigestDamageTooltipView
-extends LeftTooltipView
+class_name AcidDamageTooltip
+extends LeftTooltip
 
 
 # 初期化

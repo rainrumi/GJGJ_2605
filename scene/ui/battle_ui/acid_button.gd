@@ -1,4 +1,4 @@
-class_name DigestionButtonView
+class_name AcidButton
 extends TextureRect
 
 signal digestion_requested

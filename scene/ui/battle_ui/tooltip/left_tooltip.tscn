@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://io6yfxcbl4dr"]
 
-[ext_resource type="Script" path="res://scene/ui/battle_ui/left_tooltip_view.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bjhc4bw2q4sgp" path="res://scene/ui/battle_ui/tooltip/left_tooltip.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_left_tooltip"]
@@ -15,7 +15,7 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
-[node name="LeftTooltipPanel" type="Panel"]
+[node name="LeftTooltipPanel" type="Panel" unique_id=280841147]
 visible = false
 z_index = 100
 offset_right = 220.0
@@ -24,13 +24,12 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_left_tooltip")
 script = ExtResource("1_script")
 
-[node name="TooltipLabel" type="Label" parent="."]
+[node name="TooltipLabel" type="Label" parent="." unique_id=241761648]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 212.0
 offset_bottom = 16.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2

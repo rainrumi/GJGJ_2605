@@ -18,14 +18,14 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 @onready var digest_efficiency_value_label: Label = $DigestiveINTERVAL/digestiveINTERVAL_value
 @onready var hp_status: HpView = $HpFrame
 @onready var seed_button: SeedButtonList = $DreamSeedSkillButtons
-@onready var time_status: TimeStatusView = $Time
-@onready var digestion_button: DigestionButtonView = $DigestionFrame
-@onready var status_panel: StatusPanelView = $StatusPanel
-@onready var nightmare_tooltip: NightmareTooltipView = $NightmareTooltipPanel
-@onready var digest_tooltip: DigestDamageTooltipView = $DigestDamageTooltipPanel
-@onready var efficiency_tooltip: DigestEfficiencyTooltipView = $DigestEfficiencyTooltipPanel
-@onready var time_tooltip: TimeTooltipView = $TimeTooltipPanel
-@onready var hp_tooltip: HpTooltipView = $HpTooltipPanel
+@onready var time_status: TimeStatus = $Time
+@onready var digestion_button: AcidButton = $DigestionFrame
+@onready var status_panel: StatusPanel = $StatusPanel
+@onready var nightmare_tooltip: NightmareTooltip = $NightmareTooltipPanel
+@onready var digest_tooltip: AcidDamageTooltip = $DigestDamageTooltipPanel
+@onready var efficiency_tooltip: AcidEfficiencyTooltip = $DigestEfficiencyTooltipPanel
+@onready var time_tooltip: TimeTooltip = $TimeTooltipPanel
+@onready var hp_tooltip: HpTooltip = $HpTooltipPanel
 
 var _rest_minutes := 30
 var _rest_hp_rate := 0.1

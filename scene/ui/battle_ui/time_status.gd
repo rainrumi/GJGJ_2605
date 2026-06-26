@@ -1,4 +1,4 @@
-class_name TimeStatusView
+class_name TimeStatus
 extends TextureRect
 
 const TIME_PULSE_SCALE := 1.1

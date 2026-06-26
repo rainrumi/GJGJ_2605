@@ -1,5 +1,5 @@
-class_name TimeTooltipView
-extends LeftTooltipView
+class_name TimeTooltip
+extends LeftTooltip
 
 
 # 初期化
