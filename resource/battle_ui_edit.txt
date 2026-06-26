@@ -1,0 +1,37 @@
+battle_ui.gdの中に入っているメソッドを対応するノードの入ったシーンとその中のノードごとに責務分離してください。
+現在は入っている参照ノードの入ったシーンはそれぞれ以下の場所にあります。
+
+scene/ui/view/acid_damage_view.tscn
+@onready var acid_damage_panel: Control = $AcidDamageView
+@onready var acid_damage_value_label: Label = $AcidDamageView/AcidDamageView_value
+@onready var acid_damage_icon: Control = $AcidDamageView/AcidDamageView_icon
+
+scene/ui/view/acid_interval_view.tscn
+@onready var acid_interval_panel: Control = $AcidIntervalView
+@onready var acid_interval_icon: Control = $AcidIntervalView/AcidIntervalView_icon
+@onready var acid_interval_value_label: Label = $AcidIntervalView/AcidIntervalView_value
+
+scene/ui/hp/hp.tscn
+@onready var hp_view: HpView = $HpView
+@onready var hp_tooltip: HpTooltip = $HpView/HpView_tooltip
+
+scene/ui/seed/seed_button_list/seed_button_list.tscn
+@onready var seed_button_list: SeedButtonList = $SeedButtonList
+
+scene/ui/view/time_view.tscn
+@onready var time_view: TimeView = $TimeView
+
+scene/ui/battle_ui/button/acid/acid_button.tscn
+@onready var acid_button: AcidButton = $AcidButton
+
+scene/ui/battle_ui/debug/debug_panel.tscn
+@onready var debug_panel: DebugPanel = $DebugPanel
+
+scene/ui/battle_ui/view/acid_damage_view.tscn
+@onready var acid_damage_view_tooltip: AcidDamageViewTooltip = $AcidDamageView/AcidDamageView_tooltip
+
+scene/ui/battle_ui/view/acid_interval_view.tscn
+@onready var acid_interval_view_tooltip: AcidIntervalViewTooltip = $AcidIntervalView/AcidIntervalView_tooltip
+
+scene/ui/view/time_view.tscn
+@onready var time_tooltip: TimeTooltip = $TimeView/TimeView_tooltip
