@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cfjja3p43w2i0"]
 
 [ext_resource type="Texture2D" uid="uid://b36tju1anjxla" path="res://art/ui/player/hp/ui_player_hp_frame.png" id="1_ufdaa"]
-[ext_resource type="Script" uid="uid://d1pvoy4j5dui5" path="res://scene/ui/hp/hp_frame.gd" id="2_hp_script"]
+[ext_resource type="Script" uid="uid://d1pvoy4j5dui5" path="res://scene/ui/hp/hp_view.gd" id="2_hp_script"]
 [ext_resource type="Texture2D" uid="uid://dxngqlvp4mqnl" path="res://art/ui/player/hp/ui_player_hp_bar.png" id="3_12af1"]
 [ext_resource type="Texture2D" uid="uid://rdjv6c07wbxi" path="res://art/ui/player/hp/ui_player_hp_mask.png" id="4_12af1"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="5_font"]
@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left/left_tooltip.tscn" id="9_left_tooltip"]
 [ext_resource type="Script" uid="uid://e7h4ik0nntom" path="res://scene/ui/hp/hp_tooltip.gd" id="10_hp_tooltip"]
 
-[node name="HpFrame" type="NinePatchRect" unique_id=1335638981]
+[node name="HpView" type="NinePatchRect" unique_id=1335638981]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 offset_right = 126.0
 offset_bottom = 13.0
@@ -69,7 +69,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("8_hp_text_script")
 
-[node name="HpFrame_tooltip" parent="." unique_id=1953801730 instance=ExtResource("9_left_tooltip")]
+[node name="HpView_tooltip" parent="." unique_id=1953801730 instance=ExtResource("9_left_tooltip")]
 layout_mode = 0
 script = ExtResource("10_hp_tooltip")
 tooltip_title = null

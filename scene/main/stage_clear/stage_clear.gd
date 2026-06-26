@@ -15,7 +15,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @export var max_flowers := 50
 @export var initial_flower: SeedInfo
 @export var seed_options: Array[SeedInfo] = []
-@onready var hp_view: HpView = $CharacterArea/HpFrame
+@onready var hp_view: HpView = $CharacterArea/HpView
 @onready var seed_button_list: SeedButtonList = $CharacterArea/SeedButtonList
 @onready var guide_text: Label = $UI/GuideText
 @onready var reroll_button: Button = $UI/RerollButton
