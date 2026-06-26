@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cv2lt30r8m0jq" path="res://art/ui/icon/ui_icon_digestiveINTERVAL.png" id="1_digestive_interval_icon"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
-[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left_tooltip.tscn" id="3_left_tooltip"]
+[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left/left_tooltip.tscn" id="3_left_tooltip"]
 [ext_resource type="Script" uid="uid://d36mcwrf0i80" path="res://scene/ui/battle_ui/tooltip/acid_interval_view_tooltip.gd" id="4_acid_interval_tooltip"]
 
 [node name="AcidIntervalView" type="TextureRect"]

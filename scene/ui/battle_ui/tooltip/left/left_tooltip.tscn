@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://io6yfxcbl4dr"]
 
-[ext_resource type="Script" uid="uid://bjhc4bw2q4sgp" path="res://scene/ui/battle_ui/tooltip/left_tooltip.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bjhc4bw2q4sgp" path="res://scene/ui/battle_ui/tooltip/left/left_tooltip.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_left_tooltip"]

@@ -1,9 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bk0m5bk7vnrh8"]
+[gd_scene format=3 uid="uid://bk0m5bk7vnrh8"]
 
 [ext_resource type="Script" uid="uid://bg88dk2f4fpjw" path="res://scene/ui/view/time_view.gd" id="1_time_view_script"]
 [ext_resource type="Texture2D" uid="uid://cuxjxyxsrwydw" path="res://art/ui/icon/ui_icon_time.png" id="2_time_frame"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="3_font"]
-[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left_tooltip.tscn" id="4_left_tooltip"]
+[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left/left_tooltip.tscn" id="4_left_tooltip"]
 [ext_resource type="Script" uid="uid://b05fwmrw470hd" path="res://scene/ui/battle_ui/tooltip/time_tooltip.gd" id="5_time_tooltip"]
 
 [node name="TimeView" type="TextureRect" unique_id=1489256391]

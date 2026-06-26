@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://cejro2occ7fhb" path="res://scene/ui/hp/hp_gauge.gd" id="6_hp_gauge_script"]
 [ext_resource type="Script" uid="uid://bslt7e8ra0s5u" path="res://scene/ui/hp/hp_heal_plan.gd" id="7_hp_heal_plan_script"]
 [ext_resource type="Script" uid="uid://cuawp06r08x4" path="res://scene/ui/hp/hp_text.gd" id="8_hp_text_script"]
-[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left_tooltip.tscn" id="9_left_tooltip"]
+[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left/left_tooltip.tscn" id="9_left_tooltip"]
 [ext_resource type="Script" uid="uid://e7h4ik0nntom" path="res://scene/ui/hp/hp_tooltip.gd" id="10_hp_tooltip"]
 
 [node name="HpFrame" type="NinePatchRect" unique_id=1335638981]

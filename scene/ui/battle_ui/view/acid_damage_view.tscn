@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cgefols2qgnfi" path="res://art/ui/icon/ui_icon_digestiveDMG.png" id="1_digestive_dmg_icon"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
-[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left_tooltip.tscn" id="3_left_tooltip"]
+[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left/left_tooltip.tscn" id="3_left_tooltip"]
 [ext_resource type="Script" uid="uid://bguqd5rsu6rco" path="res://scene/ui/battle_ui/tooltip/acid_damage_view_tooltip.gd" id="4_acid_damage_tooltip"]
 
 [node name="AcidDamageView" type="TextureRect"]
