@@ -21,11 +21,11 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 @onready var time_view: TimeView = $TimeView
 @onready var acid_button: AcidButton = $AcidButton
 @onready var debug_panel: DebugPanel = $DebugPanel
-@onready var nightmare_tooltip: NightmareTooltip = $NightmareTooltip
-@onready var acid_damage_view_tooltip: AcidDamageViewTooltip = $AcidDamageViewTooltip
-@onready var acid_interval_view_tooltip: AcidIntervalViewTooltip = $AcidIntervalViewTooltip
-@onready var time_tooltip: TimeTooltip = $TimeTooltip
-@onready var hp_tooltip: HpTooltip = $HpTooltip
+@onready var nightmare_tooltip: NightmareTooltip = $NightmareTooltipLayer/Nightmare_tooltip
+@onready var acid_damage_view_tooltip: AcidDamageViewTooltip = $AcidDamageView/AcidDamageView_tooltip
+@onready var acid_interval_view_tooltip: AcidIntervalViewTooltip = $AcidIntervalView/AcidIntervalView_tooltip
+@onready var time_tooltip: TimeTooltip = $TimeView/TimeView_tooltip
+@onready var hp_tooltip: HpTooltip = $HpFrame/HpFrame_tooltip
 
 var _rest_minutes := 30
 var _rest_hp_rate := 0.1
