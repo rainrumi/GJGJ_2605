@@ -21,7 +21,6 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 @onready var time_view: TimeView = $TimeView
 @onready var acid_button: AcidButton = $AcidButton
 @onready var debug_panel: DebugPanel = $DebugPanel
-@onready var enemy_tooltip: EnemyTooltip = $EnemyTooltipView/EnemyTooltipView_tooltip
 @onready var acid_damage_view_tooltip: AcidDamageViewTooltip = $AcidDamageView/AcidDamageView_tooltip
 @onready var acid_interval_view_tooltip: AcidIntervalViewTooltip = $AcidIntervalView/AcidIntervalView_tooltip
 @onready var time_tooltip: TimeTooltip = $TimeView/TimeView_tooltip
@@ -30,6 +29,7 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 var _rest_minutes := 30
 var _rest_hp_rate := 0.1
 var _rest_recovery_bonus_rate := 0.0
+var _tooltip_enemy: Enemy
 
 
 # 初期化
@@ -123,12 +123,15 @@ func set_seed_debug_numbers_visible(is_visible: bool) -> void:
 # 悪夢ツール表示
 func show_enemy_tooltip(enemy: Enemy, debug_number_text: String, debug_numbers_visible: bool) -> void:
 	_hide_all_tooltips()
-	enemy_tooltip.show_enemy_at(enemy, debug_number_text, debug_numbers_visible, enemy.global_position)
+	_tooltip_enemy = enemy
+	_tooltip_enemy.show_tooltip(debug_number_text, debug_numbers_visible)
 
 
 # 悪夢ツール非表示
 func hide_enemy_tooltip() -> void:
-	enemy_tooltip.hide_tooltip()
+	if _tooltip_enemy != null and is_instance_valid(_tooltip_enemy):
+		_tooltip_enemy.hide_tooltip()
+	_tooltip_enemy = null
 
 
 # 消化ダメージツール表示
@@ -177,6 +180,7 @@ func hide_hp_tooltip() -> void:
 
 # alltooltips非表示
 func _hide_all_tooltips() -> void:
+	hide_enemy_tooltip()
 	for tooltip in _get_tooltip_views():
 		if tooltip != null and tooltip.has_method("hide_tooltip"):
 			tooltip.hide_tooltip()
@@ -185,7 +189,6 @@ func _hide_all_tooltips() -> void:
 # ツールviews取得
 func _get_tooltip_views() -> Array[Object]:
 	return [
-		enemy_tooltip,
 		acid_damage_view_tooltip,
 		acid_interval_view_tooltip,
 		time_tooltip,

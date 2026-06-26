@@ -14,6 +14,7 @@ const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_100
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var hp_label: Label = $HPText
 @onready var damage_label: Label = $DamageText
+@onready var tooltip: EnemyTooltip = $Enemy_tooltip
 var definition: EnemyDefinition
 var skill_info: NightmareInfo
 var seed_info: SeedInfo
@@ -327,6 +328,16 @@ func set_hovered(value: bool) -> void:
 	_hover_tween.set_trans(Tween.TRANS_QUAD)
 	_hover_tween.set_ease(Tween.EASE_OUT)
 	_hover_tween.tween_property(sprite, "scale", target_scale, HOVER_TWEEN_DURATION)
+
+
+# ツール表示
+func show_tooltip(debug_number_text: String, debug_numbers_visible: bool) -> void:
+	tooltip.show_enemy_at(self, debug_number_text, debug_numbers_visible, global_position)
+
+
+# ツール非表示
+func hide_tooltip() -> void:
+	tooltip.hide_tooltip()
 # pulsecostラベル処理
 func pulse_cost_label() -> void:
 	if hp_label == null:
