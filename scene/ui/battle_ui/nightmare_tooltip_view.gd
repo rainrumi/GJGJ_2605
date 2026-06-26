@@ -95,14 +95,14 @@ func _get_seed_block_entries(enemy: Enemy, debug_numbers_visible: bool) -> Array
 		},
 		{
 			"explanation": "効果",
-			"value": _get_seed_block_effect_text(enemy.seed_skill_info),
+			"value": _get_seed_block_effect_text(enemy.seed_info),
 		},
 	])
 	return entries
 
 
 # 種ブロックeffect文言取得
-func _get_seed_block_effect_text(seed_skill: SeedInfo) -> String:
-	if seed_skill == null:
+func _get_seed_block_effect_text(seed: SeedInfo) -> String:
+	if seed == null:
 		return "-"
-	return DreamSeedSkillDescriptionFormatter.get_sub_description(seed_skill)
+	return SeedDescription.get_sub_description(seed)

@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://bsxyd8fke3wr2"]
 
-[ext_resource type="Script" path="res://scene/ui/dream_seed_skill_button/dream_seed_skill_tooltip.gd" id="1_script"]
-[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+[ext_resource type="Script" uid="uid://cp1o8ie35jl3j" path="res://scene/ui/seed/seed_tooltip.gd" id="1_go3nn"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_opm7q"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_seed_skill_tooltip"]
 bg_color = Color(0, 0, 0, 0.78)
@@ -15,7 +15,7 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
-[node name="DreamSeedSkillTooltip" type="Panel"]
+[node name="SeedTooltip" type="Panel" unique_id=954225524]
 visible = false
 top_level = true
 z_index = 100
@@ -23,18 +23,17 @@ offset_right = 220.0
 offset_bottom = 24.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_seed_skill_tooltip")
-script = ExtResource("1_script")
+script = ExtResource("1_go3nn")
 
-[node name="TooltipLabel" type="Label" parent="."]
+[node name="TooltipLabel" type="Label" parent="." unique_id=2031412385]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 212.0
 offset_bottom = 16.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("2_font")
+theme_override_fonts/font = ExtResource("2_opm7q")
 theme_override_font_sizes/font_size = 10
 autowrap_mode = 3

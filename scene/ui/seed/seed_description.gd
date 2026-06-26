@@ -1,4 +1,4 @@
-class_name DreamSeedSkillDescriptionFormatter
+class_name SeedDescription
 extends RefCounted
 
 const EMPTY_TEXT := "-"

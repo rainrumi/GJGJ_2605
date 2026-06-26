@@ -1,4 +1,4 @@
-class_name DreamSeedSkillTooltipView
+class_name SeedTooltip
 extends Panel
 
 @onready var tooltip_label: Label = $TooltipLabel

@@ -6,9 +6,9 @@ signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
-signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
-signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
-signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
+signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
+signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
+signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 
 @onready var digest_damage_panel: Control = $DigestiveDMG
 @onready var digest_damage_icon: Control = $DigestiveDMG/digestiveDMG_icon
@@ -17,7 +17,7 @@ signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: SeedIn
 @onready var digest_efficiency_icon: Control = $DigestiveINTERVAL/digestiveINTERVAL_icon
 @onready var digest_efficiency_value_label: Label = $DigestiveINTERVAL/digestiveINTERVAL_value
 @onready var hp_status: HpView = $HpFrame
-@onready var dream_seed_skill_buttons: DreamSeedSkillButtonList = $DreamSeedSkillButtons
+@onready var seed_button: SeedButtonList = $DreamSeedSkillButtons
 @onready var time_status: TimeStatusView = $Time
 @onready var digestion_button: DigestionButtonView = $DigestionFrame
 @onready var status_panel: StatusPanelView = $StatusPanel
@@ -35,7 +35,7 @@ var _rest_recovery_bonus_rate := 0.0
 # 初期化
 func _ready() -> void:
 	_prepare_digest_mouse_filters()
-	dream_seed_skill_buttons.set_sub_skill_drag_enabled(true)
+	seed_button.set_sub_skill_drag_enabled(true)
 	_connect_child_signals()
 	_hide_all_tooltips()
 
@@ -74,8 +74,8 @@ func reset_for_battle(
 	time_tooltip.set_time_info()
 	set_message(message)
 	set_debug_message("")
-	set_dream_seed_skill_sources([])
-	set_dream_seed_debug_numbers_visible(DebugState.debug_enabled)
+	set_seed_sources([])
+	set_seed_debug_numbers_visible(DebugState.debug_enabled)
 	set_debug_button_active(DebugState.debug_enabled)
 	set_digestion_count(0)
 	set_digestion_button_visible(true)
@@ -111,13 +111,13 @@ func set_debug_message(message: String) -> void:
 
 
 # 夢種スキルsources設定
-func set_dream_seed_skill_sources(sources: Array) -> void:
-	dream_seed_skill_buttons.set_seed_sources(sources)
+func set_seed_sources(sources: Array) -> void:
+	seed_button.set_seed_sources(sources)
 
 
 # 夢種デバッグ番号visible設定
-func set_dream_seed_debug_numbers_visible(is_visible: bool) -> void:
-	dream_seed_skill_buttons.set_debug_numbers_visible(is_visible)
+func set_seed_debug_numbers_visible(is_visible: bool) -> void:
+	seed_button.set_debug_numbers_visible(is_visible)
 
 
 # 悪夢ツール表示
@@ -271,9 +271,9 @@ func _connect_child_signals() -> void:
 	status_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	status_panel.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
 	status_panel.debug_seed_requested.connect(_on_debug_seed_requested)
-	dream_seed_skill_buttons.seed_skill_drag_started.connect(_on_seed_skill_drag_started)
-	dream_seed_skill_buttons.seed_skill_drag_moved.connect(_on_seed_skill_drag_moved)
-	dream_seed_skill_buttons.seed_skill_drag_released.connect(_on_seed_skill_drag_released)
+	seed_button.seed_drag_started.connect(_on_seed_drag_started)
+	seed_button.seed_drag_moved.connect(_on_seed_drag_moved)
+	seed_button.seed_drag_released.connect(_on_seed_drag_released)
 	digest_damage_panel.mouse_entered.connect(show_digest_damage_tooltip)
 	digest_damage_panel.mouse_exited.connect(hide_digest_damage_tooltip)
 	digest_efficiency_panel.mouse_entered.connect(show_digest_efficiency_tooltip)
@@ -351,27 +351,27 @@ func _on_debug_seed_requested() -> void:
 
 
 # 開始処理
-func _on_seed_skill_drag_started(
-	button: DreamSeedSkillButton,
-	seed_skill: SeedInfo,
+func _on_seed_drag_started(
+	button: SeedButton,
+	seed: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
-	seed_skill_drag_started.emit(button, seed_skill, mouse_position)
+	seed_drag_started.emit(button, seed, mouse_position)
 
 
 # 移動処理
-func _on_seed_skill_drag_moved(
-	button: DreamSeedSkillButton,
-	seed_skill: SeedInfo,
+func _on_seed_drag_moved(
+	button: SeedButton,
+	seed: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
-	seed_skill_drag_moved.emit(button, seed_skill, mouse_position)
+	seed_drag_moved.emit(button, seed, mouse_position)
 
 
 # 離上処理
-func _on_seed_skill_drag_released(
-	button: DreamSeedSkillButton,
-	seed_skill: SeedInfo,
+func _on_seed_drag_released(
+	button: SeedButton,
+	seed: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
-	seed_skill_drag_released.emit(button, seed_skill, mouse_position)
+	seed_drag_released.emit(button, seed, mouse_position)

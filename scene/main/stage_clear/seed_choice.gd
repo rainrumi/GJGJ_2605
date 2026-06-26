@@ -38,7 +38,7 @@ func setup_choice(seed: SeedInfo) -> void:
 	effect_label.text = _get_seed_effect_text(seed)
 	seed_texture_rect.texture = seed.texture
 	frame.texture = _base_frame_texture
-	valuable_icon.visible = _is_rare_dream_seed(seed)
+	valuable_icon.visible = _is_rare_seed(seed)
 
 
 # デバッグ番号visible設定
@@ -125,13 +125,13 @@ func _get_seed_name_text(seed: SeedInfo) -> String:
 func _get_seed_effect_text(seed: SeedInfo) -> String:
 	# 行一覧
 	var lines: Array[String] = [
-		"メインスキル: %s" % DreamSeedSkillDescriptionFormatter.get_main_description(seed),
+		"メインスキル: %s" % SeedDescription.get_main_description(seed),
 	]
-	if DreamSeedSkillDescriptionFormatter.has_sub_skill(seed):
-		lines.append("サブスキル: %s" % DreamSeedSkillDescriptionFormatter.get_sub_description(seed))
+	if SeedDescription.has_sub_skill(seed):
+		lines.append("サブスキル: %s" % SeedDescription.get_sub_description(seed))
 	return "\n".join(lines)
 
 
 # rare夢種判定
-func _is_rare_dream_seed(seed: SeedInfo) -> bool:
+func _is_rare_seed(seed: SeedInfo) -> bool:
 	return seed.rarity == SeedInfo.Rarity.RARE

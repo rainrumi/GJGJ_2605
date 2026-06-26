@@ -1,12 +1,12 @@
-class_name DreamSeedSkillButton
+class_name SeedButton
 extends Button
 
-signal seed_skill_drag_started(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
-signal seed_skill_drag_moved(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
-signal seed_skill_drag_released(button: DreamSeedSkillButton, seed_skill: SeedInfo, mouse_position: Vector2)
+signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
+signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
+signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
-const TOOLTIP_SCENE := preload("res://scene/ui/dream_seed_skill_button/dream_seed_skill_tooltip.tscn")
+const TOOLTIP_SCENE := preload("res://scene/ui/seed/seed_tooltip.tscn")
 const LOW_SUB_SKILL_USES_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
 const NORMAL_ICON_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const SUB_SKILL_USE_COUNT := 1
@@ -16,8 +16,8 @@ const SUB_SKILL_USE_COUNT := 1
 
 var source_data: Resource
 var icon_source_data: Resource
-var seed_skill: SeedInfo
-var tooltip_panel: DreamSeedSkillTooltipView
+var seed: SeedInfo
+var tooltip_panel: SeedTooltip
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
 # 現状はUI表示を兼ねた一時的な使用回数。永続状態が必要になったらRuntimeStateへ移す。
@@ -41,12 +41,12 @@ func _ready() -> void:
 # 種元データ設定
 func set_seed_source(source: Resource) -> void:
 	source_data = source
-	seed_skill = null
+	seed = null
 	if source is SeedInfo:
-		seed_skill = source as SeedInfo
+		seed = source as SeedInfo
 	set_seed_icon_source(source)
 	_display_remaining_sub_skill_uses = SUB_SKILL_USE_COUNT if _has_sub_skill() else 0
-	disabled = seed_skill == null
+	disabled = seed == null
 	_update_drag_state()
 	_refresh_tooltip()
 
@@ -99,9 +99,9 @@ func consume_sub_skill_use() -> void:
 
 # 毎フレーム処理
 func _process(_delta: float) -> void:
-	if not _dragging or seed_skill == null:
+	if not _dragging or seed == null:
 		return
-	seed_skill_drag_moved.emit(self, seed_skill, get_viewport().get_mouse_position())
+	seed_drag_moved.emit(self, seed, get_viewport().get_mouse_position())
 
 
 # 入力処理
@@ -113,7 +113,7 @@ func _input(event: InputEvent) -> void:
 		var mouse_button := event as InputEventMouseButton
 		if mouse_button.button_index == MOUSE_BUTTON_LEFT and not mouse_button.pressed:
 			_dragging = false
-			seed_skill_drag_released.emit(self, seed_skill, mouse_button.position)
+			seed_drag_released.emit(self, seed, mouse_button.position)
 
 
 # GUI入力処理
@@ -127,7 +127,7 @@ func _gui_input(event: InputEvent) -> void:
 
 # ツール更新
 func _refresh_tooltip() -> void:
-	if seed_skill == null:
+	if seed == null:
 		tooltip_text = ""
 		if tooltip_panel != null:
 			tooltip_panel.set_text("")
@@ -144,25 +144,25 @@ func _get_tooltip_text() -> String:
 	# 行一覧
 	var lines: Array[String] = [
 		_get_title_text(),
-		"メインスキル: %s" % DreamSeedSkillDescriptionFormatter.get_main_description(seed_skill),
+		"メインスキル: %s" % SeedDescription.get_main_description(seed),
 	]
 	if _has_sub_skill():
-		lines.append("サブスキル: %s" % DreamSeedSkillDescriptionFormatter.get_sub_description(seed_skill))
+		lines.append("サブスキル: %s" % SeedDescription.get_sub_description(seed))
 	if debug_numbers_visible:
-		lines.append("ID: %d" % seed_skill.skill_id)
+		lines.append("ID: %d" % seed.skill_id)
 	return "\n".join(lines)
 
 
 # ツールpanel作成
 func _create_tooltip_panel() -> void:
-	tooltip_panel = TOOLTIP_SCENE.instantiate() as DreamSeedSkillTooltipView
+	tooltip_panel = TOOLTIP_SCENE.instantiate() as SeedTooltip
 	add_child(tooltip_panel)
 	_refresh_tooltip()
 
 
 # ホバー開始
 func _on_mouse_entered() -> void:
-	if seed_skill == null or tooltip_panel == null:
+	if seed == null or tooltip_panel == null:
 		return
 	tooltip_panel.global_position = TooltipPositioner.get_tooltip_position(
 		global_position,
@@ -182,13 +182,13 @@ func _on_mouse_exited() -> void:
 # title文言取得
 func _get_title_text() -> String:
 	if _is_rare_seed():
-		return "%s(レア)" % seed_skill.display_name
-	return seed_skill.display_name
+		return "%s(レア)" % seed.display_name
+	return seed.display_name
 
 
 # rare種判定
 func _is_rare_seed() -> bool:
-	return seed_skill != null and seed_skill.rarity == SeedInfo.Rarity.RARE
+	return seed != null and seed.rarity == SeedInfo.Rarity.RARE
 
 
 # usesubスキル試行
@@ -196,17 +196,17 @@ func _try_use_sub_skill(mouse_position: Vector2) -> void:
 	if not _can_use_sub_skill():
 		return
 	_dragging = true
-	seed_skill_drag_started.emit(self, seed_skill, mouse_position)
+	seed_drag_started.emit(self, seed, mouse_position)
 
 
 # usesubスキル判定
 func _can_use_sub_skill() -> bool:
-	return sub_skill_drag_enabled and seed_skill != null and seed_skill.sub_skill_mode != SeedInfo.SubSkillMode.None and _has_sub_skill() and _display_remaining_sub_skill_uses > 0
+	return sub_skill_drag_enabled and seed != null and seed.sub_skill_mode != SeedInfo.SubSkillMode.None and _has_sub_skill() and _display_remaining_sub_skill_uses > 0
 
 
 # subスキル判定
 func _has_sub_skill() -> bool:
-	return DreamSeedSkillDescriptionFormatter.has_sub_skill(seed_skill)
+	return SeedDescription.has_sub_skill(seed)
 
 
 # ドラッグstate更新

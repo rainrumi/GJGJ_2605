@@ -46,8 +46,8 @@ func _ready() -> void:
 	var battle_finished_callback := Callable(self, "_on_game_battle_finished")
 	if game.has_signal("battle_finished") and not game.is_connected("battle_finished", battle_finished_callback):
 		game.connect("battle_finished", battle_finished_callback)
-	if game.has_signal("dream_seed_depleted"):
-		game.connect("dream_seed_depleted", Callable(self, "_on_game_dream_seed_depleted"))
+	if game.has_signal("seed_depleted"):
+		game.connect("seed_depleted", Callable(self, "_on_game_seed_depleted"))
 	_play_bgm()
 	show_title()
 
@@ -234,7 +234,7 @@ func _on_game_battle_finished(won: bool) -> void:
 
 
 # 枯渇処理
-func _on_game_dream_seed_depleted(source: Resource) -> void:
+func _on_game_seed_depleted(source: Resource) -> void:
 	if stage_clear.has_method("remove_planted_flower"):
 		stage_clear.remove_planted_flower(source)
 	_sync_run_state_from_stage_clear()

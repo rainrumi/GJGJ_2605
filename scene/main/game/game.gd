@@ -1,10 +1,10 @@
 extends Node2D
 signal battle_finished(won: bool)
-signal dream_seed_depleted(source: Resource)
+signal seed_depleted(source: Resource)
 enum DragMode {
 	NONE,
 	ENEMY,
-	DREAM_SEED,
+	seed,
 }
 const START_HOUR: int = 22
 const END_HOUR: int = 30
@@ -36,7 +36,7 @@ var debug_numbers_visible := false
 var digestion_timer: Timer
 var enemy_setup := GameEnemySetupController.new()
 var digest_controller := NightmareDigestController.new()
-var dream_seed_controller := GameDreamSeedController.new()
+var seed_controller := GameDreamSeedController.new()
 var digest_spawn_request_applier := DigestSpawnRequestApplier.new()
 var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
@@ -52,7 +52,7 @@ var effective_max_hp := MAX_HP
 func _ready() -> void:
 	randomize()
 	enemy_setup.setup(self, input_controller, stomach, enemy_definitions)
-	dream_seed_controller.setup(self, stomach, input_controller)
+	seed_controller.setup(self, stomach, input_controller)
 	_connect_ui()
 	_connect_input()
 	_create_digestion_timer()
@@ -76,13 +76,13 @@ func start_battle(context: BattleStartContext = null) -> void:
 	debug_numbers_visible = DebugState.debug_enabled
 	_set_battle_flags(false)
 	_clear_scheduled_digest_events()
-	dream_seed_controller.set_flowers(battle_context.flowers)
+	seed_controller.set_flowers(battle_context.flowers)
 	_apply_seed_stomach_size_effects()
-	digest_controller.setup(dream_seed_controller.get_flowers())
+	digest_controller.setup(seed_controller.get_flowers())
 	digest_controller.set_day(current_day)
 	_refresh_effective_max_hp(false)
 	dragging_enemy = null
-	dream_seed_controller.cancel_drag()
+	seed_controller.cancel_drag()
 	drag_mode = DragMode.NONE
 	hovered_enemy = null
 	enemy_setup.setup(
@@ -101,8 +101,8 @@ func start_battle(context: BattleStartContext = null) -> void:
 		REST_HP_RATE,
 		digest_controller.get_rest_recovery_bonus_rate()
 	)
-	ui.set_dream_seed_skill_sources(dream_seed_controller.get_flowers())
-	ui.set_dream_seed_debug_numbers_visible(debug_numbers_visible)
+	ui.set_seed_sources(seed_controller.get_flowers())
+	ui.set_seed_debug_numbers_visible(debug_numbers_visible)
 	stomach.hide_preview()
 	battle_active = true
 	input_controller.set_active(true)
@@ -149,9 +149,9 @@ func _connect_ui() -> void:
 	ui.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	ui.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
 	ui.debug_seed_requested.connect(_on_debug_seed_requested)
-	ui.seed_skill_drag_started.connect(_on_seed_skill_drag_started)
-	ui.seed_skill_drag_moved.connect(_on_seed_skill_drag_moved)
-	ui.seed_skill_drag_released.connect(_on_seed_skill_drag_released)
+	ui.seed_drag_started.connect(_on_seed_drag_started)
+	ui.seed_drag_moved.connect(_on_seed_drag_moved)
+	ui.seed_drag_released.connect(_on_seed_drag_released)
 # 入力接続
 func _connect_input() -> void:
 	input_controller.setup(enemies)
@@ -167,7 +167,7 @@ func _set_battle_flags(is_active: bool) -> void:
 	auto_digest_paused_for_drag = false
 	digest_turn_in_progress = false
 	drag_mode = DragMode.NONE
-	dream_seed_controller.cancel_drag()
+	seed_controller.cancel_drag()
 	if digestion_timer != null and not digestion_timer.is_stopped():
 		digestion_timer.stop()
 # 消化timer作成
@@ -247,7 +247,7 @@ func _on_digestion_timer_timeout() -> void:
 # 要求処理
 func _on_debug_message_requested(is_active: bool) -> void:
 	debug_numbers_visible = is_active
-	ui.set_dream_seed_debug_numbers_visible(debug_numbers_visible)
+	ui.set_seed_debug_numbers_visible(debug_numbers_visible)
 	if hovered_enemy != null:
 		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 # 要求処理
@@ -275,52 +275,52 @@ func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> vo
 func _on_debug_seed_requested() -> void:
 	if not _can_use_debug_action():
 		return
-	if not dream_seed_controller.add_random_debug_seed():
+	if not seed_controller.add_random_debug_seed():
 		return
-	_sync_dream_seed_sources()
+	_sync_seed_sources()
 	_refresh_ui()
 
 
 # 開始処理
-func _on_seed_skill_drag_started(
-	button: DreamSeedSkillButton,
-	seed_skill: SeedInfo,
+func _on_seed_drag_started(
+	button: SeedButton,
+	seed: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
 	if not _can_start_seed_drag():
 		return
 	# 結果
-	var result := dream_seed_controller.start_drag(button, seed_skill, mouse_position)
+	var result := seed_controller.start_drag(button, seed, mouse_position)
 	if not result.started:
 		return
-	drag_mode = DragMode.DREAM_SEED
+	drag_mode = DragMode.seed
 	auto_digest_paused_for_drag = auto_digest_enabled
 	_update_auto_digest_timer()
 	_play_click_se()
 
 
 # 移動処理
-func _on_seed_skill_drag_moved(
-	_button: DreamSeedSkillButton,
-	_seed_skill: SeedInfo,
+func _on_seed_drag_moved(
+	_button: SeedButton,
+	_seed: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
-	if not battle_active or drag_mode != DragMode.DREAM_SEED:
+	if not battle_active or drag_mode != DragMode.seed:
 		return
-	dream_seed_controller.move_drag(mouse_position, enemies)
+	seed_controller.move_drag(mouse_position, enemies)
 	_set_hovered_enemy(null)
 
 
 # 離上処理
-func _on_seed_skill_drag_released(
-	_button: DreamSeedSkillButton,
-	_seed_skill: SeedInfo,
+func _on_seed_drag_released(
+	_button: SeedButton,
+	_seed: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
-	if drag_mode != DragMode.DREAM_SEED:
+	if drag_mode != DragMode.seed:
 		return
 	# 結果
-	var result := dream_seed_controller.release_drag(mouse_position, enemies)
+	var result := seed_controller.release_drag(mouse_position, enemies)
 	_handle_seed_drag_result(result)
 	_finish_drag_operation()
 
@@ -339,8 +339,8 @@ func _apply_placed_seed_drag_result(result: DreamSeedDragResult) -> void:
 	if result.source_button == null or not is_instance_valid(result.source_button):
 		return
 	result.source_button.consume_sub_skill_use()
-	dream_seed_controller.remove_source_while_in_stomach(result.source_button, result.seed_block)
-	_sync_dream_seed_sources()
+	seed_controller.remove_source_while_in_stomach(result.source_button, result.seed_block)
+	_sync_seed_sources()
 
 
 # ドラッグoperation終了
@@ -352,11 +352,11 @@ func _finish_drag_operation() -> void:
 
 
 # 夢種sources同期
-func _sync_dream_seed_sources() -> void:
+func _sync_seed_sources() -> void:
 	# 花値
-	var flowers := dream_seed_controller.get_flowers()
+	var flowers := seed_controller.get_flowers()
 	digest_controller.set_seed_effect_flowers(flowers)
-	ui.set_dream_seed_skill_sources(flowers)
+	ui.set_seed_sources(flowers)
 
 
 # start敵ドラッグ判定
@@ -520,7 +520,7 @@ func _apply_elapsed_time(elapsed_minutes: int) -> void:
 		digest_controller.add_revive_event()
 		_refresh_effective_max_hp(true)
 		hp = digest_controller.get_rest_hp(effective_max_hp, REST_HP_RATE)
-		if not dream_seed_controller.consume_rest_time_skip():
+		if not seed_controller.consume_rest_time_skip():
 			minutes += REST_MINUTES
 			elapsed_minutes += REST_MINUTES
 		_refresh_after_battle_event()
@@ -538,9 +538,9 @@ func _finish_digest_turn() -> void:
 
 
 # depleted夢種sources発火
-func _emit_depleted_dream_seed_sources(digested_enemies: Array[Enemy]) -> void:
-	for source in dream_seed_controller.collect_depleted_sources(digested_enemies):
-		dream_seed_depleted.emit(source)
+func _emit_depleted_seed_sources(digested_enemies: Array[Enemy]) -> void:
+	for source in seed_controller.collect_depleted_sources(digested_enemies):
+		seed_depleted.emit(source)
 
 
 # check戦闘end処理
@@ -638,13 +638,13 @@ func _refresh_after_battle_event() -> void:
 	_refresh_ui()
 # ツールデバッグ番号文言取得
 func _get_tooltip_debug_number_text(enemy: Enemy) -> String:
-	if enemy.has_seed_skill():
+	if enemy.has_seed():
 		return "ID:%s" % _get_enemy_skill_id_text(enemy)
 	return "悪夢:%s" % _get_enemy_skill_id_text(enemy)
 # 敵スキルID文言取得
 func _get_enemy_skill_id_text(enemy: Enemy) -> String:
-	if enemy.has_seed_skill():
-		return str(enemy.get_seed_skill().skill_id)
+	if enemy.has_seed():
+		return str(enemy.get_seed().skill_id)
 	if not enemy.has_nightmare_skill():
 		return "-"
 	return str(enemy.get_nightmare_skill().skill_id)
@@ -704,13 +704,13 @@ func _apply_digest_spawn_requests(spawn_requests: Array[DigestSpawnRequest]) -> 
 func _apply_digested_seed_effects(digested_enemies: Array[Enemy]) -> void:
 	# HP
 	var previous_hp := hp
-	hp = dream_seed_controller.apply_direct_digested_seed_effects(digested_enemies, hp, effective_max_hp)
+	hp = seed_controller.apply_direct_digested_seed_effects(digested_enemies, hp, effective_max_hp)
 	if hp > previous_hp:
 		hp = mini(effective_max_hp, hp + digest_controller.add_heal_event(hp - previous_hp))
-	for seed_skill in dream_seed_controller.collect_digested_seed_skills(digested_enemies):
-		digest_controller.add_digested_seed_effect(seed_skill)
+	for seed in seed_controller.collect_digested_seeds(digested_enemies):
+		digest_controller.add_digested_seed_effect(seed)
 	_apply_digested_seed_hp_effects(digested_enemies)
-	_emit_depleted_dream_seed_sources(digested_enemies)
+	_emit_depleted_seed_sources(digested_enemies)
 
 
 # playerダメージvalues適用
@@ -778,11 +778,11 @@ func _apply_remove_from_stomach_digest_damage(enemy: Enemy) -> void:
 # 消化済み種HPeffects適用
 func _apply_digested_seed_hp_effects(digested_enemies: Array[Enemy]) -> void:
 	for enemy in digested_enemies:
-		if enemy == null or not enemy.has_seed_skill():
+		if enemy == null or not enemy.has_seed():
 			continue
 		# 種スキル
-		var seed_skill := enemy.get_seed_skill()
-		match seed_skill.skill_id:
+		var seed := enemy.get_seed()
+		match seed.skill_id:
 			2121:
 				_heal_player_by_rate(0.05 * float(enemy.get_size()))
 			2125:
@@ -805,7 +805,7 @@ func _apply_digested_nightmare_seed_effects(digested_enemies: Array[Enemy]) -> v
 	if heal_rate <= 0.0 and max_hp_rate <= 0.0:
 		return
 	for enemy in digested_enemies:
-		if enemy == null or enemy.has_seed_skill():
+		if enemy == null or enemy.has_seed():
 			continue
 		if heal_rate > 0.0:
 			# 回復量
@@ -833,7 +833,7 @@ func _apply_seed_stomach_size_effects() -> void:
 	var has_column_bonus := false
 	# has行補正
 	var has_row_bonus := false
-	for flower in dream_seed_controller.get_flowers():
+	for flower in seed_controller.get_flowers():
 		if flower == null:
 			continue
 		match flower.skill_id:

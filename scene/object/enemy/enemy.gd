@@ -16,7 +16,7 @@ const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_100
 @onready var damage_label: Label = $DamageText
 var definition: EnemyDefinition
 var skill_info: NightmareInfo
-var seed_skill_info: SeedInfo
+var seed_info: SeedInfo
 var has_main_effect := false
 var nightmare_skill_enabled := true
 var max_hp := 0
@@ -49,7 +49,7 @@ var _texture_override: Texture2D
 func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_skill: NightmareInfo = null, has_effect := false, start_position_override := Vector2.INF) -> void:
 	definition = enemy_definition
 	skill_info = nightmare_skill
-	seed_skill_info = null
+	seed_info = null
 	nightmare_skill_enabled = enemy_definition.nightmare_skill_enabled
 	has_main_effect = has_effect and nightmare_skill_enabled
 	max_hp = enemy_definition.max_hp
@@ -94,8 +94,8 @@ func reset_for_battle() -> void:
 	_update_status_label_colors()
 # displayname取得
 func get_display_name() -> String:
-	if seed_skill_info != null and not seed_skill_info.display_name.is_empty():
-		return seed_skill_info.display_name
+	if seed_info != null and not seed_info.display_name.is_empty():
+		return seed_info.display_name
 	if skill_info != null and not skill_info.display_name.is_empty():
 		return skill_info.display_name
 	return definition.display_name
@@ -103,17 +103,17 @@ func get_display_name() -> String:
 
 # 種胃袋ブロック判定
 func is_seed_stomach_block() -> bool:
-	return seed_skill_info != null
+	return seed_info != null
 
 
 # 種スキル判定
-func has_seed_skill() -> bool:
-	return seed_skill_info != null
+func has_seed() -> bool:
+	return seed_info != null
 
 
 # 種スキル取得
-func get_seed_skill() -> SeedInfo:
-	return seed_skill_info
+func get_seed() -> SeedInfo:
+	return seed_info
 
 
 # 悪夢スキル判定
@@ -262,9 +262,9 @@ func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
 
 
 # setupas種胃袋ブロック処理
-func setup_as_seed_stomach_block(seed_skill: SeedInfo, target_size: Vector2) -> void:
+func setup_as_seed_stomach_block(seed: SeedInfo, target_size: Vector2) -> void:
 	# ブロック定義
-	var block_definition := seed_skill.acid_block if seed_skill != null else null
+	var block_definition := seed.acid_block if seed != null else null
 	if block_definition != null:
 		set_stomach_footprint_override(
 			block_definition.get_stomach_size(),
@@ -277,7 +277,7 @@ func setup_as_seed_stomach_block(seed_skill: SeedInfo, target_size: Vector2) -> 
 	else:
 		setup_as_one_cell_stomach_block(target_size)
 		activation_deferred = false
-	seed_skill_info = seed_skill
+	seed_info = seed
 	if block_definition != null and block_definition.texture != null:
 		set_texture_override(block_definition.texture, target_size)
 	max_hp = block_definition.get_max_hp() if block_definition != null else 1

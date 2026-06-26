@@ -23,7 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://cv2lt30r8m0jq" path="res://art/ui/icon/ui_icon_digestiveINTERVAL.png" id="38_digestive_interval_icon"]
 [ext_resource type="Script" uid="uid://b05fwmrw470hd" path="res://scene/ui/battle_ui/time_tooltip_view.gd" id="39_time_tooltip_view"]
 [ext_resource type="Script" uid="uid://e7h4ik0nntom" path="res://scene/ui/battle_ui/hp_tooltip_view.gd" id="40_hp_tooltip_view"]
-[ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/dream_seed_skill_button/dream_seed_skill_button_list.gd" id="41_dream_seed_skill_button_list"]
+[ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/seed/seed_button_list.gd" id="41_dream_seed_skill_button_list"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")

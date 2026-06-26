@@ -262,8 +262,8 @@ func has_active_nightmare_effect(enemies: Array[Enemy], skill_id: int) -> bool:
 
 
 # 種スキルID文言取得
-func get_seed_skill_id_text() -> String:
-	return seed_effects.get_seed_skill_id_text()
+func get_seed_id_text() -> String:
+	return seed_effects.get_seed_id_text()
 
 
 # directplayerダメージ適用
@@ -272,8 +272,8 @@ func apply_direct_player_damage(amount: int) -> int:
 
 
 # 消化済み種effect追加
-func add_digested_seed_effect(seed_skill: SeedInfo) -> bool:
-	return seed_effects.add_digested_seed_effect(seed_skill)
+func add_digested_seed_effect(seed: SeedInfo) -> bool:
+	return seed_effects.add_digested_seed_effect(seed)
 
 
 # 日数設定
@@ -892,7 +892,7 @@ func _apply_strength_digested_effect(
 
 # 種keptbyiriyu判定
 func _is_seed_kept_by_iriyu(enemy: Enemy, enemies: Array[Enemy]) -> bool:
-	if not enemy.has_seed_skill() or not enemy.is_active_in_stomach():
+	if not enemy.has_seed() or not enemy.is_active_in_stomach():
 		return false
 	for other in enemies:
 		if _has_nightmare_effect(other, STRENGTH_IRIYU_KEEP_SEED) and NightmarePlacementQuery.are_enemies_adjacent(enemy, other):

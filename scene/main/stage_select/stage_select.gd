@@ -480,9 +480,9 @@ func _update_debug_seed_pool_panel() -> void:
 func _get_debug_seed_pool_skills(stage_definition: StageInfo) -> Array[SeedInfo]:
 	# seeds
 	var seeds: Array[SeedInfo] = []
-	if stage_definition == null or stage_definition.drop_seed_skill_pool == null:
+	if stage_definition == null or stage_definition.drop_seed_pool == null:
 		return seeds
-	for seed in stage_definition.drop_seed_skill_pool.get_all_skills():
+	for seed in stage_definition.drop_seed_pool.get_all_skills():
 		if seed != null:
 			seeds.append(seed)
 	return seeds
@@ -521,9 +521,9 @@ func _get_debug_seed_pool_estimated_line_count(seeds: Array[SeedInfo]) -> int:
 	var line_count := 0
 	for seed in seeds:
 		line_count += 2
-		line_count += _get_wrapped_extra_line_count(DreamSeedSkillDescriptionFormatter.get_main_description(seed), 74)
-		if DreamSeedSkillDescriptionFormatter.has_sub_skill(seed):
-			line_count += _get_wrapped_extra_line_count(DreamSeedSkillDescriptionFormatter.get_sub_description(seed), 74)
+		line_count += _get_wrapped_extra_line_count(SeedDescription.get_main_description(seed), 74)
+		if SeedDescription.has_sub_skill(seed):
+			line_count += _get_wrapped_extra_line_count(SeedDescription.get_sub_description(seed), 74)
 	return line_count
 
 
@@ -541,10 +541,10 @@ func _get_debug_seed_pool_item_text(seed: SeedInfo) -> String:
 	# 行一覧
 	var lines: Array[String] = [
 		"%s  ID:%d" % [_get_debug_seed_title_text(seed), seed.skill_id],
-		"M:%s" % _get_debug_seed_pool_bbcode_text(DreamSeedSkillDescriptionFormatter.get_main_description(seed)),
+		"M:%s" % _get_debug_seed_pool_bbcode_text(SeedDescription.get_main_description(seed)),
 	]
-	if DreamSeedSkillDescriptionFormatter.has_sub_skill(seed):
-		lines.append("S:%s" % _get_debug_seed_pool_bbcode_text(DreamSeedSkillDescriptionFormatter.get_sub_description(seed)))
+	if SeedDescription.has_sub_skill(seed):
+		lines.append("S:%s" % _get_debug_seed_pool_bbcode_text(SeedDescription.get_sub_description(seed)))
 	return "\n".join(lines)
 
 

@@ -16,7 +16,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @export var initial_flower: SeedInfo
 @export var seed_options: Array[SeedInfo] = []
 @onready var hp_view: HpView = $CharacterArea/HpFrame
-@onready var dream_seed_skill_buttons: DreamSeedSkillButtonList = $CharacterArea/DreamSeedSkillButtons
+@onready var seed_button: SeedButtonList = $CharacterArea/DreamSeedSkillButtons
 @onready var guide_text: Label = $UI/GuideText
 @onready var reroll_button: Button = $UI/RerollButton
 @onready var debug_button: Button = $UI/DebugButton
@@ -236,7 +236,7 @@ func _on_reroll_button_pressed() -> void:
 
 # デバッグ番号visible更新
 func _update_debug_numbers_visible() -> void:
-	dream_seed_skill_buttons.set_debug_numbers_visible(debug_numbers_visible)
+	seed_button.set_debug_numbers_visible(debug_numbers_visible)
 	for seed_choice in seed_choices:
 		seed_choice.set_debug_numbers_visible(debug_numbers_visible)
 
@@ -270,7 +270,7 @@ func _update_reroll_button_state() -> void:
 # reroll種options処理
 func _reroll_seed_options() -> void:
 	# skills
-	var skills := _get_reroll_seed_skill_candidates()
+	var skills := _get_reroll_seed_candidates()
 	if skills.is_empty():
 		return
 	skills.shuffle()
@@ -286,7 +286,7 @@ func _reroll_seed_options() -> void:
 
 
 # reroll種スキル候補取得
-func _get_reroll_seed_skill_candidates() -> Array[SeedInfo]:
+func _get_reroll_seed_candidates() -> Array[SeedInfo]:
 	return reward_service.get_stage_seed_options(_base_seed_options, _current_clear_stage)
 
 
@@ -434,14 +434,14 @@ func _refresh_flower_slots() -> void:
 			continue
 		texture_rect.texture = display_textures[i]
 		flower_slots[i].disabled = true
-	_refresh_dream_seed_skill_buttons()
+	_refresh_seed_button()
 
 
 # 夢種スキルbuttons更新
-func _refresh_dream_seed_skill_buttons() -> void:
-	if dream_seed_skill_buttons == null:
+func _refresh_seed_button() -> void:
+	if seed_button == null:
 		return
-	dream_seed_skill_buttons.set_seed_sources(get_planted_flowers())
+	seed_button.set_seed_sources(get_planted_flowers())
 
 
 # statechanged更新

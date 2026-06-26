@@ -1,9 +1,9 @@
 class_name DreamSeedBlockDigestResolver
 extends RefCounted
 
-const DREAM_SEED_RARE_REFLECT_DIGEST_DAMAGE := 2002
-const DREAM_SEED_RARE_LATE_DIGEST_DAMAGE := 2004
-const DREAM_SEED_RARE_ADJACENT_DAMAGE_UP := 2005
+const seed_RARE_REFLECT_DIGEST_DAMAGE := 2002
+const seed_RARE_LATE_DIGEST_DAMAGE := 2004
+const seed_RARE_ADJACENT_DAMAGE_UP := 2005
 const PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE_BIG := 2103
 const PROPOSAL_RARE_REVIVE_TIME_DAMAGE := 2104
 const PROPOSAL_RARE_EXTRA_DIGEST_HIT := 2107
@@ -35,9 +35,9 @@ func get_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
 	# 率値
 	var rate := 0.0
 	for enemy in enemies:
-		if enemy == null or not enemy.is_active_in_stomach() or not enemy.has_seed_skill():
+		if enemy == null or not enemy.is_active_in_stomach() or not enemy.has_seed():
 			continue
-		if enemy.get_seed_skill().skill_id == DREAM_SEED_RARE_LATE_DIGEST_DAMAGE:
+		if enemy.get_seed().skill_id == seed_RARE_LATE_DIGEST_DAMAGE:
 			rate += LATE_DIGEST_DAMAGE_RATE
 	return rate
 
@@ -51,10 +51,10 @@ func append_digested_by_seed_block_effects(
 	received_digest_damage: Dictionary,
 	digested_enemies: Array[Enemy]
 ) -> void:
-	if seed_block == null or not seed_block.has_seed_skill():
+	if seed_block == null or not seed_block.has_seed():
 		return
-	match seed_block.get_seed_skill().skill_id:
-		DREAM_SEED_RARE_REFLECT_DIGEST_DAMAGE, DREAM_SEED_RARE_ADJACENT_DAMAGE_UP:
+	match seed_block.get_seed().skill_id:
+		seed_RARE_REFLECT_DIGEST_DAMAGE, seed_RARE_ADJACENT_DAMAGE_UP:
 			_apply_adjacent_damage(
 				seed_block,
 				enemies,
@@ -98,11 +98,11 @@ func get_target_digest_damage_multiplier(target: Enemy, enemies: Array[Enemy]) -
 	# 倍率
 	var multiplier := 1.0
 	for enemy in enemies:
-		if enemy == null or enemy == target or not enemy.is_active_in_stomach() or not enemy.has_seed_skill():
+		if enemy == null or enemy == target or not enemy.is_active_in_stomach() or not enemy.has_seed():
 			continue
 		if not NightmarePlacementQuery.are_enemies_adjacent(enemy, target):
 			continue
-		match enemy.get_seed_skill().skill_id:
+		match enemy.get_seed().skill_id:
 			PROPOSAL_RARE_RANDOM_EXTRA_DIGEST:
 				multiplier *= 2.0
 			PROPOSAL_RARE_RANDOM_DOUBLE_DIGEST:
@@ -112,7 +112,7 @@ func get_target_digest_damage_multiplier(target: Enemy, enemies: Array[Enemy]) -
 				multiplier *= 1.10
 			PROPOSAL_RARE_HP_INTERVAL_UP:
 				multiplier *= 0.80
-			DREAM_SEED_RARE_ADJACENT_DAMAGE_UP:
+			seed_RARE_ADJACENT_DAMAGE_UP:
 				multiplier *= 2.0
 	return multiplier
 
@@ -154,7 +154,7 @@ func _apply_line_damage(
 	# 対象
 	var targets: Array[Enemy] = []
 	for enemy in enemies:
-		if enemy == null or enemy.is_digested() or not enemy.is_active_in_stomach() or enemy.has_seed_skill():
+		if enemy == null or enemy.is_digested() or not enemy.is_active_in_stomach() or enemy.has_seed():
 			continue
 		if stomach.get_bottom_row_cell_count(enemy) > 0:
 			targets.append(enemy)

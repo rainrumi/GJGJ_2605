@@ -2,14 +2,14 @@ class_name StageClearRecoveryCalculator
 extends RefCounted
 
 const SKILL_2_CLEAR_RECOVERY_BONUS_RATE := 0.1
-const DREAM_SEED_CLEAR_RECOVERY_UP := 1002
-const DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE := 2004
-const DREAM_SEED_SPECIAL_EXTRA_CHOICE_START_HOUR := 28
+const seed_CLEAR_RECOVERY_UP := 1002
+const seed_RARE_CLEAR_RECOVERY_DISABLE := 2004
+const seed_SPECIAL_EXTRA_CHOICE_START_HOUR := 28
 
 
 # plant種判定
-static func can_plant_seed(seed_skill: SeedInfo, planted_flowers: Array[SeedInfo], max_flowers: int) -> bool:
-	if seed_skill == null:
+static func can_plant_seed(seed: SeedInfo, planted_flowers: Array[SeedInfo], max_flowers: int) -> bool:
+	if seed == null:
 		return false
 	return count_planted_flowers(planted_flowers) < max_flowers
 
@@ -66,7 +66,7 @@ static func get_seed_bonus_rate(planted_flowers: Array[SeedInfo]) -> float:
 	for flower in planted_flowers:
 		if flower == null:
 			continue
-		if flower.skill_id == DREAM_SEED_CLEAR_RECOVERY_UP:
+		if flower.skill_id == seed_CLEAR_RECOVERY_UP:
 			bonus_rate += SKILL_2_CLEAR_RECOVERY_BONUS_RATE
 	return bonus_rate
 
@@ -76,13 +76,13 @@ static func is_clear_time_recovery_disabled(planted_flowers: Array[SeedInfo]) ->
 	for flower in planted_flowers:
 		if flower == null:
 			continue
-		if flower.skill_id == DREAM_SEED_RARE_CLEAR_RECOVERY_DISABLE:
+		if flower.skill_id == seed_RARE_CLEAR_RECOVERY_DISABLE:
 			return true
 	return false
 
 
 # grantsextra種選択肢処理
 static func grants_extra_seed_choice(planted_flowers: Array[SeedInfo], clear_minutes: int) -> bool:
-	if clear_minutes < DREAM_SEED_SPECIAL_EXTRA_CHOICE_START_HOUR * 60:
+	if clear_minutes < seed_SPECIAL_EXTRA_CHOICE_START_HOUR * 60:
 		return false
 	return is_clear_time_recovery_disabled(planted_flowers)
