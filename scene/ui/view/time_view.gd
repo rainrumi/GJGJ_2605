@@ -8,6 +8,7 @@ const TIME_ELAPSED_TWEEN_DURATION := 0.3
 const TIME_ELAPSED_HIDE_DELAY := 0.2
 
 signal tooltip_requested(view: TimeView)
+signal tooltip_hide_requested(view: TimeView)
 
 @onready var time_text: Label = $TimeText
 @onready var time_tooltip: TimeTooltip = $TimeView_tooltip
@@ -155,4 +156,4 @@ func _on_mouse_entered() -> void:
 
 # hover終了
 func _on_mouse_exited() -> void:
-	hide_tooltip()
+	tooltip_hide_requested.emit(self)

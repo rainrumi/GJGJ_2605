@@ -586,6 +586,7 @@ func _set_hovered_enemy(enemy: Enemy) -> void:
 		return
 	if hovered_enemy != null:
 		hovered_enemy.set_hovered(false)
+		ui.hide_enemy_tooltip(hovered_enemy)
 	hovered_enemy = enemy
 	if hovered_enemy != null:
 		hovered_enemy.set_hovered(true)

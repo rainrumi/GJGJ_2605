@@ -2,6 +2,7 @@ class_name AcidIntervalView
 extends TextureRect
 
 signal tooltip_requested(view: AcidIntervalView)
+signal tooltip_hide_requested(view: AcidIntervalView)
 
 @onready var acid_interval_icon: Control = $AcidIntervalView_icon
 @onready var acid_interval_value_label: Label = $AcidIntervalView_value
@@ -76,4 +77,4 @@ func _on_mouse_entered() -> void:
 
 # hover終了
 func _on_mouse_exited() -> void:
-	hide_tooltip()
+	tooltip_hide_requested.emit(self)

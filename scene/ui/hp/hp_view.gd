@@ -7,6 +7,7 @@ const HP_DAMAGE_HIDE_DELAY := 0.15
 const HP_GAUGE_TWEEN_DURATION := 0.2
 
 signal tooltip_requested(view: HpView)
+signal tooltip_hide_requested(view: HpView)
 
 @onready var hp_gauge: HpGaugeView = $HpGauge
 @onready var hp_heal_plan: HpHealPlanView = $HpHealPlan
@@ -216,4 +217,4 @@ func _on_mouse_entered() -> void:
 
 # hover終了
 func _on_mouse_exited() -> void:
-	hide_tooltip()
+	tooltip_hide_requested.emit(self)

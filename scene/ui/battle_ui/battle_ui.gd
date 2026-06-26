@@ -21,7 +21,8 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 var _rest_minutes := 30
 var _rest_hp_rate := 0.1
 var _rest_recovery_bonus_rate := 0.0
-var _tooltip_enemy: Enemy
+var _current_tooltip_owner: Object = null
+var _current_tooltip_hide: Callable = Callable()
 
 
 # 初期化
@@ -110,16 +111,18 @@ func set_seed_debug_numbers_visible(is_visible: bool) -> void:
 
 # 悪夢ツール表示
 func show_enemy_tooltip(enemy: Enemy, debug_number_text: String, debug_numbers_visible: bool) -> void:
-	_hide_all_tooltips()
-	_tooltip_enemy = enemy
-	_tooltip_enemy.show_tooltip(debug_number_text, debug_numbers_visible)
+	var show_func := func() -> void:
+		if is_instance_valid(enemy):
+			enemy.show_tooltip(debug_number_text, debug_numbers_visible)
+	var hide_func := func() -> void:
+		if is_instance_valid(enemy):
+			enemy.hide_tooltip()
+	_show_exclusive_tooltip(enemy, show_func, hide_func)
 
 
 # 悪夢ツール非表示
-func hide_enemy_tooltip() -> void:
-	if _tooltip_enemy != null and is_instance_valid(_tooltip_enemy):
-		_tooltip_enemy.hide_tooltip()
-	_tooltip_enemy = null
+func hide_enemy_tooltip(enemy: Enemy = null) -> void:
+	_hide_current_tooltip(enemy)
 
 
 # 消化ダメージツール表示
@@ -129,17 +132,27 @@ func show_acid_damage_view_tooltip() -> void:
 
 # 消化ダメージツール非表示
 func hide_acid_damage_view_tooltip() -> void:
-	acid_damage_view.hide_tooltip()
+	_hide_current_tooltip(acid_damage_view)
 
 
 # 消化intervalツール表示
-func show_acid_acid_interval_view_tooltip() -> void:
+func show_acid_interval_view_tooltip() -> void:
 	_on_acid_interval_tooltip_requested(acid_interval_view)
 
 
+# 消化interval旧名
+func show_acid_acid_interval_view_tooltip() -> void:
+	show_acid_interval_view_tooltip()
+
+
 # 消化intervalツール非表示
+func hide_acid_interval_view_tooltip() -> void:
+	_hide_current_tooltip(acid_interval_view)
+
+
+# 消化interval旧名
 func hide_acid_acid_interval_view_tooltip() -> void:
-	acid_interval_view.hide_tooltip()
+	hide_acid_interval_view_tooltip()
 
 
 # 時間ツール表示
@@ -149,7 +162,7 @@ func show_time_tooltip() -> void:
 
 # 時間ツール非表示
 func hide_time_tooltip() -> void:
-	time_view.hide_tooltip()
+	_hide_current_tooltip(time_view)
 
 
 # HPツール表示
@@ -159,16 +172,12 @@ func show_hp_tooltip() -> void:
 
 # HPツール非表示
 func hide_hp_tooltip() -> void:
-	hp_view.hide_tooltip()
+	_hide_current_tooltip(hp_view)
 
 
 # 全ツール非表示
 func _hide_all_tooltips() -> void:
-	hide_enemy_tooltip()
-	acid_damage_view.hide_tooltip()
-	acid_interval_view.hide_tooltip()
-	time_view.hide_tooltip()
-	hp_view.hide_tooltip()
+	_hide_current_tooltip()
 
 
 # 消化ダメージ情報設定
@@ -251,33 +260,79 @@ func _connect_child_signals() -> void:
 	seed_button_list.seed_drag_moved.connect(_on_seed_drag_moved)
 	seed_button_list.seed_drag_released.connect(_on_seed_drag_released)
 	acid_damage_view.tooltip_requested.connect(_on_acid_damage_tooltip_requested)
+	acid_damage_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
 	acid_interval_view.tooltip_requested.connect(_on_acid_interval_tooltip_requested)
+	acid_interval_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
 	time_view.tooltip_requested.connect(_on_time_tooltip_requested)
+	time_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
 	hp_view.tooltip_requested.connect(_on_hp_tooltip_requested)
+	hp_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
+
+
+# 排他ツール表示
+func _show_exclusive_tooltip(
+	owner: Object,
+	show_callable: Callable,
+	hide_callable: Callable
+) -> void:
+	if owner == null:
+		return
+	if _current_tooltip_owner != owner:
+		_hide_current_tooltip()
+	_current_tooltip_owner = owner
+	_current_tooltip_hide = hide_callable
+	if show_callable.is_valid():
+		show_callable.call()
+
+
+# 現ツール非表示
+func _hide_current_tooltip(owner: Object = null) -> void:
+	if owner != null and owner != _current_tooltip_owner:
+		return
+	if _current_tooltip_hide.is_valid():
+		_current_tooltip_hide.call()
+	_current_tooltip_owner = null
+	_current_tooltip_hide = Callable()
+
+
+# viewツール表示
+func _show_view_tooltip(view: Object) -> void:
+	var show_func := func() -> void:
+		if is_instance_valid(view):
+			var show_callable := Callable(view, "show_tooltip")
+			if show_callable.is_valid():
+				show_callable.call()
+	var hide_func := func() -> void:
+		if is_instance_valid(view):
+			var hide_callable := Callable(view, "hide_tooltip")
+			if hide_callable.is_valid():
+				hide_callable.call()
+	_show_exclusive_tooltip(view, show_func, hide_func)
 
 
 # 消化ダメtooltip要求
 func _on_acid_damage_tooltip_requested(view: AcidDamageView) -> void:
-	_hide_all_tooltips()
-	view.show_tooltip()
+	_show_view_tooltip(view)
 
 
 # 消化間隔tooltip要求
 func _on_acid_interval_tooltip_requested(view: AcidIntervalView) -> void:
-	_hide_all_tooltips()
-	view.show_tooltip()
+	_show_view_tooltip(view)
 
 
 # 時間tooltip要求
 func _on_time_tooltip_requested(view: TimeView) -> void:
-	_hide_all_tooltips()
-	view.show_tooltip()
+	_show_view_tooltip(view)
 
 
 # HPtooltip要求
 func _on_hp_tooltip_requested(view: HpView) -> void:
-	_hide_all_tooltips()
-	view.show_tooltip()
+	_show_view_tooltip(view)
+
+
+# ツール非表示要求
+func _on_tooltip_hide_requested(view: Object) -> void:
+	_hide_current_tooltip(view)
 
 
 # 要求処理

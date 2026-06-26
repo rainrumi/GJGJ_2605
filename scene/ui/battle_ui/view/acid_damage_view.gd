@@ -2,6 +2,7 @@ class_name AcidDamageView
 extends TextureRect
 
 signal tooltip_requested(view: AcidDamageView)
+signal tooltip_hide_requested(view: AcidDamageView)
 
 @onready var acid_damage_icon: Control = $AcidDamageView_icon
 @onready var acid_damage_value_label: Label = $AcidDamageView_value
@@ -57,4 +58,4 @@ func _on_mouse_entered() -> void:
 
 # hover終了
 func _on_mouse_exited() -> void:
-	hide_tooltip()
+	tooltip_hide_requested.emit(self)
