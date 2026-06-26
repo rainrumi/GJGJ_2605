@@ -20,6 +20,7 @@ signal title_requested
 var _is_refreshing := false
 
 
+# 初期化
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 	se_player.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
@@ -27,26 +28,31 @@ func _ready() -> void:
 	_refresh_values()
 
 
+# 未処理入力
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
 	if event is InputEventKey:
+		# keyイベント
 		var key_event := event as InputEventKey
 		if key_event.keycode == KEY_ESCAPE and key_event.pressed and not key_event.echo:
 			get_viewport().set_input_as_handled()
 			close()
 
 
+# open処理
 func open() -> void:
 	_refresh_values()
 	visible = true
 
 
+# close処理
 func close() -> void:
 	visible = false
 	closed.emit()
 
 
+# setupoptions処理
 func _setup_options() -> void:
 	text_speed_option.clear()
 	text_speed_option.add_item("ゆっくり")
@@ -64,6 +70,7 @@ func _setup_options() -> void:
 	difficulty_option.add_item("むずかしい")
 
 
+# values更新
 func _refresh_values() -> void:
 	_is_refreshing = true
 	master_slider.value = GameSettings.master_volume
@@ -77,12 +84,14 @@ func _refresh_values() -> void:
 	_is_refreshing = false
 
 
+# 音量labels更新
 func _update_volume_labels() -> void:
 	master_value_label.text = "%d%%" % roundi(master_slider.value)
 	bgm_value_label.text = "%d%%" % roundi(bgm_slider.value)
 	se_value_label.text = "%d%%" % roundi(se_slider.value)
 
 
+# 変更処理
 func _on_master_value_changed(value: float) -> void:
 	if _is_refreshing:
 		return
@@ -90,6 +99,7 @@ func _on_master_value_changed(value: float) -> void:
 	_update_volume_labels()
 
 
+# 変更処理
 func _on_bgm_value_changed(value: float) -> void:
 	if _is_refreshing:
 		return
@@ -97,6 +107,7 @@ func _on_bgm_value_changed(value: float) -> void:
 	_update_volume_labels()
 
 
+# 変更処理
 func _on_se_value_changed(value: float) -> void:
 	if _is_refreshing:
 		return
@@ -105,6 +116,7 @@ func _on_se_value_changed(value: float) -> void:
 	_play_se()
 
 
+# 選択処理
 func _on_text_speed_item_selected(index: int) -> void:
 	if _is_refreshing:
 		return
@@ -112,6 +124,7 @@ func _on_text_speed_item_selected(index: int) -> void:
 	_play_se()
 
 
+# 選択処理
 func _on_window_size_item_selected(index: int) -> void:
 	if _is_refreshing:
 		return
@@ -119,6 +132,7 @@ func _on_window_size_item_selected(index: int) -> void:
 	_play_se()
 
 
+# イベント処理
 func _on_fullscreen_toggled(toggled_on: bool) -> void:
 	if _is_refreshing:
 		return
@@ -126,6 +140,7 @@ func _on_fullscreen_toggled(toggled_on: bool) -> void:
 	_play_se()
 
 
+# 選択処理
 func _on_difficulty_item_selected(index: int) -> void:
 	if _is_refreshing:
 		return
@@ -133,22 +148,26 @@ func _on_difficulty_item_selected(index: int) -> void:
 	_play_se()
 
 
+# 押下処理
 func _on_reset_button_pressed() -> void:
 	GameSettings.reset_to_defaults()
 	_refresh_values()
 	_play_se()
 
 
+# 押下処理
 func _on_back_button_pressed() -> void:
 	_play_se()
 	close()
 
 
+# 押下処理
 func _on_title_button_pressed() -> void:
 	_play_se()
 	title_requested.emit()
 
 
+# SE再生
 func _play_se() -> void:
 	if se_player.stream == null:
 		return

@@ -48,6 +48,7 @@ var dragged_enemy_original_global_position := Vector2.ZERO
 var hovered_enemy: Enemy
 var last_time_over_recovery_percent := 0
 var effective_max_hp := MAX_HP
+# 初期化
 func _ready() -> void:
 	randomize()
 	enemy_setup.setup(self, input_controller, stomach, enemy_definitions)
@@ -56,9 +57,12 @@ func _ready() -> void:
 	_connect_input()
 	_create_digestion_timer()
 	ui.hide_nightmare_tooltip()
+# 拍conductor設定
 func set_beat_conductor(conductor: BeatConductor) -> void:
 	beat_conductor = conductor
+# 戦闘開始
 func start_battle(context: BattleStartContext = null) -> void:
+	# 戦闘文脈
 	var battle_context := context if context != null else BattleStartContext.new()
 	minutes = START_HOUR * 60
 	effective_max_hp = MAX_HP
@@ -103,16 +107,21 @@ func start_battle(context: BattleStartContext = null) -> void:
 	battle_active = true
 	input_controller.set_active(true)
 	_refresh_ui()
+# HP取得
 func get_current_hp() -> int:
 	return hp
+# clear分数取得
 func get_clear_minutes() -> int:
 	return minutes
+# 最大HP取得
 func get_max_hp() -> int:
 	return effective_max_hp
+# 時間over回復割合取得
 func get_last_time_over_recovery_percent() -> int:
 	return last_time_over_recovery_percent
 
 
+# 戦闘取消
 func cancel_battle() -> void:
 	battle_active = false
 	input_controller.set_active(false)
@@ -123,14 +132,17 @@ func cancel_battle() -> void:
 	_update_auto_digest_timer()
 
 
+# 胃袋列取得
 func get_stomach_columns() -> int:
 	return stomach.columns
 
 
+# 胃袋行取得
 func get_stomach_rows() -> int:
 	return stomach.rows
 
 
+# UI接続
 func _connect_ui() -> void:
 	ui.digestion_requested.connect(_on_digestion_requested)
 	ui.debug_message_requested.connect(_on_debug_message_requested)
@@ -140,12 +152,14 @@ func _connect_ui() -> void:
 	ui.seed_skill_drag_started.connect(_on_seed_skill_drag_started)
 	ui.seed_skill_drag_moved.connect(_on_seed_skill_drag_moved)
 	ui.seed_skill_drag_released.connect(_on_seed_skill_drag_released)
+# 入力接続
 func _connect_input() -> void:
 	input_controller.setup(enemies)
 	input_controller.enemy_drag_started.connect(_on_enemy_drag_started)
 	input_controller.enemy_drag_moved.connect(_on_enemy_drag_moved)
 	input_controller.enemy_drag_released.connect(_on_enemy_drag_released)
 	input_controller.enemy_hover_requested.connect(_set_hovered_enemy)
+# 戦闘flags設定
 func _set_battle_flags(is_active: bool) -> void:
 	battle_active = is_active
 	input_controller.set_active(is_active)
@@ -156,6 +170,7 @@ func _set_battle_flags(is_active: bool) -> void:
 	dream_seed_controller.cancel_drag()
 	if digestion_timer != null and not digestion_timer.is_stopped():
 		digestion_timer.stop()
+# 消化timer作成
 func _create_digestion_timer() -> void:
 	digestion_timer = Timer.new()
 	digestion_timer.name = "AutoDigestionTimer"
@@ -163,6 +178,7 @@ func _create_digestion_timer() -> void:
 	digestion_timer.one_shot = false
 	digestion_timer.timeout.connect(_on_digestion_timer_timeout)
 	add_child(digestion_timer)
+# 開始処理
 func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i) -> void:
 	if not _can_start_enemy_drag():
 		input_controller.clear_drag()
@@ -177,6 +193,7 @@ func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offs
 	auto_digest_paused_for_drag = auto_digest_enabled
 	_update_auto_digest_timer()
 	_play_click_se()
+# 移動処理
 func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i) -> void:
 	if not battle_active or drag_mode != DragMode.ENEMY or enemy != dragging_enemy:
 		return
@@ -184,6 +201,7 @@ func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, pointer_offset:
 	stomach.show_preview(dragging_enemy, mouse_position, grab_cell, enemies)
 	_update_hp_damage_preview(mouse_position)
 	_set_hovered_enemy(null)
+# 離上処理
 func _on_enemy_drag_released(enemy: Enemy, mouse_position: Vector2) -> void:
 	if not battle_active or drag_mode != DragMode.ENEMY or dragging_enemy == null or enemy != dragging_enemy:
 		return
@@ -191,6 +209,7 @@ func _on_enemy_drag_released(enemy: Enemy, mouse_position: Vector2) -> void:
 	_finish_drag_operation()
 
 
+# 敵ドラッグrelease終了
 func _finish_enemy_drag_release(enemy: Enemy, mouse_position: Vector2) -> void:
 	dragging_enemy = null
 	_play_click_se()
@@ -206,6 +225,7 @@ func _finish_enemy_drag_release(enemy: Enemy, mouse_position: Vector2) -> void:
 		_remove_enemy_from_stomach(enemy)
 
 
+# 要求処理
 func _on_digestion_requested() -> void:
 	if not battle_active:
 		return
@@ -218,16 +238,19 @@ func _on_digestion_requested() -> void:
 		stomach.apply_gravity(enemies)
 	_refresh_ui()
 	_advance_digest_turn()
+# イベント処理
 func _on_digestion_timer_timeout() -> void:
 	if not auto_digest_enabled or auto_digest_paused_for_drag:
 		_update_auto_digest_timer()
 		return
 	_advance_digest_turn()
+# 要求処理
 func _on_debug_message_requested(is_active: bool) -> void:
 	debug_numbers_visible = is_active
 	ui.set_dream_seed_debug_numbers_visible(debug_numbers_visible)
 	if hovered_enemy != null:
 		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
+# 要求処理
 func _on_debug_reroll_requested() -> void:
 	if not _can_use_debug_action():
 		return
@@ -238,6 +261,7 @@ func _on_debug_reroll_requested() -> void:
 	_refresh_ui()
 
 
+# 要求処理
 func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> void:
 	if not _can_use_debug_action():
 		return
@@ -247,6 +271,7 @@ func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> vo
 	_refresh_ui()
 
 
+# 要求処理
 func _on_debug_seed_requested() -> void:
 	if not _can_use_debug_action():
 		return
@@ -256,6 +281,7 @@ func _on_debug_seed_requested() -> void:
 	_refresh_ui()
 
 
+# 開始処理
 func _on_seed_skill_drag_started(
 	button: DreamSeedSkillButton,
 	seed_skill: SeedInfo,
@@ -263,6 +289,7 @@ func _on_seed_skill_drag_started(
 ) -> void:
 	if not _can_start_seed_drag():
 		return
+	# 結果
 	var result := dream_seed_controller.start_drag(button, seed_skill, mouse_position)
 	if not result.started:
 		return
@@ -272,6 +299,7 @@ func _on_seed_skill_drag_started(
 	_play_click_se()
 
 
+# 移動処理
 func _on_seed_skill_drag_moved(
 	_button: DreamSeedSkillButton,
 	_seed_skill: SeedInfo,
@@ -283,6 +311,7 @@ func _on_seed_skill_drag_moved(
 	_set_hovered_enemy(null)
 
 
+# 離上処理
 func _on_seed_skill_drag_released(
 	_button: DreamSeedSkillButton,
 	_seed_skill: SeedInfo,
@@ -290,11 +319,13 @@ func _on_seed_skill_drag_released(
 ) -> void:
 	if drag_mode != DragMode.DREAM_SEED:
 		return
+	# 結果
 	var result := dream_seed_controller.release_drag(mouse_position, enemies)
 	_handle_seed_drag_result(result)
 	_finish_drag_operation()
 
 
+# handle種ドラッグ結果処理
 func _handle_seed_drag_result(result: DreamSeedDragResult) -> void:
 	if result.started:
 		_play_click_se()
@@ -302,6 +333,7 @@ func _handle_seed_drag_result(result: DreamSeedDragResult) -> void:
 		_apply_placed_seed_drag_result(result)
 
 
+# placed種ドラッグ結果適用
 func _apply_placed_seed_drag_result(result: DreamSeedDragResult) -> void:
 	_refresh_after_battle_event()
 	if result.source_button == null or not is_instance_valid(result.source_button):
@@ -311,6 +343,7 @@ func _apply_placed_seed_drag_result(result: DreamSeedDragResult) -> void:
 	_sync_dream_seed_sources()
 
 
+# ドラッグoperation終了
 func _finish_drag_operation() -> void:
 	if auto_digest_enabled:
 		auto_digest_paused_for_drag = false
@@ -318,24 +351,30 @@ func _finish_drag_operation() -> void:
 	_update_auto_digest_timer()
 
 
+# 夢種sources同期
 func _sync_dream_seed_sources() -> void:
+	# 花値
 	var flowers := dream_seed_controller.get_flowers()
 	digest_controller.set_seed_effect_flowers(flowers)
 	ui.set_dream_seed_skill_sources(flowers)
 
 
+# start敵ドラッグ判定
 func _can_start_enemy_drag() -> bool:
 	return battle_active and drag_mode == DragMode.NONE and not digest_turn_in_progress
 
 
+# start種ドラッグ判定
 func _can_start_seed_drag() -> bool:
 	return battle_active and drag_mode == DragMode.NONE and not digest_turn_in_progress
 
 
+# useデバッグaction判定
 func _can_use_debug_action() -> bool:
 	return battle_active and debug_numbers_visible and drag_mode == DragMode.NONE and not digest_turn_in_progress
 
 
+# デバッグ戦闘change準備
 func _prepare_debug_battle_change() -> void:
 	auto_digest_enabled = false
 	auto_digest_paused_for_drag = false
@@ -345,6 +384,7 @@ func _prepare_debug_battle_change() -> void:
 	_set_hovered_enemy(null)
 
 
+# 敵胃袋displaysizes更新
 func _refresh_enemy_stomach_display_sizes() -> void:
 	for enemy in enemies:
 		if enemy.definition == null or enemy.is_digested():
@@ -357,14 +397,17 @@ func _refresh_enemy_stomach_display_sizes() -> void:
 			stomach.place_enemy(enemy, enemy.stomach_cell)
 
 
+# 戦闘敵定義取得
 func _get_battle_enemy_definitions() -> Array[Resource]:
 	return enemy_definitions
 
 
+# 戦闘敵編成取得
 func _get_battle_enemy_preset() -> NightmarePresetInfo:
 	return current_enemy_preset
 
 
+# setup敵編成処理
 func _setup_enemy_preset(enemy_preset: NightmarePresetInfo) -> void:
 	enemy_setup.setup(
 		self,
@@ -378,7 +421,9 @@ func _setup_enemy_preset(enemy_preset: NightmarePresetInfo) -> void:
 	_refresh_ui()
 
 
+# startdigesting試行
 func _try_start_digesting(enemy: Enemy, mouse_position: Vector2) -> void:
+	# fullness
 	var next_fullness := stomach.get_current_fullness(enemies)
 	if not dragged_enemy_was_digesting:
 		next_fullness += enemy.get_size()
@@ -386,6 +431,7 @@ func _try_start_digesting(enemy: Enemy, mouse_position: Vector2) -> void:
 		_return_dragged_enemy(enemy)
 		_refresh_after_battle_event()
 		return
+	# topleft
 	var top_left := stomach.get_drop_cell(enemy, mouse_position, drag_grab_cell, enemies)
 	if not stomach.can_place(enemy, top_left, enemies):
 		_return_dragged_enemy(enemy)
@@ -394,6 +440,7 @@ func _try_start_digesting(enemy: Enemy, mouse_position: Vector2) -> void:
 	enemy.set_digesting(true)
 	stomach.place_enemy(enemy, top_left)
 	_refresh_after_battle_event()
+# dragged敵返却
 func _return_dragged_enemy(enemy: Enemy) -> void:
 	if dragged_enemy_was_digesting:
 		enemy.set_digesting(true)
@@ -401,6 +448,7 @@ func _return_dragged_enemy(enemy: Enemy) -> void:
 		enemy.global_position = dragged_enemy_original_global_position
 		return
 	enemy.return_to_origin()
+# 敵from胃袋削除
 func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	if not dragged_enemy_was_digesting:
 		enemy.return_to_origin()
@@ -408,19 +456,24 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	enemy.set_digesting(false)
 	enemy.return_to_origin()
 	_apply_remove_from_stomach_digest_damage(enemy)
+	# ダメージ
 	var damage := _get_remove_from_stomach_damage()
+	# ダメージvalues
 	var damage_values: Array[int] = [damage]
 	if damage > 0:
 		ui.show_hp_damage_values(damage_values)
 		hp = maxi(0, hp - damage)
 	_refresh_after_battle_event()
+# advance消化turn処理
 func _advance_digest_turn() -> void:
 	if not _begin_digest_turn():
 		return
 	_apply_time_seed_hp_recovery()
 	digest_controller.apply_turn_start_effects(enemies, stomach, minutes)
+	# elapsed分数
 	var elapsed_minutes := digest_controller.get_step_minutes(enemies, minutes)
 	await _wait_for_next_digest_beat()
+	# 消化結果
 	var digest_result := _run_digest_core(minutes, elapsed_minutes)
 	_apply_digest_damage_seed_heal()
 	_apply_digested_nightmare_seed_effects(digest_result.digested_enemies)
@@ -434,6 +487,7 @@ func _advance_digest_turn() -> void:
 	_finish_digest_turn()
 
 
+# begin消化turn処理
 func _begin_digest_turn() -> bool:
 	if digest_turn_in_progress:
 		return false
@@ -444,17 +498,22 @@ func _begin_digest_turn() -> bool:
 	return true
 
 
+# run消化core処理
 func _run_digest_core(current_minutes: int, elapsed_minutes: int) -> DigestTurnResult:
+	# 消化済み敵
 	var digested_enemies: Array[Enemy] = digest_controller.digest_nightmares(enemies, stomach, current_minutes, elapsed_minutes)
+	# 消化結果
 	var digest_result := digest_controller.build_turn_result(digested_enemies)
 	_apply_digest_spawn_requests(digest_result.spawn_requests)
 	return digest_result
 
 
+# empty消化turn終了
 func _finish_empty_digest_turn() -> void:
 	auto_digest_enabled = false
 	_refresh_after_battle_event()
 	digest_turn_in_progress = false
+# elapsed時間適用
 func _apply_elapsed_time(elapsed_minutes: int) -> void:
 	minutes += elapsed_minutes
 	if hp <= 0:
@@ -470,6 +529,7 @@ func _apply_elapsed_time(elapsed_minutes: int) -> void:
 	ui.show_time_elapsed(elapsed_minutes)
 
 
+# 消化turn終了
 func _finish_digest_turn() -> void:
 	_check_battle_end()
 	_update_auto_digest_timer()
@@ -477,11 +537,13 @@ func _finish_digest_turn() -> void:
 	digest_turn_in_progress = false
 
 
+# depleted夢種sources発火
 func _emit_depleted_dream_seed_sources(digested_enemies: Array[Enemy]) -> void:
 	for source in dream_seed_controller.collect_depleted_sources(digested_enemies):
 		dream_seed_depleted.emit(source)
 
 
+# check戦闘end処理
 func _check_battle_end() -> void:
 	if _all_nightmares_digested():
 		_finish_battle(true, "すべての悪夢を消化しました")
@@ -489,6 +551,7 @@ func _check_battle_end() -> void:
 	if minutes >= END_HOUR * 60:
 		_apply_time_over_recovery()
 		_finish_battle(false, "朝までに消化しきれませんでした")
+# 戦闘終了
 func _finish_battle(won: bool, _message: String) -> void:
 	battle_active = false
 	input_controller.set_active(false)
@@ -497,11 +560,15 @@ func _finish_battle(won: bool, _message: String) -> void:
 	_update_auto_digest_timer()
 	_refresh_after_battle_event()
 	battle_finished.emit(won)
+# 時間over回復適用
 func _apply_time_over_recovery() -> void:
+	# HP
 	var previous_hp := hp
 	hp = mini(effective_max_hp, hp + ceili(float(effective_max_hp) * TIME_OVER_HP_RECOVERY_RATE))
 	last_time_over_recovery_percent = roundi(float(hp - previous_hp) / float(effective_max_hp) * 100.0)
+# auto消化timer更新
 func _update_auto_digest_timer() -> void:
+	# active消化数
 	var active_digest_count := _active_digest_count()
 	if auto_digest_enabled and active_digest_count == 0:
 		auto_digest_enabled = false
@@ -513,6 +580,7 @@ func _update_auto_digest_timer() -> void:
 		if not digestion_timer.is_stopped():
 			digestion_timer.stop()
 	_refresh_ui()
+# hovered敵設定
 func _set_hovered_enemy(enemy: Enemy) -> void:
 	if hovered_enemy == enemy:
 		return
@@ -524,6 +592,7 @@ func _set_hovered_enemy(enemy: Enemy) -> void:
 		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 	else:
 		ui.hide_nightmare_tooltip()
+# HPダメージpreview更新
 func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 	if (
 		dragged_enemy_was_digesting
@@ -533,6 +602,7 @@ func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 		ui.show_hp_damage_preview(_get_remove_from_stomach_damage())
 	else:
 		ui.hide_hp_damage_preview()
+# UI更新
 func _refresh_ui() -> void:
 	digest_controller.refresh_enemy_status_display(enemies, stomach, minutes)
 	_refresh_digest_ui()
@@ -540,14 +610,18 @@ func _refresh_ui() -> void:
 	_refresh_hover_tooltip()
 
 
+# 消化UI更新
 func _refresh_digest_ui() -> void:
+	# 消化ダメージ
 	var digest_damage := _get_digest_damage_info()
+	# 消化efficiency
 	var digest_efficiency := _get_digest_efficiency_info()
 	ui.set_digest_damage_info(int(digest_damage["total"]), int(digest_damage["base"]), int(digest_damage["seed_buff"]), float(digest_damage["seed_rate"]), int(digest_damage["nightmare_buff"]), float(digest_damage["nightmare_rate"]))
 	ui.set_digest_efficiency_minutes(float(digest_efficiency["total"]), float(digest_efficiency["base"]), int(digest_efficiency["seed_buff"]), float(digest_efficiency["seed_rate"]), int(digest_efficiency["nightmare_buff"]), float(digest_efficiency["nightmare_rate"]))
 	ui.set_rest_recovery_bonus_rate(digest_controller.get_rest_recovery_bonus_rate())
 
 
+# 状態UI更新
 func _refresh_status_ui() -> void:
 	ui.set_hp(hp, effective_max_hp)
 	ui.set_time(minutes)
@@ -555,21 +629,26 @@ func _refresh_status_ui() -> void:
 	ui.set_digestion_button_visible(battle_active and not auto_digest_enabled)
 
 
+# hoverツール更新
 func _refresh_hover_tooltip() -> void:
 	if hovered_enemy != null:
 		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
+# after戦闘イベント更新
 func _refresh_after_battle_event() -> void:
 	_refresh_ui()
+# ツールデバッグ番号文言取得
 func _get_tooltip_debug_number_text(enemy: Enemy) -> String:
 	if enemy.has_seed_skill():
 		return "ID:%s" % _get_enemy_skill_id_text(enemy)
 	return "悪夢:%s" % _get_enemy_skill_id_text(enemy)
+# 敵スキルID文言取得
 func _get_enemy_skill_id_text(enemy: Enemy) -> String:
 	if enemy.has_seed_skill():
 		return str(enemy.get_seed_skill().skill_id)
 	if not enemy.has_nightmare_skill():
 		return "-"
 	return str(enemy.get_nightmare_skill().skill_id)
+# all悪夢消化済み処理
 func _all_nightmares_digested() -> bool:
 	for enemy in enemies:
 		if not enemy.should_count_for_battle_clear():
@@ -577,22 +656,29 @@ func _all_nightmares_digested() -> bool:
 		if not enemy.is_digested():
 			return false
 	return true
+# active消化数処理
 func _active_digest_count() -> int:
+	# 数値
 	var count := 0
 	for enemy in enemies:
 		if enemy.is_stomach_piece():
 			count += 1
 	return count
+# removefrom胃袋ダメージ取得
 func _get_remove_from_stomach_damage() -> int:
+	# ダメージ率
 	var damage_rate := digest_controller.get_remove_from_stomach_damage_rate(REMOVE_FROM_STOMACH_DAMAGE_RATE)
 	return ceili(float(effective_max_hp) * damage_rate)
+# sumダメージvalues処理
 func _sum_damage_values(damage_values: Array[int]) -> int:
+	# 合計
 	var total := 0
 	for damage in damage_values:
 		total += damage
 	return total
 
 
+# for消化拍待機
 func _wait_for_next_digest_beat() -> void:
 	if beat_conductor == null or not is_instance_valid(beat_conductor):
 		await get_tree().process_frame
@@ -603,16 +689,20 @@ func _wait_for_next_digest_beat() -> void:
 	await beat_conductor.wait_until_next_beat()
 
 
+# scheduled消化events消去
 func _clear_scheduled_digest_events() -> void:
 	if beat_conductor != null and is_instance_valid(beat_conductor):
 		beat_conductor.clear_scheduled_events()
 
 
+# 消化生成要求適用
 func _apply_digest_spawn_requests(spawn_requests: Array[DigestSpawnRequest]) -> void:
 	digest_spawn_request_applier.apply_requests(spawn_requests, enemies, enemy_setup)
 
 
+# 消化済み種effects適用
 func _apply_digested_seed_effects(digested_enemies: Array[Enemy]) -> void:
+	# HP
 	var previous_hp := hp
 	hp = dream_seed_controller.apply_direct_digested_seed_effects(digested_enemies, hp, effective_max_hp)
 	if hp > previous_hp:
@@ -623,7 +713,9 @@ func _apply_digested_seed_effects(digested_enemies: Array[Enemy]) -> void:
 	_emit_depleted_dream_seed_sources(digested_enemies)
 
 
+# playerダメージvalues適用
 func _apply_player_damage_values() -> void:
+	# playerダメージvalues
 	var player_damage_values := digest_controller.apply_digest_damage_values(enemies, stomach, minutes)
 	if player_damage_values.is_empty():
 		return
@@ -631,8 +723,11 @@ func _apply_player_damage_values() -> void:
 	hp = maxi(0, hp - _sum_damage_values(player_damage_values))
 
 
+# effective最大HP更新
 func _refresh_effective_max_hp(keep_rate: bool) -> void:
+	# 最大
 	var previous_max := effective_max_hp
+	# HP率
 	var hp_rate := 1.0 if previous_max <= 0 else float(hp) / float(previous_max)
 	effective_max_hp = maxi(1, roundi(float(MAX_HP) * (1.0 + digest_controller.get_max_hp_bonus_rate())))
 	if keep_rate:
@@ -641,7 +736,9 @@ func _refresh_effective_max_hp(keep_rate: bool) -> void:
 		hp = clampi(hp, 0, effective_max_hp)
 
 
+# 時間種HP回復適用
 func _apply_time_seed_hp_recovery() -> void:
+	# 回復率
 	var recovery_rate := digest_controller.get_time_hp_recovery_rate(_active_digest_count())
 	recovery_rate += digest_controller.get_hour_hp_recovery_rate(minutes)
 	if recovery_rate <= 0.0:
@@ -649,7 +746,9 @@ func _apply_time_seed_hp_recovery() -> void:
 	_heal_player_by_rate(recovery_rate)
 
 
+# 消化ダメージ種回復適用
 func _apply_digest_damage_seed_heal() -> void:
+	# 回復量
 	var heal_amount := digest_controller.consume_digest_damage_heal_amount()
 	if heal_amount <= 0:
 		return
@@ -657,13 +756,17 @@ func _apply_digest_damage_seed_heal() -> void:
 	hp = mini(effective_max_hp, hp + heal_amount)
 
 
+# removefrom胃袋消化ダメージ適用
 func _apply_remove_from_stomach_digest_damage(enemy: Enemy) -> void:
 	if enemy == null or enemy.is_digested():
 		return
+	# ダメージ率
 	var damage_rate := digest_controller.get_remove_from_stomach_digest_damage_rate()
 	if damage_rate <= 0.0:
 		return
+	# 消化ダメージ
 	var digest_damage := int(_get_digest_damage_info().get("total", 0))
+	# ダメージ
 	var damage := maxi(1, roundi(float(digest_damage) * damage_rate))
 	enemy.show_digest_damage_values([damage])
 	if enemy.take_digest_damage(damage, false):
@@ -672,10 +775,12 @@ func _apply_remove_from_stomach_digest_damage(enemy: Enemy) -> void:
 		enemy.pulse_damage()
 
 
+# 消化済み種HPeffects適用
 func _apply_digested_seed_hp_effects(digested_enemies: Array[Enemy]) -> void:
 	for enemy in digested_enemies:
 		if enemy == null or not enemy.has_seed_skill():
 			continue
+		# 種スキル
 		var seed_skill := enemy.get_seed_skill()
 		match seed_skill.skill_id:
 			2121:
@@ -691,8 +796,11 @@ func _apply_digested_seed_hp_effects(digested_enemies: Array[Enemy]) -> void:
 				_heal_player_by_rate(1.00)
 
 
+# 消化済み悪夢種effects適用
 func _apply_digested_nightmare_seed_effects(digested_enemies: Array[Enemy]) -> void:
+	# 回復率
 	var heal_rate := digest_controller.get_digested_nightmare_heal_rate()
+	# 最大HP率
 	var max_hp_rate := digest_controller.get_digested_nightmare_max_hp_rate()
 	if heal_rate <= 0.0 and max_hp_rate <= 0.0:
 		return
@@ -700,6 +808,7 @@ func _apply_digested_nightmare_seed_effects(digested_enemies: Array[Enemy]) -> v
 		if enemy == null or enemy.has_seed_skill():
 			continue
 		if heal_rate > 0.0:
+			# 回復量
 			var heal_amount := ceili(float(enemy.get_max_hp()) * heal_rate)
 			heal_amount += digest_controller.add_heal_event(heal_amount)
 			hp = mini(effective_max_hp, hp + heal_amount)
@@ -708,16 +817,21 @@ func _apply_digested_nightmare_seed_effects(digested_enemies: Array[Enemy]) -> v
 			_refresh_effective_max_hp(false)
 
 
+# 回復playerby率処理
 func _heal_player_by_rate(rate: float) -> void:
 	if rate <= 0.0:
 		return
+	# 回復量
 	var heal_amount := ceili(float(effective_max_hp) * rate)
 	heal_amount += digest_controller.add_heal_event(heal_amount)
 	hp = mini(effective_max_hp, hp + heal_amount)
 
 
+# 種胃袋サイズeffects適用
 func _apply_seed_stomach_size_effects() -> void:
+	# has列補正
 	var has_column_bonus := false
+	# has行補正
 	var has_row_bonus := false
 	for flower in dream_seed_controller.get_flowers():
 		if flower == null:
@@ -727,12 +841,15 @@ func _apply_seed_stomach_size_effects() -> void:
 				has_column_bonus = true
 			2119:
 				has_row_bonus = true
+	# 列値
 	var next_columns := stomach.columns + (1 if has_column_bonus else 0)
+	# 行値
 	var next_rows := stomach.rows + (1 if has_row_bonus else 0)
 	if next_columns != stomach.columns or next_rows != stomach.rows:
 		stomach.set_grid_size(next_columns, next_rows)
 
 
+# resolvepost消化visua処理
 func _resolve_post_digest_visuals(digested_enemies: Array[Enemy]) -> void:
 	if digested_enemies.is_empty():
 		return
@@ -741,12 +858,15 @@ func _resolve_post_digest_visuals(digested_enemies: Array[Enemy]) -> void:
 	stomach.apply_gravity(enemies)
 
 
+# 消化ダメージ情報取得
 func _get_digest_damage_info() -> Dictionary:
 	return digest_controller.get_digest_damage_breakdown(enemies, minutes)
 
 
+# 消化efficiency情報取得
 func _get_digest_efficiency_info() -> Dictionary:
 	return digest_controller.get_step_minutes_breakdown(enemies, false, minutes)
+# clickSE再生
 func _play_click_se() -> void:
 	if click_se == null:
 		return

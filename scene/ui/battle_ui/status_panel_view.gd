@@ -64,11 +64,13 @@ func toggle_debug_message() -> void:
 	DebugState.toggle_debug_enabled()
 
 
+# デバッグstate接続
 func _connect_debug_state() -> void:
 	if not DebugState.debug_enabled_changed.is_connected(_on_debug_enabled_changed):
 		DebugState.debug_enabled_changed.connect(_on_debug_enabled_changed)
 
 
+# 変更処理
 func _on_debug_enabled_changed(is_enabled: bool) -> void:
 	set_debug_button_active(is_enabled)
 	debug_message_requested.emit(is_enabled)
@@ -120,6 +122,7 @@ func _apply_normal_style() -> void:
 
 # 枠を作成
 func _create_debug_button_style(color: Color) -> StyleBoxFlat:
+	# スタイル
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
 	style.border_color = Color(0.0, 0.0, 0.0, 1.0)
@@ -130,6 +133,7 @@ func _create_debug_button_style(color: Color) -> StyleBoxFlat:
 	return style
 
 
+# デバッグcontrolsvisibl設定
 func _set_debug_controls_visible(is_visible: bool) -> void:
 	debug_stomach_x_plus_button.visible = is_visible
 	debug_stomach_x_minus_button.visible = is_visible
@@ -149,23 +153,28 @@ func _on_debug_reroll_button_pressed() -> void:
 	request_debug_reroll()
 
 
+# 押下処理
 func _on_debug_seed_button_pressed() -> void:
 	if not debug_button_active:
 		return
 	debug_seed_requested.emit()
 
 
+# 押下処理
 func _on_debug_stomach_x_plus_button_pressed() -> void:
 	debug_stomach_size_requested.emit(1, 0)
 
 
+# 押下処理
 func _on_debug_stomach_x_minus_button_pressed() -> void:
 	debug_stomach_size_requested.emit(-1, 0)
 
 
+# 押下処理
 func _on_debug_stomach_y_plus_button_pressed() -> void:
 	debug_stomach_size_requested.emit(0, 1)
 
 
+# 押下処理
 func _on_debug_stomach_y_minus_button_pressed() -> void:
 	debug_stomach_size_requested.emit(0, -1)

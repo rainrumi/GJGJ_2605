@@ -28,9 +28,11 @@ const LATE_DIGEST_DAMAGE_START_HOUR := 28
 const BASE_DIGEST_DAMAGE := 300
 
 
+# 消化ダメージ率取得
 func get_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
 	if minutes < LATE_DIGEST_DAMAGE_START_HOUR * 60:
 		return 0.0
+	# 率値
 	var rate := 0.0
 	for enemy in enemies:
 		if enemy == null or not enemy.is_active_in_stomach() or not enemy.has_seed_skill():
@@ -40,6 +42,7 @@ func get_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
 	return rate
 
 
+# 消化済みby種ブロックeffects追加
 func append_digested_by_seed_block_effects(
 	seed_block: Enemy,
 	enemies: Array[Enemy],
@@ -78,6 +81,7 @@ func append_digested_by_seed_block_effects(
 			_return_adjacent_nightmares(seed_block, enemies)
 
 
+# new消化済み適用
 func apply_digested_effect_and_append_new_digested(
 	seed_block: Enemy,
 	enemies: Array[Enemy],
@@ -87,9 +91,11 @@ func apply_digested_effect_and_append_new_digested(
 	append_digested_by_seed_block_effects(seed_block, enemies, null, 0, received_digest_damage, digested_enemies)
 
 
+# 対象消化ダメージ倍率取得
 func get_target_digest_damage_multiplier(target: Enemy, enemies: Array[Enemy]) -> float:
 	if target == null:
 		return 1.0
+	# 倍率
 	var multiplier := 1.0
 	for enemy in enemies:
 		if enemy == null or enemy == target or not enemy.is_active_in_stomach() or not enemy.has_seed_skill():
@@ -111,6 +117,7 @@ func get_target_digest_damage_multiplier(target: Enemy, enemies: Array[Enemy]) -
 	return multiplier
 
 
+# 隣接ダメージ適用
 func _apply_adjacent_damage(
 	seed_block: Enemy,
 	enemies: Array[Enemy],
@@ -120,9 +127,11 @@ func _apply_adjacent_damage(
 ) -> void:
 	if damage <= 0:
 		return
+	# 隣接敵
 	var adjacent_enemies := NightmarePlacementQuery.get_adjacent_enemies(seed_block, enemies)
 	if adjacent_enemies.is_empty():
 		return
+	# splitダメージ
 	var split_damage := maxi(1, roundi(float(damage) / float(adjacent_enemies.size()))) if split else damage
 	for adjacent_enemy in adjacent_enemies:
 		if adjacent_enemy == seed_block or adjacent_enemy.is_digested():
@@ -132,6 +141,7 @@ func _apply_adjacent_damage(
 			digested_enemies.append(adjacent_enemy)
 
 
+# 列ダメージ適用
 func _apply_line_damage(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
@@ -141,6 +151,7 @@ func _apply_line_damage(
 ) -> void:
 	if stomach == null or damage <= 0:
 		return
+	# 対象
 	var targets: Array[Enemy] = []
 	for enemy in enemies:
 		if enemy == null or enemy.is_digested() or not enemy.is_active_in_stomach() or enemy.has_seed_skill():
@@ -149,6 +160,7 @@ func _apply_line_damage(
 			targets.append(enemy)
 	if targets.is_empty():
 		return
+	# 対象ダメージ
 	var target_damage := maxi(1, roundi(float(damage) / float(targets.size()))) if split else damage
 	for target in targets:
 		target.show_digest_damage_values([target_damage])
@@ -156,6 +168,7 @@ func _apply_line_damage(
 			digested_enemies.append(target)
 
 
+# 隣接悪夢返却
 func _return_adjacent_nightmares(seed_block: Enemy, enemies: Array[Enemy]) -> void:
 	for adjacent_enemy in NightmarePlacementQuery.get_adjacent_enemies(seed_block, enemies):
 		if adjacent_enemy == null or adjacent_enemy.is_digested() or not adjacent_enemy.is_nightmare():
@@ -164,6 +177,8 @@ func _return_adjacent_nightmares(seed_block: Enemy, enemies: Array[Enemy]) -> vo
 		adjacent_enemy.return_to_origin()
 
 
+# 時ダメージ取得
 func _get_hour_damage(minutes: int) -> int:
+	# 時値
 	var hour := int(minutes / 60) % 24
 	return BASE_DIGEST_DAMAGE * hour * 10

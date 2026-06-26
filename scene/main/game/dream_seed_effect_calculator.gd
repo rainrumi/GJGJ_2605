@@ -72,6 +72,7 @@ var remove_from_stomach_disabled := false
 var _planted_flowers: Array[SeedInfo] = []
 
 
+# setup処理
 func setup(flowers: Array) -> void:
 	_planted_flowers.clear()
 	for flower in flowers:
@@ -90,21 +91,26 @@ func setup(flowers: Array) -> void:
 	remove_from_stomach_disabled = false
 
 
+# 消化ダメージbreakdown取得
 func get_digest_damage_breakdown(
 	base_damage: int,
 	nightmare_rate: float,
 	minutes: int,
 	consume_pending_bonus: bool = false
 ) -> Dictionary:
+	# 種率
 	var seed_rate := _get_digest_damage_rate(minutes)
 	if next_digest_damage_bonus_rate != 0.0:
 		seed_rate += next_digest_damage_bonus_rate
 	if consume_pending_bonus:
 		next_digest_damage_bonus_rate = 0.0
+	# 種buff
 	var seed_buff := roundi(float(base_damage) * seed_rate)
+	# ダメージafter種
 	var damage_after_seed := base_damage + seed_buff + next_digest_damage_flat_bonus
 	if consume_pending_bonus:
 		next_digest_damage_flat_bonus = 0
+	# 合計ダメージ
 	var total_damage := maxi(1, roundi(float(damage_after_seed) * (1.0 + nightmare_rate)))
 	return {
 		"total": total_damage,
@@ -116,9 +122,11 @@ func get_digest_damage_breakdown(
 	}
 
 
+# playerダメージ適用
 func apply_player_damage(amount: int, _base_damage: int) -> int:
 	if amount <= 0:
 		return 0
+	# finalダメージ
 	var final_damage := maxi(0, roundi(float(amount) * _get_player_damage_multiplier()))
 	next_digest_damage_bonus_rate += _get_reflect_digest_rate(final_damage)
 	next_digest_damage_flat_bonus += _get_taken_attack_flat_digest_bonus(final_damage)
@@ -127,7 +135,9 @@ func apply_player_damage(amount: int, _base_damage: int) -> int:
 	return final_damage
 
 
+# 時間reduction率取得
 func get_time_reduction_rate(consume_pending_bonus := false, minutes := 0) -> float:
+	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
 		if _is_dream_flower_skill(skill, DREAM_SEED_TIME_REDUCTION):
@@ -155,6 +165,7 @@ func get_time_reduction_rate(consume_pending_bonus := false, minutes := 0) -> fl
 	return clampf(rate, -2.0, 0.9)
 
 
+# 消化済み種effect追加
 func add_digested_seed_effect(seed_skill: SeedInfo) -> bool:
 	if seed_skill == null:
 		return false
@@ -229,12 +240,16 @@ func add_digested_seed_effect(seed_skill: SeedInfo) -> bool:
 	return false
 
 
+# 休憩HP取得
 func get_rest_hp(max_hp: int, base_recovery_rate: float) -> int:
+	# 回復率
 	var recovery_rate := base_recovery_rate + _consume_rest_recovery_bonus_rate()
 	return ceili(float(max_hp) * recovery_rate)
 
 
+# 休憩回復補正率取得
 func get_rest_recovery_bonus_rate() -> float:
+	# 補正率
 	var bonus_rate := 0.0
 	for skill in _get_planted_seed_skills():
 		if _is_dream_flower_skill(skill, DREAM_SEED_REST_RECOVERY):
@@ -242,7 +257,9 @@ func get_rest_recovery_bonus_rate() -> float:
 	return bonus_rate
 
 
+# 種スキルID文言取得
 func get_seed_skill_id_text() -> String:
+	# 種ids
 	var seed_ids: Array[String] = []
 	for flower in _planted_flowers:
 		if flower == null:
@@ -253,7 +270,9 @@ func get_seed_skill_id_text() -> String:
 	return ",".join(seed_ids)
 
 
+# 消化ダメージ率取得
 func _get_digest_damage_rate(minutes: int) -> float:
+	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
 		if _is_dream_flower_skill(skill, DREAM_SEED_DIGEST_DAMAGE_UP):
@@ -286,7 +305,9 @@ func _get_digest_damage_rate(minutes: int) -> float:
 	return rate
 
 
+# playerダメージ倍率取得
 func _get_player_damage_multiplier() -> float:
+	# 倍率
 	var multiplier := 1.0 + next_player_damage_multiplier_bonus
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE:
@@ -294,7 +315,9 @@ func _get_player_damage_multiplier() -> float:
 	return maxf(0.0, multiplier)
 
 
+# reflect消化率取得
 func _get_reflect_digest_rate(_taken_damage: int) -> float:
+	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE:
@@ -304,28 +327,35 @@ func _get_reflect_digest_rate(_taken_damage: int) -> float:
 	return rate
 
 
+# 回復イベント追加
 func add_heal_event(amount: int) -> int:
 	if amount <= 0:
 		return 0
+	# 補正
 	var bonus := ceili(float(amount) * _get_heal_bonus_rate())
 	recovery_accumulated_for_max_hp += amount
 	next_digest_damage_flat_bonus += _get_heal_to_line_damage(amount)
 	return bonus
 
 
+# reviveイベント追加
 func add_revive_event() -> void:
 	revive_count += 1
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_REVIVE_MAX_HP:
+			# 率値
 			var rate := maxf(0.0, 2.0 - 0.40 * float(revive_count - 1))
 			max_hp_bonus_rate += rate
 
 
+# 消化ダメージ合計追加
 func add_digest_damage_total(amount: int) -> void:
 	last_digest_damage_total += maxi(0, amount)
 
 
+# 消化ダメージ回復量消費
 func consume_digest_damage_heal_amount() -> int:
+	# 回復量
 	var heal_amount := 0
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_DIGEST_DAMAGE_HEAL:
@@ -334,7 +364,9 @@ func consume_digest_damage_heal_amount() -> int:
 	return heal_amount
 
 
+# 消化済み悪夢回復率取得
 func get_digested_nightmare_heal_rate() -> float:
+	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_DIGESTED_NIGHTMARE_HEAL:
@@ -342,7 +374,9 @@ func get_digested_nightmare_heal_rate() -> float:
 	return rate
 
 
+# 消化済み悪夢最大HP率取得
 func get_digested_nightmare_max_hp_rate() -> float:
+	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_DIGESTED_NIGHTMARE_MAX_HP:
@@ -350,7 +384,9 @@ func get_digested_nightmare_max_hp_rate() -> float:
 	return rate
 
 
+# 最大HP補正率取得
 func get_max_hp_bonus_rate() -> float:
+	# 率値
 	var rate := max_hp_bonus_rate
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_HP_INTERVAL_UP:
@@ -360,7 +396,9 @@ func get_max_hp_bonus_rate() -> float:
 	return maxf(0.0, rate)
 
 
+# 時間HP回復率取得
 func get_time_hp_recovery_rate(active_count: int) -> float:
+	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_TIME_HP:
@@ -370,7 +408,9 @@ func get_time_hp_recovery_rate(active_count: int) -> float:
 	return rate
 
 
+# 時HP回復率取得
 func get_hour_hp_recovery_rate(minutes: int) -> float:
+	# 分値
 	var minute := minutes % 60
 	if minute != 0:
 		return 0.0
@@ -380,7 +420,9 @@ func get_hour_hp_recovery_rate(minutes: int) -> float:
 	return 0.0
 
 
+# 敵attack倍率取得
 func get_enemy_attack_multiplier() -> float:
+	# 倍率
 	var multiplier := 1.0
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_ATTACK_UP:
@@ -388,7 +430,9 @@ func get_enemy_attack_multiplier() -> float:
 	return maxf(0.0, multiplier)
 
 
+# 敵attackdelta取得
 func get_enemy_attack_delta(minutes: int) -> int:
+	# delta
 	var delta := 0
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_INTERVAL_PARITY and int(minutes / 30) % 2 == 0:
@@ -396,7 +440,9 @@ func get_enemy_attack_delta(minutes: int) -> int:
 	return delta
 
 
+# 消化対象倍率取得
 func get_digest_target_multiplier() -> float:
+	# 倍率
 	var multiplier := 1.0
 	for skill in _get_planted_seed_skills():
 		match skill.skill_id:
@@ -411,8 +457,11 @@ func get_digest_target_multiplier() -> float:
 	return multiplier
 
 
+# removefrom胃袋ダメージ率取得
 func get_remove_from_stomach_damage_rate(default_rate: float) -> float:
+	# 率値
 	var rate := default_rate
+	# 安全returnenabled
 	var safe_return_enabled := false
 	for skill in _get_planted_seed_skills():
 		match skill.skill_id:
@@ -425,7 +474,9 @@ func get_remove_from_stomach_damage_rate(default_rate: float) -> float:
 	return rate
 
 
+# removefrom胃袋消化ダメージ取得
 func get_remove_from_stomach_digest_damage_rate() -> float:
+	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_RETURN_DAMAGE_AND_DISABLE:
@@ -433,19 +484,24 @@ func get_remove_from_stomach_digest_damage_rate() -> float:
 	return rate
 
 
+# removefrom胃袋disabl判定
 func is_remove_from_stomach_disabled() -> bool:
 	return remove_from_stomach_disabled
 
 
+# 最大HP補正率追加
 func add_max_hp_bonus_rate(rate: float) -> void:
 	max_hp_bonus_rate += rate
 
 
+# 日数設定
 func set_day(value: int) -> void:
 	day = maxi(1, value)
 
 
+# 休憩回復補正率消費
 func _consume_rest_recovery_bonus_rate() -> float:
+	# 補正率
 	var bonus_rate := 0.0
 	for skill in _get_planted_seed_skills():
 		if _is_dream_flower_skill(skill, DREAM_SEED_REST_RECOVERY):
@@ -453,7 +509,9 @@ func _consume_rest_recovery_bonus_rate() -> float:
 	return bonus_rate
 
 
+# 回復補正率取得
 func _get_heal_bonus_rate() -> float:
+	# 率値
 	var rate := next_heal_bonus_rate
 	next_heal_bonus_rate = 0.0
 	for skill in _get_planted_seed_skills():
@@ -462,6 +520,7 @@ func _get_heal_bonus_rate() -> float:
 	return rate
 
 
+# 回復to列ダメージ取得
 func _get_heal_to_line_damage(amount: int) -> int:
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_HEAL_TO_LINE_DAMAGE:
@@ -469,7 +528,9 @@ func _get_heal_to_line_damage(amount: int) -> int:
 	return 0
 
 
+# takenattackflat消化補取得
 func _get_taken_attack_flat_digest_bonus(taken_damage: int) -> int:
+	# 補正
 	var bonus := 0
 	for skill in _get_planted_seed_skills():
 		if skill.skill_id == PROPOSAL_RARE_ATTACK_DAMAGE_TO_DIGEST:
@@ -477,32 +538,41 @@ func _get_taken_attack_flat_digest_bonus(taken_damage: int) -> int:
 	return bonus
 
 
+# elapsedstep数取得
 func _get_elapsed_step_count(minutes: int) -> float:
 	return maxf(0.0, float(minutes - 22 * 60) / 30.0)
 
 
+# 間隔scalingダメージ率取得
 func _get_interval_scaling_damage_rate(interval_minutes: int) -> float:
 	if interval_minutes < 60:
 		return float(interval_minutes / 5) * 0.10
 	return -float(interval_minutes / 10) * 0.10
 
 
+# dailyrandom間隔率取得
 func _get_daily_random_interval_rate(source_day: int, max_positive_rate: float) -> float:
+	# rng
 	var rng := RandomNumberGenerator.new()
 	rng.seed = source_day * 97531
 	return rng.randf_range(-0.80, max_positive_rate)
 
 
+# dailygrowth率取得
 func _get_daily_growth_rate(source_day: int) -> float:
+	# rng
 	var rng := RandomNumberGenerator.new()
 	rng.seed = source_day * 86491
+	# 率値
 	var rate := 0.0
 	for _i in range(maxi(0, source_day - 1)):
 		rate += rng.randf_range(0.0, 0.10)
 	return rate
 
 
+# planted種skills取得
 func _get_planted_seed_skills() -> Array[SeedInfo]:
+	# skills
 	var skills: Array[SeedInfo] = []
 	for flower in _planted_flowers:
 		if flower != null:
@@ -510,9 +580,11 @@ func _get_planted_seed_skills() -> Array[SeedInfo]:
 	return skills
 
 
+# 夢花スキル判定
 func _is_dream_flower_skill(skill: SeedInfo, skill_id: int) -> bool:
 	return skill != null and skill.skill_id == skill_id
 
 
+# special時間スキル判定
 func _is_special_time_skill(skill: SeedInfo, skill_id: int) -> bool:
 	return skill != null and skill.skill_id == skill_id

@@ -29,6 +29,7 @@ var _enemy_definitions: Array[Resource] = []
 var _enemy_preset: NightmarePresetInfo
 
 
+# setup処理
 func setup(
 	owner: Node,
 	input_controller: GameInputController,
@@ -43,6 +44,7 @@ func setup(
 	_enemy_preset = enemy_preset
 
 
+# setup敵処理
 func setup_enemies(enemies: Array[Enemy]) -> void:
 	if _enemy_preset != null and not _enemy_preset.enemies.is_empty():
 		_setup_preset_enemies(enemies)
@@ -50,9 +52,12 @@ func setup_enemies(enemies: Array[Enemy]) -> void:
 	_setup_legacy_random_enemies(enemies)
 
 
+# setup編成敵処理
 func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
+	# 敵positions
 	var enemy_positions := _get_enemy_positions(_enemy_preset.enemies.size())
 	for i in range(enemies.size()):
+		# 敵値
 		var enemy := enemies[i]
 		if i >= _enemy_preset.enemies.size():
 			enemy.visible = false
@@ -60,10 +65,13 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 			enemy.digesting = false
 			enemy.has_main_effect = false
 			continue
+		# 元データスキル
 		var source_skill := _enemy_preset.enemies[i]
 		if source_skill == null:
 			continue
+		# スキル
 		var skill := _create_stage_nightmare_skill(source_skill)
+		# 定義
 		var definition := _create_nightmare_definition(skill)
 		enemy.setup(
 			definition,
@@ -77,11 +85,16 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 		)
 
 
+# setuplegacyrandom敵処理
 func _setup_legacy_random_enemies(enemies: Array[Enemy]) -> void:
+	# selectedskills
 	var selected_skills := _get_random_nightmare_skills()
+	# 敵positions
 	var enemy_positions := _get_enemy_positions(selected_skills.size())
+	# maineffect敵番号
 	var main_effect_enemy_index := randi() % selected_skills.size() if not selected_skills.is_empty() else -1
 	for i in range(enemies.size()):
+		# 敵値
 		var enemy := enemies[i]
 		if i >= selected_skills.size():
 			enemy.visible = false
@@ -89,6 +102,7 @@ func _setup_legacy_random_enemies(enemies: Array[Enemy]) -> void:
 			enemy.digesting = false
 			enemy.has_main_effect = false
 			continue
+		# 定義
 		var definition := _get_enemy_template(i)
 		if definition == null:
 			continue
@@ -104,6 +118,7 @@ func _setup_legacy_random_enemies(enemies: Array[Enemy]) -> void:
 		)
 
 
+# 生成nuisance悪夢処理
 func spawn_nuisance_nightmare(
 	enemies: Array[Enemy],
 	source_enemy: Enemy,
@@ -113,11 +128,15 @@ func spawn_nuisance_nightmare(
 	digest_damage_rate: float = 1.0,
 	global_digest_damage_rate: float = 1.0
 ) -> bool:
+	# nuisance敵
 	var nuisance_enemy := _get_available_nuisance_enemy(enemies, source_enemy)
 	if nuisance_enemy == null:
 		return false
+	# 元データ定義
 	var source_definition := source_enemy.definition
+	# 元データorigin位置
 	var source_origin_position := source_enemy.origin_position
+	# 元データ最大HP
 	var source_max_hp := source_enemy.max_hp
 	nuisance_enemy.setup(
 		source_definition,
@@ -137,6 +156,7 @@ func spawn_nuisance_nightmare(
 	return true
 
 
+# availablenuisance敵取得
 func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -> Enemy:
 	for enemy in enemies:
 		if enemy.visible or not enemy.digested:
@@ -144,6 +164,7 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 		return enemy
 	if source_enemy.digested:
 		return source_enemy
+	# 敵値
 	var enemy := ENEMY_SCENE.instantiate() as Enemy
 	_owner.add_child(enemy)
 	enemies.append(enemy)
@@ -151,34 +172,47 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 	return enemy
 
 
+# random悪夢skills取得
 func _get_random_nightmare_skills() -> Array[NightmareInfo]:
+	# skillsbycategory
 	var skills_by_category: Dictionary = {}
 	return _pick_skills_from_category(skills_by_category)
 
 
+# skillsfromcategory選択
 func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[NightmareInfo]:
+	# categories
 	var categories := skills_by_category.keys()
 	if categories.is_empty():
 		return []
+	# category
 	var category = categories[randi() % categories.size()]
+	# categoryskills
 	var category_skills: Array = skills_by_category[category].duplicate()
 	category_skills.shuffle()
+	# 最大数
 	var max_count := mini(4, category_skills.size())
+	# 最小数
 	var min_count := mini(2, max_count)
+	# 数値
 	var count := randi_range(min_count, max_count)
+	# selected
 	var selected: Array[NightmareInfo] = []
 	for i in range(count):
 		selected.append(category_skills[i] as NightmareInfo)
 	return selected
 
 
+# 敵template取得
 func _get_enemy_template(enemy_index: int) -> EnemyDefinition:
 	if _enemy_definitions.is_empty():
 		return null
 	return _enemy_definitions[enemy_index % _enemy_definitions.size()] as EnemyDefinition
 
 
+# 悪夢定義作成
 func _create_nightmare_definition(skill: NightmareInfo) -> EnemyDefinition:
+	# 定義
 	var definition := EnemyDefinition.new()
 	if skill == null:
 		return definition
@@ -187,6 +221,7 @@ func _create_nightmare_definition(skill: NightmareInfo) -> EnemyDefinition:
 	definition.nightmare_skill = skill
 	definition.nightmare_skill_enabled = skill.nightmare_skill_enabled
 	
+	# ブロック
 	var block := skill.acid_block
 	if block == null:
 		definition.max_hp = DEFAULT_NIGHTMARE_MAX_HP
@@ -206,19 +241,24 @@ func _create_nightmare_definition(skill: NightmareInfo) -> EnemyDefinition:
 	return definition
 
 
+# ステージ悪夢スキル作成
 func _create_stage_nightmare_skill(source_skill: NightmareInfo) -> NightmareInfo:
+	# スキル
 	var skill := source_skill.duplicate(true) as NightmareInfo
 	skill.nightmare_skill_enabled = skill.skill_id >= STRENGTHENED_NIGHTMARE_SKILL_ID_MIN
 	return skill
 
 
+# 悪夢胃袋サイズ取得
 func _get_nightmare_stomach_size(skill: NightmareInfo) -> Vector2i:
 	if skill.stomach_size.x > 0 and skill.stomach_size.y > 0:
 		return skill.stomach_size
 	return DEFAULT_NIGHTMARE_STOMACH_SIZE
 
 
+# 悪夢胃袋形状取得
 func _get_nightmare_stomach_shape(skill: NightmareInfo) -> Array[Vector2i]:
+	# 形状
 	var shape: Array[Vector2i] = []
 	for cell in skill.stomach_shape:
 		if cell is Vector2i:
@@ -228,6 +268,7 @@ func _get_nightmare_stomach_shape(skill: NightmareInfo) -> Array[Vector2i]:
 	return shape
 
 
+# 敵positions取得
 func _get_enemy_positions(enemy_count: int) -> Array[Vector2]:
 	match enemy_count:
 		2:

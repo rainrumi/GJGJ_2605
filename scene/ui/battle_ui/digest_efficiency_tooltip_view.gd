@@ -2,12 +2,14 @@ class_name DigestEfficiencyTooltipView
 extends LeftTooltipView
 
 
+# 初期化
 func _ready() -> void:
 	super()
 	set_title("消化間隔")
 	set_note("最終消化間隔分の時間が経過すると消化ダメージを与えます。", true)
 
 
+# efficiency情報設定
 func set_efficiency_info(
 	amount_minutes: float,
 	base_minutes: float = 30.0,
@@ -38,12 +40,17 @@ func set_efficiency_info(
 	])
 
 
+# 分数整形
 func _format_minutes(amount_minutes: float) -> String:
+	# 合計seconds
 	var total_seconds := maxi(1, roundi(amount_minutes * 60.0))
 	if total_seconds < 60:
 		return "%d秒" % total_seconds
+	# 合計分数
 	var total_minutes := int(total_seconds / 60)
+	# hours
 	var hours := int(total_minutes / 60)
+	# 分数only
 	var minutes_only := total_minutes % 60
 	if hours <= 0:
 		return "%d分" % total_minutes
@@ -52,14 +59,18 @@ func _format_minutes(amount_minutes: float) -> String:
 	return "%d時間%d分" % [hours, minutes_only]
 
 
+# buff分数整形
 func _format_buff_minutes(amount_minutes: int) -> String:
 	if amount_minutes == 0:
 		return "+0分"
+	# sign
 	var sign := "+" if amount_minutes >= 0 else "-"
 	return "%s%s" % [sign, _format_minutes(absi(amount_minutes))]
 
 
+# buff率整形
 func _format_buff_rate(rate: float) -> String:
+	# 割合
 	var percent := roundi(rate * 100.0)
 	if percent >= 0:
 		return "+%d%%" % percent

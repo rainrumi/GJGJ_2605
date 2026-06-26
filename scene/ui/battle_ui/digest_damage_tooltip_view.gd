@@ -2,12 +2,14 @@ class_name DigestDamageTooltipView
 extends LeftTooltipView
 
 
+# 初期化
 func _ready() -> void:
 	super()
 	set_title("消化ダメージ")
 	set_note("消化が進むごとに最終消化ダメージを与えます。", true)
 
 
+# ダメージ情報設定
 func set_damage_info(
 	total_damage: int,
 	base_damage: int,
@@ -16,6 +18,7 @@ func set_damage_info(
 	nightmare_buff: int,
 	nightmare_rate: float
 ) -> void:
+	# 合計buff率
 	var total_buff_rate := _get_total_buff_rate(seed_rate, nightmare_rate)
 	set_entries([
 		{
@@ -39,18 +42,22 @@ func set_damage_info(
 	])
 
 
+# buff量整形
 func _format_buff_amount(amount: int) -> String:
 	if amount >= 0:
 		return "+%d" % amount
 	return "-%d" % absi(amount)
 
 
+# buff率整形
 func _format_buff_rate(rate: float) -> String:
+	# 割合
 	var percent := roundi(rate * 100.0)
 	if percent >= 0:
 		return "+%d%%" % percent
 	return "-%d%%" % absi(percent)
 
 
+# 合計buff率取得
 func _get_total_buff_rate(seed_rate: float, nightmare_rate: float) -> float:
 	return (1.0 + seed_rate) * (1.0 + nightmare_rate) - 1.0

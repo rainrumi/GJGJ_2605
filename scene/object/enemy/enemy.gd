@@ -45,6 +45,7 @@ var _stomach_size_override := Vector2i.ZERO
 var _stomach_shape_override: Array[Vector2i] = []
 var _size_override := 0
 var _texture_override: Texture2D
+# setup処理
 func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_skill: NightmareInfo = null, has_effect := false, start_position_override := Vector2.INF) -> void:
 	definition = enemy_definition
 	skill_info = nightmare_skill
@@ -74,6 +75,7 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 			sprite.scale = target_size / sprite.texture.get_size()
 			_base_scale = sprite.scale
 	reset_for_battle()
+# for戦闘初期化
 func reset_for_battle() -> void:
 	current_hp = max_hp
 	digesting = false
@@ -90,6 +92,7 @@ func reset_for_battle() -> void:
 	_update_hp_label()
 	_update_damage_label()
 	_update_status_label_colors()
+# displayname取得
 func get_display_name() -> String:
 	if seed_skill_info != null and not seed_skill_info.display_name.is_empty():
 		return seed_skill_info.display_name
@@ -98,80 +101,105 @@ func get_display_name() -> String:
 	return definition.display_name
 
 
+# 種胃袋ブロック判定
 func is_seed_stomach_block() -> bool:
 	return seed_skill_info != null
 
 
+# 種スキル判定
 func has_seed_skill() -> bool:
 	return seed_skill_info != null
 
 
+# 種スキル取得
 func get_seed_skill() -> SeedInfo:
 	return seed_skill_info
 
 
+# 悪夢スキル判定
 func has_nightmare_skill() -> bool:
 	return skill_info != null
 
 
+# 悪夢スキル取得
 func get_nightmare_skill() -> NightmareInfo:
 	return skill_info
 
 
+# 悪夢判定
 func is_nightmare() -> bool:
 	return not is_seed_stomach_block()
 
 
+# 胃袋piece判定
 func is_stomach_piece() -> bool:
 	return is_active_in_stomach()
 
 
+# should数for戦闘clear処理
 func should_count_for_battle_clear() -> bool:
 	return is_nightmare()
 
 
+# shouldapply悪夢スキル処理
 func should_apply_nightmare_skill() -> bool:
 	return is_nightmare() and nightmare_skill_enabled
 
 
+# shoulddealplayerダメ処理
 func should_deal_player_damage() -> bool:
 	return is_nightmare()
 
 
+# should数for消化order処理
 func should_count_for_digest_order() -> bool:
 	return is_nightmare()
 
 
+# 悪夢reactions処理
 func should_trigger_nightmare_reactions() -> bool:
 	return is_nightmare()
 
 
+# ダメージ取得
 func get_damage() -> int: return maxi(0, roundi(float(damage) * attack_multiplier))
+# displayダメージ取得
 func get_display_damage() -> int: return display_damage_override if display_damage_override >= 0 else get_damage()
+# baseダメージ取得
 func get_base_damage() -> int: return base_damage
+# 最大HP取得
 func get_max_hp() -> int: return max_hp
+# HP取得
 func get_current_hp() -> int: return current_hp
+# revive数取得
 func get_revive_count() -> int: return revive_count
+# 消化済み判定
 func is_digested() -> bool: return digested
+# digesting判定
 func is_digesting() -> bool: return digesting
+# activationdeferred判定
 func is_activation_deferred() -> bool: return activation_deferred
 
 
+# サイズ取得
 func get_size() -> int:
 	if _size_override > 0:
 		return _size_override
 	return definition.size
 
 
+# 胃袋サイズ取得
 func get_stomach_size() -> Vector2i:
 	if _stomach_size_override != Vector2i.ZERO:
 		return _stomach_size_override
 	return definition.stomach_size
 
 
+# 胃袋形状取得
 func get_stomach_shape() -> Array[Vector2i]:
 	if not _stomach_shape_override.is_empty():
 		return _stomach_shape_override.duplicate()
+	# 形状
 	var shape: Array[Vector2i] = []
 	if definition == null:
 		return shape
@@ -181,31 +209,39 @@ func get_stomach_shape() -> Array[Vector2i]:
 	return shape
 
 
+# ドラッグ判定
 func can_drag() -> bool:
 	return not digested
 
 
+# activein胃袋判定
 func is_active_in_stomach() -> bool:
 	return digesting and not digested
 
 
+# take胃袋turn判定
 func can_take_stomach_turn() -> bool:
 	return is_active_in_stomach() and not activation_deferred
+# digesting設定
 func set_digesting(value: bool) -> void:
 	if digesting != value:
 		stomach_elapsed_minutes = 0
 	digesting = value
+# 消化済み設定
 func set_digested(value: bool) -> void:
 	digested = value
 	if digested:
 		digesting = false
 		_play_digested_tween()
+# 胃袋セル設定
 func set_stomach_cell(cell: Vector2i) -> void:
 	stomach_cell = cell
+# 胃袋footprintoverrid設定
 func set_stomach_footprint_override(size: Vector2i, shape: Array[Vector2i], cell_count: int) -> void:
 	_stomach_size_override = size
 	_stomach_shape_override = shape.duplicate()
 	_size_override = cell_count
+# 画像override設定
 func set_texture_override(texture: Texture2D, target_size: Vector2) -> void:
 	_texture_override = texture
 	if sprite == null or _texture_override == null:
@@ -215,7 +251,9 @@ func set_texture_override(texture: Texture2D, target_size: Vector2) -> void:
 		sprite.scale = target_size / sprite.texture.get_size()
 		_base_scale = sprite.scale
 	_reset_visuals()
+# setupasoneセル胃袋ブロック処理
 func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
+	# ブロック形状
 	var block_shape: Array[Vector2i] = [Vector2i.ZERO]
 	set_stomach_footprint_override(Vector2i.ONE, block_shape, 1)
 	set_texture_override(ONE_CELL_STOMACH_TEXTURE, target_size)
@@ -223,7 +261,9 @@ func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
 	activation_deferred = true
 
 
+# setupas種胃袋ブロック処理
 func setup_as_seed_stomach_block(seed_skill: SeedInfo, target_size: Vector2) -> void:
+	# ブロック定義
 	var block_definition := seed_skill.acid_block if seed_skill != null else null
 	if block_definition != null:
 		set_stomach_footprint_override(
@@ -249,29 +289,37 @@ func setup_as_seed_stomach_block(seed_skill: SeedInfo, target_size: Vector2) -> 
 	_update_damage_label()
 
 
+# 胃袋displayサイズ更新
 func update_stomach_display_size(target_size: Vector2) -> void:
 	if sprite == null or sprite.texture == null:
 		return
 	sprite.scale = target_size / sprite.texture.get_size()
 	_base_scale = sprite.scale
+# applygravity判定
 func can_apply_gravity() -> bool:
 	return not gravity_locked
+# gravitylock消去
 func clear_gravity_lock() -> void:
 	gravity_locked = false
+# activate胃袋turn処理
 func activate_stomach_turn() -> void:
 	activation_deferred = false
+# 胃袋footprintoverrid消去
 func clear_stomach_footprint_override() -> void:
 	_stomach_size_override = Vector2i.ZERO
 	_stomach_shape_override.clear()
 	_size_override = 0
+# toorigin返却
 func return_to_origin() -> void:
 	position = origin_position
+# hovered設定
 func set_hovered(value: bool) -> void:
 	if _hovered == value or sprite == null:
 		return
 	_hovered = value
 	if _hover_tween != null and _hover_tween.is_valid():
 		_hover_tween.kill()
+	# 対象scale
 	var target_scale := _base_scale
 	if _hovered:
 		target_scale *= HOVER_SCALE
@@ -279,6 +327,7 @@ func set_hovered(value: bool) -> void:
 	_hover_tween.set_trans(Tween.TRANS_QUAD)
 	_hover_tween.set_ease(Tween.EASE_OUT)
 	_hover_tween.tween_property(sprite, "scale", target_scale, HOVER_TWEEN_DURATION)
+# pulsecostラベル処理
 func pulse_cost_label() -> void:
 	if hp_label == null:
 		return
@@ -290,6 +339,7 @@ func pulse_cost_label() -> void:
 	_cost_pulse_tween.set_ease(Tween.EASE_OUT)
 	_cost_pulse_tween.tween_property(hp_label, "scale", Vector2.ONE * COST_PULSE_SCALE, COST_PULSE_DURATION * 0.5)
 	_cost_pulse_tween.tween_property(hp_label, "scale", Vector2.ONE, COST_PULSE_DURATION * 0.5)
+# pulseダメージ処理
 func pulse_damage() -> void:
 	if sprite == null:
 		return
@@ -300,6 +350,7 @@ func pulse_damage() -> void:
 	_damage_pulse_tween.set_ease(Tween.EASE_OUT)
 	_damage_pulse_tween.tween_property(sprite, "scale", _base_scale * DAMAGE_PULSE_SCALE, DAMAGE_PULSE_DURATION * 0.5)
 	_damage_pulse_tween.tween_property(sprite, "scale", _base_scale, DAMAGE_PULSE_DURATION * 0.5)
+# take消化ダメージ処理
 func take_digest_damage(amount: int, show_popup := true) -> bool:
 	if show_popup:
 		EnemyDamagePopup.show_damage(self, hp_label, amount, MAIN_EFFECT_STATUS_COLOR)
@@ -309,41 +360,59 @@ func take_digest_damage(amount: int, show_popup := true) -> bool:
 		set_digested(true)
 		return true
 	return false
+# 消化ダメージvalues表示
 func show_digest_damage_values(damage_values: Array) -> void:
 	EnemyDamagePopup.show_damage_values(self, hp_label, damage_values, MAIN_EFFECT_STATUS_COLOR)
+# globalrect取得
 func get_global_rect() -> Rect2:
 	if sprite == null or sprite.texture == null:
 		return Rect2(global_position - Vector2(25.0, 25.0), Vector2(50.0, 50.0))
+	# サイズ
 	var size := sprite.texture.get_size() * sprite.scale.abs()
 	return Rect2(sprite.global_position - size * 0.5, size)
+# grabセル取得
 func get_grab_cell(mouse_position: Vector2) -> Vector2i:
+	# 敵rect
 	var enemy_rect := get_global_rect()
+	# 敵サイズ
 	var enemy_size := get_stomach_size()
+	# relative位置
 	var relative_position := mouse_position - enemy_rect.position
+	# guessedセル
 	var guessed_cell := Vector2i(clampi(int(relative_position.x / enemy_rect.size.x * float(enemy_size.x)), 0, enemy_size.x - 1), clampi(int(relative_position.y / enemy_rect.size.y * float(enemy_size.y)), 0, enemy_size.y - 1))
 	if get_stomach_shape().has(guessed_cell):
 		return guessed_cell
 	return _get_nearest_shape_cell(guessed_cell)
+# occupiedcells取得
 func get_occupied_cells(top_left: Vector2i) -> Array[Vector2i]:
+	# cells
 	var cells: Array[Vector2i] = []
 	for offset in get_stomach_shape():
 		cells.append(top_left + offset)
 	return cells
+# bottom行取得
 func get_bottom_row(top_left: Vector2i) -> int:
+	# bottom行
 	var bottom_row := 0
 	for cell in get_occupied_cells(top_left):
 		bottom_row = maxi(bottom_row, cell.y)
 	return bottom_row
+# nearest形状セル取得
 func _get_nearest_shape_cell(target_cell: Vector2i) -> Vector2i:
+	# nearestセル
 	var nearest_cell := Vector2i.ZERO
+	# nearestdistance
 	var nearest_distance := INF
 	for offset in get_stomach_shape():
+		# diff
 		var diff := target_cell - offset
+		# distance
 		var distance := float(diff.x * diff.x + diff.y * diff.y)
 		if distance < nearest_distance:
 			nearest_distance = distance
 			nearest_cell = offset
 	return nearest_cell
+# 消化済みトゥイーン再生
 func _play_digested_tween() -> void:
 	if _digested_tween != null and _digested_tween.is_valid():
 		_digested_tween.kill()
@@ -360,6 +429,7 @@ func _play_digested_tween() -> void:
 	_digested_tween.tween_property(self, "scale", Vector2.ONE * DIGESTED_SCALE, DIGESTED_TWEEN_DURATION)
 	_digested_tween.tween_property(self, "modulate:a", 0.0, DIGESTED_TWEEN_DURATION)
 	_digested_tween.chain().tween_callback(func() -> void: visible = false)
+# visuals初期化
 func _reset_visuals() -> void:
 	if _hover_tween != null and _hover_tween.is_valid():
 		_hover_tween.kill()
@@ -378,50 +448,70 @@ func _reset_visuals() -> void:
 		hp_label.scale = Vector2.ONE
 	if damage_label != null:
 		damage_label.scale = Vector2.ONE
+# HPラベル更新
 func _update_hp_label() -> void:
 	if hp_label != null:
 		hp_label.text = str(current_hp)
+# displayダメージ設定
 func set_display_damage(value: int) -> void: display_damage_override = maxi(0, value); _update_damage_label()
+# ダメージラベル更新
 func _update_damage_label() -> void:
 	if damage_label != null: damage_label.text = "攻 %d" % get_display_damage()
+# 画像取得
 func _get_texture() -> Texture2D:
 	if _texture_override != null:
 		return _texture_override
 	return definition.texture
+# categoryname取得
 func get_category_name() -> String:
 	return EnemyTooltipFormatter.get_category_name(has_main_effect, skill_info)
+# categorydetail取得
 func get_category_detail() -> String:
 	return EnemyTooltipFormatter.get_category_detail(has_main_effect, skill_info)
+# maineffect文言取得
 func get_main_effect_text() -> String:
 	return EnemyTooltipFormatter.get_main_effect_text(has_main_effect, skill_info)
+# subeffect文言取得
 func get_sub_effect_text() -> String:
 	return "-"
+# 回復処理
 func heal(amount: int) -> void:
 	current_hp = mini(max_hp, current_hp + amount); _update_hp_label()
+# 回復over最大処理
 func heal_over_max(amount: int) -> void:
 	current_hp = maxi(0, current_hp + amount); _update_hp_label()
+# change最大HP処理
 func change_max_hp(new_max_hp: int) -> void:
 	max_hp = maxi(1, new_max_hp); current_hp = mini(current_hp, max_hp); _update_hp_label()
+# 最大HP追加
 func add_max_hp(amount: int, also_heal := true) -> void:
 	max_hp = maxi(1, max_hp + amount)
 	if also_heal:
 		current_hp += amount
 	current_hp = maxi(0, current_hp)
 	_update_hp_label()
+# HPvalues設定
 func set_hp_values(next_max_hp: int, next_current_hp: int) -> void:
 	max_hp = maxi(1, next_max_hp); current_hp = clampi(next_current_hp, 0, max_hp); _update_hp_label()
+# ダメージ追加
 func add_damage(amount: int) -> void:
 	damage = maxi(0, damage + amount); _update_damage_label()
+# ダメージ値設定
 func set_damage_value(value: int) -> void:
 	damage = maxi(0, value); base_damage = damage; _update_damage_label()
+# attack倍率設定
 func set_attack_multiplier(value: float) -> void:
 	attack_multiplier = clampf(value, 0.0, 3.0); _update_damage_label()
+# 消化ダメージtaken倍率設定
 func set_digest_damage_taken_multiplier(value: float) -> void:
 	digest_damage_taken_multiplier = maxf(0.0, value)
+# 消化ダメージglobal倍率設定
 func set_digest_damage_global_multiplier(value: float) -> void:
 	digest_damage_global_multiplier = maxf(0.0, value)
+# revivewithhalfHP処理
 func revive_with_half_hp() -> void:
 	revive_with_hp_rate(0.5)
+# revivewithHP率処理
 func revive_with_hp_rate(hp_rate: float) -> void:
 	if _digested_tween != null and _digested_tween.is_valid():
 		_digested_tween.kill()
@@ -435,7 +525,9 @@ func revive_with_hp_rate(hp_rate: float) -> void:
 	scale = Vector2.ONE
 	modulate.a = 1.0
 	_update_hp_label()
+# 状態ラベルcolors更新
 func _update_status_label_colors() -> void:
+	# 状態color
 	var status_color := MAIN_EFFECT_STATUS_COLOR if has_main_effect else DEFAULT_STATUS_COLOR
 	if hp_label != null:
 		hp_label.add_theme_color_override("font_color", status_color)

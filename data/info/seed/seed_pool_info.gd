@@ -6,7 +6,9 @@ extends Resource
 @export var super_rare_skills: Array[SeedInfo] = []
 
 
+# allskills取得
 func get_all_skills() -> Array[SeedInfo]:
+	# allskills
 	var all_skills: Array[SeedInfo] = []
 	_append_skills(all_skills, common_skills)
 	_append_skills(all_skills, rare_skills)
@@ -14,6 +16,7 @@ func get_all_skills() -> Array[SeedInfo]:
 	return all_skills
 
 
+# skills追加
 func _append_skills(
 	target: Array[SeedInfo],
 	source: Array[SeedInfo]

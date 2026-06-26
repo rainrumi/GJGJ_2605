@@ -20,6 +20,7 @@ var _pressed := false
 var _scale_tween: Tween
 
 
+# 初期化
 func _ready() -> void:
 	frame.pivot_offset = frame.size * 0.5
 	_base_scale = frame.scale
@@ -29,6 +30,7 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 
+# setup選択肢処理
 func setup_choice(stage_definition: StageInfo, exploration_percent: int = 0) -> void:
 	if stage_definition == null:
 		visible = false
@@ -51,31 +53,37 @@ func setup_choice(stage_definition: StageInfo, exploration_percent: int = 0) -> 
 	_apply_stage_text_color(stage_definition)
 
 
+# イベント処理
 func _on_button_down() -> void:
 	_pressed = true
 	_update_scale()
 
 
+# イベント処理
 func _on_button_up() -> void:
 	_pressed = false
 	_hovered = false
 	_update_scale()
 
 
+# ホバー開始
 func _on_mouse_entered() -> void:
 	_hovered = true
 	_update_scale()
 
 
+# ホバー終了
 func _on_mouse_exited() -> void:
 	_hovered = false
 	_pressed = false
 	_update_scale()
 
 
+# scale更新
 func _update_scale() -> void:
 	if _scale_tween != null and _scale_tween.is_valid():
 		_scale_tween.kill()
+	# 対象scale
 	var target_scale := _base_scale
 	if _hovered:
 		target_scale *= HOVER_SCALE
@@ -87,7 +95,9 @@ func _update_scale() -> void:
 	_scale_tween.tween_property(frame, "scale", target_scale, TWEEN_DURATION)
 
 
+# ステージ文言color適用
 func _apply_stage_text_color(stage_definition: StageInfo) -> void:
+	# フォントcolor
 	var font_color := HIGH_DIFFICULTY_TEXT_COLOR if stage_definition.is_high_difficulty else NORMAL_TEXT_COLOR
 	difficulty_label.add_theme_color_override("font_color", font_color)
 	name_label.add_theme_color_override("font_color", font_color)

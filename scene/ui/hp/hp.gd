@@ -20,6 +20,7 @@ var _is_hp_recovering := false
 var _has_hp_value := false
 
 
+# 初期化
 func _ready() -> void:
 	_prepare_mouse_filters()
 	_prepare_draw_order()
@@ -28,14 +29,20 @@ func _ready() -> void:
 	_update_hp_heal_plan()
 
 
+# HP設定
 func set_hp(current_hp: int, max_hp: int, animated: bool = true) -> void:
+	# HP
 	var previous_hp := _current_hp
 	_max_hp = maxi(1, max_hp)
 	_current_hp = clampi(current_hp, 0, _max_hp)
 	_update_hp_text()
+	# HP比率
 	var hp_ratio := clampf(float(_current_hp) / float(_max_hp), 0.0, 1.0)
+	# 対象サイズ
 	var target_size := Vector2(_hp_gauge_full_width * hp_ratio, hp_gauge.size.y)
+	# isrecovering
 	var is_recovering := _has_hp_value and animated and _current_hp > previous_hp
+	# recoveredHP
 	var recovered_hp := _current_hp - previous_hp
 	_has_hp_value = true
 	if _hp_gauge_tween != null and _hp_gauge_tween.is_valid():
@@ -64,41 +71,50 @@ func set_hp(current_hp: int, max_hp: int, animated: bool = true) -> void:
 		_hp_gauge_tween.tween_callback(func() -> void: hp_gauge.visible = false)
 
 
+# planned回復率設定
 func set_planned_recovery_rate(recovery_rate: float) -> void:
 	_planned_recovery_rate = maxf(0.0, recovery_rate)
 	_update_hp_heal_plan()
 
 
+# ダメージpreview表示
 func show_damage_preview(amount: int) -> void:
 	_hp_damage_preview_label.text = "-%d" % amount
 	_hp_damage_preview_label.position = Vector2(size.x - 21.0, -8.0)
 	_hp_damage_preview_label.visible = true
 
 
+# ダメージpreview非表示
 func hide_damage_preview() -> void:
 	_hp_damage_preview_label.visible = false
 
 
+# ダメージvalues表示
 func show_damage_values(damage_values: Array[int]) -> void:
+	# ダメージtexts
 	var damage_texts: Array[String] = []
 	for damage in damage_values:
 		if damage > 0:
 			damage_texts.append("-%d" % damage)
 	if damage_texts.is_empty():
 		return
+	# ラベル
 	var label := _create_damage_value_label(damage_texts)
 	add_child(label)
 	_play_damage_value_tween(label)
 
 
+# 回復値表示
 func _show_heal_value(amount: int) -> void:
 	if amount <= 0:
 		return
+	# ラベル
 	var label := _create_heal_value_label(amount)
 	add_child(label)
 	_play_damage_value_tween(label)
 
 
+# マウスfilters準備
 func _prepare_mouse_filters() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hp_gauge.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -106,6 +122,7 @@ func _prepare_mouse_filters() -> void:
 	hp_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
+# draworder準備
 func _prepare_draw_order() -> void:
 	move_child(hp_heal_plan, hp_gauge.get_index())
 	hp_heal_plan.z_index = 0
@@ -113,10 +130,12 @@ func _prepare_draw_order() -> void:
 	hp_text.z_index = 1
 
 
+# sizes記録
 func _capture_sizes() -> void:
 	_hp_gauge_full_width = hp_gauge.size.x
 
 
+# HPダメージpreview作成
 func _create_hp_damage_preview() -> void:
 	_hp_damage_preview_label = Label.new()
 	_hp_damage_preview_label.name = "RemoveNightmareDamagePreview"
@@ -126,7 +145,9 @@ func _create_hp_damage_preview() -> void:
 	add_child(_hp_damage_preview_label)
 
 
+# ダメージ値ラベル作成
 func _create_damage_value_label(damage_texts: Array[String]) -> Label:
+	# ラベル
 	var label := Label.new()
 	label.text = "\n".join(damage_texts)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -138,7 +159,9 @@ func _create_damage_value_label(damage_texts: Array[String]) -> Label:
 	return label
 
 
+# 回復値ラベル作成
 func _create_heal_value_label(amount: int) -> Label:
+	# ラベル
 	var label := Label.new()
 	label.text = "+%d" % amount
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -150,27 +173,33 @@ func _create_heal_value_label(amount: int) -> Label:
 	return label
 
 
+# ダメージラベルスタイル適用
 func _apply_damage_label_style(label: Label, font_size: int, outline_color: Color) -> void:
 	label.add_theme_color_override("font_color", Color.html("#ff0736"))
 	label.add_theme_color_override("font_outline_color", outline_color)
 	label.add_theme_constant_override("outline_size", 2)
+	# ダメージフォント
 	var damage_font := hp_text.get_theme_font("font")
 	if damage_font != null:
 		label.add_theme_font_override("font", damage_font)
 	label.add_theme_font_size_override("font_size", font_size)
 
 
+# 回復ラベルスタイル適用
 func _apply_heal_label_style(label: Label) -> void:
 	label.add_theme_color_override("font_color", Color.WHITE)
 	label.add_theme_color_override("font_outline_color", Color.BLACK)
 	label.add_theme_constant_override("outline_size", 2)
+	# 回復フォント
 	var heal_font := hp_text.get_theme_font("font")
 	if heal_font != null:
 		label.add_theme_font_override("font", heal_font)
 	label.add_theme_font_size_override("font_size", 14)
 
 
+# ダメージ値トゥイーン再生
 func _play_damage_value_tween(label: Label) -> void:
+	# トゥイーン
 	var tween := create_tween()
 	tween.set_parallel(true)
 	tween.set_trans(Tween.TRANS_QUART)
@@ -182,13 +211,19 @@ func _play_damage_value_tween(label: Label) -> void:
 	tween.chain().tween_callback(label.queue_free)
 
 
+# HP回復plan更新
 func _update_hp_heal_plan() -> void:
 	if _is_hp_recovering:
 		return
+	# 比率
 	var current_ratio := clampf(float(_current_hp) / float(_max_hp), 0.0, 1.0)
+	# 対象HP
 	var target_hp := mini(_max_hp, _current_hp + ceili(float(_max_hp) * _planned_recovery_rate))
+	# planned回復
 	var planned_recovery := target_hp - _current_hp
+	# 対象比率
 	var target_ratio := clampf(float(target_hp) / float(_max_hp), 0.0, 1.0)
+	# 対象幅
 	var target_width := _hp_gauge_full_width * target_ratio
 	if target_ratio <= current_ratio:
 		hp_heal_plan.visible = false
@@ -198,6 +233,7 @@ func _update_hp_heal_plan() -> void:
 	_show_hp_heal_plan(target_width)
 
 
+# HP文言更新
 func _update_hp_text(planned_recovery: int = 0) -> void:
 	if planned_recovery > 0:
 		hp_text.text = "%d(+%d)/%d" % [_current_hp, planned_recovery, _max_hp]
@@ -205,6 +241,7 @@ func _update_hp_text(planned_recovery: int = 0) -> void:
 	hp_text.text = "%d/%d" % [_current_hp, _max_hp]
 
 
+# HP回復plan表示
 func _show_hp_heal_plan(target_width: float) -> void:
 	hp_heal_plan.visible = true
 	hp_heal_plan.position = hp_gauge.position
@@ -214,6 +251,7 @@ func _show_hp_heal_plan(target_width: float) -> void:
 	hp_text.z_index = 1
 
 
+# 完了処理
 func _on_hp_gauge_tween_finished() -> void:
 	_is_hp_recovering = false
 	_update_hp_heal_plan()

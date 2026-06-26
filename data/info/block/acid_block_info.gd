@@ -8,19 +8,24 @@ extends Resource
 @export var stomach_shape: Array[Vector2i] = [Vector2i.ZERO]
 
 
+# 最大HP取得
 func get_max_hp() -> int:
 	return maxi(1, max_hp)
 
 
+# ダメージ取得
 func get_damage() -> int:
 	return maxi(0, damage)
 
 
+# 胃袋サイズ取得
 func get_stomach_size() -> Vector2i:
 	return Vector2i(maxi(1, stomach_size.x), maxi(1, stomach_size.y))
 
 
+# 胃袋形状取得
 func get_stomach_shape() -> Array[Vector2i]:
+	# 形状
 	var shape: Array[Vector2i] = []
 	for cell in stomach_shape:
 		if cell is Vector2i:
@@ -30,5 +35,6 @@ func get_stomach_shape() -> Array[Vector2i]:
 	return shape
 
 
+# セル数取得
 func get_cell_count() -> int:
 	return get_stomach_shape().size()

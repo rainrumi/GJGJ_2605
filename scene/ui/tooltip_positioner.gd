@@ -5,14 +5,18 @@ extends RefCounted
 const SCREEN_PADDING := 4.0
 
 
+# ツール位置取得
 static func get_tooltip_position(
 	anchor_global_position: Vector2,
 	tooltip_size: Vector2,
 	viewport_rect: Rect2,
 	offset: Vector2
 ) -> Vector2:
+	# 位置
 	var position := anchor_global_position + offset
+	# 最小位置
 	var min_position := viewport_rect.position + Vector2(SCREEN_PADDING, SCREEN_PADDING)
+	# 最大位置
 	var max_position := viewport_rect.end - tooltip_size - Vector2(SCREEN_PADDING, SCREEN_PADDING)
 	max_position.x = maxf(min_position.x, max_position.x)
 	max_position.y = maxf(min_position.y, max_position.y)

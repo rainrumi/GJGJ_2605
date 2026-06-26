@@ -15,6 +15,7 @@ var _pressed := false
 var _scale_tween: Tween
 
 
+# 初期化
 func _ready() -> void:
 	frame.pivot_offset = frame.size * 0.5
 	_base_scale = frame.scale
@@ -24,10 +25,12 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 
+# 回復率設定
 func set_recovery_rate(recovery_rate: float) -> void:
 	text = "放棄(HP%d%%回復)" % roundi(recovery_rate * 100.0)
 
 
+# visualstate初期化
 func reset_visual_state() -> void:
 	_hovered = false
 	_pressed = false
@@ -37,32 +40,38 @@ func reset_visual_state() -> void:
 	frame.scale = _base_scale
 
 
+# イベント処理
 func _on_button_down() -> void:
 	_pressed = true
 	frame.modulate = PRESSED_MODULATE
 	_update_scale()
 
 
+# イベント処理
 func _on_button_up() -> void:
 	_pressed = false
 	_hovered = false
 	reset_visual_state()
 
 
+# ホバー開始
 func _on_mouse_entered() -> void:
 	_hovered = true
 	_update_scale()
 
 
+# ホバー終了
 func _on_mouse_exited() -> void:
 	_hovered = false
 	_pressed = false
 	_update_scale()
 
 
+# scale更新
 func _update_scale() -> void:
 	if _scale_tween != null and _scale_tween.is_valid():
 		_scale_tween.kill()
+	# 対象scale
 	var target_scale := _base_scale
 	if _hovered:
 		target_scale *= HOVER_SCALE

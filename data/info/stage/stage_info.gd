@@ -31,13 +31,16 @@ enum StageArea {
 @export var has_normal_stage := true
 
 
+# 難度文言取得
 func get_difficulty_text() -> String:
 	if is_high_difficulty:
 		return "Lv.%d+α" % difficulty_level
 	return "Lv.%d" % difficulty_level
 
 
+# high難度fallback作成
 func create_high_difficulty_fallback() -> StageInfo:
+	# ステージ
 	var stage := duplicate(true) as StageInfo
 	stage.is_high_difficulty = true
 	stage.high_difficulty_stages = []

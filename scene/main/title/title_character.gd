@@ -7,10 +7,12 @@ var _base_y := 0.0
 var _float_time := 0.0
 
 
+# 初期化
 func _ready() -> void:
 	_base_y = position.y
 
 
+# 毎フレーム処理
 func _process(delta: float) -> void:
 	_float_time += delta
 	position.y = _base_y + sin(_float_time * TAU / max(float_period, 0.001)) * float_distance

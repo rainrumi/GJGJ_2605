@@ -5,8 +5,11 @@ extends Resource
 @export var rare_skills: Array[SeedInfo] = []
 
 
+# skillsbyrarity取得
 func get_skills_by_rarity(rarity: int, skill_id: int) -> Array[SeedInfo]:
+	# rarityskills
 	var rarity_skills := _get_skill_list_by_rarity(rarity)
+	# matchedskills
 	var matched_skills: Array[SeedInfo] = []
 	for skill in rarity_skills:
 		if skill != null and skill.skill_id == skill_id:
@@ -14,6 +17,7 @@ func get_skills_by_rarity(rarity: int, skill_id: int) -> Array[SeedInfo]:
 	return matched_skills
 
 
+# スキルlistbyrarity取得
 func _get_skill_list_by_rarity(rarity: int) -> Array[SeedInfo]:
 	match rarity:
 		SeedInfo.Rarity.NORMAL:

@@ -52,6 +52,7 @@ var _location_marker_playing := false
 var stage_selection_service := StageSelectionService.new()
 
 
+# 初期化
 func _ready() -> void:
 	_setup_map_view()
 	_collect_stage_choices()
@@ -61,20 +62,24 @@ func _ready() -> void:
 	setup_stage_choices()
 
 
+# 毎フレーム処理
 func _process(delta: float) -> void:
 	_process_map_view(delta)
 
 
+# setupmapview処理
 func _setup_map_view() -> void:
 	_setup_beacon()
 	_setup_location_marker()
 
 
+# mapview処理
 func _process_map_view(delta: float) -> void:
 	_process_beacon_frame(delta)
 	_process_location_marker_frame(delta)
 
 
+# beaconframe処理
 func _process_beacon_frame(delta: float) -> void:
 	if not beacon.visible:
 		return
@@ -88,6 +93,7 @@ func _process_beacon_frame(delta: float) -> void:
 	_apply_beacon_frame()
 
 
+# locationmarkerfram処理
 func _process_location_marker_frame(delta: float) -> void:
 	if not location_marker.visible or not _location_marker_playing:
 		return
@@ -101,6 +107,7 @@ func _process_location_marker_frame(delta: float) -> void:
 	_apply_location_marker_frame()
 
 
+# setupステージ選択肢処理
 func setup_stage_choices(
 	current_stage_definition: StageInfo = null,
 	current_day: int = 1,
@@ -121,27 +128,33 @@ func setup_stage_choices(
 		if i >= _displayed_stage_definitions.size():
 			stage_choices[i].call("setup_choice", null)
 			continue
+		# ステージ定義
 		var stage_definition := _displayed_stage_definitions[i]
 		stage_choices[i].call("setup_choice", stage_definition, _get_exploration_percent(stage_definition))
 
 
+# 押下処理
 func _on_stage_choice_pressed(choice_index: int) -> void:
 	if choice_index >= _displayed_stage_definitions.size():
 		return
+	# ステージ定義
 	var stage_definition := _displayed_stage_definitions[choice_index]
 	if stage_definition == null:
 		return
 	stage_selected.emit(stage_definition)
 
 
+# イベント処理
 func _on_stage_choice_hovered(choice_index: int) -> void:
 	if choice_index >= _displayed_stage_definitions.size():
 		_show_map_hover(null)
 		return
+	# ステージ定義
 	var stage_definition := _displayed_stage_definitions[choice_index]
 	_show_map_hover(stage_definition)
 
 
+# maphover表示
 func _show_map_hover(stage_definition: StageInfo) -> void:
 	_hovered_stage_definition = stage_definition
 	_update_debug_seed_pool_panel()
@@ -155,6 +168,7 @@ func _show_map_hover(stage_definition: StageInfo) -> void:
 	_show_beacon(stage_definition.map_position)
 
 
+# イベント処理
 func _on_stage_choice_unhovered(choice_index: int) -> void:
 	if choice_index >= _displayed_stage_definitions.size():
 		return
@@ -163,21 +177,26 @@ func _on_stage_choice_unhovered(choice_index: int) -> void:
 	_hide_beacon()
 
 
+# ステージ定義取得
 func _get_stage_definitions() -> Array[StageInfo]:
 	if stage_catalog != null:
 		return stage_catalog.stages
 	return stage_definitions
 
 
+# ステージ定義byID取得
 func get_stage_definition_by_id(stage_id: int) -> StageInfo:
 	return stage_selection_service.get_stage_definition_by_id(_get_stage_definitions(), stage_id)
 
 
+# ステージ定義forprogress取得
 func get_stage_definitions_for_progress() -> Array[StageInfo]:
 	return _get_stage_definitions()
 
 
+# randomステージ定義取得
 func _get_random_stage_definitions() -> Array[StageInfo]:
+	# 定義
 	var definitions := stage_selection_service.get_candidate_stages(
 		_get_stage_definitions(),
 		_current_stage_definition,
@@ -189,16 +208,19 @@ func _get_random_stage_definitions() -> Array[StageInfo]:
 	return definitions
 
 
+# movelocationtofron処理
 func _move_current_location_to_front(definitions: Array[StageInfo]) -> void:
 	for i in range(definitions.size()):
 		if not _is_current_location(definitions[i]):
 			continue
+		# location
 		var current_location := definitions[i]
 		definitions.remove_at(i)
 		definitions.insert(0, current_location)
 		return
 
 
+# collectステージ選択肢処理
 func _collect_stage_choices() -> void:
 	stage_choices.clear()
 	for child in stage_choice_list.get_children():
@@ -206,10 +228,12 @@ func _collect_stage_choices() -> void:
 			_add_stage_choice(child as BaseButton)
 
 
+# ensureステージ選択肢数処理
 func _ensure_stage_choice_count(count: int) -> void:
 	while stage_choices.size() < count:
 		if stage_choice_scene == null:
 			return
+		# ステージ選択肢
 		var stage_choice := stage_choice_scene.instantiate()
 		if not stage_choice is BaseButton or not stage_choice.has_method("setup_choice"):
 			stage_choice.queue_free()
@@ -218,7 +242,9 @@ func _ensure_stage_choice_count(count: int) -> void:
 		_add_stage_choice(stage_choice as BaseButton)
 
 
+# ステージ選択肢追加
 func _add_stage_choice(stage_choice: BaseButton) -> void:
+	# 選択肢番号
 	var choice_index := stage_choices.size()
 	stage_choices.append(stage_choice)
 	stage_choice.pressed.connect(_on_stage_choice_pressed.bind(choice_index))
@@ -228,6 +254,7 @@ func _add_stage_choice(stage_choice: BaseButton) -> void:
 	stage_choice.focus_exited.connect(_on_stage_choice_unhovered.bind(choice_index))
 
 
+# setupbeacon処理
 func _setup_beacon() -> void:
 	beacon.visible = false
 	beacon.scale = Vector2.ONE
@@ -236,7 +263,9 @@ func _setup_beacon() -> void:
 	_reset_beacon_frame()
 
 
+# beacon表示
 func _show_beacon(map_position: Vector2) -> void:
+	# wasvisible
 	var was_visible := beacon.visible
 	beacon.position = map_position
 	beacon.visible = true
@@ -245,6 +274,7 @@ func _show_beacon(map_position: Vector2) -> void:
 		_start_beacon_animation()
 
 
+# beacon非表示
 func _hide_beacon(clear_hover: bool = true) -> void:
 	if clear_hover:
 		_hovered_stage_definition = null
@@ -256,6 +286,7 @@ func _hide_beacon(clear_hover: bool = true) -> void:
 	_play_location_marker()
 
 
+# beaconanimation開始
 func _start_beacon_animation() -> void:
 	if _beacon_tween != null and _beacon_tween.is_valid():
 		return
@@ -268,22 +299,27 @@ func _start_beacon_animation() -> void:
 	_beacon_tween.tween_property(beacon, "scale", Vector2.ONE, 0.45)
 
 
+# backgroundcolor取得
 func _get_background_color() -> Color:
+	# scene
 	var current_scene := get_tree().current_scene
 	if current_scene == null:
 		return Color(0.1254902, 0.1254902, 0.1254902, 1.0)
+	# backgroundcolor
 	var background_color := current_scene.get_node_or_null("BackgroundColor") as ColorRect
 	if background_color == null:
 		return Color(0.1254902, 0.1254902, 0.1254902, 1.0)
 	return background_color.color
 
 
+# beaconframe初期化
 func _reset_beacon_frame() -> void:
 	_beacon_frame_index = 0
 	_beacon_frame_elapsed = 0.0
 	_apply_beacon_frame()
 
 
+# beaconframe適用
 func _apply_beacon_frame() -> void:
 	if not beacon_outline_frames.is_empty():
 		beacon_outline.texture = beacon_outline_frames[_beacon_frame_index % beacon_outline_frames.size()]
@@ -291,6 +327,7 @@ func _apply_beacon_frame() -> void:
 		beacon_fill.texture = beacon_fill_frames[_beacon_frame_index % beacon_fill_frames.size()]
 
 
+# setuplocationmarke処理
 func _setup_location_marker() -> void:
 	location_marker.visible = false
 	location_marker.scale = Vector2.ONE
@@ -306,6 +343,7 @@ func _setup_location_marker() -> void:
 		location_marker_fill.texture = location_fill_texture
 
 
+# locationmarker更新
 func _update_location_marker() -> void:
 	if _current_stage_definition == null:
 		location_marker.visible = false
@@ -317,23 +355,27 @@ func _update_location_marker() -> void:
 	_play_location_marker()
 
 
+# locationmarker一時停止
 func _pause_location_marker() -> void:
 	_location_marker_playing = false
 	_reset_location_marker_frame()
 
 
+# locationmarker再生
 func _play_location_marker() -> void:
 	if not location_marker.visible:
 		return
 	_location_marker_playing = true
 
 
+# locationmarkerfra初期化
 func _reset_location_marker_frame() -> void:
 	_location_marker_frame_index = 0
 	_location_marker_frame_elapsed = 0.0
 	_apply_location_marker_frame()
 
 
+# locationmarkerfram適用
 func _apply_location_marker_frame() -> void:
 	if not location_outline_frames.is_empty():
 		location_marker_outline.texture = location_outline_frames[_location_marker_frame_index % location_outline_frames.size()]
@@ -341,6 +383,7 @@ func _apply_location_marker_frame() -> void:
 		location_marker_fill.texture = location_fill_frames[_location_marker_frame_index % location_fill_frames.size()]
 
 
+# location判定
 func _is_current_location(stage_definition: StageInfo) -> bool:
 	if _current_stage_definition == null or stage_definition == null:
 		return false
@@ -349,37 +392,44 @@ func _is_current_location(stage_definition: StageInfo) -> bool:
 	return stage_definition.map_position.distance_squared_to(_current_stage_definition.map_position) < 0.01
 
 
+# exploration割合取得
 func _get_exploration_percent(stage_definition: StageInfo) -> int:
 	if _run_state == null:
 		return 0
 	return _run_state.get_stage_exploration_percent(stage_definition)
 
 
+# setupデバッグボタン処理
 func _setup_debug_button() -> void:
 	debug_button.pressed.connect(_on_debug_button_pressed)
 	debug_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	_apply_debug_button_state()
 
 
+# setupデバッグ種poolpane処理
 func _setup_debug_seed_pool_panel() -> void:
 	debug_seed_pool_panel.visible = false
 	debug_seed_pool_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
+# デバッグstate接続
 func _connect_debug_state() -> void:
 	if not DebugState.debug_enabled_changed.is_connected(_on_debug_enabled_changed):
 		DebugState.debug_enabled_changed.connect(_on_debug_enabled_changed)
 
 
+# 押下処理
 func _on_debug_button_pressed() -> void:
 	DebugState.toggle_debug_enabled()
 
 
+# 変更処理
 func _on_debug_enabled_changed(_is_enabled: bool) -> void:
 	_apply_debug_button_state()
 	_update_debug_seed_pool_panel()
 
 
+# デバッグボタンstate適用
 func _apply_debug_button_state() -> void:
 	if DebugState.debug_enabled:
 		debug_button.add_theme_color_override("font_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
@@ -399,7 +449,9 @@ func _apply_debug_button_state() -> void:
 	debug_button.remove_theme_stylebox_override("focus")
 
 
+# デバッグボタンスタイル作成
 func _create_debug_button_style(color: Color) -> StyleBoxFlat:
+	# スタイル
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
 	style.border_color = Color(0.0, 0.0, 0.0, 1.0)
@@ -410,19 +462,23 @@ func _create_debug_button_style(color: Color) -> StyleBoxFlat:
 	return style
 
 
+# デバッグ種poolpanel更新
 func _update_debug_seed_pool_panel() -> void:
 	debug_seed_pool_text.text = ""
 	if not DebugState.debug_enabled or _hovered_stage_definition == null:
 		debug_seed_pool_panel.visible = false
 		return
 	debug_seed_pool_title.text = "%s" % _hovered_stage_definition.location
+	# seeds
 	var seeds := _get_debug_seed_pool_skills(_hovered_stage_definition)
 	debug_seed_pool_text.text = _get_debug_seed_pool_text(seeds)
 	_apply_debug_seed_pool_text_size(seeds)
 	debug_seed_pool_panel.visible = true
 
 
+# デバッグ種poolskills取得
 func _get_debug_seed_pool_skills(stage_definition: StageInfo) -> Array[SeedInfo]:
+	# seeds
 	var seeds: Array[SeedInfo] = []
 	if stage_definition == null or stage_definition.drop_seed_skill_pool == null:
 		return seeds
@@ -432,17 +488,22 @@ func _get_debug_seed_pool_skills(stage_definition: StageInfo) -> Array[SeedInfo]
 	return seeds
 
 
+# デバッグ種pool文言取得
 func _get_debug_seed_pool_text(seeds: Array[SeedInfo]) -> String:
 	if seeds.is_empty():
 		return "No seed pool"
+	# blocks
 	var blocks: Array[String] = []
 	for seed in seeds:
 		blocks.append(_get_debug_seed_pool_item_text(seed))
 	return "\n".join(blocks)
 
 
+# デバッグ種pool文言サイズ適用
 func _apply_debug_seed_pool_text_size(seeds: Array[SeedInfo]) -> void:
+	# フォントサイズ
 	var font_size := DEBUG_SEED_POOL_MAX_FONT_SIZE
+	# 列数
 	var line_count := _get_debug_seed_pool_estimated_line_count(seeds)
 	if line_count > DEBUG_SEED_POOL_VISIBLE_LINE_BUDGET:
 		font_size = max(
@@ -452,9 +513,11 @@ func _apply_debug_seed_pool_text_size(seeds: Array[SeedInfo]) -> void:
 	debug_seed_pool_text.add_theme_font_size_override("normal_font_size", font_size)
 
 
+# デバッグ種poolestimated取得
 func _get_debug_seed_pool_estimated_line_count(seeds: Array[SeedInfo]) -> int:
 	if seeds.is_empty():
 		return 1
+	# 列数
 	var line_count := 0
 	for seed in seeds:
 		line_count += 2
@@ -464,14 +527,18 @@ func _get_debug_seed_pool_estimated_line_count(seeds: Array[SeedInfo]) -> int:
 	return line_count
 
 
+# wrappedextra列数取得
 func _get_wrapped_extra_line_count(text: String, characters_per_line: int) -> int:
+	# 文言length
 	var text_length := text.strip_edges().length()
 	if text_length <= characters_per_line:
 		return 0
 	return int(floori(float(text_length - 1) / float(characters_per_line)))
 
 
+# デバッグ種poolitem文言取得
 func _get_debug_seed_pool_item_text(seed: SeedInfo) -> String:
+	# 行一覧
 	var lines: Array[String] = [
 		"%s  ID:%d" % [_get_debug_seed_title_text(seed), seed.skill_id],
 		"M:%s" % _get_debug_seed_pool_bbcode_text(DreamSeedSkillDescriptionFormatter.get_main_description(seed)),
@@ -481,15 +548,19 @@ func _get_debug_seed_pool_item_text(seed: SeedInfo) -> String:
 	return "\n".join(lines)
 
 
+# デバッグ種title文言取得
 func _get_debug_seed_title_text(seed: SeedInfo) -> String:
+	# 種name
 	var seed_name := ""
 	if seed != null:
 		seed_name = _get_debug_seed_pool_bbcode_text(seed.display_name)
+	# coloredname
 	var colored_name := "[color=%s]%s[/color]" % [DEBUG_SEED_POOL_NAME_COLOR, seed_name]
 	if seed != null and seed.rarity == SeedInfo.Rarity.RARE:
 		return "%s [lb]Rare]" % colored_name
 	return colored_name
 
 
+# デバッグ種poolbbcode文言取得
 func _get_debug_seed_pool_bbcode_text(text: String) -> String:
 	return text.replace("[", "[lb]")

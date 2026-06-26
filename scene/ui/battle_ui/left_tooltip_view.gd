@@ -14,16 +14,19 @@ var _note_text := ""
 var _note_visible := false
 
 
+# 初期化
 func _ready() -> void:
 	_note_text = note_text
 	_note_visible = note_visible
 	_apply_text()
 
 
+# ツール表示
 func show_tooltip() -> void:
 	visible = true
 
 
+# ツールat表示
 func show_tooltip_at(anchor_global_position: Vector2) -> void:
 	_apply_text()
 	global_position = TooltipPositioner.get_tooltip_position(
@@ -35,20 +38,24 @@ func show_tooltip_at(anchor_global_position: Vector2) -> void:
 	visible = true
 
 
+# ツール非表示
 func hide_tooltip() -> void:
 	visible = false
 
 
+# title設定
 func set_title(text: String) -> void:
 	tooltip_title = text
 	_apply_text()
 
 
+# 項目設定
 func set_entries(entries: Array) -> void:
 	_entries = entries.duplicate()
 	_apply_text()
 
 
+# note設定
 func set_note(text: String, is_visible: bool) -> void:
 	if not text.is_empty():
 		_note_text = text
@@ -56,20 +63,25 @@ func set_note(text: String, is_visible: bool) -> void:
 	_apply_text()
 
 
+# 文言適用
 func _apply_text() -> void:
 	if not is_node_ready():
 		return
 	TooltipTextLayout.apply_to_panel(self, tooltip_label, _get_tooltip_text())
 
 
+# ツール文言取得
 func _get_tooltip_text() -> String:
+	# 行一覧
 	var lines: Array[String] = []
 	if not tooltip_title.is_empty():
 		lines.append(tooltip_title)
 	for entry in _entries:
 		if not (entry is Dictionary):
 			continue
+		# explanation
 		var explanation := str(entry.get("explanation", ""))
+		# 値値
 		var value := str(entry.get("value", ""))
 		if explanation.is_empty():
 			lines.append(value)

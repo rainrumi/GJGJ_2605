@@ -19,6 +19,7 @@ var _pending_depleted_sources_by_block: Dictionary = {}
 var debug_factory := DreamSeedDebugFactory.new()
 
 
+# setup処理
 func setup(
 	owner: Node,
 	stomach: StomachBoard,
@@ -29,6 +30,7 @@ func setup(
 	_input_controller = input_controller
 
 
+# 花値設定
 func set_flowers(flowers: Array) -> void:
 	_flowers.clear()
 	_pending_depleted_sources_by_block.clear()
@@ -38,13 +40,16 @@ func set_flowers(flowers: Array) -> void:
 			_flowers.append(flower as SeedInfo)
 
 
+# 花値取得
 func get_flowers() -> Array[SeedInfo]:
 	return _flowers
 
 
+# 元データwhilein胃袋削除
 func remove_source_while_in_stomach(button: DreamSeedSkillButton, seed_block: Enemy) -> void:
 	if button == null or button.get_remaining_sub_skill_uses() > 0:
 		return
+	# 元データ
 	var source := button.get_seed_source()
 	if source == null:
 		return
@@ -53,11 +58,14 @@ func remove_source_while_in_stomach(button: DreamSeedSkillButton, seed_block: En
 		_pending_depleted_sources_by_block[seed_block] = source
 
 
+# 枯渇処理
 func collect_depleted_sources(digested_enemies: Array[Enemy]) -> Array[Resource]:
+	# sources
 	var sources: Array[Resource] = []
 	for enemy in digested_enemies:
 		if not _pending_depleted_sources_by_block.has(enemy):
 			continue
+		# 元データ
 		var source := _pending_depleted_sources_by_block[enemy] as Resource
 		_pending_depleted_sources_by_block.erase(enemy)
 		if source != null:
@@ -65,8 +73,10 @@ func collect_depleted_sources(digested_enemies: Array[Enemy]) -> Array[Resource]
 	return sources
 
 
+# 元データ削除
 func remove_source(source: Resource) -> void:
 	for i in range(_flowers.size() - 1, -1, -1):
+		# 花値
 		var flower := _flowers[i]
 		if flower == source:
 			_flowers.remove_at(i)
@@ -75,16 +85,19 @@ func remove_source(source: Resource) -> void:
 			_flowers.remove_at(i)
 
 
+# ドラッグ開始
 func start_drag(
 	button: DreamSeedSkillButton,
 	seed_skill: SeedInfo,
 	mouse_position: Vector2
 ) -> DreamSeedDragResult:
+	# 結果
 	var result := DreamSeedDragResult.new()
 	result.source_button = button
 	result.seed_skill = seed_skill
 	if is_dragging():
 		return result
+	# 種ブロック
 	var seed_block := _create_seed_block(seed_skill)
 	if seed_block == null:
 		return result
@@ -98,6 +111,7 @@ func start_drag(
 	return result
 
 
+# moveドラッグ処理
 func move_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> void:
 	if _dragging_seed_block == null:
 		return
@@ -105,7 +119,9 @@ func move_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> void:
 	_stomach.show_preview(_dragging_seed_block, mouse_position, Vector2i.ZERO, enemies)
 
 
+# releaseドラッグ処理
 func release_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> DreamSeedDragResult:
+	# 結果
 	var result := DreamSeedDragResult.new()
 	if _dragging_seed_block == null:
 		return result
@@ -126,6 +142,7 @@ func release_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> DreamSeedDr
 	return result
 
 
+# ドラッグ取消
 func cancel_drag() -> void:
 	if _dragging_seed_block != null:
 		cancel_seed_block(_dragging_seed_block)
@@ -136,21 +153,27 @@ func cancel_drag() -> void:
 		_stomach.hide_preview()
 
 
+# dragging判定
 func is_dragging() -> bool:
 	return _dragging_seed_block != null
 
 
+# 種ブロック作成
 func _create_seed_block(
 	seed_skill: SeedInfo
 ) -> Enemy:
 	if seed_skill == null:
 		return null
+	# 定義
 	var definition := _get_seed_block_template(seed_skill)
 	if definition == null:
 		return null
+	# 種ブロック
 	var seed_block := ENEMY_SCENE.instantiate() as Enemy
 	_owner.add_child(seed_block)
+	# ブロックサイズ
 	var block_size := _get_seed_block_stomach_size(seed_skill)
+	# 対象サイズ
 	var target_size := Vector2(
 		_stomach.get_span_size(block_size.x),
 		_stomach.get_span_size(block_size.y)
@@ -160,6 +183,7 @@ func _create_seed_block(
 	return seed_block
 
 
+# place種ブロック試行
 func _try_place_seed_block(
 	seed_block: Enemy,
 	mouse_position: Vector2,
@@ -167,6 +191,7 @@ func _try_place_seed_block(
 ) -> bool:
 	if seed_block == null:
 		return false
+	# topleft
 	var top_left := _stomach.get_drop_cell(seed_block, mouse_position, Vector2i.ZERO, enemies)
 	if not _stomach.can_place(seed_block, top_left, enemies):
 		return false
@@ -178,25 +203,31 @@ func _try_place_seed_block(
 	return true
 
 
+# 種ブロック取消
 func cancel_seed_block(seed_block: Enemy) -> void:
 	if seed_block != null:
 		seed_block.queue_free()
 
 
+# 種ブロック胃袋サイズ取得
 func _get_seed_block_stomach_size(seed_skill: SeedInfo) -> Vector2i:
 	if seed_skill != null and seed_skill.acid_block != null:
 		return seed_skill.acid_block.get_stomach_size()
 	return Vector2i.ONE
 
 
+# 種ブロックtemplate取得
 func _get_seed_block_template(seed_skill: SeedInfo) -> EnemyDefinition:
 	return _create_seed_block_template(seed_skill)
 
 
+# 種ブロックtemplate作成
 func _create_seed_block_template(seed_skill: SeedInfo) -> EnemyDefinition:
 	if seed_skill == null:
 		return null
+	# ブロック定義
 	var block_definition := seed_skill.acid_block
+	# 定義
 	var definition := EnemyDefinition.new()
 	definition.display_name = seed_skill.display_name
 	definition.texture = seed_skill.texture
@@ -217,15 +248,18 @@ func _create_seed_block_template(seed_skill: SeedInfo) -> EnemyDefinition:
 	return definition
 
 
+# direct消化済み種effects適用
 func apply_direct_digested_seed_effects(
 	digested_enemies: Array[Enemy],
 	current_hp: int,
 	max_hp: int
 ) -> int:
+	# HP
 	var next_hp := current_hp
 	for enemy in digested_enemies:
 		if enemy == null or not enemy.has_seed_skill():
 			continue
+		# 種スキル
 		var seed_skill := enemy.get_seed_skill()
 		if seed_skill.skill_id == DREAM_SEED_DIGEST_HP_RECOVERY:
 			next_hp = mini(max_hp, next_hp + ceili(float(max_hp) * DREAM_SEED_DIGEST_HP_RECOVERY_RATE))
@@ -235,11 +269,14 @@ func apply_direct_digested_seed_effects(
 	return next_hp
 
 
+# collect消化済み種skills処理
 func collect_digested_seed_skills(digested_enemies: Array[Enemy]) -> Array[SeedInfo]:
+	# skills
 	var skills: Array[SeedInfo] = []
 	for enemy in digested_enemies:
 		if enemy == null or not enemy.has_seed_skill():
 			continue
+		# 種スキル
 		var seed_skill := enemy.get_seed_skill()
 		if _is_direct_controller_effect(seed_skill):
 			continue
@@ -247,6 +284,7 @@ func collect_digested_seed_skills(digested_enemies: Array[Enemy]) -> Array[SeedI
 	return skills
 
 
+# 休憩時間skip消費
 func consume_rest_time_skip() -> bool:
 	if rest_time_skip_count <= 0:
 		return false
@@ -254,6 +292,7 @@ func consume_rest_time_skip() -> bool:
 	return true
 
 
+# controllereffect判定
 func _is_direct_controller_effect(seed_skill: SeedInfo) -> bool:
 	return (
 		seed_skill.skill_id == DREAM_SEED_DIGEST_HP_RECOVERY
@@ -261,7 +300,9 @@ func _is_direct_controller_effect(seed_skill: SeedInfo) -> bool:
 	)
 
 
+# randomデバッグ種追加
 func add_random_debug_seed() -> bool:
+	# 花値
 	var flower := debug_factory.create_random_debug_seed_flower()
 	if flower == null:
 		return false

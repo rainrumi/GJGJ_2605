@@ -20,6 +20,7 @@ var _pressed := false
 var _scale_tween: Tween
 
 
+# 初期化
 func _ready() -> void:
 	_base_frame_texture = frame.texture
 	frame.pivot_offset = frame.size * 0.5
@@ -30,6 +31,7 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 
+# setup選択肢処理
 func setup_choice(seed: SeedInfo) -> void:
 	current_seed = seed
 	name_label.text = _get_seed_name_text(seed)
@@ -39,6 +41,7 @@ func setup_choice(seed: SeedInfo) -> void:
 	valuable_icon.visible = _is_rare_dream_seed(seed)
 
 
+# デバッグ番号visible設定
 func set_debug_numbers_visible(is_visible: bool) -> void:
 	debug_numbers_visible = is_visible
 	if current_seed != null:
@@ -46,37 +49,44 @@ func set_debug_numbers_visible(is_visible: bool) -> void:
 		effect_label.text = _get_seed_effect_text(current_seed)
 
 
+# 選択肢disabled設定
 func set_choice_disabled(value: bool) -> void:
 	disabled = value
 	if disabled:
 		_reset_scale_state()
 
 
+# イベント処理
 func _on_button_down() -> void:
 	_pressed = true
 	_update_scale()
 
 
+# イベント処理
 func _on_button_up() -> void:
 	_pressed = false
 	_hovered = false
 	_update_scale()
 
 
+# ホバー開始
 func _on_mouse_entered() -> void:
 	_hovered = true
 	_update_scale()
 
 
+# ホバー終了
 func _on_mouse_exited() -> void:
 	_hovered = false
 	_pressed = false
 	_update_scale()
 
 
+# scale更新
 func _update_scale() -> void:
 	if _scale_tween != null and _scale_tween.is_valid():
 		_scale_tween.kill()
+	# 対象scale
 	var target_scale := _base_scale
 	if _hovered:
 		target_scale *= HOVER_SCALE
@@ -88,6 +98,7 @@ func _update_scale() -> void:
 	_scale_tween.tween_property(frame, "scale", target_scale, TWEEN_DURATION)
 
 
+# scalestate初期化
 func _reset_scale_state() -> void:
 	_hovered = false
 	_pressed = false
@@ -96,18 +107,23 @@ func _reset_scale_state() -> void:
 	frame.scale = _base_scale
 
 
+# 種displayname取得
 func _get_seed_display_name(seed: SeedInfo) -> String:
 	return seed.display_name
 
 
+# 種name文言取得
 func _get_seed_name_text(seed: SeedInfo) -> String:
+	# displayname
 	var display_name := _get_seed_display_name(seed)
 	if not debug_numbers_visible:
 		return display_name
 	return "%s ID:%d" % [display_name, seed.skill_id]
 
 
+# 種effect文言取得
 func _get_seed_effect_text(seed: SeedInfo) -> String:
+	# 行一覧
 	var lines: Array[String] = [
 		"メインスキル: %s" % DreamSeedSkillDescriptionFormatter.get_main_description(seed),
 	]
@@ -116,5 +132,6 @@ func _get_seed_effect_text(seed: SeedInfo) -> String:
 	return "\n".join(lines)
 
 
+# rare夢種判定
 func _is_rare_dream_seed(seed: SeedInfo) -> bool:
 	return seed.rarity == SeedInfo.Rarity.RARE

@@ -2,11 +2,13 @@ class_name HpTooltipView
 extends LeftTooltipView
 
 
+# 初期化
 func _ready() -> void:
 	super()
 	set_title("HP(プレイヤー)")
 
 
+# HP情報設定
 func set_hp_info(
 	current_hp: int,
 	max_hp: int,
@@ -14,8 +16,11 @@ func set_hp_info(
 	rest_hp_rate: float,
 	rest_recovery_bonus_rate: float
 ) -> void:
+	# 休憩HP割合
 	var rest_hp_percent := roundi(rest_hp_rate * 100.0)
+	# 休憩回復補正割合
 	var rest_recovery_bonus_percent := roundi(rest_recovery_bonus_rate * 100.0)
+	# 合計休憩回復割合
 	var total_rest_recovery_percent := rest_hp_percent + rest_recovery_bonus_percent
 	set_entries([
 		{

@@ -10,10 +10,12 @@ const FADE_IN_DURATION := 0.5
 var _fade_tween: Tween
 
 
+# 初期化
 func _ready() -> void:
 	visible = false
 
 
+# 日数表示
 func show_day(day: int) -> void:
 	day_label.text = "%d日目" % _get_start_display_day(day)
 	if _fade_tween != null and _fade_tween.is_valid():
@@ -30,6 +32,7 @@ func show_day(day: int) -> void:
 	visible = false
 
 
+# startdisplay日数取得
 func _get_start_display_day(day: int) -> int:
 	if day <= 1:
 		return day

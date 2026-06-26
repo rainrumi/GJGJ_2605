@@ -25,6 +25,7 @@ var _display_remaining_sub_skill_uses := 0
 var _dragging := false
 
 
+# 初期化
 func _ready() -> void:
 	custom_minimum_size = Vector2(16.0, 16.0)
 	size = custom_minimum_size
@@ -37,6 +38,7 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 
+# 種元データ設定
 func set_seed_source(source: Resource) -> void:
 	source_data = source
 	seed_skill = null
@@ -49,6 +51,7 @@ func set_seed_source(source: Resource) -> void:
 	_refresh_tooltip()
 
 
+# 種アイコン元データ設定
 func set_seed_icon_source(source: Resource) -> void:
 	icon_source_data = source
 	if source is SeedInfo:
@@ -59,71 +62,86 @@ func set_seed_icon_source(source: Resource) -> void:
 		set_seed_icon_texture(null)
 
 
+# 種アイコン画像設定
 func set_seed_icon_texture(texture: Texture2D) -> void:
 	icon_rect.texture = texture
 	icon_rect.visible = texture != null
 
 
+# 種元データ取得
 func get_seed_source() -> Resource:
 	return source_data
 
 
+# remainingsubスキルuse取得
 func get_remaining_sub_skill_uses() -> int:
 	return _display_remaining_sub_skill_uses
 
 
+# デバッグ番号visible設定
 func set_debug_numbers_visible(is_visible: bool) -> void:
 	debug_numbers_visible = is_visible
 	_refresh_tooltip()
 
 
+# subスキルドラッグenabled設定
 func set_sub_skill_drag_enabled(is_enabled: bool) -> void:
 	sub_skill_drag_enabled = is_enabled
 	_update_drag_state()
 
 
+# subスキルuse消費
 func consume_sub_skill_use() -> void:
 	_display_remaining_sub_skill_uses = maxi(0, _display_remaining_sub_skill_uses - 1)
 	_update_drag_state()
 	_refresh_tooltip()
 
 
+# 毎フレーム処理
 func _process(_delta: float) -> void:
 	if not _dragging or seed_skill == null:
 		return
 	seed_skill_drag_moved.emit(self, seed_skill, get_viewport().get_mouse_position())
 
 
+# 入力処理
 func _input(event: InputEvent) -> void:
 	if not _dragging:
 		return
 	if event is InputEventMouseButton:
+		# マウスボタン
 		var mouse_button := event as InputEventMouseButton
 		if mouse_button.button_index == MOUSE_BUTTON_LEFT and not mouse_button.pressed:
 			_dragging = false
 			seed_skill_drag_released.emit(self, seed_skill, mouse_button.position)
 
 
+# GUI入力処理
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
+		# マウスボタン
 		var mouse_button := event as InputEventMouseButton
 		if mouse_button.button_index == MOUSE_BUTTON_LEFT and mouse_button.pressed:
 			_try_use_sub_skill(mouse_button.position)
 
 
+# ツール更新
 func _refresh_tooltip() -> void:
 	if seed_skill == null:
 		tooltip_text = ""
 		if tooltip_panel != null:
 			tooltip_panel.set_text("")
 		return
+	# 文言
 	var text := _get_tooltip_text()
 	tooltip_text = ""
 	if tooltip_panel != null:
 		tooltip_panel.set_text(text)
 
 
+# ツール文言取得
 func _get_tooltip_text() -> String:
+	# 行一覧
 	var lines: Array[String] = [
 		_get_title_text(),
 		"メインスキル: %s" % DreamSeedSkillDescriptionFormatter.get_main_description(seed_skill),
@@ -135,12 +153,14 @@ func _get_tooltip_text() -> String:
 	return "\n".join(lines)
 
 
+# ツールpanel作成
 func _create_tooltip_panel() -> void:
 	tooltip_panel = TOOLTIP_SCENE.instantiate() as DreamSeedSkillTooltipView
 	add_child(tooltip_panel)
 	_refresh_tooltip()
 
 
+# ホバー開始
 func _on_mouse_entered() -> void:
 	if seed_skill == null or tooltip_panel == null:
 		return
@@ -153,21 +173,25 @@ func _on_mouse_entered() -> void:
 	tooltip_panel.visible = true
 
 
+# ホバー終了
 func _on_mouse_exited() -> void:
 	if tooltip_panel != null:
 		tooltip_panel.visible = false
 
 
+# title文言取得
 func _get_title_text() -> String:
 	if _is_rare_seed():
 		return "%s(レア)" % seed_skill.display_name
 	return seed_skill.display_name
 
 
+# rare種判定
 func _is_rare_seed() -> bool:
 	return seed_skill != null and seed_skill.rarity == SeedInfo.Rarity.RARE
 
 
+# usesubスキル試行
 func _try_use_sub_skill(mouse_position: Vector2) -> void:
 	if not _can_use_sub_skill():
 		return
@@ -175,14 +199,17 @@ func _try_use_sub_skill(mouse_position: Vector2) -> void:
 	seed_skill_drag_started.emit(self, seed_skill, mouse_position)
 
 
+# usesubスキル判定
 func _can_use_sub_skill() -> bool:
 	return sub_skill_drag_enabled and seed_skill != null and seed_skill.sub_skill_mode != SeedInfo.SubSkillMode.None and _has_sub_skill() and _display_remaining_sub_skill_uses > 0
 
 
+# subスキル判定
 func _has_sub_skill() -> bool:
 	return DreamSeedSkillDescriptionFormatter.has_sub_skill(seed_skill)
 
 
+# ドラッグstate更新
 func _update_drag_state() -> void:
 	if icon_rect != null:
 		icon_rect.self_modulate = LOW_SUB_SKILL_USES_COLOR if _can_use_sub_skill() and _display_remaining_sub_skill_uses <= 1 else NORMAL_ICON_COLOR

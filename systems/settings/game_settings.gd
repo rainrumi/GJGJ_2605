@@ -37,6 +37,7 @@ var fullscreen := DEFAULT_FULLSCREEN
 var difficulty := DEFAULT_DIFFICULTY
 
 
+# 初期化
 func _ready() -> void:
 	_ensure_audio_bus(BGM_BUS_NAME)
 	_ensure_audio_bus(SE_BUS_NAME)
@@ -44,8 +45,11 @@ func _ready() -> void:
 	apply_settings()
 
 
+# 設定読込
 func load_settings() -> void:
+	# 設定
 	var config := ConfigFile.new()
+	# エラー
 	var error := config.load(SETTINGS_PATH)
 	if error != OK:
 		return
@@ -58,7 +62,9 @@ func load_settings() -> void:
 	difficulty = clampi(int(config.get_value("gameplay", "difficulty", DEFAULT_DIFFICULTY)), 0, 2)
 
 
+# 設定保存
 func save_settings() -> void:
+	# 設定
 	var config := ConfigFile.new()
 	config.set_value("audio", "master_volume", master_volume)
 	config.set_value("audio", "bgm_volume", bgm_volume)
@@ -70,6 +76,7 @@ func save_settings() -> void:
 	config.save(SETTINGS_PATH)
 
 
+# 設定適用
 func apply_settings() -> void:
 	_ensure_audio_bus(BGM_BUS_NAME)
 	_ensure_audio_bus(SE_BUS_NAME)
@@ -80,6 +87,7 @@ func apply_settings() -> void:
 	settings_changed.emit()
 
 
+# todefaults初期化
 func reset_to_defaults() -> void:
 	master_volume = DEFAULT_MASTER_VOLUME
 	bgm_volume = DEFAULT_BGM_VOLUME
@@ -92,69 +100,84 @@ func reset_to_defaults() -> void:
 	apply_settings()
 
 
+# 文言間隔取得
 func get_text_interval() -> float:
 	return TEXT_INTERVALS[text_speed]
 
 
+# master音量設定
 func set_master_volume(value: float) -> void:
 	master_volume = clampf(value, 0.0, 100.0)
 	_apply_and_save()
 
 
+# BGM音量設定
 func set_bgm_volume(value: float) -> void:
 	bgm_volume = clampf(value, 0.0, 100.0)
 	_apply_and_save()
 
 
+# SE音量設定
 func set_se_volume(value: float) -> void:
 	se_volume = clampf(value, 0.0, 100.0)
 	_apply_and_save()
 
 
+# 文言speed設定
 func set_text_speed(value: int) -> void:
 	text_speed = clampi(value, 0, TEXT_INTERVALS.size() - 1)
 	_apply_and_save()
 
 
+# ウィンドウサイズ設定
 func set_window_size(value: int) -> void:
 	window_size = clampi(value, 0, WINDOW_SIZES.size() - 1)
 	_apply_and_save()
 
 
+# fullscreen設定
 func set_fullscreen(value: bool) -> void:
 	fullscreen = value
 	_apply_and_save()
 
 
+# 難度設定
 func set_difficulty(value: int) -> void:
 	difficulty = clampi(value, 0, 2)
 	_apply_and_save()
 
 
+# andsave適用
 func _apply_and_save() -> void:
 	save_settings()
 	apply_settings()
 
 
+# bus音量設定
 func _set_bus_volume(bus_name: String, volume_percent: float) -> void:
+	# bus番号
 	var bus_index := AudioServer.get_bus_index(bus_name)
 	if bus_index < 0:
 		return
+	# linear音量
 	var linear_volume := clampf(volume_percent / 100.0, 0.0, 1.0)
 	AudioServer.set_bus_mute(bus_index, linear_volume <= 0.0)
 	if linear_volume > 0.0:
 		AudioServer.set_bus_volume_db(bus_index, linear_to_db(linear_volume))
 
 
+# ensure音声bus処理
 func _ensure_audio_bus(bus_name: String) -> void:
 	if AudioServer.get_bus_index(bus_name) >= 0:
 		return
 	AudioServer.add_bus()
+	# bus番号
 	var bus_index := AudioServer.get_bus_count() - 1
 	AudioServer.set_bus_name(bus_index, bus_name)
 	AudioServer.set_bus_send(bus_index, "Master")
 
 
+# ウィンドウ設定適用
 func _apply_window_settings() -> void:
 	if fullscreen:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)

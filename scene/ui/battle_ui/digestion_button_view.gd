@@ -49,6 +49,7 @@ func _on_gui_input(event: InputEvent) -> void:
 	if not visible:
 		return
 	if event is InputEventMouseButton:
+		# マウスイベント
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
 			digestion_requested.emit()
@@ -68,6 +69,7 @@ func _on_mouse_exited() -> void:
 func _set_hovered(is_hovered: bool) -> void:
 	if _hover_tween != null and _hover_tween.is_valid():
 		_hover_tween.kill()
+	# 対象scale
 	var target_scale := _base_scale
 	if is_hovered:
 		target_scale *= HOVER_SCALE

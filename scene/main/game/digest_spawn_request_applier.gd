@@ -2,6 +2,7 @@ class_name DigestSpawnRequestApplier
 extends RefCounted
 
 
+# 要求適用
 func apply_requests(
 	spawn_requests: Array[DigestSpawnRequest],
 	enemies: Array[Enemy],
