@@ -127,7 +127,7 @@ func hide_enemy_tooltip(enemy: Enemy = null) -> void:
 
 # 消化ダメージツール表示
 func show_acid_damage_view_tooltip() -> void:
-	_on_acid_damage_tooltip_requested(acid_damage_view)
+	_on_view_tooltip_requested(acid_damage_view)
 
 
 # 消化ダメージツール非表示
@@ -137,7 +137,7 @@ func hide_acid_damage_view_tooltip() -> void:
 
 # 消化intervalツール表示
 func show_acid_interval_view_tooltip() -> void:
-	_on_acid_interval_tooltip_requested(acid_interval_view)
+	_on_view_tooltip_requested(acid_interval_view)
 
 
 # 消化intervalツール非表示
@@ -147,7 +147,7 @@ func hide_acid_interval_view_tooltip() -> void:
 
 # 時間ツール表示
 func show_time_tooltip() -> void:
-	_on_time_tooltip_requested(time_view)
+	_on_view_tooltip_requested(time_view)
 
 
 # 時間ツール非表示
@@ -157,7 +157,7 @@ func hide_time_tooltip() -> void:
 
 # HPツール表示
 func show_hp_tooltip() -> void:
-	_on_hp_tooltip_requested(hp_view)
+	_on_view_tooltip_requested(hp_view)
 
 
 # HPツール非表示
@@ -249,13 +249,13 @@ func _connect_child_signals() -> void:
 	seed_button_list.seed_drag_started.connect(_on_seed_drag_started)
 	seed_button_list.seed_drag_moved.connect(_on_seed_drag_moved)
 	seed_button_list.seed_drag_released.connect(_on_seed_drag_released)
-	acid_damage_view.tooltip_requested.connect(_on_acid_damage_tooltip_requested)
+	acid_damage_view.tooltip_requested.connect(_on_view_tooltip_requested)
 	acid_damage_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
-	acid_interval_view.tooltip_requested.connect(_on_acid_interval_tooltip_requested)
+	acid_interval_view.tooltip_requested.connect(_on_view_tooltip_requested)
 	acid_interval_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
-	time_view.tooltip_requested.connect(_on_time_tooltip_requested)
+	time_view.tooltip_requested.connect(_on_view_tooltip_requested)
 	time_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
-	hp_view.tooltip_requested.connect(_on_hp_tooltip_requested)
+	hp_view.tooltip_requested.connect(_on_view_tooltip_requested)
 	hp_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
 
 
@@ -300,23 +300,8 @@ func _show_view_tooltip(view: Object) -> void:
 	_show_exclusive_tooltip(view, show_func, hide_func)
 
 
-# 消化ダメtooltip要求
-func _on_acid_damage_tooltip_requested(view: AcidDamageView) -> void:
-	_show_view_tooltip(view)
-
-
-# 消化間隔tooltip要求
-func _on_acid_interval_tooltip_requested(view: AcidIntervalView) -> void:
-	_show_view_tooltip(view)
-
-
-# 時間tooltip要求
-func _on_time_tooltip_requested(view: TimeView) -> void:
-	_show_view_tooltip(view)
-
-
-# HPtooltip要求
-func _on_hp_tooltip_requested(view: HpView) -> void:
+# viewtooltip要求
+func _on_view_tooltip_requested(view: Object) -> void:
 	_show_view_tooltip(view)
 
 
@@ -325,32 +310,32 @@ func _on_tooltip_hide_requested(view: Object) -> void:
 	_hide_current_tooltip(view)
 
 
-# 要求処理
+# 消化開始要求
 func _on_Acidion_requested() -> void:
 	Acidion_requested.emit()
 
 
-# 要求処理
+# デバッグ開始要求
 func _on_debug_message_requested(is_active: bool) -> void:
 	debug_message_requested.emit(is_active)
 
 
-# 要求処理
+# デバッグリロール要求
 func _on_debug_reroll_requested() -> void:
 	debug_reroll_requested.emit()
 
 
-# 要求処理
+# デバッグ胃袋サイズ変更要求
 func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> void:
 	debug_stomach_size_requested.emit(delta_columns, delta_rows)
 
 
-# 要求処理
+# デバッグ種生成要求
 func _on_debug_seed_requested() -> void:
 	debug_seed_requested.emit()
 
 
-# 開始処理
+# 種移動開始
 func _on_seed_drag_started(
 	button: SeedButton,
 	seed: SeedInfo,
@@ -368,7 +353,7 @@ func _on_seed_drag_moved(
 	seed_drag_moved.emit(button, seed, mouse_position)
 
 
-# 離上処理
+# 種移動キャンセル処理
 func _on_seed_drag_released(
 	button: SeedButton,
 	seed: SeedInfo,
