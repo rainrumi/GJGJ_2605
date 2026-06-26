@@ -30,7 +30,7 @@ offset_top = 253.0
 offset_right = 155.0
 offset_bottom = 266.0
 
-[node name="DreamSeedSkillButtons" type="HFlowContainer" parent="CharacterArea" unique_id=1933210198]
+[node name="SeedButtonList" type="HFlowContainer" parent="CharacterArea" unique_id=1933210198]
 offset_left = 29.0
 offset_top = 270.0
 offset_right = 155.0

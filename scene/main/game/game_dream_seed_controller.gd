@@ -13,7 +13,7 @@ var _owner: Node
 var _stomach: StomachBoard
 var _input_controller: GameInputController
 var _dragging_seed_block: Enemy
-var _dragging_seed_button: SeedButton
+var _dragging_seed_button_list: SeedButton
 var _dragging_seed: SeedInfo
 var _pending_depleted_sources_by_block: Dictionary = {}
 var debug_factory := DreamSeedDebugFactory.new()
@@ -101,7 +101,7 @@ func start_drag(
 	var seed_block := _create_seed_block(seed)
 	if seed_block == null:
 		return result
-	_dragging_seed_button = button
+	_dragging_seed_button_list = button
 	_dragging_seed = seed
 	_dragging_seed_block = seed_block
 	_dragging_seed_block.global_position = mouse_position
@@ -127,11 +127,11 @@ func release_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> DreamSeedDr
 		return result
 	result.started = true
 	result.seed_block = _dragging_seed_block
-	result.source_button = _dragging_seed_button
+	result.source_button = _dragging_seed_button_list
 	result.seed = _dragging_seed
-	result.source = _dragging_seed_button.get_seed_source() if _dragging_seed_button != null else null
+	result.source = _dragging_seed_button_list.get_seed_source() if _dragging_seed_button_list != null else null
 	_dragging_seed_block = null
-	_dragging_seed_button = null
+	_dragging_seed_button_list = null
 	_dragging_seed = null
 	_stomach.hide_preview()
 	if _stomach.contains_global_position(mouse_position) and _try_place_seed_block(result.seed_block, mouse_position, enemies):
@@ -147,7 +147,7 @@ func cancel_drag() -> void:
 	if _dragging_seed_block != null:
 		cancel_seed_block(_dragging_seed_block)
 	_dragging_seed_block = null
-	_dragging_seed_button = null
+	_dragging_seed_button_list = null
 	_dragging_seed = null
 	if _stomach != null:
 		_stomach.hide_preview()

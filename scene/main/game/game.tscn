@@ -177,7 +177,7 @@ offset_top = 253.0
 offset_right = 155.0
 offset_bottom = 266.0
 
-[node name="DreamSeedSkillButtons" type="HFlowContainer" parent="UI" unique_id=1206675277]
+[node name="SeedButtonList" type="HFlowContainer" parent="UI" unique_id=1206675277]
 offset_left = 29.0
 offset_top = 270.0
 offset_right = 155.0
@@ -187,7 +187,7 @@ theme_override_constants/h_separation = 2
 theme_override_constants/v_separation = 2
 script = ExtResource("41_dream_seed_skill_button_list")
 
-[node name="DigestionFrame" type="TextureRect" parent="UI" unique_id=75896202]
+[node name="AcidButton" type="TextureRect" parent="UI" unique_id=75896202]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 offset_left = 491.5
 offset_top = 313.0

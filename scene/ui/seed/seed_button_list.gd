@@ -23,7 +23,7 @@ func set_seed_sources(sources: Array) -> void:
 	_clear_buttons()
 	for source in sources:
 		if source is Resource and _has_seed(source as Resource):
-			_add_seed_button(source as Resource)
+			_add_seed_button_list(source as Resource)
 
 
 # デバッグ番号visible設定
@@ -43,7 +43,7 @@ func set_sub_skill_drag_enabled(is_enabled: bool) -> void:
 
 
 # 種ボタン追加
-func _add_seed_button(source: Resource) -> void:
+func _add_seed_button_list(source: Resource) -> void:
 	# ボタン
 	var button := BUTTON_SCENE.instantiate() as SeedButton
 	add_child(button)

@@ -17,9 +17,9 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 @onready var digest_efficiency_icon: Control = $DigestiveINTERVAL/digestiveINTERVAL_icon
 @onready var digest_efficiency_value_label: Label = $DigestiveINTERVAL/digestiveINTERVAL_value
 @onready var hp_status: HpView = $HpFrame
-@onready var seed_button: SeedButtonList = $DreamSeedSkillButtons
+@onready var seed_button_list: SeedButtonList = $SeedButtonList
 @onready var time_status: TimeStatus = $Time
-@onready var digestion_button: AcidButton = $DigestionFrame
+@onready var acid_button: AcidButton = $AcidButton
 @onready var debug_panel: DebugPanel = $DebugPanel
 @onready var nightmare_tooltip: NightmareTooltip = $NightmareTooltipPanel
 @onready var digest_tooltip: AcidDamageTooltip = $DigestDamageTooltipPanel
@@ -35,7 +35,7 @@ var _rest_recovery_bonus_rate := 0.0
 # 初期化
 func _ready() -> void:
 	_prepare_digest_mouse_filters()
-	seed_button.set_sub_skill_drag_enabled(true)
+	seed_button_list.set_sub_skill_drag_enabled(true)
 	_connect_child_signals()
 	_hide_all_tooltips()
 
@@ -78,7 +78,7 @@ func reset_for_battle(
 	set_seed_debug_numbers_visible(DebugState.debug_enabled)
 	set_debug_button_active(DebugState.debug_enabled)
 	set_digestion_count(0)
-	set_digestion_button_visible(true)
+	set_acid_button_visible(true)
 	hide_hp_damage_preview()
 	hide_time_elapsed()
 	_hide_all_tooltips()
@@ -112,12 +112,12 @@ func set_debug_message(message: String) -> void:
 
 # 夢種スキルsources設定
 func set_seed_sources(sources: Array) -> void:
-	seed_button.set_seed_sources(sources)
+	seed_button_list.set_seed_sources(sources)
 
 
 # 夢種デバッグ番号visible設定
 func set_seed_debug_numbers_visible(is_visible: bool) -> void:
-	seed_button.set_debug_numbers_visible(is_visible)
+	seed_button_list.set_debug_numbers_visible(is_visible)
 
 
 # 悪夢ツール表示
@@ -226,17 +226,17 @@ func set_debug_button_active(is_active: bool) -> void:
 
 # 消化数設定
 func set_digestion_count(count: int) -> void:
-	digestion_button.set_count(count)
+	acid_button.set_count(count)
 
 
 # 消化ボタンvisible設定
-func set_digestion_button_visible(is_visible: bool) -> void:
-	digestion_button.set_button_visible(is_visible)
+func set_acid_button_visible(is_visible: bool) -> void:
+	acid_button.set_button_visible(is_visible)
 
 
 # 消化ボタンhit判定
-func is_digestion_button_hit(mouse_position: Vector2) -> bool:
-	return digestion_button.is_hit(mouse_position)
+func is_acid_button_hit(mouse_position: Vector2) -> bool:
+	return acid_button.is_hit(mouse_position)
 
 
 # 時間elapsed表示
@@ -266,14 +266,14 @@ func show_hp_damage_values(damage_values: Array[int]) -> void:
 
 # childsignals接続
 func _connect_child_signals() -> void:
-	digestion_button.digestion_requested.connect(_on_digestion_requested)
+	acid_button.digestion_requested.connect(_on_digestion_requested)
 	debug_panel.debug_message_requested.connect(_on_debug_message_requested)
 	debug_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	debug_panel.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
 	debug_panel.debug_seed_requested.connect(_on_debug_seed_requested)
-	seed_button.seed_drag_started.connect(_on_seed_drag_started)
-	seed_button.seed_drag_moved.connect(_on_seed_drag_moved)
-	seed_button.seed_drag_released.connect(_on_seed_drag_released)
+	seed_button_list.seed_drag_started.connect(_on_seed_drag_started)
+	seed_button_list.seed_drag_moved.connect(_on_seed_drag_moved)
+	seed_button_list.seed_drag_released.connect(_on_seed_drag_released)
 	digest_damage_panel.mouse_entered.connect(show_digest_damage_tooltip)
 	digest_damage_panel.mouse_exited.connect(hide_digest_damage_tooltip)
 	digest_efficiency_panel.mouse_entered.connect(show_digest_efficiency_tooltip)

@@ -626,7 +626,7 @@ func _refresh_status_ui() -> void:
 	ui.set_hp(hp, effective_max_hp)
 	ui.set_time(minutes)
 	ui.set_digestion_count(_active_digest_count())
-	ui.set_digestion_button_visible(battle_active and not auto_digest_enabled)
+	ui.set_acid_button_visible(battle_active and not auto_digest_enabled)
 
 
 # hoverツール更新

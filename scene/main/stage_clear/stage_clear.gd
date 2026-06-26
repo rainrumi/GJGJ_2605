@@ -16,7 +16,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @export var initial_flower: SeedInfo
 @export var seed_options: Array[SeedInfo] = []
 @onready var hp_view: HpView = $CharacterArea/HpFrame
-@onready var seed_button: SeedButtonList = $CharacterArea/DreamSeedSkillButtons
+@onready var seed_button_list: SeedButtonList = $CharacterArea/SeedButtonList
 @onready var guide_text: Label = $UI/GuideText
 @onready var reroll_button: Button = $UI/RerollButton
 @onready var debug_button: Button = $UI/DebugButton
@@ -236,7 +236,7 @@ func _on_reroll_button_pressed() -> void:
 
 # デバッグ番号visible更新
 func _update_debug_numbers_visible() -> void:
-	seed_button.set_debug_numbers_visible(debug_numbers_visible)
+	seed_button_list.set_debug_numbers_visible(debug_numbers_visible)
 	for seed_choice in seed_choices:
 		seed_choice.set_debug_numbers_visible(debug_numbers_visible)
 
@@ -434,14 +434,14 @@ func _refresh_flower_slots() -> void:
 			continue
 		texture_rect.texture = display_textures[i]
 		flower_slots[i].disabled = true
-	_refresh_seed_button()
+	_refresh_seed_button_list()
 
 
 # 夢種スキルbuttons更新
-func _refresh_seed_button() -> void:
-	if seed_button == null:
+func _refresh_seed_button_list() -> void:
+	if seed_button_list == null:
 		return
-	seed_button.set_seed_sources(get_planted_flowers())
+	seed_button_list.set_seed_sources(get_planted_flowers())
 
 
 # statechanged更新

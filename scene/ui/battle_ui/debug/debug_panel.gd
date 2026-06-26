@@ -18,7 +18,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @onready var debug_stomach_y_plus_button: Button = $DebugStomachYPlusButton
 @onready var debug_stomach_y_minus_button: Button = $DebugStomachYMinusButton
 @onready var debug_reroll_button: Button = $DebugRerollButton
-@onready var debug_seed_button: Button = $DebugSeedButton
+@onready var debug_seed_button_list: Button = $DebugSeedButton
 @onready var debug_message_button: Button = $DebugMessageButton
 
 var debug_message := ""
@@ -34,7 +34,7 @@ func _ready() -> void:
 	debug_stomach_y_plus_button.pressed.connect(_on_debug_stomach_y_plus_button_pressed)
 	debug_stomach_y_minus_button.pressed.connect(_on_debug_stomach_y_minus_button_pressed)
 	debug_reroll_button.pressed.connect(_on_debug_reroll_button_pressed)
-	debug_seed_button.pressed.connect(_on_debug_seed_button_pressed)
+	debug_seed_button_list.pressed.connect(_on_debug_seed_button_list_pressed)
 	debug_message_button.pressed.connect(_on_debug_message_button_pressed)
 	_connect_debug_state()
 	set_debug_button_active(DebugState.debug_enabled)
@@ -92,7 +92,7 @@ func _prepare_mouse_filters() -> void:
 	debug_stomach_y_plus_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_stomach_y_minus_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_reroll_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	debug_seed_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	debug_seed_button_list.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_message_button.mouse_filter = Control.MOUSE_FILTER_STOP
 
 
@@ -140,7 +140,7 @@ func _set_debug_controls_visible(is_visible: bool) -> void:
 	debug_stomach_y_plus_button.visible = is_visible
 	debug_stomach_y_minus_button.visible = is_visible
 	debug_reroll_button.visible = is_visible
-	debug_seed_button.visible = is_visible
+	debug_seed_button_list.visible = is_visible
 
 
 # Debug押下
@@ -154,7 +154,7 @@ func _on_debug_reroll_button_pressed() -> void:
 
 
 # 押下処理
-func _on_debug_seed_button_pressed() -> void:
+func _on_debug_seed_button_list_pressed() -> void:
 	if not debug_button_active:
 		return
 	debug_seed_requested.emit()
