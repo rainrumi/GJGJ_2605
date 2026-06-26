@@ -140,19 +140,9 @@ func show_acid_interval_view_tooltip() -> void:
 	_on_acid_interval_tooltip_requested(acid_interval_view)
 
 
-# 消化interval旧名
-func show_acid_acid_interval_view_tooltip() -> void:
-	show_acid_interval_view_tooltip()
-
-
 # 消化intervalツール非表示
 func hide_acid_interval_view_tooltip() -> void:
 	_hide_current_tooltip(acid_interval_view)
-
-
-# 消化interval旧名
-func hide_acid_acid_interval_view_tooltip() -> void:
-	hide_acid_interval_view_tooltip()
 
 
 # 時間ツール表示
