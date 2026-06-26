@@ -1,4 +1,4 @@
-class_name NightmareTooltip
+class_name EnemyTooltip
 extends LeftTooltip
 
 var _debug_number_text := ""

@@ -56,7 +56,7 @@ func _ready() -> void:
 	_connect_ui()
 	_connect_input()
 	_create_Acidion_timer()
-	ui.hide_nightmare_tooltip()
+	ui.hide_enemy_tooltip()
 # 拍conductor設定
 func set_beat_conductor(conductor: BeatConductor) -> void:
 	beat_conductor = conductor
@@ -249,7 +249,7 @@ func _on_debug_message_requested(is_active: bool) -> void:
 	debug_numbers_visible = is_active
 	ui.set_seed_debug_numbers_visible(debug_numbers_visible)
 	if hovered_enemy != null:
-		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
+		ui.show_enemy_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 # 要求処理
 func _on_debug_reroll_requested() -> void:
 	if not _can_use_debug_action():
@@ -589,9 +589,9 @@ func _set_hovered_enemy(enemy: Enemy) -> void:
 	hovered_enemy = enemy
 	if hovered_enemy != null:
 		hovered_enemy.set_hovered(true)
-		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
+		ui.show_enemy_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 	else:
-		ui.hide_nightmare_tooltip()
+		ui.hide_enemy_tooltip()
 # HPダメージpreview更新
 func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 	if (
@@ -632,7 +632,7 @@ func _refresh_status_ui() -> void:
 # hoverツール更新
 func _refresh_hover_tooltip() -> void:
 	if hovered_enemy != null:
-		ui.show_nightmare_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
+		ui.show_enemy_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 # after戦闘イベント更新
 func _refresh_after_battle_event() -> void:
 	_refresh_ui()
