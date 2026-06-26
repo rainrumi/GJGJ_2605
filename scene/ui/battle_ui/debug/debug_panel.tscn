@@ -1,0 +1,98 @@
+[gd_scene format=3 uid="uid://b6fh1poo6sv5f"]
+
+[ext_resource type="Script" uid="uid://wiaj3pchfaj2" path="res://scene/ui/battle_ui/debug/debug_panel.gd" id="1_status_panel_script"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+
+[node name="StatusPanel" type="Control" unique_id=1605446388]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+script = ExtResource("1_status_panel_script")
+
+[node name="MessageText" type="Label" parent="." unique_id=196976463]
+visible = false
+layout_mode = 0
+offset_left = 388.0
+offset_top = 52.5
+offset_right = 638.0
+offset_bottom = 68.5
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "６時までにすべての悪夢を消化しましょう"
+horizontal_alignment = 2
+autowrap_mode = 3
+
+[node name="DebugStomachXPlusButton" type="Button" parent="." unique_id=645112890]
+layout_mode = 0
+offset_left = 225.0
+offset_top = 339.0
+offset_right = 258.0
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+text = "X+1"
+
+[node name="DebugStomachXMinusButton" type="Button" parent="." unique_id=537635604]
+layout_mode = 0
+offset_left = 262.0
+offset_top = 339.0
+offset_right = 295.0
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+text = "X-1"
+
+[node name="DebugStomachYPlusButton" type="Button" parent="." unique_id=494838133]
+layout_mode = 0
+offset_left = 299.0
+offset_top = 339.0
+offset_right = 332.0
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+text = "Y+1"
+
+[node name="DebugStomachYMinusButton" type="Button" parent="." unique_id=1840537296]
+layout_mode = 0
+offset_left = 336.0
+offset_top = 339.0
+offset_right = 369.0
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+text = "Y-1"
+
+[node name="DebugRerollButton" type="Button" parent="." unique_id=917573151]
+layout_mode = 0
+offset_left = 377.0
+offset_top = 339.0
+offset_right = 430.5
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 9
+text = "リロール"
+
+[node name="DebugSeedButton" type="Button" parent="." unique_id=1366271414]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 339.0
+offset_right = 221.5
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 9
+text = "種+1"
+
+[node name="DebugMessageButton" type="Button" parent="." unique_id=2146876269]
+layout_mode = 0
+offset_left = 434.0
+offset_top = 339.0
+offset_right = 487.5
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 9
+text = "Debug"

@@ -20,7 +20,7 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 @onready var seed_button: SeedButtonList = $DreamSeedSkillButtons
 @onready var time_status: TimeStatus = $Time
 @onready var digestion_button: AcidButton = $DigestionFrame
-@onready var status_panel: StatusPanel = $StatusPanel
+@onready var debug_panel: DebugPanel = $DebugPanel
 @onready var nightmare_tooltip: NightmareTooltip = $NightmareTooltipPanel
 @onready var digest_tooltip: AcidDamageTooltip = $DigestDamageTooltipPanel
 @onready var efficiency_tooltip: AcidEfficiencyTooltip = $DigestEfficiencyTooltipPanel
@@ -48,9 +48,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		if not key_event.pressed or key_event.echo:
 			return
 		if key_event.keycode == KEY_D:
-			status_panel.toggle_debug_message()
+			debug_panel.toggle_debug_message()
 		if key_event.keycode == KEY_R:
-			status_panel.request_debug_reroll()
+			debug_panel.request_debug_reroll()
 
 
 # for戦闘初期化
@@ -102,12 +102,12 @@ func set_time(minutes: int) -> void:
 
 # 文言設定
 func set_message(message: String) -> void:
-	status_panel.set_message(message)
+	debug_panel.set_message(message)
 
 
 # デバッグ文言設定
 func set_debug_message(message: String) -> void:
-	status_panel.set_debug_message(message)
+	debug_panel.set_debug_message(message)
 
 
 # 夢種スキルsources設定
@@ -221,7 +221,7 @@ func set_digest_efficiency_minutes(
 
 # デバッグボタンactive設定
 func set_debug_button_active(is_active: bool) -> void:
-	status_panel.set_debug_button_active(is_active)
+	debug_panel.set_debug_button_active(is_active)
 
 
 # 消化数設定
@@ -267,10 +267,10 @@ func show_hp_damage_values(damage_values: Array[int]) -> void:
 # childsignals接続
 func _connect_child_signals() -> void:
 	digestion_button.digestion_requested.connect(_on_digestion_requested)
-	status_panel.debug_message_requested.connect(_on_debug_message_requested)
-	status_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
-	status_panel.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
-	status_panel.debug_seed_requested.connect(_on_debug_seed_requested)
+	debug_panel.debug_message_requested.connect(_on_debug_message_requested)
+	debug_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
+	debug_panel.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
+	debug_panel.debug_seed_requested.connect(_on_debug_seed_requested)
 	seed_button.seed_drag_started.connect(_on_seed_drag_started)
 	seed_button.seed_drag_moved.connect(_on_seed_drag_moved)
 	seed_button.seed_drag_released.connect(_on_seed_drag_released)

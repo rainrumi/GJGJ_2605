@@ -1,4 +1,4 @@
-class_name StatusPanel
+class_name DebugPanel
 extends Control
 
 signal debug_message_requested(is_active: bool)
