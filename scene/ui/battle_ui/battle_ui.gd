@@ -16,7 +16,7 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 @onready var acid_interval_panel: Control = $AcidIntervalView
 @onready var acid_interval_icon: Control = $AcidIntervalView/AcidIntervalView_icon
 @onready var acid_interval_value_label: Label = $AcidIntervalView/AcidIntervalView_value
-@onready var hp_status: HpView = $HpFrame
+@onready var hp_status: HpView = $HpView
 @onready var seed_button_list: SeedButtonList = $SeedButtonList
 @onready var time_view: TimeView = $TimeView
 @onready var acid_button: AcidButton = $AcidButton
