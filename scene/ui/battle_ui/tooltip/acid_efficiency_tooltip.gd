@@ -1,4 +1,4 @@
-class_name AcidEfficiencyTooltip
+class_name AcidIntervalViewTooltip
 extends LeftTooltip
 
 
@@ -9,8 +9,8 @@ func _ready() -> void:
 	set_note("最終消化間隔分の時間が経過すると消化ダメージを与えます。", true)
 
 
-# efficiency情報設定
-func set_efficiency_info(
+# interval情報設定
+func set_interval_info(
 	amount_minutes: float,
 	base_minutes: float = 30.0,
 	seed_buff: int = 0,

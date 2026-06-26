@@ -1,8 +1,8 @@
-class_name DigestSideEffects
+class_name AcidSideEffects
 extends RefCounted
 
 var player_damage_values: Array[int] = []
-var spawn_requests: Array[DigestSpawnRequest] = []
+var spawn_requests: Array[AcidSpawnRequest] = []
 
 
 # 対象消去

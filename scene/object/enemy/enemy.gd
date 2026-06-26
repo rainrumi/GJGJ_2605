@@ -6,8 +6,8 @@ const COST_PULSE_SCALE := 1.1
 const COST_PULSE_DURATION := 0.2
 const DAMAGE_PULSE_SCALE := 1.12
 const DAMAGE_PULSE_DURATION := 0.18
-const DIGESTED_SCALE := 1.2
-const DIGESTED_TWEEN_DURATION := 0.5
+const AcidED_SCALE := 1.2
+const AcidED_TWEEN_DURATION := 0.5
 const DEFAULT_STATUS_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
 const MAIN_EFFECT_STATUS_COLOR := Color(0.78, 0.18, 0.08, 1.0)
 const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_1000.png")
@@ -24,13 +24,13 @@ var damage := 0
 var base_damage := 0
 var display_damage_override := -1
 var attack_multiplier := 1.0
-var digest_damage_taken_multiplier := 1.0
-var digest_damage_global_multiplier := 1.0
+var acid_damage_taken_multiplier := 1.0
+var acid_damage_global_multiplier := 1.0
 var stomach_elapsed_minutes := 0
 var revive_count := 0
 var current_hp := 0
-var digesting := false
-var digested := false
+var Aciding := false
+var Acided := false
 var gravity_locked := false
 var activation_deferred := false
 var stomach_cell := Vector2i.ZERO
@@ -39,7 +39,7 @@ var _base_scale := Vector2.ONE
 var _hover_tween: Tween
 var _cost_pulse_tween: Tween
 var _damage_pulse_tween: Tween
-var _digested_tween: Tween
+var _Acided_tween: Tween
 var _hovered := false
 var _stomach_size_override := Vector2i.ZERO
 var _stomach_shape_override: Array[Vector2i] = []
@@ -57,8 +57,8 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 	base_damage = enemy_definition.damage
 	display_damage_override = -1
 	attack_multiplier = 1.0
-	digest_damage_taken_multiplier = 1.0
-	digest_damage_global_multiplier = 1.0
+	acid_damage_taken_multiplier = 1.0
+	acid_damage_global_multiplier = 1.0
 	stomach_elapsed_minutes = 0
 	revive_count = 0
 	gravity_locked = false
@@ -78,8 +78,8 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 # for戦闘初期化
 func reset_for_battle() -> void:
 	current_hp = max_hp
-	digesting = false
-	digested = false
+	Aciding = false
+	Acided = false
 	gravity_locked = false
 	activation_deferred = false
 	stomach_cell = Vector2i.ZERO
@@ -152,7 +152,7 @@ func should_deal_player_damage() -> bool:
 
 
 # should数for消化order処理
-func should_count_for_digest_order() -> bool:
+func should_count_for_acid_order() -> bool:
 	return is_nightmare()
 
 
@@ -174,9 +174,9 @@ func get_current_hp() -> int: return current_hp
 # revive数取得
 func get_revive_count() -> int: return revive_count
 # 消化済み判定
-func is_digested() -> bool: return digested
-# digesting判定
-func is_digesting() -> bool: return digesting
+func is_Acided() -> bool: return Acided
+# Aciding判定
+func is_Aciding() -> bool: return Aciding
 # activationdeferred判定
 func is_activation_deferred() -> bool: return activation_deferred
 
@@ -211,28 +211,28 @@ func get_stomach_shape() -> Array[Vector2i]:
 
 # ドラッグ判定
 func can_drag() -> bool:
-	return not digested
+	return not Acided
 
 
 # activein胃袋判定
 func is_active_in_stomach() -> bool:
-	return digesting and not digested
+	return Aciding and not Acided
 
 
 # take胃袋turn判定
 func can_take_stomach_turn() -> bool:
 	return is_active_in_stomach() and not activation_deferred
-# digesting設定
-func set_digesting(value: bool) -> void:
-	if digesting != value:
+# Aciding設定
+func set_Aciding(value: bool) -> void:
+	if Aciding != value:
 		stomach_elapsed_minutes = 0
-	digesting = value
+	Aciding = value
 # 消化済み設定
-func set_digested(value: bool) -> void:
-	digested = value
-	if digested:
-		digesting = false
-		_play_digested_tween()
+func set_Acided(value: bool) -> void:
+	Acided = value
+	if Acided:
+		Aciding = false
+		_play_Acided_tween()
 # 胃袋セル設定
 func set_stomach_cell(cell: Vector2i) -> void:
 	stomach_cell = cell
@@ -351,17 +351,17 @@ func pulse_damage() -> void:
 	_damage_pulse_tween.tween_property(sprite, "scale", _base_scale * DAMAGE_PULSE_SCALE, DAMAGE_PULSE_DURATION * 0.5)
 	_damage_pulse_tween.tween_property(sprite, "scale", _base_scale, DAMAGE_PULSE_DURATION * 0.5)
 # take消化ダメージ処理
-func take_digest_damage(amount: int, show_popup := true) -> bool:
+func take_acid_damage(amount: int, show_popup := true) -> bool:
 	if show_popup:
 		EnemyDamagePopup.show_damage(self, hp_label, amount, MAIN_EFFECT_STATUS_COLOR)
 	current_hp = maxi(0, current_hp - amount)
 	_update_hp_label()
 	if current_hp == 0:
-		set_digested(true)
+		set_Acided(true)
 		return true
 	return false
 # 消化ダメージvalues表示
-func show_digest_damage_values(damage_values: Array) -> void:
+func show_acid_damage_values(damage_values: Array) -> void:
 	EnemyDamagePopup.show_damage_values(self, hp_label, damage_values, MAIN_EFFECT_STATUS_COLOR)
 # globalrect取得
 func get_global_rect() -> Rect2:
@@ -413,22 +413,22 @@ func _get_nearest_shape_cell(target_cell: Vector2i) -> Vector2i:
 			nearest_cell = offset
 	return nearest_cell
 # 消化済みトゥイーン再生
-func _play_digested_tween() -> void:
-	if _digested_tween != null and _digested_tween.is_valid():
-		_digested_tween.kill()
+func _play_Acided_tween() -> void:
+	if _Acided_tween != null and _Acided_tween.is_valid():
+		_Acided_tween.kill()
 	if _hover_tween != null and _hover_tween.is_valid():
 		_hover_tween.kill()
 	_hovered = false
 	visible = true
 	scale = Vector2.ONE
 	modulate.a = 1.0
-	_digested_tween = create_tween()
-	_digested_tween.set_parallel(true)
-	_digested_tween.set_trans(Tween.TRANS_QUART)
-	_digested_tween.set_ease(Tween.EASE_OUT)
-	_digested_tween.tween_property(self, "scale", Vector2.ONE * DIGESTED_SCALE, DIGESTED_TWEEN_DURATION)
-	_digested_tween.tween_property(self, "modulate:a", 0.0, DIGESTED_TWEEN_DURATION)
-	_digested_tween.chain().tween_callback(func() -> void: visible = false)
+	_Acided_tween = create_tween()
+	_Acided_tween.set_parallel(true)
+	_Acided_tween.set_trans(Tween.TRANS_QUART)
+	_Acided_tween.set_ease(Tween.EASE_OUT)
+	_Acided_tween.tween_property(self, "scale", Vector2.ONE * AcidED_SCALE, AcidED_TWEEN_DURATION)
+	_Acided_tween.tween_property(self, "modulate:a", 0.0, AcidED_TWEEN_DURATION)
+	_Acided_tween.chain().tween_callback(func() -> void: visible = false)
 # visuals初期化
 func _reset_visuals() -> void:
 	if _hover_tween != null and _hover_tween.is_valid():
@@ -437,8 +437,8 @@ func _reset_visuals() -> void:
 		_cost_pulse_tween.kill()
 	if _damage_pulse_tween != null and _damage_pulse_tween.is_valid():
 		_damage_pulse_tween.kill()
-	if _digested_tween != null and _digested_tween.is_valid():
-		_digested_tween.kill()
+	if _Acided_tween != null and _Acided_tween.is_valid():
+		_Acided_tween.kill()
 	_hovered = false
 	scale = Vector2.ONE
 	modulate.a = 1.0
@@ -503,23 +503,23 @@ func set_damage_value(value: int) -> void:
 func set_attack_multiplier(value: float) -> void:
 	attack_multiplier = clampf(value, 0.0, 3.0); _update_damage_label()
 # 消化ダメージtaken倍率設定
-func set_digest_damage_taken_multiplier(value: float) -> void:
-	digest_damage_taken_multiplier = maxf(0.0, value)
+func set_acid_damage_taken_multiplier(value: float) -> void:
+	acid_damage_taken_multiplier = maxf(0.0, value)
 # 消化ダメージglobal倍率設定
-func set_digest_damage_global_multiplier(value: float) -> void:
-	digest_damage_global_multiplier = maxf(0.0, value)
+func set_acid_damage_global_multiplier(value: float) -> void:
+	acid_damage_global_multiplier = maxf(0.0, value)
 # revivewithhalfHP処理
 func revive_with_half_hp() -> void:
 	revive_with_hp_rate(0.5)
 # revivewithHP率処理
 func revive_with_hp_rate(hp_rate: float) -> void:
-	if _digested_tween != null and _digested_tween.is_valid():
-		_digested_tween.kill()
+	if _Acided_tween != null and _Acided_tween.is_valid():
+		_Acided_tween.kill()
 	revive_count += 1
 	change_max_hp(ceili(float(max_hp) * hp_rate))
 	current_hp = max_hp
-	digested = false
-	digesting = false
+	Acided = false
+	Aciding = false
 	visible = true
 	return_to_origin()
 	scale = Vector2.ONE

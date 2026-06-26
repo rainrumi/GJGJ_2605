@@ -61,8 +61,8 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 		var enemy := enemies[i]
 		if i >= _enemy_preset.enemies.size():
 			enemy.visible = false
-			enemy.digested = true
-			enemy.digesting = false
+			enemy.Acided = true
+			enemy.Aciding = false
 			enemy.has_main_effect = false
 			continue
 		# 元データスキル
@@ -98,8 +98,8 @@ func _setup_legacy_random_enemies(enemies: Array[Enemy]) -> void:
 		var enemy := enemies[i]
 		if i >= selected_skills.size():
 			enemy.visible = false
-			enemy.digested = true
-			enemy.digesting = false
+			enemy.Acided = true
+			enemy.Aciding = false
 			enemy.has_main_effect = false
 			continue
 		# 定義
@@ -125,8 +125,8 @@ func spawn_nuisance_nightmare(
 	spawn_cell: Vector2i,
 	hp_rate: float,
 	damage_value: int,
-	digest_damage_rate: float = 1.0,
-	global_digest_damage_rate: float = 1.0
+	acid_damage_rate: float = 1.0,
+	global_acid_damage_rate: float = 1.0
 ) -> bool:
 	# nuisance敵
 	var nuisance_enemy := _get_available_nuisance_enemy(enemies, source_enemy)
@@ -149,9 +149,9 @@ func spawn_nuisance_nightmare(
 	nuisance_enemy.change_max_hp(maxi(1, roundi(float(source_max_hp) * hp_rate)))
 	nuisance_enemy.current_hp = nuisance_enemy.max_hp
 	nuisance_enemy.set_damage_value(maxi(0, damage_value))
-	nuisance_enemy.set_digest_damage_taken_multiplier(digest_damage_rate)
-	nuisance_enemy.set_digest_damage_global_multiplier(global_digest_damage_rate)
-	nuisance_enemy.set_digesting(true)
+	nuisance_enemy.set_acid_damage_taken_multiplier(acid_damage_rate)
+	nuisance_enemy.set_acid_damage_global_multiplier(global_acid_damage_rate)
+	nuisance_enemy.set_Aciding(true)
 	_stomach.place_enemy(nuisance_enemy, spawn_cell)
 	return true
 
@@ -159,10 +159,10 @@ func spawn_nuisance_nightmare(
 # availablenuisance敵取得
 func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -> Enemy:
 	for enemy in enemies:
-		if enemy.visible or not enemy.digested:
+		if enemy.visible or not enemy.Acided:
 			continue
 		return enemy
-	if source_enemy.digested:
+	if source_enemy.Acided:
 		return source_enemy
 	# 敵値
 	var enemy := ENEMY_SCENE.instantiate() as Enemy

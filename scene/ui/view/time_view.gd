@@ -1,4 +1,4 @@
-class_name TimeStatus
+class_name TimeView
 extends TextureRect
 
 const TIME_PULSE_SCALE := 1.1
@@ -16,23 +16,23 @@ var _time_elapsed_label_base_position := Vector2.ZERO
 var _time_elapsed_tween: Tween
 
 
-# 初期化
+# Ready
 func _ready() -> void:
 	_prepare_mouse_filters()
 	_capture_sizes()
 	_create_time_elapsed_label()
 
 
-# 時間設定
+# Set time
 func set_time(minutes: int) -> void:
-	# 時値
+	# Hour
 	var hour := int(minutes / 60) % 24
-	# 分値
+	# Minute
 	var minute := minutes % 60
 	time_text.text = "%02d:%02d" % [hour, minute]
 
 
-# elapsed表示
+# Show elapsed
 func show_elapsed(amount_minutes: int) -> void:
 	if _time_elapsed_tween != null and _time_elapsed_tween.is_valid():
 		_time_elapsed_tween.kill()
@@ -56,7 +56,7 @@ func show_elapsed(amount_minutes: int) -> void:
 	_pulse_time_text()
 
 
-# elapsed非表示
+# Hide elapsed
 func hide_elapsed() -> void:
 	if _time_elapsed_tween != null and _time_elapsed_tween.is_valid():
 		_time_elapsed_tween.kill()
@@ -67,19 +67,19 @@ func hide_elapsed() -> void:
 	_time_elapsed_label.modulate.a = 0.0
 
 
-# マウスfilters準備
+# Mouse setup
 func _prepare_mouse_filters() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	time_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
-# sizes記録
+# Capture size
 func _capture_sizes() -> void:
 	_time_text_base_scale = time_text.scale
 	time_text.pivot_offset = time_text.size * 0.5
 
 
-# 時間elapsedラベル作成
+# Create label
 func _create_time_elapsed_label() -> void:
 	_time_elapsed_label = Label.new()
 	_time_elapsed_label.name = "TimeElapsedLabel"
@@ -94,7 +94,7 @@ func _create_time_elapsed_label() -> void:
 	_time_elapsed_label.add_theme_color_override("font_color", Color(0.94, 0.88, 1.0, 1.0))
 	_time_elapsed_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	_time_elapsed_label.add_theme_constant_override("outline_size", 2)
-	# elapsedフォント
+	# Elapsed font
 	var elapsed_font := time_text.get_theme_font("font")
 	if elapsed_font != null:
 		_time_elapsed_label.add_theme_font_override("font", elapsed_font)
@@ -102,7 +102,7 @@ func _create_time_elapsed_label() -> void:
 	add_child(_time_elapsed_label)
 
 
-# pulse時間文言処理
+# Pulse time
 func _pulse_time_text() -> void:
 	if _time_text_pulse_tween != null and _time_text_pulse_tween.is_valid():
 		_time_text_pulse_tween.kill()
@@ -114,11 +114,11 @@ func _pulse_time_text() -> void:
 	_time_text_pulse_tween.tween_property(time_text, "scale", _time_text_base_scale, TIME_PULSE_DURATION * 0.5)
 
 
-# elapsed時間整形
+# Format elapsed
 func _format_elapsed_time(amount_minutes: int) -> String:
-	# hours
+	# Hours
 	var hours := int(amount_minutes / 60)
-	# 分数only
+	# Minutes
 	var minutes_only := amount_minutes % 60
 	if hours == 0:
 		return "+%02dm" % minutes_only

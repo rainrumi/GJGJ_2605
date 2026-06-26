@@ -3,9 +3,9 @@ extends RefCounted
 
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 const SEED_BLOCK_DRAG_ALPHA := 0.58
-const seed_DIGEST_HP_RECOVERY := 1002
-const seed_DIGEST_HP_RECOVERY_RATE := 0.05
-const seed_DIGEST_SKIP_REST_TIME := 1004
+const seed_acid_HP_RECOVERY := 1002
+const seed_acid_HP_RECOVERY_RATE := 0.05
+const seed_acid_SKIP_REST_TIME := 1004
 
 var rest_time_skip_count := 0
 var _flowers: Array[SeedInfo] = []
@@ -59,10 +59,10 @@ func remove_source_while_in_stomach(button: SeedButton, seed_block: Enemy) -> vo
 
 
 # 枯渇処理
-func collect_depleted_sources(digested_enemies: Array[Enemy]) -> Array[Resource]:
+func collect_depleted_sources(Acided_enemies: Array[Enemy]) -> Array[Resource]:
 	# sources
 	var sources: Array[Resource] = []
-	for enemy in digested_enemies:
+	for enemy in Acided_enemies:
 		if not _pending_depleted_sources_by_block.has(enemy):
 			continue
 		# 元データ
@@ -196,7 +196,7 @@ func _try_place_seed_block(
 	if not _stomach.can_place(seed_block, top_left, enemies):
 		return false
 	seed_block.modulate.a = 1.0
-	seed_block.set_digesting(true)
+	seed_block.set_Aciding(true)
 	enemies.append(seed_block)
 	_input_controller.setup(enemies)
 	_stomach.place_enemy(seed_block, top_left)
@@ -249,31 +249,31 @@ func _create_seed_block_template(seed: SeedInfo) -> EnemyDefinition:
 
 
 # direct消化済み種effects適用
-func apply_direct_digested_seed_effects(
-	digested_enemies: Array[Enemy],
+func apply_direct_Acided_seed_effects(
+	Acided_enemies: Array[Enemy],
 	current_hp: int,
 	max_hp: int
 ) -> int:
 	# HP
 	var next_hp := current_hp
-	for enemy in digested_enemies:
+	for enemy in Acided_enemies:
 		if enemy == null or not enemy.has_seed():
 			continue
 		# 種スキル
 		var seed := enemy.get_seed()
-		if seed.skill_id == seed_DIGEST_HP_RECOVERY:
-			next_hp = mini(max_hp, next_hp + ceili(float(max_hp) * seed_DIGEST_HP_RECOVERY_RATE))
+		if seed.skill_id == seed_acid_HP_RECOVERY:
+			next_hp = mini(max_hp, next_hp + ceili(float(max_hp) * seed_acid_HP_RECOVERY_RATE))
 			continue
-		if seed.skill_id == seed_DIGEST_SKIP_REST_TIME:
+		if seed.skill_id == seed_acid_SKIP_REST_TIME:
 			rest_time_skip_count += 1
 	return next_hp
 
 
 # collect消化済み種skills処理
-func collect_digested_seeds(digested_enemies: Array[Enemy]) -> Array[SeedInfo]:
+func collect_Acided_seeds(Acided_enemies: Array[Enemy]) -> Array[SeedInfo]:
 	# skills
 	var skills: Array[SeedInfo] = []
-	for enemy in digested_enemies:
+	for enemy in Acided_enemies:
 		if enemy == null or not enemy.has_seed():
 			continue
 		# 種スキル
@@ -295,8 +295,8 @@ func consume_rest_time_skip() -> bool:
 # controllereffect判定
 func _is_direct_controller_effect(seed: SeedInfo) -> bool:
 	return (
-		seed.skill_id == seed_DIGEST_HP_RECOVERY
-		or seed.skill_id == seed_DIGEST_SKIP_REST_TIME
+		seed.skill_id == seed_acid_HP_RECOVERY
+		or seed.skill_id == seed_acid_SKIP_REST_TIME
 	)
 
 

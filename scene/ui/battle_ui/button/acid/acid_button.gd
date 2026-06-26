@@ -1,7 +1,7 @@
 class_name AcidButton
 extends TextureRect
 
-signal digestion_requested
+signal Acidion_requested
 
 const HOVER_SCALE := 1.1
 const HOVER_TWEEN_DURATION := 0.1
@@ -52,7 +52,7 @@ func _on_gui_input(event: InputEvent) -> void:
 		# マウスイベント
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
-			digestion_requested.emit()
+			Acidion_requested.emit()
 
 
 # ホバー開始

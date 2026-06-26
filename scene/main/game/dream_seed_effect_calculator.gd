@@ -1,16 +1,16 @@
 class_name DreamSeedEffectCalculator
 extends RefCounted
 
-const SKILL_1_DIGEST_DAMAGE_RATE := 0.1
-const SKILL_1_BLOCK_DIGEST_DAMAGE_RATE := 0.2
+const SKILL_1_acid_DAMAGE_RATE := 0.1
+const SKILL_1_BLOCK_acid_DAMAGE_RATE := 0.2
 const SKILL_3_TIME_REDUCTION_RATE := 0.05
 const SKILL_3_BLOCK_TIME_REDUCTION_RATE := 0.15
 const SKILL_3_MAX_TIME_REDUCTION_RATE := 0.2
 const SKILL_4_REST_RECOVERY_BONUS_RATE := 0.5
 const RARE_SKILL_3_BLOCK_TIME_REDUCTION_RATE := 0.5
-const SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_RATE := 2.0
-const SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_START_HOUR := 28
-const seed_DIGEST_DAMAGE_UP := 1001
+const SPECIAL_SKILL_4_LATE_acid_DAMAGE_RATE := 2.0
+const SPECIAL_SKILL_4_LATE_acid_DAMAGE_START_HOUR := 28
+const seed_acid_DAMAGE_UP := 1001
 const seed_CLEAR_RECOVERY_UP := 1002
 const seed_TIME_REDUCTION := 1003
 const seed_REST_RECOVERY := 1004
@@ -18,15 +18,15 @@ const seed_RARE_TIME_REDUCTION := 2003
 const seed_RARE_CLEAR_RECOVERY_DISABLE := 2004
 const PROPOSAL_RARE_ID_MIN := 2101
 const PROPOSAL_RARE_ID_MAX := 2138
-const PROPOSAL_RARE_DIGEST_DAMAGE_TIME := 2101
-const PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE := 2102
-const PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE_BIG := 2103
+const PROPOSAL_RARE_acid_DAMAGE_TIME := 2101
+const PROPOSAL_RARE_REVIVE_acid_DAMAGE := 2102
+const PROPOSAL_RARE_REVIVE_acid_DAMAGE_BIG := 2103
 const PROPOSAL_RARE_REVIVE_TIME_DAMAGE := 2104
-const PROPOSAL_RARE_ATTACK_DAMAGE_TO_DIGEST := 2105
+const PROPOSAL_RARE_ATTACK_DAMAGE_TO_Acid := 2105
 const PROPOSAL_RARE_DAMAGE_AND_INTERVAL_UP := 2106
-const PROPOSAL_RARE_EXTRA_DIGEST_HIT := 2107
-const PROPOSAL_RARE_RANDOM_EXTRA_DIGEST := 2108
-const PROPOSAL_RARE_RANDOM_DOUBLE_DIGEST := 2109
+const PROPOSAL_RARE_EXTRA_acid_HIT := 2107
+const PROPOSAL_RARE_RANDOM_EXTRA_Acid := 2108
+const PROPOSAL_RARE_RANDOM_DOUBLE_Acid := 2109
 const PROPOSAL_RARE_INTERVAL_DAMAGE := 2110
 const PROPOSAL_RARE_INTERVAL_SCALING_DAMAGE := 2111
 const PROPOSAL_RARE_FIXED_INTERVAL_DAMAGE := 2112
@@ -34,16 +34,16 @@ const PROPOSAL_RARE_LINE_PLUS := 2113
 const PROPOSAL_RARE_LINE_CELL_DAMAGE := 2114
 const PROPOSAL_RARE_EDGE_LINE_DAMAGE := 2115
 const PROPOSAL_RARE_LINE_COUNT_DAMAGE := 2116
-const PROPOSAL_RARE_SELF_DAMAGE_FROM_DIGEST := 2117
+const PROPOSAL_RARE_SELF_DAMAGE_FROM_Acid := 2117
 const PROPOSAL_RARE_STOMACH_COLUMN := 2118
 const PROPOSAL_RARE_STOMACH_ROW := 2119
 const PROPOSAL_RARE_TIME_HP := 2120
 const PROPOSAL_RARE_TIME_HP_BY_COUNT := 2121
 const PROPOSAL_RARE_EXTRA_HEAL := 2122
-const PROPOSAL_RARE_DIGEST_DAMAGE_HEAL := 2123
-const PROPOSAL_RARE_DIGESTED_NIGHTMARE_HEAL := 2124
+const PROPOSAL_RARE_acid_DAMAGE_HEAL := 2123
+const PROPOSAL_RARE_AcidED_NIGHTMARE_HEAL := 2124
 const PROPOSAL_RARE_HOUR_HP := 2125
-const PROPOSAL_RARE_DIGESTED_NIGHTMARE_MAX_HP := 2126
+const PROPOSAL_RARE_AcidED_NIGHTMARE_MAX_HP := 2126
 const PROPOSAL_RARE_HP_INTERVAL_UP := 2127
 const PROPOSAL_RARE_REVIVE_MAX_HP := 2128
 const PROPOSAL_RARE_HEAL_TO_LINE_DAMAGE := 2129
@@ -57,14 +57,14 @@ const PROPOSAL_RARE_GROWING_INTERVAL_DOWN := 2136
 const PROPOSAL_RARE_SAFE_RETURN := 2137
 const PROPOSAL_RARE_RETURN_DAMAGE_AND_DISABLE := 2138
 
-var next_digest_damage_bonus_rate := 0.0
+var next_acid_damage_bonus_rate := 0.0
 var next_time_reduction_bonus_rate := 0.0
-var next_digest_damage_flat_bonus := 0
+var next_acid_damage_flat_bonus := 0
 var next_player_damage_multiplier_bonus := 0.0
 var next_heal_bonus_rate := 0.0
 var max_hp_bonus_rate := 0.0
 var recovery_accumulated_for_max_hp := 0
-var last_digest_damage_total := 0
+var last_acid_damage_total := 0
 var last_hp_loss := 0
 var revive_count := 0
 var day := 1
@@ -78,38 +78,38 @@ func setup(flowers: Array) -> void:
 	for flower in flowers:
 		if flower is SeedInfo:
 			_planted_flowers.append(flower as SeedInfo)
-	next_digest_damage_bonus_rate = 0.0
+	next_acid_damage_bonus_rate = 0.0
 	next_time_reduction_bonus_rate = 0.0
-	next_digest_damage_flat_bonus = 0
+	next_acid_damage_flat_bonus = 0
 	next_player_damage_multiplier_bonus = 0.0
 	next_heal_bonus_rate = 0.0
 	max_hp_bonus_rate = 0.0
 	recovery_accumulated_for_max_hp = 0
-	last_digest_damage_total = 0
+	last_acid_damage_total = 0
 	last_hp_loss = 0
 	revive_count = 0
 	remove_from_stomach_disabled = false
 
 
 # 消化ダメージbreakdown取得
-func get_digest_damage_breakdown(
+func get_acid_damage_breakdown(
 	base_damage: int,
 	nightmare_rate: float,
 	minutes: int,
 	consume_pending_bonus: bool = false
 ) -> Dictionary:
 	# 種率
-	var seed_rate := _get_digest_damage_rate(minutes)
-	if next_digest_damage_bonus_rate != 0.0:
-		seed_rate += next_digest_damage_bonus_rate
+	var seed_rate := _get_acid_damage_rate(minutes)
+	if next_acid_damage_bonus_rate != 0.0:
+		seed_rate += next_acid_damage_bonus_rate
 	if consume_pending_bonus:
-		next_digest_damage_bonus_rate = 0.0
+		next_acid_damage_bonus_rate = 0.0
 	# 種buff
 	var seed_buff := roundi(float(base_damage) * seed_rate)
 	# ダメージafter種
-	var damage_after_seed := base_damage + seed_buff + next_digest_damage_flat_bonus
+	var damage_after_seed := base_damage + seed_buff + next_acid_damage_flat_bonus
 	if consume_pending_bonus:
-		next_digest_damage_flat_bonus = 0
+		next_acid_damage_flat_bonus = 0
 	# 合計ダメージ
 	var total_damage := maxi(1, roundi(float(damage_after_seed) * (1.0 + nightmare_rate)))
 	return {
@@ -128,8 +128,8 @@ func apply_player_damage(amount: int, _base_damage: int) -> int:
 		return 0
 	# finalダメージ
 	var final_damage := maxi(0, roundi(float(amount) * _get_player_damage_multiplier()))
-	next_digest_damage_bonus_rate += _get_reflect_digest_rate(final_damage)
-	next_digest_damage_flat_bonus += _get_taken_attack_flat_digest_bonus(final_damage)
+	next_acid_damage_bonus_rate += _get_reflect_acid_rate(final_damage)
+	next_acid_damage_flat_bonus += _get_taken_attack_flat_acid_bonus(final_damage)
 	next_player_damage_multiplier_bonus = 0.0
 	last_hp_loss = final_damage
 	return final_damage
@@ -166,12 +166,12 @@ func get_time_reduction_rate(consume_pending_bonus := false, minutes := 0) -> fl
 
 
 # 消化済み種effect追加
-func add_digested_seed_effect(seed: SeedInfo) -> bool:
+func add_Acided_seed_effect(seed: SeedInfo) -> bool:
 	if seed == null:
 		return false
 	match seed.skill_id:
-		seed_DIGEST_DAMAGE_UP:
-			next_digest_damage_bonus_rate += SKILL_1_BLOCK_DIGEST_DAMAGE_RATE
+		seed_acid_DAMAGE_UP:
+			next_acid_damage_bonus_rate += SKILL_1_BLOCK_acid_DAMAGE_RATE
 			return true
 		seed_TIME_REDUCTION:
 			next_time_reduction_bonus_rate += SKILL_3_BLOCK_TIME_REDUCTION_RATE
@@ -180,18 +180,18 @@ func add_digested_seed_effect(seed: SeedInfo) -> bool:
 			next_time_reduction_bonus_rate += RARE_SKILL_3_BLOCK_TIME_REDUCTION_RATE
 			return true
 		PROPOSAL_RARE_DAMAGE_AND_INTERVAL_UP:
-			next_digest_damage_bonus_rate -= 0.05
+			next_acid_damage_bonus_rate -= 0.05
 			next_time_reduction_bonus_rate += 0.10
 			return true
-		PROPOSAL_RARE_DIGEST_DAMAGE_TIME:
-			next_digest_damage_bonus_rate -= 0.50
+		PROPOSAL_RARE_acid_DAMAGE_TIME:
+			next_acid_damage_bonus_rate -= 0.50
 			next_time_reduction_bonus_rate += 0.50
 			return true
 		PROPOSAL_RARE_STOMACH_COLUMN:
 			next_time_reduction_bonus_rate += 0.10
 			return true
 		PROPOSAL_RARE_STOMACH_ROW:
-			next_digest_damage_bonus_rate += 0.10
+			next_acid_damage_bonus_rate += 0.10
 			return true
 		PROPOSAL_RARE_TIME_HP:
 			next_time_reduction_bonus_rate += 0.99
@@ -202,7 +202,7 @@ func add_digested_seed_effect(seed: SeedInfo) -> bool:
 		PROPOSAL_RARE_EXTRA_HEAL:
 			max_hp_bonus_rate += float(recovery_accumulated_for_max_hp) / 100.0
 			return true
-		PROPOSAL_RARE_DIGESTED_NIGHTMARE_MAX_HP:
+		PROPOSAL_RARE_AcidED_NIGHTMARE_MAX_HP:
 			max_hp_bonus_rate += 0.10
 			return true
 		PROPOSAL_RARE_HP_INTERVAL_UP:
@@ -212,13 +212,13 @@ func add_digested_seed_effect(seed: SeedInfo) -> bool:
 			next_heal_bonus_rate += 1.00
 			return true
 		PROPOSAL_RARE_LINE_PLUS:
-			next_digest_damage_bonus_rate -= 0.20
+			next_acid_damage_bonus_rate -= 0.20
 			return true
 		PROPOSAL_RARE_LINE_COUNT_DAMAGE:
-			next_digest_damage_bonus_rate += 0.50
+			next_acid_damage_bonus_rate += 0.50
 			return true
 		PROPOSAL_RARE_INTERVAL_PARITY:
-			next_digest_damage_bonus_rate += 0.20
+			next_acid_damage_bonus_rate += 0.20
 			next_heal_bonus_rate += 0.20
 			return true
 		PROPOSAL_RARE_RANDOM_INTERVAL_DAILY:
@@ -235,7 +235,7 @@ func add_digested_seed_effect(seed: SeedInfo) -> bool:
 			return true
 		PROPOSAL_RARE_RETURN_DAMAGE_AND_DISABLE:
 			remove_from_stomach_disabled = true
-			next_digest_damage_bonus_rate += 1.0
+			next_acid_damage_bonus_rate += 1.0
 			return true
 	return false
 
@@ -271,22 +271,22 @@ func get_seed_id_text() -> String:
 
 
 # 消化ダメージ率取得
-func _get_digest_damage_rate(minutes: int) -> float:
+func _get_acid_damage_rate(minutes: int) -> float:
 	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seeds():
-		if _is_dream_flower_skill(skill, seed_DIGEST_DAMAGE_UP):
-			rate += SKILL_1_DIGEST_DAMAGE_RATE
-		if _is_special_time_skill(skill, seed_RARE_CLEAR_RECOVERY_DISABLE) and minutes >= SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_START_HOUR * 60:
-			rate += SPECIAL_SKILL_4_LATE_DIGEST_DAMAGE_RATE
+		if _is_dream_flower_skill(skill, seed_acid_DAMAGE_UP):
+			rate += SKILL_1_acid_DAMAGE_RATE
+		if _is_special_time_skill(skill, seed_RARE_CLEAR_RECOVERY_DISABLE) and minutes >= SPECIAL_SKILL_4_LATE_acid_DAMAGE_START_HOUR * 60:
+			rate += SPECIAL_SKILL_4_LATE_acid_DAMAGE_RATE
 		match skill.skill_id:
-			PROPOSAL_RARE_DIGEST_DAMAGE_TIME:
+			PROPOSAL_RARE_acid_DAMAGE_TIME:
 				rate += 0.001 * _get_elapsed_step_count(minutes)
-			PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE:
+			PROPOSAL_RARE_REVIVE_acid_DAMAGE:
 				rate += 0.002 * float(revive_count)
-			PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE_BIG:
+			PROPOSAL_RARE_REVIVE_acid_DAMAGE_BIG:
 				rate += 0.05 * float(revive_count)
-			PROPOSAL_RARE_ATTACK_DAMAGE_TO_DIGEST:
+			PROPOSAL_RARE_ATTACK_DAMAGE_TO_Acid:
 				rate += 0.0
 			PROPOSAL_RARE_DAMAGE_AND_INTERVAL_UP:
 				rate += 0.05
@@ -300,7 +300,7 @@ func _get_digest_damage_rate(minutes: int) -> float:
 				rate -= 0.20
 			PROPOSAL_RARE_LINE_CELL_DAMAGE:
 				rate += 10.0 / 300.0
-			PROPOSAL_RARE_DIGEST_DAMAGE_HEAL:
+			PROPOSAL_RARE_acid_DAMAGE_HEAL:
 				pass
 	return rate
 
@@ -310,19 +310,19 @@ func _get_player_damage_multiplier() -> float:
 	# 倍率
 	var multiplier := 1.0 + next_player_damage_multiplier_bonus
 	for skill in _get_planted_seeds():
-		if skill.skill_id == PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE:
+		if skill.skill_id == PROPOSAL_RARE_REVIVE_acid_DAMAGE:
 			multiplier += 0.30
 	return maxf(0.0, multiplier)
 
 
 # reflect消化率取得
-func _get_reflect_digest_rate(_taken_damage: int) -> float:
+func _get_reflect_acid_rate(_taken_damage: int) -> float:
 	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seeds():
-		if skill.skill_id == PROPOSAL_RARE_REVIVE_DIGEST_DAMAGE:
+		if skill.skill_id == PROPOSAL_RARE_REVIVE_acid_DAMAGE:
 			rate += 0.30
-		if skill.skill_id == PROPOSAL_RARE_ATTACK_DAMAGE_TO_DIGEST:
+		if skill.skill_id == PROPOSAL_RARE_ATTACK_DAMAGE_TO_Acid:
 			rate += 0.02
 	return rate
 
@@ -334,7 +334,7 @@ func add_heal_event(amount: int) -> int:
 	# 補正
 	var bonus := ceili(float(amount) * _get_heal_bonus_rate())
 	recovery_accumulated_for_max_hp += amount
-	next_digest_damage_flat_bonus += _get_heal_to_line_damage(amount)
+	next_acid_damage_flat_bonus += _get_heal_to_line_damage(amount)
 	return bonus
 
 
@@ -349,37 +349,37 @@ func add_revive_event() -> void:
 
 
 # 消化ダメージ合計追加
-func add_digest_damage_total(amount: int) -> void:
-	last_digest_damage_total += maxi(0, amount)
+func add_acid_damage_total(amount: int) -> void:
+	last_acid_damage_total += maxi(0, amount)
 
 
 # 消化ダメージ回復量消費
-func consume_digest_damage_heal_amount() -> int:
+func consume_acid_damage_heal_amount() -> int:
 	# 回復量
 	var heal_amount := 0
 	for skill in _get_planted_seeds():
-		if skill.skill_id == PROPOSAL_RARE_DIGEST_DAMAGE_HEAL:
-			heal_amount += floori(float(last_digest_damage_total) * 0.02)
-	last_digest_damage_total = 0
+		if skill.skill_id == PROPOSAL_RARE_acid_DAMAGE_HEAL:
+			heal_amount += floori(float(last_acid_damage_total) * 0.02)
+	last_acid_damage_total = 0
 	return heal_amount
 
 
 # 消化済み悪夢回復率取得
-func get_digested_nightmare_heal_rate() -> float:
+func get_Acided_nightmare_heal_rate() -> float:
 	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seeds():
-		if skill.skill_id == PROPOSAL_RARE_DIGESTED_NIGHTMARE_HEAL:
+		if skill.skill_id == PROPOSAL_RARE_AcidED_NIGHTMARE_HEAL:
 			rate += 0.20
 	return rate
 
 
 # 消化済み悪夢最大HP率取得
-func get_digested_nightmare_max_hp_rate() -> float:
+func get_Acided_nightmare_max_hp_rate() -> float:
 	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seeds():
-		if skill.skill_id == PROPOSAL_RARE_DIGESTED_NIGHTMARE_MAX_HP:
+		if skill.skill_id == PROPOSAL_RARE_AcidED_NIGHTMARE_MAX_HP:
 			rate += 0.05
 	return rate
 
@@ -441,17 +441,17 @@ func get_enemy_attack_delta(minutes: int) -> int:
 
 
 # 消化対象倍率取得
-func get_digest_target_multiplier() -> float:
+func get_acid_target_multiplier() -> float:
 	# 倍率
 	var multiplier := 1.0
 	for skill in _get_planted_seeds():
 		match skill.skill_id:
-			PROPOSAL_RARE_EXTRA_DIGEST_HIT:
+			PROPOSAL_RARE_EXTRA_acid_HIT:
 				multiplier *= 1.20
-			PROPOSAL_RARE_RANDOM_EXTRA_DIGEST:
+			PROPOSAL_RARE_RANDOM_EXTRA_Acid:
 				if randi() % 20 == 0:
 					multiplier *= 3.0
-			PROPOSAL_RARE_RANDOM_DOUBLE_DIGEST:
+			PROPOSAL_RARE_RANDOM_DOUBLE_Acid:
 				if randi() % 5 == 0:
 					multiplier *= 2.0
 	return multiplier
@@ -475,7 +475,7 @@ func get_remove_from_stomach_damage_rate(default_rate: float) -> float:
 
 
 # removefrom胃袋消化ダメージ取得
-func get_remove_from_stomach_digest_damage_rate() -> float:
+func get_remove_from_stomach_acid_damage_rate() -> float:
 	# 率値
 	var rate := 0.0
 	for skill in _get_planted_seeds():
@@ -529,11 +529,11 @@ func _get_heal_to_line_damage(amount: int) -> int:
 
 
 # takenattackflat消化補取得
-func _get_taken_attack_flat_digest_bonus(taken_damage: int) -> int:
+func _get_taken_attack_flat_acid_bonus(taken_damage: int) -> int:
 	# 補正
 	var bonus := 0
 	for skill in _get_planted_seeds():
-		if skill.skill_id == PROPOSAL_RARE_ATTACK_DAMAGE_TO_DIGEST:
+		if skill.skill_id == PROPOSAL_RARE_ATTACK_DAMAGE_TO_Acid:
 			bonus += floori(float(taken_damage) * 0.10)
 	return bonus
 

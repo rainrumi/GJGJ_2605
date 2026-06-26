@@ -1,4 +1,4 @@
-class_name AcidDamageTooltip
+class_name AcidDamageViewTooltip
 extends LeftTooltip
 
 

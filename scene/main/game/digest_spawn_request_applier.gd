@@ -1,10 +1,10 @@
-class_name DigestSpawnRequestApplier
+class_name AcidSpawnRequestApplier
 extends RefCounted
 
 
 # 要求適用
 func apply_requests(
-	spawn_requests: Array[DigestSpawnRequest],
+	spawn_requests: Array[AcidSpawnRequest],
 	enemies: Array[Enemy],
 	enemy_setup: GameEnemySetupController
 ) -> void:
@@ -17,7 +17,7 @@ func apply_requests(
 			request.cell,
 			request.hp_rate,
 			request.damage,
-			request.digest_damage_rate,
-			request.global_digest_damage_rate
+			request.acid_damage_rate,
+			request.global_acid_damage_rate
 		):
 			break

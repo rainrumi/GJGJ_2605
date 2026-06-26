@@ -1,8 +1,8 @@
-class_name NightmareDigestController
+class_name NightmareAcidController
 extends RefCounted
 
 const STEP_MINUTES := 30
-const DIGEST_DAMAGE := 300
+const acid_DAMAGE := 300
 const SKILL_3_DAMAGE_REDUCTION_PER_OPEN_FACE := 0.1
 const SKILL_7_HP_STEP_RATE := 0.2
 const SKILL_7_MIN_HP_RATE := 0.2
@@ -16,14 +16,14 @@ const NIGHTMARE_SKILL_OPEN_CELL_ATTACK := 1
 const NIGHTMARE_SKILL_DAMAGE_SHARE := 2
 const NIGHTMARE_SKILL_OPEN_CELL_DEFENSE := 3
 const NIGHTMARE_SKILL_BOTTOM_ATTACK := 4
-const NIGHTMARE_SKILL_LATE_DIGEST_WEAKEN := 5
+const NIGHTMARE_SKILL_LATE_acid_WEAKEN := 5
 const NIGHTMARE_SKILL_TIME_DELAY := 6
 const NIGHTMARE_SKILL_RANDOM_HP := 7
 const NIGHTMARE_SKILL_SPAWN_BLOCKS := 8
 const NIGHTMARE_SKILL_CHAIN_GROWTH := 9
 const NIGHTMARE_SKILL_ODD_ORDER_DAMAGE := 10
 const NIGHTMARE_SKILL_EVEN_ORDER_REVIVE := 11
-const NIGHTMARE_SKILL_SINGLE_DIGEST_SPAWN := 12
+const NIGHTMARE_SKILL_SINGLE_acid_SPAWN := 12
 const STRENGTH_ERAMIA_DAMAGE_TO_ATTACK := 20021
 const STRENGTH_ERAMIA_COUNT_BUFF := 20022
 const STRENGTH_ERAMIA_BIG_HIT_GUARD := 20023
@@ -57,11 +57,11 @@ const STRENGTH_IRIYU_DAMAGE_TO_ATTACK := 20113
 const THREE_OCLOCK_MINUTES := 27 * 60
 
 var seed_effects := DreamSeedEffectCalculator.new()
-var seed_block_resolver := DreamSeedBlockDigestResolver.new()
-var digest_order := 0
-# Side effects that can later move into DigestSideEffects / DigestTurnResult.
+var seed_block_resolver := DreamSeedBlockAcidResolver.new()
+var acid_order := 0
+# Side effects that can later move into AcidSideEffects / AcidTurnResult.
 var _pending_player_damage_values: Array[int] = []
-var _pending_spawn_requests: Array[DigestSpawnRequest] = []
+var _pending_spawn_requests: Array[AcidSpawnRequest] = []
 var _pending_extra_elapsed_minutes := 0
 var _pending_time_override_minutes := -1
 var _skill_7_base_hp: Dictionary = {}
@@ -76,7 +76,7 @@ var _strength_hp_modifiers: Dictionary = {}
 
 # setup処理
 func setup(flowers: Array) -> void:
-	digest_order = 0
+	acid_order = 0
 	_pending_player_damage_values.clear()
 	_pending_spawn_requests.clear()
 	_pending_extra_elapsed_minutes = 0
@@ -98,8 +98,8 @@ func set_seed_effect_flowers(flowers: Array) -> void:
 
 
 # 消化order初期化
-func reset_digest_order() -> void:
-	digest_order = 0
+func reset_acid_order() -> void:
+	acid_order = 0
 	_skill_7_base_hp.clear()
 	_skill_7_hp_rate.clear()
 	_strength_turn_counts.clear()
@@ -111,14 +111,14 @@ func reset_digest_order() -> void:
 
 
 # 消化ダメージbreakdown取得
-func get_digest_damage_breakdown(
+func get_acid_damage_breakdown(
 	enemies: Array[Enemy],
 	minutes: int,
 	consume_pending_bonus: bool = false
 ) -> Dictionary:
-	return seed_effects.get_digest_damage_breakdown(
-		DIGEST_DAMAGE,
-		_get_nightmare_digest_damage_rate(enemies, minutes) + _get_seed_block_digest_damage_rate(enemies, minutes),
+	return seed_effects.get_acid_damage_breakdown(
+		acid_DAMAGE,
+		_get_nightmare_acid_damage_rate(enemies, minutes) + _get_seed_block_acid_damage_rate(enemies, minutes),
 		minutes,
 		consume_pending_bonus
 	)
@@ -155,7 +155,7 @@ func get_step_minutes_breakdown(enemies: Array[Enemy], consume_pending_bonus := 
 # turnstarteffects適用
 func apply_turn_start_effects(enemies: Array[Enemy], stomach: StomachBoard, minutes: int) -> void:
 	for enemy in enemies:
-		if enemy.is_digested():
+		if enemy.is_Acided():
 			continue
 		if enemy.can_take_stomach_turn():
 			enemy.stomach_elapsed_minutes += STEP_MINUTES
@@ -165,40 +165,40 @@ func apply_turn_start_effects(enemies: Array[Enemy], stomach: StomachBoard, minu
 
 
 # 消化悪夢処理
-func digest_nightmares(
+func acid_nightmares(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
 	minutes: int,
 	elapsed_minutes: int = STEP_MINUTES
 ) -> Array[Enemy]:
 	# 消化済み敵
-	var digested_enemies: Array[Enemy] = []
+	var Acided_enemies: Array[Enemy] = []
 	# sharedダメージ
 	var shared_damage: Dictionary = {}
 	# ダメージdisplayvalues
 	var damage_display_values: Dictionary = {}
 	# received消化ダメージ
-	var received_digest_damage: Dictionary = {}
+	var received_acid_damage: Dictionary = {}
 	# 最大received消化ダメージ
-	var max_received_digest_damage: Dictionary = {}
+	var max_received_acid_damage: Dictionary = {}
 	# turnstartHP
 	var turn_start_hp := _get_turn_start_hp(enemies)
 	# 消化ダメージperセル
-	var digest_damage_per_cell := int(get_digest_damage_breakdown(enemies, minutes, true)["total"])
+	var acid_damage_per_cell := int(get_acid_damage_breakdown(enemies, minutes, true)["total"])
 	for enemy in enemies:
-		_digest_enemy(enemy, enemies, stomach, minutes, elapsed_minutes, digest_damage_per_cell, shared_damage, damage_display_values, received_digest_damage, max_received_digest_damage)
-	_apply_shared_damage(shared_damage, enemies, stomach, minutes, elapsed_minutes, damage_display_values, received_digest_damage, max_received_digest_damage)
+		_acid_enemy(enemy, enemies, stomach, minutes, elapsed_minutes, acid_damage_per_cell, shared_damage, damage_display_values, received_acid_damage, max_received_acid_damage)
+	_apply_shared_damage(shared_damage, enemies, stomach, minutes, elapsed_minutes, damage_display_values, received_acid_damage, max_received_acid_damage)
 	# forced消化済み
-	var forced_digested := _apply_strength_after_damage_reactions(enemies, received_digest_damage)
-	_apply_enemy_damage_values(damage_display_values, digested_enemies)
-	for enemy in forced_digested:
-		if not digested_enemies.has(enemy):
-			digested_enemies.append(enemy)
-	return _resolve_digested_enemy_effects(enemies, stomach, minutes, digested_enemies, received_digest_damage, max_received_digest_damage, turn_start_hp)
+	var forced_Acided := _apply_strength_after_damage_reactions(enemies, received_acid_damage)
+	_apply_enemy_damage_values(damage_display_values, Acided_enemies)
+	for enemy in forced_Acided:
+		if not Acided_enemies.has(enemy):
+			Acided_enemies.append(enemy)
+	return _resolve_Acided_enemy_effects(enemies, stomach, minutes, Acided_enemies, received_acid_damage, max_received_acid_damage, turn_start_hp)
 
 
 # 消化ダメージvalues適用
-func apply_digest_damage_values(enemies: Array[Enemy], stomach: StomachBoard, minutes: int) -> Array[int]:
+func apply_acid_damage_values(enemies: Array[Enemy], stomach: StomachBoard, minutes: int) -> Array[int]:
 	# rawダメージvalues
 	var raw_damage_values: Array[int] = []
 	# 合計ダメージ
@@ -215,7 +215,7 @@ func apply_digest_damage_values(enemies: Array[Enemy], stomach: StomachBoard, mi
 				raw_damage_values.append_array(attack_values)
 				total_damage += _sum_damage_values(attack_values)
 	# finalダメージ
-	var final_damage := seed_effects.apply_player_damage(total_damage, DIGEST_DAMAGE)
+	var final_damage := seed_effects.apply_player_damage(total_damage, acid_DAMAGE)
 	# ダメージvalues
 	var damage_values := _split_damage_values(raw_damage_values, final_damage)
 	damage_values.append_array(consume_pending_player_damage_values())
@@ -225,7 +225,7 @@ func apply_digest_damage_values(enemies: Array[Enemy], stomach: StomachBoard, mi
 # 敵状態display更新
 func refresh_enemy_status_display(enemies: Array[Enemy], stomach: StomachBoard, minutes := 0) -> void:
 	for enemy in enemies:
-		if enemy == null or enemy.is_digested():
+		if enemy == null or enemy.is_Acided():
 			continue
 		enemy.set_display_damage(_get_enemy_attack_damage(enemy, enemies, stomach, minutes))
 
@@ -256,7 +256,7 @@ func unlock_deferred_nuisance_gravity(enemies: Array[Enemy]) -> void:
 # active悪夢effect判定
 func has_active_nightmare_effect(enemies: Array[Enemy], skill_id: int) -> bool:
 	for enemy in enemies:
-		if _has_nightmare_effect(enemy, skill_id) and not enemy.is_digested():
+		if _has_nightmare_effect(enemy, skill_id) and not enemy.is_Acided():
 			return true
 	return false
 
@@ -268,12 +268,12 @@ func get_seed_id_text() -> String:
 
 # directplayerダメージ適用
 func apply_direct_player_damage(amount: int) -> int:
-	return seed_effects.apply_player_damage(amount, DIGEST_DAMAGE)
+	return seed_effects.apply_player_damage(amount, acid_DAMAGE)
 
 
 # 消化済み種effect追加
-func add_digested_seed_effect(seed: SeedInfo) -> bool:
-	return seed_effects.add_digested_seed_effect(seed)
+func add_Acided_seed_effect(seed: SeedInfo) -> bool:
+	return seed_effects.add_Acided_seed_effect(seed)
 
 
 # 日数設定
@@ -312,18 +312,18 @@ func get_hour_hp_recovery_rate(current_minutes: int) -> float:
 
 
 # 消化ダメージ回復量消費
-func consume_digest_damage_heal_amount() -> int:
-	return seed_effects.consume_digest_damage_heal_amount()
+func consume_acid_damage_heal_amount() -> int:
+	return seed_effects.consume_acid_damage_heal_amount()
 
 
 # 消化済み悪夢回復率取得
-func get_digested_nightmare_heal_rate() -> float:
-	return seed_effects.get_digested_nightmare_heal_rate()
+func get_Acided_nightmare_heal_rate() -> float:
+	return seed_effects.get_Acided_nightmare_heal_rate()
 
 
 # 消化済み悪夢最大HP率取得
-func get_digested_nightmare_max_hp_rate() -> float:
-	return seed_effects.get_digested_nightmare_max_hp_rate()
+func get_Acided_nightmare_max_hp_rate() -> float:
+	return seed_effects.get_Acided_nightmare_max_hp_rate()
 
 
 # 敵attack倍率取得
@@ -342,8 +342,8 @@ func get_remove_from_stomach_damage_rate(default_rate: float) -> float:
 
 
 # removefrom胃袋消化ダメージ取得
-func get_remove_from_stomach_digest_damage_rate() -> float:
-	return seed_effects.get_remove_from_stomach_digest_damage_rate()
+func get_remove_from_stomach_acid_damage_rate() -> float:
+	return seed_effects.get_remove_from_stomach_acid_damage_rate()
 
 
 # removefrom胃袋disabl判定
@@ -352,10 +352,10 @@ func is_remove_from_stomach_disabled() -> bool:
 
 
 # buildturn結果処理
-func build_turn_result(digested_enemies: Array[Enemy]) -> DigestTurnResult:
+func build_turn_result(Acided_enemies: Array[Enemy]) -> AcidTurnResult:
 	# 結果
-	var result := DigestTurnResult.new()
-	result.digested_enemies = digested_enemies
+	var result := AcidTurnResult.new()
+	result.Acided_enemies = Acided_enemies
 	result.spawn_requests = consume_spawn_requests()
 	result.extra_elapsed_minutes = _pending_extra_elapsed_minutes
 	result.time_override_minutes = _pending_time_override_minutes
@@ -374,26 +374,26 @@ func consume_pending_player_damage_values() -> Array[int]:
 
 
 # 生成要求消費
-func consume_spawn_requests() -> Array[DigestSpawnRequest]:
+func consume_spawn_requests() -> Array[AcidSpawnRequest]:
 	# 要求
-	var requests: Array[DigestSpawnRequest] = []
+	var requests: Array[AcidSpawnRequest] = []
 	requests.append_array(_pending_spawn_requests)
 	_pending_spawn_requests.clear()
 	return requests
 
 
 # 消化敵処理
-func _digest_enemy(
+func _acid_enemy(
 	enemy: Enemy,
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
 	minutes: int,
 	elapsed_minutes: int,
-	digest_damage_per_cell: int,
+	acid_damage_per_cell: int,
 	shared_damage: Dictionary,
 	damage_display_values: Dictionary,
-	received_digest_damage: Dictionary,
-	max_received_digest_damage: Dictionary
+	received_acid_damage: Dictionary,
+	max_received_acid_damage: Dictionary
 ) -> void:
 	if not enemy.can_take_stomach_turn():
 		return
@@ -404,13 +404,13 @@ func _digest_enemy(
 	if bottom_cell_count == 0:
 		return
 	# ダメージ
-	var damage := _get_final_digest_damage(enemy, enemies, stomach, minutes, digest_damage_per_cell * bottom_cell_count)
-	received_digest_damage[enemy] = received_digest_damage.get(enemy, 0) + damage
-	seed_effects.add_digest_damage_total(damage)
-	_record_max_digest_damage(max_received_digest_damage, enemy, damage)
+	var damage := _get_final_acid_damage(enemy, enemies, stomach, minutes, acid_damage_per_cell * bottom_cell_count)
+	received_acid_damage[enemy] = received_acid_damage.get(enemy, 0) + damage
+	seed_effects.add_acid_damage_total(damage)
+	_record_max_acid_damage(max_received_acid_damage, enemy, damage)
 	_apply_strength_damage_received_effects(enemy, enemies, damage, minutes, elapsed_minutes, stomach)
 	_append_damage_value(damage_display_values, enemy, damage)
-	_apply_digest_damage_share(enemy, enemies, damage, shared_damage)
+	_apply_acid_damage_share(enemy, enemies, damage, shared_damage)
 
 
 # sharedダメージ適用
@@ -421,56 +421,56 @@ func _apply_shared_damage(
 	minutes: int,
 	elapsed_minutes: int,
 	damage_display_values: Dictionary,
-	received_digest_damage: Dictionary,
-	max_received_digest_damage: Dictionary
+	received_acid_damage: Dictionary,
+	max_received_acid_damage: Dictionary
 ) -> void:
 	for target in shared_damage.keys():
 		# 対象敵
 		var target_enemy := target as Enemy
-		if target_enemy == null or target_enemy.is_digested():
+		if target_enemy == null or target_enemy.is_Acided():
 			continue
 		# ダメージvalues
 		var damage_values: Array = shared_damage[target]
 		# 合計ダメージ
 		var total_damage := _sum_damage_values(damage_values)
-		total_damage = _get_final_digest_damage(target_enemy, enemies, stomach, minutes, total_damage)
-		received_digest_damage[target_enemy] = received_digest_damage.get(target_enemy, 0) + total_damage
-		seed_effects.add_digest_damage_total(total_damage)
-		_record_max_digest_damage(max_received_digest_damage, target_enemy, total_damage)
+		total_damage = _get_final_acid_damage(target_enemy, enemies, stomach, minutes, total_damage)
+		received_acid_damage[target_enemy] = received_acid_damage.get(target_enemy, 0) + total_damage
+		seed_effects.add_acid_damage_total(total_damage)
+		_record_max_acid_damage(max_received_acid_damage, target_enemy, total_damage)
 		_apply_strength_damage_received_effects(target_enemy, enemies, total_damage, minutes, elapsed_minutes, stomach)
 		_append_damage_value(damage_display_values, target_enemy, total_damage)
 
 
 # resolve消化済み敵effect処理
-func _resolve_digested_enemy_effects(
+func _resolve_Acided_enemy_effects(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
 	minutes: int,
-	digested_enemies: Array[Enemy],
-	received_digest_damage: Dictionary,
-	max_received_digest_damage: Dictionary,
+	Acided_enemies: Array[Enemy],
+	received_acid_damage: Dictionary,
+	max_received_acid_damage: Dictionary,
 	turn_start_hp: Dictionary
 ) -> Array[Enemy]:
 	# final消化済み
-	var final_digested: Array[Enemy] = []
-	_sort_digested_enemies(enemies, digested_enemies, received_digest_damage, turn_start_hp)
-	for enemy in digested_enemies:
+	var final_Acided: Array[Enemy] = []
+	_sort_Acided_enemies(enemies, Acided_enemies, received_acid_damage, turn_start_hp)
+	for enemy in Acided_enemies:
 		# order
 		var current_order := -1
-		if enemy.should_count_for_digest_order():
-			digest_order += 1
-			current_order = digest_order
-		if _has_nightmare_effect(enemy, STRENGTH_RIRAN_SINGLE_REVIVE) and _get_digested_nightmares(digested_enemies).size() == 1:
+		if enemy.should_count_for_acid_order():
+			acid_order += 1
+			current_order = acid_order
+		if _has_nightmare_effect(enemy, STRENGTH_RIRAN_SINGLE_REVIVE) and _get_Acided_nightmares(Acided_enemies).size() == 1:
 			# riran率
 			var riran_rate := STRENGTH_RIRAN_REVIVE_START_RATE - float(enemy.get_revive_count()) * SKILL_11_REVIVE_DECAY_RATE
 			if riran_rate <= 0.0:
-				final_digested.append(enemy)
+				final_Acided.append(enemy)
 				continue
 			enemy.revive_with_hp_rate(riran_rate)
 			continue
 		if current_order >= 0 and _has_nightmare_effect(enemy, NIGHTMARE_SKILL_ODD_ORDER_DAMAGE) and current_order % 2 == 1:
 			# ダメージ
-			var damage := seed_effects.apply_player_damage(enemy.get_damage() * 3, DIGEST_DAMAGE)
+			var damage := seed_effects.apply_player_damage(enemy.get_damage() * 3, acid_DAMAGE)
 			if damage > 0:
 				_pending_player_damage_values.append(damage)
 		if current_order >= 0 and _has_nightmare_effect(enemy, NIGHTMARE_SKILL_EVEN_ORDER_REVIVE) and current_order % 2 == 0:
@@ -481,35 +481,35 @@ func _resolve_digested_enemy_effects(
 			)
 			enemy.revive_with_hp_rate(revive_rate)
 			continue
-		seed_block_resolver.append_digested_by_seed_block_effects(
+		seed_block_resolver.append_Acided_by_seed_block_effects(
 			enemy,
 			enemies,
 			stomach,
 			minutes,
-			received_digest_damage,
-			digested_enemies
+			received_acid_damage,
+			Acided_enemies
 		)
-		_apply_strength_digested_effect(enemy, enemies, received_digest_damage, max_received_digest_damage)
-		final_digested.append(enemy)
+		_apply_strength_Acided_effect(enemy, enemies, received_acid_damage, max_received_acid_damage)
+		final_Acided.append(enemy)
 	# 消化済み悪夢
-	var digested_nightmares := _get_digested_nightmares(final_digested)
-	_apply_chain_reactions(enemies, digested_nightmares)
-	_apply_spawn_reactions(final_digested, digested_nightmares)
-	return final_digested
+	var Acided_nightmares := _get_Acided_nightmares(final_Acided)
+	_apply_chain_reactions(enemies, Acided_nightmares)
+	_apply_spawn_reactions(final_Acided, Acided_nightmares)
+	return final_Acided
 
 
 # sort消化済み敵処理
-func _sort_digested_enemies(
+func _sort_Acided_enemies(
 	enemies: Array[Enemy],
-	digested_enemies: Array[Enemy],
-	received_digest_damage: Dictionary,
+	Acided_enemies: Array[Enemy],
+	received_acid_damage: Dictionary,
 	turn_start_hp: Dictionary
 ) -> void:
-	digested_enemies.sort_custom(func(a: Enemy, b: Enemy) -> bool:
+	Acided_enemies.sort_custom(func(a: Enemy, b: Enemy) -> bool:
 		# asurplus
-		var a_surplus := int(received_digest_damage.get(a, 0)) - int(turn_start_hp.get(a, 0))
+		var a_surplus := int(received_acid_damage.get(a, 0)) - int(turn_start_hp.get(a, 0))
 		# bsurplus
-		var b_surplus := int(received_digest_damage.get(b, 0)) - int(turn_start_hp.get(b, 0))
+		var b_surplus := int(received_acid_damage.get(b, 0)) - int(turn_start_hp.get(b, 0))
 		if a_surplus == b_surplus:
 			return enemies.find(a) < enemies.find(b)
 		return a_surplus > b_surplus
@@ -517,19 +517,19 @@ func _sort_digested_enemies(
 
 
 # chainreactions適用
-func _apply_chain_reactions(enemies: Array[Enemy], digested_enemies: Array[Enemy]) -> void:
+func _apply_chain_reactions(enemies: Array[Enemy], Acided_enemies: Array[Enemy]) -> void:
 	for watcher in enemies:
-		if not _has_nightmare_effect(watcher, NIGHTMARE_SKILL_CHAIN_GROWTH) or watcher.is_digested():
-			if not _has_nightmare_effect(watcher, STRENGTH_COROTTA_CHAIN_BUFF) or watcher.is_digested():
+		if not _has_nightmare_effect(watcher, NIGHTMARE_SKILL_CHAIN_GROWTH) or watcher.is_Acided():
+			if not _has_nightmare_effect(watcher, STRENGTH_COROTTA_CHAIN_BUFF) or watcher.is_Acided():
 				continue
-			for digested_enemy in digested_enemies:
-				if watcher == digested_enemy:
+			for Acided_enemy in Acided_enemies:
+				if watcher == Acided_enemy:
 					continue
 				watcher.add_max_hp(watcher.get_max_hp())
 				watcher.add_damage(watcher.get_base_damage())
 			continue
-		for digested_enemy in digested_enemies:
-			if watcher == digested_enemy:
+		for Acided_enemy in Acided_enemies:
+			if watcher == Acided_enemy:
 				continue
 			watcher.change_max_hp(roundi(float(watcher.get_max_hp()) * 0.9))
 			watcher.add_damage(roundi(float(watcher.get_base_damage()) * 0.5))
@@ -537,16 +537,16 @@ func _apply_chain_reactions(enemies: Array[Enemy], digested_enemies: Array[Enemy
 
 # 生成reactions適用
 func _apply_spawn_reactions(
-	digested_enemies: Array[Enemy],
-	digested_nightmares: Array[Enemy]
+	Acided_enemies: Array[Enemy],
+	Acided_nightmares: Array[Enemy]
 ) -> void:
-	for enemy in digested_enemies:
+	for enemy in Acided_enemies:
 		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_SPAWN_BLOCKS):
 			# nuisanceダメージ
 			var nuisance_damage := roundi(float(enemy.get_base_damage()) * 0.5)
 			for cell in enemy.get_occupied_cells(enemy.stomach_cell):
 				_pending_spawn_requests.append(_create_spawn_request(enemy, cell, 0.5, nuisance_damage))
-		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_SINGLE_DIGEST_SPAWN) and digested_nightmares.size() == 1:
+		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_SINGLE_acid_SPAWN) and Acided_nightmares.size() == 1:
 			# 生成cells
 			var spawn_cells := enemy.get_occupied_cells(enemy.stomach_cell)
 			if not spawn_cells.is_empty():
@@ -559,25 +559,25 @@ func _create_spawn_request(
 	cell: Vector2i,
 	hp_rate: float,
 	damage: int,
-	digest_damage_rate: float = 1.0,
-	global_digest_damage_rate: float = 1.0
-) -> DigestSpawnRequest:
+	acid_damage_rate: float = 1.0,
+	global_acid_damage_rate: float = 1.0
+) -> AcidSpawnRequest:
 	# 要求
-	var request := DigestSpawnRequest.new()
+	var request := AcidSpawnRequest.new()
 	request.source_enemy = source_enemy
 	request.cell = cell
 	request.hp_rate = hp_rate
 	request.damage = damage
-	request.digest_damage_rate = digest_damage_rate
-	request.global_digest_damage_rate = global_digest_damage_rate
+	request.acid_damage_rate = acid_damage_rate
+	request.global_acid_damage_rate = global_acid_damage_rate
 	return request
 
 
 # 消化済み悪夢取得
-func _get_digested_nightmares(digested_enemies: Array[Enemy]) -> Array[Enemy]:
+func _get_Acided_nightmares(Acided_enemies: Array[Enemy]) -> Array[Enemy]:
 	# 悪夢
 	var nightmares: Array[Enemy] = []
-	for enemy in digested_enemies:
+	for enemy in Acided_enemies:
 		if enemy != null and enemy.should_trigger_nightmare_reactions():
 			nightmares.append(enemy)
 	return nightmares
@@ -618,7 +618,7 @@ func _get_enemy_attack_damage_values(enemy: Enemy, damage: int) -> Array[int]:
 
 
 # 消化ダメージshare適用
-func _apply_digest_damage_share(
+func _apply_acid_damage_share(
 	enemy: Enemy,
 	enemies: Array[Enemy],
 	damage: int,
@@ -640,11 +640,11 @@ func _apply_digest_damage_share(
 
 
 # final消化ダメージ取得
-func _get_final_digest_damage(enemy: Enemy, enemies: Array[Enemy], stomach: StomachBoard, minutes: int, raw_damage: int) -> int:
+func _get_final_acid_damage(enemy: Enemy, enemies: Array[Enemy], stomach: StomachBoard, minutes: int, raw_damage: int) -> int:
 	# ダメージ率
-	var damage_rate := enemy.digest_damage_taken_multiplier
-	damage_rate *= seed_effects.get_digest_target_multiplier()
-	damage_rate *= seed_block_resolver.get_target_digest_damage_multiplier(enemy, enemies)
+	var damage_rate := enemy.acid_damage_taken_multiplier
+	damage_rate *= seed_effects.get_acid_target_multiplier()
+	damage_rate *= seed_block_resolver.get_target_acid_damage_multiplier(enemy, enemies)
 	if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_OPEN_CELL_DEFENSE):
 		# open隣接cells
 		var open_adjacent_cells := NightmarePlacementQuery.get_open_adjacent_cell_count(enemy, enemies, stomach.columns, stomach.rows)
@@ -680,19 +680,19 @@ func _apply_outside_stomach_hp_variation(enemy: Enemy) -> void:
 
 
 # 敵ダメージvalues適用
-func _apply_enemy_damage_values(damage_display_values: Dictionary, digested_enemies: Array[Enemy]) -> void:
+func _apply_enemy_damage_values(damage_display_values: Dictionary, Acided_enemies: Array[Enemy]) -> void:
 	for target in damage_display_values.keys():
 		# 敵値
 		var enemy := target as Enemy
-		if enemy == null or enemy.is_digested():
+		if enemy == null or enemy.is_Acided():
 			continue
 		# ダメージvalues
 		var damage_values: Array = damage_display_values[target]
 		# 合計ダメージ
 		var total_damage := _sum_damage_values(damage_values)
-		enemy.show_digest_damage_values(damage_values)
-		if enemy.take_digest_damage(total_damage, false) and not digested_enemies.has(enemy):
-			digested_enemies.append(enemy)
+		enemy.show_acid_damage_values(damage_values)
+		if enemy.take_acid_damage(total_damage, false) and not Acided_enemies.has(enemy):
+			Acided_enemies.append(enemy)
 		elif _has_nightmare_effect(enemy, STRENGTH_RIRAN_OVERHEAL):
 			enemy.heal_over_max(maxi(1, ceili(float(enemy.get_max_hp()) * 0.01)))
 		enemy.pulse_damage()
@@ -720,7 +720,7 @@ func _append_damage_value(damage_values_by_enemy: Dictionary, enemy: Enemy, dama
 
 
 # 最大消化ダメージ記録
-func _record_max_digest_damage(max_damage_by_enemy: Dictionary, enemy: Enemy, damage: int) -> void:
+func _record_max_acid_damage(max_damage_by_enemy: Dictionary, enemy: Enemy, damage: int) -> void:
 	if enemy == null or damage <= 0:
 		return
 	max_damage_by_enemy[enemy] = maxi(int(max_damage_by_enemy.get(enemy, 0)), damage)
@@ -771,7 +771,7 @@ func _apply_strength_turn_start_effect(enemy: Enemy, enemies: Array[Enemy], stom
 		_add_line_minutes(enemy, stomach, line_elapsed_minutes)
 		if int(_strength_line_minutes.get(enemy, 0)) >= 60:
 			_strength_line_minutes[enemy] = 0
-			_pending_player_damage_values.append(seed_effects.apply_player_damage(enemy.get_base_damage() * 5, DIGEST_DAMAGE))
+			_pending_player_damage_values.append(seed_effects.apply_player_damage(enemy.get_base_damage() * 5, acid_DAMAGE))
 	if _has_nightmare_effect(enemy, STRENGTH_ELMENA_HIT_COUNT_HEAL) and enemy.stomach_elapsed_minutes > 0 and enemy.stomach_elapsed_minutes % 60 == 0:
 		# hit数
 		var hit_count := int(_strength_hit_counts.get(enemy, 0))
@@ -792,7 +792,7 @@ func _apply_strength_turn_start_effect(enemy: Enemy, enemies: Array[Enemy], stom
 		# 数値
 		var count := _increment_strength_turn_count(enemy)
 		if count % 3 == 0:
-			_pending_player_damage_values.append(seed_effects.apply_player_damage(enemy.get_base_damage() * 5, DIGEST_DAMAGE))
+			_pending_player_damage_values.append(seed_effects.apply_player_damage(enemy.get_base_damage() * 5, acid_DAMAGE))
 	if _has_nightmare_effect(enemy, STRENGTH_COROTTA_TEN_TURNS):
 		# 数値
 		var count := _increment_strength_turn_count(enemy)
@@ -813,7 +813,7 @@ func _apply_strength_attack_timing_effect(enemy: Enemy, minutes: int) -> bool:
 	):
 		_strength_once_keys["%s:elmena_two_oclock" % enemy.get_instance_id()] = true
 		# ダメージ
-		var damage := seed_effects.apply_player_damage(enemy.get_base_damage() * 100, DIGEST_DAMAGE)
+		var damage := seed_effects.apply_player_damage(enemy.get_base_damage() * 100, acid_DAMAGE)
 		if damage > 0:
 			_pending_player_damage_values.append(damage)
 	return false
@@ -846,15 +846,15 @@ func _apply_strength_damage_received_effects(
 
 
 # ダメージreactions適用
-func _apply_strength_after_damage_reactions(enemies: Array[Enemy], received_digest_damage: Dictionary) -> Array[Enemy]:
+func _apply_strength_after_damage_reactions(enemies: Array[Enemy], received_acid_damage: Dictionary) -> Array[Enemy]:
 	# forced消化済み
-	var forced_digested: Array[Enemy] = []
+	var forced_Acided: Array[Enemy] = []
 	for enemy in enemies:
-		if _has_nightmare_effect(enemy, STRENGTH_NERIX_TOP_DAMAGE_ATTACK) and _received_more_damage_than_others(enemy, enemies, received_digest_damage):
+		if _has_nightmare_effect(enemy, STRENGTH_NERIX_TOP_DAMAGE_ATTACK) and _received_more_damage_than_others(enemy, enemies, received_acid_damage):
 			enemy.add_damage(ceili(float(enemy.get_base_damage()) * 0.5))
 		if not _has_nightmare_effect(enemy, STRENGTH_NERIX_ABSORB_ALL):
 			continue
-		if int(received_digest_damage.get(enemy, 0)) <= 0:
+		if int(received_acid_damage.get(enemy, 0)) <= 0:
 			continue
 		# others
 		var others := _get_other_active_nightmares(enemy, enemies)
@@ -863,24 +863,24 @@ func _apply_strength_after_damage_reactions(enemies: Array[Enemy], received_dige
 		for other in others:
 			enemy.add_max_hp(other.get_max_hp() * 2)
 			enemy.add_damage(ceili(float(other.get_base_damage()) * 1.5))
-			other.set_digested(true)
-			forced_digested.append(other)
-	return forced_digested
+			other.set_Acided(true)
+			forced_Acided.append(other)
+	return forced_Acided
 
 
 # strength消化済みeffect適用
-func _apply_strength_digested_effect(
+func _apply_strength_Acided_effect(
 	enemy: Enemy,
 	enemies: Array[Enemy],
-	_received_digest_damage: Dictionary,
-	max_received_digest_damage: Dictionary
+	_received_acid_damage: Dictionary,
+	max_received_acid_damage: Dictionary
 ) -> void:
 	if _has_nightmare_effect(enemy, STRENGTH_GONSAL_LOW_PARASITE):
 		for cell in enemy.get_occupied_cells(enemy.stomach_cell):
 			_pending_spawn_requests.append(_create_spawn_request(enemy, cell, 0.5, 0))
 	if _has_nightmare_effect(enemy, STRENGTH_GONSAL_MID_PARASITE):
 		# ダメージ
-		var damage := maxi(0, int(max_received_digest_damage.get(enemy, 0)))
+		var damage := maxi(0, int(max_received_acid_damage.get(enemy, 0)))
 		for cell in enemy.get_occupied_cells(enemy.stomach_cell):
 			_pending_spawn_requests.append(_create_spawn_request(enemy, cell, 1.0, damage))
 	if _has_nightmare_effect(enemy, STRENGTH_GONSAL_HIGH_PARASITE):
@@ -985,15 +985,15 @@ func _has_lower_attack_than_other_nightmare(enemy: Enemy, enemies: Array[Enemy])
 
 
 # thanothers処理
-func _received_more_damage_than_others(enemy: Enemy, enemies: Array[Enemy], received_digest_damage: Dictionary) -> bool:
+func _received_more_damage_than_others(enemy: Enemy, enemies: Array[Enemy], received_acid_damage: Dictionary) -> bool:
 	# ダメージ
-	var damage := int(received_digest_damage.get(enemy, 0))
+	var damage := int(received_acid_damage.get(enemy, 0))
 	if damage <= 0:
 		return false
 	for other in enemies:
 		if other == enemy or not other.is_active_in_stomach() or not other.is_nightmare():
 			continue
-		if damage <= int(received_digest_damage.get(other, 0)):
+		if damage <= int(received_acid_damage.get(other, 0)):
 			return false
 	return true
 
@@ -1021,10 +1021,10 @@ func _time_text_contains_digit(minutes: int, digit: String) -> bool:
 
 
 # 悪夢消化ダメージ率取得
-func _get_nightmare_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
+func _get_nightmare_acid_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
 	# ダメージ率
-	var damage_rate := _get_global_digest_damage_multiplier(enemies) - 1.0
-	if not has_active_nightmare_effect(enemies, NIGHTMARE_SKILL_LATE_DIGEST_WEAKEN) or minutes < 25 * 60:
+	var damage_rate := _get_global_acid_damage_multiplier(enemies) - 1.0
+	if not has_active_nightmare_effect(enemies, NIGHTMARE_SKILL_LATE_acid_WEAKEN) or minutes < 25 * 60:
 		return damage_rate
 	# passedhours
 	var passed_hours := maxi(0, floori(float(minutes - 25 * 60) / 60.0))
@@ -1032,18 +1032,18 @@ func _get_nightmare_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> f
 
 
 # global消化ダメージ倍率取得
-func _get_global_digest_damage_multiplier(enemies: Array[Enemy]) -> float:
+func _get_global_acid_damage_multiplier(enemies: Array[Enemy]) -> float:
 	# 倍率
 	var multiplier := 1.0
 	for enemy in enemies:
 		if enemy != null and enemy.is_active_in_stomach():
-			multiplier *= enemy.digest_damage_global_multiplier
+			multiplier *= enemy.acid_damage_global_multiplier
 	return multiplier
 
 
 # 種ブロック消化ダメージ率取得
-func _get_seed_block_digest_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
-	return seed_block_resolver.get_digest_damage_rate(enemies, minutes)
+func _get_seed_block_acid_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
+	return seed_block_resolver.get_acid_damage_rate(enemies, minutes)
 
 
 # 悪夢effect判定

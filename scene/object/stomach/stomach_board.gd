@@ -288,13 +288,13 @@ func _update_line_mesh() -> void:
 	# bottom行
 	var bottom_row := rows - 1
 	# 消化列topy
-	var digest_line_top_y := _get_row_top_y(bottom_row)
+	var acid_line_top_y := _get_row_top_y(bottom_row)
 	# 消化列bottomy
-	var digest_line_bottom_y := _get_row_bottom_y(bottom_row)
+	var acid_line_bottom_y := _get_row_bottom_y(bottom_row)
 	# 列位置
-	var line_position := Vector2(frame.position.x, digest_line_top_y)
+	var line_position := Vector2(frame.position.x, acid_line_top_y)
 	# 列サイズ
-	var line_size := Vector2(frame.size.x, digest_line_bottom_y - digest_line_top_y)
+	var line_size := Vector2(frame.size.x, acid_line_bottom_y - acid_line_top_y)
 	line_mesh.set_line_rect(line_position, line_size)
 
 
