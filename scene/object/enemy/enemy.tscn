@@ -4,6 +4,9 @@
 [ext_resource type="Script" uid="uid://ccx2iw1mxklqy" path="res://scene/object/enemy/enemy.gd" id="2_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="3_font"]
 [ext_resource type="PackedScene" uid="uid://cki5epcjxetrf" path="res://scene/object/enemy/tooltip/enemy_tooltip.tscn" id="4_enemy_tooltip_view"]
+[ext_resource type="Script" path="res://scene/object/enemy/enemy_sprite_view.gd" id="5_sprite_view"]
+[ext_resource type="Script" path="res://scene/object/enemy/enemy_hp_text.gd" id="6_hp_text"]
+[ext_resource type="Script" path="res://scene/object/enemy/enemy_damage_text.gd" id="7_damage_text"]
 
 [node name="Enemy" type="Node2D" unique_id=1729494960]
 z_index = 10
@@ -12,6 +15,7 @@ script = ExtResource("2_script")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=713877918]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 texture = ExtResource("1_enemy")
+script = ExtResource("5_sprite_view")
 
 [node name="HPText" type="Label" parent="." unique_id=157147899]
 z_index = 5
@@ -27,6 +31,7 @@ theme_override_font_sizes/font_size = 16
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
+script = ExtResource("6_hp_text")
 
 [node name="Enemy_tooltip" parent="." unique_id=886606580 instance=ExtResource("4_enemy_tooltip_view")]
 
@@ -44,3 +49,4 @@ theme_override_font_sizes/font_size = 14
 text = "攻 0"
 horizontal_alignment = 1
 vertical_alignment = 1
+script = ExtResource("7_damage_text")

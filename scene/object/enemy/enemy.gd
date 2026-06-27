@@ -1,19 +1,16 @@
 class_name Enemy
 extends Node2D
-const HOVER_SCALE := 1.1
-const HOVER_TWEEN_DURATION := 0.1
-const COST_PULSE_SCALE := 1.1
-const COST_PULSE_DURATION := 0.2
-const DAMAGE_PULSE_SCALE := 1.12
-const DAMAGE_PULSE_DURATION := 0.18
-const AcidED_SCALE := 1.2
-const AcidED_TWEEN_DURATION := 0.5
+const AcidED_TWEEN_DURATION := EnemySpriteView.ACIDED_TWEEN_DURATION
 const DEFAULT_STATUS_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
 const MAIN_EFFECT_STATUS_COLOR := Color(0.78, 0.18, 0.08, 1.0)
 const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_1000.png")
-@onready var sprite: Sprite2D = $Sprite2D
-@onready var hp_label: Label = $HPText
-@onready var damage_label: Label = $DamageText
+# 画像表示
+@onready var sprite: EnemySpriteView = $Sprite2D
+# HP表示
+@onready var hp_label: EnemyHpText = $HPText
+# 攻撃表示
+@onready var damage_label: EnemyDamageText = $DamageText
+# 詳細表示
 @onready var tooltip: EnemyTooltip = $Enemy_tooltip
 var definition: EnemyDefinition
 var skill_info: NightmareInfo
@@ -36,12 +33,6 @@ var gravity_locked := false
 var activation_deferred := false
 var stomach_cell := Vector2i.ZERO
 var origin_position := Vector2.ZERO
-var _base_scale := Vector2.ONE
-var _hover_tween: Tween
-var _cost_pulse_tween: Tween
-var _damage_pulse_tween: Tween
-var _Acided_tween: Tween
-var _hovered := false
 var _stomach_size_override := Vector2i.ZERO
 var _stomach_shape_override: Array[Vector2i] = []
 var _size_override := 0
@@ -71,10 +62,7 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 		origin_position = start_position_override
 	position = origin_position
 	if sprite != null:
-		sprite.texture = _get_texture()
-		if sprite.texture != null:
-			sprite.scale = target_size / sprite.texture.get_size()
-			_base_scale = sprite.scale
+		sprite.setup_texture(_get_texture(), target_size)
 	reset_for_battle()
 # for戦闘初期化
 func reset_for_battle() -> void:
@@ -247,10 +235,7 @@ func set_texture_override(texture: Texture2D, target_size: Vector2) -> void:
 	_texture_override = texture
 	if sprite == null or _texture_override == null:
 		return
-	sprite.texture = _texture_override
-	if sprite.texture != null:
-		sprite.scale = target_size / sprite.texture.get_size()
-		_base_scale = sprite.scale
+	sprite.setup_texture(_texture_override, target_size)
 	_reset_visuals()
 # setupasoneセル胃袋ブロック処理
 func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
@@ -292,10 +277,9 @@ func setup_as_seed_stomach_block(seed: SeedInfo, target_size: Vector2) -> void:
 
 # 胃袋displayサイズ更新
 func update_stomach_display_size(target_size: Vector2) -> void:
-	if sprite == null or sprite.texture == null:
+	if sprite == null:
 		return
-	sprite.scale = target_size / sprite.texture.get_size()
-	_base_scale = sprite.scale
+	sprite.update_display_size(target_size)
 # applygravity判定
 func can_apply_gravity() -> bool:
 	return not gravity_locked
@@ -315,19 +299,9 @@ func return_to_origin() -> void:
 	position = origin_position
 # hovered設定
 func set_hovered(value: bool) -> void:
-	if _hovered == value or sprite == null:
+	if sprite == null:
 		return
-	_hovered = value
-	if _hover_tween != null and _hover_tween.is_valid():
-		_hover_tween.kill()
-	# 対象scale
-	var target_scale := _base_scale
-	if _hovered:
-		target_scale *= HOVER_SCALE
-	_hover_tween = create_tween()
-	_hover_tween.set_trans(Tween.TRANS_QUAD)
-	_hover_tween.set_ease(Tween.EASE_OUT)
-	_hover_tween.tween_property(sprite, "scale", target_scale, HOVER_TWEEN_DURATION)
+	sprite.set_hovered(value)
 
 
 # ツール表示
@@ -342,25 +316,12 @@ func hide_tooltip() -> void:
 func pulse_cost_label() -> void:
 	if hp_label == null:
 		return
-	if _cost_pulse_tween != null and _cost_pulse_tween.is_valid():
-		_cost_pulse_tween.kill()
-	hp_label.scale = Vector2.ONE
-	_cost_pulse_tween = create_tween()
-	_cost_pulse_tween.set_trans(Tween.TRANS_ELASTIC)
-	_cost_pulse_tween.set_ease(Tween.EASE_OUT)
-	_cost_pulse_tween.tween_property(hp_label, "scale", Vector2.ONE * COST_PULSE_SCALE, COST_PULSE_DURATION * 0.5)
-	_cost_pulse_tween.tween_property(hp_label, "scale", Vector2.ONE, COST_PULSE_DURATION * 0.5)
+	hp_label.pulse_cost_label()
 # pulseダメージ処理
 func pulse_damage() -> void:
 	if sprite == null:
 		return
-	if _damage_pulse_tween != null and _damage_pulse_tween.is_valid():
-		_damage_pulse_tween.kill()
-	_damage_pulse_tween = create_tween()
-	_damage_pulse_tween.set_trans(Tween.TRANS_QUAD)
-	_damage_pulse_tween.set_ease(Tween.EASE_OUT)
-	_damage_pulse_tween.tween_property(sprite, "scale", _base_scale * DAMAGE_PULSE_SCALE, DAMAGE_PULSE_DURATION * 0.5)
-	_damage_pulse_tween.tween_property(sprite, "scale", _base_scale, DAMAGE_PULSE_DURATION * 0.5)
+	sprite.pulse_damage()
 # take消化ダメージ処理
 func take_acid_damage(amount: int, show_popup := true) -> bool:
 	if show_popup:
@@ -425,49 +386,25 @@ func _get_nearest_shape_cell(target_cell: Vector2i) -> Vector2i:
 	return nearest_cell
 # 消化済みトゥイーン再生
 func _play_Acided_tween() -> void:
-	if _Acided_tween != null and _Acided_tween.is_valid():
-		_Acided_tween.kill()
-	if _hover_tween != null and _hover_tween.is_valid():
-		_hover_tween.kill()
-	_hovered = false
-	visible = true
-	scale = Vector2.ONE
-	modulate.a = 1.0
-	_Acided_tween = create_tween()
-	_Acided_tween.set_parallel(true)
-	_Acided_tween.set_trans(Tween.TRANS_QUART)
-	_Acided_tween.set_ease(Tween.EASE_OUT)
-	_Acided_tween.tween_property(self, "scale", Vector2.ONE * AcidED_SCALE, AcidED_TWEEN_DURATION)
-	_Acided_tween.tween_property(self, "modulate:a", 0.0, AcidED_TWEEN_DURATION)
-	_Acided_tween.chain().tween_callback(func() -> void: visible = false)
+	if sprite != null:
+		sprite.play_Acided_tween(self)
 # visuals初期化
 func _reset_visuals() -> void:
-	if _hover_tween != null and _hover_tween.is_valid():
-		_hover_tween.kill()
-	if _cost_pulse_tween != null and _cost_pulse_tween.is_valid():
-		_cost_pulse_tween.kill()
-	if _damage_pulse_tween != null and _damage_pulse_tween.is_valid():
-		_damage_pulse_tween.kill()
-	if _Acided_tween != null and _Acided_tween.is_valid():
-		_Acided_tween.kill()
-	_hovered = false
-	scale = Vector2.ONE
-	modulate.a = 1.0
 	if sprite != null:
-		sprite.scale = _base_scale
+		sprite.reset_visuals(self)
 	if hp_label != null:
-		hp_label.scale = Vector2.ONE
+		hp_label.reset_visuals()
 	if damage_label != null:
-		damage_label.scale = Vector2.ONE
+		damage_label.reset_visuals()
 # HPラベル更新
 func _update_hp_label() -> void:
 	if hp_label != null:
-		hp_label.text = str(current_hp)
+		hp_label.show_hp(current_hp)
 # displayダメージ設定
 func set_display_damage(value: int) -> void: display_damage_override = maxi(0, value); _update_damage_label()
 # ダメージラベル更新
 func _update_damage_label() -> void:
-	if damage_label != null: damage_label.text = "攻 %d" % get_display_damage()
+	if damage_label != null: damage_label.show_damage(get_display_damage())
 # 画像取得
 func _get_texture() -> Texture2D:
 	if _texture_override != null:
@@ -524,8 +461,8 @@ func revive_with_half_hp() -> void:
 	revive_with_hp_rate(0.5)
 # revivewithHP率処理
 func revive_with_hp_rate(hp_rate: float) -> void:
-	if _Acided_tween != null and _Acided_tween.is_valid():
-		_Acided_tween.kill()
+	if sprite != null:
+		sprite.stop_Acided_tween()
 	revive_count += 1
 	change_max_hp(ceili(float(max_hp) * hp_rate))
 	current_hp = max_hp
@@ -541,6 +478,6 @@ func _update_status_label_colors() -> void:
 	# 状態color
 	var status_color := MAIN_EFFECT_STATUS_COLOR if has_main_effect else DEFAULT_STATUS_COLOR
 	if hp_label != null:
-		hp_label.add_theme_color_override("font_color", status_color)
+		hp_label.set_status_color(status_color)
 	if damage_label != null:
-		damage_label.add_theme_color_override("font_color", status_color)
+		damage_label.set_status_color(status_color)
