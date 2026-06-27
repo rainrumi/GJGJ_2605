@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://ch5ohl873x4x4" path="res://art/enemy/tex_enemy_1000_No_100.png" id="1_enemy"]
 [ext_resource type="Script" uid="uid://ccx2iw1mxklqy" path="res://scene/object/enemy/enemy.gd" id="2_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="3_font"]
-[ext_resource type="PackedScene" uid="uid://cki5epcjxetrf" path="res://scene/object/enemy/enemy_tooltip.tscn" id="4_enemy_tooltip_view"]
+[ext_resource type="PackedScene" uid="uid://cki5epcjxetrf" path="res://scene/object/enemy/tooltip/enemy_tooltip.tscn" id="4_enemy_tooltip_view"]
 
 [node name="Enemy" type="Node2D" unique_id=1729494960]
 z_index = 10

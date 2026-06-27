@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cki5epcjxetrf"]
 
 [ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left/left_tooltip.tscn" id="1_1ow1s"]
-[ext_resource type="Script" uid="uid://cadvjfvgq6ltr" path="res://scene/object/enemy/enemy_tooltip.gd" id="2_bsw6y"]
+[ext_resource type="Script" uid="uid://cadvjfvgq6ltr" path="res://scene/object/enemy/tooltip/enemy_tooltip.gd" id="2_bsw6y"]
 
 [node name="Enemy_tooltip" unique_id=1214918502 instance=ExtResource("1_1ow1s")]
 z_index = 50
