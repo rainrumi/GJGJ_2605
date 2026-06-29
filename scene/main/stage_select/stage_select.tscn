@@ -42,6 +42,11 @@
 [ext_resource type="Script" uid="uid://bkictreay8s85" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_panel.gd" id="39_debug_seed_pool_panel"]
 [ext_resource type="Script" uid="uid://d0tgljokt842x" path="res://scene/main/stage_select/debug/stage_select_debug_button.gd" id="40_debug_button"]
 [ext_resource type="Script" uid="uid://bv0erjxernnad" path="res://scene/main/stage_select/map/marker/stage_select_location_marker.gd" id="42_location_marker"]
+[ext_resource type="Script" uid="uid://ccm1s2fn83nry" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_margin.gd" id="43_debug_seed_pool_margin"]
+[ext_resource type="Script" uid="uid://cw56t27dpnhv0" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_items.gd" id="44_debug_seed_pool_items"]
+[ext_resource type="Script" uid="uid://dug83pdl1h0si" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_title_label.gd" id="45_debug_seed_pool_title_label"]
+[ext_resource type="Script" uid="uid://bqorv7jk0nlas" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_scroll.gd" id="46_debug_seed_pool_scroll"]
+[ext_resource type="Script" uid="uid://db60itn8qj4ap" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_text.gd" id="47_debug_seed_pool_text"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_debug_seed_pool"]
 bg_color = Color(0, 0, 0, 0.78)
@@ -180,10 +185,12 @@ theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
+script = ExtResource("43_debug_seed_pool_margin")
 
 [node name="Items" type="VBoxContainer" parent="UI/DebugSeedPoolPanel/Margin" unique_id=1355754087]
 layout_mode = 2
 theme_override_constants/separation = 2
+script = ExtResource("44_debug_seed_pool_items")
 
 [node name="TitleLabel" type="Label" parent="UI/DebugSeedPoolPanel/Margin/Items" unique_id=1600233487]
 layout_mode = 2
@@ -194,12 +201,14 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 10
 text = "Seed Pool"
 text_overrun_behavior = 3
+script = ExtResource("45_debug_seed_pool_title_label")
 
 [node name="DebugSeedScroll" type="ScrollContainer" parent="UI/DebugSeedPoolPanel/Margin/Items" unique_id=232839403]
 custom_minimum_size = Vector2(440, 318)
 layout_mode = 2
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
+script = ExtResource("46_debug_seed_pool_scroll")
 
 [node name="SeedPoolText" type="RichTextLabel" parent="UI/DebugSeedPoolPanel/Margin/Items/DebugSeedScroll" unique_id=128661934]
 custom_minimum_size = Vector2(440, 0)
@@ -214,6 +223,7 @@ bbcode_enabled = true
 fit_content = true
 scroll_active = false
 autowrap_mode = 1
+script = ExtResource("47_debug_seed_pool_text")
 
 [node name="DebugButton" type="Button" parent="UI" unique_id=673340750]
 layout_mode = 0
