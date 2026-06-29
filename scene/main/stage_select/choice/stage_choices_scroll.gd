@@ -1,6 +1,6 @@
 extends ScrollContainer
 
-const SCROLL_BAR_SCRIPT := preload("res://scene/main/stage_select/stage_choices_scroll_bar.gd")
+const SCROLL_BAR_SCRIPT := preload("res://scene/main/stage_select/choice/stage_choices_scroll_bar.gd")
 
 
 # 初期化
