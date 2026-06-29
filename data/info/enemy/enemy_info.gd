@@ -1,4 +1,4 @@
-class_name NightmareInfo
+class_name EnemyInfo
 extends Resource
 
 # ID

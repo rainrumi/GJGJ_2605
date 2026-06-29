@@ -3,7 +3,7 @@ extends RefCounted
 
 
 # categoryname取得
-static func get_category_name(has_main_effect: bool, skill_definition: NightmareInfo) -> String:
+static func get_category_name(has_main_effect: bool, skill_definition: EnemyInfo) -> String:
 	if not has_main_effect:
 		return "-"
 	# category文言
@@ -16,7 +16,7 @@ static func get_category_name(has_main_effect: bool, skill_definition: Nightmare
 
 
 # categorydetail取得
-static func get_category_detail(has_main_effect: bool, skill_definition: NightmareInfo) -> String:
+static func get_category_detail(has_main_effect: bool, skill_definition: EnemyInfo) -> String:
 	if not has_main_effect:
 		return ""
 	# category文言
@@ -31,14 +31,14 @@ static func get_category_detail(has_main_effect: bool, skill_definition: Nightma
 
 
 # maineffect文言取得
-static func get_main_effect_text(has_main_effect: bool, skill_definition: NightmareInfo) -> String:
+static func get_main_effect_text(has_main_effect: bool, skill_definition: EnemyInfo) -> String:
 	if not has_main_effect or skill_definition == null:
 		return ""
 	return skill_definition.description
 
 
 # category文言取得
-static func _get_category_text(skill_definition: NightmareInfo) -> String:
+static func _get_category_text(skill_definition: EnemyInfo) -> String:
 	if skill_definition == null or skill_definition.category.is_empty():
 		return "通常"
 	return skill_definition.category

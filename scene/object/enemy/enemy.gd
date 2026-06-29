@@ -25,7 +25,7 @@ const DEFAULT_NIGHTMARE_STOMACH_SHAPE: Array[Vector2i] = [
 @onready var damage_label: EnemyDamageText = $DamageText
 # 詳細表示
 @onready var tooltip: EnemyTooltip = $Enemy_tooltip
-var skill_info: NightmareInfo
+var skill_info: EnemyInfo
 var seed_info: SeedInfo
 var has_main_effect := false
 var nightmare_skill_enabled := true
@@ -50,7 +50,7 @@ var _stomach_shape_override: Array[Vector2i] = []
 var _size_override := 0
 var _texture_override: Texture2D
 # setup処理
-func setup(nightmare_info: NightmareInfo, target_size: Vector2, has_effect := false, start_position_override := Vector2.INF, skill_enabled_override := true) -> void:
+func setup(nightmare_info: EnemyInfo, target_size: Vector2, has_effect := false, start_position_override := Vector2.INF, skill_enabled_override := true) -> void:
 	skill_info = nightmare_info
 	seed_info = null
 	nightmare_skill_enabled = skill_enabled_override
@@ -128,7 +128,7 @@ func has_nightmare_skill() -> bool:
 
 
 # 悪夢スキル取得
-func get_nightmare_skill() -> NightmareInfo:
+func get_nightmare_skill() -> EnemyInfo:
 	return skill_info
 
 

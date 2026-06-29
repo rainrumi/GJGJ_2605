@@ -4,9 +4,9 @@
 [ext_resource type="Script" uid="uid://ccx2iw1mxklqy" path="res://scene/object/enemy/enemy.gd" id="2_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="3_font"]
 [ext_resource type="PackedScene" uid="uid://cki5epcjxetrf" path="res://scene/object/enemy/tooltip/enemy_tooltip.tscn" id="4_enemy_tooltip_view"]
-[ext_resource type="Script" path="res://scene/object/enemy/enemy_sprite_view.gd" id="5_sprite_view"]
-[ext_resource type="Script" path="res://scene/object/enemy/enemy_hp_text.gd" id="6_hp_text"]
-[ext_resource type="Script" path="res://scene/object/enemy/enemy_damage_text.gd" id="7_damage_text"]
+[ext_resource type="Script" uid="uid://xmsmswgpbyg0" path="res://scene/object/enemy/enemy_sprite_view.gd" id="5_sprite_view"]
+[ext_resource type="Script" uid="uid://bnx1c14fi5uuu" path="res://scene/object/enemy/enemy_hp_text.gd" id="6_hp_text"]
+[ext_resource type="Script" uid="uid://dvoh254myirr7" path="res://scene/object/enemy/enemy_damage_text.gd" id="7_damage_text"]
 
 [node name="Enemy" type="Node2D" unique_id=1729494960]
 z_index = 10

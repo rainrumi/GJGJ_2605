@@ -14,7 +14,7 @@ const DEFAULT_NIGHTMARE_STOMACH_SIZE := Vector2i(2, 3)
 var _owner: Node
 var _input_controller: GameInputController
 var _stomach: StomachBoard
-var _enemy_preset: NightmarePresetInfo
+var _enemy_preset: EnemyPresetInfo
 
 
 # setup処理
@@ -22,7 +22,7 @@ func setup(
 	owner: Node,
 	input_controller: GameInputController,
 	stomach: StomachBoard,
-	enemy_preset: NightmarePresetInfo = null
+	enemy_preset: EnemyPresetInfo = null
 ) -> void:
 	_owner = owner
 	_input_controller = input_controller
@@ -155,14 +155,14 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 
 
 # random悪夢skills取得
-func _get_random_nightmare_skills() -> Array[NightmareInfo]:
+func _get_random_nightmare_skills() -> Array[EnemyInfo]:
 	# skillsbycategory
 	var skills_by_category: Dictionary = {}
 	return _pick_skills_from_category(skills_by_category)
 
 
 # skillsfromcategory選択
-func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[NightmareInfo]:
+func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[EnemyInfo]:
 	# categories
 	var categories := skills_by_category.keys()
 	if categories.is_empty():
@@ -179,19 +179,19 @@ func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[Nightma
 	# 数値
 	var count := randi_range(min_count, max_count)
 	# selected
-	var selected: Array[NightmareInfo] = []
+	var selected: Array[EnemyInfo] = []
 	for i in range(count):
-		selected.append(category_skills[i] as NightmareInfo)
+		selected.append(category_skills[i] as EnemyInfo)
 	return selected
 
 
 # stageスキル有効
-func _is_stage_nightmare_skill_enabled(source_skill: NightmareInfo) -> bool:
+func _is_stage_nightmare_skill_enabled(source_skill: EnemyInfo) -> bool:
 	return source_skill != null and source_skill.skill_id >= STRENGTHENED_NIGHTMARE_SKILL_ID_MIN
 
 
 # 悪夢胃袋サイズ取得
-func _get_nightmare_stomach_size(skill: NightmareInfo) -> Vector2i:
+func _get_nightmare_stomach_size(skill: EnemyInfo) -> Vector2i:
 	var block := skill.acid_block if skill != null else null
 	return block.get_stomach_size() if block != null else DEFAULT_NIGHTMARE_STOMACH_SIZE
 

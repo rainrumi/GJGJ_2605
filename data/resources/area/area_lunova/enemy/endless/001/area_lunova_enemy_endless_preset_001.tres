@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="NightmarePresetInfo" format=3 uid="uid://dvfx3ir0egw38"]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/nightmare/nightmare_info.gd" id="1_etbcs"]
-[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/nightmare/nightmare_preset_info.gd" id="3_534e4"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_etbcs"]
+[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/enemy/enemy_preset_info.gd" id="3_534e4"]
 
 [resource]
 script = ExtResource("3_534e4")

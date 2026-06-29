@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="StageEnemySetDefinition" format=3 uid="uid://camckhadnoy65"]
 
-[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/nightmare/nightmare_preset_info.gd" id="1_1kpwa"]
+[ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/enemy/enemy_preset_info.gd" id="1_1kpwa"]
 [ext_resource type="Script" uid="uid://clqarc0s67i01" path="res://data/info/stage/stage_enemy_info.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/normal/001/area_riran_enemy_normal_preset_001.tres" id="2_normal"]
-[ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/endless/001/area_riran_enemy_endless_preset_001.tres" id="3_endless"]
-[ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/boss/001/area_riran_enemy_boss_preset_001.tres" id="4_strengthened"]
+[ext_resource type="Resource" uid="uid://b2wlu6oowrce5" path="res://data/resources/area/area_riran/enemy/normal/001/area_riran_enemy_normal_preset_001.tres" id="2_normal"]
+[ext_resource type="Resource" uid="uid://b0a5onsd2thvh" path="res://data/resources/area/area_riran/enemy/endless/001/area_riran_enemy_endless_preset_001.tres" id="3_endless"]
+[ext_resource type="Resource" uid="uid://d2l3b0g80l2nk" path="res://data/resources/area/area_riran/enemy/boss/001/area_riran_enemy_boss_preset_001.tres" id="4_strengthened"]
 [ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/boss/002/area_riran_enemy_boss_preset_002.tres" id="5_strengthened"]
 [ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/boss/003/area_riran_enemy_boss_preset_003.tres" id="6_strengthened"]
 

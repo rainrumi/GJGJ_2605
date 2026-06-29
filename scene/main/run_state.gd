@@ -43,7 +43,7 @@ func reset() -> void:
 
 
 # 敵編成選択
-func pick_enemy_preset(stage: StageInfo) -> NightmarePresetInfo:
+func pick_enemy_preset(stage: StageInfo) -> EnemyPresetInfo:
 	if stage == null or stage.enemy_data == null:
 		return null
 	if stage.is_high_difficulty:
@@ -52,7 +52,7 @@ func pick_enemy_preset(stage: StageInfo) -> NightmarePresetInfo:
 
 
 # 通常敵編成選択
-func _pick_normal_enemy_preset(stage: StageInfo) -> NightmarePresetInfo:
+func _pick_normal_enemy_preset(stage: StageInfo) -> EnemyPresetInfo:
 	# key
 	var key := _get_stage_progress_key(stage)
 	# 番号
@@ -66,7 +66,7 @@ func _pick_normal_enemy_preset(stage: StageInfo) -> NightmarePresetInfo:
 
 
 # 強化敵編成選択
-func _pick_strengthened_enemy_preset(stage: StageInfo) -> NightmarePresetInfo:
+func _pick_strengthened_enemy_preset(stage: StageInfo) -> EnemyPresetInfo:
 	# key
 	var key := _get_stage_progress_key(stage)
 	# 番号

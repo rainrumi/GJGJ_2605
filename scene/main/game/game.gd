@@ -25,7 +25,7 @@ var hp := MAX_HP
 var current_stage_id := 0
 var current_stage: StageInfo
 var current_day := 1
-var current_enemy_preset: NightmarePresetInfo
+var current_enemy_preset: EnemyPresetInfo
 var battle_active := false
 var auto_acid_enabled := false
 var auto_acid_paused_for_drag := false
@@ -396,12 +396,12 @@ func _refresh_enemy_stomach_display_sizes() -> void:
 
 
 # 戦闘敵編成取得
-func _get_battle_enemy_preset() -> NightmarePresetInfo:
+func _get_battle_enemy_preset() -> EnemyPresetInfo:
 	return current_enemy_preset
 
 
 # setup敵編成処理
-func _setup_enemy_preset(enemy_preset: NightmarePresetInfo) -> void:
+func _setup_enemy_preset(enemy_preset: EnemyPresetInfo) -> void:
 	enemy_setup.setup(
 		self,
 		input_controller,
