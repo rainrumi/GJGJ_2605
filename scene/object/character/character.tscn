@@ -1,10 +1,9 @@
 [gd_scene format=3 uid="uid://wsdjjcostaq8"]
 
-[ext_resource type="Texture2D" uid="uid://dyux7ahv35bmf" path="res://art/character/tex_character_100_portrate_1000.png" id="1_character"]
+[ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://art/character/tex_character_portrate_1000.png" id="1_oatpn"]
 
 [node name="Character" type="Node2D" unique_id=1173042167]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1226085197]
-modulate = Color(1, 1, 1, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-texture = ExtResource("1_character")
+texture = ExtResource("1_oatpn")
