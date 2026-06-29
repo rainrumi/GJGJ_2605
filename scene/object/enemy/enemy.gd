@@ -3,7 +3,20 @@ extends Node2D
 const AcidED_TWEEN_DURATION := EnemySpriteView.ACIDED_TWEEN_DURATION
 const DEFAULT_STATUS_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
 const MAIN_EFFECT_STATUS_COLOR := Color(0.78, 0.18, 0.08, 1.0)
+const DEFAULT_NIGHTMARE_TEXTURE := preload("res://art/enemy/tex_enemy_1000_No_100.png")
 const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_1000.png")
+const DEFAULT_NIGHTMARE_MAX_HP := 1400
+const DEFAULT_NIGHTMARE_SIZE := 6
+const DEFAULT_NIGHTMARE_DAMAGE := 2
+const DEFAULT_NIGHTMARE_STOMACH_SIZE := Vector2i(2, 3)
+const DEFAULT_NIGHTMARE_STOMACH_SHAPE: Array[Vector2i] = [
+	Vector2i(0, 0),
+	Vector2i(1, 0),
+	Vector2i(0, 1),
+	Vector2i(1, 1),
+	Vector2i(0, 2),
+	Vector2i(1, 2),
+]
 # 画像表示
 @onready var sprite: EnemySpriteView = $Sprite2D
 # HP表示
@@ -12,7 +25,6 @@ const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_100
 @onready var damage_label: EnemyDamageText = $DamageText
 # 詳細表示
 @onready var tooltip: EnemyTooltip = $Enemy_tooltip
-var definition: EnemyDefinition
 var skill_info: NightmareInfo
 var seed_info: SeedInfo
 var has_main_effect := false
@@ -38,15 +50,14 @@ var _stomach_shape_override: Array[Vector2i] = []
 var _size_override := 0
 var _texture_override: Texture2D
 # setup処理
-func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_skill: NightmareInfo = null, has_effect := false, start_position_override := Vector2.INF) -> void:
-	definition = enemy_definition
-	skill_info = nightmare_skill
+func setup(nightmare_info: NightmareInfo, target_size: Vector2, has_effect := false, start_position_override := Vector2.INF, skill_enabled_override := true) -> void:
+	skill_info = nightmare_info
 	seed_info = null
-	nightmare_skill_enabled = enemy_definition.nightmare_skill_enabled
+	nightmare_skill_enabled = skill_enabled_override
 	has_main_effect = has_effect and nightmare_skill_enabled
-	max_hp = enemy_definition.max_hp
-	damage = enemy_definition.damage
-	base_damage = enemy_definition.damage
+	max_hp = _get_nightmare_max_hp()
+	damage = _get_nightmare_damage()
+	base_damage = damage
 	display_damage_override = -1
 	attack_multiplier = 1.0
 	acid_damage_taken_multiplier = 1.0
@@ -57,13 +68,19 @@ func setup(enemy_definition: EnemyDefinition, target_size: Vector2, nightmare_sk
 	activation_deferred = false
 	_texture_override = null
 	clear_stomach_footprint_override()
-	origin_position = enemy_definition.start_position
+	origin_position = Vector2.ZERO
 	if start_position_override != Vector2.INF:
 		origin_position = start_position_override
 	position = origin_position
 	if sprite != null:
 		sprite.setup_texture(_get_texture(), target_size)
 	reset_for_battle()
+
+
+# 種setup
+func setup_seed(seed: SeedInfo, target_size: Vector2, start_position_override := Vector2.ZERO) -> void:
+	setup(null, target_size, false, start_position_override, false)
+	setup_as_seed_stomach_block(seed, target_size)
 # for戦闘初期化
 func reset_for_battle() -> void:
 	current_hp = max_hp
@@ -87,7 +104,7 @@ func get_display_name() -> String:
 		return seed_info.display_name
 	if skill_info != null and not skill_info.display_name.is_empty():
 		return skill_info.display_name
-	return definition.display_name
+	return ""
 
 
 # 種胃袋ブロック判定
@@ -174,14 +191,14 @@ func is_activation_deferred() -> bool: return activation_deferred
 func get_size() -> int:
 	if _size_override > 0:
 		return _size_override
-	return definition.size
+	return _get_nightmare_cell_count()
 
 
 # 胃袋サイズ取得
 func get_stomach_size() -> Vector2i:
 	if _stomach_size_override != Vector2i.ZERO:
 		return _stomach_size_override
-	return definition.stomach_size
+	return _get_nightmare_stomach_size()
 
 
 # 胃袋形状取得
@@ -189,13 +206,7 @@ func get_stomach_shape() -> Array[Vector2i]:
 	if not _stomach_shape_override.is_empty():
 		return _stomach_shape_override.duplicate()
 	# 形状
-	var shape: Array[Vector2i] = []
-	if definition == null:
-		return shape
-	for cell in definition.stomach_shape:
-		if cell is Vector2i:
-			shape.append(cell)
-	return shape
+	return _get_nightmare_stomach_shape()
 
 
 # ドラッグ判定
@@ -409,7 +420,47 @@ func _update_damage_label() -> void:
 func _get_texture() -> Texture2D:
 	if _texture_override != null:
 		return _texture_override
-	return definition.texture
+	var block := _get_nightmare_block()
+	if block != null and block.texture != null:
+		return block.texture
+	return DEFAULT_NIGHTMARE_TEXTURE
+
+
+# nightmareblock取得
+func _get_nightmare_block() -> AcidBlockInfo:
+	if skill_info == null:
+		return null
+	return skill_info.acid_block
+
+
+# nightmareHP取得
+func _get_nightmare_max_hp() -> int:
+	var block := _get_nightmare_block()
+	return block.get_max_hp() if block != null else DEFAULT_NIGHTMARE_MAX_HP
+
+
+# nightmare攻撃取得
+func _get_nightmare_damage() -> int:
+	var block := _get_nightmare_block()
+	return block.get_damage() if block != null else DEFAULT_NIGHTMARE_DAMAGE
+
+
+# nightmareセル数
+func _get_nightmare_cell_count() -> int:
+	var block := _get_nightmare_block()
+	return block.get_cell_count() if block != null else DEFAULT_NIGHTMARE_SIZE
+
+
+# nightmareサイズ
+func _get_nightmare_stomach_size() -> Vector2i:
+	var block := _get_nightmare_block()
+	return block.get_stomach_size() if block != null else DEFAULT_NIGHTMARE_STOMACH_SIZE
+
+
+# nightmare形状
+func _get_nightmare_stomach_shape() -> Array[Vector2i]:
+	var block := _get_nightmare_block()
+	return block.get_stomach_shape() if block != null else DEFAULT_NIGHTMARE_STOMACH_SHAPE.duplicate()
 # categoryname取得
 func get_category_name() -> String:
 	return EnemyTooltipFormatter.get_category_name(has_main_effect, skill_info)

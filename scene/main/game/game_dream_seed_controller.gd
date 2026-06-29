@@ -164,10 +164,6 @@ func _create_seed_block(
 ) -> Enemy:
 	if seed == null:
 		return null
-	# 定義
-	var definition := _get_seed_block_template(seed)
-	if definition == null:
-		return null
 	# 種ブロック
 	var seed_block := ENEMY_SCENE.instantiate() as Enemy
 	_owner.add_child(seed_block)
@@ -178,8 +174,7 @@ func _create_seed_block(
 		_stomach.get_span_size(block_size.x),
 		_stomach.get_span_size(block_size.y)
 	)
-	seed_block.setup(definition, target_size, null, false, Vector2.ZERO)
-	seed_block.setup_as_seed_stomach_block(seed, target_size)
+	seed_block.setup_seed(seed, target_size, Vector2.ZERO)
 	return seed_block
 
 
@@ -214,38 +209,6 @@ func _get_seed_block_stomach_size(seed: SeedInfo) -> Vector2i:
 	if seed != null and seed.acid_block != null:
 		return seed.acid_block.get_stomach_size()
 	return Vector2i.ONE
-
-
-# 種ブロックtemplate取得
-func _get_seed_block_template(seed: SeedInfo) -> EnemyDefinition:
-	return _create_seed_block_template(seed)
-
-
-# 種ブロックtemplate作成
-func _create_seed_block_template(seed: SeedInfo) -> EnemyDefinition:
-	if seed == null:
-		return null
-	# ブロック定義
-	var block_definition := seed.acid_block
-	# 定義
-	var definition := EnemyDefinition.new()
-	definition.display_name = seed.display_name
-	definition.texture = seed.texture
-	definition.max_hp = 1
-	definition.size = 1
-	definition.damage = 0
-	definition.nightmare_skill_enabled = false
-	definition.stomach_size = Vector2i.ONE
-	definition.stomach_shape = [Vector2i.ZERO]
-	if block_definition != null:
-		if block_definition.texture != null:
-			definition.texture = block_definition.texture
-		definition.max_hp = block_definition.get_max_hp()
-		definition.size = block_definition.get_cell_count()
-		definition.damage = block_definition.get_damage()
-		definition.stomach_size = block_definition.get_stomach_size()
-		definition.stomach_shape = block_definition.get_stomach_shape()
-	return definition
 
 
 # direct消化済み種effects適用

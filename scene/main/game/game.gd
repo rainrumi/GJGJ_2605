@@ -15,7 +15,6 @@ const TIME_OVER_HP_RECOVERY_RATE: float = 0.7
 const acid_AUTO_INTERVAL: float = 0.05
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
-@export var enemy_definitions: Array[Resource] = []
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
@@ -51,7 +50,7 @@ var effective_max_hp := MAX_HP
 # 初期化
 func _ready() -> void:
 	randomize()
-	enemy_setup.setup(self, input_controller, stomach, enemy_definitions)
+	enemy_setup.setup(self, input_controller, stomach)
 	seed_controller.setup(self, stomach, input_controller)
 	_connect_ui()
 	_connect_input()
@@ -89,7 +88,6 @@ func start_battle(context: BattleStartContext = null) -> void:
 		self,
 		input_controller,
 		stomach,
-		_get_battle_enemy_definitions(),
 		_get_battle_enemy_preset()
 	)
 	enemy_setup.setup_enemies(enemies)
@@ -387,7 +385,7 @@ func _prepare_debug_battle_change() -> void:
 # 敵胃袋displaysizes更新
 func _refresh_enemy_stomach_display_sizes() -> void:
 	for enemy in enemies:
-		if enemy.definition == null or enemy.is_Acided():
+		if enemy.is_Acided():
 			continue
 		enemy.update_stomach_display_size(Vector2(
 			stomach.get_span_size(enemy.get_stomach_size().x),
@@ -395,11 +393,6 @@ func _refresh_enemy_stomach_display_sizes() -> void:
 		))
 		if enemy.is_active_in_stomach():
 			stomach.place_enemy(enemy, enemy.stomach_cell)
-
-
-# 戦闘敵定義取得
-func _get_battle_enemy_definitions() -> Array[Resource]:
-	return enemy_definitions
 
 
 # 戦闘敵編成取得
@@ -413,7 +406,6 @@ func _setup_enemy_preset(enemy_preset: NightmarePresetInfo) -> void:
 		self,
 		input_controller,
 		stomach,
-		_get_battle_enemy_definitions(),
 		enemy_preset
 	)
 	enemy_setup.setup_enemies(enemies)
