@@ -1,10 +1,15 @@
 [gd_scene format=3 uid="uid://cdxfuey83p5f0"]
 
-[ext_resource type="Script" uid="uid://dl173oyj7acni" path="res://scene/main/stage_clear/seed_choice.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dl173oyj7acni" path="res://scene/main/stage_clear/seed_choice/seed_choice.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://d1swr615sa4we" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_200.png" id="3_6u1fo"]
 [ext_resource type="Texture2D" uid="uid://bf3b0ngamjwoc" path="res://art/stage_clear/ui_choise_seed_frame_1000_LV_100.png" id="3_frame"]
 [ext_resource type="Texture2D" uid="uid://bohjr6l6tyw7q" path="res://art/dreamseed/tex_seed_1000_No_200.png" id="4_6ejp0"]
+[ext_resource type="Script" uid="uid://bcaqfqxx5br8x" path="res://scene/main/stage_clear/seed_choice/seed_choice_frame.gd" id="5_frame_script"]
+[ext_resource type="Script" uid="uid://dw6sg0ihf2qc1" path="res://scene/main/stage_clear/seed_choice/seed_choice_icon_rare.gd" id="6_rare_script"]
+[ext_resource type="Script" uid="uid://8n7rdibc6uyc" path="res://scene/main/stage_clear/seed_choice/seed_choice_texture.gd" id="7_texture_script"]
+[ext_resource type="Script" uid="uid://bjkbu3ifo3dg0" path="res://scene/main/stage_clear/seed_choice/seed_choice_label_name.gd" id="8_name_script"]
+[ext_resource type="Script" uid="uid://llc58wsg7b3n" path="res://scene/main/stage_clear/seed_choice/seed_choice_label_effect.gd" id="10_raa8t"]
 
 [node name="SeedChoice" type="Button" unique_id=188041236]
 custom_minimum_size = Vector2(300, 70)
@@ -23,6 +28,7 @@ patch_margin_left = 8
 patch_margin_top = 8
 patch_margin_right = 8
 patch_margin_bottom = 8
+script = ExtResource("5_frame_script")
 
 [node name="ValuableIcon" type="NinePatchRect" parent="." unique_id=1518090049]
 visible = false
@@ -34,6 +40,7 @@ offset_top = 3.0
 offset_right = 297.0
 offset_bottom = 22.0
 texture = ExtResource("3_6u1fo")
+script = ExtResource("6_rare_script")
 
 [node name="Texture" type="TextureRect" parent="." unique_id=388718737]
 self_modulate = Color(0, 0, 0, 1)
@@ -44,6 +51,7 @@ offset_right = 292.0
 offset_bottom = 67.0
 texture = ExtResource("4_6ejp0")
 expand_mode = 1
+script = ExtResource("7_texture_script")
 
 [node name="NameLabel" type="Label" parent="." unique_id=256460895]
 layout_mode = 0
@@ -57,6 +65,7 @@ theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 6
 text = "夢の種の名前"
+script = ExtResource("8_name_script")
 
 [node name="EffectLabel" type="Label" parent="." unique_id=713516620]
 layout_mode = 0
@@ -71,3 +80,4 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 6
 text = "効果テキスト"
 autowrap_mode = 3
+script = ExtResource("10_raa8t")

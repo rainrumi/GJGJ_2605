@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://bfh6kan0q3y4s"]
 
-[ext_resource type="Script" uid="uid://ce3s60lbqwdan" path="res://scene/main/stage_clear/abandon_button.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://ce3s60lbqwdan" path="res://scene/main/stage_clear/abandon/abandon_button.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://bvewbj2k87hga" path="res://art/stage_clear/ui_choise_cancel_frame_1000.png" id="3_cancel_frame"]
 
-[node name="AbandonButton" type="Button"]
+[node name="AbandonButton" type="Button" unique_id=1178344794]
 offset_right = 120.0
 offset_bottom = 26.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
@@ -17,7 +17,7 @@ text = "放棄(HP30%回復)"
 flat = true
 script = ExtResource("1_script")
 
-[node name="Frame" type="NinePatchRect" parent="."]
+[node name="Frame" type="NinePatchRect" parent="." unique_id=1808600798]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 show_behind_parent = true
 layout_mode = 1
