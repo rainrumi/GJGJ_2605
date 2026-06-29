@@ -8,7 +8,7 @@ signal stage_selected(stage: StageInfo)
 
 @onready var map_view: StageSelectMapView = $CharacterArea/Map
 @onready var stage_choice_list: StageSelectChoiceList = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices
-@onready var debug_seed_pool_panel: StageSelectDebugSeedPoolPanel = $UI/DebugSeedPoolPanel
+@onready var debug_seed_pool_panel: StageSelectDebugPanel = $UI/DebugSeedPoolPanel
 
 var _displayed_stage_definitions: Array[StageInfo] = []
 var _current_stage_definition: StageInfo

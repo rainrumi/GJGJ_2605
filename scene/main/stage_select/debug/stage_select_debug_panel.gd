@@ -1,8 +1,8 @@
-class_name StageSelectDebugSeedPoolPanel
+class_name StageSelectDebugPanel
 extends PanelContainer
 
 # 内容領域
-@onready var content_margin: StageSelectDebugSeedPoolMargin = $Margin
+@onready var content_margin: StageSelectDebugMargin = $Margin
 
 var _hovered_stage_definition: StageInfo
 

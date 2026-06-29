@@ -39,14 +39,14 @@
 [ext_resource type="Texture2D" uid="uid://br16sseuu25m3" path="res://art/ui/icon/location/ui_icon_location_07.png" id="36_location_07"]
 [ext_resource type="Script" uid="uid://wm4hijfwmw0a" path="res://scene/main/stage_select/map/stage_select_map_view.gd" id="37_stage_select_map_view"]
 [ext_resource type="Script" uid="uid://d7ydvghfpo18" path="res://scene/main/stage_select/choice/stage_choice_list.gd" id="38_stage_choice_list"]
-[ext_resource type="Script" uid="uid://bkictreay8s85" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_panel.gd" id="39_debug_seed_pool_panel"]
+[ext_resource type="Script" uid="uid://bkictreay8s85" path="res://scene/main/stage_select/debug/stage_select_debug_panel.gd" id="39_debug_seed_pool_panel"]
 [ext_resource type="Script" uid="uid://d0tgljokt842x" path="res://scene/main/stage_select/debug/stage_select_debug_button.gd" id="40_debug_button"]
 [ext_resource type="Script" uid="uid://bv0erjxernnad" path="res://scene/main/stage_select/map/marker/stage_select_location_marker.gd" id="42_location_marker"]
-[ext_resource type="Script" uid="uid://ccm1s2fn83nry" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_margin.gd" id="43_debug_seed_pool_margin"]
-[ext_resource type="Script" uid="uid://cw56t27dpnhv0" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_items.gd" id="44_debug_seed_pool_items"]
-[ext_resource type="Script" uid="uid://dug83pdl1h0si" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_title_label.gd" id="45_debug_seed_pool_title_label"]
-[ext_resource type="Script" uid="uid://bqorv7jk0nlas" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_scroll.gd" id="46_debug_seed_pool_scroll"]
-[ext_resource type="Script" uid="uid://db60itn8qj4ap" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_text.gd" id="47_debug_seed_pool_text"]
+[ext_resource type="Script" uid="uid://cw56t27dpnhv0" path="res://scene/main/stage_select/debug/stage_select_debug_items.gd" id="43_bxeow"]
+[ext_resource type="Script" uid="uid://ccm1s2fn83nry" path="res://scene/main/stage_select/debug/stage_select_debug_margin.gd" id="43_debug_seed_pool_margin"]
+[ext_resource type="Script" uid="uid://dug83pdl1h0si" path="res://scene/main/stage_select/debug/stage_select_debug_label.gd" id="45_debug_seed_pool_title_label"]
+[ext_resource type="Script" uid="uid://bqorv7jk0nlas" path="res://scene/main/stage_select/debug/stage_select_debug_scroll.gd" id="46_debug_seed_pool_scroll"]
+[ext_resource type="Script" uid="uid://db60itn8qj4ap" path="res://scene/main/stage_select/debug/stage_select_debug_text.gd" id="47_debug_seed_pool_text"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_debug_seed_pool"]
 bg_color = Color(0, 0, 0, 0.78)
@@ -63,6 +63,7 @@ corner_radius_bottom_left = 2
 [node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
 stage_catalog = ExtResource("6_stage_catalog")
+stage_definitions = null
 stage_choice_scene = ExtResource("5_stage_choice")
 
 [node name="CharacterArea" type="Node2D" parent="." unique_id=691295669]
@@ -190,7 +191,7 @@ script = ExtResource("43_debug_seed_pool_margin")
 [node name="Items" type="VBoxContainer" parent="UI/DebugSeedPoolPanel/Margin" unique_id=1355754087]
 layout_mode = 2
 theme_override_constants/separation = 2
-script = ExtResource("44_debug_seed_pool_items")
+script = ExtResource("43_bxeow")
 
 [node name="TitleLabel" type="Label" parent="UI/DebugSeedPoolPanel/Margin/Items" unique_id=1600233487]
 layout_mode = 2

@@ -1,4 +1,4 @@
-class_name StageSelectDebugSeedPoolTitleLabel
+class_name StageSelectDebugLabel
 extends Label
 
 

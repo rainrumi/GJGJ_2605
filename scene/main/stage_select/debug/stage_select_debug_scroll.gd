@@ -1,8 +1,8 @@
-class_name StageSelectDebugSeedPoolScroll
+class_name StageSelectDebugScroll
 extends ScrollContainer
 
 # 本文
-@onready var seed_pool_text: StageSelectDebugSeedPoolText = $SeedPoolText
+@onready var seed_pool_text: StageSelectDebugText = $SeedPoolText
 
 
 # 表示設定

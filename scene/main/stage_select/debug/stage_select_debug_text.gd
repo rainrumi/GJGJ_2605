@@ -1,4 +1,4 @@
-class_name StageSelectDebugSeedPoolText
+class_name StageSelectDebugText
 extends RichTextLabel
 
 const MAX_FONT_SIZE := 7

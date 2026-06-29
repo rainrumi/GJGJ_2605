@@ -1,8 +1,8 @@
-class_name StageSelectDebugSeedPoolMargin
+class_name StageSelectDebugMargin
 extends MarginContainer
 
 # 子要素
-@onready var items: StageSelectDebugSeedPoolItems = $Items
+@onready var items: StageSelectDebugItems = $Items
 
 
 # 表示設定

@@ -1,10 +1,10 @@
-class_name StageSelectDebugSeedPoolItems
+class_name StageSelectDebugItems
 extends VBoxContainer
 
 # 見出し
-@onready var title_label: StageSelectDebugSeedPoolTitleLabel = $TitleLabel
+@onready var title_label: StageSelectDebugLabel = $TitleLabel
 # 種一覧
-@onready var seed_scroll: StageSelectDebugSeedPoolScroll = $DebugSeedScroll
+@onready var seed_scroll: StageSelectDebugScroll = $DebugSeedScroll
 
 
 # 表示設定
