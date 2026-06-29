@@ -36,6 +36,10 @@
 [ext_resource type="Texture2D" uid="uid://b3wgnduijbf4x" path="res://art/ui/icon/location/ui_icon_location_05.png" id="34_location_05"]
 [ext_resource type="Texture2D" uid="uid://b4r4q0rq841dw" path="res://art/ui/icon/location/ui_icon_location_06.png" id="35_location_06"]
 [ext_resource type="Texture2D" uid="uid://br16sseuu25m3" path="res://art/ui/icon/location/ui_icon_location_07.png" id="36_location_07"]
+[ext_resource type="Script" path="res://scene/main/stage_select/stage_select_map_view.gd" id="37_stage_select_map_view"]
+[ext_resource type="Script" path="res://scene/main/stage_select/choice/stage_choice_list.gd" id="38_stage_choice_list"]
+[ext_resource type="Script" path="res://scene/main/stage_select/debug/stage_select_debug_seed_pool_panel.gd" id="39_debug_seed_pool_panel"]
+[ext_resource type="Script" path="res://scene/main/stage_select/debug/stage_select_debug_button.gd" id="40_debug_button"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_debug_seed_pool"]
 bg_color = Color(0, 0, 0, 0.78)
@@ -53,10 +57,6 @@ corner_radius_bottom_left = 2
 script = ExtResource("1_script")
 stage_catalog = ExtResource("6_stage_catalog")
 stage_choice_scene = ExtResource("5_stage_choice")
-beacon_outline_frames = Array[Texture2D]([ExtResource("9_beacon_outline_01"), ExtResource("10_beacon_outline_02"), ExtResource("11_beacon_outline_03"), ExtResource("12_beacon_outline_04"), ExtResource("13_beacon_outline_05"), ExtResource("14_beacon_outline_06"), ExtResource("15_beacon_outline_07")])
-beacon_fill_frames = Array[Texture2D]([ExtResource("16_beacon_01"), ExtResource("17_beacon_02"), ExtResource("18_beacon_03"), ExtResource("19_beacon_04"), ExtResource("20_beacon_05"), ExtResource("21_beacon_06"), ExtResource("22_beacon_07")])
-location_outline_frames = Array[Texture2D]([ExtResource("23_location_outline_01"), ExtResource("25_location_outline_02"), ExtResource("26_location_outline_03"), ExtResource("27_location_outline_04"), ExtResource("28_location_outline_05"), ExtResource("29_location_outline_06"), ExtResource("30_location_outline_07")])
-location_fill_frames = Array[Texture2D]([ExtResource("24_location_01"), ExtResource("31_location_02"), ExtResource("32_location_03"), ExtResource("33_location_04"), ExtResource("34_location_05"), ExtResource("35_location_06"), ExtResource("36_location_07")])
 
 [node name="CharacterArea" type="Node2D" parent="." unique_id=691295669]
 
@@ -64,6 +64,11 @@ location_fill_frames = Array[Texture2D]([ExtResource("24_location_01"), ExtResou
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 position = Vector2(149, 206)
 texture = ExtResource("3_map")
+script = ExtResource("37_stage_select_map_view")
+beacon_outline_frames = Array[Texture2D]([ExtResource("9_beacon_outline_01"), ExtResource("10_beacon_outline_02"), ExtResource("11_beacon_outline_03"), ExtResource("12_beacon_outline_04"), ExtResource("13_beacon_outline_05"), ExtResource("14_beacon_outline_06"), ExtResource("15_beacon_outline_07")])
+beacon_fill_frames = Array[Texture2D]([ExtResource("16_beacon_01"), ExtResource("17_beacon_02"), ExtResource("18_beacon_03"), ExtResource("19_beacon_04"), ExtResource("20_beacon_05"), ExtResource("21_beacon_06"), ExtResource("22_beacon_07")])
+location_outline_frames = Array[Texture2D]([ExtResource("23_location_outline_01"), ExtResource("25_location_outline_02"), ExtResource("26_location_outline_03"), ExtResource("27_location_outline_04"), ExtResource("28_location_outline_05"), ExtResource("29_location_outline_06"), ExtResource("30_location_outline_07")])
+location_fill_frames = Array[Texture2D]([ExtResource("24_location_01"), ExtResource("31_location_02"), ExtResource("32_location_03"), ExtResource("33_location_04"), ExtResource("34_location_05"), ExtResource("35_location_06"), ExtResource("36_location_07")])
 
 [node name="Beacon" type="Node2D" parent="CharacterArea/Map" unique_id=824570816]
 visible = false
@@ -143,6 +148,7 @@ theme_override_constants/margin_bottom = 8
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
+script = ExtResource("38_stage_choice_list")
 
 [node name="StageChoice1" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=786245821 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
@@ -162,6 +168,7 @@ offset_right = 452.0
 offset_bottom = 352.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_debug_seed_pool")
+script = ExtResource("39_debug_seed_pool_panel")
 
 [node name="Margin" type="MarginContainer" parent="UI/DebugSeedPoolPanel" unique_id=876047967]
 layout_mode = 2
@@ -213,3 +220,4 @@ offset_bottom = 70.0
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 10
 text = "Debug"
+script = ExtResource("40_debug_button")
