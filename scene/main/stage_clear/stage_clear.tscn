@@ -12,12 +12,16 @@
 [ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/seed/seed_button_list/seed_button_list.gd" id="15_dream_seed_skill_button_list"]
 [ext_resource type="PackedScene" uid="uid://bfh6kan0q3y4s" path="res://scene/main/stage_clear/abandon/abandon_button.tscn" id="16_abandon_button"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="17_seed_skill_definition"]
+[ext_resource type="Script" uid="uid://d4m8xq2s7p9ab" path="res://scene/main/stage_clear/stage_clear_character_area.gd" id="18_character_area_script"]
+[ext_resource type="Script" uid="uid://c6k9j2m5x8w1r" path="res://scene/main/stage_clear/stage_clear_ui.gd" id="19_ui_script"]
+[ext_resource type="Script" uid="uid://b7n4rcq6t2v0h" path="res://scene/main/stage_clear/stage_clear_seed_choice_list.gd" id="20_seed_choice_list_script"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
 seed_options = Array[ExtResource("17_seed_skill_definition")]([ExtResource("12_seed_skill_1001"), ExtResource("13_seed_skill_1002"), ExtResource("14_seed_skill_1003")])
 
 [node name="CharacterArea" type="Node2D" parent="." unique_id=1051992702]
+script = ExtResource("18_character_area_script")
 
 [node name="Character" type="Sprite2D" parent="CharacterArea" unique_id=837318386]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
@@ -110,6 +114,7 @@ anchors_preset = 0
 offset_right = 640.0
 offset_bottom = 360.0
 mouse_filter = 2
+script = ExtResource("19_ui_script")
 
 [node name="TitleEffect" type="TextureRect" parent="UI" unique_id=1736404112]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
@@ -189,6 +194,7 @@ offset_right = 570.0
 offset_bottom = 348.0
 mouse_filter = 2
 theme_override_constants/separation = 8
+script = ExtResource("20_seed_choice_list_script")
 
 [node name="SeedChoice1" parent="UI/SeedChoices" unique_id=507694198 instance=ExtResource("5_seed_choice")]
 layout_mode = 2
@@ -205,7 +211,3 @@ offset_left = 175.0
 offset_top = 322.0
 offset_right = 295.0
 offset_bottom = 348.0
-
-[connection signal="mouse_entered" from="UI/AbandonButton" to="." method="_on_abandon_button_mouse_entered"]
-[connection signal="mouse_exited" from="UI/AbandonButton" to="." method="_on_abandon_button_mouse_exited"]
-[connection signal="pressed" from="UI/AbandonButton" to="." method="_on_abandon_button_pressed"]
