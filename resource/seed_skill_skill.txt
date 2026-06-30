@@ -1,0 +1,11 @@
+dream_seed_block_digest_resolver.gdの内容を整理します。
+
+- seed_info.gdは新たにseed_effect.gdに書かれた型のカスタムリソースをそれぞれarrayで保持できるmain_skills,sub_skills変数を保持します。
+- seedが持つスキルの種類ごとにseed_effect.gdを継承したseed_effect_*.gdファイルを作成し、そこで処理に使用するメソッドや基礎パラメータの変数を管理します。
+  - これはカスタムリソースとしてseed_info.gdのmain_skill,sub_skillにアタッチできます。
+- 新しいseed_effect.gdはメインスキルとサブスキルを呼ぶことができる_call_main_skill()と_call_sub_skill()を保持します。
+  - seed_effectを継承した子クラスはこのメソッドをオーバーライドし、特有の処理を作成することができます。
+- seed_effect_*.gdに保持される変数は固定された変数です。
+  - スキルによって変動する変数はseed_skill_data.gdという新しいgdスクリプトをscene/main/game内に作成し、それを継承したseed_skill_*_data.gdを使用します。
+    - このクラスは必要なクラスのみ作成します。
+- seed_effect.gdとその子クラスのgdはscene/main/game/seed内にskillフォルダを作成し、その中に格納してください。
