@@ -1,21 +1,20 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dmjobxqg7aetu"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dd8ahqk6b1ihs"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_4mctb"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_y2jrs"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_4620a"]
 [ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="4_0d1if"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
-[sub_resource type="Resource" id="Resource_main_skill"]
-script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([])
-
-[sub_resource type="Resource" id="Resource_sub_skill"]
-script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([])
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_4mctb")
 texture = ExtResource("2_y2jrs")
+
+[sub_resource type="Resource" id="Resource_main_skill"]
+script = ExtResource("skill_seed_skill")
+
+[sub_resource type="Resource" id="Resource_sub_skill"]
+script = ExtResource("skill_seed_skill")
 
 [resource]
 script = ExtResource("3_4620a")

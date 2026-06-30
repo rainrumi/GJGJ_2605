@@ -1,17 +1,20 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dbldwdv6fkdvx"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://d0yexn7mc6qcf"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_s658i"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_hh77o"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_status.gd" id="skill_adjacent_status"]
+[ext_resource type="Script" uid="uid://2v54yxspsyjc" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_status.gd" id="skill_adjacent_status"]
+[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" uid="uid://bc7tnfw70v1m2" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
+
+[sub_resource type="Resource" id="Resource_drag_block"]
+script = ExtResource("1_s658i")
+texture = ExtResource("4_block_texture")
 
 [sub_resource type="Resource" id="Resource_main_effect_1"]
 script = ExtResource("skill_time_rate")
 hp_loss_rate = 0.01
-max_abs_rate = 2.0
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
@@ -24,9 +27,6 @@ attack_multiplier_delta = -0.4
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")
 effects = Array[Resource]([SubResource("Resource_sub_effect_1")])
-[sub_resource type="Resource" id="Resource_drag_block"]
-script = ExtResource("1_s658i")
-texture = ExtResource("4_block_texture")
 
 [resource]
 script = ExtResource("3_hh77o")
