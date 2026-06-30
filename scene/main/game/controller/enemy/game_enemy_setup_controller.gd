@@ -151,3 +151,23 @@ func _get_enemy_positions(enemy_count: int) -> Array[Vector2]:
 		Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y),
 		Vector2(ENEMY_RIGHT_X, ENEMY_BOTTOM_Y),
 	]
+
+
+# spawn要求適用
+func apply_spawn_requests(
+	spawn_requests: Array[BattleSpawnEnemyData],
+	enemies: Array[Enemy]
+) -> void:
+	for request in spawn_requests:
+		if request == null:
+			continue
+		if not spawn_nuisance_nightmare(
+			enemies,
+			request.source_enemy,
+			request.cell,
+			request.hp_rate,
+			request.damage,
+			request.acid_damage_rate,
+			request.global_acid_damage_rate
+		):
+			break
