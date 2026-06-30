@@ -34,7 +34,7 @@ var drag_mode := DragMode.NONE
 var debug_numbers_visible := false
 var Acidion_timer: Timer
 var enemy_setup := GameEnemySetupController.new()
-var acid_controller := NightmareAcidController.new()
+var acid_controller := EnemyController.new()
 var seed_controller := GameSeedController.new()
 var beat_conductor: BeatConductor
 var dragging_enemy: Enemy

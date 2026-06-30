@@ -1,4 +1,4 @@
-class_name NightmareAcidController
+class_name EnemyController
 extends RefCounted
 
 const STEP_MINUTES := 30
