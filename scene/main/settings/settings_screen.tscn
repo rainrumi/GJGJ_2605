@@ -184,6 +184,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_constants/separation = 8
 script = ExtResource("7_option_row")
+items = ["ゆっくり", "ふつう", "はやい", "とてもはやい"]
 
 [node name="Label" type="Label" parent="Screen/Panel/Rows/TextSpeed" unique_id=306169039]
 custom_minimum_size = Vector2(134, 0)
@@ -208,6 +209,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 script = ExtResource("7_option_row")
 option_type = "window_size"
+items = ["650×360", "960×540", "1280×720", "1600×900"]
 
 [node name="Label" type="Label" parent="Screen/Panel/Rows/WindowSize" unique_id=1509644498]
 custom_minimum_size = Vector2(134, 0)
@@ -254,6 +256,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 script = ExtResource("7_option_row")
 option_type = "difficulty"
+items = ["やさしい", "ふつう", "むずかしい"]
 
 [node name="Label" type="Label" parent="Screen/Panel/Rows/Difficulty" unique_id=887955238]
 custom_minimum_size = Vector2(134, 0)
