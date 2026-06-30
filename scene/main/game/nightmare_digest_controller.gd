@@ -56,7 +56,7 @@ const STRENGTH_IRIYU_ADJACENT_WEAKEN := 20112
 const STRENGTH_IRIYU_DAMAGE_TO_ATTACK := 20113
 const THREE_OCLOCK_MINUTES := 27 * 60
 
-var seed_effects := DreamSeedEffectCalculator.new()
+var seed_effects := SeedEffect.new()
 var seed_block_resolver := DreamSeedBlockAcidResolver.new()
 var acid_order := 0
 # Side effects that can later move into AcidSideEffects / BattleTurnResultData.

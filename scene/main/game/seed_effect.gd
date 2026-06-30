@@ -1,4 +1,4 @@
-class_name DreamSeedEffectCalculator
+class_name SeedEffect
 extends RefCounted
 
 const SKILL_1_acid_DAMAGE_RATE := 0.1
