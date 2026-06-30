@@ -4,7 +4,27 @@
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_tque7"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_net8h"]
 [ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="4_aq1du"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_not_battle/seed_effect_on_not_battle_change_clear_recovery.gd" id="skill_clear_recovery"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate.gd" id="skill_pending_acid"]
 
+[sub_resource type="Resource" id="Resource_main_effect_1"]
+script = ExtResource("skill_clear_recovery")
+disable_recovery = true
+extra_choice_start_minutes = 1680
+
+[sub_resource type="Resource" id="Resource_main_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+
+[sub_resource type="Resource" id="Resource_sub_effect_1"]
+script = ExtResource("skill_pending_acid")
+rate = 2.0
+start_minutes = 1680
+
+[sub_resource type="Resource" id="Resource_sub_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_sub_effect_1")])
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_xh4bt")
 texture = ExtResource("2_tque7")
@@ -15,6 +35,8 @@ skill_id = 100107
 rarity = 1
 display_name = "ヨルガオ"
 texture = ExtResource("4_aq1du")
+main_skill = SubResource("Resource_main_skill")
+sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "クリア時にHPを回復出来なくなる。4時以降にクリア時夢の種を追加で1回獲得できる。"
 sub_description = "消化時。時刻が4時以降のとき消化ダメージが200%上昇する。"

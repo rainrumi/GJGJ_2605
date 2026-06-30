@@ -4,7 +4,26 @@
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_agyyv"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_heal/seed_effect_on_heal_change_effect.gd" id="skill_heal_effect"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_adjacent.gd" id="skill_adjacent_damage"]
 
+[sub_resource type="Resource" id="Resource_main_effect_1"]
+script = ExtResource("skill_heal_effect")
+heal_to_line_damage_rate = 0.33
+
+[sub_resource type="Resource" id="Resource_main_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+
+[sub_resource type="Resource" id="Resource_sub_effect_1"]
+script = ExtResource("skill_adjacent_damage")
+damage = 300
+split = false
+
+[sub_resource type="Resource" id="Resource_sub_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_sub_effect_1")])
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_kaibi")
 texture = ExtResource("4_block_texture")
@@ -15,6 +34,8 @@ skill_id = 100121
 rarity = 1
 display_name = "オトギリソウ"
 texture = ExtResource("2_texture")
+main_skill = SubResource("Resource_main_skill")
+sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "HPを回復したとき回復量33%を消化ダメージに変換し消化ラインに触れている悪夢に与える。"
 sub_description = "この花を消化すると現在のHP300%の数値を隣接する悪夢に消化ダメージとして与える。"

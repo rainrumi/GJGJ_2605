@@ -4,7 +4,30 @@
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_1dpiv"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_dr4of"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="4_jtoxl"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_remove_from_stomach/seed_effect_on_remove_from_stomach_change_damage.gd" id="skill_return_damage"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate.gd" id="skill_pending_acid"]
 
+[sub_resource type="Resource" id="Resource_main_effect_1"]
+script = ExtResource("skill_return_damage")
+damage_rate = 0.5
+acid_damage_rate = 0.33
+
+[sub_resource type="Resource" id="Resource_main_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+
+[sub_resource type="Resource" id="Resource_sub_effect_1"]
+script = ExtResource("skill_return_damage")
+disable_after_seed_acid = true
+
+[sub_resource type="Resource" id="Resource_sub_effect_2"]
+script = ExtResource("skill_pending_acid")
+rate = 1.0
+
+[sub_resource type="Resource" id="Resource_sub_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_sub_effect_1"), SubResource("Resource_sub_effect_2")])
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_1cdcj")
 texture = ExtResource("2_1dpiv")
@@ -15,6 +38,8 @@ skill_id = 100126
 rarity = 1
 display_name = "ドクダミ"
 texture = ExtResource("4_jtoxl")
+main_skill = SubResource("Resource_main_skill")
+sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "吐き戻した悪夢に消化ダメージ33%を与える。吐き戻し時のダメージがHP50%になる。"
 sub_description = "この花を消化するとドラッグ操作での吐き戻しが出来なくなる。代わりに消化ダメージ+100%"

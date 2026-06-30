@@ -1,15 +1,15 @@
 class_name SeedSkill
 extends Resource
 
-@export var effects: Array[SeedEffect] = []
+@export var effects: Array[Resource] = []
 
 
 # 効果一覧
 func get_effects() -> Array[SeedEffect]:
 	var active_effects: Array[SeedEffect] = []
 	for effect in effects:
-		if effect != null:
-			active_effects.append(effect)
+		if effect is SeedEffect:
+			active_effects.append(effect as SeedEffect)
 	active_effects.sort_custom(func(a: SeedEffect, b: SeedEffect) -> bool:
 		return a.priority < b.priority
 	)

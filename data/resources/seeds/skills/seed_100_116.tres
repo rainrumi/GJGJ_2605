@@ -4,7 +4,25 @@
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_62s2h"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_stomach_size.gd" id="skill_stomach_size"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate.gd" id="skill_pending_acid"]
 
+[sub_resource type="Resource" id="Resource_main_effect_1"]
+script = ExtResource("skill_stomach_size")
+rows_delta = 1
+
+[sub_resource type="Resource" id="Resource_main_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+
+[sub_resource type="Resource" id="Resource_sub_effect_1"]
+script = ExtResource("skill_pending_acid")
+rate = 0.1
+
+[sub_resource type="Resource" id="Resource_sub_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_sub_effect_1")])
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_cafjl")
 texture = ExtResource("4_block_texture")
@@ -15,6 +33,8 @@ skill_id = 100116
 rarity = 1
 display_name = "ルピナス"
 texture = ExtResource("2_texture")
+main_skill = SubResource("Resource_main_skill")
+sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "胃袋マスが縦に1マス増える。この花は重複不可"
 sub_description = "消化ダメージ+10%"

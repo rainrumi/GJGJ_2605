@@ -4,7 +4,25 @@
 [ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_g5ndj"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_revive.gd" id="skill_revive"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_skip_rest_time.gd" id="skill_skip_rest"]
 
+[sub_resource type="Resource" id="Resource_main_effect_1"]
+script = ExtResource("skill_revive")
+max_hp_bonus_rate = 0.5
+
+[sub_resource type="Resource" id="Resource_main_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+
+[sub_resource type="Resource" id="Resource_sub_effect_1"]
+script = ExtResource("skill_skip_rest")
+skip_count = 1
+
+[sub_resource type="Resource" id="Resource_sub_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_sub_effect_1")])
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_3n8c3")
 texture = ExtResource("4_block_texture")
@@ -14,6 +32,8 @@ script = ExtResource("3_g5ndj")
 skill_id = 100104
 display_name = "アネモネ"
 texture = ExtResource("2_texture")
+main_skill = SubResource("Resource_main_skill")
+sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "蘇生時の回復量がHP上限+50%増加。"
 sub_description = "この花を消化すると蘇生時の時間経過が発生しない。"

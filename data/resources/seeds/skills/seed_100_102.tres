@@ -4,7 +4,25 @@
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_lildo"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_l5omq"]
 [ext_resource type="Texture2D" uid="uid://bohjr6l6tyw7q" path="res://art/dreamseed/tex_seed_1000_No_200.png" id="4_q6u56"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_not_battle/seed_effect_on_not_battle_change_clear_recovery.gd" id="skill_clear_recovery"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_recover_hp.gd" id="skill_seed_hp"]
 
+[sub_resource type="Resource" id="Resource_main_effect_1"]
+script = ExtResource("skill_clear_recovery")
+recovery_rate = 0.1
+
+[sub_resource type="Resource" id="Resource_main_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+
+[sub_resource type="Resource" id="Resource_sub_effect_1"]
+script = ExtResource("skill_seed_hp")
+hp_rate = 0.05
+
+[sub_resource type="Resource" id="Resource_sub_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_sub_effect_1")])
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_sjvm2")
 texture = ExtResource("2_lildo")
@@ -14,6 +32,8 @@ script = ExtResource("3_l5omq")
 skill_id = 100102
 display_name = "カモミール"
 texture = ExtResource("4_q6u56")
+main_skill = SubResource("Resource_main_skill")
+sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "ステージクリア時HP10%回復"
 sub_description = "この花を消化するとHP5%回復"

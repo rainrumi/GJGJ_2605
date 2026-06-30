@@ -4,7 +4,25 @@
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_yn8ot"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_wfiqv"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate.gd" id="skill_pending_time"]
 
+[sub_resource type="Resource" id="Resource_main_effect_1"]
+script = ExtResource("skill_time_rate")
+rate = 0.05
+
+[sub_resource type="Resource" id="Resource_main_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+
+[sub_resource type="Resource" id="Resource_sub_effect_1"]
+script = ExtResource("skill_pending_time")
+rate = 0.15
+
+[sub_resource type="Resource" id="Resource_sub_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_sub_effect_1")])
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_8s68j")
 texture = ExtResource("4_block_texture")
@@ -14,6 +32,8 @@ script = ExtResource("3_wfiqv")
 skill_id = 100103
 display_name = "トケイソウ"
 texture = ExtResource("2_yn8ot")
+main_skill = SubResource("Resource_main_skill")
+sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "消化間隔-5%。この花はひとつしか持てない"
 sub_description = "この花を消化すると消化間隔-15%"

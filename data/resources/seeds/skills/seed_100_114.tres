@@ -4,7 +4,27 @@
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_6m0ja"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_progress_time/seed_effect_on_progress_time_damage_line.gd" id="skill_progress_line"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_adjacent.gd" id="skill_adjacent_damage"]
 
+[sub_resource type="Resource" id="Resource_main_effect_1"]
+script = ExtResource("skill_progress_line")
+damage = 500
+edge_only = true
+
+[sub_resource type="Resource" id="Resource_main_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+
+[sub_resource type="Resource" id="Resource_sub_effect_1"]
+script = ExtResource("skill_adjacent_damage")
+damage = 1000
+split = false
+
+[sub_resource type="Resource" id="Resource_sub_skill"]
+script = ExtResource("skill_seed_skill")
+effects = Array[Resource]([SubResource("Resource_sub_effect_1")])
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_pckvp")
 texture = ExtResource("4_block_texture")
@@ -15,6 +35,8 @@ skill_id = 100114
 rarity = 1
 display_name = "ノイバラ"
 texture = ExtResource("2_texture")
+main_skill = SubResource("Resource_main_skill")
+sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "時間が経過するたびに胃袋の端に隣接する消化ラインに触れているモノに500消化ダメージを与える。"
 sub_description = "隣接するモノに1000消化ダメージを与える。"
