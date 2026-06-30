@@ -1,30 +1,32 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://o8cavvep5sxl"]
 
-[ext_resource type="Script" path="res://scene/main/settings/settings_screen.gd" id="1_script"]
-[ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="2_font"]
-[ext_resource type="Texture2D" path="res://art/texture/still/tex_still_1000.png" id="3_texture"]
+[ext_resource type="Script" uid="uid://b7kc2qgsl7grm" path="res://scene/main/settings/settings_screen.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://cw37wjrw5yjos" path="res://art/texture/still/tex_still_1000.png" id="3_texture"]
 [ext_resource type="Theme" uid="uid://dm8y3onffije6" path="res://scene/ui/slider/slider_theme.tres" id="4_slider_theme"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://sound/se/click.mp3" id="5_click_se"]
+[ext_resource type="Script" uid="uid://d2k7deas22ski" path="res://scene/main/settings/settings_volume.gd" id="6_volume_row"]
+[ext_resource type="Script" uid="uid://5wrwvawrct0x" path="res://scene/main/settings/settings_option.gd" id="7_option_row"]
+[ext_resource type="Script" uid="uid://1jvcbmt8ujp4" path="res://scene/main/settings/settings_fullscreen.gd" id="8_fullscreen_row"]
+[ext_resource type="Script" uid="uid://dmcuggh1jlv3u" path="res://scene/main/settings/settings_button.gd" id="9_yi1nd"]
 
-[node name="SettingsScreen" type="CanvasLayer"]
-visible = false
+[node name="SettingsScreen" type="CanvasLayer" unique_id=1429017954]
 layer = 200
+visible = false
 script = ExtResource("1_script")
 
-[node name="SePlayer" type="AudioStreamPlayer" parent="."]
+[node name="SePlayer" type="AudioStreamPlayer" parent="." unique_id=1559835908]
 stream = ExtResource("5_click_se")
-bus = &"SE"
 
-[node name="Screen" type="Control" parent="."]
+[node name="Screen" type="Control" parent="." unique_id=738985149]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 0
 
-[node name="Dim" type="ColorRect" parent="Screen"]
+[node name="Dim" type="ColorRect" parent="Screen" unique_id=9840285]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -34,7 +36,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.03529412, 0.02745098, 0.04313726, 0.78)
 
-[node name="AccentTexture" type="TextureRect" parent="Screen"]
+[node name="AccentTexture" type="TextureRect" parent="Screen" unique_id=1927717156]
 self_modulate = Color(0.94, 0.88, 1, 0.16)
 layout_mode = 0
 offset_left = 410.0
@@ -46,15 +48,14 @@ texture = ExtResource("3_texture")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Panel" type="Panel" parent="Screen"]
+[node name="Panel" type="Panel" parent="Screen" unique_id=2124514777]
 layout_mode = 0
 offset_left = 84.0
 offset_top = 24.0
 offset_right = 556.0
 offset_bottom = 336.0
-mouse_filter = 0
 
-[node name="TitleLabel" type="Label" parent="Screen/Panel"]
+[node name="TitleLabel" type="Label" parent="Screen/Panel" unique_id=1407783960]
 layout_mode = 0
 offset_left = 22.0
 offset_top = 14.0
@@ -67,7 +68,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 20
 text = "設定"
 
-[node name="Rows" type="VBoxContainer" parent="Screen/Panel"]
+[node name="Rows" type="VBoxContainer" parent="Screen/Panel" unique_id=666271636]
 layout_mode = 0
 offset_left = 28.0
 offset_top = 54.0
@@ -75,11 +76,12 @@ offset_right = 444.0
 offset_bottom = 258.0
 theme_override_constants/separation = 8
 
-[node name="MasterVolume" type="HBoxContainer" parent="Screen/Panel/Rows"]
+[node name="MasterVolume" type="HBoxContainer" parent="Screen/Panel/Rows" unique_id=739975478]
 layout_mode = 2
 theme_override_constants/separation = 8
+script = ExtResource("6_volume_row")
 
-[node name="Label" type="Label" parent="Screen/Panel/Rows/MasterVolume"]
+[node name="Label" type="Label" parent="Screen/Panel/Rows/MasterVolume" unique_id=617981618]
 custom_minimum_size = Vector2(134, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -90,16 +92,14 @@ theme_override_font_sizes/font_size = 13
 text = "マスタ音量"
 vertical_alignment = 1
 
-[node name="Value" type="HSlider" parent="Screen/Panel/Rows/MasterVolume"]
+[node name="Value" type="HSlider" parent="Screen/Panel/Rows/MasterVolume" unique_id=1022717910]
 texture_filter = 1
 custom_minimum_size = Vector2(190, 22)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_slider_theme")
-max_value = 100.0
-step = 1.0
 
-[node name="ValueLabel" type="Label" parent="Screen/Panel/Rows/MasterVolume"]
+[node name="ValueLabel" type="Label" parent="Screen/Panel/Rows/MasterVolume" unique_id=1697224472]
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -110,11 +110,13 @@ theme_override_font_sizes/font_size = 12
 text = "80%"
 vertical_alignment = 1
 
-[node name="BgmVolume" type="HBoxContainer" parent="Screen/Panel/Rows"]
+[node name="BgmVolume" type="HBoxContainer" parent="Screen/Panel/Rows" unique_id=445505684]
 layout_mode = 2
 theme_override_constants/separation = 8
+script = ExtResource("6_volume_row")
+volume_type = "bgm"
 
-[node name="Label" type="Label" parent="Screen/Panel/Rows/BgmVolume"]
+[node name="Label" type="Label" parent="Screen/Panel/Rows/BgmVolume" unique_id=31846451]
 custom_minimum_size = Vector2(134, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -125,16 +127,14 @@ theme_override_font_sizes/font_size = 13
 text = "BGM音量"
 vertical_alignment = 1
 
-[node name="Value" type="HSlider" parent="Screen/Panel/Rows/BgmVolume"]
+[node name="Value" type="HSlider" parent="Screen/Panel/Rows/BgmVolume" unique_id=76303215]
 texture_filter = 1
 custom_minimum_size = Vector2(190, 22)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_slider_theme")
-max_value = 100.0
-step = 1.0
 
-[node name="ValueLabel" type="Label" parent="Screen/Panel/Rows/BgmVolume"]
+[node name="ValueLabel" type="Label" parent="Screen/Panel/Rows/BgmVolume" unique_id=423497184]
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -145,11 +145,13 @@ theme_override_font_sizes/font_size = 12
 text = "70%"
 vertical_alignment = 1
 
-[node name="SeVolume" type="HBoxContainer" parent="Screen/Panel/Rows"]
+[node name="SeVolume" type="HBoxContainer" parent="Screen/Panel/Rows" unique_id=773607367]
 layout_mode = 2
 theme_override_constants/separation = 8
+script = ExtResource("6_volume_row")
+volume_type = "se"
 
-[node name="Label" type="Label" parent="Screen/Panel/Rows/SeVolume"]
+[node name="Label" type="Label" parent="Screen/Panel/Rows/SeVolume" unique_id=1627899831]
 custom_minimum_size = Vector2(134, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -160,16 +162,14 @@ theme_override_font_sizes/font_size = 13
 text = "SE音量"
 vertical_alignment = 1
 
-[node name="Value" type="HSlider" parent="Screen/Panel/Rows/SeVolume"]
+[node name="Value" type="HSlider" parent="Screen/Panel/Rows/SeVolume" unique_id=1498868233]
 texture_filter = 1
 custom_minimum_size = Vector2(190, 22)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_slider_theme")
-max_value = 100.0
-step = 1.0
 
-[node name="ValueLabel" type="Label" parent="Screen/Panel/Rows/SeVolume"]
+[node name="ValueLabel" type="Label" parent="Screen/Panel/Rows/SeVolume" unique_id=320329768]
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -180,11 +180,12 @@ theme_override_font_sizes/font_size = 12
 text = "80%"
 vertical_alignment = 1
 
-[node name="TextSpeed" type="HBoxContainer" parent="Screen/Panel/Rows"]
+[node name="TextSpeed" type="HBoxContainer" parent="Screen/Panel/Rows" unique_id=1203319769]
 layout_mode = 2
 theme_override_constants/separation = 8
+script = ExtResource("7_option_row")
 
-[node name="Label" type="Label" parent="Screen/Panel/Rows/TextSpeed"]
+[node name="Label" type="Label" parent="Screen/Panel/Rows/TextSpeed" unique_id=306169039]
 custom_minimum_size = Vector2(134, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -195,18 +196,20 @@ theme_override_font_sizes/font_size = 13
 text = "テキスト速度"
 vertical_alignment = 1
 
-[node name="Value" type="OptionButton" parent="Screen/Panel/Rows/TextSpeed"]
+[node name="Value" type="OptionButton" parent="Screen/Panel/Rows/TextSpeed" unique_id=880254248]
 custom_minimum_size = Vector2(230, 24)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 
-[node name="WindowSize" type="HBoxContainer" parent="Screen/Panel/Rows"]
+[node name="WindowSize" type="HBoxContainer" parent="Screen/Panel/Rows" unique_id=91902139]
 layout_mode = 2
 theme_override_constants/separation = 8
+script = ExtResource("7_option_row")
+option_type = "window_size"
 
-[node name="Label" type="Label" parent="Screen/Panel/Rows/WindowSize"]
+[node name="Label" type="Label" parent="Screen/Panel/Rows/WindowSize" unique_id=1509644498]
 custom_minimum_size = Vector2(134, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -217,18 +220,19 @@ theme_override_font_sizes/font_size = 13
 text = "ウィンドウ"
 vertical_alignment = 1
 
-[node name="Value" type="OptionButton" parent="Screen/Panel/Rows/WindowSize"]
+[node name="Value" type="OptionButton" parent="Screen/Panel/Rows/WindowSize" unique_id=49787043]
 custom_minimum_size = Vector2(230, 24)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 
-[node name="Fullscreen" type="HBoxContainer" parent="Screen/Panel/Rows"]
+[node name="Fullscreen" type="HBoxContainer" parent="Screen/Panel/Rows" unique_id=142089738]
 layout_mode = 2
 theme_override_constants/separation = 8
+script = ExtResource("8_fullscreen_row")
 
-[node name="Label" type="Label" parent="Screen/Panel/Rows/Fullscreen"]
+[node name="Label" type="Label" parent="Screen/Panel/Rows/Fullscreen" unique_id=1175895997]
 custom_minimum_size = Vector2(134, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -239,17 +243,19 @@ theme_override_font_sizes/font_size = 13
 text = "フルスクリーン"
 vertical_alignment = 1
 
-[node name="Value" type="CheckBox" parent="Screen/Panel/Rows/Fullscreen"]
+[node name="Value" type="CheckBox" parent="Screen/Panel/Rows/Fullscreen" unique_id=1175600627]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 text = "ON"
 
-[node name="Difficulty" type="HBoxContainer" parent="Screen/Panel/Rows"]
+[node name="Difficulty" type="HBoxContainer" parent="Screen/Panel/Rows" unique_id=1799042487]
 layout_mode = 2
 theme_override_constants/separation = 8
+script = ExtResource("7_option_row")
+option_type = "difficulty"
 
-[node name="Label" type="Label" parent="Screen/Panel/Rows/Difficulty"]
+[node name="Label" type="Label" parent="Screen/Panel/Rows/Difficulty" unique_id=887955238]
 custom_minimum_size = Vector2(134, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -260,14 +266,14 @@ theme_override_font_sizes/font_size = 13
 text = "ゲーム難易度"
 vertical_alignment = 1
 
-[node name="Value" type="OptionButton" parent="Screen/Panel/Rows/Difficulty"]
+[node name="Value" type="OptionButton" parent="Screen/Panel/Rows/Difficulty" unique_id=204107476]
 custom_minimum_size = Vector2(230, 24)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 
-[node name="ResetButton" type="Button" parent="Screen/Panel"]
+[node name="ResetButton" type="Button" parent="Screen/Panel" unique_id=1569492301]
 layout_mode = 0
 offset_left = 96.0
 offset_top = 270.0
@@ -276,8 +282,9 @@ offset_bottom = 300.0
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 text = "初期化"
+script = ExtResource("9_yi1nd")
 
-[node name="TitleButton" type="Button" parent="Screen/Panel"]
+[node name="TitleButton" type="Button" parent="Screen/Panel" unique_id=718059657]
 layout_mode = 0
 offset_left = 206.0
 offset_top = 270.0
@@ -286,8 +293,9 @@ offset_bottom = 300.0
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 text = "タイトル"
+script = ExtResource("9_yi1nd")
 
-[node name="BackButton" type="Button" parent="Screen/Panel"]
+[node name="BackButton" type="Button" parent="Screen/Panel" unique_id=1221405624]
 layout_mode = 0
 offset_left = 330.0
 offset_top = 270.0
@@ -296,14 +304,23 @@ offset_bottom = 300.0
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 text = "戻る"
+script = ExtResource("9_yi1nd")
 
-[connection signal="value_changed" from="Screen/Panel/Rows/MasterVolume/Value" to="." method="_on_master_value_changed"]
-[connection signal="value_changed" from="Screen/Panel/Rows/BgmVolume/Value" to="." method="_on_bgm_value_changed"]
-[connection signal="value_changed" from="Screen/Panel/Rows/SeVolume/Value" to="." method="_on_se_value_changed"]
-[connection signal="item_selected" from="Screen/Panel/Rows/TextSpeed/Value" to="." method="_on_text_speed_item_selected"]
-[connection signal="item_selected" from="Screen/Panel/Rows/WindowSize/Value" to="." method="_on_window_size_item_selected"]
-[connection signal="toggled" from="Screen/Panel/Rows/Fullscreen/Value" to="." method="_on_fullscreen_toggled"]
-[connection signal="item_selected" from="Screen/Panel/Rows/Difficulty/Value" to="." method="_on_difficulty_item_selected"]
-[connection signal="pressed" from="Screen/Panel/ResetButton" to="." method="_on_reset_button_pressed"]
-[connection signal="pressed" from="Screen/Panel/TitleButton" to="." method="_on_title_button_pressed"]
-[connection signal="pressed" from="Screen/Panel/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="value_changed" from="Screen/Panel/Rows/MasterVolume/Value" to="Screen/Panel/Rows/MasterVolume" method="_on_value_changed"]
+[connection signal="value_changed" from="Screen/Panel/Rows/BgmVolume/Value" to="Screen/Panel/Rows/BgmVolume" method="_on_value_changed"]
+[connection signal="feedback_requested" from="Screen/Panel/Rows/SeVolume" to="." method="_on_setting_feedback_requested"]
+[connection signal="value_changed" from="Screen/Panel/Rows/SeVolume/Value" to="Screen/Panel/Rows/SeVolume" method="_on_value_changed"]
+[connection signal="feedback_requested" from="Screen/Panel/Rows/TextSpeed" to="." method="_on_setting_feedback_requested"]
+[connection signal="item_selected" from="Screen/Panel/Rows/TextSpeed/Value" to="Screen/Panel/Rows/TextSpeed" method="_on_item_selected"]
+[connection signal="feedback_requested" from="Screen/Panel/Rows/WindowSize" to="." method="_on_setting_feedback_requested"]
+[connection signal="item_selected" from="Screen/Panel/Rows/WindowSize/Value" to="Screen/Panel/Rows/WindowSize" method="_on_item_selected"]
+[connection signal="feedback_requested" from="Screen/Panel/Rows/Fullscreen" to="." method="_on_setting_feedback_requested"]
+[connection signal="toggled" from="Screen/Panel/Rows/Fullscreen/Value" to="Screen/Panel/Rows/Fullscreen" method="_on_toggled"]
+[connection signal="feedback_requested" from="Screen/Panel/Rows/Difficulty" to="." method="_on_setting_feedback_requested"]
+[connection signal="item_selected" from="Screen/Panel/Rows/Difficulty/Value" to="Screen/Panel/Rows/Difficulty" method="_on_item_selected"]
+[connection signal="action_requested" from="Screen/Panel/ResetButton" to="." method="_on_reset_button_action_requested"]
+[connection signal="pressed" from="Screen/Panel/ResetButton" to="Screen/Panel/ResetButton" method="_on_pressed"]
+[connection signal="action_requested" from="Screen/Panel/TitleButton" to="." method="_on_title_button_action_requested"]
+[connection signal="pressed" from="Screen/Panel/TitleButton" to="Screen/Panel/TitleButton" method="_on_pressed"]
+[connection signal="action_requested" from="Screen/Panel/BackButton" to="." method="_on_back_button_action_requested"]
+[connection signal="pressed" from="Screen/Panel/BackButton" to="Screen/Panel/BackButton" method="_on_pressed"]
