@@ -1,0 +1,19 @@
+dream_seed_block_digest_resolver.gd、seed_effect.gdの内容を整理します。
+
+- これまで上記のスクリプトで管理していたスキルごとの定数は使用しません。したがって削除すること。
+- seed_info.gdは新たにseed_effect.gdに書かれた型のカスタムリソースをそれぞれarrayで保持できるmain_skills,sub_skills変数を保持します。
+- seedが持つスキルの種類ごとにseed_effect.gdを継承したseed_effect_*.gdファイルを作成し、そこで処理に使用するメソッドや基礎パラメータの変数を管理します。
+  - これはカスタムリソースとしてseed_info.gdのmain_skills,sub_skillsにアタッチできます。
+- 新しいseed_effect.gdにはメインスキルとサブスキルに入れられたスキルを呼ぶことができる仮想メソッドが存在します。
+  - これはタイミングがあらかじめ決められており、タイミングに沿ってforを使用して呼び出す必要があります。
+  - 例として以下のように使用します。
+	- **消化されたとき**に発動するスキルはon_finished_acid()を呼び出します。
+	- **消化ダメージを受けたとき**に発動するスキルはon_acid()を呼び出します。
+  - seed_effectを継承した子クラスはこのメソッドをオーバーライドし、特有の処理を作成することができます。
+- seed_effect_*.gdに保持される変数は固定された変数です。
+  - スキルによって変動する変数はseed_skill_data.gdという新しいgdスクリプトをscene/main/game内に作成し、それを継承したseed_skill_*_data.gdを使用します。
+	- このクラスは必要なクラスのみ作成します。
+  - seed_effect_*.gdは標準的にintのpriorityを持っています。この数字はスキルの発動優先度を示します。
+	- スキル発動時のforではpriorityが昇順になるような順番でスキルを発動します。
+	- 現状、すべてのpriorityは100にしてください。
+- seed_effect.gdとその子クラスのgdはscene/main/game/seed内にskillフォルダを作成し、その中に格納してください。
