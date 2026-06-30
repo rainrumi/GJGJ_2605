@@ -1,4 +1,4 @@
-class_name BattleStartContext
+class_name BattleInfo
 extends RefCounted
 
 var starting_hp := 100

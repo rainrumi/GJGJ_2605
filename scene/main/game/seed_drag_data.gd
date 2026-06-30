@@ -1,4 +1,4 @@
-class_name DreamSeedDragResult
+class_name SeedDragData
 extends RefCounted
 
 var started := false

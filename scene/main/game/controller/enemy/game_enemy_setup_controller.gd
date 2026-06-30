@@ -35,8 +35,6 @@ func setup_enemies(enemies: Array[Enemy]) -> void:
 	if _enemy_preset != null and not _enemy_preset.enemies.is_empty():
 		_setup_preset_enemies(enemies)
 		return
-	_setup_legacy_random_enemies(enemies)
-
 
 # setup編成敵処理
 func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
@@ -69,38 +67,6 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 			enemy_positions[i],
 			skill_enabled
 		)
-
-
-# setuplegacyrandom敵処理
-func _setup_legacy_random_enemies(enemies: Array[Enemy]) -> void:
-	# selectedskills
-	var selected_skills := _get_random_nightmare_skills()
-	# 敵positions
-	var enemy_positions := _get_enemy_positions(selected_skills.size())
-	# maineffect敵番号
-	var main_effect_enemy_index := randi() % selected_skills.size() if not selected_skills.is_empty() else -1
-	for i in range(enemies.size()):
-		# 敵値
-		var enemy := enemies[i]
-		if i >= selected_skills.size():
-			enemy.visible = false
-			enemy.Acided = true
-			enemy.Aciding = false
-			enemy.has_main_effect = false
-			continue
-		# 胃袋サイズ
-		var stomach_size := _get_nightmare_stomach_size(selected_skills[i])
-		enemy.setup(
-			selected_skills[i],
-			Vector2(
-				_stomach.get_span_size(stomach_size.x),
-				_stomach.get_span_size(stomach_size.y)
-			),
-			i == main_effect_enemy_index,
-			enemy_positions[i],
-			selected_skills[i].nightmare_skill_enabled
-		)
-
 
 # 生成nuisance悪夢処理
 func spawn_nuisance_nightmare(
@@ -136,7 +102,7 @@ func spawn_nuisance_nightmare(
 	nuisance_enemy.set_Aciding(true)
 	_stomach.place_enemy(nuisance_enemy, spawn_cell)
 	return true
-
+	
 
 # availablenuisance敵取得
 func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -> Enemy:
@@ -152,37 +118,6 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 	enemies.append(enemy)
 	_input_controller.setup(enemies)
 	return enemy
-
-
-# random悪夢skills取得
-func _get_random_nightmare_skills() -> Array[EnemyInfo]:
-	# skillsbycategory
-	var skills_by_category: Dictionary = {}
-	return _pick_skills_from_category(skills_by_category)
-
-
-# skillsfromcategory選択
-func _pick_skills_from_category(skills_by_category: Dictionary) -> Array[EnemyInfo]:
-	# categories
-	var categories := skills_by_category.keys()
-	if categories.is_empty():
-		return []
-	# category
-	var category = categories[randi() % categories.size()]
-	# categoryskills
-	var category_skills: Array = skills_by_category[category].duplicate()
-	category_skills.shuffle()
-	# 最大数
-	var max_count := mini(4, category_skills.size())
-	# 最小数
-	var min_count := mini(2, max_count)
-	# 数値
-	var count := randi_range(min_count, max_count)
-	# selected
-	var selected: Array[EnemyInfo] = []
-	for i in range(count):
-		selected.append(category_skills[i] as EnemyInfo)
-	return selected
 
 
 # stageスキル有効

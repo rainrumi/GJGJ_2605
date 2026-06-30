@@ -1,4 +1,4 @@
-class_name GameDreamSeedController
+class_name GameSeedController
 extends RefCounted
 
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
@@ -90,9 +90,9 @@ func start_drag(
 	button: SeedButton,
 	seed: SeedInfo,
 	mouse_position: Vector2
-) -> DreamSeedDragResult:
+) -> SeedDragData:
 	# 結果
-	var result := DreamSeedDragResult.new()
+	var result := SeedDragData.new()
 	result.source_button = button
 	result.seed = seed
 	if is_dragging():
@@ -120,9 +120,9 @@ func move_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> void:
 
 
 # releaseドラッグ処理
-func release_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> DreamSeedDragResult:
+func release_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> SeedDragData:
 	# 結果
-	var result := DreamSeedDragResult.new()
+	var result := SeedDragData.new()
 	if _dragging_seed_block == null:
 		return result
 	result.started = true

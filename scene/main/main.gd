@@ -455,9 +455,9 @@ func _is_high_difficulty_day(day: int) -> bool:
 
 
 # 戦闘start文脈作成
-func _create_battle_start_context(reset_player_state: bool) -> BattleStartContext:
+func _create_battle_start_context(reset_player_state: bool) -> BattleInfo:
 	# 文脈
-	var context := BattleStartContext.new()
+	var context := BattleInfo.new()
 	context.starting_hp = _get_starting_hp(reset_player_state)
 	context.day = run_state.current_day
 	context.stage_id = run_state.selected_stage_id

@@ -35,7 +35,7 @@ var debug_numbers_visible := false
 var Acidion_timer: Timer
 var enemy_setup := GameEnemySetupController.new()
 var acid_controller := NightmareAcidController.new()
-var seed_controller := GameDreamSeedController.new()
+var seed_controller := GameSeedController.new()
 var acid_spawn_request_applier := AcidSpawnRequestApplier.new()
 var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
@@ -60,9 +60,9 @@ func _ready() -> void:
 func set_beat_conductor(conductor: BeatConductor) -> void:
 	beat_conductor = conductor
 # 戦闘開始
-func start_battle(context: BattleStartContext = null) -> void:
+func start_battle(context: BattleInfo = null) -> void:
 	# 戦闘文脈
-	var battle_context := context if context != null else BattleStartContext.new()
+	var battle_context := context if context != null else BattleInfo.new()
 	minutes = START_HOUR * 60
 	effective_max_hp = MAX_HP
 	hp = clampi(battle_context.starting_hp, 0, effective_max_hp)
@@ -324,7 +324,7 @@ func _on_seed_drag_released(
 
 
 # handle種ドラッグ結果処理
-func _handle_seed_drag_result(result: DreamSeedDragResult) -> void:
+func _handle_seed_drag_result(result: SeedDragData) -> void:
 	if result.started:
 		_play_click_se()
 	if result.placed:
@@ -332,7 +332,7 @@ func _handle_seed_drag_result(result: DreamSeedDragResult) -> void:
 
 
 # placed種ドラッグ結果適用
-func _apply_placed_seed_drag_result(result: DreamSeedDragResult) -> void:
+func _apply_placed_seed_drag_result(result: SeedDragData) -> void:
 	_refresh_after_battle_event()
 	if result.source_button == null or not is_instance_valid(result.source_button):
 		return
