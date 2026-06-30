@@ -12,9 +12,9 @@
 [ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/seed/seed_button_list/seed_button_list.gd" id="15_dream_seed_skill_button_list"]
 [ext_resource type="PackedScene" uid="uid://bfh6kan0q3y4s" path="res://scene/main/stage_clear/abandon/abandon_button.tscn" id="16_abandon_button"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="17_seed_skill_definition"]
-[ext_resource type="Script" uid="uid://d4m8xq2s7p9ab" path="res://scene/main/stage_clear/stage_clear_character_area.gd" id="18_character_area_script"]
-[ext_resource type="Script" uid="uid://c6k9j2m5x8w1r" path="res://scene/main/stage_clear/stage_clear_ui.gd" id="19_ui_script"]
-[ext_resource type="Script" uid="uid://b7n4rcq6t2v0h" path="res://scene/main/stage_clear/stage_clear_seed_choice_list.gd" id="20_seed_choice_list_script"]
+[ext_resource type="Script" uid="uid://d4m8xq2s7qaab" path="res://scene/main/stage_clear/stage_clear_character.gd" id="18_character_area_script"]
+[ext_resource type="Script" uid="uid://c6laj2m5x8w1r" path="res://scene/main/stage_clear/stage_clear_ui.gd" id="19_ui_script"]
+[ext_resource type="Script" uid="uid://b7n4rcq6t2v0h" path="res://scene/main/stage_clear/stage_clear_choice_seed.gd" id="20_seed_choice_list_script"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")

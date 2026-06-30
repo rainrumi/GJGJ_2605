@@ -1,4 +1,4 @@
-class_name StageClearRewardService
+class_name StageClearReward
 extends RefCounted
 
 
@@ -8,7 +8,7 @@ func can_plant_seed(
 	planted_flowers: Array[SeedInfo],
 	max_flowers: int
 ) -> bool:
-	return StageClearRecoveryCalculator.can_plant_seed(seed, planted_flowers, max_flowers)
+	return StageClearCalculatorRecovery.can_plant_seed(seed, planted_flowers, max_flowers)
 
 
 # replacefirst花処理

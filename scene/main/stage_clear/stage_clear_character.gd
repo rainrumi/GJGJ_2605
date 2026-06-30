@@ -1,4 +1,4 @@
-class_name StageClearCharacterArea
+class_name StageClearCharacter
 extends Node2D
 
 const HEAD_FLOWER_DISPLAY_COUNT := 0

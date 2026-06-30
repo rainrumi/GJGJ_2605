@@ -1,4 +1,4 @@
-class_name StageClearSeedChoiceList
+class_name StageClearChoiceSeed
 extends VBoxContainer
 
 signal choice_pressed(choice_index: int)

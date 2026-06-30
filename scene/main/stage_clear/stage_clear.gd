@@ -14,7 +14,7 @@ const MAX_HP := 100
 @export var seed_options: Array[SeedInfo] = []
 
 # 表示エリア
-@onready var character_area: StageClearCharacterArea = $CharacterArea
+@onready var character_area: StageClearCharacter = $CharacterArea
 # 操作UI
 @onready var ui: StageClearUi = $UI
 
@@ -29,7 +29,7 @@ var _extra_seed_choice_granted := false
 var _seed_choice_active := false
 var _base_seed_options: Array[SeedInfo] = []
 var _current_clear_stage: StageInfo
-var reward_service := StageClearRewardService.new()
+var reward_service := StageClearReward.new()
 
 
 # 初期化
@@ -293,7 +293,7 @@ func _finish_seed_choice(recovered_rate: float, message: String) -> void:
 
 # clear回復率
 func _get_planned_clear_recovery_rate() -> float:
-	return StageClearRecoveryCalculator.get_planned_recovery_rate(
+	return StageClearCalculatorRecovery.get_planned_recovery_rate(
 		planted_flowers,
 		clear_minutes,
 		_clear_recovery_applied,
@@ -311,7 +311,7 @@ func _get_seed_choice_recovery_rate(seed_index: int) -> float:
 	var seed := _get_seed_option(seed_index)
 	if seed == null:
 		return _get_planned_clear_recovery_rate()
-	return StageClearRecoveryCalculator.get_planned_recovery_rate(
+	return StageClearCalculatorRecovery.get_planned_recovery_rate(
 		_get_preview_flowers_for_seed(seed),
 		clear_minutes,
 		false,
@@ -333,7 +333,7 @@ func _get_abandon_recovery_rate() -> float:
 func _get_abandon_extra_recovery_rate() -> float:
 	if _clear_recovery_applied:
 		return 0.0
-	if StageClearRecoveryCalculator.is_clear_time_recovery_disabled(planted_flowers):
+	if StageClearCalculatorRecovery.is_clear_time_recovery_disabled(planted_flowers):
 		return 0.0
 	return ABANDON_HP_RECOVERY_RATE
 
@@ -353,7 +353,7 @@ func _reset_extra_seed_choices() -> void:
 func _update_extra_seed_choices() -> void:
 	if _extra_seed_choice_granted:
 		return
-	if StageClearRecoveryCalculator.grants_extra_seed_choice(planted_flowers, clear_minutes):
+	if StageClearCalculatorRecovery.grants_extra_seed_choice(planted_flowers, clear_minutes):
 		_remaining_extra_seed_choices += 1
 		_extra_seed_choice_granted = true
 

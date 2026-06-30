@@ -24,7 +24,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 # debugボタン
 @onready var debug_button: Button = $DebugButton
 # 種選択一覧
-@onready var seed_choice_list: StageClearSeedChoiceList = $SeedChoices
+@onready var seed_choice_list: StageClearChoiceSeed = $SeedChoices
 # 放棄ボタン
 @onready var abandon_button: StageClearAbandonButton = $AbandonButton
 

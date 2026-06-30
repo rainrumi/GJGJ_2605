@@ -1,4 +1,4 @@
-class_name StageClearRecoveryCalculator
+class_name StageClearCalculatorRecovery
 extends RefCounted
 
 const SKILL_2_CLEAR_RECOVERY_BONUS_RATE := 0.1
