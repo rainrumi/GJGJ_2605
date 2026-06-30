@@ -700,7 +700,7 @@ func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	if hp > previous_hp:
 		hp = mini(effective_max_hp, hp + acid_controller.add_heal_event(hp - previous_hp))
 	for seed in seed_controller.collect_Acided_seeds(Acided_enemies):
-		acid_controller.add_Acided_seed_effect(seed)
+		acid_controller.add_Acided_seed_effect(seed, minutes)
 	_apply_Acided_seed_hp_effects(Acided_enemies)
 	_emit_depleted_seed_sources(Acided_enemies)
 
@@ -828,11 +828,11 @@ func _apply_seed_stomach_size_effects() -> void:
 	for flower in seed_controller.get_flowers():
 		if flower == null:
 			continue
-		match flower.skill_id:
-			2118:
-				has_column_bonus = true
-			2119:
-				has_row_bonus = true
+		var skill := flower.get_main_skill()
+		if skill == null:
+			continue
+		has_column_bonus = has_column_bonus or skill.get_stomach_columns_delta() > 0
+		has_row_bonus = has_row_bonus or skill.get_stomach_rows_delta() > 0
 	# 列値
 	var next_columns := stomach.columns + (1 if has_column_bonus else 0)
 	# 行値

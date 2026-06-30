@@ -56,7 +56,7 @@ const STRENGTH_IRIYU_ADJACENT_WEAKEN := 20112
 const STRENGTH_IRIYU_DAMAGE_TO_ATTACK := 20113
 const THREE_OCLOCK_MINUTES := 27 * 60
 
-var seed_effects := SeedEffect.new()
+var seed_effects := SeedEffectResolver.new()
 var seed_block_resolver := DreamSeedBlockAcidResolver.new()
 var acid_order := 0
 # Side effects that can later move into AcidSideEffects / BattleTurnResultData.
@@ -272,8 +272,8 @@ func apply_direct_player_damage(amount: int) -> int:
 
 
 # 消化済み種effect追加
-func add_Acided_seed_effect(seed: SeedInfo) -> bool:
-	return seed_effects.add_Acided_seed_effect(seed)
+func add_Acided_seed_effect(seed: SeedInfo, minutes := 0) -> bool:
+	return seed_effects.add_Acided_seed_effect(seed, minutes)
 
 
 # 日数設定
