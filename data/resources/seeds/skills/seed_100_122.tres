@@ -11,7 +11,7 @@ texture = ExtResource("4_block_texture")
 
 [resource]
 script = ExtResource("3_hh77o")
-skill_id = 2132
+skill_id = 100122
 rarity = 1
 display_name = "トリカブト"
 texture = ExtResource("2_texture")

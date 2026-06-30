@@ -11,7 +11,7 @@ texture = ExtResource("4_block_texture")
 
 [resource]
 script = ExtResource("3_wfiqv")
-skill_id = 1003
+skill_id = 100103
 display_name = "トケイソウ"
 texture = ExtResource("2_yn8ot")
 acid_block = SubResource("Resource_drag_block")

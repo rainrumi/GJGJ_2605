@@ -11,7 +11,7 @@ texture = ExtResource("2_n5a61")
 
 [resource]
 script = ExtResource("3_ohkbt")
-skill_id = 2003
+skill_id = 100106
 rarity = 1
 display_name = "ゲッカビジン"
 texture = ExtResource("4_mmdek")
