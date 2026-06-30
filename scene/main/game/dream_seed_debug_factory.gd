@@ -32,8 +32,5 @@ func _append_debug_seed_flower_candidates(
 			continue
 		# スキル
 		var skill := skill_resource as SeedInfo
-		# 花値
-		var flower := SeedInfo.new()
-		flower.display_name = skill.display_name
-		flower.texture = skill.texture
-		candidates.append(flower)
+		# 種データ
+		candidates.append(skill)
