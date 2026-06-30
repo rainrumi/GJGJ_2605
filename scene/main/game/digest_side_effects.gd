@@ -2,7 +2,7 @@ class_name AcidSideEffects
 extends RefCounted
 
 var player_damage_values: Array[int] = []
-var spawn_requests: Array[AcidSpawnRequest] = []
+var spawn_requests: Array[BattleSpawnEnemyData] = []
 
 
 # 対象消去

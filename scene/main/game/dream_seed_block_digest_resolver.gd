@@ -100,7 +100,7 @@ func get_target_acid_damage_multiplier(target: Enemy, enemies: Array[Enemy]) -> 
 	for enemy in enemies:
 		if enemy == null or enemy == target or not enemy.is_active_in_stomach() or not enemy.has_seed():
 			continue
-		if not NightmarePlacementQuery.are_enemies_adjacent(enemy, target):
+		if not EnemyPlacementQuery.are_enemies_adjacent(enemy, target):
 			continue
 		match enemy.get_seed().skill_id:
 			PROPOSAL_RARE_RANDOM_EXTRA_Acid:
@@ -128,7 +128,7 @@ func _apply_adjacent_damage(
 	if damage <= 0:
 		return
 	# 隣接敵
-	var adjacent_enemies := NightmarePlacementQuery.get_adjacent_enemies(seed_block, enemies)
+	var adjacent_enemies := EnemyPlacementQuery.get_adjacent_enemies(seed_block, enemies)
 	if adjacent_enemies.is_empty():
 		return
 	# splitダメージ
@@ -170,7 +170,7 @@ func _apply_line_damage(
 
 # 隣接悪夢返却
 func _return_adjacent_nightmares(seed_block: Enemy, enemies: Array[Enemy]) -> void:
-	for adjacent_enemy in NightmarePlacementQuery.get_adjacent_enemies(seed_block, enemies):
+	for adjacent_enemy in EnemyPlacementQuery.get_adjacent_enemies(seed_block, enemies):
 		if adjacent_enemy == null or adjacent_enemy.is_Acided() or not adjacent_enemy.is_nightmare():
 			continue
 		adjacent_enemy.set_Aciding(false)

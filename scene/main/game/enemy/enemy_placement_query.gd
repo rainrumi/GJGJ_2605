@@ -1,4 +1,4 @@
-class_name NightmarePlacementQuery
+class_name EnemyPlacementQuery
 extends RefCounted
 
 

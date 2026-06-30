@@ -1,10 +1,10 @@
-class_name AcidSpawnRequestApplier
+class_name BattleSpawnEnemyDataApplier
 extends RefCounted
 
 
 # 要求適用
 func apply_requests(
-	spawn_requests: Array[AcidSpawnRequest],
+	spawn_requests: Array[BattleSpawnEnemyData],
 	enemies: Array[Enemy],
 	enemy_setup: GameEnemySetupController
 ) -> void:

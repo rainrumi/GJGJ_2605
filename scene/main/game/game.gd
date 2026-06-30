@@ -36,7 +36,7 @@ var Acidion_timer: Timer
 var enemy_setup := GameEnemySetupController.new()
 var acid_controller := NightmareAcidController.new()
 var seed_controller := GameSeedController.new()
-var acid_spawn_request_applier := AcidSpawnRequestApplier.new()
+var acid_spawn_request_applier := BattleSpawnEnemyDataApplier.new()
 var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
 var drag_offset := Vector2.ZERO
@@ -491,7 +491,7 @@ func _begin_acid_turn() -> bool:
 
 
 # run消化core処理
-func _run_acid_core(current_minutes: int, elapsed_minutes: int) -> AcidTurnResult:
+func _run_acid_core(current_minutes: int, elapsed_minutes: int) -> BattleTurnResultData:
 	# 消化済み敵
 	var Acided_enemies: Array[Enemy] = acid_controller.acid_nightmares(enemies, stomach, current_minutes, elapsed_minutes)
 	# 消化結果
@@ -689,7 +689,7 @@ func _clear_scheduled_acid_events() -> void:
 
 
 # 消化生成要求適用
-func _apply_acid_spawn_requests(spawn_requests: Array[AcidSpawnRequest]) -> void:
+func _apply_acid_spawn_requests(spawn_requests: Array[BattleSpawnEnemyData]) -> void:
 	acid_spawn_request_applier.apply_requests(spawn_requests, enemies, enemy_setup)
 
 

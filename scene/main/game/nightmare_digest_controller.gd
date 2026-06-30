@@ -59,9 +59,9 @@ const THREE_OCLOCK_MINUTES := 27 * 60
 var seed_effects := DreamSeedEffectCalculator.new()
 var seed_block_resolver := DreamSeedBlockAcidResolver.new()
 var acid_order := 0
-# Side effects that can later move into AcidSideEffects / AcidTurnResult.
+# Side effects that can later move into AcidSideEffects / BattleTurnResultData.
 var _pending_player_damage_values: Array[int] = []
-var _pending_spawn_requests: Array[AcidSpawnRequest] = []
+var _pending_spawn_requests: Array[BattleSpawnEnemyData] = []
 var _pending_extra_elapsed_minutes := 0
 var _pending_time_override_minutes := -1
 var _skill_7_base_hp: Dictionary = {}
@@ -352,9 +352,9 @@ func is_remove_from_stomach_disabled() -> bool:
 
 
 # buildturn結果処理
-func build_turn_result(Acided_enemies: Array[Enemy]) -> AcidTurnResult:
+func build_turn_result(Acided_enemies: Array[Enemy]) -> BattleTurnResultData:
 	# 結果
-	var result := AcidTurnResult.new()
+	var result := BattleTurnResultData.new()
 	result.Acided_enemies = Acided_enemies
 	result.spawn_requests = consume_spawn_requests()
 	result.extra_elapsed_minutes = _pending_extra_elapsed_minutes
@@ -374,9 +374,9 @@ func consume_pending_player_damage_values() -> Array[int]:
 
 
 # 生成要求消費
-func consume_spawn_requests() -> Array[AcidSpawnRequest]:
+func consume_spawn_requests() -> Array[BattleSpawnEnemyData]:
 	# 要求
-	var requests: Array[AcidSpawnRequest] = []
+	var requests: Array[BattleSpawnEnemyData] = []
 	requests.append_array(_pending_spawn_requests)
 	_pending_spawn_requests.clear()
 	return requests
@@ -561,9 +561,9 @@ func _create_spawn_request(
 	damage: int,
 	acid_damage_rate: float = 1.0,
 	global_acid_damage_rate: float = 1.0
-) -> AcidSpawnRequest:
+) -> BattleSpawnEnemyData:
 	# 要求
-	var request := AcidSpawnRequest.new()
+	var request := BattleSpawnEnemyData.new()
 	request.source_enemy = source_enemy
 	request.cell = cell
 	request.hp_rate = hp_rate
@@ -591,7 +591,7 @@ func _get_enemy_attack_damage(enemy: Enemy, enemies: Array[Enemy], stomach: Stom
 		damage = 0
 	if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_OPEN_CELL_ATTACK):
 		# open隣接cells
-		var open_adjacent_cells := NightmarePlacementQuery.get_open_adjacent_cell_count(enemy, enemies, stomach.columns, stomach.rows)
+		var open_adjacent_cells := EnemyPlacementQuery.get_open_adjacent_cell_count(enemy, enemies, stomach.columns, stomach.rows)
 		damage += roundi(float(enemy.get_base_damage()) * float(open_adjacent_cells))
 	if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_BOTTOM_ATTACK) and enemy.is_active_in_stomach():
 		# bottomcells
@@ -628,7 +628,7 @@ func _apply_acid_damage_share(
 		if not _has_nightmare_effect(enemy, STRENGTH_MIRUNE_FULL_DAMAGE_SHARE):
 			return
 	# 隣接敵
-	var adjacent_enemies := NightmarePlacementQuery.get_adjacent_enemies(enemy, enemies)
+	var adjacent_enemies := EnemyPlacementQuery.get_adjacent_enemies(enemy, enemies)
 	if adjacent_enemies.is_empty():
 		return
 	# share率
@@ -647,7 +647,7 @@ func _get_final_acid_damage(enemy: Enemy, enemies: Array[Enemy], stomach: Stomac
 	damage_rate *= seed_block_resolver.get_target_acid_damage_multiplier(enemy, enemies)
 	if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_OPEN_CELL_DEFENSE):
 		# open隣接cells
-		var open_adjacent_cells := NightmarePlacementQuery.get_open_adjacent_cell_count(enemy, enemies, stomach.columns, stomach.rows)
+		var open_adjacent_cells := EnemyPlacementQuery.get_open_adjacent_cell_count(enemy, enemies, stomach.columns, stomach.rows)
 		damage_rate *= maxf(
 			0.0,
 			1.0 - float(open_adjacent_cells) * SKILL_3_DAMAGE_REDUCTION_PER_OPEN_FACE
@@ -895,7 +895,7 @@ func _is_seed_kept_by_iriyu(enemy: Enemy, enemies: Array[Enemy]) -> bool:
 	if not enemy.has_seed() or not enemy.is_active_in_stomach():
 		return false
 	for other in enemies:
-		if _has_nightmare_effect(other, STRENGTH_IRIYU_KEEP_SEED) and NightmarePlacementQuery.are_enemies_adjacent(enemy, other):
+		if _has_nightmare_effect(other, STRENGTH_IRIYU_KEEP_SEED) and EnemyPlacementQuery.are_enemies_adjacent(enemy, other):
 			return true
 	return false
 
@@ -944,7 +944,7 @@ func _apply_max_hp_modifier(enemy: Enemy, key: String, multiplier: float, enable
 
 # iriyu隣接weaken適用
 func _apply_iriyu_adjacent_weaken(source: Enemy, enemies: Array[Enemy]) -> void:
-	for adjacent in NightmarePlacementQuery.get_adjacent_enemies(source, enemies):
+	for adjacent in EnemyPlacementQuery.get_adjacent_enemies(source, enemies):
 		if not adjacent.is_nightmare():
 			continue
 		# oncekey

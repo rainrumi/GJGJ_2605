@@ -1,4 +1,4 @@
-class_name AcidSpawnRequest
+class_name BattleSpawnEnemyData
 extends RefCounted
 
 var source_enemy: Enemy

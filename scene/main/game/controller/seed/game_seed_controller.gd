@@ -16,7 +16,7 @@ var _dragging_seed_block: Enemy
 var _dragging_seed_button_list: SeedButton
 var _dragging_seed: SeedInfo
 var _pending_depleted_sources_by_block: Dictionary = {}
-var debug_factory := DreamSeedDebugFactory.new()
+var debug_factory := SeedDebug.new()
 
 
 # setup処理

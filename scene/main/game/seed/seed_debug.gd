@@ -1,4 +1,4 @@
-class_name DreamSeedDebugFactory
+class_name SeedDebug
 extends RefCounted
 
 const seed_catalog: SeedCatalogInfo = preload("res://data/resources/seeds/seed_catalog.tres")
