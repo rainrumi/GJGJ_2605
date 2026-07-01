@@ -1,7 +1,7 @@
 class_name SeedEffectOnFinishAcidSeedChangeLine
 extends SeedEffect
 
-@export var line_delta := 0
+@export var line_delta := 0 # 列差分
 
 
 # 種消化完了

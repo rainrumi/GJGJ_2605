@@ -1,8 +1,8 @@
 class_name SeedEffectOnBattleChangeRevive
 extends SeedEffect
 
-@export var max_hp_bonus_rate := 0.0
-@export var skip_rest_time := false
+@export var max_hp_bonus_rate := 0.0 # 最大HP率
+@export var skip_rest_time := false # 休息省略
 
 
 # 戦闘中

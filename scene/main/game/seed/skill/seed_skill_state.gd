@@ -1,18 +1,18 @@
 class_name DreamSeedSkillState
 extends RefCounted
 
-var next_acid_damage_bonus_rate := 0.0
-var next_time_reduction_bonus_rate := 0.0
-var next_acid_damage_flat_bonus := 0
-var next_player_damage_multiplier_bonus := 0.0
-var next_heal_bonus_rate := 0.0
-var max_hp_bonus_rate := 0.0
-var recovery_accumulated_for_max_hp := 0
-var last_acid_damage_total := 0
-var last_hp_loss := 0
-var revive_count := 0
-var day := 1
-var remove_from_stomach_disabled := false
+var next_acid_damage_bonus_rate := 0.0 # 次酸倍率
+var next_time_reduction_bonus_rate := 0.0 # 次短縮率
+var next_acid_damage_flat_bonus := 0 # 次酸加算
+var next_player_damage_multiplier_bonus := 0.0 # 次被弾率
+var next_heal_bonus_rate := 0.0 # 次回復率
+var max_hp_bonus_rate := 0.0 # 最大HP率
+var recovery_accumulated_for_max_hp := 0 # 回復累計
+var last_acid_damage_total := 0 # 酸総量
+var last_hp_loss := 0 # 直近減HP
+var revive_count := 0 # 復活数
+var day := 1 # 日数
+var remove_from_stomach_disabled := false # 取出無効
 
 
 # 初期化

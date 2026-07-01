@@ -1,8 +1,8 @@
 class_name SeedEffectOnFinishAcidSeedChangeAcidDamageRate
 extends SeedEffect
 
-@export var rate := 0.0
-@export var start_minutes := -1
+@export var rate := 0.0 # 酸倍率
+@export var start_minutes := -1 # 開始分
 
 
 # 種消化完了

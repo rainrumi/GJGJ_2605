@@ -1,7 +1,7 @@
 class_name SeedEffectOnFinishAcidSeedSkipRestTime
 extends SeedEffect
 
-@export var skip_count := 1
+@export var skip_count := 1 # 省略回数
 
 
 # 種消化完了

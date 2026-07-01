@@ -1,9 +1,9 @@
 class_name SeedEffectOnRemoveFromStomachChangeDamage
 extends SeedEffect
 
-@export var damage_rate := -1.0
-@export var acid_damage_rate := 0.0
-@export var disable_after_seed_acid := false
+@export var damage_rate := -1.0 # 戻し率
+@export var acid_damage_rate := 0.0 # 酸戻し率
+@export var disable_after_seed_acid := false # 種後無効
 
 
 # 種消化完了

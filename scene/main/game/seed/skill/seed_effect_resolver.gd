@@ -1,8 +1,8 @@
 class_name SeedEffectResolver
 extends RefCounted
 
-var _state := DreamSeedSkillState.new()
-var _planted_flowers: Array[SeedInfo] = []
+var _state := DreamSeedSkillState.new() # 状態
+var _planted_flowers: Array[SeedInfo] = [] # 植付花
 
 
 # setup処理
@@ -23,17 +23,17 @@ func get_acid_damage_breakdown(
 	minutes: int,
 	consume_pending_bonus: bool = false
 ) -> Dictionary:
-	var context := {"minutes": minutes}
-	var seed_rate := _sum_float("get_acid_damage_rate", context)
+	var context := {"minutes": minutes} # 文脈
+	var seed_rate := _sum_float("get_acid_damage_rate", context) # 種倍率
 	if _state.next_acid_damage_bonus_rate != 0.0:
 		seed_rate += _state.next_acid_damage_bonus_rate
 	if consume_pending_bonus:
 		_state.next_acid_damage_bonus_rate = 0.0
-	var seed_buff := roundi(float(base_damage) * seed_rate)
-	var damage_after_seed := base_damage + seed_buff + _state.next_acid_damage_flat_bonus
+	var seed_buff := roundi(float(base_damage) * seed_rate) # 種加算
+	var damage_after_seed := base_damage + seed_buff + _state.next_acid_damage_flat_bonus # 種後ダメ
 	if consume_pending_bonus:
 		_state.next_acid_damage_flat_bonus = 0
-	var total_damage := maxi(1, roundi(float(damage_after_seed) * (1.0 + nightmare_rate)))
+	var total_damage := maxi(1, roundi(float(damage_after_seed) * (1.0 + nightmare_rate))) # 総ダメ
 	return {
 		"total": total_damage,
 		"base": base_damage,
@@ -48,11 +48,11 @@ func get_acid_damage_breakdown(
 func apply_player_damage(amount: int, base_damage: int) -> int:
 	if amount <= 0:
 		return 0
-	var context := {"amount": amount, "base_damage": base_damage}
-	var multiplier := 1.0 + _state.next_player_damage_multiplier_bonus
+	var context := {"amount": amount, "base_damage": base_damage} # 文脈
+	var multiplier := 1.0 + _state.next_player_damage_multiplier_bonus # 被弾倍率
 	multiplier += _sum_float("get_player_damage_multiplier_bonus", context)
-	var final_damage := maxi(0, roundi(float(amount) * maxf(0.0, multiplier)))
-	var damage_context := {
+	var final_damage := maxi(0, roundi(float(amount) * maxf(0.0, multiplier))) # 最終ダメ
+	var damage_context := { # 被弾文脈
 		"amount": amount,
 		"base_damage": base_damage,
 		"taken_damage": final_damage,
@@ -66,7 +66,7 @@ func apply_player_damage(amount: int, base_damage: int) -> int:
 
 # 時間reduction率取得
 func get_time_reduction_rate(consume_pending_bonus := false, minutes := 0) -> float:
-	var rate := _sum_float("get_time_reduction_rate", {"minutes": minutes})
+	var rate := _sum_float("get_time_reduction_rate", {"minutes": minutes}) # 短縮率
 	rate += _state.next_time_reduction_bonus_rate
 	if consume_pending_bonus:
 		_state.next_time_reduction_bonus_rate = 0.0
@@ -77,8 +77,8 @@ func get_time_reduction_rate(consume_pending_bonus := false, minutes := 0) -> fl
 func add_Acided_seed_effect(seed: SeedInfo, minutes := 0) -> bool:
 	if seed == null:
 		return false
-	var handled := false
-	var context := {"seed": seed, "minutes": minutes}
+	var handled := false # 処理済み
+	var context := {"seed": seed, "minutes": minutes} # 文脈
 	for effect in _get_seed_effects(seed.get_sub_skill()):
 		if effect.on_finish_acid_seed(_state, context):
 			handled = true
@@ -87,7 +87,7 @@ func add_Acided_seed_effect(seed: SeedInfo, minutes := 0) -> bool:
 
 # 休憩HP取得
 func get_rest_hp(max_hp: int, base_recovery_rate: float) -> int:
-	var recovery_rate := base_recovery_rate + get_rest_recovery_bonus_rate()
+	var recovery_rate := base_recovery_rate + get_rest_recovery_bonus_rate() # 回復率
 	return ceili(float(max_hp) * recovery_rate)
 
 
@@ -98,7 +98,7 @@ func get_rest_recovery_bonus_rate() -> float:
 
 # 種スキルID文言取得
 func get_seed_id_text() -> String:
-	var seed_ids: Array[String] = []
+	var seed_ids: Array[String] = [] # 種ID群
 	for flower in _planted_flowers:
 		if flower == null:
 			continue
@@ -112,8 +112,8 @@ func get_seed_id_text() -> String:
 func add_heal_event(amount: int) -> int:
 	if amount <= 0:
 		return 0
-	var context := {"amount": amount}
-	var bonus := ceili(float(amount) * _get_heal_bonus_rate(context))
+	var context := {"amount": amount} # 文脈
+	var bonus := ceili(float(amount) * _get_heal_bonus_rate(context)) # 回復加算
 	_state.recovery_accumulated_for_max_hp += amount
 	for effect in _get_main_effects():
 		effect.on_battle(_state, context)
@@ -134,7 +134,7 @@ func add_acid_damage_total(amount: int) -> void:
 
 # 消化ダメージ回復量消費
 func consume_acid_damage_heal_amount() -> int:
-	var heal_amount := floori(float(_state.last_acid_damage_total) * _sum_float("get_acid_damage_heal_rate", {}))
+	var heal_amount := floori(float(_state.last_acid_damage_total) * _sum_float("get_acid_damage_heal_rate", {})) # 回復量
 	_state.last_acid_damage_total = 0
 	return heal_amount
 
@@ -151,7 +151,7 @@ func get_Acided_nightmare_max_hp_rate() -> float:
 
 # 最大HP補正率取得
 func get_max_hp_bonus_rate() -> float:
-	var context := {"recovery_accumulated": _state.recovery_accumulated_for_max_hp}
+	var context := {"recovery_accumulated": _state.recovery_accumulated_for_max_hp} # 文脈
 	return maxf(0.0, _state.max_hp_bonus_rate + _sum_float("get_max_hp_bonus_rate", context))
 
 
@@ -179,7 +179,7 @@ func get_enemy_attack_delta(minutes: int) -> int:
 
 # 消化対象倍率取得
 func get_acid_target_multiplier() -> float:
-	var multiplier := 1.0
+	var multiplier := 1.0 # 倍率
 	for effect in _get_main_effects():
 		multiplier *= effect.get_acid_target_multiplier(_state, {})
 	return multiplier
@@ -187,9 +187,9 @@ func get_acid_target_multiplier() -> float:
 
 # removefrom胃袋ダメージ率取得
 func get_remove_from_stomach_damage_rate(default_rate: float) -> float:
-	var rate := default_rate
+	var rate := default_rate # 基準率
 	for effect in _get_main_effects():
-		var effect_rate := effect.get_remove_from_stomach_damage_rate(_state, {})
+		var effect_rate := effect.get_remove_from_stomach_damage_rate(_state, {}) # 効果率
 		if effect_rate >= 0.0:
 			rate = effect_rate
 	if _state.remove_from_stomach_disabled:
@@ -219,14 +219,14 @@ func set_day(value: int) -> void:
 
 # 回復補正率取得
 func _get_heal_bonus_rate(context: Dictionary) -> float:
-	var rate := _state.next_heal_bonus_rate + _sum_float("get_heal_bonus_rate", context)
+	var rate := _state.next_heal_bonus_rate + _sum_float("get_heal_bonus_rate", context) # 回復率
 	_state.next_heal_bonus_rate = 0.0
 	return rate
 
 
 # main効果取得
 func _get_main_effects() -> Array[SeedEffect]:
-	var effects: Array[SeedEffect] = []
+	var effects: Array[SeedEffect] = [] # 効果群
 	for flower in _planted_flowers:
 		if flower == null:
 			continue
@@ -239,7 +239,7 @@ func _get_main_effects() -> Array[SeedEffect]:
 
 # seed効果取得
 func _get_seed_effects(skill: SeedSkill) -> Array[SeedEffect]:
-	var effects: Array[SeedEffect] = []
+	var effects: Array[SeedEffect] = [] # 効果群
 	if skill == null:
 		return effects
 	effects.append_array(skill.get_effects())
@@ -248,7 +248,7 @@ func _get_seed_effects(skill: SeedSkill) -> Array[SeedEffect]:
 
 # float合計
 func _sum_float(method_name: String, context: Dictionary) -> float:
-	var total := 0.0
+	var total := 0.0 # 合計
 	for effect in _get_main_effects():
 		total += float(effect.call(method_name, _state, context))
 	return total
@@ -256,7 +256,7 @@ func _sum_float(method_name: String, context: Dictionary) -> float:
 
 # int合計
 func _sum_int(method_name: String, context: Dictionary) -> int:
-	var total := 0
+	var total := 0 # 合計
 	for effect in _get_main_effects():
 		total += int(effect.call(method_name, _state, context))
 	return total

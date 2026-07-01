@@ -1,8 +1,8 @@
 class_name SeedEffectOnBattleChangeStomachSize
 extends SeedEffect
 
-@export var columns_delta := 0
-@export var rows_delta := 0
+@export var columns_delta := 0 # 列差分
+@export var rows_delta := 0 # 行差分
 
 
 # 胃袋列補正

@@ -1,7 +1,7 @@
 class_name SeedEffectOnFinishAcidSeedChangeMaxHpRate
 extends SeedEffect
 
-@export var rate := 0.0
+@export var rate := 0.0 # 最大HP率
 
 
 # 種消化完了

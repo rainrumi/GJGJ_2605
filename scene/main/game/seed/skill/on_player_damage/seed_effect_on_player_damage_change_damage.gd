@@ -1,9 +1,9 @@
 class_name SeedEffectOnPlayerDamageChangeDamage
 extends SeedEffect
 
-@export var damage_multiplier_bonus := 0.0
-@export var reflect_acid_rate := 0.0
-@export var flat_acid_rate := 0.0
+@export var damage_multiplier_bonus := 0.0 # 被弾倍率
+@export var reflect_acid_rate := 0.0 # 反射酸率
+@export var flat_acid_rate := 0.0 # 固定酸率
 
 
 # 被ダメ倍率

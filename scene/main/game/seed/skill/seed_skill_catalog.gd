@@ -92,8 +92,8 @@ static func get_sub_skill(skill_id: int) -> SeedSkill:
 
 # skill作成
 static func _skill(effects: Array) -> SeedSkill:
-	var skill := SeedSkill.new()
-	var typed_effects: Array[Resource] = []
+	var skill := SeedSkill.new() # スキル
+	var typed_effects: Array[Resource] = [] # 効果配列
 	for effect in effects:
 		if effect is SeedEffect:
 			typed_effects.append(effect as Resource)
@@ -103,7 +103,7 @@ static func _skill(effects: Array) -> SeedSkill:
 
 # 消化率効果
 static func _acid_rate(rate: float, start_minutes := -1) -> SeedEffect:
-	var effect := SeedEffectOnBattleChangeAcidDamageRate.new()
+	var effect := SeedEffectOnBattleChangeAcidDamageRate.new() # 効果
 	effect.rate = rate
 	effect.start_minutes = start_minutes
 	return effect
@@ -111,7 +111,7 @@ static func _acid_rate(rate: float, start_minutes := -1) -> SeedEffect:
 
 # pending消化率
 static func _pending_acid(rate: float, start_minutes := -1) -> SeedEffect:
-	var effect := SeedEffectOnFinishAcidSeedChangeAcidDamageRate.new()
+	var effect := SeedEffectOnFinishAcidSeedChangeAcidDamageRate.new() # 効果
 	effect.rate = rate
 	effect.start_minutes = start_minutes
 	return effect
@@ -127,7 +127,7 @@ static func _time_rate(
 	elapsed_step_rate := 0.0,
 	max_abs_rate := 2.0
 ) -> SeedEffect:
-	var effect := SeedEffectOnBattleChangeTimeReductionRate.new()
+	var effect := SeedEffectOnBattleChangeTimeReductionRate.new() # 効果
 	effect.rate = rate
 	effect.before_minutes = before_minutes
 	effect.before_rate = before_rate
@@ -146,7 +146,7 @@ static func _pending_time(
 	before_rate := 0.0,
 	after_rate := 0.0
 ) -> SeedEffect:
-	var effect := SeedEffectOnFinishAcidSeedChangeTimeReductionRate.new()
+	var effect := SeedEffectOnFinishAcidSeedChangeTimeReductionRate.new() # 効果
 	effect.rate = rate
 	effect.before_minutes = before_minutes
 	effect.before_rate = before_rate
@@ -156,7 +156,7 @@ static func _pending_time(
 
 # 被ダメ効果
 static func _player_damage(multiplier: float, reflect_rate: float, flat_rate: float) -> SeedEffect:
-	var effect := SeedEffectOnPlayerDamageChangeDamage.new()
+	var effect := SeedEffectOnPlayerDamageChangeDamage.new() # 効果
 	effect.damage_multiplier_bonus = multiplier
 	effect.reflect_acid_rate = reflect_rate
 	effect.flat_acid_rate = flat_rate
@@ -165,7 +165,7 @@ static func _player_damage(multiplier: float, reflect_rate: float, flat_rate: fl
 
 # 回復効果
 static func _heal_effect(heal_bonus: float, heal_to_line: float, max_hp_from_recovery: float) -> SeedEffect:
-	var effect := SeedEffectOnHealChangeEffect.new()
+	var effect := SeedEffectOnHealChangeEffect.new() # 効果
 	effect.heal_bonus_rate = heal_bonus
 	effect.heal_to_line_damage_rate = heal_to_line
 	effect.max_hp_from_recovery_rate = max_hp_from_recovery
@@ -180,7 +180,7 @@ static func _recover_hp(
 	time_heal: float,
 	hour_heal: float
 ) -> SeedEffect:
-	var effect := SeedEffectOnBattleRecoverHp.new()
+	var effect := SeedEffectOnBattleRecoverHp.new() # 効果
 	effect.acid_damage_heal_rate = acid_heal
 	effect.acided_nightmare_heal_rate = nightmare_heal
 	effect.acided_nightmare_max_hp_rate = nightmare_max_hp
@@ -191,7 +191,7 @@ static func _recover_hp(
 
 # 対象倍率
 static func _target_multiplier(multiplier: float, random_chance := 0, random_multiplier := 1.0) -> SeedEffect:
-	var effect := SeedEffectOnTargetChangeAcidDamage.new()
+	var effect := SeedEffectOnTargetChangeAcidDamage.new() # 効果
 	effect.multiplier = multiplier
 	effect.random_chance = random_chance
 	effect.random_multiplier = random_multiplier
@@ -200,7 +200,7 @@ static func _target_multiplier(multiplier: float, random_chance := 0, random_mul
 
 # 吐戻し効果
 static func _return_damage(damage_rate: float, acid_damage_rate: float, disable_after_seed_acid: bool) -> SeedEffect:
-	var effect := SeedEffectOnRemoveFromStomachChangeDamage.new()
+	var effect := SeedEffectOnRemoveFromStomachChangeDamage.new() # 効果
 	effect.damage_rate = damage_rate
 	effect.acid_damage_rate = acid_damage_rate
 	effect.disable_after_seed_acid = disable_after_seed_acid
@@ -209,7 +209,7 @@ static func _return_damage(damage_rate: float, acid_damage_rate: float, disable_
 
 # 隣接ダメージ
 static func _adjacent_damage(damage: int, received_rate: float, split: bool) -> SeedEffect:
-	var effect := SeedEffectOnFinishAcidSeedBlockDamageAdjacent.new()
+	var effect := SeedEffectOnFinishAcidSeedBlockDamageAdjacent.new() # 効果
 	effect.damage = damage
 	effect.received_damage_rate = received_rate
 	effect.split = split
@@ -218,7 +218,7 @@ static func _adjacent_damage(damage: int, received_rate: float, split: bool) -> 
 
 # 列ダメージ
 static func _line_damage(damage: int, split: bool) -> SeedEffect:
-	var effect := SeedEffectOnFinishAcidSeedBlockDamageLine.new()
+	var effect := SeedEffectOnFinishAcidSeedBlockDamageLine.new() # 効果
 	effect.damage = damage
 	effect.split = split
 	return effect
@@ -231,7 +231,7 @@ static func _return_adjacent() -> SeedEffect:
 
 # 胃袋サイズ
 static func _stomach_size(columns: int, rows: int) -> SeedEffect:
-	var effect := SeedEffectOnBattleChangeStomachSize.new()
+	var effect := SeedEffectOnBattleChangeStomachSize.new() # 効果
 	effect.columns_delta = columns
 	effect.rows_delta = rows
 	return effect
@@ -239,6 +239,6 @@ static func _stomach_size(columns: int, rows: int) -> SeedEffect:
 
 # pending最大HP
 static func _pending_max_hp(rate: float) -> SeedEffect:
-	var effect := SeedEffectOnFinishAcidSeedChangeMaxHpRate.new()
+	var effect := SeedEffectOnFinishAcidSeedChangeMaxHpRate.new() # 効果
 	effect.rate = rate
 	return effect
