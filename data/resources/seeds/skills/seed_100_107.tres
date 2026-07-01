@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_net8h"]
 [ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="4_aq1du"]
 [ext_resource type="Script" uid="uid://dcxsalhctu1yw" path="res://scene/main/game/seed/skill/on_not_battle/seed_effect_on_not_battle_change_clear_recovery.gd" id="skill_clear_recovery"]
-[ext_resource type="Script" uid="uid://723kakfbp6lv" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate.gd" id="skill_pending_acid"]
+[ext_resource type="Script" uid="uid://cq36h2j85k72s" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate_after_clock.gd" id="skill_pending_acid"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_drag_block"]

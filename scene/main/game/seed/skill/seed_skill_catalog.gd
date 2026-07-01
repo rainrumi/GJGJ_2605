@@ -62,7 +62,7 @@ static func get_sub_skill(skill_id: int) -> SeedSkill:
 		2003, 100106:
 			return _skill([_pending_time(0.50)])
 		2004, 100107:
-			return _skill([_pending_acid(2.0, 28 * 60)])
+			return _skill([_pending_acid_after_clock(2.0, 28 * 60)])
 		2108, 100110:
 			return _skill([_target_multiplier(2.0)])
 		2113, 100112:
@@ -80,7 +80,7 @@ static func get_sub_skill(skill_id: int) -> SeedSkill:
 		2126, 100120:
 			return _skill([_pending_max_hp(0.10)])
 		2134, 100123:
-			return _skill([_pending_time(0.0, -1, 26 * 60, 0.80, -0.80)])
+			return _skill([_pending_time_clock_before(0.0, 26 * 60, 0.80, -0.80)])
 		2136, 100124:
 			return _skill([_pending_time(-0.04)])
 		2137, 100125:
@@ -109,8 +109,15 @@ static func _acid_rate(rate: float) -> SeedEffect:
 
 
 # pending消化率
-static func _pending_acid(rate: float, start_minutes := -1) -> SeedEffect:
+static func _pending_acid(rate: float) -> SeedEffect:
 	var effect := SeedEffectOnFinishAcidSeedChangeAcidDamageRate.new() # 効果
+	effect.rate = rate
+	return effect
+
+
+# pending時刻後消化率
+static func _pending_acid_after_clock(rate: float, start_minutes: int) -> SeedEffect:
+	var effect := SeedEffectOnFinishAcidSeedChangeAcidDamageRateAfterClock.new() # 効果
 	effect.rate = rate
 	effect.start_minutes = start_minutes
 	return effect
@@ -138,14 +145,20 @@ static func _time_rate(
 
 
 # pending時間率
-static func _pending_time(
-	rate: float,
-	_unused_start := -1,
-	before_minutes := -1,
-	before_rate := 0.0,
-	after_rate := 0.0
-) -> SeedEffect:
+static func _pending_time(rate: float) -> SeedEffect:
 	var effect := SeedEffectOnFinishAcidSeedChangeTimeReductionRate.new() # 効果
+	effect.rate = rate
+	return effect
+
+
+# pending時刻前時間率
+static func _pending_time_clock_before(
+	rate: float,
+	before_minutes: int,
+	before_rate: float,
+	after_rate: float
+) -> SeedEffect:
+	var effect := SeedEffectOnFinishAcidSeedChangeTimeReductionRateBeforeClock.new() # 効果
 	effect.rate = rate
 	effect.before_minutes = before_minutes
 	effect.before_rate = before_rate
