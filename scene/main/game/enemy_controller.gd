@@ -75,7 +75,7 @@ var _strength_hp_modifiers: Dictionary = {}
 
 
 # setup処理
-func setup(flowers: Array) -> void:
+func setup(flowers: Array, battle_start_minutes: int = -1) -> void:
 	acid_order = 0
 	_pending_player_damage_values.clear()
 	_pending_spawn_requests.clear()
@@ -89,12 +89,12 @@ func setup(flowers: Array) -> void:
 	_strength_once_keys.clear()
 	_strength_base_max_hp.clear()
 	_strength_hp_modifiers.clear()
-	seed_effects.setup(flowers)
+	seed_effects.setup(flowers, battle_start_minutes)
 
 
 # 種effect花設定
-func set_seed_effect_flowers(flowers: Array) -> void:
-	seed_effects.setup(flowers)
+func set_seed_effect_flowers(flowers: Array, battle_start_minutes: int = -1) -> void:
+	seed_effects.setup(flowers, battle_start_minutes)
 
 
 # 消化order初期化

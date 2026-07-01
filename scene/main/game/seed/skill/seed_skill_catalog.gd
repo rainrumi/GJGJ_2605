@@ -102,10 +102,9 @@ static func _skill(effects: Array) -> SeedSkill:
 
 
 # 消化率効果
-static func _acid_rate(rate: float, start_minutes := -1) -> SeedEffect:
+static func _acid_rate(rate: float) -> SeedEffect:
 	var effect := SeedEffectOnBattleChangeAcidDamageRate.new() # 効果
 	effect.rate = rate
-	effect.start_minutes = start_minutes
 	return effect
 
 

@@ -3,10 +3,12 @@ extends RefCounted
 
 var _state := DreamSeedSkillState.new() # 状態
 var _planted_flowers: Array[SeedInfo] = [] # 植付花
+var _battle_start_minutes := -1 # 開始分
 
 
 # setup処理
-func setup(flowers: Array) -> void:
+func setup(flowers: Array, battle_start_minutes: int = -1) -> void:
+	_battle_start_minutes = battle_start_minutes
 	_planted_flowers.clear()
 	for flower in flowers:
 		if flower is SeedInfo:
@@ -23,7 +25,7 @@ func get_acid_damage_breakdown(
 	minutes: int,
 	consume_pending_bonus: bool = false
 ) -> Dictionary:
-	var context := {"minutes": minutes} # 文脈
+	var context := {"minutes": minutes, "battle_start_minutes": _battle_start_minutes} # 文脈
 	var seed_rate := _sum_float("get_acid_damage_rate", context) # 種倍率
 	if _state.next_acid_damage_bonus_rate != 0.0:
 		seed_rate += _state.next_acid_damage_bonus_rate
