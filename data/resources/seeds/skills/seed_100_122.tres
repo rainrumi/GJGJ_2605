@@ -38,4 +38,4 @@ main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "HPが減るたびに消化間隔+1%。最大200%。"
-sub_description = "この花を消化すると隣接する敵の攻撃力-40%"
+sub_description = "この花を消化すると隣接する敵の攻撃力-40%（1回だけ-100%とかのがいいかな？）"
