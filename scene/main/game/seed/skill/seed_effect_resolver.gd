@@ -3,12 +3,10 @@ extends RefCounted
 
 var _state := DreamSeedSkillState.new() # 状態
 var _planted_flowers: Array[SeedInfo] = [] # 植付花
-var _battle_start_minutes := -1 # 開始分
 
 
 # setup処理
-func setup(flowers: Array, battle_start_minutes: int = -1) -> void:
-	_battle_start_minutes = battle_start_minutes
+func setup(flowers: Array) -> void:
 	_planted_flowers.clear()
 	for flower in flowers:
 		if flower is SeedInfo:
@@ -25,8 +23,9 @@ func get_acid_damage_breakdown(
 	minutes: int,
 	consume_pending_bonus: bool = false
 ) -> Dictionary:
-	var context := {"minutes": minutes, "battle_start_minutes": _battle_start_minutes} # 文脈
+	var context := {"minutes": minutes} # 文脈
 	var seed_rate := _sum_float("get_acid_damage_rate", context) # 種倍率
+	seed_rate += _state.progress_acid_damage_bonus_rate
 	if _state.next_acid_damage_bonus_rate != 0.0:
 		seed_rate += _state.next_acid_damage_bonus_rate
 	if consume_pending_bonus:
@@ -64,6 +63,18 @@ func apply_player_damage(amount: int, base_damage: int) -> int:
 	_state.next_player_damage_multiplier_bonus = 0.0
 	_state.last_hp_loss = final_damage
 	return final_damage
+
+
+# 時間経過適用
+func apply_progress_time(previous_minutes: int, minutes: int) -> void:
+	var elapsed_minutes := maxi(0, minutes - previous_minutes) # 経過分
+	var context := { # 文脈
+		"previous_minutes": previous_minutes,
+		"minutes": minutes,
+		"elapsed_minutes": elapsed_minutes,
+	}
+	for effect in _get_main_effects():
+		effect.on_progress_time(_state, context)
 
 
 # 時間reduction率取得
