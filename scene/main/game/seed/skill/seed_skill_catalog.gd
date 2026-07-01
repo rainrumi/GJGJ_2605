@@ -7,12 +7,19 @@ static func get_main_skill(skill_id: int) -> SeedSkill:
 	match skill_id:
 		1001, 100101:
 			return _skill([_acid_rate(0.10)])
+		1002, 100102:
+			return _skill([_selected_rewerd_hp(0.10)])
 		1003, 100103:
 			return _skill([_time_rate(0.05)])
+		2003, 100106:
+			return _skill([_selected_rewerd_acid_before_clock(0.05, 25 * 60)])
 		2002, 100105:
 			return _skill([_player_damage(0.30, 0.0, 0.30)])
 		2004, 100107:
-			return _skill([])
+			return _skill([
+				_selected_rewerd_disable_clear_recovery(),
+				_selected_rewerd_extra_choice_after_clock(1, 28 * 60),
+			])
 		2005, 100108:
 			return _skill([_acid_rate(0.10)])
 		2107, 100109:
@@ -198,6 +205,34 @@ static func _heal_effect(heal_bonus: float, heal_to_line: float, max_hp_from_rec
 	effect.heal_bonus_rate = heal_bonus
 	effect.heal_to_line_damage_rate = heal_to_line
 	effect.max_hp_from_recovery_rate = max_hp_from_recovery
+	return effect
+
+
+# 報酬HP
+static func _selected_rewerd_hp(recovery_rate: float) -> SeedEffect:
+	var effect := SeedEffectOnSelectedRewerdChangeHp.new() # 効果
+	effect.recovery_rate = recovery_rate
+	return effect
+
+
+# 報酬酸以前
+static func _selected_rewerd_acid_before_clock(rate: float, before_minutes: int) -> SeedEffect:
+	var effect := SeedEffectOnSelectedRewerdChangeAcidDamageRateBeforeClock.new() # 効果
+	effect.rate = rate
+	effect.before_minutes = before_minutes
+	return effect
+
+
+# 報酬回復無効
+static func _selected_rewerd_disable_clear_recovery() -> SeedEffect:
+	return SeedEffectOnSelectedRewerdDisableClearRecovery.new()
+
+
+# 報酬追加以降
+static func _selected_rewerd_extra_choice_after_clock(choice_count: int, start_minutes: int) -> SeedEffect:
+	var effect := SeedEffectOnSelectedRewerdAddExtraChoiceAfterClock.new() # 効果
+	effect.choice_count = choice_count
+	effect.start_minutes = start_minutes
 	return effect
 
 

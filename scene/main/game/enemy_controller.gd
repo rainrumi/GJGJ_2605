@@ -306,6 +306,11 @@ func add_max_hp_bonus_rate(rate: float) -> void:
 	seed_effects.add_max_hp_bonus_rate(rate)
 
 
+# 消化率加算
+func add_acid_damage_bonus_rate(rate: float) -> void:
+	seed_effects.add_acid_damage_bonus_rate(rate)
+
+
 # 時間HP回復率取得
 func get_time_hp_recovery_rate(active_count: int) -> float:
 	return seed_effects.get_time_hp_recovery_rate(active_count)

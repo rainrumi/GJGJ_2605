@@ -466,6 +466,7 @@ func _create_battle_start_context(reset_player_state: bool) -> BattleInfo:
 	context.stomach_columns = run_state.stomach_columns
 	context.stomach_rows = run_state.stomach_rows
 	context.flowers = run_state.planted_flowers.duplicate()
+	context.permanent_acid_damage_bonus_rate = run_state.permanent_acid_damage_bonus_rate
 	return context
 
 
@@ -483,6 +484,8 @@ func _sync_run_state_from_stage_clear() -> void:
 		run_state.current_hp = stage_clear.get_current_hp()
 	if stage_clear.has_method("get_planted_flowers"):
 		run_state.planted_flowers = stage_clear.get_planted_flowers()
+	if stage_clear.has_method("get_permanent_acid_damage_bonus_rate"):
+		run_state.permanent_acid_damage_bonus_rate = stage_clear.get_permanent_acid_damage_bonus_rate()
 
 
 # startingHP取得

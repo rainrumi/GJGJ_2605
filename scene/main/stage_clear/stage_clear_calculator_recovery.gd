@@ -1,12 +1,6 @@
 class_name StageClearCalculatorRecovery
 extends RefCounted
 
-const SKILL_2_CLEAR_RECOVERY_BONUS_RATE := 0.1
-const seed_CLEAR_RECOVERY_UP := 1002
-const seed_RARE_CLEAR_RECOVERY_DISABLE := 2004
-const seed_SPECIAL_EXTRA_CHOICE_START_HOUR := 28
-
-
 # plant種判定
 static func can_plant_seed(seed: SeedInfo, planted_flowers: Array[SeedInfo], max_flowers: int) -> bool:
 	if seed == null:
@@ -36,7 +30,7 @@ static func get_planned_recovery_rate(
 ) -> float:
 	if recovery_applied:
 		return 0.0
-	return get_clear_time_recovery_rate(planted_flowers, clear_minutes, start_hour, end_hour, base_rate, hourly_loss_rate) + get_seed_bonus_rate(planted_flowers)
+	return get_clear_time_recovery_rate(planted_flowers, clear_minutes, start_hour, end_hour, base_rate, hourly_loss_rate) + get_seed_bonus_rate(planted_flowers, clear_minutes)
 
 
 # clear時間回復率取得
@@ -48,7 +42,7 @@ static func get_clear_time_recovery_rate(
 	base_rate: float,
 	hourly_loss_rate: float
 ) -> float:
-	if is_clear_time_recovery_disabled(planted_flowers):
+	if is_clear_time_recovery_disabled(planted_flowers, clear_minutes):
 		return 0.0
 	# clear時
 	var clear_hour := int(clear_minutes / 60)
@@ -60,29 +54,71 @@ static func get_clear_time_recovery_rate(
 
 
 # 種補正率取得
-static func get_seed_bonus_rate(planted_flowers: Array[SeedInfo]) -> float:
-	# 補正率
-	var bonus_rate := 0.0
-	for flower in planted_flowers:
-		if flower == null:
-			continue
-		if flower.skill_id == seed_CLEAR_RECOVERY_UP:
-			bonus_rate += SKILL_2_CLEAR_RECOVERY_BONUS_RATE
-	return bonus_rate
+static func get_seed_bonus_rate(planted_flowers: Array[SeedInfo], clear_minutes := 0) -> float:
+	return float(get_selecting_rewerd_context(planted_flowers, clear_minutes).get("hp_recovery_rate", 0.0))
 
 
 # clear時間回復disabled判定
-static func is_clear_time_recovery_disabled(planted_flowers: Array[SeedInfo]) -> bool:
-	for flower in planted_flowers:
-		if flower == null:
-			continue
-		if flower.skill_id == seed_RARE_CLEAR_RECOVERY_DISABLE:
-			return true
-	return false
+static func is_clear_time_recovery_disabled(planted_flowers: Array[SeedInfo], clear_minutes := 0) -> bool:
+	return bool(get_selecting_rewerd_context(planted_flowers, clear_minutes).get("clear_time_recovery_disabled", false))
 
 
 # grantsextra種選択肢処理
 static func grants_extra_seed_choice(planted_flowers: Array[SeedInfo], clear_minutes: int) -> bool:
-	if clear_minutes < seed_SPECIAL_EXTRA_CHOICE_START_HOUR * 60:
-		return false
-	return is_clear_time_recovery_disabled(planted_flowers)
+	return get_extra_seed_choice_count(planted_flowers, clear_minutes) > 0
+
+
+# 追加選択数取得
+static func get_extra_seed_choice_count(planted_flowers: Array[SeedInfo], clear_minutes: int) -> int:
+	return int(get_selected_rewerd_context(planted_flowers, clear_minutes).get("extra_seed_choice_count", 0))
+
+
+# 選択中効果取得
+static func get_selecting_rewerd_context(planted_flowers: Array[SeedInfo], clear_minutes: int) -> Dictionary:
+	var context := _create_rewerd_context(clear_minutes) # 文脈
+	var state := DreamSeedSkillState.new() # 状態
+	for effect in _get_main_effects(planted_flowers):
+		effect.on_selecting_rewerd(state, context)
+	return context
+
+
+# 選択後効果取得
+static func get_selected_rewerd_context(planted_flowers: Array[SeedInfo], clear_minutes: int) -> Dictionary:
+	var context := _create_rewerd_context(clear_minutes) # 文脈
+	var state := DreamSeedSkillState.new() # 状態
+	for effect in _get_main_effects(planted_flowers):
+		effect.on_selected_rewerd(state, context)
+	return context
+
+
+# 文脈作成
+static func _create_rewerd_context(clear_minutes: int) -> Dictionary:
+	return {
+		"clear_minutes": clear_minutes,
+		"hp_recovery_rate": 0.0,
+		"extra_seed_choice_count": 0,
+		"permanent_acid_rate": 0.0,
+		"clear_time_recovery_disabled": false,
+	}
+
+
+# main効果取得
+static func _get_main_effects(planted_flowers: Array[SeedInfo]) -> Array[SeedEffect]:
+	var effects: Array[SeedEffect] = [] # 効果
+	for flower in planted_flowers:
+		if flower == null:
+			continue
+		effects.append_array(_get_seed_effects(flower.get_main_skill()))
+	effects.sort_custom(func(a: SeedEffect, b: SeedEffect) -> bool:
+		return a.priority < b.priority
+	)
+	return effects
+
+
+# 種効果取得
+static func _get_seed_effects(skill: SeedSkill) -> Array[SeedEffect]:
+	var effects: Array[SeedEffect] = [] # 効果
+	if skill == null:
+		return effects
+	effects.append_array(skill.get_effects())
+	return effects

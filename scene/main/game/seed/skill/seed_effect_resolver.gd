@@ -225,6 +225,11 @@ func add_max_hp_bonus_rate(rate: float) -> void:
 	_state.max_hp_bonus_rate += rate
 
 
+# 消化率加算
+func add_acid_damage_bonus_rate(rate: float) -> void:
+	_state.progress_acid_damage_bonus_rate += rate
+
+
 # 日数設定
 func set_day(value: int) -> void:
 	_state.day = maxi(1, value)

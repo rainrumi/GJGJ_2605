@@ -21,9 +21,11 @@ const MAX_HP := 100
 var planted_flowers: Array[SeedInfo] = []
 var current_hp := MAX_HP
 var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
+var permanent_acid_damage_bonus_rate := 0.0
 var debug_numbers_visible := false
 
 var _clear_recovery_applied := false
+var _selected_rewerd_effect_applied := false
 var _remaining_extra_seed_choices := 0
 var _extra_seed_choice_granted := false
 var _seed_choice_active := false
@@ -59,7 +61,6 @@ func setup_clear_result(value: int, cleared_minutes: int, cleared_stage: StageIn
 	_current_clear_stage = cleared_stage
 	_restore_base_seed_options()
 	_apply_stage_drop_options(cleared_stage)
-	_update_extra_seed_choices()
 	if is_node_ready():
 		_set_hp(current_hp, false)
 		_show_select_mode()
@@ -88,6 +89,11 @@ func get_planted_flowers() -> Array[SeedInfo]:
 		if flower != null:
 			flowers.append(flower)
 	return flowers
+
+
+# 永続酸率取得
+func get_permanent_acid_damage_bonus_rate() -> float:
+	return permanent_acid_damage_bonus_rate
 
 
 # 花削除
@@ -130,7 +136,9 @@ func _initialize_planted_flowers() -> void:
 func _reset_clear_state() -> void:
 	current_hp = MAX_HP
 	clear_minutes = CLEAR_RECOVERY_START_HOUR * 60
+	permanent_acid_damage_bonus_rate = 0.0
 	_clear_recovery_applied = false
+	_selected_rewerd_effect_applied = false
 	_reset_extra_seed_choices()
 
 
@@ -138,6 +146,7 @@ func _reset_clear_state() -> void:
 func _set_clear_hp_state(value: int) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	_clear_recovery_applied = false
+	_selected_rewerd_effect_applied = false
 	_reset_extra_seed_choices()
 
 
@@ -146,6 +155,7 @@ func _set_clear_result_state(value: int, cleared_minutes: int) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	clear_minutes = cleared_minutes
 	_clear_recovery_applied = false
+	_selected_rewerd_effect_applied = false
 	_reset_extra_seed_choices()
 
 
@@ -333,7 +343,7 @@ func _get_abandon_recovery_rate() -> float:
 func _get_abandon_extra_recovery_rate() -> float:
 	if _clear_recovery_applied:
 		return 0.0
-	if StageClearCalculatorRecovery.is_clear_time_recovery_disabled(planted_flowers):
+	if StageClearCalculatorRecovery.is_clear_time_recovery_disabled(planted_flowers, clear_minutes):
 		return 0.0
 	return ABANDON_HP_RECOVERY_RATE
 
@@ -349,23 +359,43 @@ func _reset_extra_seed_choices() -> void:
 	_extra_seed_choice_granted = false
 
 
-# 追加選択更新
-func _update_extra_seed_choices() -> void:
-	if _extra_seed_choice_granted:
-		return
-	if StageClearCalculatorRecovery.grants_extra_seed_choice(planted_flowers, clear_minutes):
-		_remaining_extra_seed_choices += 1
-		_extra_seed_choice_granted = true
-
-
 # 回復適用
 func _apply_selection_recovery(extra_recovery_rate: float) -> float:
-	if _clear_recovery_applied:
-		return 0.0
-	var recovery_rate := _get_planned_clear_recovery_rate() + extra_recovery_rate
-	var recovered_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * recovery_rate))
-	_clear_recovery_applied = true
-	_set_hp(recovered_hp, true)
+	var rewerd_context := _apply_selected_rewerd_effects() # 報酬効果
+	var recovery_rate := 0.0 # 回復率
+	if not _clear_recovery_applied:
+		recovery_rate = _get_selected_rewerd_recovery_rate(rewerd_context) + extra_recovery_rate
+		var recovered_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * recovery_rate)) # 回復HP
+		_clear_recovery_applied = true
+		_set_hp(recovered_hp, true)
+	return recovery_rate
+
+
+# 報酬効果適用
+func _apply_selected_rewerd_effects() -> Dictionary:
+	if _selected_rewerd_effect_applied:
+		return {}
+	var context := StageClearCalculatorRecovery.get_selected_rewerd_context(planted_flowers, clear_minutes) # 文脈
+	permanent_acid_damage_bonus_rate += float(context.get("permanent_acid_rate", 0.0))
+	var extra_count := int(context.get("extra_seed_choice_count", 0)) # 追加数
+	if not _extra_seed_choice_granted and extra_count > 0:
+		_remaining_extra_seed_choices += extra_count
+		_extra_seed_choice_granted = true
+	_selected_rewerd_effect_applied = true
+	return context
+
+
+# 報酬回復率
+func _get_selected_rewerd_recovery_rate(rewerd_context: Dictionary) -> float:
+	var recovery_rate := StageClearCalculatorRecovery.get_clear_time_recovery_rate(
+		planted_flowers,
+		clear_minutes,
+		CLEAR_RECOVERY_START_HOUR,
+		CLEAR_RECOVERY_END_HOUR,
+		CLEAR_RECOVERY_BASE_RATE,
+		CLEAR_RECOVERY_HOURLY_LOSS_RATE
+	)
+	recovery_rate += float(rewerd_context.get("hp_recovery_rate", 0.0))
 	return recovery_rate
 
 

@@ -4,6 +4,16 @@ extends Resource
 @export var priority := 0 # 優先度
 
 
+# 報酬選択中
+func on_selecting_rewerd(_state: DreamSeedSkillState, _context: Dictionary) -> void:
+	pass
+
+
+# 報酬選択後
+func on_selected_rewerd(_state: DreamSeedSkillState, _context: Dictionary) -> void:
+	pass
+
+
 # 初期化
 func setup(_state: DreamSeedSkillState) -> void:
 	pass
@@ -11,11 +21,6 @@ func setup(_state: DreamSeedSkillState) -> void:
 
 # 戦闘中
 func on_battle(_state: DreamSeedSkillState, _context: Dictionary) -> void:
-	pass
-
-
-# 非戦闘中
-func on_not_battle(_state: DreamSeedSkillState, _context: Dictionary) -> void:
 	pass
 
 
@@ -36,11 +41,6 @@ func on_finish_acid_seed_block(_context: Dictionary) -> void:
 
 # 敵消化中
 func on_fire_acid_enemy(_state: DreamSeedSkillState, _context: Dictionary) -> void:
-	pass
-
-
-# 時刻までclear
-func on_clear_until_clock(_state: DreamSeedSkillState, _context: Dictionary) -> void:
 	pass
 
 

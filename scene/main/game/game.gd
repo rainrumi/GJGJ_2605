@@ -78,6 +78,7 @@ func start_battle(context: BattleInfo = null) -> void:
 	_apply_seed_stomach_size_effects()
 	acid_controller.setup(seed_controller.get_flowers())
 	acid_controller.set_day(current_day)
+	acid_controller.add_acid_damage_bonus_rate(battle_context.permanent_acid_damage_bonus_rate)
 	_refresh_effective_max_hp(false)
 	dragging_enemy = null
 	seed_controller.cancel_drag()
