@@ -21,7 +21,7 @@ static func get_main_skill(skill_id: int) -> SeedSkill:
 				_selected_rewerd_extra_choice_after_clock(1, 28 * 60),
 			])
 		2005, 100108:
-			return _skill([_acid_rate(0.10)])
+			return _skill([_acid_rate(0.10), _acid_buff_multiplier(2.0)])
 		2107, 100109:
 			return _skill([_target_multiplier(1.20)])
 		2108, 100110:
@@ -118,6 +118,13 @@ static func _skill(effects: Array) -> SeedSkill:
 static func _acid_rate(rate: float) -> SeedEffect:
 	var effect := SeedEffectOnBattleChangeAcidDamageRate.new() # 効果
 	effect.rate = rate
+	return effect
+
+
+# 消化buff倍率
+static func _acid_buff_multiplier(multiplier: float) -> SeedEffect:
+	var effect := SeedEffectOnFireAcidEnemyChangeAcidDamageBuffRate.new() # 効果
+	effect.multiplier = multiplier
 	return effect
 
 

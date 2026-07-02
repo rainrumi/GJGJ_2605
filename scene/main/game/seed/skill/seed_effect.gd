@@ -49,6 +49,11 @@ func get_acid_damage_rate(_state: DreamSeedSkillState, _context: Dictionary) -> 
 	return 0.0
 
 
+# 消化buff倍率
+func get_acid_damage_buff_multiplier(_state: DreamSeedSkillState, _context: Dictionary) -> float:
+	return 1.0
+
+
 # 時間短縮率
 func get_time_reduction_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
 	return 0.0

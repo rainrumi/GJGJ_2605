@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_kr1fv"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_lfupt"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_q8lej"]
+[ext_resource type="Script" uid="uid://dnnbgc5igge1m" path="res://scene/main/game/seed/skill/on_fire_acid_enemy/seed_effect_on_fire_acid_enemy_change_acid_damage_buff_rate.gd" id="4_5d06b"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="4_phtvx"]
 [ext_resource type="Script" uid="uid://c0ggg1oy1aq1c" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_acid_damage_rate.gd" id="skill_acid_rate"]
 [ext_resource type="Script" uid="uid://2v54yxspsyjc" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_status.gd" id="skill_adjacent_status"]
@@ -16,9 +17,12 @@ texture = ExtResource("2_lfupt")
 script = ExtResource("skill_acid_rate")
 rate = 0.1
 
+[sub_resource type="Resource" id="Resource_main_effect_2"]
+script = ExtResource("4_5d06b")
+
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+effects = Array[Resource]([SubResource("Resource_main_effect_1"), SubResource("Resource_main_effect_2")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_adjacent_status")

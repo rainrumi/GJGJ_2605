@@ -30,6 +30,9 @@ func get_acid_damage_breakdown(
 		seed_rate += _state.next_acid_damage_bonus_rate
 	if consume_pending_bonus:
 		_state.next_acid_damage_bonus_rate = 0.0
+	var buff_multiplier := _get_acid_damage_buff_multiplier(context) # buff倍率
+	seed_rate *= buff_multiplier
+	nightmare_rate *= buff_multiplier
 	var seed_buff := roundi(float(base_damage) * seed_rate) # 種加算
 	var damage_after_seed := base_damage + seed_buff + _state.next_acid_damage_flat_bonus # 種後ダメ
 	if consume_pending_bonus:
@@ -228,6 +231,14 @@ func add_max_hp_bonus_rate(rate: float) -> void:
 # 消化率加算
 func add_acid_damage_bonus_rate(rate: float) -> void:
 	_state.progress_acid_damage_bonus_rate += rate
+
+
+# 消化buff倍率取得
+func _get_acid_damage_buff_multiplier(context: Dictionary) -> float:
+	var multiplier := 1.0 # 倍率
+	for effect in _get_main_effects():
+		multiplier *= maxf(0.0, effect.get_acid_damage_buff_multiplier(_state, context))
+	return multiplier
 
 
 # 日数設定
