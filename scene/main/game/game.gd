@@ -856,7 +856,7 @@ func _resolve_post_acid_visuals(Acided_enemies: Array[Enemy]) -> void:
 
 # 消化ダメージ情報取得
 func _get_acid_damage_info() -> Dictionary:
-	return acid_controller.get_acid_damage_breakdown(enemies, minutes)
+	return acid_controller.get_acid_damage_breakdown(enemies, minutes, false, stomach)
 
 
 # 消化interval情報取得

@@ -114,13 +114,21 @@ func reset_acid_order() -> void:
 func get_acid_damage_breakdown(
 	enemies: Array[Enemy],
 	minutes: int,
-	consume_pending_bonus: bool = false
+	consume_pending_bonus: bool = false,
+	stomach: StomachBoard = null
 ) -> Dictionary:
+	var stomach_columns := 0 # 胃袋列
+	var stomach_rows := 0 # 胃袋行
+	if stomach != null:
+		stomach_columns = stomach.columns
+		stomach_rows = stomach.rows
 	return seed_effects.get_acid_damage_breakdown(
 		acid_DAMAGE,
 		_get_nightmare_acid_damage_rate(enemies, minutes) + _get_seed_block_acid_damage_rate(enemies, minutes),
 		minutes,
-		consume_pending_bonus
+		consume_pending_bonus,
+		stomach_columns,
+		stomach_rows
 	)
 
 
@@ -184,7 +192,7 @@ func acid_nightmares(
 	# turnstartHP
 	var turn_start_hp := _get_turn_start_hp(enemies)
 	# 消化ダメージperセル
-	var acid_damage_per_cell := int(get_acid_damage_breakdown(enemies, minutes, true)["total"])
+	var acid_damage_per_cell := int(get_acid_damage_breakdown(enemies, minutes, true, stomach)["total"])
 	for enemy in enemies:
 		_acid_enemy(enemy, enemies, stomach, minutes, elapsed_minutes, acid_damage_per_cell, shared_damage, damage_display_values, received_acid_damage, max_received_acid_damage)
 	_apply_shared_damage(shared_damage, enemies, stomach, minutes, elapsed_minutes, damage_display_values, received_acid_damage, max_received_acid_damage)

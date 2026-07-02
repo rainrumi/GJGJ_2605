@@ -21,9 +21,16 @@ func get_acid_damage_breakdown(
 	base_damage: int,
 	nightmare_rate: float,
 	minutes: int,
-	consume_pending_bonus: bool = false
+	consume_pending_bonus: bool = false,
+	stomach_columns: int = 0,
+	stomach_rows: int = 0
 ) -> Dictionary:
-	var context := {"minutes": minutes} # 文脈
+	var context := { # 文脈
+		"base_damage": base_damage,
+		"minutes": minutes,
+		"stomach_columns": stomach_columns,
+		"stomach_rows": stomach_rows,
+	}
 	var seed_rate := _sum_float("get_acid_damage_rate", context) # 種倍率
 	seed_rate += _state.progress_acid_damage_bonus_rate
 	if _state.next_acid_damage_bonus_rate != 0.0:
