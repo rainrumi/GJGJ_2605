@@ -50,8 +50,8 @@ func apply_player_damage(amount: int, base_damage: int) -> int:
 	if amount <= 0:
 		return 0
 	var context := {"amount": amount, "base_damage": base_damage} # 文脈
-	var multiplier := 1.0 + _state.next_player_damage_multiplier_bonus # 被弾倍率
-	multiplier += _sum_float("get_player_damage_multiplier_bonus", context)
+	var multiplier := 1.0 + _state.next_player_damage_rate # 被弾倍率
+	multiplier += _sum_float("get_player_damage_rate", context)
 	var final_damage := maxi(0, roundi(float(amount) * maxf(0.0, multiplier))) # 最終ダメ
 	var damage_context := { # 被弾文脈
 		"amount": amount,
@@ -60,7 +60,7 @@ func apply_player_damage(amount: int, base_damage: int) -> int:
 	}
 	_state.next_acid_damage_bonus_rate += _sum_float("get_reflect_acid_rate", damage_context)
 	_state.next_acid_damage_flat_bonus += _sum_int("get_taken_attack_flat_acid_bonus", damage_context)
-	_state.next_player_damage_multiplier_bonus = 0.0
+	_state.next_player_damage_rate = 0.0
 	_state.last_hp_loss = final_damage
 	return final_damage
 

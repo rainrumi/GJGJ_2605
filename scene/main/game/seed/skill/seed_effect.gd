@@ -55,7 +55,7 @@ func get_time_reduction_rate(_state: DreamSeedSkillState, _context: Dictionary) 
 
 
 # 被ダメ倍率
-func get_player_damage_multiplier_bonus(_state: DreamSeedSkillState, _context: Dictionary) -> float:
+func get_player_damage_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
 	return 0.0
 
 

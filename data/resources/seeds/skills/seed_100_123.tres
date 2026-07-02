@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_afp8s"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate_after_clock.gd" id="skill_pending_time_after"]
+[ext_resource type="Script" uid="uid://f6m3c8x2waqa" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate_after_clock.gd" id="skill_pending_time_after"]
 [ext_resource type="Script" uid="uid://d4qv5nl3n18m" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate_before_clock.gd" id="skill_pending_time_before"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 [ext_resource type="Script" uid="uid://c13yomdwh4bja" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_on_target_clock_change_time_reduction_rate_after_clock.gd" id="skill_time_after"]

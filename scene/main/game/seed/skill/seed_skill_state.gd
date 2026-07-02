@@ -5,7 +5,7 @@ var next_acid_damage_bonus_rate := 0.0 # 次酸倍率
 var next_time_reduction_bonus_rate := 0.0 # 次短縮率
 var next_acid_damage_flat_bonus := 0 # 次酸加算
 var progress_acid_damage_bonus_rate := 0.0 # 時酸倍率
-var next_player_damage_multiplier_bonus := 0.0 # 次被弾率
+var next_player_damage_rate := 0.0 # 次被弾率
 var next_heal_bonus_rate := 0.0 # 次回復率
 var max_hp_bonus_rate := 0.0 # 最大HP率
 var recovery_accumulated_for_max_hp := 0 # 回復累計
@@ -22,7 +22,7 @@ func reset() -> void:
 	next_time_reduction_bonus_rate = 0.0
 	next_acid_damage_flat_bonus = 0
 	progress_acid_damage_bonus_rate = 0.0
-	next_player_damage_multiplier_bonus = 0.0
+	next_player_damage_rate = 0.0
 	next_heal_bonus_rate = 0.0
 	max_hp_bonus_rate = 0.0
 	recovery_accumulated_for_max_hp = 0

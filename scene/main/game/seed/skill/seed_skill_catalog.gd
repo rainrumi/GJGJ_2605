@@ -14,7 +14,7 @@ static func get_main_skill(skill_id: int) -> SeedSkill:
 		2003, 100106:
 			return _skill([_selected_rewerd_acid_before_clock(0.05, 25 * 60)])
 		2002, 100105:
-			return _skill([_player_damage(0.30, 0.0, 0.30)])
+			return _skill(_player_damage(0.30, 0.0, 0.30))
 		2004, 100107:
 			return _skill([
 				_selected_rewerd_disable_clear_recovery(),
@@ -191,11 +191,35 @@ static func _pending_time_after_clock(rate: float, start_minutes: int) -> SeedEf
 
 
 # 被ダメ効果
-static func _player_damage(multiplier: float, reflect_rate: float, flat_rate: float) -> SeedEffect:
-	var effect := SeedEffectOnPlayerDamageChangeDamage.new() # 効果
-	effect.damage_multiplier_bonus = multiplier
-	effect.reflect_acid_rate = reflect_rate
-	effect.flat_acid_rate = flat_rate
+static func _player_damage(multiplier: float, reflect_rate: float, flat_rate: float) -> Array:
+	var effects := [] # 効果一覧
+	if not is_zero_approx(multiplier):
+		effects.append(_player_damage_multiplier(multiplier))
+	if not is_zero_approx(reflect_rate):
+		effects.append(_player_damage_reflect_acid(reflect_rate))
+	if not is_zero_approx(flat_rate):
+		effects.append(_player_damage_flat_acid(flat_rate))
+	return effects
+
+
+# 被ダメ倍率
+static func _player_damage_multiplier(multiplier: float) -> SeedEffect:
+	var effect := SeedEffectOnPlayerDamageChangeDamageRate.new() # 効果
+	effect.damage_rate = multiplier
+	return effect
+
+
+# 反射酸率
+static func _player_damage_reflect_acid(rate: float) -> SeedEffect:
+	var effect := SeedEffectOnPlayerDamageChangeReflectAcidRate.new() # 効果
+	effect.reflect_acid_rate = rate
+	return effect
+
+
+# 被撃酸加算
+static func _player_damage_flat_acid(rate: float) -> SeedEffect:
+	var effect := SeedEffectOnPlayerDamageChangeFlatAcidRate.new() # 効果
+	effect.flat_acid_rate = rate
 	return effect
 
 

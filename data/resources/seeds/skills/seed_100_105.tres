@@ -5,7 +5,8 @@
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_8l2xy"]
 [ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="4_mgqf0"]
 [ext_resource type="Script" uid="uid://blm8lnep51asi" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_adjacent.gd" id="skill_adjacent_damage"]
-[ext_resource type="Script" uid="uid://b87q5ot1nhkdf" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_damage.gd" id="skill_player_damage"]
+[ext_resource type="Script" uid="uid://bpdmul6xy2d0a" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_damage_multiplier_bonus.gd" id="skill_player_damage_multiplier"]
+[ext_resource type="Script" uid="uid://bfacid5m8p1z0" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_flat_acid_rate.gd" id="skill_player_damage_flat"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_drag_block"]
@@ -13,13 +14,16 @@ script = ExtResource("1_qrrqf")
 texture = ExtResource("2_kof6u")
 
 [sub_resource type="Resource" id="Resource_main_effect_1"]
-script = ExtResource("skill_player_damage")
+script = ExtResource("skill_player_damage_multiplier")
 damage_multiplier_bonus = 0.3
+
+[sub_resource type="Resource" id="Resource_main_effect_2"]
+script = ExtResource("skill_player_damage_flat")
 flat_acid_rate = 0.3
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+effects = Array[Resource]([SubResource("Resource_main_effect_1"), SubResource("Resource_main_effect_2")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_adjacent_damage")
