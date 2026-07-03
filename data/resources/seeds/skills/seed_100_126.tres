@@ -23,6 +23,7 @@ effects = Array[Resource]([SubResource("Resource_main_effect_1")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_return_damage")
+damage_rate = 1.0
 disable_after_seed_acid = true
 
 [sub_resource type="Resource" id="Resource_sub_effect_2"]
