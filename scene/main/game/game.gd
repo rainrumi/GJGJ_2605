@@ -78,6 +78,7 @@ func start_battle(context: BattleInfo = null) -> void:
 	seed_controller.set_flowers(battle_context.flowers)
 	_apply_seed_stomach_size_effects()
 	_apply_seed_acid_line_effects()
+	acid_controller.set_battle_start_minutes(START_HOUR * 60)
 	acid_controller.setup(seed_controller.get_flowers())
 	acid_controller.set_day(current_day)
 	acid_controller.add_acid_damage_bonus_rate(battle_context.permanent_acid_damage_bonus_rate)
@@ -99,7 +100,8 @@ func start_battle(context: BattleInfo = null) -> void:
 		START_MESSAGE,
 		REST_MINUTES,
 		REST_HP_RATE,
-		acid_controller.get_rest_recovery_bonus_rate()
+		acid_controller.get_rest_recovery_bonus_rate(),
+		float(acid_controller.get_base_step_minutes())
 	)
 	ui.set_seed_sources(seed_controller.get_flowers())
 	ui.set_seed_debug_numbers_visible(debug_numbers_visible)

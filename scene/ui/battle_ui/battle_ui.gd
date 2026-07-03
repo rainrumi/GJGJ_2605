@@ -55,7 +55,8 @@ func reset_for_battle(
 	message: String,
 	rest_minutes: int = 30,
 	rest_hp_rate: float = 0.1,
-	rest_recovery_bonus_rate: float = 0.0
+	rest_recovery_bonus_rate: float = 0.0,
+	acid_interval_minutes: float = 30.0
 ) -> void:
 	_rest_minutes = rest_minutes
 	_rest_hp_rate = rest_hp_rate
@@ -63,7 +64,7 @@ func reset_for_battle(
 	set_hp(max_hp, max_hp)
 	set_time(minutes)
 	set_acid_damage_info(0, 0, 0, 0.0, 0, 0.0)
-	set_acid_interval_minutes(30.0)
+	set_acid_interval_minutes(acid_interval_minutes)
 	time_view.set_tooltip_info()
 	set_message(message)
 	set_debug_message("")

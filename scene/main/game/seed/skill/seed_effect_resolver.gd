@@ -89,8 +89,18 @@ func apply_progress_time(previous_minutes: int, minutes: int) -> void:
 
 
 # 時間reduction率取得
-func get_time_reduction_rate(consume_pending_bonus := false, minutes := 0) -> float:
-	var rate := _sum_float("get_time_reduction_rate", {"minutes": minutes}) # 短縮率
+func get_time_reduction_rate(
+	consume_pending_bonus: bool = false,
+	minutes: int = 0,
+	battle_start_minutes: int = 0,
+	base_step_minutes: int = 1
+) -> float:
+	var context := { # 文脈
+		"minutes": minutes,
+		"battle_start_minutes": battle_start_minutes,
+		"base_step_minutes": base_step_minutes,
+	}
+	var rate := _sum_float("get_time_reduction_rate", context) # 短縮率
 	rate += _state.next_time_reduction_bonus_rate
 	if consume_pending_bonus:
 		_state.next_time_reduction_bonus_rate = 0.0
@@ -197,8 +207,13 @@ func get_enemy_attack_multiplier() -> float:
 
 
 # 敵attackdelta取得
-func get_enemy_attack_delta(minutes: int) -> int:
-	return _sum_int("get_enemy_attack_delta", {"minutes": minutes})
+func get_enemy_attack_delta(minutes: int, battle_start_minutes: int = 0, base_step_minutes: int = 1) -> int:
+	var context := { # 文脈
+		"minutes": minutes,
+		"battle_start_minutes": battle_start_minutes,
+		"base_step_minutes": base_step_minutes,
+	}
+	return _sum_int("get_enemy_attack_delta", context)
 
 
 # 消化対象倍率取得

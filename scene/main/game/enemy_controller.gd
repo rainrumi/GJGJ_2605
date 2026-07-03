@@ -59,6 +59,7 @@ const THREE_OCLOCK_MINUTES := 27 * 60
 var seed_effects := SeedEffectResolver.new()
 var seed_block_resolver := DreamSeedBlockAcidResolver.new()
 var acid_order := 0
+var _battle_start_minutes := 0 # 開始分
 # Side effects that can later move into AcidSideEffects / BattleTurnResultData.
 var _pending_player_damage_values: Array[int] = []
 var _pending_spawn_requests: Array[BattleSpawnEnemyData] = []
@@ -95,6 +96,11 @@ func setup(flowers: Array) -> void:
 # 種effect花設定
 func set_seed_effect_flowers(flowers: Array) -> void:
 	seed_effects.setup(flowers)
+
+
+# 開始分設定
+func set_battle_start_minutes(value: int) -> void:
+	_battle_start_minutes = maxi(0, value)
 
 
 # 消化order初期化
@@ -138,6 +144,11 @@ func get_step_minutes(enemies: Array[Enemy], minutes := 0) -> int:
 	return int(get_step_minutes_breakdown(enemies, true, minutes)["total"])
 
 
+# 基準step取得
+func get_base_step_minutes() -> int:
+	return STEP_MINUTES
+
+
 # step分数breakdown取得
 func get_step_minutes_breakdown(enemies: Array[Enemy], consume_pending_bonus := false, minutes := 0) -> Dictionary:
 	# base分数
@@ -145,10 +156,15 @@ func get_step_minutes_breakdown(enemies: Array[Enemy], consume_pending_bonus := 
 	# 悪夢分数
 	var nightmare_minutes := base_minutes
 	for enemy in enemies:
-		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_TIME_DELAY) and enemy.stomach_elapsed_minutes > 0 and enemy.stomach_elapsed_minutes % 60 == 0:
-			nightmare_minutes += 30
+		if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_TIME_DELAY) and _is_stomach_step_cycle_elapsed(enemy):
+			nightmare_minutes += base_minutes
 	# 種率
-	var seed_rate := -seed_effects.get_time_reduction_rate(consume_pending_bonus, minutes)
+	var seed_rate := -seed_effects.get_time_reduction_rate(
+		consume_pending_bonus,
+		minutes,
+		_battle_start_minutes,
+		base_minutes
+	)
 	# 合計分数
 	var total_minutes := maxi(1, roundi(float(nightmare_minutes) * (1.0 + seed_rate)))
 	return {
@@ -352,7 +368,7 @@ func get_enemy_attack_multiplier() -> float:
 
 # 敵attackdelta取得
 func get_enemy_attack_delta(current_minutes: int) -> int:
-	return seed_effects.get_enemy_attack_delta(current_minutes)
+	return seed_effects.get_enemy_attack_delta(current_minutes, _battle_start_minutes, STEP_MINUTES)
 
 
 # removefrom胃袋ダメージ率取得
@@ -609,7 +625,8 @@ func _get_Acided_nightmares(Acided_enemies: Array[Enemy]) -> Array[Enemy]:
 # 敵attackダメージ取得
 func _get_enemy_attack_damage(enemy: Enemy, enemies: Array[Enemy], stomach: StomachBoard, minutes := 0) -> int:
 	# ダメージ
-	var damage := maxi(0, roundi(float(enemy.get_damage()) * seed_effects.get_enemy_attack_multiplier()) + seed_effects.get_enemy_attack_delta(minutes))
+	var damage_delta := seed_effects.get_enemy_attack_delta(minutes, _battle_start_minutes, STEP_MINUTES) # 差分
+	var damage := maxi(0, roundi(float(enemy.get_damage()) * seed_effects.get_enemy_attack_multiplier()) + damage_delta)
 	if _has_nightmare_effect(enemy, STRENGTH_MIRUNE_DELAYED_ATTACK):
 		damage = 0
 	if _has_nightmare_effect(enemy, NIGHTMARE_SKILL_OPEN_CELL_ATTACK):
@@ -790,12 +807,12 @@ func _apply_strength_turn_start_effect(enemy: Enemy, enemies: Array[Enemy], stom
 		return
 	if _has_nightmare_effect(enemy, STRENGTH_ELMENA_LINE_ATTACK):
 		# 列elapsed分数
-		var line_elapsed_minutes := int(get_step_minutes_breakdown(enemies)["total"])
+		var line_elapsed_minutes := int(get_step_minutes_breakdown(enemies, false, minutes)["total"])
 		_add_line_minutes(enemy, stomach, line_elapsed_minutes)
-		if int(_strength_line_minutes.get(enemy, 0)) >= 60:
+		if int(_strength_line_minutes.get(enemy, 0)) >= _get_step_cycle_minutes():
 			_strength_line_minutes[enemy] = 0
 			_pending_player_damage_values.append(seed_effects.apply_player_damage(enemy.get_base_damage() * 5, acid_DAMAGE))
-	if _has_nightmare_effect(enemy, STRENGTH_ELMENA_HIT_COUNT_HEAL) and enemy.stomach_elapsed_minutes > 0 and enemy.stomach_elapsed_minutes % 60 == 0:
+	if _has_nightmare_effect(enemy, STRENGTH_ELMENA_HIT_COUNT_HEAL) and _is_stomach_step_cycle_elapsed(enemy):
 		# hit数
 		var hit_count := int(_strength_hit_counts.get(enemy, 0))
 		if hit_count > 0:
@@ -1075,6 +1092,18 @@ func _get_global_acid_damage_multiplier(enemies: Array[Enemy]) -> float:
 # 種ブロック消化ダメージ率取得
 func _get_seed_block_acid_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
 	return seed_block_resolver.get_acid_damage_rate(enemies, minutes)
+
+
+# step周期分取得
+func _get_step_cycle_minutes() -> int:
+	return maxi(1, STEP_MINUTES * 2)
+
+
+# step周期判定
+func _is_stomach_step_cycle_elapsed(enemy: Enemy) -> bool:
+	if enemy == null or enemy.stomach_elapsed_minutes <= 0:
+		return false
+	return enemy.stomach_elapsed_minutes % _get_step_cycle_minutes() == 0
 
 
 # 悪夢effect判定
