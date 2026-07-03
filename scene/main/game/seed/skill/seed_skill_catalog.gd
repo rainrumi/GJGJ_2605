@@ -52,7 +52,7 @@ static func get_main_skill(skill_id: int) -> SeedSkill:
 				_time_after_clock(0.50, 26 * 60),
 			])
 		2136, 100124:
-			return _skill([_time_rate(0.02, 0.0, 0.02, 0.40)])
+			return _skill([_time_rate(0.02, 0.0, 0.02)])
 		2137, 100125:
 			return _skill([_return_damage(0.0, 0.0, false)])
 		2138, 100126:
@@ -157,14 +157,12 @@ static func _pending_acid_after_clock(rate: float, start_minutes: int) -> SeedEf
 static func _time_rate(
 	rate: float,
 	hp_loss_rate := 0.0,
-	elapsed_step_rate := 0.0,
-	max_abs_rate := 2.0
+	elapsed_step_rate := 0.0
 ) -> SeedEffect:
 	var effect := SeedEffectOnBattleChangeTimeReductionRate.new() # 効果
 	effect.rate = rate
 	effect.hp_loss_rate = hp_loss_rate
 	effect.elapsed_step_rate = elapsed_step_rate
-	effect.max_abs_rate = max_abs_rate
 	return effect
 
 

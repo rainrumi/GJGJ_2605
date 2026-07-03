@@ -16,7 +16,6 @@ texture = ExtResource("4_block_texture")
 script = ExtResource("skill_time_rate")
 rate = 0.02
 elapsed_step_rate = 0.02
-max_abs_rate = 0.4
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
@@ -29,7 +28,6 @@ rate = 0.04
 [sub_resource type="Resource" id="Resource_sub_effect_2"]
 script = ExtResource("skill_time_rate")
 elapsed_step_rate = 0.04
-max_abs_rate = 0.8
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")
