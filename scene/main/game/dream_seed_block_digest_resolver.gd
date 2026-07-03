@@ -24,7 +24,9 @@ func append_Acided_by_seed_block_effects(
 	stomach: StomachBoard,
 	minutes: int,
 	received_acid_damage: Dictionary,
-	Acided_enemies: Array[Enemy]
+	Acided_enemies: Array[Enemy],
+	acid_damage: int = 0,
+	acid_interval_minutes: int = 0
 ) -> void:
 	if seed_block == null or not seed_block.has_seed():
 		return
@@ -35,6 +37,8 @@ func append_Acided_by_seed_block_effects(
 		"minutes": minutes,
 		"received_acid_damage": received_acid_damage,
 		"acided_enemies": Acided_enemies,
+		"acid_damage": acid_damage,
+		"acid_interval_minutes": acid_interval_minutes,
 	}
 	for effect in _get_seed_block_effects(seed_block):
 		effect.on_finish_acid_seed_block(context)

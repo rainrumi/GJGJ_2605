@@ -323,7 +323,7 @@ static func _adjacent_damage(damage: int, received_rate: float, split: bool) -> 
 
 # 列ダメージ
 static func _line_damage(damage: int, split: bool) -> SeedEffect:
-	var effect := SeedEffectOnFinishAcidSeedBlockDamageLine.new() # 効果
+	var effect := SeedEffectOnFinishAcidSeedBlockFixedDamageLine.new() # 効果
 	effect.damage = damage
 	effect.split = split
 	return effect

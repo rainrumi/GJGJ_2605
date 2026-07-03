@@ -203,7 +203,7 @@ func acid_nightmares(
 	for enemy in forced_Acided:
 		if not Acided_enemies.has(enemy):
 			Acided_enemies.append(enemy)
-	return _resolve_Acided_enemy_effects(enemies, stomach, minutes, Acided_enemies, received_acid_damage, max_received_acid_damage, turn_start_hp)
+	return _resolve_Acided_enemy_effects(enemies, stomach, minutes, elapsed_minutes, acid_damage_per_cell, Acided_enemies, received_acid_damage, max_received_acid_damage, turn_start_hp)
 
 
 # 消化ダメージvalues適用
@@ -465,6 +465,8 @@ func _resolve_Acided_enemy_effects(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
 	minutes: int,
+	elapsed_minutes: int,
+	acid_damage_per_cell: int,
 	Acided_enemies: Array[Enemy],
 	received_acid_damage: Dictionary,
 	max_received_acid_damage: Dictionary,
@@ -506,7 +508,9 @@ func _resolve_Acided_enemy_effects(
 			stomach,
 			minutes,
 			received_acid_damage,
-			Acided_enemies
+			Acided_enemies,
+			acid_damage_per_cell,
+			elapsed_minutes
 		)
 		_apply_strength_Acided_effect(enemy, enemies, received_acid_damage, max_received_acid_damage)
 		final_Acided.append(enemy)
