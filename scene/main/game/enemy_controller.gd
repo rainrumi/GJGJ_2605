@@ -122,15 +122,16 @@ func get_acid_damage_breakdown(
 	if stomach != null:
 		stomach_columns = stomach.columns
 		stomach_rows = stomach.rows
+	var stomach_count := _get_active_stomach_count(enemies) # 胃内数
 	return seed_effects.get_acid_damage_breakdown(
 		acid_DAMAGE,
 		_get_nightmare_acid_damage_rate(enemies, minutes) + _get_seed_block_acid_damage_rate(enemies, minutes),
 		minutes,
 		consume_pending_bonus,
 		stomach_columns,
-		stomach_rows
+		stomach_rows,
+		stomach_count
 	)
-
 
 # step分数取得
 func get_step_minutes(enemies: Array[Enemy], minutes := 0) -> int:
@@ -983,6 +984,14 @@ func _get_active_nightmare_count(enemies: Array[Enemy]) -> int:
 			count += 1
 	return count
 
+
+# 胃内数取得
+func _get_active_stomach_count(enemies: Array[Enemy]) -> int:
+	var count := 0 # 数
+	for enemy in enemies:
+		if enemy != null and enemy.is_stomach_piece():
+			count += 1
+	return count
 
 # otheractive悪夢取得
 func _get_other_active_nightmares(source: Enemy, enemies: Array[Enemy]) -> Array[Enemy]:

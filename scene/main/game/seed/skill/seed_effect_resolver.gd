@@ -23,13 +23,15 @@ func get_acid_damage_breakdown(
 	minutes: int,
 	consume_pending_bonus: bool = false,
 	stomach_columns: int = 0,
-	stomach_rows: int = 0
+	stomach_rows: int = 0,
+	stomach_count: int = 0
 ) -> Dictionary:
 	var context := { # 文脈
 		"base_damage": base_damage,
 		"minutes": minutes,
 		"stomach_columns": stomach_columns,
 		"stomach_rows": stomach_rows,
+		"stomach_count": stomach_count,
 	}
 	var seed_rate := _sum_float("get_acid_damage_rate", context) # 種倍率
 	seed_rate += _state.progress_acid_damage_bonus_rate
@@ -53,7 +55,6 @@ func get_acid_damage_breakdown(
 		"nightmare_buff": total_damage - damage_after_seed,
 		"nightmare_rate": nightmare_rate,
 	}
-
 
 # playerダメージ適用
 func apply_player_damage(amount: int, base_damage: int) -> int:

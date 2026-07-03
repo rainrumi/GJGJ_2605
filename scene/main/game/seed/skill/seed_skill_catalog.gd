@@ -27,7 +27,7 @@ static func get_main_skill(skill_id: int) -> SeedSkill:
 		2108, 100110:
 			return _skill([_target_multiplier(1.0, 20, 3.0)])
 		2110, 100111:
-			return _skill([_acid_rate(0.06)])
+			return _skill([_stomach_count_acid_rate(0.50, 3)])
 		2113, 100112:
 			return _skill([_acid_rate(-0.20)])
 		2118, 100115:
@@ -75,6 +75,8 @@ static func get_sub_skill(skill_id: int) -> SeedSkill:
 			return _skill([_pending_acid_after_clock(2.0, 28 * 60)])
 		2108, 100110:
 			return _skill([_target_multiplier(2.0)])
+		2107, 100109:
+			return _skill([_stomach_count_acid_rate(0.50, 3)])
 		2113, 100112:
 			return _skill([])
 		2114, 100113:
@@ -118,6 +120,14 @@ static func _skill(effects: Array) -> SeedSkill:
 static func _acid_rate(rate: float) -> SeedEffect:
 	var effect := SeedEffectOnBattleChangeAcidDamageRate.new() # 効果
 	effect.rate = rate
+	return effect
+
+
+# 胃内数消化率
+static func _stomach_count_acid_rate(rate: float, max_count: int) -> SeedEffect:
+	var effect := SeedEffectOnAcidDamageChangeAcidDamageRateByStomachCount.new() # 効果
+	effect.rate = rate
+	effect.max_stomach_count = max_count
 	return effect
 
 

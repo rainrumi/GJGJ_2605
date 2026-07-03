@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_rrnf1"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
 [ext_resource type="Script" uid="uid://nju1jc33vwty" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_line.gd" id="skill_line_damage"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_acid_damage_rate_of_progress.gd" id="skill_progress_rate"]
+[ext_resource type="Script" uid="uid://dps4akvj70m1w" path="res://scene/main/game/seed/skill/on_acid_damage/seed_effect_on_acid_damage_change_acid_damage_rate_by_stomach_count.gd" id="skill_progress_rate"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_drag_block"]
@@ -14,6 +14,8 @@ texture = ExtResource("4_block_texture")
 
 [sub_resource type="Resource" id="Resource_main_effect_1"]
 script = ExtResource("skill_progress_rate")
+rate = 0.5
+max_stomach_count = 3
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
@@ -37,5 +39,5 @@ texture = ExtResource("2_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
-main_description = "消化ダメージを消化間隔(分)/10の値増やす"
+main_description = "胃の中に存在するモノが3体以下の場合消化ダメージ+50%"
 sub_description = "この花を消化すると消化ラインに触れたモノに消化間隔(分)×消化ダメージの消化ダメージを配分して与える。"
