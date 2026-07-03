@@ -61,8 +61,13 @@ func show_finished_mode(message: String) -> void:
 
 
 # 選択肢更新
-func setup_seed_choices(seed_options: Array[SeedInfo]) -> void:
-	seed_choice_list.setup_choices(seed_options, _seed_choice_active, _debug_numbers_visible)
+func setup_seed_choices(seed_options: Array[SeedInfo], selectable_states: Array[bool] = []) -> void:
+	seed_choice_list.setup_choices(
+		seed_options,
+		_seed_choice_active,
+		_debug_numbers_visible,
+		selectable_states
+	)
 
 
 # debug状態設定

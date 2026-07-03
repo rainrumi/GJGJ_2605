@@ -8,6 +8,19 @@ static func can_plant_seed(seed: SeedInfo, planted_flowers: Array[SeedInfo], max
 	return count_planted_flowers(planted_flowers) < max_flowers
 
 
+# 種入手可否
+static func can_receive_seed(seed: SeedInfo, planted_flowers: Array[SeedInfo]) -> bool:
+	if seed == null:
+		return false
+	for effect in _get_all_seed_effects(seed):
+		if not effect.has_possession_limit():
+			continue
+		var current_count := _count_possession_limit_effects(effect, planted_flowers) # 所持数
+		if not effect.can_add_possession(current_count):
+			return false
+	return true
+
+
 # 数planted花処理
 static func count_planted_flowers(planted_flowers: Array[SeedInfo]) -> int:
 	# 数値
@@ -122,3 +135,28 @@ static func _get_seed_effects(skill: SeedSkill) -> Array[SeedEffect]:
 		return effects
 	effects.append_array(skill.get_effects())
 	return effects
+
+
+# 全効果取得
+static func _get_all_seed_effects(seed: SeedInfo) -> Array[SeedEffect]:
+	var effects: Array[SeedEffect] = [] # 効果
+	if seed == null:
+		return effects
+	effects.append_array(_get_seed_effects(seed.get_main_skill()))
+	effects.append_array(_get_seed_effects(seed.get_sub_skill()))
+	return effects
+
+
+# 上限効果数
+static func _count_possession_limit_effects(
+	target_effect: SeedEffect,
+	planted_flowers: Array[SeedInfo]
+) -> int:
+	var count := 0 # 数値
+	for flower in planted_flowers:
+		if flower == null:
+			continue
+		for effect in _get_all_seed_effects(flower):
+			if target_effect.matches_possession_limit_target(effect):
+				count += 1
+	return count

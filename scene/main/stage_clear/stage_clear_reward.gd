@@ -11,6 +11,11 @@ func can_plant_seed(
 	return StageClearCalculatorRecovery.can_plant_seed(seed, planted_flowers, max_flowers)
 
 
+# 種入手可否
+func can_receive_seed(seed: SeedInfo, planted_flowers: Array[SeedInfo]) -> bool:
+	return StageClearCalculatorRecovery.can_receive_seed(seed, planted_flowers)
+
+
 # replacefirst花処理
 func replace_first_flower(planted_flowers: Array[SeedInfo], flower: SeedInfo) -> void:
 	if flower == null:
@@ -33,6 +38,8 @@ func get_preview_flowers_for_seed(
 	for seed_info in planted_seed:
 		preview_flowers.append(seed_info)
 	if seed == null:
+		return preview_flowers
+	if not can_receive_seed(seed, preview_flowers):
 		return preview_flowers
 	if can_plant_seed(seed, preview_flowers, max_flowers):
 		preview_flowers.append(seed)

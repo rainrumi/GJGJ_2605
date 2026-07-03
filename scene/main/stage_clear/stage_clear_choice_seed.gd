@@ -14,7 +14,12 @@ func _ready() -> void:
 
 
 # 選択肢設定
-func setup_choices(seed_options: Array[SeedInfo], is_active: bool, debug_numbers_visible: bool) -> void:
+func setup_choices(
+	seed_options: Array[SeedInfo],
+	is_active: bool,
+	debug_numbers_visible: bool,
+	selectable_states: Array[bool] = []
+) -> void:
 	if _seed_choices.is_empty():
 		_collect_seed_choices()
 	for i in range(_seed_choices.size()):
@@ -25,7 +30,7 @@ func setup_choices(seed_options: Array[SeedInfo], is_active: bool, debug_numbers
 			continue
 		seed_choice.setup_choice(seed)
 		seed_choice.set_debug_numbers_visible(debug_numbers_visible)
-		seed_choice.set_choice_disabled(not is_active)
+		seed_choice.set_choice_disabled(not is_active or not _is_seed_selectable(selectable_states, i))
 
 
 # debug表示
@@ -69,6 +74,13 @@ func _get_seed_option(seed_options: Array[SeedInfo], seed_index: int) -> SeedInf
 	if seed_index < 0 or seed_index >= seed_options.size():
 		return null
 	return seed_options[seed_index]
+
+
+# 選択可否取得
+func _is_seed_selectable(selectable_states: Array[bool], seed_index: int) -> bool:
+	if seed_index < 0 or seed_index >= selectable_states.size():
+		return true
+	return selectable_states[seed_index]
 
 
 # 押下通知

@@ -254,6 +254,8 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 	var seed := _get_seed_option(seed_index)
 	if seed == null:
 		return
+	if not _can_receive_seed(seed):
+		return
 	character_area.set_planned_recovery_rate(_get_seed_choice_recovery_rate(seed_index))
 	if _can_plant_seed(seed):
 		planted_flowers.append(seed)
@@ -289,6 +291,11 @@ func _show_finished_mode(message: String) -> void:
 # 植え付け可否
 func _can_plant_seed(seed: SeedInfo) -> bool:
 	return reward_service.can_plant_seed(seed, planted_flowers, max_flowers)
+
+
+# 入手可否
+func _can_receive_seed(seed: SeedInfo) -> bool:
+	return reward_service.can_receive_seed(seed, planted_flowers)
 
 
 # 種選択完了
@@ -407,8 +414,16 @@ func _refresh_after_reward_state_changed() -> void:
 # 報酬UI更新
 func _refresh_reward_ui() -> void:
 	character_area.set_planted_flowers(get_planted_flowers())
-	ui.setup_seed_choices(seed_options)
+	ui.setup_seed_choices(seed_options, _get_seed_selectable_states())
 	_update_hp_heal_plan()
+
+
+# 種選択可否一覧
+func _get_seed_selectable_states() -> Array[bool]:
+	var selectable_states: Array[bool] = [] # 可否一覧
+	for seed in seed_options:
+		selectable_states.append(_can_receive_seed(seed))
+	return selectable_states
 
 
 # HP設定内部

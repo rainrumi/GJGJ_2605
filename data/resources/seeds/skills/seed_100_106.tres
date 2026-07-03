@@ -14,6 +14,8 @@ texture = ExtResource("2_n5a61")
 
 [sub_resource type="Resource" id="Resource_main_effect_1"]
 script = ExtResource("skill_clear_recovery")
+possession_limit = 1
+possession_limit_key = "seed_100106"
 rate = 0.05
 before_minutes = 1500
 
