@@ -157,3 +157,8 @@ func get_stomach_columns_delta() -> int:
 # 胃袋行補正
 func get_stomach_rows_delta() -> int:
 	return 0
+
+
+# 消化行補正
+func get_acid_line_rows_delta() -> int:
+	return 0

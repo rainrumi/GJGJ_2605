@@ -16,9 +16,13 @@ texture = ExtResource("4_block_texture")
 script = ExtResource("skill_acid_rate")
 rate = -0.2
 
+[sub_resource type="Resource" id="Resource_main_effect_2"]
+script = ExtResource("skill_line_change")
+line_delta = 1
+
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+effects = Array[Resource]([SubResource("Resource_main_effect_1"), SubResource("Resource_main_effect_2")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_line_change")
@@ -38,4 +42,4 @@ main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "消化ダメージ-20%。消化ライン+1"
-sub_description = "この花を消化すると消化ライン-1"
+sub_description = "この花を消化すると消化ライン-1（最小1ライン）"

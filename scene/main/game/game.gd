@@ -70,12 +70,14 @@ func start_battle(context: BattleInfo = null) -> void:
 	current_stage = battle_context.stage
 	current_enemy_preset = battle_context.enemy_preset
 	stomach.set_grid_size(battle_context.stomach_columns, battle_context.stomach_rows)
+	stomach.set_acid_line_rows(1)
 	last_time_over_recovery_percent = 0
 	debug_numbers_visible = DebugState.debug_enabled
 	_set_battle_flags(false)
 	_clear_scheduled_acid_events()
 	seed_controller.set_flowers(battle_context.flowers)
 	_apply_seed_stomach_size_effects()
+	_apply_seed_acid_line_effects()
 	acid_controller.setup(seed_controller.get_flowers())
 	acid_controller.set_day(current_day)
 	acid_controller.add_acid_damage_bonus_rate(battle_context.permanent_acid_damage_bonus_rate)
@@ -704,7 +706,7 @@ func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	if hp > previous_hp:
 		hp = mini(effective_max_hp, hp + acid_controller.add_heal_event(hp - previous_hp))
 	for seed in seed_controller.collect_Acided_seeds(Acided_enemies):
-		acid_controller.add_Acided_seed_effect(seed, minutes)
+		acid_controller.add_Acided_seed_effect(seed, minutes, stomach)
 	_apply_Acided_seed_hp_effects(Acided_enemies)
 	_emit_depleted_seed_sources(Acided_enemies)
 
@@ -843,6 +845,20 @@ func _apply_seed_stomach_size_effects() -> void:
 	var next_rows := stomach.rows + (1 if has_row_bonus else 0)
 	if next_columns != stomach.columns or next_rows != stomach.rows:
 		stomach.set_grid_size(next_columns, next_rows)
+
+
+# 種消化行effects適用
+func _apply_seed_acid_line_effects() -> void:
+	var line_delta := 0 # 行差分
+	for flower in seed_controller.get_flowers():
+		if flower == null:
+			continue
+		var skill := flower.get_main_skill()
+		if skill == null:
+			continue
+		line_delta += skill.get_acid_line_rows_delta()
+	if line_delta != 0:
+		stomach.add_acid_line_rows(line_delta)
 
 
 # resolvepost消化visua処理

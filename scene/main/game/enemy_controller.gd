@@ -281,8 +281,8 @@ func apply_direct_player_damage(amount: int) -> int:
 
 
 # 消化済み種effect追加
-func add_Acided_seed_effect(seed: SeedInfo, minutes := 0) -> bool:
-	return seed_effects.add_Acided_seed_effect(seed, minutes)
+func add_Acided_seed_effect(seed: SeedInfo, minutes := 0, stomach: StomachBoard = null) -> bool:
+	return seed_effects.add_Acided_seed_effect(seed, minutes, stomach)
 
 
 # 時間経過適用

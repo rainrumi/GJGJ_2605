@@ -29,7 +29,7 @@ static func get_main_skill(skill_id: int) -> SeedSkill:
 		2110, 100111:
 			return _skill([_stomach_count_acid_rate(0.50, 3)])
 		2113, 100112:
-			return _skill([_acid_rate(-0.20)])
+			return _skill([_acid_rate(-0.20), _acid_line_rows(1)])
 		2118, 100115:
 			return _skill([_stomach_size(1, 0)])
 		2119, 100116:
@@ -78,7 +78,7 @@ static func get_sub_skill(skill_id: int) -> SeedSkill:
 		2107, 100109:
 			return _skill([_stomach_count_acid_rate(0.50, 3)])
 		2113, 100112:
-			return _skill([])
+			return _skill([_acid_line_rows(-1)])
 		2114, 100113:
 			return _skill([_line_damage(1000, false)])
 		2115, 100114:
@@ -326,6 +326,13 @@ static func _line_damage(damage: int, split: bool) -> SeedEffect:
 	var effect := SeedEffectOnFinishAcidSeedBlockFixedDamageLine.new() # 効果
 	effect.damage = damage
 	effect.split = split
+	return effect
+
+
+# 消化行数
+static func _acid_line_rows(delta: int) -> SeedEffect:
+	var effect := SeedEffectOnFinishAcidSeedChangeLine.new() # 効果
+	effect.line_delta = delta
 	return effect
 
 

@@ -38,3 +38,11 @@ func get_stomach_rows_delta() -> int:
 	for effect in get_effects():
 		delta += effect.get_stomach_rows_delta()
 	return delta
+
+
+# 消化行補正
+func get_acid_line_rows_delta() -> int:
+	var delta := 0 # 行差分
+	for effect in get_effects():
+		delta += effect.get_acid_line_rows_delta()
+	return delta

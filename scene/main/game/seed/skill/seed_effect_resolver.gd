@@ -98,11 +98,11 @@ func get_time_reduction_rate(consume_pending_bonus := false, minutes := 0) -> fl
 
 
 # 消化済み種effect追加
-func add_Acided_seed_effect(seed: SeedInfo, minutes := 0) -> bool:
+func add_Acided_seed_effect(seed: SeedInfo, minutes := 0, stomach: StomachBoard = null) -> bool:
 	if seed == null:
 		return false
 	var handled := false # 処理済み
-	var context := {"seed": seed, "minutes": minutes} # 文脈
+	var context := {"seed": seed, "minutes": minutes, "stomach": stomach} # 文脈
 	for effect in _get_seed_effects(seed.get_sub_skill()):
 		if effect.on_finish_acid_seed(_state, context):
 			handled = true

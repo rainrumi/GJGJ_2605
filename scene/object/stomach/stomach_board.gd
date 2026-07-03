@@ -19,6 +19,7 @@ var _frame_base_size := Vector2.ZERO
 var _line_base_position := Vector2.ZERO
 var _line_base_size := Vector2.ZERO
 var _preview_sprite: Sprite2D
+var _acid_line_rows := 1 # 消化行数
 
 
 # 初期化
@@ -37,8 +38,25 @@ func get_capacity() -> int:
 func set_grid_size(new_columns: int, new_rows: int) -> void:
 	columns = maxi(1, new_columns)
 	rows = maxi(1, new_rows)
+	_acid_line_rows = clampi(_acid_line_rows, 1, rows)
 	hide_preview()
 	_configure_grid()
+
+
+# 消化行数設定
+func set_acid_line_rows(value: int) -> void:
+	_acid_line_rows = clampi(value, 1, rows)
+	_update_line_mesh()
+
+
+# 消化行数加算
+func add_acid_line_rows(delta: int) -> void:
+	set_acid_line_rows(_acid_line_rows + delta)
+
+
+# 消化行数取得
+func get_acid_line_rows() -> int:
+	return _acid_line_rows
 
 
 # spanサイズ取得
@@ -134,8 +152,9 @@ func get_bottom_row_cell_count(enemy: Enemy) -> int:
 		return 0
 	# 数値
 	var count := 0
+	var line_top_row := maxi(0, rows - _acid_line_rows) # ライン上端
 	for cell: Vector2i in enemy.get_occupied_cells(enemy.stomach_cell):
-		if cell.y == rows - 1:
+		if cell.y >= line_top_row:
 			count += 1
 	return count
 
@@ -285,10 +304,11 @@ func _get_grid_origin(active_grid_area_position: Vector2, active_grid_area_size:
 
 # 列mesh更新
 func _update_line_mesh() -> void:
-	# bottom行
+	# ライン行
+	var top_row := maxi(0, rows - _acid_line_rows)
 	var bottom_row := rows - 1
 	# 消化列topy
-	var acid_line_top_y := _get_row_top_y(bottom_row)
+	var acid_line_top_y := _get_row_top_y(top_row)
 	# 消化列bottomy
 	var acid_line_bottom_y := _get_row_bottom_y(bottom_row)
 	# 列位置
