@@ -2,29 +2,6 @@ class_name SeedEffect
 extends Resource
 
 @export var priority := 0 # 優先度
-@export var possession_limit := 0 # 所持上限
-@export var possession_limit_key := "" # 所持キー
-
-
-# 所持上限有無
-func has_possession_limit() -> bool:
-	return possession_limit > 0
-
-
-# 所持追加可否
-func can_add_possession(current_count: int) -> bool:
-	if not has_possession_limit():
-		return true
-	return current_count < possession_limit
-
-
-# 所持対象一致
-func matches_possession_limit_target(other: SeedEffect) -> bool:
-	if other == null:
-		return false
-	if possession_limit_key != "":
-		return possession_limit_key == other.possession_limit_key
-	return get_script() == other.get_script()
 
 
 # 報酬選択中

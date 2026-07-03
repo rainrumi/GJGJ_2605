@@ -13,10 +13,11 @@ static func can_receive_seed(seed: SeedInfo, planted_flowers: Array[SeedInfo]) -
 	if seed == null:
 		return false
 	for effect in _get_all_seed_effects(seed):
-		if not effect.has_possession_limit():
+		if not (effect is SeedEffectBringLimit):
 			continue
-		var current_count := _count_possession_limit_effects(effect, planted_flowers) # 所持数
-		if not effect.can_add_possession(current_count):
+		var limit_effect := effect as SeedEffectBringLimit
+		var current_count := _count_possession_limit_effects(limit_effect, planted_flowers)
+		if not limit_effect.can_add_possession(current_count):
 			return false
 	return true
 
@@ -149,7 +150,7 @@ static func _get_all_seed_effects(seed: SeedInfo) -> Array[SeedEffect]:
 
 # 上限効果数
 static func _count_possession_limit_effects(
-	target_effect: SeedEffect,
+	target_effect: SeedEffectBringLimit,
 	planted_flowers: Array[SeedInfo]
 ) -> int:
 	var count := 0 # 数値
@@ -157,6 +158,9 @@ static func _count_possession_limit_effects(
 		if flower == null:
 			continue
 		for effect in _get_all_seed_effects(flower):
-			if target_effect.matches_possession_limit_target(effect):
+			if not (effect is SeedEffectBringLimit):
+				continue
+			var limit_effect := effect as SeedEffectBringLimit
+			if target_effect.matches_possession_limit_target(limit_effect):
 				count += 1
 	return count

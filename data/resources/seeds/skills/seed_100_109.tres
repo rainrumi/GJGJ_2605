@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_gclsi"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
 [ext_resource type="Script" uid="uid://dps4akvj70m1w" path="res://scene/main/game/seed/skill/on_acid_damage/seed_effect_on_acid_damage_change_acid_damage_rate_by_stomach_count.gd" id="skill_acid_rate"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_fire_acid_enemy/seed_effect_on_fire_acid_enemy_change_acid_damage_rate.gd" id="skill_fire_rate"]
+[ext_resource type="Script" uid="uid://bnhf7xq3e0bap" path="res://scene/main/game/seed/skill/on_fire_acid_enemy/seed_effect_on_fire_acid_enemy_change_acid_damage_rate.gd" id="skill_fire_rate"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_drag_block"]
