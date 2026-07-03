@@ -15,6 +15,8 @@ texture = ExtResource("4_block_texture")
 [sub_resource type="Resource" id="Resource_main_effect_1"]
 script = ExtResource("skill_time_rate")
 hp_loss_rate = 0.01
+min_interval_rate = 0.0
+max_interval_rate = 2.0
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
