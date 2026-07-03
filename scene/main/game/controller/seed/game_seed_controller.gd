@@ -3,9 +3,6 @@ extends RefCounted
 
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 const SEED_BLOCK_DRAG_ALPHA := 0.58
-const seed_acid_HP_RECOVERY := 1002
-const seed_acid_HP_RECOVERY_RATE := 0.05
-const seed_acid_SKIP_REST_TIME := 1004
 
 var rest_time_skip_count := 0
 var _flowers: Array[SeedInfo] = []
@@ -222,13 +219,18 @@ func apply_direct_Acided_seed_effects(
 	for enemy in Acided_enemies:
 		if enemy == null or not enemy.has_seed():
 			continue
-		# 種スキル
+		# 種値
 		var seed := enemy.get_seed()
-		if seed.skill_id == seed_acid_HP_RECOVERY:
-			next_hp = mini(max_hp, next_hp + ceili(float(max_hp) * seed_acid_HP_RECOVERY_RATE))
-			continue
-		if seed.skill_id == seed_acid_SKIP_REST_TIME:
-			rest_time_skip_count += 1
+		for effect in _get_finish_seed_effects(seed):
+			if effect is SeedEffectOnFinishAcidSeedRecoverHp:
+				# 回復効果
+				var recover_effect := effect as SeedEffectOnFinishAcidSeedRecoverHp
+				next_hp = mini(max_hp, next_hp + _get_seed_recovery_amount(recover_effect, enemy, max_hp))
+				continue
+			if effect is SeedEffectOnFinishAcidSeedSkipRestTime:
+				# skip効果
+				var skip_effect := effect as SeedEffectOnFinishAcidSeedSkipRestTime
+				rest_time_skip_count += maxi(0, skip_effect.skip_count)
 	return next_hp
 
 
@@ -257,10 +259,36 @@ func consume_rest_time_skip() -> bool:
 
 # controllereffect判定
 func _is_direct_controller_effect(seed: SeedInfo) -> bool:
-	return (
-		seed.skill_id == seed_acid_HP_RECOVERY
-		or seed.skill_id == seed_acid_SKIP_REST_TIME
-	)
+	for effect in _get_finish_seed_effects(seed):
+		if (
+			effect is SeedEffectOnFinishAcidSeedRecoverHp
+			or effect is SeedEffectOnFinishAcidSeedSkipRestTime
+		):
+			return true
+	return false
+
+
+# 完了効果取得
+func _get_finish_seed_effects(seed: SeedInfo) -> Array[SeedEffect]:
+	# 効果一覧
+	var effects: Array[SeedEffect] = []
+	if seed == null or seed.get_sub_skill() == null:
+		return effects
+	effects.append_array(seed.get_sub_skill().get_effects())
+	return effects
+
+
+# 種回復量取得
+func _get_seed_recovery_amount(
+	effect: SeedEffectOnFinishAcidSeedRecoverHp,
+	enemy: Enemy,
+	max_hp: int
+) -> int:
+	# 回復率
+	var recovery_rate := effect.hp_rate
+	if effect.hp_rate_per_size != 0.0 and enemy != null:
+		recovery_rate += effect.hp_rate_per_size * float(enemy.get_size())
+	return ceili(float(max_hp) * recovery_rate)
 
 
 # randomデバッグ種追加
