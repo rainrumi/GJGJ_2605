@@ -258,7 +258,7 @@ func _on_debug_reroll_requested() -> void:
 	if not _can_use_debug_action():
 		return
 	_prepare_debug_battle_change()
-	acid_controller.reset_acid_order()
+	acid_controller.reset_enemy_effects()
 	enemy_setup.setup_enemies(enemies)
 	acid_controller.refresh_enemy_effects(enemies, stomach)
 	input_controller.setup(enemies)

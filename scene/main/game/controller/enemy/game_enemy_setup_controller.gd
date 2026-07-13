@@ -8,7 +8,6 @@ const ENEMY_LEFT_X := 425.0
 const ENEMY_CENTER_X := 500.0
 const ENEMY_RIGHT_X := 575.0
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
-const STRENGTHENED_NIGHTMARE_SKILL_ID_MIN := 20000
 const DEFAULT_NIGHTMARE_STOMACH_SIZE := Vector2i(2, 3)
 
 var _owner: Node
@@ -122,7 +121,7 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 
 # stageスキル有効
 func _is_stage_nightmare_skill_enabled(source_skill: EnemyInfo) -> bool:
-	return source_skill != null and (source_skill.skill != null or source_skill.skill_id >= STRENGTHENED_NIGHTMARE_SKILL_ID_MIN)
+	return source_skill != null and source_skill.skill != null
 
 
 # 悪夢胃袋サイズ取得
