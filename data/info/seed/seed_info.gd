@@ -35,13 +35,9 @@ enum SubSkillMode {
 
 # mainスキル取得
 func get_main_skill() -> SeedSkill:
-	if main_skill != null:
-		return main_skill
-	return SeedSkillCatalog.get_main_skill(skill_id)
+	return main_skill
 
 
 # subスキル取得
 func get_sub_skill() -> SeedSkill:
-	if sub_skill != null:
-		return sub_skill
-	return SeedSkillCatalog.get_sub_skill(skill_id)
+	return sub_skill
