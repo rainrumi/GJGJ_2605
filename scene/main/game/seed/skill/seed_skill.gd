@@ -1,15 +1,16 @@
 class_name SeedSkill
 extends Resource
 
-@export var effects: Array[Resource] = [] # 効果一覧
+# 効果一覧
+@export var effects: Array[SeedEffect] = []
 
 
 # 効果一覧
 func get_effects() -> Array[SeedEffect]:
 	var active_effects: Array[SeedEffect] = [] # 有効効果
 	for effect in effects:
-		if effect is SeedEffect:
-			active_effects.append(effect as SeedEffect)
+		if effect != null and effect.enabled:
+			active_effects.append(effect)
 	active_effects.sort_custom(func(a: SeedEffect, b: SeedEffect) -> bool:
 		return a.priority < b.priority
 	)
@@ -18,10 +19,7 @@ func get_effects() -> Array[SeedEffect]:
 
 # 効果有無
 func has_effects() -> bool:
-	for effect in effects:
-		if effect != null:
-			return true
-	return false
+	return not get_effects().is_empty()
 
 
 # 胃袋列補正

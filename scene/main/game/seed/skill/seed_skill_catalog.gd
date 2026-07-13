@@ -108,10 +108,10 @@ static func get_sub_skill(skill_id: int) -> SeedSkill:
 # skill作成
 static func _skill(effects: Array) -> SeedSkill:
 	var skill := SeedSkill.new() # スキル
-	var typed_effects: Array[Resource] = [] # 効果配列
+	var typed_effects: Array[SeedEffect] = [] # 効果配列
 	for effect in effects:
 		if effect is SeedEffect:
-			typed_effects.append(effect as Resource)
+			typed_effects.append(effect as SeedEffect)
 	skill.effects = typed_effects
 	return skill
 

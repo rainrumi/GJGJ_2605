@@ -2,6 +2,7 @@ class_name SeedEffect
 extends Resource
 
 @export var priority := 0 # 優先度
+@export var enabled := true # 有効状態
 
 
 # 報酬選択中
