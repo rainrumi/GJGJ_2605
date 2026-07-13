@@ -42,8 +42,26 @@ enum ValueSource {
 	INHERITED_VALUE,
 }
 
+enum Event {
+	BATTLE_START,
+	REFRESH,
+	TURN_START,
+	PROGRESS_TIME,
+	BEFORE_ACID_DAMAGE,
+	AFTER_ACID_DAMAGE,
+	DIGESTED,
+	ANY_DIGESTED,
+	ADJACENT_ACID_DAMAGE,
+	ADJACENT_DIGESTED,
+}
+
 # 適用順
 @export var priority := 0
 # 有効状態
 @export var enabled := true
+
+
+# 効果適用
+func apply(_context: EnemyEffectContext) -> void:
+	pass
 

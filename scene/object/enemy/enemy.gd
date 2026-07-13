@@ -132,6 +132,22 @@ func get_nightmare_skill() -> EnemyInfo:
 	return skill_info
 
 
+# 敵skill取得
+func get_enemy_skill() -> EnemySkill:
+	if skill_info == null or not nightmare_skill_enabled:
+		return null
+	return skill_info.skill
+
+
+# 敵effects取得
+func get_enemy_effects() -> Array[EnemyEffect]:
+	var effects: Array[EnemyEffect] = [] # 効果一覧
+	var enemy_skill := get_enemy_skill() # 敵スキル
+	if enemy_skill != null:
+		effects.append_array(enemy_skill.get_effects())
+	return effects
+
+
 # 悪夢判定
 func is_nightmare() -> bool:
 	return not is_seed_stomach_block()

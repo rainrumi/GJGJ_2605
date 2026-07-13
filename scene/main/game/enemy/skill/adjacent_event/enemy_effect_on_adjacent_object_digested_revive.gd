@@ -6,3 +6,6 @@ extends EnemyEffect
 # 復活対象
 @export var target: EnemyEffect.EffectTarget = EnemyEffect.EffectTarget.ADJACENT_OBJECTS
 
+# 効果適用
+func apply(context: EnemyEffectContext) -> void:
+	if context.is_event(Event.ADJACENT_DIGESTED) and context.get_targets(target).has(context.target): context.revive(context.target, recovery_rate)

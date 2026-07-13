@@ -8,3 +8,11 @@ extends EnemyEffect
 # 自身を含む
 @export var include_self := true
 
+# 効果適用
+func apply(context: EnemyEffectContext) -> void:
+	if not context.is_event(Event.ADJACENT_DIGESTED): return
+	var group := context.get_adjacent_objects() # 共有群
+	if include_self: group.append(context.source)
+	if not group.has(context.target): return
+	var survivors := group.filter(func(enemy: Enemy) -> bool: return not enemy.is_Acided()) # 生存群
+	if not require_survivor or not survivors.is_empty(): context.revive(context.target, recovery_rate)

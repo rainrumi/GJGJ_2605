@@ -10,3 +10,7 @@ extends EnemyEffect
 # 失敗率扱い
 @export var invert_chance := false
 
+# 効果適用
+func apply(context: EnemyEffectContext) -> void:
+	if not context.is_event(Event.AFTER_ACID_DAMAGE) or context.target != context.source or not context.roll(chance, invert_chance): return
+	for enemy in context.get_targets(target): context.recover(enemy, recovery)

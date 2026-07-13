@@ -12,3 +12,9 @@ extends EnemyEffect
 # ダメージ参照元
 @export var damage_source: EnemyEffect.ValueSource = EnemyEffect.ValueSource.SELF_ATTACK
 
+# 効果適用
+func apply(context: EnemyEffectContext) -> void:
+	if context.is_event(Event.REFRESH): context.resolver.set_default_attack_disabled(context.source, suppress_default_attack); return
+	if not context.is_event(Event.PROGRESS_TIME): return
+	var triggers := context.consume_interval(interval_seconds) # 発火数
+	context.attack_player(context.resolve_value(damage_source, fixed_damage), attack_count * triggers)

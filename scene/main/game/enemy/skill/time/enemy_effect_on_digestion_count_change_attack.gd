@@ -6,3 +6,10 @@ extends EnemyEffect
 # 攻撃差分
 @export var attack_delta := 0
 
+# 効果適用
+func apply(context: EnemyEffectContext) -> void:
+	if not context.is_event(Event.ANY_DIGESTED): return
+	var count := context.get_state_int("digestion_count") + context.digested_enemies.size() # 消化数
+	var triggers := int(count / required_count) # 発火数
+	context.set_state("digestion_count", count % required_count)
+	if triggers > 0: context.source.add_damage(roundi(context.scale_value(float(attack_delta * triggers))))

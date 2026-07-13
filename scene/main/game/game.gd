@@ -94,6 +94,7 @@ func start_battle(context: BattleInfo = null) -> void:
 		_get_battle_enemy_preset()
 	)
 	enemy_setup.setup_enemies(enemies)
+	acid_controller.refresh_enemy_effects(enemies, stomach)
 	ui.reset_for_battle(
 		MAX_HP,
 		minutes,
@@ -259,6 +260,7 @@ func _on_debug_reroll_requested() -> void:
 	_prepare_debug_battle_change()
 	acid_controller.reset_acid_order()
 	enemy_setup.setup_enemies(enemies)
+	acid_controller.refresh_enemy_effects(enemies, stomach)
 	input_controller.setup(enemies)
 	_refresh_ui()
 
@@ -413,6 +415,7 @@ func _setup_enemy_preset(enemy_preset: EnemyPresetInfo) -> void:
 		enemy_preset
 	)
 	enemy_setup.setup_enemies(enemies)
+	acid_controller.refresh_enemy_effects(enemies, stomach)
 	input_controller.setup(enemies)
 	_refresh_ui()
 
@@ -520,12 +523,26 @@ func _apply_elapsed_time(elapsed_minutes: int) -> void:
 		if not seed_controller.consume_rest_time_skip():
 			minutes += REST_MINUTES
 			elapsed_minutes += REST_MINUTES
-		acid_controller.apply_progress_time(previous_minutes, minutes)
+		var effect_result := acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
+		_apply_progress_effect_result(effect_result)
 		_refresh_after_battle_event()
 	else:
-		acid_controller.apply_progress_time(previous_minutes, minutes)
+		var effect_result := acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
+		_apply_progress_effect_result(effect_result)
 		_refresh_after_battle_event()
 	ui.show_time_elapsed(elapsed_minutes)
+
+
+# 時間effect結果適用
+func _apply_progress_effect_result(result: BattleTurnResultData) -> void:
+	if result == null:
+		return
+	_apply_acid_spawn_requests(result.spawn_requests)
+	if not result.player_damage_values.is_empty():
+		ui.show_hp_damage_values(result.player_damage_values)
+		hp = maxi(0, hp - _sum_damage_values(result.player_damage_values))
+	if result.extra_elapsed_minutes != 0:
+		minutes += result.extra_elapsed_minutes
 
 
 # 消化turn終了
@@ -635,6 +652,7 @@ func _refresh_hover_tooltip() -> void:
 		ui.show_enemy_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 # after戦闘イベント更新
 func _refresh_after_battle_event() -> void:
+	acid_controller.refresh_enemy_effects(enemies, stomach)
 	_refresh_ui()
 # ツールデバッグ番号文言取得
 func _get_tooltip_debug_number_text(enemy: Enemy) -> String:
@@ -698,6 +716,7 @@ func _clear_scheduled_acid_events() -> void:
 # 消化生成要求適用
 func _apply_acid_spawn_requests(spawn_requests: Array[BattleSpawnEnemyData]) -> void:
 	enemy_setup.apply_spawn_requests(spawn_requests, enemies)
+	acid_controller.refresh_enemy_effects(enemies, stomach)
 
 
 # 消化済み種effects適用

@@ -6,3 +6,9 @@ extends EnemyEffect
 # 追加ダメージ
 @export var damage := 0
 
+# 効果適用
+func apply(context: EnemyEffectContext) -> void:
+	if not context.is_event(Event.AFTER_ACID_DAMAGE) or context.target != context.source: return
+	var count := context.get_state_int("hit_count") + 1 # 被弾数
+	context.set_state("hit_count", count % required_count)
+	if count >= required_count: context.deal_acid_damage(context.source, damage)

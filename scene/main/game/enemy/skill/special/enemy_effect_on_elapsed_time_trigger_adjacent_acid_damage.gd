@@ -8,3 +8,8 @@ extends EnemyEffect
 # 効果対象
 @export var target: EnemyEffect.EffectTarget = EnemyEffect.EffectTarget.ADJACENT_OBJECTS
 
+# 効果適用
+func apply(context: EnemyEffectContext) -> void:
+	if not context.is_event(Event.PROGRESS_TIME): return
+	var count := context.consume_interval(interval_seconds) # 発火数
+	for enemy in context.get_targets(target): context.deal_acid_damage(enemy, context.resolver.get_last_acid_damage(), hit_count * count)

@@ -8,3 +8,9 @@ extends EnemyEffect
 # 必要隣接数
 @export_range(1, 64, 1) var minimum_count := 1
 
+# 効果適用
+func apply(context: EnemyEffectContext) -> void:
+	if not context.is_event(Event.REFRESH): return
+	var count := context.get_adjacent_objects().size() # 隣接数
+	if count < minimum_count: return
+	for enemy in context.get_targets(target): context.add_attack_delta(enemy, attack_delta * count)

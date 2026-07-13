@@ -30,3 +30,9 @@ extends EnemyEffect
 # スキル継承
 @export var inherit_skill := false
 
+# 効果適用
+func apply(context: EnemyEffectContext) -> void:
+	if not context.is_event(Event.DIGESTED) or context.target != context.source: return
+	var hp_value := hp_base + roundi(float(context.resolve_value(hp_source, 0)) * hp_multiplier) + hp_delta # 生成HP
+	var attack_value := attack_base + roundi(float(context.resolve_value(attack_source, 0)) * attack_multiplier) + attack_delta # 生成攻撃
+	context.spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)

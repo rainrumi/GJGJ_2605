@@ -122,7 +122,7 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 
 # stageスキル有効
 func _is_stage_nightmare_skill_enabled(source_skill: EnemyInfo) -> bool:
-	return source_skill != null and source_skill.skill_id >= STRENGTHENED_NIGHTMARE_SKILL_ID_MIN
+	return source_skill != null and (source_skill.skill != null or source_skill.skill_id >= STRENGTHENED_NIGHTMARE_SKILL_ID_MIN)
 
 
 # 悪夢胃袋サイズ取得
@@ -161,6 +161,10 @@ func apply_spawn_requests(
 	for request in spawn_requests:
 		if request == null:
 			continue
+		if request.enemy_info != null or request.skill != null or request.max_hp >= 0:
+			if not _spawn_effect_enemy(enemies, request):
+				break
+			continue
 		if not spawn_nuisance_nightmare(
 			enemies,
 			request.source_enemy,
@@ -171,3 +175,63 @@ func apply_spawn_requests(
 			request.global_acid_damage_rate
 		):
 			break
+
+
+# effect敵生成
+func _spawn_effect_enemy(enemies: Array[Enemy], request: BattleSpawnEnemyData) -> bool:
+	if request.source_enemy == null:
+		return false
+	var spawned := _get_available_nuisance_enemy(enemies, request.source_enemy) # 生成個体
+	if spawned == null:
+		return false
+	var source_info := request.enemy_info if request.enemy_info != null else request.source_enemy.get_nightmare_skill() # 元定義
+	if source_info == null:
+		return false
+	var runtime_info := source_info.duplicate(true) as EnemyInfo # 個体定義
+	if request.skill != null:
+		runtime_info.skill = request.skill
+	var block := runtime_info.acid_block.duplicate(true) as AcidBlockInfo if runtime_info.acid_block != null else AcidBlockInfo.new() # 個体ブロック
+	if request.max_hp >= 0:
+		block.max_hp = maxi(1, request.max_hp)
+	if request.damage >= 0:
+		block.damage = maxi(0, request.damage)
+	runtime_info.acid_block = block
+	spawned.setup(
+		runtime_info,
+		Vector2(_stomach.get_span_size(block.get_stomach_size().x), _stomach.get_span_size(block.get_stomach_size().y)),
+		true,
+		request.source_enemy.origin_position,
+		true
+	)
+	if request.current_hp >= 0:
+		spawned.set_hp_values(block.get_max_hp(), request.current_hp)
+	if request.spawn_area == EnemyEffect.SpawnArea.OUTSIDE_STOMACH:
+		spawned.set_Aciding(false)
+		spawned.return_to_origin()
+		return true
+	var spawn_cell := _find_spawn_cell(spawned, request, enemies) # 生成セル
+	if spawn_cell.x < 0:
+		spawned.set_Acided(true)
+		spawned.visible = false
+		return false
+	spawned.set_Aciding(true)
+	_stomach.place_enemy(spawned, spawn_cell)
+	return true
+
+
+# 生成セル検索
+func _find_spawn_cell(enemy: Enemy, request: BattleSpawnEnemyData, enemies: Array[Enemy]) -> Vector2i:
+	var candidates: Array[Vector2i] = [] # 候補セル
+	if request.spawn_area == EnemyEffect.SpawnArea.SAME_CELLS:
+		candidates.append_array(request.source_enemy.get_occupied_cells(request.source_enemy.stomach_cell))
+	elif request.spawn_area == EnemyEffect.SpawnArea.EMPTY_ADJACENT:
+		for cell in request.source_enemy.get_occupied_cells(request.source_enemy.stomach_cell):
+			for direction in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+				if not candidates.has(cell + direction): candidates.append(cell + direction)
+	else:
+		for row in range(_stomach.rows):
+			for column in range(_stomach.columns): candidates.append(Vector2i(column, row))
+	for cell in candidates:
+		if _stomach.can_place(enemy, cell, enemies):
+			return cell
+	return Vector2i(-1, -1)
