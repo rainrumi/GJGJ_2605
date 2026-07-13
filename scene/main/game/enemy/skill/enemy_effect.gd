@@ -1,0 +1,49 @@
+class_name EnemyEffect
+extends Resource
+
+enum EffectTarget {
+	SELF,
+	ADJACENT_OBJECTS,
+	ADJACENT_ENEMIES,
+	ALL_OBJECTS,
+	ALL_ENEMIES,
+	ACID_LINE_OBJECTS,
+}
+
+enum AdjacentSelection {
+	ALL,
+	EVEN_SPLIT,
+	LOWEST_HP,
+	RANDOM_ONE,
+}
+
+enum TargetSelection {
+	ALL,
+	RANDOM_ONE,
+	LOWEST_HP,
+}
+
+enum SpawnArea {
+	SAME_CELLS,
+	EMPTY_STOMACH,
+	EMPTY_ADJACENT,
+	OUTSIDE_STOMACH,
+}
+
+enum ValueSource {
+	FIXED,
+	SELF_CURRENT_HP,
+	SELF_MAX_HP,
+	SELF_ATTACK,
+	TAKEN_DAMAGE,
+	OVERKILL_DAMAGE,
+	DIGESTED_MINUTES,
+	LOST_HP,
+	INHERITED_VALUE,
+}
+
+# 適用順
+@export var priority := 0
+# 有効状態
+@export var enabled := true
+

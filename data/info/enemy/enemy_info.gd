@@ -11,3 +11,5 @@ extends Resource
 @export_multiline var description := ""
 # スキル有無
 @export var nightmare_skill_enabled := true
+# スキル
+@export var skill: EnemySkill
