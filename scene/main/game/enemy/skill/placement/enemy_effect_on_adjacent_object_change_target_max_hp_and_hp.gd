@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentObjectChangeTargetMaxHpAndHp
+﻿class_name EnemyEffectOnAdjacentObjectChangeTargetMaxHpAndHp
 extends EnemyEffect
 
 # 最大HP差分
@@ -8,6 +8,6 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.REFRESH): return
-	for enemy in runtime.get_adjacent_objects(): runtime.add_max_hp_delta(enemy, max_hp_delta, false)
-	for enemy in runtime.get_new_adjacent_objects(): runtime.change_hp(enemy, hp_delta)
+	if not is_refresh_activation(): return
+	for enemy in get_adjacent_objects(): add_max_hp_delta(enemy, max_hp_delta, false)
+	for enemy in get_new_adjacent_objects(): change_hp(enemy, hp_delta)

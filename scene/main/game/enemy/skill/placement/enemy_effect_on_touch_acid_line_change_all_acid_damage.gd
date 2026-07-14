@@ -1,4 +1,4 @@
-class_name EnemyEffectOnTouchAcidLineChangeAllAcidDamage
+﻿class_name EnemyEffectOnTouchAcidLineChangeAllAcidDamage
 extends EnemyEffect
 
 # ダメージ差分
@@ -8,4 +8,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH) and runtime.get_acid_line_contact_count() > 0: runtime.add_global_acid_damage(damage_delta, damage_multiplier)
+	if is_refresh_activation() and get_acid_line_contact_count() > 0: add_global_acid_damage(damage_delta, damage_multiplier)

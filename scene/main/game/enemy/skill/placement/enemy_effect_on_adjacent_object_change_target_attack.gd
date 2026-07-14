@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentObjectChangeTargetAttack
+﻿class_name EnemyEffectOnAdjacentObjectChangeTargetAttack
 extends EnemyEffect
 
 # 攻撃差分
@@ -8,5 +8,5 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.REFRESH): return
-	for enemy in runtime.get_activatable_new_adjacent(max_activations_per_target): enemy.add_damage(roundi(runtime.scale_value(float(attack_delta))))
+	if not is_refresh_activation(): return
+	for enemy in get_activatable_new_adjacent(max_activations_per_target): enemy.add_damage(roundi(scale_value(float(attack_delta))))

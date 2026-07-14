@@ -1,4 +1,4 @@
-class_name EnemyEffectOnClockCountChangeAcidDamage
+﻿class_name EnemyEffectOnClockCountChangeAcidDamage
 extends EnemyEffect
 
 # 必要回数
@@ -10,7 +10,7 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.PROGRESS_TIME): return
-	var count := runtime.get_state_int("clock_count") + 1 # 時刻回数
-	runtime.set_state("clock_count", count % required_count)
-	if count >= required_count: runtime.resolver.add_permanent_acid_modifier(runtime.source, damage_delta, damage_multiplier)
+	if not is_progress_time_activation(): return
+	var count := get_state_int("clock_count") + 1 # 時刻回数
+	set_state("clock_count", count % required_count)
+	if count >= required_count: add_permanent_acid_modifier(source, damage_delta, damage_multiplier)

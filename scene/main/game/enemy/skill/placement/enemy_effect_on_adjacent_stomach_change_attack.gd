@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentStomachChangeAttack
+﻿class_name EnemyEffectOnAdjacentStomachChangeAttack
 extends EnemyEffect
 
 # 接触毎差分
@@ -6,4 +6,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH): runtime.add_attack_delta(runtime.source, attack_delta * runtime.get_stomach_edge_contact_count())
+	if is_refresh_activation(): add_attack_delta(source, attack_delta * get_stomach_edge_contact_count())

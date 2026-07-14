@@ -1,4 +1,4 @@
-class_name EnemyEffectOnClockCountDealAllAcidDamage
+﻿class_name EnemyEffectOnClockCountDealAllAcidDamage
 extends EnemyEffect
 
 # 必要回数
@@ -12,8 +12,8 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.PROGRESS_TIME): return
-	var count := runtime.get_state_int("clock_count") + 1 # 時刻回数
-	runtime.set_state("clock_count", count % required_count)
+	if not is_progress_time_activation(): return
+	var count := get_state_int("clock_count") + 1 # 時刻回数
+	set_state("clock_count", count % required_count)
 	if count >= required_count:
-		for enemy in runtime.get_targets(target): runtime.deal_acid_damage(enemy, damage, hit_count)
+		for enemy in get_targets(target): deal_acid_damage(enemy, damage, hit_count)

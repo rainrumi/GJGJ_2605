@@ -1,4 +1,4 @@
-class_name EnemyEffectOnNotAdjacentAcidLineChangeHp
+﻿class_name EnemyEffectOnNotAdjacentAcidLineChangeHp
 extends EnemyEffect
 
 # HP差分
@@ -8,4 +8,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH) and runtime.get_acid_line_contact_count() == 0: runtime.multiply_hp(runtime.source, hp_multiplier); runtime.add_max_hp_delta(runtime.source, hp_delta, false)
+	if is_refresh_activation() and get_acid_line_contact_count() == 0: multiply_hp(source, hp_multiplier); add_max_hp_delta(source, hp_delta, false)

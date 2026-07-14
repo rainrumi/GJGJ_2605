@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentStomachChangeDigestIntervalRate
+﻿class_name EnemyEffectOnAdjacentStomachChangeDigestIntervalRate
 extends EnemyEffect
 
 # 接触毎割合
@@ -6,4 +6,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH): runtime.add_interval_rate(interval_delta_rate * runtime.get_stomach_edge_contact_count())
+	if is_refresh_activation(): add_interval_rate(interval_delta_rate * get_stomach_edge_contact_count())

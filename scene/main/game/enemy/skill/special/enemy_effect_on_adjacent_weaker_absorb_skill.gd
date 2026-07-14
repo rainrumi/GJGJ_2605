@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentWeakerAbsorbSkill
+﻿class_name EnemyEffectOnAdjacentWeakerAbsorbSkill
 extends EnemyEffect
 
 # 消化ダメージ
@@ -6,6 +6,6 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.REFRESH): return
-	for enemy in runtime.get_new_adjacent_objects():
-		if enemy.get_damage() < runtime.source.get_damage(): runtime.deal_acid_damage(enemy, damage); runtime.resolver.inherit_effects(runtime.source, enemy)
+	if not is_refresh_activation(): return
+	for enemy in get_new_adjacent_objects():
+		if enemy.get_damage() < source.get_damage(): deal_acid_damage(enemy, damage); inherit_effects(source, enemy)

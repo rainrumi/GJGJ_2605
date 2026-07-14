@@ -1,4 +1,4 @@
-class_name EnemyEffectOnBattleChanceScaleAttack
+﻿class_name EnemyEffectOnBattleChanceScaleAttack
 extends EnemyEffect
 
 # 攻撃倍率
@@ -10,7 +10,7 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.REFRESH): return
-	var active := runtime.get_state_int("active", -1) # 発動状態
-	if active < 0: active = 1 if runtime.roll(chance, invert_chance) else 0; runtime.set_state("active", active)
-	if active == 1: runtime.multiply_attack(runtime.source, attack_multiplier)
+	if not is_refresh_activation(): return
+	var active := get_state_int("active", -1) # 発動状態
+	if active < 0: active = 1 if roll(chance, invert_chance) else 0; set_state("active", active)
+	if active == 1: multiply_attack(source, attack_multiplier)

@@ -1,4 +1,4 @@
-class_name EnemyEffectOnElapsedTimeRecoverHp
+﻿class_name EnemyEffectOnElapsedTimeRecoverHp
 extends EnemyEffect
 
 # 発動秒数
@@ -10,6 +10,6 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.PROGRESS_TIME): return
-	var count := runtime.consume_interval(interval_seconds) # 発火数
-	runtime.recover(runtime.source, recovery * count, recovery_rate * count)
+	if not is_progress_time_activation(): return
+	var count := consume_interval(interval_seconds) # 発火数
+	recover(source, recovery * count, recovery_rate * count)

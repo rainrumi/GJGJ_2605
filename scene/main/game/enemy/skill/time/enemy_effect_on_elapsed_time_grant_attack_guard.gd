@@ -1,4 +1,4 @@
-class_name EnemyEffectOnElapsedTimeGrantAttackGuard
+﻿class_name EnemyEffectOnElapsedTimeGrantAttackGuard
 extends EnemyEffect
 
 # 発動秒数
@@ -14,7 +14,7 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH): runtime.resolver.set_default_attack_disabled(runtime.source, suppress_default_attack); return
-	if not runtime.is_event(Event.PROGRESS_TIME): return
-	var count := runtime.consume_interval(interval_seconds) # 発火数
-	for enemy in runtime.get_targets(target): runtime.resolver.add_attack_guards(enemy, mini(stack_limit, guard_count * count))
+	if is_refresh_activation(): set_default_attack_disabled(source, suppress_default_attack); return
+	if not is_progress_time_activation(): return
+	var count := consume_interval(interval_seconds) # 発火数
+	for enemy in get_targets(target): add_attack_guards(enemy, mini(stack_limit, guard_count * count))

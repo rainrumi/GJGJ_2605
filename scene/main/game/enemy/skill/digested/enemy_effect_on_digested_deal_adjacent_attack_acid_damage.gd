@@ -1,4 +1,4 @@
-class_name EnemyEffectOnDigestedDealAdjacentAttackAcidDamage
+﻿class_name EnemyEffectOnDigestedDealAdjacentAttackAcidDamage
 extends EnemyEffect
 
 # 攻撃倍率
@@ -8,5 +8,5 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.DIGESTED) and runtime.target == runtime.source:
-		for enemy in runtime.get_targets(target): runtime.deal_acid_damage(enemy, roundi(float(runtime.source.get_damage()) * attack_multiplier))
+	if is_digested_activation() and get_activation_target() == source:
+		for enemy in get_targets(target): deal_acid_damage(enemy, roundi(float(source.get_damage()) * attack_multiplier))

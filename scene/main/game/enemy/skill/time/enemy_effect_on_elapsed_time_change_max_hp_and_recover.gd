@@ -1,4 +1,4 @@
-class_name EnemyEffectOnElapsedTimeChangeMaxHpAndRecover
+﻿class_name EnemyEffectOnElapsedTimeChangeMaxHpAndRecover
 extends EnemyEffect
 
 # 発動秒数
@@ -10,7 +10,7 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.PROGRESS_TIME): return
-	var count := runtime.consume_interval(interval_seconds) # 発火数
-	runtime.source.add_max_hp(roundi(runtime.scale_value(float(max_hp_delta * count))), false)
-	runtime.recover(runtime.source, recovery * count)
+	if not is_progress_time_activation(): return
+	var count := consume_interval(interval_seconds) # 発火数
+	source.add_max_hp(roundi(scale_value(float(max_hp_delta * count))), false)
+	recover(source, recovery * count)

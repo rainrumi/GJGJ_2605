@@ -1,4 +1,4 @@
-class_name EnemyEffectOnElapsedTimeChangeAttack
+﻿class_name EnemyEffectOnElapsedTimeChangeAttack
 extends EnemyEffect
 
 # 発動秒数
@@ -8,4 +8,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.PROGRESS_TIME): runtime.source.add_damage(roundi(runtime.scale_value(float(attack_delta * runtime.consume_interval(interval_seconds)))))
+	if is_progress_time_activation(): source.add_damage(roundi(scale_value(float(attack_delta * consume_interval(interval_seconds)))))

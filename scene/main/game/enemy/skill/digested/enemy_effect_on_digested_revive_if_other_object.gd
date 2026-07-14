@@ -1,4 +1,4 @@
-class_name EnemyEffectOnDigestedReviveIfOtherObject
+﻿class_name EnemyEffectOnDigestedReviveIfOtherObject
 extends EnemyEffect
 
 # 回復割合
@@ -6,5 +6,5 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.DIGESTED) or runtime.target != runtime.source: return
-	if runtime.get_active_objects().any(func(enemy: Enemy) -> bool: return enemy != runtime.source): runtime.revive(runtime.source, recovery_rate)
+	if not is_digested_activation() or get_activation_target() != source: return
+	if get_active_objects().any(func(enemy: Enemy) -> bool: return enemy != source): revive(source, recovery_rate)

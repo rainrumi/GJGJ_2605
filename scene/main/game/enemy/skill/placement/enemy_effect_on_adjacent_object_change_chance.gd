@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentObjectChangeChance
+﻿class_name EnemyEffectOnAdjacentObjectChangeChance
 extends EnemyEffect
 
 # 確率差分
@@ -8,7 +8,7 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.REFRESH): return
-	var targets := runtime.get_adjacent_objects() # 隣接対象
+	if not is_refresh_activation(): return
+	var targets := get_adjacent_objects() # 隣接対象
 	if targets.size() < required_count: return
-	for enemy in targets: runtime.add_chance_delta(enemy, chance_delta)
+	for enemy in targets: add_chance_delta(enemy, chance_delta)

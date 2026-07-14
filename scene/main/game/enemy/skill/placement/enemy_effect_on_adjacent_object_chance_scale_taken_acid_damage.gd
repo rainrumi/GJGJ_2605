@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentObjectChanceScaleTakenAcidDamage
+﻿class_name EnemyEffectOnAdjacentObjectChanceScaleTakenAcidDamage
 extends EnemyEffect
 
 # 発動率
@@ -10,5 +10,5 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.BEFORE_ACID_DAMAGE) or runtime.target == null: return
-	if runtime.get_adjacent_objects().has(runtime.target) and runtime.get_adjacent_objects().size() >= required_count and runtime.roll(chance): runtime.damage = roundi(float(runtime.damage) * damage_multiplier)
+	if not is_before_acid_damage_activation() or get_activation_target() == null: return
+	if get_adjacent_objects().has(get_activation_target()) and get_adjacent_objects().size() >= required_count and roll(chance): set_activation_damage(roundi(float(get_activation_damage()) * damage_multiplier))

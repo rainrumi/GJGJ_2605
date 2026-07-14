@@ -6,7 +6,7 @@ const acid_DAMAGE := 300
 
 var seed_effects := SeedEffectResolver.new()
 var seed_block_resolver := DreamSeedBlockAcidResolver.new()
-var enemy_effects := EnemyEffectResolver.new()
+var enemy_effects := EnemyEffectSystem.new()
 var _battle_start_minutes := 0 # 開始分
 
 

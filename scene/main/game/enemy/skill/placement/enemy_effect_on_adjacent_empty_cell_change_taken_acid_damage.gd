@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentEmptyCellChangeTakenAcidDamage
+﻿class_name EnemyEffectOnAdjacentEmptyCellChangeTakenAcidDamage
 extends EnemyEffect
 
 # マス毎差分
@@ -8,7 +8,7 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.REFRESH): return
-	var count := runtime.get_open_adjacent_count() # 空隣接数
-	runtime.add_acid_damage_delta(runtime.source, damage_delta * count)
-	runtime.multiply_acid_damage(runtime.source, pow(damage_multiplier, count))
+	if not is_refresh_activation(): return
+	var count := get_open_adjacent_count() # 空隣接数
+	add_acid_damage_delta(source, damage_delta * count)
+	multiply_acid_damage(source, pow(damage_multiplier, count))

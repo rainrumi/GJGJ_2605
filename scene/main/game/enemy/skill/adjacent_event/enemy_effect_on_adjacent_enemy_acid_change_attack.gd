@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentEnemyAcidChangeAttack
+﻿class_name EnemyEffectOnAdjacentEnemyAcidChangeAttack
 extends EnemyEffect
 
 # 攻撃差分
@@ -6,4 +6,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.ADJACENT_ACID_DAMAGE) and runtime.get_adjacent_enemies().has(runtime.target): runtime.source.add_damage(roundi(runtime.scale_value(float(attack_delta))))
+	if is_adjacent_acid_damage_activation() and get_adjacent_enemies().has(get_activation_target()): source.add_damage(roundi(scale_value(float(attack_delta))))

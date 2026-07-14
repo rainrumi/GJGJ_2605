@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAcidDamageCountAttack
+﻿class_name EnemyEffectOnAcidDamageCountAttack
 extends EnemyEffect
 
 # 必要被弾数
@@ -10,7 +10,7 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.AFTER_ACID_DAMAGE) or runtime.target != runtime.source: return
-	var count := runtime.get_state_int("hit_count") + 1 # 被弾数
-	runtime.set_state("hit_count", count % required_count)
-	if count >= required_count: runtime.attack_player(fixed_damage if fixed_damage > 0 else runtime.source.get_damage(), attack_count)
+	if not is_after_acid_damage_activation() or get_activation_target() != source: return
+	var count := get_state_int("hit_count") + 1 # 被弾数
+	set_state("hit_count", count % required_count)
+	if count >= required_count: attack_player(fixed_damage if fixed_damage > 0 else source.get_damage(), attack_count)

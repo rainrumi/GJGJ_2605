@@ -1,4 +1,4 @@
-class_name EnemyEffectOnElapsedTimeTakeAcidDamage
+﻿class_name EnemyEffectOnElapsedTimeTakeAcidDamage
 extends EnemyEffect
 
 # 発動秒数
@@ -8,4 +8,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.PROGRESS_TIME): runtime.deal_acid_damage(runtime.source, damage, runtime.consume_interval(interval_seconds))
+	if is_progress_time_activation(): deal_acid_damage(source, damage, consume_interval(interval_seconds))

@@ -1,4 +1,4 @@
-class_name EnemyEffectOnDamageSpawnEnemy
+﻿class_name EnemyEffectOnDamageSpawnEnemy
 extends EnemyEffect
 
 # 生成敵定義
@@ -18,4 +18,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.AFTER_ACID_DAMAGE) and runtime.target == runtime.source: runtime.spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, spawn_hp, spawn_attack)
+	if is_after_acid_damage_activation() and get_activation_target() == source: spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, spawn_hp, spawn_attack)

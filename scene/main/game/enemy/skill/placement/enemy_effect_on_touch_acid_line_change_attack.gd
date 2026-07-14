@@ -1,4 +1,4 @@
-class_name EnemyEffectOnTouchAcidLineChangeAttack
+﻿class_name EnemyEffectOnTouchAcidLineChangeAttack
 extends EnemyEffect
 
 # 攻撃差分
@@ -6,4 +6,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH) and runtime.get_acid_line_contact_count() > 0: runtime.add_attack_delta(runtime.source, attack_delta)
+	if is_refresh_activation() and get_acid_line_contact_count() > 0: add_attack_delta(source, attack_delta)

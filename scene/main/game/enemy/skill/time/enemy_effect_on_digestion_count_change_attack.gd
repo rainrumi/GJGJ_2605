@@ -1,4 +1,4 @@
-class_name EnemyEffectOnDigestionCountChangeAttack
+﻿class_name EnemyEffectOnDigestionCountChangeAttack
 extends EnemyEffect
 
 # 必要消化数
@@ -8,8 +8,8 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.ANY_DIGESTED): return
-	var count := runtime.get_state_int("digestion_count") + runtime.digested_enemies.size() # 消化数
+	if not is_any_digested_activation(): return
+	var count := get_state_int("digestion_count") + get_activation_digested_enemies().size() # 消化数
 	var triggers := int(count / required_count) # 発火数
-	runtime.set_state("digestion_count", count % required_count)
-	if triggers > 0: runtime.source.add_damage(roundi(runtime.scale_value(float(attack_delta * triggers))))
+	set_state("digestion_count", count % required_count)
+	if triggers > 0: source.add_damage(roundi(scale_value(float(attack_delta * triggers))))

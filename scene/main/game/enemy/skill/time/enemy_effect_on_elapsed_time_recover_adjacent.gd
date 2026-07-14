@@ -1,4 +1,4 @@
-class_name EnemyEffectOnElapsedTimeRecoverAdjacent
+﻿class_name EnemyEffectOnElapsedTimeRecoverAdjacent
 extends EnemyEffect
 
 # 発動秒数
@@ -12,8 +12,8 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH): runtime.resolver.set_default_attack_disabled(runtime.source, suppress_default_attack); return
-	if not runtime.is_event(Event.PROGRESS_TIME): return
-	var count := runtime.consume_interval(interval_seconds) # 発火数
-	for enemy in runtime.get_adjacent_objects(): runtime.recover(enemy, recovery * count)
-	if include_self: runtime.recover(runtime.source, recovery * count)
+	if is_refresh_activation(): set_default_attack_disabled(source, suppress_default_attack); return
+	if not is_progress_time_activation(): return
+	var count := consume_interval(interval_seconds) # 発火数
+	for enemy in get_adjacent_objects(): recover(enemy, recovery * count)
+	if include_self: recover(source, recovery * count)

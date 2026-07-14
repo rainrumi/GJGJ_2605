@@ -1,4 +1,4 @@
-class_name EnemyEffectOnBattleChangeHpByEmptyCell
+﻿class_name EnemyEffectOnBattleChangeHpByEmptyCell
 extends EnemyEffect
 
 # マス毎HP
@@ -6,4 +6,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH): runtime.change_hp(runtime.source, hp_delta_per_cell * (runtime.get_empty_cell_count() - runtime.get_state_int("empty_count"))); runtime.set_state("empty_count", runtime.get_empty_cell_count())
+	if is_refresh_activation(): change_hp(source, hp_delta_per_cell * (get_empty_cell_count() - get_state_int("empty_count"))); set_state("empty_count", get_empty_cell_count())

@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentObjectShareAcidDamage
+﻿class_name EnemyEffectOnAdjacentObjectShareAcidDamage
 extends EnemyEffect
 
 # 自身を含む
@@ -8,11 +8,11 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.BEFORE_ACID_DAMAGE) or runtime.target != runtime.source: return
-	var targets := runtime.get_adjacent_objects() # 分配対象
+	if not is_before_acid_damage_activation() or get_activation_target() != source: return
+	var targets := get_adjacent_objects() # 分配対象
 	if targets.size() < minimum_count: return
-	if include_self: targets.append(runtime.source)
-	var split := int(runtime.damage / maxi(1, targets.size())) # 分配値
+	if include_self: targets.append(source)
+	var split := int(get_activation_damage() / maxi(1, targets.size())) # 分配値
 	for enemy in targets:
-		if enemy != runtime.source: runtime.deal_acid_damage(enemy, split)
-	runtime.damage = split
+		if enemy != source: deal_acid_damage(enemy, split)
+	set_activation_damage(split)

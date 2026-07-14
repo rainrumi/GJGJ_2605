@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAcidDamageAcquireAttack
+﻿class_name EnemyEffectOnAcidDamageAcquireAttack
 extends EnemyEffect
 
 # 取得割合
@@ -10,6 +10,6 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.AFTER_ACID_DAMAGE) or runtime.target != runtime.source: return
-	if require_acid_line_touch and runtime.get_acid_line_contact_count() == 0: return
-	if runtime.roll(chance): runtime.source.add_damage(roundi(float(runtime.damage) * attack_rate))
+	if not is_after_acid_damage_activation() or get_activation_target() != source: return
+	if require_acid_line_touch and get_acid_line_contact_count() == 0: return
+	if roll(chance): source.add_damage(roundi(float(get_activation_damage()) * attack_rate))

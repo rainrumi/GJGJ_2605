@@ -1,4 +1,4 @@
-class_name EnemyEffectOnClockCountRecoverHpByEnemyCount
+﻿class_name EnemyEffectOnClockCountRecoverHpByEnemyCount
 extends EnemyEffect
 
 # 必要回数
@@ -10,10 +10,10 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.PROGRESS_TIME): return
-	var count := runtime.get_state_int("clock_count") + 1 # 時刻回数
-	runtime.set_state("clock_count", count % required_count)
+	if not is_progress_time_activation(): return
+	var count := get_state_int("clock_count") + 1 # 時刻回数
+	set_state("clock_count", count % required_count)
 	if count >= required_count:
-		var enemy_count := runtime.get_active_enemies().size() # 敵数
+		var enemy_count := get_active_enemies().size() # 敵数
 		if not include_self: enemy_count = maxi(0, enemy_count - 1)
-		runtime.recover(runtime.source, recovery_per_enemy * enemy_count)
+		recover(source, recovery_per_enemy * enemy_count)

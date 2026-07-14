@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAcidDamageTransfer
+﻿class_name EnemyEffectOnAcidDamageTransfer
 extends EnemyEffect
 
 # 譲渡率
@@ -10,11 +10,11 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.BEFORE_ACID_DAMAGE) or runtime.target != runtime.source: return
-	var targets := runtime.get_adjacent_objects() # 譲渡対象
+	if not is_before_acid_damage_activation() or get_activation_target() != source: return
+	var targets := get_adjacent_objects() # 譲渡対象
 	if targets.size() < minimum_count: return
 	if selection == AdjacentSelection.LOWEST_HP: targets.sort_custom(func(a: Enemy, b: Enemy) -> bool: return a.get_current_hp() < b.get_current_hp()); targets = [targets[0]]
 	elif selection == AdjacentSelection.RANDOM_ONE: targets = [targets.pick_random()]
-	var split := roundi(float(runtime.damage) * transfer_rate / float(targets.size())) # 譲渡値
-	for enemy in targets: runtime.deal_acid_damage(enemy, split)
-	runtime.damage = maxi(0, runtime.damage - split * targets.size())
+	var split := roundi(float(get_activation_damage()) * transfer_rate / float(targets.size())) # 譲渡値
+	for enemy in targets: deal_acid_damage(enemy, split)
+	set_activation_damage(maxi(0, get_activation_damage() - split * targets.size()))

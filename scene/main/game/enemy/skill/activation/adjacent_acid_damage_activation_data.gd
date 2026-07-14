@@ -1,0 +1,2 @@
+class_name AdjacentAcidDamageActivationData
+extends DamageActivationData

@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAcidDamageChanceScaleTakenDamage
+﻿class_name EnemyEffectOnAcidDamageChanceScaleTakenDamage
 extends EnemyEffect
 
 # 発動率
@@ -8,4 +8,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.BEFORE_ACID_DAMAGE) and runtime.target == runtime.source and runtime.roll(chance): runtime.damage = roundi(float(runtime.damage) * damage_multiplier)
+	if is_before_acid_damage_activation() and get_activation_target() == source and roll(chance): set_activation_damage(roundi(float(get_activation_damage()) * damage_multiplier))

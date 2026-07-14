@@ -1,4 +1,4 @@
-class_name EnemyEffectOnDigestedRevive
+﻿class_name EnemyEffectOnDigestedRevive
 extends EnemyEffect
 
 # 回復割合
@@ -6,4 +6,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.DIGESTED) and runtime.target == runtime.source: runtime.revive(runtime.source, recovery_rate)
+	if is_digested_activation() and get_activation_target() == source: revive(source, recovery_rate)

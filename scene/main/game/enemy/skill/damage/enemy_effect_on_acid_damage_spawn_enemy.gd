@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAcidDamageSpawnEnemy
+﻿class_name EnemyEffectOnAcidDamageSpawnEnemy
 extends EnemyEffect
 
 # 生成敵定義
@@ -28,9 +28,9 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.AFTER_ACID_DAMAGE) or runtime.target != runtime.source: return
-	var hp_value := roundi(float(runtime.resolve_value(hp_source)) * hp_multiplier) # 生成HP
-	var attack_value := roundi(float(runtime.resolve_value(attack_source)) * attack_multiplier) # 生成攻撃
-	runtime.spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)
-	runtime.source.set_hp_values(roundi(float(runtime.source.get_max_hp()) * self_hp_multiplier_on_success), mini(runtime.source.get_current_hp(), roundi(float(runtime.source.get_max_hp()) * self_hp_multiplier_on_success)))
-	runtime.source.set_damage_value(roundi(float(runtime.source.get_damage()) * self_attack_multiplier_on_success))
+	if not is_after_acid_damage_activation() or get_activation_target() != source: return
+	var hp_value := roundi(float(resolve_value(hp_source)) * hp_multiplier) # 生成HP
+	var attack_value := roundi(float(resolve_value(attack_source)) * attack_multiplier) # 生成攻撃
+	spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)
+	source.set_hp_values(roundi(float(source.get_max_hp()) * self_hp_multiplier_on_success), mini(source.get_current_hp(), roundi(float(source.get_max_hp()) * self_hp_multiplier_on_success)))
+	source.set_damage_value(roundi(float(source.get_damage()) * self_attack_multiplier_on_success))

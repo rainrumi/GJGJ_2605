@@ -1,0 +1,2 @@
+class_name AdjacentDigestedActivationData
+extends DigestionActivationData

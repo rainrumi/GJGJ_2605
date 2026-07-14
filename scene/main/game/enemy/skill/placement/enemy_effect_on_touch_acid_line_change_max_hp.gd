@@ -1,4 +1,4 @@
-class_name EnemyEffectOnTouchAcidLineChangeMaxHp
+﻿class_name EnemyEffectOnTouchAcidLineChangeMaxHp
 extends EnemyEffect
 
 # 最大HP差分
@@ -6,4 +6,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH) and runtime.get_acid_line_contact_count() > 0: runtime.add_max_hp_delta(runtime.source, max_hp_delta, false)
+	if is_refresh_activation() and get_acid_line_contact_count() > 0: add_max_hp_delta(source, max_hp_delta, false)

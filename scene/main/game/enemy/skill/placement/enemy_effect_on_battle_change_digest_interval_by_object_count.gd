@@ -1,4 +1,4 @@
-class_name EnemyEffectOnBattleChangeDigestIntervalByObjectCount
+﻿class_name EnemyEffectOnBattleChangeDigestIntervalByObjectCount
 extends EnemyEffect
 
 # モノ毎秒差
@@ -6,4 +6,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH): runtime.add_interval_seconds(seconds_per_object * runtime.get_active_objects().size())
+	if is_refresh_activation(): add_interval_seconds(seconds_per_object * get_active_objects().size())

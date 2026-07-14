@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentObjectCountChangeSelfOrTargetAttack
+﻿class_name EnemyEffectOnAdjacentObjectCountChangeSelfOrTargetAttack
 extends EnemyEffect
 
 # 効果対象
@@ -10,7 +10,7 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.REFRESH): return
-	var count := runtime.get_adjacent_objects().size() # 隣接数
+	if not is_refresh_activation(): return
+	var count := get_adjacent_objects().size() # 隣接数
 	if count < minimum_count: return
-	for enemy in runtime.get_targets(target): runtime.add_attack_delta(enemy, attack_delta * count)
+	for enemy in get_targets(target): add_attack_delta(enemy, attack_delta * count)

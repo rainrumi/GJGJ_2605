@@ -49,6 +49,10 @@ func _run() -> void:
 	var stack := EnemyEffectStack.new() # 対象スタック
 	var slow := TestEffect.new() # 後順位効果
 	var fast := TestEffect.new() # 先順位効果
+	var slow_owner := Enemy.new() # 後順位所有者
+	var fast_owner := Enemy.new() # 先順位所有者
+	slow.source = slow_owner
+	fast.source = fast_owner
 	slow.priority = 10
 	fast.priority = 0
 	slow.setup(output, stack)
@@ -60,6 +64,10 @@ func _run() -> void:
 	await process_frame
 	_expect(output == [3, 1, 2, 4], "優先度・受付順・次バッチを維持する")
 	_expect(slow.get_activation_data() == null, "実行後に発動値を破棄する")
+	slow.unbind()
+	fast.unbind()
+	slow_owner.free()
+	fast_owner.free()
 	quit(_failures)
 
 

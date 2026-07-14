@@ -1,4 +1,4 @@
-class_name EnemyEffectOnDigestionCountDealAllAcidDamage
+﻿class_name EnemyEffectOnDigestionCountDealAllAcidDamage
 extends EnemyEffect
 
 # 必要消化数
@@ -12,8 +12,8 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.ANY_DIGESTED): return
-	var count := runtime.get_state_int("digestion_count") + runtime.digested_enemies.size() # 消化数
+	if not is_any_digested_activation(): return
+	var count := get_state_int("digestion_count") + get_activation_digested_enemies().size() # 消化数
 	var triggers := int(count / required_count) # 発火数
-	runtime.set_state("digestion_count", count % required_count)
-	for enemy in runtime.get_targets(target): runtime.deal_acid_damage(enemy, damage, hit_count * triggers)
+	set_state("digestion_count", count % required_count)
+	for enemy in get_targets(target): deal_acid_damage(enemy, damage, hit_count * triggers)

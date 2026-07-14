@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentObjectScaleEffect
+﻿class_name EnemyEffectOnAdjacentObjectScaleEffect
 extends EnemyEffect
 
 # 効果倍率
@@ -8,7 +8,7 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.REFRESH): return
-	var targets := runtime.get_adjacent_objects() # 隣接対象
+	if not is_refresh_activation(): return
+	var targets := get_adjacent_objects() # 隣接対象
 	if targets.size() < required_count: return
-	for enemy in targets: runtime.multiply_effect(enemy, effect_multiplier)
+	for enemy in targets: multiply_effect(enemy, effect_multiplier)

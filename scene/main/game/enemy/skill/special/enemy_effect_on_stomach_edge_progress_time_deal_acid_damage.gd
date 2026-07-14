@@ -1,4 +1,4 @@
-class_name EnemyEffectOnStomachEdgeProgressTimeDealAcidDamage
+﻿class_name EnemyEffectOnStomachEdgeProgressTimeDealAcidDamage
 extends EnemyEffect
 
 # ダメージ
@@ -10,9 +10,9 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.PROGRESS_TIME) or runtime.get_stomach_edge_contact_count() == 0: return
-	var targets := runtime.get_targets(target) # 対象一覧
+	if not is_progress_time_activation() or get_stomach_edge_contact_count() == 0: return
+	var targets := get_targets(target) # 対象一覧
 	if targets.is_empty(): return
 	if selection == TargetSelection.RANDOM_ONE: targets = [targets.pick_random()]
 	elif selection == TargetSelection.LOWEST_HP: targets.sort_custom(func(a: Enemy, b: Enemy) -> bool: return a.get_current_hp() < b.get_current_hp()); targets = [targets[0]]
-	for enemy in targets: runtime.deal_acid_damage(enemy, damage)
+	for enemy in targets: deal_acid_damage(enemy, damage)

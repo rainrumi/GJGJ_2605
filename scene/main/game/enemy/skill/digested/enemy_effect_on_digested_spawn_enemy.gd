@@ -1,4 +1,4 @@
-class_name EnemyEffectOnDigestedSpawnEnemy
+﻿class_name EnemyEffectOnDigestedSpawnEnemy
 extends EnemyEffect
 
 # 生成敵定義
@@ -32,7 +32,7 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.DIGESTED) or runtime.target != runtime.source: return
-	var hp_value := hp_base + roundi(float(runtime.resolve_value(hp_source, 0)) * hp_multiplier) + hp_delta # 生成HP
-	var attack_value := attack_base + roundi(float(runtime.resolve_value(attack_source, 0)) * attack_multiplier) + attack_delta # 生成攻撃
-	runtime.spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)
+	if not is_digested_activation() or get_activation_target() != source: return
+	var hp_value := hp_base + roundi(float(resolve_value(hp_source, 0)) * hp_multiplier) + hp_delta # 生成HP
+	var attack_value := attack_base + roundi(float(resolve_value(attack_source, 0)) * attack_multiplier) + attack_delta # 生成攻撃
+	spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)

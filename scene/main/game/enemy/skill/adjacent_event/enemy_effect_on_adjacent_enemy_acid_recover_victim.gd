@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentEnemyAcidRecoverVictim
+﻿class_name EnemyEffectOnAdjacentEnemyAcidRecoverVictim
 extends EnemyEffect
 
 # 隣接毎回復量
@@ -6,4 +6,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.ADJACENT_ACID_DAMAGE) and runtime.get_adjacent_enemies().has(runtime.target): runtime.recover(runtime.target, recovery_per_adjacent * runtime.get_adjacent_enemies().size())
+	if is_adjacent_acid_damage_activation() and get_adjacent_enemies().has(get_activation_target()): recover(get_activation_target(), recovery_per_adjacent * get_adjacent_enemies().size())

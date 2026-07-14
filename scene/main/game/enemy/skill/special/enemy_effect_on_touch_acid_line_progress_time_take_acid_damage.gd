@@ -1,4 +1,4 @@
-class_name EnemyEffectOnTouchAcidLineProgressTimeTakeAcidDamage
+﻿class_name EnemyEffectOnTouchAcidLineProgressTimeTakeAcidDamage
 extends EnemyEffect
 
 # 固定ダメージ
@@ -8,4 +8,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.PROGRESS_TIME): runtime.deal_acid_damage(runtime.source, damage + damage_per_contact * runtime.get_acid_line_contact_count())
+	if is_progress_time_activation(): deal_acid_damage(source, damage + damage_per_contact * get_acid_line_contact_count())

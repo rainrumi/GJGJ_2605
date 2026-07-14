@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAcidDamageRecoverAll
+﻿class_name EnemyEffectOnAcidDamageRecoverAll
 extends EnemyEffect
 
 # 回復量
@@ -12,5 +12,5 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.AFTER_ACID_DAMAGE) or runtime.target != runtime.source or not runtime.roll(chance, invert_chance): return
-	for enemy in runtime.get_targets(target): runtime.recover(enemy, recovery)
+	if not is_after_acid_damage_activation() or get_activation_target() != source or not roll(chance, invert_chance): return
+	for enemy in get_targets(target): recover(enemy, recovery)

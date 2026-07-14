@@ -1,4 +1,4 @@
-class_name EnemyEffectOnBattleIgnoreAcidDamageBelow
+﻿class_name EnemyEffectOnBattleIgnoreAcidDamageBelow
 extends EnemyEffect
 
 # 閾値
@@ -8,4 +8,4 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.BEFORE_ACID_DAMAGE) and runtime.target == runtime.source and runtime.damage < runtime.resolve_value(threshold_source, threshold): runtime.damage = 0
+	if is_before_acid_damage_activation() and get_activation_target() == source and get_activation_damage() < resolve_value(threshold_source, threshold): set_activation_damage(0)

@@ -1,4 +1,4 @@
-class_name EnemyEffectOnDigestedChanceRevive
+﻿class_name EnemyEffectOnDigestedChanceRevive
 extends EnemyEffect
 
 # 回復割合
@@ -14,6 +14,6 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.DIGESTED) or runtime.target != runtime.source: return
-	var steps := 0 if revives_per_step <= 0 else int(runtime.source.get_revive_count() / revives_per_step) # 段階数
-	if runtime.roll(chance + chance_delta * steps, invert_chance): runtime.revive(runtime.source, recovery_rate)
+	if not is_digested_activation() or get_activation_target() != source: return
+	var steps := 0 if revives_per_step <= 0 else int(source.get_revive_count() / revives_per_step) # 段階数
+	if roll(chance + chance_delta * steps, invert_chance): revive(source, recovery_rate)

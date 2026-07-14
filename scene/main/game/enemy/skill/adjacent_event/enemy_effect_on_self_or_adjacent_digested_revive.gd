@@ -1,4 +1,4 @@
-class_name EnemyEffectOnSelfOrAdjacentDigestedRevive
+﻿class_name EnemyEffectOnSelfOrAdjacentDigestedRevive
 extends EnemyEffect
 
 # 回復割合
@@ -10,9 +10,9 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if not runtime.is_event(Event.ADJACENT_DIGESTED): return
-	var group := runtime.get_adjacent_objects() # 共有群
-	if include_self: group.append(runtime.source)
-	if not group.has(runtime.target): return
+	if not is_adjacent_digested_activation(): return
+	var group := get_adjacent_objects() # 共有群
+	if include_self: group.append(source)
+	if not group.has(get_activation_target()): return
 	var survivors := group.filter(func(enemy: Enemy) -> bool: return not enemy.is_Acided()) # 生存群
-	if not require_survivor or not survivors.is_empty(): runtime.revive(runtime.target, recovery_rate)
+	if not require_survivor or not survivors.is_empty(): revive(get_activation_target(), recovery_rate)

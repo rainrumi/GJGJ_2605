@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentObjectSetAttack
+﻿class_name EnemyEffectOnAdjacentObjectSetAttack
 extends EnemyEffect
 
 # 指定攻撃力
@@ -8,5 +8,5 @@ extends EnemyEffect
 
 # 効果適用
 func apply() -> void:
-	if runtime.is_event(Event.REFRESH) and runtime.get_adjacent_objects().size() >= minimum_count:
-		runtime.set_attack(runtime.source, attack)
+	if is_refresh_activation() and get_adjacent_objects().size() >= minimum_count:
+		set_attack(source, attack)
