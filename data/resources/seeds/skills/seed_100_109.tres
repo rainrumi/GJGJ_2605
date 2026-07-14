@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_xv40f"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_7wwav"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_gclsi"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
 [ext_resource type="Script" uid="uid://dps4akvj70m1w" path="res://scene/main/game/seed/skill/on_acid_damage/seed_effect_on_acid_damage_change_acid_damage_rate_by_stomach_count.gd" id="skill_acid_rate"]
@@ -18,14 +19,14 @@ rate = 0.2
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+effects = Array[ExtResource("3_7wwav")]([SubResource("Resource_main_effect_1")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_acid_rate")
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_7wwav")]([SubResource("Resource_sub_effect_1")])
 
 [resource]
 script = ExtResource("3_gclsi")

@@ -1,6 +1,8 @@
 class_name EnemySkill
 extends Resource
 
+# 優先度
+@export var priority: int
 # 効果一覧
 @export var effects: Array[EnemyEffect] = []
 
@@ -20,4 +22,3 @@ func get_effects() -> Array[EnemyEffect]:
 # 効果有無
 func has_effects() -> bool:
 	return not get_effects().is_empty()
-

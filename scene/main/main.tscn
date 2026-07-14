@@ -11,7 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://dc8vyar0jf1e4" path="res://sound/bgm/Night_Dance.mp3" id="10_bgm"]
 [ext_resource type="PackedScene" path="res://systems/audio/beat_conductor.tscn" id="11_beat_conductor"]
 [ext_resource type="Resource" path="res://data/resources/novel/novel_ending_gameclear.tres" id="12_game_clear_text"]
-[ext_resource type="PackedScene" path="res://scene/main/settings/settings_screen.tscn" id="13_settings"]
+[ext_resource type="PackedScene" uid="uid://o8cavvep5sxl" path="res://scene/main/settings/settings_screen.tscn" id="13_settings"]
 
 [node name="Main" type="Node" unique_id=1753159910]
 script = ExtResource("1_6vuhr")

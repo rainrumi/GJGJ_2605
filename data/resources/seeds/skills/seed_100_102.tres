@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_sjvm2"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_lildo"]
+[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_8ad0q"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_l5omq"]
 [ext_resource type="Texture2D" uid="uid://bohjr6l6tyw7q" path="res://art/dreamseed/tex_seed_1000_No_200.png" id="4_q6u56"]
 [ext_resource type="Script" uid="uid://dnapp6l4hcsja" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_change_hp.gd" id="skill_clear_recovery"]
@@ -18,7 +19,7 @@ recovery_rate = 0.1
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([SubResource("Resource_main_effect_1")])
+effects = Array[ExtResource("3_8ad0q")]([SubResource("Resource_main_effect_1")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_seed_hp")
@@ -26,7 +27,7 @@ hp_rate = 0.05
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_8ad0q")]([SubResource("Resource_sub_effect_1")])
 
 [resource]
 script = ExtResource("3_l5omq")

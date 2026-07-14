@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_vf1xj"]
 [ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_afp8s"]
+[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_qxbtq"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]
 [ext_resource type="Script" uid="uid://f6m3c8x2waqa" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate_after_clock.gd" id="skill_pending_time_after"]
 [ext_resource type="Script" uid="uid://d4qv5nl3n18m" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate_before_clock.gd" id="skill_pending_time_before"]
@@ -26,7 +27,7 @@ start_minutes = 1560
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([SubResource("Resource_main_effect_1"), SubResource("Resource_main_effect_2")])
+effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_main_effect_1"), SubResource("Resource_main_effect_2")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_pending_time_before")
@@ -40,7 +41,7 @@ start_minutes = 1560
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")
-effects = Array[Resource]([SubResource("Resource_sub_effect_1"), SubResource("Resource_sub_effect_2")])
+effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_sub_effect_1"), SubResource("Resource_sub_effect_2")])
 
 [resource]
 script = ExtResource("3_afp8s")

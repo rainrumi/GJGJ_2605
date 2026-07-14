@@ -1,6 +1,8 @@
 class_name SeedSkill
 extends Resource
 
+# 優先度
+@export var priority: int
 # 効果一覧
 @export var effects: Array[SeedEffect] = []
 

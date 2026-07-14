@@ -64,4 +64,3 @@ enum Event {
 # 効果適用
 func apply(_context: EnemyEffectContext) -> void:
 	pass
-
