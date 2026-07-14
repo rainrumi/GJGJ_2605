@@ -9,8 +9,8 @@ extends EnemyEffect
 @export var fixed_damage := 0
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if not context.is_event(Event.AFTER_ACID_DAMAGE) or context.target != context.source: return
-	var count := context.get_state_int("hit_count") + 1 # 被弾数
-	context.set_state("hit_count", count % required_count)
-	if count >= required_count: context.attack_player(fixed_damage if fixed_damage > 0 else context.source.get_damage(), attack_count)
+func apply() -> void:
+	if not runtime.is_event(Event.AFTER_ACID_DAMAGE) or runtime.target != runtime.source: return
+	var count := runtime.get_state_int("hit_count") + 1 # 被弾数
+	runtime.set_state("hit_count", count % required_count)
+	if count >= required_count: runtime.attack_player(fixed_damage if fixed_damage > 0 else runtime.source.get_damage(), attack_count)

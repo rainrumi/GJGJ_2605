@@ -12,11 +12,10 @@ var _acid_damage_deltas: Dictionary = {} # 消化差分
 var _acid_damage_multipliers: Dictionary = {} # 消化倍率
 var _effect_multipliers: Dictionary = {} # 効果倍率
 var _chance_deltas: Dictionary = {} # 確率差分
-var _interval_seconds_delta := 0 # 間隔秒差分
-var _interval_rate := 0.0 # 間隔割合
+var _digestion_interval := DigestionInterval.new() # 消化間隔
 var _global_acid_delta := 0 # 全体消化差分
 var _global_acid_multiplier := 1.0 # 全体消化倍率
-var _pending_player_damage: Array[int] = [] # プレイヤーダメージ
+var _player_health := PlayerHealth.new() # プレイヤーHP
 var _pending_spawns: Array[BattleSpawnEnemyData] = [] # 生成要求
 var _spawn_counts: Dictionary = {} # 生成数
 var _extra_attacks: Dictionary = {} # 追加攻撃
@@ -29,13 +28,20 @@ var _default_attack_disabled: Dictionary = {} # 通常攻撃停止
 var _pending_time_delta_seconds := 0 # 時刻差分秒
 var _last_acid_damage := 0 # 直近消化値
 var _pending_digested: Array[Enemy] = [] # 直接消化済み
+var _effect_stack := EnemyEffectStack.new() # 効果スタック
+var _event_source := EnemyEffectEventSource.new() # イベント通知元
+
+
+# 通知接続
+func _init() -> void:
+	_event_source.occurred.connect(_on_effect_occurred)
 
 
 # 状態初期化
 func reset() -> void:
 	_states.clear()
 	_applied_max_hp_deltas.clear()
-	_pending_player_damage.clear()
+	_player_health.clear()
 	_pending_spawns.clear()
 	_spawn_counts.clear()
 	_extra_attacks.clear()
@@ -48,25 +54,18 @@ func reset() -> void:
 	_pending_time_delta_seconds = 0
 	_last_acid_damage = 0
 	_pending_digested.clear()
+	_effect_stack.clear()
 	_clear_modifiers()
 
 
 # 継続効果更新
 func refresh(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	_clear_modifiers()
-	for enemy in enemies:
-		if not _can_apply(enemy):
-			continue
-		for effect in _get_effects(enemy):
-			if effect is EnemyEffectOnAdjacentObjectScaleEffect or effect is EnemyEffectOnAdjacentObjectChangeChance:
-				_dispatch_effect(effect, EnemyEffect.Event.REFRESH, enemy, enemies, stomach)
-	for enemy in enemies:
-		if not _can_apply(enemy):
-			continue
-		for effect in _get_effects(enemy):
-			if effect is EnemyEffectOnAdjacentObjectScaleEffect or effect is EnemyEffectOnAdjacentObjectChangeChance:
-				continue
-			_dispatch_effect(effect, EnemyEffect.Event.REFRESH, enemy, enemies, stomach)
+	var event_data := _create_event_data(EnemyEffect.Event.REFRESH) # 更新イベント
+	_event_source.notify(event_data, enemies, stomach, EnemyEffectEventSource.Phase.PREPROCESS)
+	_effect_stack.execute()
+	_event_source.notify(event_data, enemies, stomach, EnemyEffectEventSource.Phase.MAIN)
+	_effect_stack.execute()
 	_apply_max_hp_modifiers(enemies)
 
 
@@ -82,13 +81,18 @@ func dispatch(
 	current_seconds := 0,
 	digested_enemies: Array[Enemy] = []
 ) -> int:
-	var current_damage := damage # 現在ダメージ
-	for enemy in enemies:
-		if not _can_apply_for_event(enemy, event):
-			continue
-		for effect in _get_effects(enemy):
-			current_damage = _dispatch_effect(effect, event, enemy, enemies, stomach, target, current_damage, overkill_damage, elapsed_seconds, current_seconds, digested_enemies)
-	return current_damage
+	var event_data := _create_event_data(
+		event,
+		target,
+		damage,
+		overkill_damage,
+		elapsed_seconds,
+		current_seconds,
+		digested_enemies
+	) # 発火イベント
+	_event_source.notify(event_data, enemies, stomach)
+	_effect_stack.execute()
+	return event_data.damage
 
 
 # 攻撃値取得
@@ -109,7 +113,7 @@ func get_acid_damage(enemy: Enemy, base_value: int) -> int:
 
 # 間隔秒取得
 func get_interval_seconds(base_seconds: int) -> int:
-	return maxi(1, roundi(float(base_seconds + _interval_seconds_delta) * (1.0 + _interval_rate)))
+	return _digestion_interval.resolve(base_seconds)
 
 
 # 攻撃差分追加
@@ -157,12 +161,12 @@ func add_global_acid_damage(delta: int, multiplier: float) -> void:
 
 # 間隔秒追加
 func add_interval_seconds(value: int) -> void:
-	_interval_seconds_delta += value
+	_digestion_interval.add_seconds(value)
 
 
 # 間隔割合追加
 func add_interval_rate(value: float) -> void:
-	_interval_rate += value
+	_digestion_interval.add_rate(value)
 
 
 # 効果倍率追加
@@ -187,15 +191,12 @@ func get_chance_delta(enemy: Enemy) -> float:
 
 # プレイヤーダメージ追加
 func queue_player_damage(value: int) -> void:
-	if value > 0:
-		_pending_player_damage.append(value)
+	_player_health.request_damage(value)
 
 
 # プレイヤーダメージ消費
 func consume_player_damage() -> Array[int]:
-	var values: Array[int] = _pending_player_damage.duplicate() # ダメージ一覧
-	_pending_player_damage.clear()
-	return values
+	return _player_health.consume_damage()
 
 
 # 直接消化ダメージ
@@ -314,7 +315,8 @@ func consume_time_delta_seconds() -> int:
 func inherit_effects(target: Enemy, source: Enemy) -> void:
 	var values: Array[EnemyEffect] = [] # 継承一覧
 	if _inherited_effects.has(target): values.append_array(_inherited_effects[target])
-	values.append_array(source.get_enemy_effects())
+	for effect in source.get_enemy_effects():
+		values.append(effect.duplicate(true) as EnemyEffect)
 	_inherited_effects[target] = values
 
 
@@ -349,36 +351,62 @@ func set_state(enemy: Enemy, effect: EnemyEffect, key: String, value: Variant) -
 	_states[_state_key(enemy, effect, key)] = value
 
 
-# 効果dispatch
-func _dispatch_effect(
+# 効果発動要求
+func _request_effect(
 	effect: EnemyEffect,
-	event: EnemyEffect.Event,
 	source: Enemy,
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
+	event_data: EnemyEffectEventData
+) -> void:
+	if effect == null:
+		return
+	var runtime := EnemyEffectRuntime.new() # 実行時値
+	runtime.setup(source, enemies, stomach, effect, self, event_data)
+	effect.prepare(runtime)
+	_effect_stack.request(effect)
+
+
+# イベント値作成
+func _create_event_data(
+	event: EnemyEffect.Event,
 	target: Enemy = null,
 	damage := 0,
 	overkill_damage := 0,
 	elapsed_seconds := 0,
 	current_seconds := 0,
 	digested_enemies: Array[Enemy] = []
-) -> int:
-	var context := EnemyEffectContext.new() # 効果文脈
-	context.event = event
-	context.source = source
-	context.target = target
-	context.enemies = enemies
-	context.stomach = stomach
-	context.effect = effect
-	context.resolver = self
-	context.damage = damage
-	context.overkill_damage = overkill_damage
-	context.elapsed_seconds = elapsed_seconds
-	context.current_seconds = current_seconds
-	context.digested_minutes = source.stomach_elapsed_minutes
-	context.digested_enemies = digested_enemies
-	effect.apply(context)
-	return context.damage
+) -> EnemyEffectEventData:
+	var data := EnemyEffectEventData.new() # イベント値
+	data.event = event
+	data.target = target
+	data.set_damage(damage)
+	data.overkill_damage = overkill_damage
+	data.clock.set_time(elapsed_seconds, current_seconds)
+	data.digested_enemies = digested_enemies
+	return data
+
+
+# 効果イベント受付
+func _on_effect_occurred(
+	event_data: EnemyEffectEventData,
+	enemies: Array[Enemy],
+	stomach: StomachBoard,
+	phase: EnemyEffectEventSource.Phase
+) -> void:
+	for enemy in enemies:
+		if event_data.event == EnemyEffect.Event.REFRESH:
+			if not _can_apply(enemy):
+				continue
+		elif not _can_apply_for_event(enemy, event_data.event):
+			continue
+		for effect in _get_effects(enemy):
+			var is_preprocessor := effect is EnemyEffectOnAdjacentObjectScaleEffect or effect is EnemyEffectOnAdjacentObjectChangeChance # 前処理判定
+			if phase == EnemyEffectEventSource.Phase.PREPROCESS and not is_preprocessor:
+				continue
+			if phase == EnemyEffectEventSource.Phase.MAIN and is_preprocessor:
+				continue
+			_request_effect(effect, enemy, enemies, stomach, event_data)
 
 
 # 効果取得
@@ -413,8 +441,7 @@ func _clear_modifiers() -> void:
 	_effect_multipliers.clear()
 	_chance_deltas.clear()
 	_default_attack_disabled.clear()
-	_interval_seconds_delta = 0
-	_interval_rate = 0.0
+	_digestion_interval.reset()
 	_global_acid_delta = 0
 	_global_acid_multiplier = 1.0
 

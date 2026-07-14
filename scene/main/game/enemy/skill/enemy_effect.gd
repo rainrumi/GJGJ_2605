@@ -59,8 +59,14 @@ enum Event {
 @export var priority := 0
 # 有効状態
 @export var enabled := true
+var runtime: EnemyEffectRuntime # 実行時値
+
+
+# 実行時値設定
+func prepare(next_runtime: EnemyEffectRuntime) -> void:
+	runtime = next_runtime
 
 
 # 効果適用
-func apply(_context: EnemyEffectContext) -> void:
+func apply() -> void:
 	pass

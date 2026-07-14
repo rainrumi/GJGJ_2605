@@ -9,7 +9,7 @@ extends EnemyEffect
 @export var require_acid_line_touch := false
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if not context.is_event(Event.AFTER_ACID_DAMAGE) or context.target != context.source: return
-	if require_acid_line_touch and context.get_acid_line_contact_count() == 0: return
-	if context.roll(chance): context.source.add_damage(roundi(float(context.damage) * attack_rate))
+func apply() -> void:
+	if not runtime.is_event(Event.AFTER_ACID_DAMAGE) or runtime.target != runtime.source: return
+	if require_acid_line_touch and runtime.get_acid_line_contact_count() == 0: return
+	if runtime.roll(chance): runtime.source.add_damage(roundi(float(runtime.damage) * attack_rate))

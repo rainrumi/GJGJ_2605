@@ -7,5 +7,5 @@ extends EnemyEffect
 @export var attack_delta := 0
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if context.is_event(Event.PROGRESS_TIME): context.source.add_damage(roundi(context.scale_value(float(attack_delta * context.consume_interval(interval_seconds)))))
+func apply() -> void:
+	if runtime.is_event(Event.PROGRESS_TIME): runtime.source.add_damage(roundi(runtime.scale_value(float(attack_delta * runtime.consume_interval(interval_seconds)))))

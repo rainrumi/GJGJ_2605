@@ -11,11 +11,11 @@ extends EnemyEffect
 @export var chance_multiplier := 1.0
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if not context.is_event(Event.REFRESH): return
-	var targets := context.get_adjacent_objects() # 隣接対象
+func apply() -> void:
+	if not runtime.is_event(Event.REFRESH): return
+	var targets := runtime.get_adjacent_objects() # 隣接対象
 	if targets.size() < minimum_count: return
 	for enemy in targets:
 		var value := attack_delta * targets.size() # 攻撃差分
-		if context.roll(chance): value = roundi(float(value) * chance_multiplier)
-		context.add_attack_delta(enemy, value)
+		if runtime.roll(chance): value = roundi(float(value) * chance_multiplier)
+		runtime.add_attack_delta(enemy, value)

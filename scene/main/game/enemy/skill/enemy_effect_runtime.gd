@@ -1,29 +1,67 @@
-class_name EnemyEffectContext
+class_name EnemyEffectRuntime
 extends RefCounted
 
-var event: EnemyEffect.Event = EnemyEffect.Event.REFRESH # 発火種別
-var source: Enemy # 効果所有者
-var target: Enemy # 発火対象
-var enemies: Array[Enemy] = [] # 敵一覧
-var stomach: StomachBoard # 胃袋
+var event_data := EnemyEffectEventData.new() # イベント値
+var targets := EnemyEffectTargets.new() # 対象値
+var event: EnemyEffect.Event:
+	get: return event_data.event
+	set(value): event_data.event = value
+var source: Enemy:
+	get: return targets.source
+	set(value): targets.source = value
+var target: Enemy:
+	get: return event_data.target
+	set(value): event_data.target = value
+var enemies: Array[Enemy]:
+	get: return targets.enemies
+	set(value): targets.enemies = value
+var stomach: StomachBoard:
+	get: return targets.stomach
+	set(value): targets.stomach = value
 var effect: EnemyEffect # 実行効果
 var resolver: EnemyEffectResolver # 効果解決器
-var elapsed_seconds := 0 # 経過秒数
-var current_seconds := 0 # 現在秒数
-var damage := 0 # 被ダメージ
-var overkill_damage := 0 # 超過ダメージ
+var elapsed_seconds: int:
+	get: return event_data.elapsed_seconds
+	set(value): event_data.elapsed_seconds = value
+var current_seconds: int:
+	get: return event_data.current_seconds
+	set(value): event_data.current_seconds = value
+var damage: int:
+	get: return event_data.damage
+	set(value): event_data.set_damage(value)
+var overkill_damage: int:
+	get: return event_data.overkill_damage
+	set(value): event_data.overkill_damage = value
 var digested_minutes := 0 # 消化経過分
-var digested_enemies: Array[Enemy] = [] # 消化済み一覧
+var digested_enemies: Array[Enemy]:
+	get: return event_data.digested_enemies
+	set(value): event_data.digested_enemies = value
+
+
+# 実行値初期化
+func setup(
+	owner: Enemy,
+	enemy_list: Array[Enemy],
+	stomach_board: StomachBoard,
+	effect_value: EnemyEffect,
+	resolver_value: EnemyEffectResolver,
+	event_value: EnemyEffectEventData
+) -> void:
+	targets.setup(owner, enemy_list, stomach_board)
+	effect = effect_value
+	resolver = resolver_value
+	event_data = event_value
+	digested_minutes = owner.stomach_elapsed_minutes if owner != null else 0
 
 
 # event判定
 func is_event(value: EnemyEffect.Event) -> bool:
-	return event == value
+	return event_data.is_event(value)
 
 
 # 隣接モノ取得
 func get_adjacent_objects() -> Array[Enemy]:
-	return EnemyPlacementQuery.get_adjacent_enemies(source, enemies)
+	return targets.get_adjacent_objects()
 
 
 # 隣接悪夢取得
@@ -53,20 +91,12 @@ func get_targets(target_type: EnemyEffect.EffectTarget) -> Array[Enemy]:
 
 # activeモノ取得
 func get_active_objects() -> Array[Enemy]:
-	var values: Array[Enemy] = [] # 有効モノ
-	for enemy in enemies:
-		if enemy != null and enemy.is_active_in_stomach() and not enemy.is_Acided():
-			values.append(enemy)
-	return values
+	return targets.get_active_objects()
 
 
 # active悪夢取得
 func get_active_enemies() -> Array[Enemy]:
-	var values: Array[Enemy] = [] # 有効悪夢
-	for enemy in get_active_objects():
-		if enemy.is_nightmare():
-			values.append(enemy)
-	return values
+	return targets.get_active_enemies()
 
 
 # 消化ライン対象取得

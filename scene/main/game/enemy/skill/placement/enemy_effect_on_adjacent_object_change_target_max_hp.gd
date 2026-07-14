@@ -5,6 +5,6 @@ extends EnemyEffect
 @export var max_hp_delta := 0
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if context.is_event(Event.REFRESH):
-		for enemy in context.get_adjacent_objects(): context.add_max_hp_delta(enemy, max_hp_delta, false)
+func apply() -> void:
+	if runtime.is_event(Event.REFRESH):
+		for enemy in runtime.get_adjacent_objects(): runtime.add_max_hp_delta(enemy, max_hp_delta, false)

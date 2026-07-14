@@ -7,8 +7,8 @@ extends EnemyEffect
 @export_range(1, 64, 1) var minimum_count := 1
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if not context.is_event(Event.REFRESH): return
-	var targets := context.get_adjacent_objects() # 隣接対象
+func apply() -> void:
+	if not runtime.is_event(Event.REFRESH): return
+	var targets := runtime.get_adjacent_objects() # 隣接対象
 	if targets.size() < minimum_count: return
-	for enemy in targets: context.add_attack_delta(enemy, attack_delta * targets.size())
+	for enemy in targets: runtime.add_attack_delta(enemy, attack_delta * targets.size())

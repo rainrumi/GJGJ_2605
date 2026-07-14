@@ -1,8 +1,8 @@
 class_name Enemy
 extends Node2D
 const AcidED_TWEEN_DURATION := EnemySpriteView.ACIDED_TWEEN_DURATION
-const DEFAULT_STATUS_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
-const MAIN_EFFECT_STATUS_COLOR := Color(0.78, 0.18, 0.08, 1.0)
+const DEFAULT_STATUS_COLOR := EnemyView.DEFAULT_STATUS_COLOR
+const MAIN_EFFECT_STATUS_COLOR := EnemyView.MAIN_EFFECT_STATUS_COLOR
 const DEFAULT_NIGHTMARE_TEXTURE := preload("res://art/enemy/tex_enemy_1000_No_100.png")
 const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_1000.png")
 const DEFAULT_NIGHTMARE_MAX_HP := 1400
@@ -25,41 +25,81 @@ const DEFAULT_NIGHTMARE_STOMACH_SHAPE: Array[Vector2i] = [
 @onready var damage_label: EnemyDamageText = $DamageText
 # 詳細表示
 @onready var tooltip: EnemyTooltip = $Enemy_tooltip
+# 敵表示
+@onready var enemy_view: EnemyView = $View
+var data := EnemyData.new() # 敵データ
 var skill_info: EnemyInfo
 var seed_info: SeedInfo
 var has_main_effect := false
 var nightmare_skill_enabled := true
-var max_hp := 0
-var damage := 0
-var base_damage := 0
-var display_damage_override := -1
-var attack_multiplier := 1.0
+var max_hp: int:
+	get: return data.hp.maximum
+	set(value): data.hp.set_maximum(value)
+var current_hp: int:
+	get: return data.hp.current
+	set(value): data.hp.set_current(value)
+var damage: int:
+	get: return data.attack.value
+	set(value): data.attack.set_value(value, false)
+var base_damage: int:
+	get: return data.attack.base_value
+	set(value): data.attack.base_value = maxi(0, value)
+var display_damage_override: int:
+	get: return data.attack.display_override
+	set(value): data.attack.set_display_override(value)
+var attack_multiplier: float:
+	get: return data.attack.multiplier
+	set(value): data.attack.set_multiplier(value)
 var acid_damage_taken_multiplier := 1.0
 var acid_damage_global_multiplier := 1.0
-var stomach_elapsed_minutes := 0
-var revive_count := 0
-var current_hp := 0
-var Aciding := false
-var Acided := false
-var gravity_locked := false
-var activation_deferred := false
-var stomach_cell := Vector2i.ZERO
+var stomach_elapsed_minutes: int:
+	get: return data.stomach_status.elapsed_minutes
+	set(value): data.stomach_status.set_elapsed_minutes(value)
+var revive_count: int:
+	get: return data.stomach_status.revive_count
+	set(value): data.stomach_status.revive_count = maxi(0, value)
+var Aciding: bool:
+	get: return data.stomach_status.is_digesting
+	set(value): data.stomach_status.set_digesting(value)
+var Acided: bool:
+	get: return data.stomach_status.is_digested
+	set(value): data.stomach_status.set_digested(value)
+var gravity_locked: bool:
+	get: return data.stomach_status.gravity_locked
+	set(value): data.stomach_status.gravity_locked = value
+var activation_deferred: bool:
+	get: return data.stomach_status.activation_deferred
+	set(value): data.stomach_status.activation_deferred = value
+var stomach_cell: Vector2i:
+	get: return data.stomach_status.cell
+	set(value): data.stomach_status.cell = value
 var origin_position := Vector2.ZERO
 var _stomach_size_override := Vector2i.ZERO
 var _stomach_shape_override: Array[Vector2i] = []
 var _size_override := 0
 var _texture_override: Texture2D
+
+
+# 表示準備
+func _ready() -> void:
+	enemy_view.setup(self, sprite, hp_label, damage_label, tooltip)
+	data.hp.changed.connect(_on_hp_changed)
+	data.attack.changed.connect(_on_attack_changed)
+
+
 # setup処理
 func setup(nightmare_info: EnemyInfo, target_size: Vector2, has_effect := false, start_position_override := Vector2.INF, skill_enabled_override := true) -> void:
 	skill_info = nightmare_info
 	seed_info = null
 	nightmare_skill_enabled = skill_enabled_override
 	has_main_effect = has_effect and nightmare_skill_enabled
-	max_hp = _get_nightmare_max_hp()
-	damage = _get_nightmare_damage()
-	base_damage = damage
-	display_damage_override = -1
-	attack_multiplier = 1.0
+	data.setup(
+		nightmare_info,
+		_get_nightmare_max_hp(),
+		_get_nightmare_damage(),
+		has_main_effect,
+		nightmare_skill_enabled
+	)
 	acid_damage_taken_multiplier = 1.0
 	acid_damage_global_multiplier = 1.0
 	stomach_elapsed_minutes = 0
@@ -72,8 +112,8 @@ func setup(nightmare_info: EnemyInfo, target_size: Vector2, has_effect := false,
 	if start_position_override != Vector2.INF:
 		origin_position = start_position_override
 	position = origin_position
-	if sprite != null:
-		sprite.setup_texture(_get_texture(), target_size)
+	if enemy_view != null:
+		enemy_view.setup_texture(_get_texture(), target_size)
 	reset_for_battle()
 
 
@@ -91,7 +131,7 @@ func reset_for_battle() -> void:
 	stomach_cell = Vector2i.ZERO
 	stomach_elapsed_minutes = 0
 	revive_count = 0
-	visible = true
+	set_presented(true)
 	_reset_visuals()
 	return_to_origin()
 	set_hovered(false)
@@ -134,18 +174,12 @@ func get_nightmare_skill() -> EnemyInfo:
 
 # 敵skill取得
 func get_enemy_skill() -> EnemySkill:
-	if skill_info == null or not nightmare_skill_enabled:
-		return null
-	return skill_info.skill
+	return data.get_active_skill()
 
 
 # 敵effects取得
 func get_enemy_effects() -> Array[EnemyEffect]:
-	var effects: Array[EnemyEffect] = [] # 効果一覧
-	var enemy_skill := get_enemy_skill() # 敵スキル
-	if enemy_skill != null:
-		effects.append_array(enemy_skill.get_effects())
-	return effects
+	return data.get_effects()
 
 
 # 悪夢判定
@@ -260,9 +294,9 @@ func set_stomach_footprint_override(size: Vector2i, shape: Array[Vector2i], cell
 # 画像override設定
 func set_texture_override(texture: Texture2D, target_size: Vector2) -> void:
 	_texture_override = texture
-	if sprite == null or _texture_override == null:
+	if enemy_view == null or _texture_override == null:
 		return
-	sprite.setup_texture(_texture_override, target_size)
+	enemy_view.setup_texture(_texture_override, target_size)
 	_reset_visuals()
 # setupasoneセル胃袋ブロック処理
 func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
@@ -304,9 +338,9 @@ func setup_as_seed_stomach_block(seed: SeedInfo, target_size: Vector2) -> void:
 
 # 胃袋displayサイズ更新
 func update_stomach_display_size(target_size: Vector2) -> void:
-	if sprite == null:
+	if enemy_view == null:
 		return
-	sprite.update_display_size(target_size)
+	enemy_view.update_display_size(target_size)
 # applygravity判定
 func can_apply_gravity() -> bool:
 	return not gravity_locked
@@ -326,49 +360,53 @@ func return_to_origin() -> void:
 	position = origin_position
 # hovered設定
 func set_hovered(value: bool) -> void:
-	if sprite == null:
-		return
-	sprite.set_hovered(value)
+	if enemy_view != null:
+		enemy_view.set_hovered(value)
+
+
+# 表示状態設定
+func set_presented(value: bool) -> void:
+	if enemy_view != null:
+		enemy_view.set_presented(value)
+	else:
+		visible = value
 
 
 # ツール表示
 func show_tooltip(debug_number_text: String, debug_numbers_visible: bool) -> void:
-	tooltip.show_enemy_at(self, debug_number_text, debug_numbers_visible, global_position)
+	if enemy_view != null:
+		enemy_view.show_tooltip(debug_number_text, debug_numbers_visible)
 
 
 # ツール非表示
 func hide_tooltip() -> void:
-	tooltip.hide_tooltip()
+	if enemy_view != null:
+		enemy_view.hide_tooltip()
 # pulsecostラベル処理
 func pulse_cost_label() -> void:
-	if hp_label == null:
-		return
-	hp_label.pulse_cost_label()
+	if enemy_view != null:
+		enemy_view.pulse_hp()
 # pulseダメージ処理
 func pulse_damage() -> void:
-	if sprite == null:
-		return
-	sprite.pulse_damage()
+	if enemy_view != null:
+		enemy_view.pulse_damage()
 # take消化ダメージ処理
 func take_acid_damage(amount: int, show_popup := true) -> bool:
-	if show_popup:
-		EnemyDamagePopup.show_damage(self, hp_label, amount, MAIN_EFFECT_STATUS_COLOR)
-	current_hp = maxi(0, current_hp - amount)
-	_update_hp_label()
-	if current_hp == 0:
+	if show_popup and enemy_view != null:
+		enemy_view.show_damage_popup(amount)
+	if data.hp.take_damage(amount):
 		set_Acided(true)
 		return true
 	return false
 # 消化ダメージvalues表示
 func show_acid_damage_values(damage_values: Array) -> void:
-	EnemyDamagePopup.show_damage_values(self, hp_label, damage_values, MAIN_EFFECT_STATUS_COLOR)
+	if enemy_view != null:
+		enemy_view.show_damage_values(damage_values)
 # globalrect取得
 func get_global_rect() -> Rect2:
-	if sprite == null or sprite.texture == null:
-		return Rect2(global_position - Vector2(25.0, 25.0), Vector2(50.0, 50.0))
-	# サイズ
-	var size := sprite.texture.get_size() * sprite.scale.abs()
-	return Rect2(sprite.global_position - size * 0.5, size)
+	if enemy_view != null:
+		return enemy_view.get_global_rect()
+	return Rect2(global_position - Vector2(25.0, 25.0), Vector2(50.0, 50.0))
 # grabセル取得
 func get_grab_cell(mouse_position: Vector2) -> Vector2i:
 	# 敵rect
@@ -413,25 +451,22 @@ func _get_nearest_shape_cell(target_cell: Vector2i) -> Vector2i:
 	return nearest_cell
 # 消化済みトゥイーン再生
 func _play_Acided_tween() -> void:
-	if sprite != null:
-		sprite.play_Acided_tween(self)
+	if enemy_view != null:
+		enemy_view.play_digested()
 # visuals初期化
 func _reset_visuals() -> void:
-	if sprite != null:
-		sprite.reset_visuals(self)
-	if hp_label != null:
-		hp_label.reset_visuals()
-	if damage_label != null:
-		damage_label.reset_visuals()
+	if enemy_view != null:
+		enemy_view.reset_visuals()
 # HPラベル更新
 func _update_hp_label() -> void:
-	if hp_label != null:
-		hp_label.show_hp(current_hp)
+	if enemy_view != null:
+		enemy_view.show_hp(current_hp)
 # displayダメージ設定
 func set_display_damage(value: int) -> void: display_damage_override = maxi(0, value); _update_damage_label()
 # ダメージラベル更新
 func _update_damage_label() -> void:
-	if damage_label != null: damage_label.show_damage(get_display_damage())
+	if enemy_view != null:
+		enemy_view.show_damage(get_display_damage())
 # 画像取得
 func _get_texture() -> Texture2D:
 	if _texture_override != null:
@@ -491,32 +526,28 @@ func get_sub_effect_text() -> String:
 	return "-"
 # 回復処理
 func heal(amount: int) -> void:
-	current_hp = mini(max_hp, current_hp + amount); _update_hp_label()
+	data.hp.heal(amount)
 # 回復over最大処理
 func heal_over_max(amount: int) -> void:
-	current_hp = maxi(0, current_hp + amount); _update_hp_label()
+	data.hp.heal_over_max(amount)
 # change最大HP処理
 func change_max_hp(new_max_hp: int) -> void:
-	max_hp = maxi(1, new_max_hp); current_hp = mini(current_hp, max_hp); _update_hp_label()
+	data.hp.set_maximum(new_max_hp)
 # 最大HP追加
 func add_max_hp(amount: int, also_heal := true) -> void:
-	max_hp = maxi(1, max_hp + amount)
-	if also_heal:
-		current_hp += amount
-	current_hp = maxi(0, current_hp)
-	_update_hp_label()
+	data.hp.add_maximum(amount, also_heal)
 # HPvalues設定
 func set_hp_values(next_max_hp: int, next_current_hp: int) -> void:
-	max_hp = maxi(1, next_max_hp); current_hp = clampi(next_current_hp, 0, max_hp); _update_hp_label()
+	data.hp.set_values(next_max_hp, next_current_hp)
 # ダメージ追加
 func add_damage(amount: int) -> void:
-	damage = maxi(0, damage + amount); _update_damage_label()
+	data.attack.add_value(amount)
 # ダメージ値設定
 func set_damage_value(value: int) -> void:
-	damage = maxi(0, value); base_damage = damage; _update_damage_label()
+	data.attack.set_value(value)
 # attack倍率設定
 func set_attack_multiplier(value: float) -> void:
-	attack_multiplier = clampf(value, 0.0, 3.0); _update_damage_label()
+	data.attack.set_multiplier(value)
 # 消化ダメージtaken倍率設定
 func set_acid_damage_taken_multiplier(value: float) -> void:
 	acid_damage_taken_multiplier = maxf(0.0, value)
@@ -528,23 +559,29 @@ func revive_with_half_hp() -> void:
 	revive_with_hp_rate(0.5)
 # revivewithHP率処理
 func revive_with_hp_rate(hp_rate: float) -> void:
-	if sprite != null:
-		sprite.stop_Acided_tween()
-	revive_count += 1
+	if enemy_view != null:
+		enemy_view.show_revived()
+	data.stomach_status.record_revive()
 	change_max_hp(ceili(float(max_hp) * hp_rate))
 	current_hp = max_hp
 	Acided = false
 	Aciding = false
-	visible = true
+	set_presented(true)
 	return_to_origin()
 	scale = Vector2.ONE
 	modulate.a = 1.0
 	_update_hp_label()
 # 状態ラベルcolors更新
 func _update_status_label_colors() -> void:
-	# 状態color
-	var status_color := MAIN_EFFECT_STATUS_COLOR if has_main_effect else DEFAULT_STATUS_COLOR
-	if hp_label != null:
-		hp_label.set_status_color(status_color)
-	if damage_label != null:
-		damage_label.set_status_color(status_color)
+	if enemy_view != null:
+		enemy_view.update_status_colors(has_main_effect)
+
+
+# HP変更通知
+func _on_hp_changed(_current: int, _maximum: int) -> void:
+	_update_hp_label()
+
+
+# 攻撃変更通知
+func _on_attack_changed(_display_value: int) -> void:
+	_update_damage_label()

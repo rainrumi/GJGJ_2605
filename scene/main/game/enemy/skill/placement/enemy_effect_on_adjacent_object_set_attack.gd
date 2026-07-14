@@ -7,6 +7,6 @@ extends EnemyEffect
 @export_range(1, 64, 1) var minimum_count := 1
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if context.is_event(Event.REFRESH) and context.get_adjacent_objects().size() >= minimum_count:
-		context.set_attack(context.source, attack)
+func apply() -> void:
+	if runtime.is_event(Event.REFRESH) and runtime.get_adjacent_objects().size() >= minimum_count:
+		runtime.set_attack(runtime.source, attack)

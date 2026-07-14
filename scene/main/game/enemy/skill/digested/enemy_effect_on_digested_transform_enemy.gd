@@ -9,5 +9,5 @@ extends EnemyEffect
 @export var remove_from_stomach := true
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if context.is_event(Event.DIGESTED) and context.target == context.source: context.spawn_enemy(next_enemy_info, next_skill, 1, 1, SpawnArea.OUTSIDE_STOMACH if remove_from_stomach else SpawnArea.SAME_CELLS, -1, -1)
+func apply() -> void:
+	if runtime.is_event(Event.DIGESTED) and runtime.target == runtime.source: runtime.spawn_enemy(next_enemy_info, next_skill, 1, 1, SpawnArea.OUTSIDE_STOMACH if remove_from_stomach else SpawnArea.SAME_CELLS, -1, -1)

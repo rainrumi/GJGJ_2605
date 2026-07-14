@@ -5,5 +5,5 @@ extends EnemyEffect
 @export var disabled := true
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if context.is_event(Event.REFRESH): context.resolver.set_default_attack_disabled(context.source, disabled)
+func apply() -> void:
+	if runtime.is_event(Event.REFRESH): runtime.resolver.set_default_attack_disabled(runtime.source, disabled)

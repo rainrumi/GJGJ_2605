@@ -7,5 +7,5 @@ extends EnemyEffect
 @export var threshold_source: EnemyEffect.ValueSource = EnemyEffect.ValueSource.FIXED
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if context.is_event(Event.BEFORE_ACID_DAMAGE) and context.target == context.source and context.damage < context.resolve_value(threshold_source, threshold): context.damage = 0
+func apply() -> void:
+	if runtime.is_event(Event.BEFORE_ACID_DAMAGE) and runtime.target == runtime.source and runtime.damage < runtime.resolve_value(threshold_source, threshold): runtime.damage = 0

@@ -7,6 +7,6 @@ extends EnemyEffect
 @export var target: EnemyEffect.EffectTarget = EnemyEffect.EffectTarget.ADJACENT_OBJECTS
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if context.is_event(Event.DIGESTED) and context.target == context.source:
-		for enemy in context.get_targets(target): context.deal_acid_damage(enemy, roundi(float(context.source.get_damage()) * attack_multiplier))
+func apply() -> void:
+	if runtime.is_event(Event.DIGESTED) and runtime.target == runtime.source:
+		for enemy in runtime.get_targets(target): runtime.deal_acid_damage(enemy, roundi(float(runtime.source.get_damage()) * attack_multiplier))

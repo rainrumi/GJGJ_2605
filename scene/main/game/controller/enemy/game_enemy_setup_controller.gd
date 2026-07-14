@@ -43,7 +43,7 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 		# 敵値
 		var enemy := enemies[i]
 		if i >= _enemy_preset.enemies.size():
-			enemy.visible = false
+			enemy.set_presented(false)
 			enemy.Acided = true
 			enemy.Aciding = false
 			enemy.has_main_effect = false
@@ -211,7 +211,7 @@ func _spawn_effect_enemy(enemies: Array[Enemy], request: BattleSpawnEnemyData) -
 	var spawn_cell := _find_spawn_cell(spawned, request, enemies) # 生成セル
 	if spawn_cell.x < 0:
 		spawned.set_Acided(true)
-		spawned.visible = false
+		spawned.set_presented(false)
 		return false
 	spawned.set_Aciding(true)
 	_stomach.place_enemy(spawned, spawn_cell)

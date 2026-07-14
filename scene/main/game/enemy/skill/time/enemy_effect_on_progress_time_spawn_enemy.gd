@@ -17,5 +17,5 @@ extends EnemyEffect
 @export var spawn_attack := -1
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if context.is_event(Event.PROGRESS_TIME): context.spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, spawn_hp, spawn_attack)
+func apply() -> void:
+	if runtime.is_event(Event.PROGRESS_TIME): runtime.spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, spawn_hp, spawn_attack)

@@ -1,4 +1,4 @@
-EnemyEffectContextの実装を調整します。
+EnemyEffectContext、EnemyEffectResolve、そのほかEnemy周りの実装を調整します。
 ## 1
 - SOLID原則に則ってEnemyEffectContext内の処理を以下のようなパラメーターごとにクラスを分けようと思います。
   - プレイヤーのHP

@@ -9,6 +9,6 @@ extends EnemyEffect
 @export_range(1, 64, 1) var required_count := 1
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if not context.is_event(Event.BEFORE_ACID_DAMAGE) or context.target == null: return
-	if context.get_adjacent_objects().has(context.target) and context.get_adjacent_objects().size() >= required_count and context.roll(chance): context.damage = roundi(float(context.damage) * damage_multiplier)
+func apply() -> void:
+	if not runtime.is_event(Event.BEFORE_ACID_DAMAGE) or runtime.target == null: return
+	if runtime.get_adjacent_objects().has(runtime.target) and runtime.get_adjacent_objects().size() >= required_count and runtime.roll(chance): runtime.damage = roundi(float(runtime.damage) * damage_multiplier)

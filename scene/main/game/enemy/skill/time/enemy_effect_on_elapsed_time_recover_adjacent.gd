@@ -11,9 +11,9 @@ extends EnemyEffect
 @export var suppress_default_attack := false
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if context.is_event(Event.REFRESH): context.resolver.set_default_attack_disabled(context.source, suppress_default_attack); return
-	if not context.is_event(Event.PROGRESS_TIME): return
-	var count := context.consume_interval(interval_seconds) # 発火数
-	for enemy in context.get_adjacent_objects(): context.recover(enemy, recovery * count)
-	if include_self: context.recover(context.source, recovery * count)
+func apply() -> void:
+	if runtime.is_event(Event.REFRESH): runtime.resolver.set_default_attack_disabled(runtime.source, suppress_default_attack); return
+	if not runtime.is_event(Event.PROGRESS_TIME): return
+	var count := runtime.consume_interval(interval_seconds) # 発火数
+	for enemy in runtime.get_adjacent_objects(): runtime.recover(enemy, recovery * count)
+	if include_self: runtime.recover(runtime.source, recovery * count)

@@ -7,5 +7,5 @@ extends EnemyEffect
 @export var fixed_damage := 0
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if context.is_event(Event.AFTER_ACID_DAMAGE) and context.target == context.source: context.attack_player(fixed_damage if fixed_damage > 0 else context.source.get_damage(), attack_count)
+func apply() -> void:
+	if runtime.is_event(Event.AFTER_ACID_DAMAGE) and runtime.target == runtime.source: runtime.attack_player(fixed_damage if fixed_damage > 0 else runtime.source.get_damage(), attack_count)

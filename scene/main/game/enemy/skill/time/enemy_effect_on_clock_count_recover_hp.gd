@@ -7,8 +7,8 @@ extends EnemyEffect
 @export var recovery := 0
 
 # 効果適用
-func apply(context: EnemyEffectContext) -> void:
-	if not context.is_event(Event.PROGRESS_TIME): return
-	var count := context.get_state_int("clock_count") + 1 # 時刻回数
-	context.set_state("clock_count", count % required_count)
-	if count >= required_count: context.recover(context.source, recovery)
+func apply() -> void:
+	if not runtime.is_event(Event.PROGRESS_TIME): return
+	var count := runtime.get_state_int("clock_count") + 1 # 時刻回数
+	runtime.set_state("clock_count", count % required_count)
+	if count >= required_count: runtime.recover(runtime.source, recovery)
