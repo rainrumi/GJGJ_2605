@@ -1,68 +1,106 @@
-# EnemyEffect・EnemyController・Enemy周辺のSOLID／MVP再設計依頼
+# EnemyEffect・EnemyDigestionResolver・Enemy周辺の追加リファクタリング依頼
 
-添付プロジェクトの実装を確認し、現在肥大化している以下のクラスを再設計してください。
+添付プロジェクトを確認し、前回のSOLID／MVPリファクタリングで残っている問題を修正してください。
 
-* `EnemyEffect`
-* `EnemyEffectSystem`
-* `EnemyEffectStack`
-* `EnemyEffectInstaller`
-* `EnemyController`
-* `Enemy`
-* `EnemyData`
-* `EnemyView`
-* その他、上記クラスと密接に関連するクラス
+今回の目的は、新機能の追加ではありません。
 
-本改修では、既存動作を維持したまま、SOLID原則およびMVPデザインパターンに基づいて責務を分離してください。
+既存のゲーム挙動を維持しながら、以下の問題を解消してください。
 
-単純なクラス名の変更や、既存の巨大クラスを別名の巨大クラスへ置き換える対応は禁止します。
+1. 状態クラスからEnemyEffect層への依存を除去する
+2. `EnemyDigestionResolver`から表示処理とEffect実行管理を分離する
+3. `EnemyEffect`基底クラスの責務をさらに縮小する
+4. `EnemyEffectInstaller`のService Locator化を解消する
+5. `EnemyPresenter`を実際のMVP仲介役として機能させる
+6. 潜在的なGDScript解析エラーを修正する
+7. 新しい巨大クラスを作らない
 
----
-
-# 1. 改修目的
-
-本改修の目的は以下です。
-
-1. `EnemyEffectContext`に集中していた責務を、状態の所有者ごとに分離する
-2. `EnemyEffectResolver`または`EnemyEffectSystem`へ集中している処理を分離する
-3. `EnemyEffect`基底クラスの肥大化を解消する
-4. `EnemyController`を戦闘処理の調整役に限定する
-5. 敵の状態、効果処理、表示処理を分離する
-6. 各Effectが自身に必要な依存関係のみを保持する
-7. Effect発動順と連鎖処理を一か所で管理する
-8. Model、View、Presenterの役割を明確にする
-9. 既存のゲーム挙動を変更しない
-10. 既存テストを維持し、必要な回帰テストを追加する
+既存の`EnemyEffectStack`、`EnemyEffectRequest`、`EnemyEffectActivationData`、`EnemyData`、分割後の`EnemyController`については、問題がない部分を維持してください。
 
 ---
 
-# 2. パラメータークラスの責務
+# 1. 最優先：潜在的な解析エラーの修正
 
-現在、`EnemyEffect`、`EnemyEffectSystem`、`EnemyController`などに分散している状態を、状態の所有者ごとに分離してください。
+`EnemyEffectOnAdjacentAcidDamage`および関連する基底クラスを確認してください。
 
-想定するクラスの例：
+現在、基底クラス内で以下のように`enemies`を参照している可能性があります。
 
-* `PlayerHealth`
-* `StomachBoard`
-* `BattleClock`
-* `DigestionInterval`
+```gdscript
+func accepts_activation(data: EnemyEffectActivationData) -> bool:
+    return EnemyEffectTargetQuery.get_adjacent_enemies(
+        source,
+        enemies
+    ).has(get_activation_target_from(data))
+```
+
+基底クラス自身に`enemies`が宣言されていない場合、GDScriptの解析エラーまたは不明瞭な隠れ依存になります。
+
+以下のいずれかの方法で修正してください。
+
+推奨：
+
+```gdscript
+class_name EnemyEffectOnAdjacentAcidDamage
+extends EnemyEffect
+
+var enemy_query: EnemyQuery
+```
+
+または、必要な敵一覧だけを明示的に注入してください。
+
+```gdscript
+func setup_dependencies(
+    owner_value: EnemyData,
+    enemies_value: Array[EnemyData],
+    stack_value: EnemyEffectStack
+) -> void:
+    owner = owner_value
+    enemies = enemies_value
+    effect_stack = stack_value
+```
+
+派生クラスに偶然同名フィールドが存在することを前提に、基底クラスから参照してはいけません。
+
+## 完了条件
+
+* すべての基底クラスが、自身の使用する識別子を自身または明示的な依存として宣言している
+* プロジェクト全体でGDScriptのParse Errorがない
+* 継承先の暗黙フィールドへ依存していない
+
+---
+
+# 2. 状態クラスからEnemyEffect層への依存を除去する
+
+以下の状態クラスを確認してください。
+
 * `EnemyHp`
-* `EnemyAttack`
-* `EnemyDefenseStatus`
+* `BattleClock`
 * `EnemyStomachStatus`
 * `EnemyDigestionState`
-* `EnemySpawnQueue`
+* その他のModel／状態クラス
 
-クラス名は、そのクラスが管理する対象を表す名詞形式にしてください。
+これらのクラスが、以下のようなEffect専用型をSignal引数として使用している場合は修正してください。
 
-すべてのクラスへ機械的に`Status`を付ける必要はありません。
+```gdscript
+signal acid_damage_preparing(
+    data: BeforeAcidDamageActivationData
+)
 
-各クラスの責務は以下に限定してください。
+signal acid_damage_applied(
+    data: AfterAcidDamageActivationData
+)
 
-* 自身が所有する値の保持
-* 値を変更する操作
-* 不変条件の保証
-* 普遍的な出来事の検出
-* Signalによる出来事の通知
+signal battle_started(
+    data: BattleStartActivationData
+)
+
+signal progress_resolved(
+    data: ProgressTimeActivationData
+)
+```
+
+Modelまたは状態クラスは、`EnemyEffectActivationData`およびその派生型を認識してはいけません。
+
+状態クラスは、普遍的な出来事だけを通知してください。
 
 例：
 
@@ -74,955 +112,730 @@ signal changed(current_hp: int, maximum_hp: int)
 signal damaged(amount: int)
 signal healed(amount: int)
 signal depleted
-
-func take_damage(amount: int) -> int:
-    # HP変更と普遍的なSignal通知のみ行う
-    return 0
 ```
 
-パラメータークラスへ、特定スキル固有の反応を実装してはいけません。
-
-禁止例：
-
 ```gdscript
-func take_damage(amount: int) -> void:
-    current_hp -= amount
-
-    if owner.has_recovery_skill:
-        heal(10)
-```
-
-パラメータークラスへ入れるのは、出来事の検出と通知までです。
-
----
-
-# 3. 普遍的な出来事と特殊な効果の分離
-
-以下のような出来事は、対応する状態クラスが検出してSignalを発行してください。
-
-* HPが減った
-* HPが回復した
-* HPが0になった
-* 攻撃力が変化した
-* 時刻が進んだ
-* 消化間隔が変化した
-* 敵が消化された
-* 敵が吐き戻された
-* 胃袋内の配置が変化した
-* 隣接関係が変化した
-
-以下のような特殊な反応は、`EnemyEffect`継承クラスへ実装してください。
-
-* ダメージを受けたときHPを10回復する
-* ダメージを受けるたび攻撃力を増加する
-* 時刻が進んだとき50ダメージを受ける
-* 隣接する敵が消化されたとき復活する
-* 一定値以下のダメージを無効化する
-* 条件達成時に別の敵を生成する
-
-状態クラスは、どのスキルが存在するかを認識してはいけません。
-
----
-
-# 4. EnemyData
-
-戦闘中に変化する敵のデータは、`EnemyData`で管理してください。
-
-`EnemyData`は`RefCounted`とします。
-
-```gdscript
-class_name EnemyData
+class_name BattleClock
 extends RefCounted
 
-var definition: EnemyInfo
-
-var hp: EnemyHp
-var attack: EnemyAttack
-var defense: EnemyDefenseStatus
-var stomach_status: EnemyStomachStatus
-var digestion_state: EnemyDigestionState
-
-var main_skill: EnemySkill
-var sub_skill: EnemySkill
-```
-
-`EnemyInfo`は初期設定用のResourceとして扱ってください。
-
-`EnemyInfo`から以下を参照して、敵ごとの`EnemyData`を生成してください。
-
-* 初期HP
-* 初期攻撃力
-* 防御設定
-* 表示情報
-* メインスキル定義
-* サブスキル定義
-
-メインスキルとサブスキルは、それぞれ別の実行インスタンスとして生成してください。
-
-スキル内の`EnemyEffect`も敵ごとに個別化してください。
-
-元の`.tres` Resourceへ以下を保存してはいけません。
-
-* 所有者
-* Signal接続
-* 発動回数
-* 経過時間
-* 前回対象
-* ActivationData
-* 戦闘中の可変値
-
----
-
-# 5. EnemyEffect基底クラスの縮小
-
-現在の`EnemyEffect`基底クラスへ集約されている以下の責務を外へ移してください。
-
-* HP操作
-* 攻撃力操作
-* プレイヤーへの攻撃
-* 胃袋検索
-* 隣接対象検索
-* 敵生成
-* 時刻変更
-* 消化間隔変更
-* 防御処理
-* ダメージ計算
-* 対象選択
-* 全敵一覧の管理
-* Event enumによる発動判定
-
-`EnemyEffect`基底クラスへ残す責務は、原則として以下だけです。
-
-* Effectの設定値
-* priority
-* 有効・無効状態
-* 所有する敵への参照
-* `EnemyEffectStack`への参照
-* Effect固有の実行状態
-* 発動時データの一時参照
-* Signal接続解除
-* `apply()`
-
-例：
-
-```gdscript
-class_name EnemyEffect
-extends Resource
-
-@export var priority := 0
-
-var owner: EnemyData
-var effect_stack: EnemyEffectStack
-
-func apply() -> void:
-    pass
-
-func unbind() -> void:
-    pass
-```
-
-`EnemyEffect`基底へ、すべてのEffectが使用できる万能操作メソッド群を追加してはいけません。
-
-禁止例：
-
-```gdscript
-func change_hp(...)
-func add_attack_delta(...)
-func spawn_enemy(...)
-func get_targets(...)
-func get_adjacent_objects(...)
-func attack_player(...)
-func add_time_delta(...)
-```
-
-Effectが必要とする操作対象は、必要なEffectへだけ注入してください。
-
----
-
-# 6. Effectの依存性注入
-
-各Effectは、自身が実際に使用する依存関係だけを保持してください。
-
-例えば、被ダメージ時に攻撃力を増やすEffectであれば、必要なのは主に以下です。
-
-* 監視対象の`EnemyHp`
-* 変更対象の`EnemyAttack`
-* `EnemyEffectStack`
-
-このEffectへ、以下を渡してはいけません。
-
-* `StomachBoard`
-* `BattleClock`
-* `PlayerHealth`
-* `EnemySpawnQueue`
-* 全敵一覧
-* 万能Context
-* 万能Runtime
-
-依存関係は生成・初期化時に外部から注入してください。
-
-`apply()`内で以下の方法により依存関係を探索してはいけません。
-
-* Autoload
-* Global
-* SceneTree全体の検索
-* Group検索
-* Resolverへの問い合わせ
-* 万能Service Locator
-
-Effectの組み立ては、専用のInstallerまたはFactoryで行ってください。
-
-ただしInstallerがイベント種別ごとの巨大な`if`、`match`、型判定を持たないようにしてください。
-
----
-
-# 7. Signal接続方式
-
-各`enemy_effect_on_*`は、自身の発動条件となるSignalへ接続してください。
-
-例：
-
-```text
-被ダメージ時に発動
-→ EnemyHp.damaged
-
-HPが0になったときに発動
-→ EnemyHp.depleted
-
-時刻進行時に発動
-→ BattleClock.progressed
-
-消化時に発動
-→ EnemyDigestionState.digested
-
-吐き戻し時に発動
-→ EnemyDigestionState.vomited
-```
-
-以下の方式は禁止します。
-
-```text
-全Effectへ共通Eventを送信
-↓
-各Effectがevent enumを確認
-↓
-該当しなければreturn
-```
-
-禁止コード例：
-
-```gdscript
-if runtime.is_event(Event.AFTER_ACID_DAMAGE):
+signal progressed(
+    elapsed_seconds: int,
+    current_seconds: int
+)
 ```
 
 ```gdscript
-if activation_data.event != Event.PROGRESS_TIME:
-    return
+class_name EnemyDigestionState
+extends RefCounted
+
+signal digestion_started(enemy: EnemyData)
+signal digested(enemy: EnemyData)
+signal vomited(enemy: EnemyData)
 ```
 
-Signalを受信した時点で、何が起きたかは確定している設計にしてください。
-
----
-
-# 8. Request前の発動条件判定
-
-Signalを受信したEffectは、`EnemyEffectStack`へRequestを送る前に発動条件を判定してください。
+Effect用のActivationDataは、Signalを受信するEffect、中間基底クラス、または専用Adapterで生成してください。
 
 例：
 
 ```gdscript
 func _on_damaged(amount: int) -> void:
-    if amount > maximum_trigger_damage:
+    var activation := DamageActivationData.new()
+    activation.target = owner
+    activation.amount = amount
+
+    if not accepts_activation(activation):
         return
 
-    var data := DamageActivationData.new()
-    data.amount = amount
-
-    effect_stack.request(self, data)
+    effect_stack.request(self, activation)
 ```
 
-以下の条件はRequest前に判定してください。
+## 禁止事項
 
-* 対象が所有者自身か
-* ダメージ量が条件内か
-* 確率条件を満たすか
-* 対象が特定の種か
-* 隣接条件を満たすか
-* 発動回数上限内か
-* Effectが有効か
+状態クラスから以下へ依存してはいけません。
 
-`apply()`実行後に、イベント種別や基本的な対象条件を確認して何もせず終了する構造は禁止します。
+* `EnemyEffect`
+* `EnemyEffectStack`
+* `EnemyEffectRequest`
+* `EnemyEffectActivationData`
+* `EnemyEffectSystem`
+* `EnemyEffectInstaller`
+
+状態クラスをEffectイベントの中継器として使用してはいけません。
+
+## SOLID上の目的
+
+* DIP：Modelが上位のEffect実装へ依存しない
+* SRP：状態クラスは状態管理と普遍的通知だけを担当する
+* OCP：Effect追加のたびに状態クラスを変更しない
 
 ---
 
-# 9. apply()の仕様
+# 3. EnemyDigestionResolverからView操作を除去する
 
-すべての`EnemyEffect`継承クラスは、共通して以下を実装してください。
+`EnemyDigestionResolver`を確認し、以下のような表示処理を削除してください。
 
 ```gdscript
-func apply() -> void:
-    pass
+enemy.show_acid_damage_values(values)
+enemy.pulse_damage()
+enemy.show_damage(...)
+enemy.play_digestion_animation()
 ```
 
-`apply()`へ以下を渡してはいけません。
+`EnemyDigestionResolver`は、消化処理の計算と結果生成だけを担当してください。
 
-* `EnemyEffectContext`
-* `EnemyEffectRuntime`
-* Event enum
-* 全依存関係をまとめたオブジェクト
-* Resolver
-* EnemyEffectSystem
-
-長期間使用する依存関係は初期化時に注入し、発動ごとに異なる値はActivationDataとしてRequestへ保持してください。
-
----
-
-# 10. ActivationData
-
-発動ごとに値が変わる情報は、用途ごとの小さなActivationDataで管理してください。
+表示は行わず、結果オブジェクトを返してください。
 
 例：
 
 ```gdscript
-class_name DamageActivationData
-extends EnemyEffectActivationData
-
-var amount: int
-var overkill_amount: int
-var target: EnemyData
-```
-
-```gdscript
-class_name TimeActivationData
-extends EnemyEffectActivationData
-
-var elapsed_seconds: int
-var current_seconds: int
-```
-
-ActivationDataへEvent enumを持たせてはいけません。
-
-禁止例：
-
-```gdscript
-var event: EnemyEffect.Event
-```
-
-Effectの種類と接続先Signalによって、イベント種類は確定しています。
-
----
-
-# 11. EnemyEffectRequest
-
-`EnemyEffectStack`へ`EnemyEffect`を直接格納しないでください。
-
-発動1回ごとに`EnemyEffectRequest`を生成してください。
-
-```gdscript
-class_name EnemyEffectRequest
+class_name EnemyDigestionResult
 extends RefCounted
 
-var effect: EnemyEffect
-var activation_data: EnemyEffectActivationData
-var priority: int
-var sequence: int
+var enemy: EnemyData
+var damage_values: Array[int] = []
+var total_damage := 0
+var applied_damage := 0
+var overkill_damage := 0
+var was_digested := false
 ```
 
-同じEffectが2回発動した場合は、2件のRequestとして保持してください。
-
-Effect参照が同一であることを理由に重複排除してはいけません。
-
-Request実行時は、以下の流れとしてください。
+複数対象を処理する場合：
 
 ```gdscript
-func execute() -> void:
-    effect.begin_activation(activation_data)
-    effect.apply()
-    effect.end_activation()
-```
-
-発動時データはRequest作成時に固定し、実行直前までEffect本体へ書き込まないでください。
-
----
-
-# 12. EnemyEffectStack
-
-`EnemyEffectStack`の責務は以下に限定してください。
-
-* Requestを受け付ける
-* Requestを検証する
-* priority順へ並べる
-* 同priority時の順番を保証する
-* Requestを順番に実行する
-* 実行中に追加されたRequestを次バッチへ送る
-* 無限連鎖を検出する
-
-Stackは以下を担当してはいけません。
-
-* HP変更
-* 攻撃力変更
-* 時刻変更
-* 敵生成
-* 盤面検索
-* 対象選択
-* Effect固有条件の判定
-* Effectの依存関係解決
-
-内部配列を外部へ公開せず、必ず`request()`経由で追加してください。
-
-```gdscript
-var _pending: Array[EnemyEffectRequest] = []
-var _next_batch: Array[EnemyEffectRequest] = []
-
-var _is_processing := false
-var _is_scheduled := false
-var _next_sequence := 0
-```
-
-最初のRequestが届いた瞬間には実行せず、`call_deferred()`で一度だけ処理開始を予約してください。
-
-同じSignal通知中のRequestをすべて収集した後、priorityが小さい順に実行してください。
-
-同priorityの場合はsequenceが小さい順に実行してください。
-
-現在バッチ実行中に届いたRequestは、必ず次バッチへ入れてください。
-
-現在バッチへの途中挿入は禁止します。
-
-無限連鎖対策として、1連鎖あたりの最大実行数を設定してください。
-
----
-
-# 13. Effectの発動契機別基底クラス
-
-巨大なActivationMask方式を避けるため、必要に応じて発動契機別の中間基底クラスを使用してください。
-
-例：
-
-* `EnemyEffectOnDamaged`
-* `EnemyEffectOnDepleted`
-* `EnemyEffectOnTimeProgressed`
-* `EnemyEffectOnDigested`
-* `EnemyEffectOnVomited`
-* `EnemyEffectOnTurnStarted`
-* `EnemyEffectOnAdjacentChanged`
-
-中間基底クラスは以下を担当して構いません。
-
-* 対応するSignalへの接続
-* 共通のRequest前条件
-* 共通ActivationDataの作成
-* Signal解除
-
-ただし、各中間基底クラスへ無関係な依存関係を追加してはいけません。
-
----
-
-# 14. EnemyEffectSystem
-
-`EnemyEffectSystem`を残す場合は、Facadeまたは組み立て役に限定してください。
-
-担当してよいもの：
-
-* Effectの初期化開始
-* EffectStackの所有
-* Installer／Factoryの呼び出し
-* Effect群のbind／unbind
-* 移行期間中の互換API
-
-担当してはいけないもの：
-
-* HP計算
-* 攻撃力計算
-* 消化ダメージ計算
-* プレイヤーダメージ計算
-* 時刻計算
-* 盤面検索
-* 敵生成処理
-* 全イベントの中央振り分け
-* Effect固有条件の判定
-* 巨大な状態Dictionaryの所有
-
-`EnemyEffectSystem`が旧`EnemyEffectResolver`の名前を変えたクラスにならないようにしてください。
-
----
-
-# 15. EnemyControllerの分割
-
-現在の`EnemyController`は、少なくとも以下の責務を持っています。
-
-* 消化ダメージ処理
-* 敵からプレイヤーへの攻撃処理
-* ターン開始処理
-* 時刻進行処理
-* SeedEffectへの転送
-* EnemyEffectSystemの制御
-* 敵の表示更新
-* ターン結果の構築
-* 遅延敵処理
-* 吐き戻しや重力制御
-
-これらを責務ごとに分離してください。
-
-推奨する分割先：
-
-```text
-EnemyController
-├─ EnemyDigestionResolver
-├─ EnemyAttackResolver
-├─ EnemyTurnProcessor
-├─ EnemyEffectSystem
-├─ EnemyPresenter
-└─ 必要に応じてSeedEffectService
-```
-
----
-
-# 16. EnemyDigestionResolver
-
-以下の責務を`EnemyController`から移してください。
-
-* 消化対象の並び替え
-* 酸ダメージの算出
-* 消化ダメージの適用
-* 超過ダメージの算出
-* 消化された敵の判定
-* 消化前後の結果データ作成
-* 夢種ブロック等による消化補正
-
-候補となる既存メソッド：
-
-* `acid_nightmares`
-* `_acid_enemy`
-* `_resolve_Acided_enemy_effects`
-* `_apply_enemy_damage_values`
-* `_get_final_acid_damage`
-* `_sort_Acided_enemies`
-* `get_acid_damage_breakdown`
-
-`EnemyDigestionResolver`は敵のViewを操作してはいけません。
-
-ダメージ適用前HPを保存し、超過ダメージを正しく計算してください。
-
-```gdscript
-var hp_before := enemy.data.hp.current
-var applied_damage := enemy.data.hp.take_damage(total_damage)
-var overkill := maxi(0, total_damage - hp_before)
-```
-
-ダメージ適用後HPを使って超過ダメージを算出してはいけません。
-
----
-
-# 17. EnemyAttackResolver
-
-以下の責務を`EnemyController`から移してください。
-
-* 敵ごとの攻撃力取得
-* 攻撃倍率適用
-* プレイヤーへの最終ダメージ算出
-* ダメージ値の分割
-* 攻撃結果データの生成
-
-候補となる既存メソッド：
-
-* `apply_acid_damage_values`
-* `_get_enemy_attack_damage`
-* `_get_enemy_attack_damage_values`
-* `_sum_damage_values`
-* `_split_damage_values`
-
-`apply_acid_damage_values`が敵からプレイヤーへの攻撃を意味している場合、処理内容に合う名前へ変更してください。
-
-例：
-
-```gdscript
-resolve_enemy_attacks()
-```
-
----
-
-# 18. EnemyTurnProcessor
-
-以下の責務を`EnemyController`から移してください。
-
-* ターン開始処理
-* 時刻進行処理
-* ターン終了処理
-* 遅延敵の有効化
-* 遅延重力の解除
-* ターン結果の構築
-
-候補となる既存メソッド：
-
-* `apply_turn_start_effects`
-* `apply_progress_time`
-* `build_turn_result`
-* `activate_deferred_nuisance_enemies`
-* `unlock_deferred_nuisance_gravity`
-
-`EnemyTurnProcessor`は処理順を管理してよいですが、個別のHP計算や攻撃計算を直接実装してはいけません。
-
-それらは対応するResolverへ委譲してください。
-
----
-
-# 19. EnemyControllerの最終責務
-
-分割後の`EnemyController`は、ユースケースの調整役に限定してください。
-
-担当してよいもの：
-
-* 戦闘処理の実行順を指示する
-* 各Resolver／Processorを呼び出す
-* 処理結果をまとめて返す
-* 上位のGameクラスへ結果を返す
-
-担当してはいけないもの：
-
-* 個別のダメージ計算
-* HP変更
-* 攻撃倍率計算
-* Effect発動条件判定
-* View更新
-* Signal接続
-* SeedEffectの大量な単純転送
-* 具体サービスの内部生成
-
-例：
-
-```gdscript
-class_name EnemyController
+class_name EnemyDigestionBatchResult
 extends RefCounted
 
-var digestion_resolver: EnemyDigestionResolver
-var attack_resolver: EnemyAttackResolver
-var turn_processor: EnemyTurnProcessor
+var results: Array[EnemyDigestionResult] = []
+var digested_enemies: Array[EnemyData] = []
+```
 
-func process_turn(input: EnemyTurnInput) -> BattleTurnResultData:
-    var result := BattleTurnResultData.new()
+Resolverは次のような形にしてください。
 
-    turn_processor.begin_turn(input, result)
-    digestion_resolver.resolve(input, result)
-    attack_resolver.resolve(input, result)
-    turn_processor.end_turn(input, result)
+```gdscript
+func resolve(input: EnemyDigestionInput) -> EnemyDigestionBatchResult:
+    var result := EnemyDigestionBatchResult.new()
+
+    for enemy in input.targets:
+        result.results.append(
+            _resolve_enemy(enemy, input)
+        )
 
     return result
 ```
 
----
-
-# 20. 依存関係の生成
-
-`EnemyController`自身が、具体的な依存クラスを直接`new()`しないようにしてください。
-
-禁止例：
+表示処理は`EnemyPresenter`へ渡してください。
 
 ```gdscript
-var enemy_effects := EnemyEffectSystem.new()
-var seed_effects := SeedEffectResolver.new()
-var digestion_resolver := EnemyDigestionResolver.new()
-```
-
-依存関係は上位のComposition Root、Factory、またはsetupメソッドから注入してください。
-
-```gdscript
-func setup(
-    digestion_resolver_value: EnemyDigestionResolver,
-    attack_resolver_value: EnemyAttackResolver,
-    turn_processor_value: EnemyTurnProcessor
+func present_digestion_result(
+    result: EnemyDigestionResult
 ) -> void:
-    digestion_resolver = digestion_resolver_value
-    attack_resolver = attack_resolver_value
-    turn_processor = turn_processor_value
+    view.show_acid_damage_values(
+        result.damage_values
+    )
+
+    if result.applied_damage > 0:
+        view.pulse_damage()
+
+    if result.was_digested:
+        view.play_digestion_animation()
 ```
+
+## 禁止事項
+
+`EnemyDigestionResolver`から以下を呼んではいけません。
+
+* `EnemyView`
+* Sprite、Label、Tween
+* `enemy.show_*`
+* `enemy.pulse_*`
+* Tooltip
+* アニメーション再生
+
+## SOLID／MVP上の目的
+
+* SRP：Resolverは消化ルールだけを担当する
+* MVP：PresenterだけがModelの結果をViewへ反映する
 
 ---
 
-# 21. SeedEffectの転送メソッド
+# 4. EnemyDigestionResolverからEffect実行管理を分離する
 
-`EnemyController`に存在する、SeedEffect関連の単純な転送メソッドを整理してください。
+現在`EnemyDigestionResolver`内に、以下のような処理が混在している場合は分離してください。
+
+```gdscript
+enemy_effects.prepare(...)
+enemy_effects.notify_...(...)
+enemy_effects.execute()
+```
+
+または、
+
+```gdscript
+effect_stack.process()
+```
+
+`EnemyDigestionResolver`はEffectStackのバッチ開始・実行・終了を直接管理してはいけません。
+
+消化ユースケースの実行順調整は、以下のいずれかへ移してください。
+
+推奨：
+
+```text
+EnemyDigestionProcessor
+├─ EnemyDigestionResolver
+├─ EnemyEffectStack
+└─ EnemyDigestionPresenter
+```
 
 例：
 
 ```gdscript
-func get_rest_hp():
-    return seed_effects.get_rest_hp()
+class_name EnemyDigestionProcessor
+extends RefCounted
+
+var resolver: EnemyDigestionResolver
+var effect_stack: EnemyEffectStack
+
+func process(
+    input: EnemyDigestionInput
+) -> EnemyDigestionBatchResult:
+    var result := resolver.resolve(input)
+    effect_stack.process_pending()
+    return result
 ```
 
-このような単純転送は、呼び出し側が適切なServiceを直接使用できる構造へ変更してください。
+ただし、EffectのSignalが同期的にRequestを作り、Stackが`call_deferred()`で処理する設計の場合は、Processorから明示的にStackを実行する必要がない可能性があります。
 
-互換性維持のため一時的に残す場合は、非推奨Adapterとして明示し、新しい処理を追加しないでください。
+その場合は、Resolverが状態を変更するだけで、対応するModel SignalからEffectがRequestを送信する構造にしてください。
 
----
-
-# 22. MVP構造
-
-敵周辺は以下の役割へ分離してください。
+## 推奨する流れ
 
 ```text
-Model
-→ EnemyData
-→ EnemyHp
-→ EnemyAttack
-→ その他の状態クラス
-
-View
-→ EnemyView
-
-Presenter
-→ EnemyPresenterまたは整理後のEnemy Node
-
-戦闘ユースケース
-→ EnemyController
+EnemyDigestionResolver
+↓
+EnemyHpやEnemyDigestionStateを変更
+↓
+状態クラスが普遍的Signalを発行
+↓
+対応EffectがSignalを受信
+↓
+EffectがRequestを追加
+↓
+EnemyEffectStackがバッチ処理
 ```
 
-## Model
-
-Modelは以下を参照してはいけません。
-
-* Node
-* Sprite
-* Label
-* Tween
-* Tooltip
-* SceneTree
-* View
-
-## View
-
-Viewは以下を担当してください。
-
-* Sprite表示
-* HP表示
-* 攻撃力表示
-* 表示・非表示
-* 色変更
-* Tween
-* ダメージ演出
-* 消化演出
-* 復活演出
-* Tooltip
-
-Viewはゲーム状態を変更してはいけません。
-
-## Presenter
-
-Presenterは以下を担当してください。
-
-* ModelのSignalをViewへ反映する
-* View操作をまとめる
-* Controllerからの命令をModelへ伝える
-* EnemyDataとEnemyViewを接続する
-
-既存の`Enemy`がNodeである場合、`Enemy`を純粋なModelとして扱ってはいけません。
+ResolverからEffect種別を指定して通知してはいけません。
 
 ---
 
-# 23. Enemyクラスの縮小
+# 5. EnemyEffect基底クラスを縮小する
 
-現在の`Enemy`へ残っている以下の責務を整理してください。
+`EnemyEffect`基底クラスを確認し、ActivationDataの具体型ごとの操作や判定を減らしてください。
 
-* HP変更
-* 攻撃力変更
-* 表示処理
-* Tooltip
-* Tween
-* 盤面形状
-* Effect管理
-* 消化処理
-* 互換API
+問題例：
 
-最終的に、`Enemy`がNodeとして残る場合は、PresenterまたはScene上のFacadeとして扱ってください。
+```gdscript
+func get_activation_damage() -> int:
+    var data := get_activation_data()
+    if data is DamageActivationData:
+        return data.amount
+    return 0
+```
 
-以下のようなラッパーは段階移行中のみ許可します。
+```gdscript
+func get_elapsed_seconds() -> int:
+    var data := get_activation_data()
+    if data is TimeActivationData:
+        return data.elapsed_seconds
+    return 0
+```
+
+```gdscript
+var lifecycle_allowed := \
+    data is AfterAcidDamageActivationData \
+    or data is AdjacentAcidDamageActivationData \
+    or data is DigestionActivationData
+```
+
+このような具体型判定を`EnemyEffect`基底へ集中させると、新しいActivationData追加のたびに基底クラスの修正が必要になります。
+
+これはOCPおよびISPに反します。
+
+## 修正方針
+
+発動契機別の中間基底クラスへ移してください。
+
+例：
+
+```gdscript
+class_name EnemyEffectOnDamage
+extends EnemyEffect
+
+func get_damage_activation() -> DamageActivationData:
+    return get_activation_data() as DamageActivationData
+```
+
+```gdscript
+class_name EnemyEffectOnTimeProgressed
+extends EnemyEffect
+
+func get_time_activation() -> TimeActivationData:
+    return get_activation_data() as TimeActivationData
+```
+
+```gdscript
+class_name EnemyEffectOnDigested
+extends EnemyEffect
+
+func get_digestion_activation() -> DigestionActivationData:
+    return get_activation_data() as DigestionActivationData
+```
+
+`EnemyEffect`基底へ残すものは以下に限定してください。
+
+```text
+priority
+owner
+effect_stack
+enabled
+runtime state
+begin_activation()
+end_activation()
+get_activation_data()
+request_activation()
+apply()
+bind()
+unbind()
+```
+
+## 消化済み所有者の発動可否
+
+基底クラスで具体ActivationData型を列挙して判定してはいけません。
+
+以下のようなポリモーフィズムへ変更してください。
+
+Effect側で定義する場合：
+
+```gdscript
+func can_activate_when_owner_digested() -> bool:
+    return false
+```
+
+消化後にも発動可能な中間基底：
+
+```gdscript
+class_name EnemyEffectAfterDigestion
+extends EnemyEffect
+
+func can_activate_when_owner_digested() -> bool:
+    return true
+```
+
+またはActivationData側に普遍的な属性として持たせてください。
+
+```gdscript
+var allows_digested_owner := false
+```
+
+ただし、イベント型の列挙による判定へ戻してはいけません。
+
+---
+
+# 6. EnemyEffectInstallerのService Locator化を解消する
+
+現在、各Effectが以下のようにInstallerから依存を取得している場合は修正してください。
+
+```gdscript
+func bind_dependencies(
+    installer: EnemyEffectInstaller
+) -> void:
+    stomach = installer.get_stomach()
+    battle_clock = installer.get_battle_clock()
+```
+
+これはEffectがInstallerをService Locatorとして利用している状態です。
+
+Effectが何へ依存しているのか、外部から判別しにくくなります。
+
+## 修正方針
+
+InstallerからEffectへ必要な依存だけを直接渡してください。
+
+例：
+
+```gdscript
+func install_damage_attack_up(
+    effect: EnemyEffectOnDamageAttackUp,
+    enemy: EnemyData
+) -> void:
+    effect.setup(
+        enemy.hp,
+        enemy.attack,
+        effect_stack
+    )
+```
+
+Effect側：
+
+```gdscript
+func setup(
+    hp_value: EnemyHp,
+    attack_value: EnemyAttack,
+    stack_value: EnemyEffectStack
+) -> void:
+    hp = hp_value
+    attack = attack_value
+    effect_stack = stack_value
+```
+
+ただし、Installer内へ大量の具体クラス判定を追加してはいけません。
+
+以下は禁止します。
+
+```gdscript
+if effect is EnemyEffectA:
+    ...
+elif effect is EnemyEffectB:
+    ...
+```
+
+## 推奨案
+
+発動契機別基底クラスが、必要な依存を受け取る初期化メソッドを持つ構造にしてください。
+
+```gdscript
+class_name EnemyEffectOnDamage
+extends EnemyEffect
+
+func setup_damage_trigger(
+    hp: EnemyHp,
+    stack: EnemyEffectStack
+) -> void:
+    ...
+```
+
+特殊な追加依存だけを具体Effectへ直接注入してください。
+
+Installerの責務は以下に限定してください。
+
+* Resource複製後の実行個体初期化
+* 必要な依存の注入
+* bindの呼び出し
+* unbindの呼び出し
+
+Installerを万能データ取得窓口にしてはいけません。
+
+---
+
+# 7. EnemyPresenterをMVPの仲介役として拡張する
+
+現在の`EnemyPresenter`が攻撃力表示など一部だけを担当している場合、ModelとViewの接続をPresenterへ移してください。
+
+最低限、以下のModel SignalをPresenterが購読してください。
+
+* `EnemyHp.changed`
+* `EnemyHp.damaged`
+* `EnemyHp.healed`
+* `EnemyHp.depleted`
+* `EnemyAttack.changed`
+* `EnemyStomachStatus.changed`
+* `EnemyDigestionState.digested`
+* `EnemyDigestionState.vomited`
+
+例：
+
+```gdscript
+class_name EnemyPresenter
+extends RefCounted
+
+var model: EnemyData
+var view: EnemyView
+
+func bind(
+    model_value: EnemyData,
+    view_value: EnemyView
+) -> void:
+    model = model_value
+    view = view_value
+
+    model.hp.changed.connect(_on_hp_changed)
+    model.hp.damaged.connect(_on_damaged)
+    model.attack.changed.connect(_on_attack_changed)
+```
+
+```gdscript
+func _on_hp_changed(
+    current_hp: int,
+    maximum_hp: int
+) -> void:
+    view.update_hp(current_hp, maximum_hp)
+```
+
+```gdscript
+func _on_damaged(amount: int) -> void:
+    view.show_damage(amount)
+    view.pulse_damage()
+```
+
+`Enemy` NodeをScene上のFacadeとして残すことは許可します。
+
+ただし、以下を新規に`Enemy`へ追加してはいけません。
+
+* ダメージ計算
+* 回復量計算
+* Effect条件判定
+* View表示ロジック
+* Tween詳細
+* Tooltip生成ロジック
+
+`Enemy`に残す互換メソッドは、ModelまたはPresenterへ転送するだけにしてください。
+
+例：
 
 ```gdscript
 func take_acid_damage(amount: int) -> int:
     return data.hp.take_damage(amount)
 ```
 
-新しいゲームルールや計算処理を`Enemy`へ追加してはいけません。
+---
+
+# 8. EnemyDigestionResolverの追加分割
+
+`EnemyDigestionResolver`が依然として大きい場合、行数だけではなく責務を基準に分けてください。
+
+推奨する構造：
+
+```text
+EnemyDigestionResolver
+├─ EnemyDigestionDamageCalculator
+├─ EnemyDigestionTargetSorter
+├─ EnemyDigestionResultBuilder
+└─ 必要ならDreamSeedBlockAcidResolver
+```
+
+## EnemyDigestionDamageCalculator
+
+担当：
+
+* 基礎酸ダメージ
+* 各種倍率
+* 防御補正
+* 最終ダメージ
+* 超過ダメージ
+
+## EnemyDigestionTargetSorter
+
+担当：
+
+* 消化処理順の決定
+* priorityや盤面位置による並べ替え
+
+## EnemyDigestionResultBuilder
+
+担当：
+
+* `EnemyDigestionResult`
+* `EnemyDigestionBatchResult`
+* 消化済み敵一覧
+
+## 禁止事項
+
+分割後の各クラスが、相互に全機能を呼び合う構造にしてはいけません。
+
+巨大クラスのメソッドをファイルへ分けただけの実装は禁止します。
 
 ---
 
-# 24. 禁止する代替巨大クラス
+# 9. EnemyEffectSystemの責務を限定する
 
-以下の名前に限らず、旧Context、Resolver、Controllerと同等の万能クラスを新設してはいけません。
+`EnemyEffectSystem`が以下を直接実行している場合は見直してください。
 
+```gdscript
+enemy.data.defense_status.reset_refresh_modifiers()
+enemy.data.attack.reset_modifiers()
+enemy.data.hp.reset_modifiers()
+enemy.data.hp.apply_modifiers()
+```
+
+これらがEffectライフサイクル上必要であれば、専用クラスへ移してください。
+
+例：
+
+```text
+EnemyEffectRefreshProcessor
+├─ modifier reset
+├─ passive effect request
+└─ modifier apply
+```
+
+`EnemyEffectSystem`本体は以下に限定してください。
+
+* EffectStackの所有または参照
+* Effectインスタンスのbind／unbind
+* Installerの呼び出し
+* Effect実行ライフサイクルの入口
+* 移行期間中のFacade
+
+HP、攻撃、防御の具体的なリセット処理を直接知る必要はありません。
+
+---
+
+# 10. 新しい巨大Context／Managerを作らない
+
+以下のようなクラスを新設して、今回の依存をすべて集めてはいけません。
+
+* `EnemyEffectContext`
 * `EnemyEffectRuntime`
-* `EnemyEffectExecution`
-* `EnemyEffectEnvironment`
 * `EnemyEffectServices`
-* `EnemyEffectManager`
+* `EnemyEffectEnvironment`
 * `EnemyBattleContext`
-* `EnemyRuntimeData`
+* `EnemyManager`
+* `EnemyDigestionContext`
 
 以下を同時に保持するクラスは禁止します。
 
 ```text
 全敵一覧
-プレイヤーHP
 胃袋
 時刻
-消化間隔
-HP操作
-攻撃操作
-敵生成
-盤面検索
-イベント振り分け
-Effect状態管理
-View更新
-ターン進行
+PlayerHealth
+EnemyHp
+EnemyAttack
+EnemyEffectStack
+EnemySpawnQueue
+View
+Presenter
+ダメージ計算
+Effect発動
 ```
 
-巨大クラスを複数の小さなファイルへ分割しただけで、相互依存が変わっていない実装も不可とします。
+依存を一つのオブジェクトへまとめて各Effectへ渡す方法は禁止します。
 
 ---
 
-# 25. Signal解除とライフサイクル
+# 11. テスト要件
 
-Effectの破棄、敵の削除、スキル切り替え、メイン・サブスキル更新時には、接続済みSignalを解除してください。
+以下のテストを追加または修正してください。
 
-Effectは`unbind()`に相当する処理を持ってください。
+## 状態クラス
 
-二重接続を防止してください。
+* `EnemyHp`がEnemyEffect関連型へ依存していない
+* `BattleClock`がEnemyEffect関連型へ依存していない
+* `EnemyDigestionState`がEnemyEffect関連型へ依存していない
+* 状態変更時に普遍的Signalだけが発行される
 
-Signal接続先が解放済みの場合にも安全に処理できるようにしてください。
+## Effect
 
----
+* Signal受信後にActivationDataをEffect側で作成する
+* Request前に条件判定される
+* 新しいActivationDataを追加しても`EnemyEffect`基底を変更する必要がない
+* 消化済み所有者の発動可否がポリモーフィズムで判定される
+* 不要な依存をInstallerから取得できない
 
-# 26. テスト要件
+## DigestionResolver
 
-以下のテストを追加または更新してください。
+* ResolverがViewメソッドを呼ばない
+* ResolverがEffectの具体イベントを通知しない
+* 正しいダメージ結果を返す
+* 超過ダメージが適用前HPを基準に計算される
+* EffectStackの実行順管理を持たない
 
-## EnemyEffectStack
+## Presenter
 
-* 同じSignalで複数Requestが追加される
-* priorityが小さい順に実行される
-* 同priorityではsequence順に実行される
-* 同じEffectが2回Requestされた場合、2回実行される
-* 実行中に追加されたRequestが次バッチで実行される
-* ActivationDataが後続Requestで上書きされない
-* 無限連鎖が上限で停止する
+* HP変更SignalでViewが更新される
+* ダメージSignalで演出が実行される
+* 攻撃力変更Signalで表示が更新される
+* ResolverからViewを直接呼ばず、Presenter経由で表示される
+* unbind後はModel Signalを受信しない
 
-## EnemyEffect
+## 解析・回帰
 
-* Event enumなしで正しいSignalから発動する
-* Request前に発動条件を判定する
-* 不要な依存関係を保持しない
-* スキルResourceが敵同士で状態共有されない
-* unbind後にSignalを受信しない
-
-## EnemyData
-
-* EnemyInfoから正しく初期化される
-* メインスキルとサブスキルが別インスタンスになる
-* HP、攻撃、防御の状態が敵同士で共有されない
-
-## EnemyController
-
-* 消化Resolver、攻撃Resolver、TurnProcessorの順序を正しく調整する
-* 個別の計算をController自身が行わない
-* Resolverを差し替えてテストできる
-
-## MVP
-
-* ModelがViewを参照しない
-* ViewがModelを変更しない
-* PresenterがModelのSignalをViewへ反映する
-* EnemyControllerがViewを直接操作しない
+* 全GDScriptをロードしてParse Errorがない
+* すべての既存Effect Resourceをロードできる
+* Gameシーンを起動できる
+* 消化、復活、隣接効果、時間経過効果が従来どおり動作する
 
 ---
 
-# 27. 実装完了条件
+# 12. 実装完了条件
 
 以下をすべて満たした時点で完了としてください。
 
+## Model
+
+* 状態クラスが`EnemyEffectActivationData`へ依存していない
+* 状態クラスが`EnemyEffectSystem`へ依存していない
+* 普遍的なSignalだけを発行している
+
 ## EnemyEffect
 
-* `EnemyEffectContext`が存在しない
-* `EnemyEffectRuntime`が存在しない
-* `runtime.is_event()`が存在しない
-* Event enumによるEffect内分岐が存在しない
-* `EnemyEffect`基底が万能操作APIを持っていない
-* Effectは必要なSignalへ接続している
-* Request前に発動条件を判定している
-* `apply()`は引数なしで統一されている
-* StackへRequest単位で格納される
-* 同じEffectの複数発動が失われない
+* 基底クラスに具体ActivationData型の大量判定がない
+* 発動契機別の処理が中間基底へ移動している
+* Event enumによる分岐がない
+* 必要な依存だけを保持している
+* InstallerをService Locatorとして使用していない
 
-## EnemyEffectSystem
+## EnemyDigestionResolver
 
-* 全イベントを中央振り分けしていない
-* HP・攻撃・盤面・時刻の計算を持っていない
-* 万能Contextの代替になっていない
-
-## EnemyController
-
-* 消化計算が分離されている
-* 敵攻撃計算が分離されている
-* ターン進行が分離されている
-* Viewを直接操作していない
-* SeedEffectの大量な単純転送が整理されている
-* 具体依存を内部で生成していない
-* 主責務がユースケースの調整だけになっている
+* Viewを操作していない
+* Effect種別を指定して通知していない
+* EffectStackの実行管理をしていない
+* 消化計算と結果生成に責務が限定されている
+* 必要に応じて計算、並び替え、結果生成が分離されている
 
 ## MVP
 
-* `EnemyData`にNode参照がない
-* `EnemyView`にゲームルールがない
-* `Enemy`または`EnemyPresenter`がModelとViewを仲介している
-* ControllerがModelとViewの両方を直接更新していない
+* EnemyPresenterがModel SignalをViewへ反映している
+* EnemyViewがゲーム状態を変更していない
+* Enemy Nodeの表示ロジックが減っている
+* ControllerおよびResolverがViewを直接操作していない
 
 ## 品質
 
-* 既存ゲーム挙動を維持している
-* 既存テストが通る
-* 新規テストが通る
+* `EnemyEffectOnAdjacentAcidDamage`を含む全スクリプトが解析可能
 * 新しい巨大クラスが作られていない
-* 循環依存が作られていない
-* 各クラスの責務をコメントまたはクラス説明で明示している
+* 循環依存がない
+* 既存動作を維持している
+* 追加・既存テストがすべて成功している
 
 ---
 
-# 28. 推奨実装順序
+# 13. 実装順序
 
-以下の順序で段階的に実装してください。
+以下の順で作業してください。
 
-1. 現在の責務と依存関係を一覧化する
-2. `EnemyEffect`基底から万能操作APIを切り出す
-3. Effectを発動契機別の中間基底へ整理する
-4. EffectのRequest前条件判定を実装する
-5. 状態クラスからEffect専用Signalを削除する
-6. `EnemyEffectSystem`をFacadeへ縮小する
-7. `EnemyDigestionResolver`を切り出す
-8. `EnemyAttackResolver`を切り出す
-9. `EnemyTurnProcessor`を切り出す
-10. `EnemyController`を調整役へ縮小する
-11. `Enemy`から表示処理を`EnemyView`へ移す
-12. ModelとViewをPresenterで接続する
-13. SeedEffectの転送APIを整理する
-14. 互換Adapterを段階的に削除する
-15. テストを追加して回帰確認する
+1. 全GDScriptのParse Errorを修正する
+2. ModelからActivationData依存を除去する
+3. 普遍的Signalへ変更する
+4. Effect側でActivationDataを生成する
+5. `EnemyDigestionResolver`からView操作を除去する
+6. `EnemyDigestionResolver`からEffect実行管理を除去する
+7. `EnemyEffect`基底の具体型判定を中間基底へ移す
+8. InstallerのService Locator利用を除去する
+9. PresenterへModelとViewの接続を移す
+10. `EnemyEffectSystem`の状態リセット処理を分離する
+11. 必要なテストを追加する
+12. 全ゲーム動作を回帰確認する
 
-各段階でプロジェクトが実行可能な状態を維持してください。
+各段階でプロジェクトが起動できる状態を維持してください。
 
 ---
 
-# 29. 作業報告
+# 14. 作業完了報告
 
-実装完了時は、以下を報告してください。
+実装後、以下を報告してください。
 
-1. 作成したクラス
-2. 削除したクラス
-3. 責務を移動したメソッド一覧
-4. `EnemyEffect`から削除した依存関係
-5. `EnemyController`から切り出した責務
-6. 残している互換Adapter
-7. 未完了箇所
-8. 実行したテスト
-9. テスト結果
-10. 既存動作へ影響する可能性がある箇所
+1. 修正したクラス一覧
+2. 新規作成したクラス一覧
+3. 削除した依存関係
+4. Modelから削除したEffect関連型
+5. `EnemyDigestionResolver`から移動した処理
+6. `EnemyEffect`基底から移動した処理
+7. Presenterへ移した表示処理
+8. 残している互換Facade
+9. 未完了箇所
+10. 実行したテストと結果
+11. Parse Errorがないことの確認結果
+12. 既存動作へ影響する可能性がある箇所
 
-コード量を減らしたことではなく、責務と依存関係が正しく分離されたことを成果として扱ってください。
+コードを別ファイルへ移したことではなく、責務と依存方向が正しくなったことを成果として扱ってください。
