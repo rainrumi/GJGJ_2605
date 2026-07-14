@@ -10,6 +10,7 @@ var _digestion_state: EnemyDigestionState # 消化状態
 var _inheritance: EnemyEffectInheritance # 継承効果
 var _effect_stack: EnemyEffectStack # 効果スタック
 var _installed_effects: Array[EnemyEffect] = [] # 接続済み効果
+var _observed_data: Array[EnemyData] = [] # 監視中データ
 var _connections: Dictionary = {} # 効果別接続
 var _enemy_ids: Array[int] = [] # 接続対象ID
 var _stomach_id := 0 # 胃袋ID
@@ -48,7 +49,7 @@ func sync(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	var current_stomach_id := stomach.get_instance_id() if stomach != null else 0 # 現在の胃袋ID
 	if not _is_dirty and current_ids == _enemy_ids and current_stomach_id == _stomach_id:
 		return
-	_disconnect_all()
+	_disconnect_all(false)
 	_enemy_ids = current_ids
 	_stomach_id = current_stomach_id
 	for enemy in enemies:
@@ -58,7 +59,7 @@ func sync(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 
 # 配線解除
 func reset() -> void:
-	_disconnect_all()
+	_disconnect_all(true)
 	_enemy_ids.clear()
 	_stomach_id = 0
 	_is_dirty = true
@@ -68,6 +69,9 @@ func reset() -> void:
 func _install_enemy(owner: Enemy, enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	if owner == null or not is_instance_valid(owner):
 		return
+	if not owner.data.skills_changed.is_connected(_on_skills_changed):
+		owner.data.skills_changed.connect(_on_skills_changed)
+	_observed_data.append(owner.data)
 	var effects := owner.get_enemy_effects() # 固有効果
 	effects.append_array(_inheritance.get_effects(owner))
 	effects.sort_custom(func(a: EnemyEffect, b: EnemyEffect) -> bool: return a.priority < b.priority)
@@ -136,7 +140,11 @@ func _connect_signal(effect: EnemyEffect, source_signal: Signal) -> void:
 
 
 # 全配線解除
-func _disconnect_all() -> void:
+func _disconnect_all(clear_state: bool) -> void:
+	for enemy_data in _observed_data:
+		if enemy_data != null and enemy_data.skills_changed.is_connected(_on_skills_changed):
+			enemy_data.skills_changed.disconnect(_on_skills_changed)
+	_observed_data.clear()
 	for effect in _installed_effects:
 		if effect == null:
 			continue
@@ -144,11 +152,16 @@ func _disconnect_all() -> void:
 		for source_signal in _connections.get(effect, []):
 			if source_signal.is_connected(callback):
 				source_signal.disconnect(callback)
-		effect.unbind()
+		effect.unbind(clear_state)
 	_installed_effects.clear()
 	_connections.clear()
 
 
 # 継承変更受信
 func _on_effects_changed() -> void:
+	_is_dirty = true
+
+
+# スキル変更受信
+func _on_skills_changed() -> void:
 	_is_dirty = true

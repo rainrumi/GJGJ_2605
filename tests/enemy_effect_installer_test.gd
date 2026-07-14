@@ -14,6 +14,11 @@ class TestEffect:
 		return ACTIVATION_PROGRESS_TIME
 
 
+	# 依存種別取得
+	func get_dependency_mask() -> int:
+		return DEPENDENCY_BATTLE_CLOCK
+
+
 	# 試験効果適用
 	func apply() -> void:
 		if is_progress_time_activation():
@@ -54,18 +59,58 @@ func _run() -> void:
 		stack
 	)
 	installer.sync(enemies, null)
+	_expect(effect.battle_clock == battle_clock, "必要な時刻参照だけを保持する")
+	_expect(effect.player_health == null and effect.stomach == null, "未使用参照を保持しない")
 	battle_clock.request_progress_effect(ProgressTimeActivationData.new(60, 60))
 	stack.execute()
 	_expect(effect.activation_count == 1, "対象Signalで一度発動する")
+	effect.set_state("counter", 7)
+	var extra_enemy := Enemy.new() # 追加敵
+	enemies.append(extra_enemy)
+	installer.sync(enemies, null)
+	_expect(effect.get_state_int("counter") == 7, "敵一覧変更で効果状態を維持する")
 	battle_clock.request_turn_effect(TurnStartActivationData.new(60, 60))
 	stack.execute()
 	_expect(effect.activation_count == 1, "対象外Signalでは発動しない")
-	installer.reset()
+	var next_effect := TestEffect.new() # 切替後効果
+	var next_skill := EnemySkill.new() # 切替後スキル
+	next_skill.effects = [next_effect]
+	enemy.data.unbind_skills()
+	enemy.data.main_skill = next_skill
+	installer.sync(enemies, null)
 	battle_clock.request_progress_effect(ProgressTimeActivationData.new(60, 120))
 	stack.execute()
-	_expect(effect.activation_count == 1, "解除後は発動しない")
+	_expect(effect.activation_count == 1, "切替前効果を再発動しない")
+	_expect(next_effect.activation_count == 1, "切替後効果を接続する")
+	installer.reset()
+	battle_clock.request_progress_effect(ProgressTimeActivationData.new(60, 180))
+	stack.execute()
+	_expect(next_effect.activation_count == 1, "解除後は発動しない")
+	_test_effect_duplication()
+	extra_enemy.free()
 	enemy.free()
 	quit(_failures)
+
+
+# 効果複製試験
+func _test_effect_duplication() -> void:
+	var template_effect := TestEffect.new() # 原本効果
+	var template_skill := EnemySkill.new() # 原本スキル
+	template_skill.effects = [template_effect]
+	var definition := EnemyInfo.new() # 敵定義
+	definition.main_skill = template_skill
+	var first_data := EnemyData.new() # 1体目データ
+	var second_data := EnemyData.new() # 2体目データ
+	first_data.setup(definition, 10, 1, true, true)
+	second_data.setup(definition, 10, 1, true, true)
+	var first_effect := first_data.get_effects()[0] # 1体目効果
+	var second_effect := second_data.get_effects()[0] # 2体目効果
+	_expect(first_effect != template_effect, "原本Effectを直接使用しない")
+	_expect(first_effect != second_effect, "敵同士でEffectを共有しない")
+	first_effect.set_state("count", 1)
+	_expect(second_effect.get_state_int("count") == 0, "敵ごとの状態を分離する")
+	first_data.unbind_skills()
+	second_data.unbind_skills()
 
 
 # 期待値確認

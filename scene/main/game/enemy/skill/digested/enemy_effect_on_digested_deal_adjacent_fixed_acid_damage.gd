@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_DIGESTED
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_ENEMIES | DEPENDENCY_STOMACH | DEPENDENCY_DIGESTION_STATE
+
 # 固定ダメージ
 @export var damage := 0
 # ダメージ倍率

@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_BEFORE_ACID_DAMAGE
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_ENEMIES | DEPENDENCY_DIGESTION_STATE
+
 # 譲渡率
 @export_range(0.0, 1.0, 0.01) var transfer_rate := 0.0
 # 対象選択

@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_DIGESTED
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_ENEMIES | DEPENDENCY_STOMACH | DEPENDENCY_DIGESTION_STATE
+
 # 超過倍率
 @export var overkill_multiplier := 1.0
 # 効果対象

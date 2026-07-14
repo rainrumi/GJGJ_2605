@@ -98,7 +98,7 @@ func get_step_minutes_breakdown(enemies: Array[Enemy], consume_pending_bonus := 
 # turnstarteffects適用
 func apply_turn_start_effects(enemies: Array[Enemy], stomach: StomachBoard, minutes: int) -> void:
 	enemy_effects.refresh(enemies, stomach)
-	enemy_effects.dispatch(EnemyEffect.Event.TURN_START, enemies, stomach, null, 0, 0, STEP_MINUTES * 60, minutes * 60)
+	enemy_effects.notify_turn_start(enemies, stomach, STEP_MINUTES * 60, minutes * 60)
 	for enemy in enemies:
 		if enemy.is_Acided():
 			continue
@@ -207,21 +207,14 @@ func add_Acided_seed_effect(seed: SeedInfo, minutes := 0, stomach: StomachBoard 
 # 時間経過適用
 func apply_progress_time(previous_minutes: int, minutes: int, enemies: Array[Enemy], stomach: StomachBoard) -> BattleTurnResultData:
 	seed_effects.apply_progress_time(previous_minutes, minutes)
-	enemy_effects.dispatch(
-		EnemyEffect.Event.PROGRESS_TIME,
-		enemies,
-		stomach,
-		null,
-		0,
-		0,
-		maxi(0, minutes - previous_minutes) * 60,
-		minutes * 60
-	)
+	var elapsed_seconds := maxi(0, minutes - previous_minutes) * 60 # 経過秒数
+	var current_seconds := minutes * 60 # 現在秒数
+	enemy_effects.notify_progress_time(enemies, stomach, elapsed_seconds, current_seconds)
 	var Acided_enemies := enemy_effects.consume_pending_digested() # 時間消化済み
 	for enemy in Acided_enemies:
-		enemy_effects.dispatch(EnemyEffect.Event.DIGESTED, enemies, stomach, enemy, 0, 0, maxi(0, minutes - previous_minutes) * 60, minutes * 60, Acided_enemies)
-		enemy_effects.dispatch(EnemyEffect.Event.ADJACENT_DIGESTED, enemies, stomach, enemy, 0, 0, maxi(0, minutes - previous_minutes) * 60, minutes * 60, Acided_enemies)
-	enemy_effects.dispatch(EnemyEffect.Event.ANY_DIGESTED, enemies, stomach, null, 0, 0, maxi(0, minutes - previous_minutes) * 60, minutes * 60, Acided_enemies)
+		enemy_effects.notify_digested(enemies, stomach, enemy, 0, 0, elapsed_seconds, current_seconds, Acided_enemies)
+		enemy_effects.notify_adjacent_digested(enemies, stomach, enemy, elapsed_seconds, current_seconds, Acided_enemies)
+	enemy_effects.notify_any_digested(enemies, stomach, elapsed_seconds, current_seconds, Acided_enemies)
 	enemy_effects.refresh(enemies, stomach)
 	var result := BattleTurnResultData.new() # 時間効果結果
 	result.Acided_enemies = Acided_enemies
@@ -341,7 +334,7 @@ func _acid_enemy(
 	# ダメージ
 	var damage := _get_final_acid_damage(enemy, enemies, stomach, minutes, acid_damage_per_cell * bottom_cell_count)
 	damage = enemy_effects.get_acid_damage(enemy, damage)
-	damage = enemy_effects.dispatch(EnemyEffect.Event.BEFORE_ACID_DAMAGE, enemies, stomach, enemy, damage, 0, elapsed_minutes * 60, minutes * 60)
+	damage = enemy_effects.before_acid_damage(enemies, stomach, enemy, damage)
 	enemy_effects.set_last_acid_damage(damage)
 	received_acid_damage[enemy] = received_acid_damage.get(enemy, 0) + damage
 	seed_effects.add_acid_damage_total(damage)
@@ -364,7 +357,7 @@ func _resolve_Acided_enemy_effects(
 	_sort_Acided_enemies(enemies, Acided_enemies, received_acid_damage, turn_start_hp)
 	for enemy in Acided_enemies:
 		var overkill_damage := maxi(0, int(received_acid_damage.get(enemy, 0)) - int(turn_start_hp.get(enemy, 0))) # 超過ダメージ
-		enemy_effects.dispatch(EnemyEffect.Event.DIGESTED, enemies, stomach, enemy, int(received_acid_damage.get(enemy, 0)), overkill_damage, elapsed_minutes * 60, minutes * 60, Acided_enemies)
+		enemy_effects.notify_digested(enemies, stomach, enemy, int(received_acid_damage.get(enemy, 0)), overkill_damage, elapsed_minutes * 60, minutes * 60, Acided_enemies)
 		if not enemy.is_Acided():
 			continue
 		seed_block_resolver.append_Acided_by_seed_block_effects(
@@ -378,9 +371,9 @@ func _resolve_Acided_enemy_effects(
 			elapsed_minutes
 		)
 		final_Acided.append(enemy)
-	enemy_effects.dispatch(EnemyEffect.Event.ANY_DIGESTED, enemies, stomach, null, 0, 0, elapsed_minutes * 60, minutes * 60, final_Acided)
+	enemy_effects.notify_any_digested(enemies, stomach, elapsed_minutes * 60, minutes * 60, final_Acided)
 	for Acided_enemy in final_Acided:
-		enemy_effects.dispatch(EnemyEffect.Event.ADJACENT_DIGESTED, enemies, stomach, Acided_enemy, 0, 0, elapsed_minutes * 60, minutes * 60, final_Acided)
+		enemy_effects.notify_adjacent_digested(enemies, stomach, Acided_enemy, elapsed_minutes * 60, minutes * 60, final_Acided)
 	return final_Acided
 
 
@@ -446,8 +439,8 @@ func _apply_enemy_damage_values(
 			Acided_enemies.append(enemy)
 		enemy.pulse_damage()
 		var overkill := maxi(0, total_damage - enemy.get_current_hp()) # 超過値
-		enemy_effects.dispatch(EnemyEffect.Event.AFTER_ACID_DAMAGE, enemies, stomach, enemy, total_damage, overkill, STEP_MINUTES * 60, minutes * 60, Acided_enemies)
-		enemy_effects.dispatch(EnemyEffect.Event.ADJACENT_ACID_DAMAGE, enemies, stomach, enemy, total_damage, overkill, STEP_MINUTES * 60, minutes * 60, Acided_enemies)
+		enemy_effects.notify_after_acid_damage(enemies, stomach, enemy, total_damage, overkill)
+		enemy_effects.notify_adjacent_acid_damage(enemies, stomach, enemy, total_damage, overkill)
 
 
 # turnstartHP取得

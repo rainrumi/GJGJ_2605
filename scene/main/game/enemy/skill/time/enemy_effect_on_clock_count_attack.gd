@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_PROGRESS_TIME
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_PLAYER_HEALTH
+
 # 必要回数
 @export_range(1, 10000, 1) var required_count := 1
 # 攻撃回数

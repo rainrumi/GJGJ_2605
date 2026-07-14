@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_REFRESH
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_STOMACH | DEPENDENCY_DIGESTION_INTERVAL
+
 # 接触毎割合
 @export var interval_delta_rate := 0.0
 

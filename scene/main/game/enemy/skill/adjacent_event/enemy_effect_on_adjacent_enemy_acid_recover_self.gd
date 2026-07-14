@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_ADJACENT_ACID_DAMAGE
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_ENEMIES
+
 # 隣接毎回復量
 @export var recovery_per_adjacent := 0
 

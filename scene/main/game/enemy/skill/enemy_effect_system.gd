@@ -61,35 +61,134 @@ func refresh(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	_apply_max_hp_modifiers(enemies)
 
 
-# イベント通知
-func dispatch(
-	event: EnemyEffect.Event,
+# 戦闘開始通知
+func notify_battle_start(enemies: Array[Enemy], stomach: StomachBoard) -> void:
+	_prepare_connections(enemies, stomach)
+	_battle_clock.request_battle_effect(BattleStartActivationData.new())
+	_effect_stack.execute()
+
+
+# ターン開始通知
+func notify_turn_start(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
-	target: Enemy = null,
-	damage := 0,
-	overkill_damage := 0,
-	elapsed_seconds := 0,
-	current_seconds := 0,
-	digested_enemies: Array[Enemy] = []
-) -> int:
-	_register_enemies(enemies)
-	_installer.sync(enemies, stomach)
-	var activation := _create_activation(
-		event,
-		target,
-		damage,
-		overkill_damage,
-		elapsed_seconds,
-		current_seconds,
-		digested_enemies
-	) # 発動時値
-	if activation == null:
-		return maxi(0, damage)
-	_emit_activation(activation, target)
+	elapsed_seconds: int,
+	current_seconds: int
+) -> void:
+	_prepare_connections(enemies, stomach)
+	_battle_clock.request_turn_effect(TurnStartActivationData.new(elapsed_seconds, current_seconds))
 	_effect_stack.execute()
-	var damage_data := activation as DamageActivationData # 被弾値
-	return damage_data.amount if damage_data != null else maxi(0, damage)
+
+
+# 時間進行通知
+func notify_progress_time(
+	enemies: Array[Enemy],
+	stomach: StomachBoard,
+	elapsed_seconds: int,
+	current_seconds: int
+) -> void:
+	_prepare_connections(enemies, stomach)
+	_battle_clock.request_progress_effect(ProgressTimeActivationData.new(elapsed_seconds, current_seconds))
+	_effect_stack.execute()
+
+
+# 消化前通知
+func before_acid_damage(
+	enemies: Array[Enemy],
+	stomach: StomachBoard,
+	target: Enemy,
+	damage: int,
+	overkill_damage := 0
+) -> int:
+	if target == null:
+		return maxi(0, damage)
+	_prepare_connections(enemies, stomach)
+	var activation := BeforeAcidDamageActivationData.new(damage, overkill_damage, target.data, target) # 被弾値
+	target.data.hp.request_before_acid_damage(activation)
+	_effect_stack.execute()
+	return activation.amount
+
+
+# 消化後通知
+func notify_after_acid_damage(
+	enemies: Array[Enemy],
+	stomach: StomachBoard,
+	target: Enemy,
+	damage: int,
+	overkill_damage: int
+) -> void:
+	if target == null:
+		return
+	_prepare_connections(enemies, stomach)
+	var activation := AfterAcidDamageActivationData.new(damage, overkill_damage, target.data, target) # 被弾値
+	target.data.hp.request_after_acid_damage(activation)
+	_effect_stack.execute()
+
+
+# 隣接被弾通知
+func notify_adjacent_acid_damage(
+	enemies: Array[Enemy],
+	stomach: StomachBoard,
+	target: Enemy,
+	damage: int,
+	overkill_damage: int
+) -> void:
+	if target == null:
+		return
+	_prepare_connections(enemies, stomach)
+	var activation := AdjacentAcidDamageActivationData.new(damage, overkill_damage, target.data, target) # 被弾値
+	target.data.hp.request_adjacent_acid_damage(activation)
+	_effect_stack.execute()
+
+
+# 消化済み通知
+func notify_digested(
+	enemies: Array[Enemy],
+	stomach: StomachBoard,
+	target: Enemy,
+	damage: int,
+	overkill_damage: int,
+	elapsed_seconds: int,
+	current_seconds: int,
+	digested_enemies: Array[Enemy]
+) -> void:
+	if target == null:
+		return
+	_prepare_connections(enemies, stomach)
+	var activation := _create_digestion_activation(DigestedActivationData.new(), target, damage, overkill_damage, elapsed_seconds, current_seconds, digested_enemies) # 消化値
+	target.data.stomach_status.request_digested_effect(activation)
+	_effect_stack.execute()
+
+
+# 全体消化通知
+func notify_any_digested(
+	enemies: Array[Enemy],
+	stomach: StomachBoard,
+	elapsed_seconds: int,
+	current_seconds: int,
+	digested_enemies: Array[Enemy]
+) -> void:
+	_prepare_connections(enemies, stomach)
+	var activation := _create_digestion_activation(AnyDigestedActivationData.new(), null, 0, 0, elapsed_seconds, current_seconds, digested_enemies) # 消化値
+	_digestion_state.request_any_digested_effect(activation)
+	_effect_stack.execute()
+
+
+# 隣接消化通知
+func notify_adjacent_digested(
+	enemies: Array[Enemy],
+	stomach: StomachBoard,
+	target: Enemy,
+	elapsed_seconds: int,
+	current_seconds: int,
+	digested_enemies: Array[Enemy]
+) -> void:
+	if target == null:
+		return
+	_prepare_connections(enemies, stomach)
+	var activation := _create_digestion_activation(AdjacentDigestedActivationData.new(), target, 0, 0, elapsed_seconds, current_seconds, digested_enemies) # 消化値
+	target.data.stomach_status.request_adjacent_digested_effect(activation)
+	_effect_stack.execute()
 
 
 # 攻撃値取得
@@ -142,60 +241,10 @@ func set_last_acid_damage(value: int) -> void:
 	_digestion_state.set_last_damage(value)
 
 
-# 発動信号通知
-func _emit_activation(activation: EnemyEffectActivationData, target: Enemy) -> void:
-	if activation is BattleStartActivationData:
-		_battle_clock.request_battle_effect(activation)
-	elif activation is TurnStartActivationData:
-		_battle_clock.request_turn_effect(activation)
-	elif activation is ProgressTimeActivationData:
-		_battle_clock.request_progress_effect(activation)
-	elif activation is BeforeAcidDamageActivationData and target != null:
-		target.data.hp.request_before_acid_damage(activation)
-	elif activation is AfterAcidDamageActivationData and target != null:
-		target.data.hp.request_after_acid_damage(activation)
-	elif activation is AdjacentAcidDamageActivationData and target != null:
-		target.data.hp.request_adjacent_acid_damage(activation)
-	elif activation is DigestedActivationData and target != null:
-		target.data.stomach_status.request_digested_effect(activation)
-	elif activation is AnyDigestedActivationData:
-		_digestion_state.request_any_digested_effect(activation)
-	elif activation is AdjacentDigestedActivationData and target != null:
-		target.data.stomach_status.request_adjacent_digested_effect(activation)
-
-
-# 発動値作成
-func _create_activation(
-	event: EnemyEffect.Event,
-	target: Enemy,
-	damage: int,
-	overkill_damage: int,
-	elapsed_seconds: int,
-	current_seconds: int,
-	digested_enemies: Array[Enemy]
-) -> EnemyEffectActivationData:
-	match event:
-		EnemyEffect.Event.BATTLE_START:
-			return BattleStartActivationData.new()
-		EnemyEffect.Event.REFRESH:
-			return RefreshActivationData.new()
-		EnemyEffect.Event.TURN_START:
-			return TurnStartActivationData.new(elapsed_seconds, current_seconds)
-		EnemyEffect.Event.PROGRESS_TIME:
-			return ProgressTimeActivationData.new(elapsed_seconds, current_seconds)
-		EnemyEffect.Event.BEFORE_ACID_DAMAGE:
-			return BeforeAcidDamageActivationData.new(damage, overkill_damage, target.data if target != null else null, target)
-		EnemyEffect.Event.AFTER_ACID_DAMAGE:
-			return AfterAcidDamageActivationData.new(damage, overkill_damage, target.data if target != null else null, target)
-		EnemyEffect.Event.ADJACENT_ACID_DAMAGE:
-			return AdjacentAcidDamageActivationData.new(damage, overkill_damage, target.data if target != null else null, target)
-		EnemyEffect.Event.DIGESTED:
-			return _create_digestion_activation(DigestedActivationData.new(), target, damage, overkill_damage, elapsed_seconds, current_seconds, digested_enemies)
-		EnemyEffect.Event.ANY_DIGESTED:
-			return _create_digestion_activation(AnyDigestedActivationData.new(), target, damage, overkill_damage, elapsed_seconds, current_seconds, digested_enemies)
-		EnemyEffect.Event.ADJACENT_DIGESTED:
-			return _create_digestion_activation(AdjacentDigestedActivationData.new(), target, damage, overkill_damage, elapsed_seconds, current_seconds, digested_enemies)
-	return null
+# 効果配線準備
+func _prepare_connections(enemies: Array[Enemy], stomach: StomachBoard) -> void:
+	_register_enemies(enemies)
+	_installer.sync(enemies, stomach)
 
 
 # 消化発動値作成

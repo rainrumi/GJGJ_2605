@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_DIGESTED
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_SPAWN_QUEUE
+
 # 次形態定義
 @export var next_enemy_info: EnemyInfo
 # 次形態スキル

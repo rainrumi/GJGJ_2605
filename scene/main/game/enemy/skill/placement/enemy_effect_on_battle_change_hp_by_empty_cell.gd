@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_REFRESH
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_ENEMIES | DEPENDENCY_STOMACH
+
 # マス毎HP
 @export var hp_delta_per_cell := 0
 

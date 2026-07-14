@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_DIGESTED
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_BATTLE_CLOCK
+
 # 時刻秒差分
 @export var seconds_delta := 0
 

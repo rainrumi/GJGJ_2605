@@ -42,19 +42,6 @@ enum ValueSource {
 	INHERITED_VALUE,
 }
 
-enum Event {
-	BATTLE_START,
-	REFRESH,
-	TURN_START,
-	PROGRESS_TIME,
-	BEFORE_ACID_DAMAGE,
-	AFTER_ACID_DAMAGE,
-	DIGESTED,
-	ANY_DIGESTED,
-	ADJACENT_ACID_DAMAGE,
-	ADJACENT_DIGESTED,
-}
-
 const ACTIVATION_BATTLE_START := 1 << 0
 const ACTIVATION_REFRESH := 1 << 1
 const ACTIVATION_TURN_START := 1 << 2
@@ -65,6 +52,15 @@ const ACTIVATION_DIGESTED := 1 << 6
 const ACTIVATION_ANY_DIGESTED := 1 << 7
 const ACTIVATION_ADJACENT_ACID_DAMAGE := 1 << 8
 const ACTIVATION_ADJACENT_DIGESTED := 1 << 9
+const DEPENDENCY_ENEMIES := 1 << 0
+const DEPENDENCY_STOMACH := 1 << 1
+const DEPENDENCY_PLAYER_HEALTH := 1 << 2
+const DEPENDENCY_SPAWN_QUEUE := 1 << 3
+const DEPENDENCY_BATTLE_CLOCK := 1 << 4
+const DEPENDENCY_DIGESTION_INTERVAL := 1 << 5
+const DEPENDENCY_ACID_MODIFIERS := 1 << 6
+const DEPENDENCY_DIGESTION_STATE := 1 << 7
+const DEPENDENCY_INHERITANCE := 1 << 8
 
 # 適用順
 @export var priority :int = 0
@@ -100,15 +96,19 @@ func bind_dependencies(
 	stack: EnemyEffectStack
 ) -> void:
 	source = owner
-	enemies = enemy_list
-	stomach = stomach_board
-	player_health = player_hp
-	spawn_queue = enemy_spawns
-	battle_clock = clock
-	digestion_interval = interval
-	acid_modifiers = global_acid
-	digestion_state = digestion
-	inheritance = inherited_effects
+	var dependency_mask := get_dependency_mask() # 必要依存
+	var required_enemies: Array[Enemy] = [] # 必要な敵一覧
+	if dependency_mask & DEPENDENCY_ENEMIES:
+		required_enemies.assign(enemy_list)
+	enemies = required_enemies
+	stomach = stomach_board if dependency_mask & DEPENDENCY_STOMACH else null
+	player_health = player_hp if dependency_mask & DEPENDENCY_PLAYER_HEALTH else null
+	spawn_queue = enemy_spawns if dependency_mask & DEPENDENCY_SPAWN_QUEUE else null
+	battle_clock = clock if dependency_mask & DEPENDENCY_BATTLE_CLOCK else null
+	digestion_interval = interval if dependency_mask & DEPENDENCY_DIGESTION_INTERVAL else null
+	acid_modifiers = global_acid if dependency_mask & DEPENDENCY_ACID_MODIFIERS else null
+	digestion_state = digestion if dependency_mask & DEPENDENCY_DIGESTION_STATE else null
+	inheritance = inherited_effects if dependency_mask & DEPENDENCY_INHERITANCE else null
 	effect_stack = stack
 
 
@@ -141,7 +141,7 @@ func can_request(data: EnemyEffectActivationData) -> bool:
 
 
 # 接続解除
-func unbind() -> void:
+func unbind(clear_state := true) -> void:
 	_activation_data = null
 	source = null
 	enemies = []
@@ -154,7 +154,8 @@ func unbind() -> void:
 	digestion_state = null
 	inheritance = null
 	effect_stack = null
-	state.clear()
+	if clear_state:
+		state.clear()
 
 
 # 効果適用
@@ -164,6 +165,11 @@ func apply() -> void:
 
 # 発動種別取得
 func get_activation_mask() -> int:
+	return 0
+
+
+# 依存種別取得
+func get_dependency_mask() -> int:
 	return 0
 
 

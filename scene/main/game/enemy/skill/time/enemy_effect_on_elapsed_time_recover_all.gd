@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_REFRESH | ACTIVATION_PROGRESS_TIME
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_ENEMIES
+
 # 発動秒数
 @export_range(1, 86400, 1) var interval_seconds := 60
 # 回復量

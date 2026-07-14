@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_REFRESH
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_ENEMIES
+
 # 確率差分
 @export_range(-1.0, 1.0, 0.01) var chance_delta := 0.0
 # 必要隣接数

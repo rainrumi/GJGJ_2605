@@ -1,6 +1,8 @@
 class_name EnemyData
 extends RefCounted
 
+signal skills_changed
+
 var definition: EnemyInfo # 敵定義
 var hp := EnemyHp.new() # 敵HP
 var attack := EnemyAttack.new() # 敵攻撃力
@@ -24,6 +26,7 @@ func setup(info: EnemyInfo, maximum_hp: int, attack_value: int, use_main_skill: 
 	skills_enabled = enable_skills
 	main_skill = _duplicate_skill(info.get_main_skill_definition() if info != null else null)
 	sub_skill = _duplicate_skill(info.get_sub_skill_definition() if info != null else null)
+	skills_changed.emit()
 
 
 # 使用スキル取得
@@ -36,7 +39,10 @@ func get_active_skill() -> EnemySkill:
 # 効果一覧取得
 func get_effects() -> Array[EnemyEffect]:
 	var skill := get_active_skill() # 使用スキル
-	return skill.get_effects() if skill != null else []
+	var active_effects: Array[EnemyEffect] = [] # 有効効果
+	if skill != null:
+		active_effects.assign(skill.get_effects())
+	return active_effects
 
 
 # スキル接続解除
@@ -47,6 +53,7 @@ func unbind_skills() -> void:
 		sub_skill.unbind()
 	main_skill = null
 	sub_skill = null
+	skills_changed.emit()
 
 
 # スキル複製

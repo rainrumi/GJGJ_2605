@@ -6,6 +6,11 @@ extends EnemyEffect
 func get_activation_mask() -> int:
 	return ACTIVATION_PROGRESS_TIME
 
+
+# 依存種別取得
+func get_dependency_mask() -> int:
+	return DEPENDENCY_SPAWN_QUEUE
+
 # 生成敵定義
 @export var enemy_info: EnemyInfo
 # 生成スキル
