@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnStomachEdgeProgressTimeDealAcidDamage
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_PROGRESS_TIME
+
 # ダメージ
 @export var damage := 0
 # 対象選択

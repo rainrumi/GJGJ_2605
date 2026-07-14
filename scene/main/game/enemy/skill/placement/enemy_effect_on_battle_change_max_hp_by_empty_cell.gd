@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnBattleChangeMaxHpByEmptyCell
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # マス毎最大HP
 @export var max_hp_delta_per_cell := 0
 

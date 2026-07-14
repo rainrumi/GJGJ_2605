@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnBattleChangeHpByEmptyCell
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # マス毎HP
 @export var hp_delta_per_cell := 0
 

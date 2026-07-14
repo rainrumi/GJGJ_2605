@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnBattleChanceScaleAttack
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # 攻撃倍率
 @export var attack_multiplier := 1.0
 # 発動率

@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnBattleIgnoreAcidDamageAtMost
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_BEFORE_ACID_DAMAGE
+
 # 閾値
 @export var threshold := 0
 # 閾値参照元

@@ -3,6 +3,9 @@ extends RefCounted
 
 signal progressed(elapsed_seconds: int, current_seconds: int)
 signal change_requested(delta_seconds: int)
+signal battle_effect_requested(data: BattleStartActivationData)
+signal turn_effect_requested(data: TurnStartActivationData)
+signal progress_effect_requested(data: ProgressTimeActivationData)
 
 var elapsed_seconds := 0 # 経過秒数
 var current_seconds := 0 # 現在秒数
@@ -34,3 +37,20 @@ func reset() -> void:
 	elapsed_seconds = 0
 	current_seconds = 0
 	_pending_delta_seconds = 0
+
+
+# 戦闘開始通知
+func request_battle_effect(data: BattleStartActivationData) -> void:
+	battle_effect_requested.emit(data)
+
+
+# ターン開始通知
+func request_turn_effect(data: TurnStartActivationData) -> void:
+	set_time(data.elapsed_seconds, data.current_seconds)
+	turn_effect_requested.emit(data)
+
+
+# 時間進行通知
+func request_progress_effect(data: ProgressTimeActivationData) -> void:
+	set_time(data.elapsed_seconds, data.current_seconds)
+	progress_effect_requested.emit(data)

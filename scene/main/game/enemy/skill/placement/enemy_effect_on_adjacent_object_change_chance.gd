@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAdjacentObjectChangeChance
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # 確率差分
 @export_range(-1.0, 1.0, 0.01) var chance_delta := 0.0
 # 必要隣接数

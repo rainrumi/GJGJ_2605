@@ -55,6 +55,17 @@ enum Event {
 	ADJACENT_DIGESTED,
 }
 
+const ACTIVATION_BATTLE_START := 1 << 0
+const ACTIVATION_REFRESH := 1 << 1
+const ACTIVATION_TURN_START := 1 << 2
+const ACTIVATION_PROGRESS_TIME := 1 << 3
+const ACTIVATION_BEFORE_ACID_DAMAGE := 1 << 4
+const ACTIVATION_AFTER_ACID_DAMAGE := 1 << 5
+const ACTIVATION_DIGESTED := 1 << 6
+const ACTIVATION_ANY_DIGESTED := 1 << 7
+const ACTIVATION_ADJACENT_ACID_DAMAGE := 1 << 8
+const ACTIVATION_ADJACENT_DIGESTED := 1 << 9
+
 # 適用順
 @export var priority :int = 0
 # 有効状態
@@ -71,6 +82,7 @@ var digestion_interval: DigestionInterval # 消化間隔
 var acid_modifiers: EnemyAcidDamageModifiers # 全体消化補正
 var digestion_state: EnemyDigestionState # 消化状態
 var inheritance: EnemyEffectInheritance # 効果継承
+var effect_stack: EnemyEffectStack # 効果スタック
 
 
 # 依存関係設定
@@ -84,7 +96,8 @@ func bind_dependencies(
 	interval: DigestionInterval,
 	global_acid: EnemyAcidDamageModifiers,
 	digestion: EnemyDigestionState,
-	inherited_effects: EnemyEffectInheritance
+	inherited_effects: EnemyEffectInheritance,
+	stack: EnemyEffectStack
 ) -> void:
 	source = owner
 	enemies = enemy_list
@@ -96,6 +109,7 @@ func bind_dependencies(
 	acid_modifiers = global_acid
 	digestion_state = digestion
 	inheritance = inherited_effects
+	effect_stack = stack
 
 
 # 発動開始
@@ -115,7 +129,15 @@ func end_activation() -> void:
 
 # 要求可能判定
 func can_request(data: EnemyEffectActivationData) -> bool:
-	return enabled and source != null and is_instance_valid(source) and data != null and data.is_valid()
+	if not enabled or source == null or not is_instance_valid(source) or data == null or not data.is_valid():
+		return false
+	if not source.should_apply_nightmare_skill():
+		return false
+	if not source.is_Acided():
+		return true
+	return data is AfterAcidDamageActivationData \
+		or data is AdjacentAcidDamageActivationData \
+		or data is DigestionActivationData
 
 
 # 接続解除
@@ -131,12 +153,24 @@ func unbind() -> void:
 	acid_modifiers = null
 	digestion_state = null
 	inheritance = null
+	effect_stack = null
 	state.clear()
 
 
 # 効果適用
 func apply() -> void:
 	pass
+
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return 0
+
+
+# 発動要求受付
+func queue_activation(data: EnemyEffectActivationData) -> void:
+	if effect_stack != null and can_request(data):
+		effect_stack.request(self, data)
 
 
 # 戦闘開始判定

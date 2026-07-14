@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnProgressTimeChangeAttackByObjectCount
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_PROGRESS_TIME
+
 # モノ毎攻撃
 @export var attack_per_object := 0
 # 自身を含む

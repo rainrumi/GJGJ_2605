@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAcidDamageAcquireAttack
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_AFTER_ACID_DAMAGE
+
 # 取得割合
 @export var attack_rate := 1.0
 # 発動率

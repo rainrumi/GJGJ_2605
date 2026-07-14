@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAdjacentObjectScaleEffect
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # 効果倍率
 @export var effect_multiplier := 1.0
 # 必要隣接数

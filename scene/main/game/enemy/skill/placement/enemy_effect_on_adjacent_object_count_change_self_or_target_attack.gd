@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAdjacentObjectCountChangeSelfOrTargetAttack
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # 効果対象
 @export var target: EnemyEffect.EffectTarget = EnemyEffect.EffectTarget.SELF
 # 攻撃差分

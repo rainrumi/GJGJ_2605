@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnDigestedDealAdjacentInheritedOverkillAcidDamage
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_DIGESTED
+
 # 超過倍率
 @export var overkill_multiplier := 1.0
 # 効果対象

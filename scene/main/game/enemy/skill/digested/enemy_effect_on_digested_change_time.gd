@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnDigestedChangeTime
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_DIGESTED
+
 # 時刻秒差分
 @export var seconds_delta := 0
 

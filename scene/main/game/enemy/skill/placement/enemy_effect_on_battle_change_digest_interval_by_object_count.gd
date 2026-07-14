@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnBattleChangeDigestIntervalByObjectCount
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # モノ毎秒差
 @export var seconds_per_object := 0
 

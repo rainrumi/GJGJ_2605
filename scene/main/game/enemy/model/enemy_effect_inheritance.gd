@@ -1,6 +1,8 @@
 class_name EnemyEffectInheritance
 extends RefCounted
 
+signal effects_changed
+
 var _effects: Dictionary = {} # 継承効果一覧
 
 
@@ -11,6 +13,7 @@ func reset() -> void:
 			if effect != null:
 				effect.unbind()
 	_effects.clear()
+	effects_changed.emit()
 
 
 # 効果継承
@@ -22,6 +25,7 @@ func inherit(target: Enemy, source: Enemy) -> void:
 		if effect != null:
 			values.append(effect.duplicate(true) as EnemyEffect)
 	_effects[target] = values
+	effects_changed.emit()
 
 
 # 継承効果取得

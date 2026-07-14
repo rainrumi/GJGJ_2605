@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnTouchStomachChangeDigestIntervalSeconds
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # 秒差分
 @export var interval_delta_seconds := 0
 

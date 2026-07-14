@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnProgressTimeDisableDefaultAttack
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # 通常攻撃停止
 @export var disabled := true
 

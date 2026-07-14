@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnElapsedTimeGrantExtraAttack
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH | ACTIVATION_PROGRESS_TIME
+
 # 発動秒数
 @export_range(1, 86400, 1) var interval_seconds := 60
 # 付与対象

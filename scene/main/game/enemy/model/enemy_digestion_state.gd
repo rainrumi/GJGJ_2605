@@ -2,6 +2,7 @@ class_name EnemyDigestionState
 extends RefCounted
 
 signal digested_registered(enemy: Enemy)
+signal any_digested_effect_requested(data: AnyDigestedActivationData)
 
 var last_acid_damage := 0 # 直近消化値
 var _pending: Array[Enemy] = [] # 消化済み一覧
@@ -31,3 +32,8 @@ func consume() -> Array[Enemy]:
 # 直近消化設定
 func set_last_damage(value: int) -> void:
 	last_acid_damage = maxi(0, value)
+
+
+# 全消化効果通知
+func request_any_digested_effect(data: AnyDigestedActivationData) -> void:
+	any_digested_effect_requested.emit(data)

@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAdjacentEnemyAcidRecoverSelf
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_ADJACENT_ACID_DAMAGE
+
 # 隣接毎回復量
 @export var recovery_per_adjacent := 0
 

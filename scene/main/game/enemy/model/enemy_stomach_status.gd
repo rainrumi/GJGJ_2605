@@ -4,6 +4,8 @@ extends RefCounted
 signal placement_changed(is_placed: bool)
 signal digested
 signal elapsed_changed(minutes: int)
+signal digested_effect_requested(data: DigestedActivationData)
+signal adjacent_digested_effect_requested(data: AdjacentDigestedActivationData)
 
 var is_digesting := false # 消化中
 var is_digested := false # 消化済み
@@ -58,3 +60,13 @@ func add_elapsed_minutes(value: int) -> void:
 # 復活記録
 func record_revive() -> void:
 	revive_count += 1
+
+
+# 消化効果通知
+func request_digested_effect(data: DigestedActivationData) -> void:
+	digested_effect_requested.emit(data)
+
+
+# 隣接消化通知
+func request_adjacent_digested_effect(data: AdjacentDigestedActivationData) -> void:
+	adjacent_digested_effect_requested.emit(data)

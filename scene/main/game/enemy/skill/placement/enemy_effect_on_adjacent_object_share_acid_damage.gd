@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAdjacentObjectShareAcidDamage
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_BEFORE_ACID_DAMAGE
+
 # 自身を含む
 @export var include_self := true
 # 必要隣接数

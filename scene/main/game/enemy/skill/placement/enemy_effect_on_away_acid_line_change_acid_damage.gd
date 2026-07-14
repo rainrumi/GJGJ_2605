@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAwayAcidLineChangeAcidDamage
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # ダメージ差分
 @export var acid_damage_delta := 0
 

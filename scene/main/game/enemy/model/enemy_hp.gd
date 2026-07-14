@@ -4,6 +4,9 @@ extends RefCounted
 signal changed(current_value: int, maximum_value: int)
 signal damaged(amount: int)
 signal depleted
+signal before_acid_damage_requested(data: BeforeAcidDamageActivationData)
+signal after_acid_damage_requested(data: AfterAcidDamageActivationData)
+signal adjacent_acid_damage_requested(data: AdjacentAcidDamageActivationData)
 
 var maximum := 1 # 最大HP
 var current := 1 # 現在HP
@@ -105,3 +108,18 @@ func apply_modifiers() -> void:
 func reset_modifiers() -> void:
 	modifier_delta = 0
 	modifier_multiplier = 1.0
+
+
+# 消化前通知
+func request_before_acid_damage(data: BeforeAcidDamageActivationData) -> void:
+	before_acid_damage_requested.emit(data)
+
+
+# 消化後通知
+func request_after_acid_damage(data: AfterAcidDamageActivationData) -> void:
+	after_acid_damage_requested.emit(data)
+
+
+# 隣接被弾通知
+func request_adjacent_acid_damage(data: AdjacentAcidDamageActivationData) -> void:
+	adjacent_acid_damage_requested.emit(data)

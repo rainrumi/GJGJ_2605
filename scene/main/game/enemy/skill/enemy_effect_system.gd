@@ -9,11 +9,27 @@ var _battle_clock := BattleClock.new() # 戦闘時刻
 var _digestion_state := EnemyDigestionState.new() # 消化状態
 var _inheritance := EnemyEffectInheritance.new() # 継承効果
 var _effect_stack := EnemyEffectStack.new() # 効果スタック
+var _installer := EnemyEffectInstaller.new() # 効果配線
 var _known_enemies: Dictionary = {} # 戦闘参加敵
+
+
+# 効果系初期化
+func _init() -> void:
+	_installer.setup(
+		_player_health,
+		_spawn_queue,
+		_battle_clock,
+		_digestion_interval,
+		_acid_modifiers,
+		_digestion_state,
+		_inheritance,
+		_effect_stack
+	)
 
 
 # 状態初期化
 func reset() -> void:
+	_installer.reset()
 	for enemy in _known_enemies.keys():
 		if enemy != null and is_instance_valid(enemy):
 			enemy.data.defense_status.reset()
@@ -33,11 +49,14 @@ func reset() -> void:
 # 継続効果更新
 func refresh(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	_register_enemies(enemies)
+	_installer.sync(enemies, stomach)
 	_clear_refresh_modifiers()
 	var activation := RefreshActivationData.new() # 更新発動値
-	_request_effects(activation, enemies, stomach, true)
+	if stomach != null:
+		stomach.request_effect_refresh_preprocess(activation)
 	_effect_stack.execute()
-	_request_effects(activation, enemies, stomach, false)
+	if stomach != null:
+		stomach.request_effect_refresh(activation)
 	_effect_stack.execute()
 	_apply_max_hp_modifiers(enemies)
 
@@ -55,6 +74,7 @@ func dispatch(
 	digested_enemies: Array[Enemy] = []
 ) -> int:
 	_register_enemies(enemies)
+	_installer.sync(enemies, stomach)
 	var activation := _create_activation(
 		event,
 		target,
@@ -66,7 +86,7 @@ func dispatch(
 	) # 発動時値
 	if activation == null:
 		return maxi(0, damage)
-	_request_effects(activation, enemies, stomach, false)
+	_emit_activation(activation, target)
 	_effect_stack.execute()
 	var damage_data := activation as DamageActivationData # 被弾値
 	return damage_data.amount if damage_data != null else maxi(0, damage)
@@ -122,59 +142,26 @@ func set_last_acid_damage(value: int) -> void:
 	_digestion_state.set_last_damage(value)
 
 
-# 効果要求作成
-func _request_effects(
-	activation: EnemyEffectActivationData,
-	enemies: Array[Enemy],
-	stomach: StomachBoard,
-	preprocess: bool
-) -> void:
-	for enemy in enemies:
-		if not _can_apply(enemy, activation):
-			continue
-		for effect in _get_effects(enemy):
-			var is_preprocessor := effect is EnemyEffectOnAdjacentObjectScaleEffect or effect is EnemyEffectOnAdjacentObjectChangeChance # 前処理判定
-			if activation is RefreshActivationData and preprocess != is_preprocessor:
-				continue
-			if not activation is RefreshActivationData and preprocess:
-				continue
-			_bind_effect(effect, enemy, enemies, stomach)
-			_effect_stack.request(effect, activation)
-
-
-# 効果依存設定
-func _bind_effect(effect: EnemyEffect, owner: Enemy, enemies: Array[Enemy], stomach: StomachBoard) -> void:
-	effect.bind_dependencies(
-		owner,
-		enemies,
-		stomach,
-		_player_health,
-		_spawn_queue,
-		_battle_clock,
-		_digestion_interval,
-		_acid_modifiers,
-		_digestion_state,
-		_inheritance
-	)
-
-
-# 効果取得
-func _get_effects(enemy: Enemy) -> Array[EnemyEffect]:
-	var values := enemy.get_enemy_effects() # 効果一覧
-	values.append_array(_inheritance.get_effects(enemy))
-	values.sort_custom(func(a: EnemyEffect, b: EnemyEffect) -> bool: return a.priority < b.priority)
-	return values
-
-
-# 効果適用判定
-func _can_apply(enemy: Enemy, activation: EnemyEffectActivationData) -> bool:
-	if enemy == null or not enemy.should_apply_nightmare_skill() or _get_effects(enemy).is_empty():
-		return false
-	if not enemy.is_Acided():
-		return true
-	return activation is AfterAcidDamageActivationData \
-		or activation is AdjacentAcidDamageActivationData \
-		or activation is DigestionActivationData
+# 発動信号通知
+func _emit_activation(activation: EnemyEffectActivationData, target: Enemy) -> void:
+	if activation is BattleStartActivationData:
+		_battle_clock.request_battle_effect(activation)
+	elif activation is TurnStartActivationData:
+		_battle_clock.request_turn_effect(activation)
+	elif activation is ProgressTimeActivationData:
+		_battle_clock.request_progress_effect(activation)
+	elif activation is BeforeAcidDamageActivationData and target != null:
+		target.data.hp.request_before_acid_damage(activation)
+	elif activation is AfterAcidDamageActivationData and target != null:
+		target.data.hp.request_after_acid_damage(activation)
+	elif activation is AdjacentAcidDamageActivationData and target != null:
+		target.data.hp.request_adjacent_acid_damage(activation)
+	elif activation is DigestedActivationData and target != null:
+		target.data.stomach_status.request_digested_effect(activation)
+	elif activation is AnyDigestedActivationData:
+		_digestion_state.request_any_digested_effect(activation)
+	elif activation is AdjacentDigestedActivationData and target != null:
+		target.data.stomach_status.request_adjacent_digested_effect(activation)
 
 
 # 発動値作成

@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAdjacentObjectCountChangeTargetAttack
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # 攻撃差分
 @export var attack_delta := 0
 # 必要隣接数

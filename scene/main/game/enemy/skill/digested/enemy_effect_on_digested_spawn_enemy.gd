@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnDigestedSpawnEnemy
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_DIGESTED
+
 # 生成敵定義
 @export var enemy_info: EnemyInfo
 # 生成スキル

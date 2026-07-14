@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAdjacentEmptyCellChangeTakenAcidDamage
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # マス毎差分
 @export var damage_delta := 0
 # ダメージ倍率

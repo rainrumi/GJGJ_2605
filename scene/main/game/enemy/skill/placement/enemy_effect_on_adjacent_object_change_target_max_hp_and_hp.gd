@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAdjacentObjectChangeTargetMaxHpAndHp
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_REFRESH
+
 # 最大HP差分
 @export var max_hp_delta := 0
 # 現在HP差分

@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAcidDamageCountTakeAcidDamage
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_AFTER_ACID_DAMAGE
+
 # 必要被弾数
 @export_range(1, 10000, 1) var required_count := 1
 # 追加ダメージ

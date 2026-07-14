@@ -1,6 +1,11 @@
 ﻿class_name EnemyEffectOnAcidDamageRecoverAll
 extends EnemyEffect
 
+
+# 発動種別取得
+func get_activation_mask() -> int:
+	return ACTIVATION_AFTER_ACID_DAMAGE
+
 # 回復量
 @export var recovery := 0
 # 効果対象

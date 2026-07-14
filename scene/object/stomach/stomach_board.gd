@@ -1,6 +1,9 @@
 class_name StomachBoard
 extends Node2D
 
+signal effect_refresh_preprocess_requested(data: RefreshActivationData)
+signal effect_refresh_requested(data: RefreshActivationData)
+
 @export var columns := 4
 @export var rows := 5
 @export var edge_overlap := 1.0
@@ -185,6 +188,16 @@ func show_preview(enemy: Enemy, mouse_position: Vector2, grab_cell: Vector2i, ac
 func hide_preview() -> void:
 	if _preview_sprite != null:
 		_preview_sprite.visible = false
+
+
+# 効果更新前通知
+func request_effect_refresh_preprocess(data: RefreshActivationData) -> void:
+	effect_refresh_preprocess_requested.emit(data)
+
+
+# 効果更新通知
+func request_effect_refresh(data: RefreshActivationData) -> void:
+	effect_refresh_requested.emit(data)
 
 
 # global位置forセル取得
