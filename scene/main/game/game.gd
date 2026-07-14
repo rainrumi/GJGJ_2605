@@ -34,7 +34,22 @@ var drag_mode := DragMode.NONE
 var debug_numbers_visible := false
 var Acidion_timer: Timer
 var enemy_setup := GameEnemySetupController.new()
+var seed_effects := SeedEffectResolver.new() # 種効果計算
+var enemy_effects := EnemyEffectSystem.new() # 敵効果窓口
+var player_health := PlayerHealth.new() # プレイヤーHP状態
+var enemy_spawn_queue := EnemySpawnQueue.new() # 敵生成要求
+var battle_clock := BattleClock.new() # 戦闘時刻状態
+var digestion_interval := DigestionInterval.new() # 消化間隔状態
+var acid_modifiers := EnemyAcidDamageModifiers.new() # 消化補正状態
+var digestion_state := EnemyDigestionState.new() # 消化状態
+var effect_inheritance := EnemyEffectInheritance.new() # 効果継承状態
+var effect_stack := EnemyEffectStack.new() # 効果実行順
+var effect_installer := EnemyEffectInstaller.new() # 効果配線
+var digestion_resolver := EnemyDigestionResolver.new() # 消化処理
+var attack_resolver := EnemyAttackResolver.new() # 攻撃処理
+var turn_processor := EnemyTurnProcessor.new() # ターン処理
 var acid_controller := EnemyController.new()
+var enemy_presenter := EnemyPresenter.new() # 敵表示仲介
 var seed_controller := GameSeedController.new()
 var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
@@ -49,6 +64,22 @@ var effective_max_hp := MAX_HP
 # 初期化
 func _ready() -> void:
 	randomize()
+	enemy_effects.setup(
+		player_health,
+		enemy_spawn_queue,
+		battle_clock,
+		digestion_interval,
+		acid_modifiers,
+		digestion_state,
+		effect_inheritance,
+		effect_stack,
+		effect_installer
+	)
+	digestion_resolver.setup(seed_effects, DreamSeedBlockAcidResolver.new(), enemy_effects, acid_modifiers, digestion_state)
+	attack_resolver.setup(seed_effects, enemy_effects, EnemyController.ACID_DAMAGE)
+	turn_processor.setup(seed_effects, enemy_effects, digestion_interval, battle_clock, digestion_state, EnemyController.STEP_MINUTES)
+	acid_controller.setup(digestion_resolver, attack_resolver, turn_processor, enemy_effects)
+	enemy_presenter.setup(attack_resolver)
 	enemy_setup.setup(self, input_controller, stomach)
 	seed_controller.setup(self, stomach, input_controller)
 	_connect_ui()
@@ -79,9 +110,10 @@ func start_battle(context: BattleInfo = null) -> void:
 	_apply_seed_stomach_size_effects()
 	_apply_seed_acid_line_effects()
 	acid_controller.set_battle_start_minutes(START_HOUR * 60)
-	acid_controller.setup(seed_controller.get_flowers())
-	acid_controller.set_day(current_day)
-	acid_controller.add_acid_damage_bonus_rate(battle_context.permanent_acid_damage_bonus_rate)
+	seed_effects.setup(seed_controller.get_flowers())
+	enemy_effects.reset()
+	seed_effects.set_day(current_day)
+	seed_effects.add_acid_damage_bonus_rate(battle_context.permanent_acid_damage_bonus_rate)
 	_refresh_effective_max_hp(false)
 	dragging_enemy = null
 	seed_controller.cancel_drag()
@@ -101,7 +133,7 @@ func start_battle(context: BattleInfo = null) -> void:
 		START_MESSAGE,
 		REST_MINUTES,
 		REST_HP_RATE,
-		acid_controller.get_rest_recovery_bonus_rate(),
+		seed_effects.get_rest_recovery_bonus_rate(),
 		float(acid_controller.get_base_step_minutes())
 	)
 	ui.set_seed_sources(seed_controller.get_flowers())
@@ -221,7 +253,7 @@ func _finish_enemy_drag_release(enemy: Enemy, mouse_position: Vector2) -> void:
 	if stomach.contains_global_position(mouse_position):
 		_try_start_Aciding(enemy, mouse_position)
 	else:
-		if acid_controller.is_remove_from_stomach_disabled():
+		if seed_effects.is_remove_from_stomach_disabled():
 			_return_dragged_enemy(enemy)
 			_refresh_after_battle_event()
 			return
@@ -359,7 +391,7 @@ func _finish_drag_operation() -> void:
 func _sync_seed_sources() -> void:
 	# 花値
 	var flowers := seed_controller.get_flowers()
-	acid_controller.set_seed_effect_flowers(flowers)
+	seed_effects.setup(flowers)
 	ui.set_seed_sources(flowers)
 
 
@@ -517,9 +549,9 @@ func _apply_elapsed_time(elapsed_minutes: int) -> void:
 	var previous_minutes := minutes # 前時刻
 	minutes += elapsed_minutes
 	if hp <= 0:
-		acid_controller.add_revive_event()
+		seed_effects.add_revive_event()
 		_refresh_effective_max_hp(true)
-		hp = acid_controller.get_rest_hp(effective_max_hp, REST_HP_RATE)
+		hp = seed_effects.get_rest_hp(effective_max_hp, REST_HP_RATE)
 		if not seed_controller.consume_rest_time_skip():
 			minutes += REST_MINUTES
 			elapsed_minutes += REST_MINUTES
@@ -613,7 +645,7 @@ func _set_hovered_enemy(enemy: Enemy) -> void:
 func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 	if (
 		dragged_enemy_was_Aciding
-		and not acid_controller.is_remove_from_stomach_disabled()
+		and not seed_effects.is_remove_from_stomach_disabled()
 		and not stomach.contains_global_position(mouse_position)
 	):
 		ui.show_hp_damage_preview(_get_remove_from_stomach_damage())
@@ -621,7 +653,7 @@ func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 		ui.hide_hp_damage_preview()
 # UI更新
 func _refresh_ui() -> void:
-	acid_controller.refresh_enemy_status_display(enemies, stomach, minutes)
+	enemy_presenter.refresh_attack_displays(enemies, stomach, minutes)
 	_refresh_acid_ui()
 	_refresh_status_ui()
 	_refresh_hover_tooltip()
@@ -635,7 +667,7 @@ func _refresh_acid_ui() -> void:
 	var acid_interval := _get_acid_interval_info()
 	ui.set_acid_damage_info(int(acid_damage["total"]), int(acid_damage["base"]), int(acid_damage["seed_buff"]), float(acid_damage["seed_rate"]), int(acid_damage["nightmare_buff"]), float(acid_damage["nightmare_rate"]))
 	ui.set_acid_interval_minutes(float(acid_interval["total"]), float(acid_interval["base"]), int(acid_interval["seed_buff"]), float(acid_interval["seed_rate"]), int(acid_interval["nightmare_buff"]), float(acid_interval["nightmare_rate"]))
-	ui.set_rest_recovery_bonus_rate(acid_controller.get_rest_recovery_bonus_rate())
+	ui.set_rest_recovery_bonus_rate(seed_effects.get_rest_recovery_bonus_rate())
 
 
 # 状態UI更新
@@ -685,7 +717,7 @@ func _active_acid_count() -> int:
 # removefrom胃袋ダメージ取得
 func _get_remove_from_stomach_damage() -> int:
 	# ダメージ率
-	var damage_rate := acid_controller.get_remove_from_stomach_damage_rate(REMOVE_FROM_STOMACH_DAMAGE_RATE)
+	var damage_rate := seed_effects.get_remove_from_stomach_damage_rate(REMOVE_FROM_STOMACH_DAMAGE_RATE)
 	return ceili(float(effective_max_hp) * damage_rate)
 # sumダメージvalues処理
 func _sum_damage_values(damage_values: Array[int]) -> int:
@@ -725,9 +757,9 @@ func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	var previous_hp := hp
 	hp = seed_controller.apply_direct_Acided_seed_effects(Acided_enemies, hp, effective_max_hp)
 	if hp > previous_hp:
-		hp = mini(effective_max_hp, hp + acid_controller.add_heal_event(hp - previous_hp))
+		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp - previous_hp))
 	for seed in seed_controller.collect_Acided_seeds(Acided_enemies):
-		acid_controller.add_Acided_seed_effect(seed, minutes, stomach)
+		seed_effects.add_Acided_seed_effect(seed, minutes, stomach)
 	_apply_Acided_seed_hp_effects(Acided_enemies)
 	_emit_depleted_seed_sources(Acided_enemies)
 
@@ -735,7 +767,7 @@ func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 # playerダメージvalues適用
 func _apply_player_damage_values() -> void:
 	# playerダメージvalues
-	var player_damage_values := acid_controller.apply_acid_damage_values(enemies, stomach, minutes)
+	var player_damage_values := acid_controller.resolve_enemy_attacks(enemies, stomach, minutes)
 	if player_damage_values.is_empty():
 		return
 	ui.show_hp_damage_values(player_damage_values)
@@ -748,7 +780,7 @@ func _refresh_effective_max_hp(keep_rate: bool) -> void:
 	var previous_max := effective_max_hp
 	# HP率
 	var hp_rate := 1.0 if previous_max <= 0 else float(hp) / float(previous_max)
-	effective_max_hp = maxi(1, roundi(float(MAX_HP) * (1.0 + acid_controller.get_max_hp_bonus_rate())))
+	effective_max_hp = maxi(1, roundi(float(MAX_HP) * (1.0 + seed_effects.get_max_hp_bonus_rate())))
 	if keep_rate:
 		hp = clampi(roundi(float(effective_max_hp) * hp_rate), 0, effective_max_hp)
 	else:
@@ -758,8 +790,8 @@ func _refresh_effective_max_hp(keep_rate: bool) -> void:
 # 時間種HP回復適用
 func _apply_time_seed_hp_recovery() -> void:
 	# 回復率
-	var recovery_rate := acid_controller.get_time_hp_recovery_rate(_active_acid_count())
-	recovery_rate += acid_controller.get_hour_hp_recovery_rate(minutes)
+	var recovery_rate := seed_effects.get_time_hp_recovery_rate(_active_acid_count())
+	recovery_rate += seed_effects.get_hour_hp_recovery_rate(minutes)
 	if recovery_rate <= 0.0:
 		return
 	_heal_player_by_rate(recovery_rate)
@@ -768,10 +800,10 @@ func _apply_time_seed_hp_recovery() -> void:
 # 消化ダメージ種回復適用
 func _apply_acid_damage_seed_heal() -> void:
 	# 回復量
-	var heal_amount := acid_controller.consume_acid_damage_heal_amount()
+	var heal_amount := seed_effects.consume_acid_damage_heal_amount()
 	if heal_amount <= 0:
 		return
-	heal_amount += acid_controller.add_heal_event(heal_amount)
+	heal_amount += seed_effects.add_heal_event(heal_amount)
 	hp = mini(effective_max_hp, hp + heal_amount)
 
 
@@ -780,7 +812,7 @@ func _apply_remove_from_stomach_acid_damage(enemy: Enemy) -> void:
 	if enemy == null or enemy.is_Acided():
 		return
 	# ダメージ率
-	var damage_rate := acid_controller.get_remove_from_stomach_acid_damage_rate()
+	var damage_rate := seed_effects.get_remove_from_stomach_acid_damage_rate()
 	if damage_rate <= 0.0:
 		return
 	# 消化ダメージ
@@ -807,7 +839,7 @@ func _apply_Acided_seed_hp_effects(Acided_enemies: Array[Enemy]) -> void:
 			2125:
 				_heal_player_by_rate(clampf(float(minutes % 60), 1.0, 60.0) / 100.0)
 			2126:
-				acid_controller.add_max_hp_bonus_rate(0.10)
+				seed_effects.add_max_hp_bonus_rate(0.10)
 				_refresh_effective_max_hp(false)
 			2127:
 				_heal_player_by_rate(0.50)
@@ -818,9 +850,9 @@ func _apply_Acided_seed_hp_effects(Acided_enemies: Array[Enemy]) -> void:
 # 消化済み悪夢種effects適用
 func _apply_Acided_nightmare_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	# 回復率
-	var heal_rate := acid_controller.get_Acided_nightmare_heal_rate()
+	var heal_rate := seed_effects.get_Acided_nightmare_heal_rate()
 	# 最大HP率
-	var max_hp_rate := acid_controller.get_Acided_nightmare_max_hp_rate()
+	var max_hp_rate := seed_effects.get_Acided_nightmare_max_hp_rate()
 	if heal_rate <= 0.0 and max_hp_rate <= 0.0:
 		return
 	for enemy in Acided_enemies:
@@ -829,10 +861,10 @@ func _apply_Acided_nightmare_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 		if heal_rate > 0.0:
 			# 回復量
 			var heal_amount := ceili(float(enemy.get_max_hp()) * heal_rate)
-			heal_amount += acid_controller.add_heal_event(heal_amount)
+			heal_amount += seed_effects.add_heal_event(heal_amount)
 			hp = mini(effective_max_hp, hp + heal_amount)
 		if max_hp_rate > 0.0:
-			acid_controller.add_max_hp_bonus_rate(max_hp_rate)
+			seed_effects.add_max_hp_bonus_rate(max_hp_rate)
 			_refresh_effective_max_hp(false)
 
 
@@ -842,7 +874,7 @@ func _heal_player_by_rate(rate: float) -> void:
 		return
 	# 回復量
 	var heal_amount := ceili(float(effective_max_hp) * rate)
-	heal_amount += acid_controller.add_heal_event(heal_amount)
+	heal_amount += seed_effects.add_heal_event(heal_amount)
 	hp = mini(effective_max_hp, hp + heal_amount)
 
 

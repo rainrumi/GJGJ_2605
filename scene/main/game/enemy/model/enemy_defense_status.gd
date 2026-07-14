@@ -10,6 +10,8 @@ var acid_damage_delta := 0 # 消化差分
 var acid_damage_multiplier := 1.0 # 消化倍率
 var permanent_acid_delta := 0 # 永続消化差分
 var permanent_acid_multiplier := 1.0 # 永続消化倍率
+var taken_acid_multiplier := 1.0 # 被消化倍率
+var global_acid_multiplier := 1.0 # 全体消化倍率
 var effect_multiplier := 1.0 # 効果倍率
 var chance_delta := 0.0 # 確率差分
 var extra_attack_count := 0 # 追加攻撃回数
@@ -21,6 +23,8 @@ func reset() -> void:
 	acid_guard_count = 0
 	permanent_acid_delta = 0
 	permanent_acid_multiplier = 1.0
+	taken_acid_multiplier = 1.0
+	global_acid_multiplier = 1.0
 	extra_attack_count = 0
 	reset_refresh_modifiers()
 	changed.emit()
@@ -88,6 +92,18 @@ func multiply_acid_damage(value: float) -> void:
 func add_permanent_acid_modifier(delta: int, multiplier: float) -> void:
 	permanent_acid_delta += delta
 	permanent_acid_multiplier *= multiplier
+	changed.emit()
+
+
+# 被消化倍率設定
+func set_taken_acid_multiplier(value: float) -> void:
+	taken_acid_multiplier = maxf(0.0, value)
+	changed.emit()
+
+
+# 全体消化倍率設定
+func set_global_acid_multiplier(value: float) -> void:
+	global_acid_multiplier = maxf(0.0, value)
 	changed.emit()
 
 

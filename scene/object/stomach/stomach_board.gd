@@ -1,8 +1,8 @@
 class_name StomachBoard
 extends Node2D
 
-signal effect_refresh_preprocess_requested(data: RefreshActivationData)
-signal effect_refresh_requested(data: RefreshActivationData)
+signal refresh_preparing(data: RefreshActivationData)
+signal refreshed(data: RefreshActivationData)
 
 @export var columns := 4
 @export var rows := 5
@@ -190,14 +190,14 @@ func hide_preview() -> void:
 		_preview_sprite.visible = false
 
 
-# 効果更新前通知
-func request_effect_refresh_preprocess(data: RefreshActivationData) -> void:
-	effect_refresh_preprocess_requested.emit(data)
+# 更新準備通知
+func notify_refresh_preparing(data: RefreshActivationData) -> void:
+	refresh_preparing.emit(data)
 
 
-# 効果更新通知
-func request_effect_refresh(data: RefreshActivationData) -> void:
-	effect_refresh_requested.emit(data)
+# 更新完了通知
+func notify_refreshed(data: RefreshActivationData) -> void:
+	refreshed.emit(data)
 
 
 # global位置forセル取得

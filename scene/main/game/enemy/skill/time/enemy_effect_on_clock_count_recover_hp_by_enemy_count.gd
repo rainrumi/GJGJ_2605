@@ -2,14 +2,22 @@
 extends EnemyEffect
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_PROGRESS_TIME
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_progress_time(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_ENEMIES
+var enemies: Array[Enemy] = [] # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	enemies = installer.get_enemies()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	enemies = []
 
 # 必要回数
 @export_range(1, 10000, 1) var required_count := 1
@@ -20,10 +28,9 @@ func get_dependency_mask() -> int:
 
 # 効果適用
 func apply() -> void:
-	if not is_progress_time_activation(): return
 	var count := get_state_int("clock_count") + 1 # 時刻回数
 	set_state("clock_count", count % required_count)
 	if count >= required_count:
-		var enemy_count := get_active_enemies().size() # 敵数
+		var enemy_count := EnemyEffectTargetQuery.get_active_enemies(enemies).size() # 敵数
 		if not include_self: enemy_count = maxi(0, enemy_count - 1)
-		recover(source, recovery_per_enemy * enemy_count)
+		EnemyEffectBattleActions.recover(source, source, recovery_per_enemy * enemy_count)

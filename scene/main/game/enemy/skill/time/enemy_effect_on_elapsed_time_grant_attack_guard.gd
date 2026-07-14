@@ -2,14 +2,26 @@
 extends EnemyEffect
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_REFRESH | ACTIVATION_PROGRESS_TIME
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_default_attack_refresh(self, suppress_default_attack)
+	installer.connect_progress_time(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_ENEMIES | DEPENDENCY_STOMACH
+var enemies: Array[Enemy] = [] # 効果依存
+var stomach: StomachBoard # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	enemies = installer.get_enemies()
+	stomach = installer.get_stomach()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	enemies = []
+	stomach = null
 
 # 発動秒数
 @export_range(1, 86400, 1) var interval_seconds := 60
@@ -24,7 +36,5 @@ func get_dependency_mask() -> int:
 
 # 効果適用
 func apply() -> void:
-	if is_refresh_activation(): set_default_attack_disabled(source, suppress_default_attack); return
-	if not is_progress_time_activation(): return
 	var count := consume_interval(interval_seconds) # 発火数
-	for enemy in get_targets(target): add_attack_guards(enemy, mini(stack_limit, guard_count * count))
+	for enemy in EnemyEffectTargetQuery.get_targets(source, enemies, stomach, target): EnemyEffectStatChanges.add_attack_guards(enemy, mini(stack_limit, guard_count * count))

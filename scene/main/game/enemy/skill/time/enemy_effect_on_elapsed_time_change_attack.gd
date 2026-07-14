@@ -2,9 +2,9 @@
 extends EnemyEffect
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_PROGRESS_TIME
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_progress_time(self)
 
 # 発動秒数
 @export_range(1, 86400, 1) var interval_seconds := 60
@@ -13,4 +13,4 @@ func get_activation_mask() -> int:
 
 # 効果適用
 func apply() -> void:
-	if is_progress_time_activation(): source.add_damage(roundi(scale_value(float(attack_delta * consume_interval(interval_seconds)))))
+	source.add_damage(roundi(EnemyEffectValueCalculator.scale(source, float(attack_delta * consume_interval(interval_seconds)))))

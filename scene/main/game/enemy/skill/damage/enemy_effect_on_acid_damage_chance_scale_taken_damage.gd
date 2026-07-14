@@ -1,16 +1,21 @@
 ﻿class_name EnemyEffectOnAcidDamageChanceScaleTakenDamage
-extends EnemyEffect
+extends EnemyEffectOnSelfBeforeAcidDamage
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_BEFORE_ACID_DAMAGE
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_before_acid_damage(self)
 
 # 発動率
 @export_range(0.0, 1.0, 0.01) var chance := 1.0
 # ダメージ倍率
 @export var damage_multiplier := 1.0
 
+# 発動条件判定
+func accepts_activation(data: EnemyEffectActivationData) -> bool:
+	return super.accepts_activation(data) and EnemyEffectValueCalculator.roll(source, chance)
+
+
 # 効果適用
 func apply() -> void:
-	if is_before_acid_damage_activation() and get_activation_target() == source and roll(chance): set_activation_damage(roundi(float(get_activation_damage()) * damage_multiplier))
+	set_activation_damage(roundi(float(get_activation_damage()) * damage_multiplier))

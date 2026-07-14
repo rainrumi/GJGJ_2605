@@ -7,22 +7,34 @@ class TestEffect:
 	extends EnemyEffect
 
 	var activation_count := 0 # 発動回数
+	var maximum_current_seconds := 86400 # 発動上限時刻
+	var battle_clock: BattleClock # 時刻依存
 
 
-	# 発動種別取得
-	func get_activation_mask() -> int:
-		return ACTIVATION_PROGRESS_TIME
+	# 発動Signal接続
+	func bind_triggers(installer: EnemyEffectInstaller) -> void:
+		installer.connect_progress_time(self)
 
 
-	# 依存種別取得
-	func get_dependency_mask() -> int:
-		return DEPENDENCY_BATTLE_CLOCK
+	# 依存関係設定
+	func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+		battle_clock = installer.get_battle_clock()
+
+
+	# 依存関係解除
+	func clear_dependencies() -> void:
+		battle_clock = null
+
+
+	# 発動条件判定
+	func accepts_activation(data: EnemyEffectActivationData) -> bool:
+		var time_data := data as TimeActivationData # 時刻発動値
+		return time_data != null and time_data.current_seconds <= maximum_current_seconds
 
 
 	# 試験効果適用
 	func apply() -> void:
-		if is_progress_time_activation():
-			activation_count += 1
+		activation_count += 1
 
 
 # 試験開始
@@ -34,6 +46,7 @@ func _initialize() -> void:
 func _run() -> void:
 	var enemy := Enemy.new() # 効果所有者
 	var effect := TestEffect.new() # 試験効果
+	effect.maximum_current_seconds = 90
 	var skill := EnemySkill.new() # 試験スキル
 	skill.effects = [effect]
 	enemy.data.main_skill = skill
@@ -60,8 +73,9 @@ func _run() -> void:
 	)
 	installer.sync(enemies, null)
 	_expect(effect.battle_clock == battle_clock, "必要な時刻参照だけを保持する")
-	_expect(effect.player_health == null and effect.stomach == null, "未使用参照を保持しない")
-	battle_clock.request_progress_effect(ProgressTimeActivationData.new(60, 60))
+	var property_names := effect.get_property_list().map(func(property: Dictionary) -> StringName: return property.name) # 保持項目
+	_expect(not property_names.has(&"player_health") and not property_names.has(&"stomach"), "未使用参照を保持しない")
+	battle_clock.notify_progress_resolved(ProgressTimeActivationData.new(60, 60))
 	stack.execute()
 	_expect(effect.activation_count == 1, "対象Signalで一度発動する")
 	effect.set_state("counter", 7)
@@ -69,21 +83,24 @@ func _run() -> void:
 	enemies.append(extra_enemy)
 	installer.sync(enemies, null)
 	_expect(effect.get_state_int("counter") == 7, "敵一覧変更で効果状態を維持する")
-	battle_clock.request_turn_effect(TurnStartActivationData.new(60, 60))
+	battle_clock.notify_turn_started(TurnStartActivationData.new(60, 60))
 	stack.execute()
 	_expect(effect.activation_count == 1, "対象外Signalでは発動しない")
+	battle_clock.notify_progress_resolved(ProgressTimeActivationData.new(60, 120))
+	stack.execute()
+	_expect(effect.activation_count == 1, "条件外Requestを追加しない")
 	var next_effect := TestEffect.new() # 切替後効果
 	var next_skill := EnemySkill.new() # 切替後スキル
 	next_skill.effects = [next_effect]
 	enemy.data.unbind_skills()
 	enemy.data.main_skill = next_skill
 	installer.sync(enemies, null)
-	battle_clock.request_progress_effect(ProgressTimeActivationData.new(60, 120))
+	battle_clock.notify_progress_resolved(ProgressTimeActivationData.new(60, 120))
 	stack.execute()
 	_expect(effect.activation_count == 1, "切替前効果を再発動しない")
 	_expect(next_effect.activation_count == 1, "切替後効果を接続する")
 	installer.reset()
-	battle_clock.request_progress_effect(ProgressTimeActivationData.new(60, 180))
+	battle_clock.notify_progress_resolved(ProgressTimeActivationData.new(60, 180))
 	stack.execute()
 	_expect(next_effect.activation_count == 1, "解除後は発動しない")
 	_test_effect_duplication()

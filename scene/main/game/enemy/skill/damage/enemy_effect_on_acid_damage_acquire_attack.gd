@@ -1,15 +1,23 @@
 ﻿class_name EnemyEffectOnAcidDamageAcquireAttack
-extends EnemyEffect
+extends EnemyEffectOnSelfAfterAcidDamage
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_AFTER_ACID_DAMAGE
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_after_acid_damage(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_STOMACH
+var stomach: StomachBoard # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	stomach = installer.get_stomach()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	stomach = null
 
 # 取得割合
 @export var attack_rate := 1.0
@@ -18,8 +26,15 @@ func get_dependency_mask() -> int:
 # ライン接触必須
 @export var require_acid_line_touch := false
 
+# 発動条件判定
+func accepts_activation(data: EnemyEffectActivationData) -> bool:
+	if not super.accepts_activation(data):
+		return false
+	if require_acid_line_touch and EnemyEffectTargetQuery.get_acid_line_contact_count(source, stomach) == 0:
+		return false
+	return EnemyEffectValueCalculator.roll(source, chance)
+
+
 # 効果適用
 func apply() -> void:
-	if not is_after_acid_damage_activation() or get_activation_target() != source: return
-	if require_acid_line_touch and get_acid_line_contact_count() == 0: return
-	if roll(chance): source.add_damage(roundi(float(get_activation_damage()) * attack_rate))
+	source.add_damage(roundi(float(get_activation_damage()) * attack_rate))

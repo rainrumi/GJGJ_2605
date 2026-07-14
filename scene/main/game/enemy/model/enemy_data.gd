@@ -7,6 +7,8 @@ var definition: EnemyInfo # 敵定義
 var hp := EnemyHp.new() # 敵HP
 var attack := EnemyAttack.new() # 敵攻撃力
 var stomach_status := EnemyStomachStatus.new() # 胃内状態
+var digestion_state: EnemyStomachStatus:
+	get: return stomach_status
 var defense_status := EnemyDefenseStatus.new() # 防御状態
 var main_skill: EnemySkill # メインスキル
 var sub_skill: EnemySkill # サブスキル

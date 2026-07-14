@@ -1,10 +1,10 @@
 ﻿class_name EnemyEffectOnDigestedChanceRevive
-extends EnemyEffect
+extends EnemyEffectOnSelfDigested
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_DIGESTED
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_digested(self)
 
 # 回復割合
 @export_range(0.0, 1.0, 0.01) var recovery_rate := 1.0
@@ -17,8 +17,14 @@ func get_activation_mask() -> int:
 # 段階復活数
 @export_range(0, 10000, 1) var revives_per_step := 0
 
+# 発動条件判定
+func accepts_activation(data: EnemyEffectActivationData) -> bool:
+	if not super.accepts_activation(data):
+		return false
+	var steps := 0 if revives_per_step <= 0 else int(source.get_revive_count() / revives_per_step) # 段階数
+	return EnemyEffectValueCalculator.roll(source, chance + chance_delta * steps, invert_chance)
+
+
 # 効果適用
 func apply() -> void:
-	if not is_digested_activation() or get_activation_target() != source: return
-	var steps := 0 if revives_per_step <= 0 else int(source.get_revive_count() / revives_per_step) # 段階数
-	if roll(chance + chance_delta * steps, invert_chance): revive(source, recovery_rate)
+	EnemyEffectBattleActions.revive(source, source, recovery_rate)

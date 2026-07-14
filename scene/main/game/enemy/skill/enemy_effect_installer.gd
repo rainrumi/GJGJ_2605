@@ -15,6 +15,8 @@ var _connections: Dictionary = {} # 効果別接続
 var _enemy_ids: Array[int] = [] # 接続対象ID
 var _stomach_id := 0 # 胃袋ID
 var _is_dirty := true # 再接続要否
+var _current_enemies: Array[Enemy] = [] # 現在の敵一覧
+var _current_stomach: StomachBoard # 現在の胃袋
 
 
 # 依存関係設定
@@ -50,6 +52,8 @@ func sync(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	if not _is_dirty and current_ids == _enemy_ids and current_stomach_id == _stomach_id:
 		return
 	_disconnect_all(false)
+	_current_enemies.assign(enemies)
+	_current_stomach = stomach
 	_enemy_ids = current_ids
 	_stomach_id = current_stomach_id
 	for enemy in enemies:
@@ -60,6 +64,8 @@ func sync(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 # 配線解除
 func reset() -> void:
 	_disconnect_all(true)
+	_current_enemies.clear()
+	_current_stomach = null
 	_enemy_ids.clear()
 	_stomach_id = 0
 	_is_dirty = true
@@ -78,55 +84,126 @@ func _install_enemy(owner: Enemy, enemies: Array[Enemy], stomach: StomachBoard) 
 	for effect in effects:
 		if effect == null:
 			continue
-		effect.bind_dependencies(
-			owner,
-			enemies,
-			stomach,
-			_player_health,
-			_spawn_queue,
-			_battle_clock,
-			_digestion_interval,
-			_acid_modifiers,
-			_digestion_state,
-			_inheritance,
-			_effect_stack
-		)
+		effect.bind_owner(owner, _effect_stack)
+		effect.bind_dependencies(self)
 		_installed_effects.append(effect)
-		_connect_effect(effect, enemies, stomach)
+		effect.bind_triggers(self)
 
 
-# 発動元接続
-func _connect_effect(effect: EnemyEffect, enemies: Array[Enemy], stomach: StomachBoard) -> void:
-	var mask := effect.get_activation_mask() # 発動種別
-	if mask & EnemyEffect.ACTIVATION_BATTLE_START:
-		_connect_signal(effect, _battle_clock.battle_effect_requested)
-	if mask & EnemyEffect.ACTIVATION_REFRESH and stomach != null:
-		var preprocess := effect is EnemyEffectOnAdjacentObjectScaleEffect or effect is EnemyEffectOnAdjacentObjectChangeChance # 前処理効果
-		_connect_signal(effect, stomach.effect_refresh_preprocess_requested if preprocess else stomach.effect_refresh_requested)
-	if mask & EnemyEffect.ACTIVATION_TURN_START:
-		_connect_signal(effect, _battle_clock.turn_effect_requested)
-	if mask & EnemyEffect.ACTIVATION_PROGRESS_TIME:
-		_connect_signal(effect, _battle_clock.progress_effect_requested)
-	if mask & EnemyEffect.ACTIVATION_ANY_DIGESTED:
-		_connect_signal(effect, _digestion_state.any_digested_effect_requested)
-	for enemy in enemies:
-		_connect_enemy_signals(effect, mask, enemy)
+# 敵一覧取得
+func get_enemies() -> Array[Enemy]:
+	return _current_enemies.duplicate()
 
 
-# 敵別信号接続
-func _connect_enemy_signals(effect: EnemyEffect, mask: int, enemy: Enemy) -> void:
-	if enemy == null or not is_instance_valid(enemy):
+# 胃袋取得
+func get_stomach() -> StomachBoard:
+	return _current_stomach
+
+
+# プレイヤーHP取得
+func get_player_health() -> PlayerHealth:
+	return _player_health
+
+
+# 敵生成要求取得
+func get_spawn_queue() -> EnemySpawnQueue:
+	return _spawn_queue
+
+
+# 戦闘時刻取得
+func get_battle_clock() -> BattleClock:
+	return _battle_clock
+
+
+# 消化間隔取得
+func get_digestion_interval() -> DigestionInterval:
+	return _digestion_interval
+
+
+# 消化補正取得
+func get_acid_modifiers() -> EnemyAcidDamageModifiers:
+	return _acid_modifiers
+
+
+# 消化状態取得
+func get_digestion_state() -> EnemyDigestionState:
+	return _digestion_state
+
+
+# 効果継承取得
+func get_inheritance() -> EnemyEffectInheritance:
+	return _inheritance
+
+
+# 更新Signal接続
+func connect_refresh(effect: EnemyEffect) -> void:
+	if _current_stomach != null:
+		_connect_signal(effect, _current_stomach.refreshed)
+
+
+# 更新前Signal接続
+func connect_refresh_preprocess(effect: EnemyEffect) -> void:
+	if _current_stomach != null:
+		_connect_signal(effect, _current_stomach.refresh_preparing)
+
+
+# 通常攻撃更新接続
+func connect_default_attack_refresh(effect: EnemyEffect, disabled: bool) -> void:
+	if _current_stomach == null:
 		return
-	if mask & EnemyEffect.ACTIVATION_BEFORE_ACID_DAMAGE:
-		_connect_signal(effect, enemy.data.hp.before_acid_damage_requested)
-	if mask & EnemyEffect.ACTIVATION_AFTER_ACID_DAMAGE:
-		_connect_signal(effect, enemy.data.hp.after_acid_damage_requested)
-	if mask & EnemyEffect.ACTIVATION_ADJACENT_ACID_DAMAGE:
-		_connect_signal(effect, enemy.data.hp.adjacent_acid_damage_requested)
-	if mask & EnemyEffect.ACTIVATION_DIGESTED:
-		_connect_signal(effect, enemy.data.stomach_status.digested_effect_requested)
-	if mask & EnemyEffect.ACTIVATION_ADJACENT_DIGESTED:
-		_connect_signal(effect, enemy.data.stomach_status.adjacent_digested_effect_requested)
+	var refresh_effect := EnemyEffectRefreshDefaultAttack.new() # 更新専用効果
+	refresh_effect.priority = effect.priority
+	refresh_effect.disabled = disabled
+	refresh_effect.bind_owner(effect.source, _effect_stack)
+	_installed_effects.append(refresh_effect)
+	_connect_signal(refresh_effect, _current_stomach.refreshed)
+
+
+# 時間Signal接続
+func connect_progress_time(effect: EnemyEffect) -> void:
+	_connect_signal(effect, _battle_clock.progress_resolved)
+
+
+# 全消化Signal接続
+func connect_any_digested(effect: EnemyEffect) -> void:
+	_connect_signal(effect, _digestion_state.digestion_batch_resolved)
+
+
+# 消化前Signal接続
+func connect_before_acid_damage(effect: EnemyEffect) -> void:
+	_connect_enemy_signal(effect, "acid_damage_preparing")
+
+
+# 消化後Signal接続
+func connect_after_acid_damage(effect: EnemyEffect) -> void:
+	_connect_enemy_signal(effect, "acid_damage_applied")
+
+
+# 隣接被弾Signal接続
+func connect_adjacent_acid_damage(effect: EnemyEffect) -> void:
+	_connect_enemy_signal(effect, "adjacent_acid_damage_applied")
+
+
+# 消化Signal接続
+func connect_digested(effect: EnemyEffect) -> void:
+	for enemy in _current_enemies:
+		if enemy != null and is_instance_valid(enemy):
+			_connect_signal(effect, enemy.data.stomach_status.digestion_resolved)
+
+
+# 隣接消化Signal接続
+func connect_adjacent_digested(effect: EnemyEffect) -> void:
+	for enemy in _current_enemies:
+		if enemy != null and is_instance_valid(enemy):
+			_connect_signal(effect, enemy.data.stomach_status.adjacent_digestion_resolved)
+
+
+# HP Signal接続
+func _connect_enemy_signal(effect: EnemyEffect, signal_name: StringName) -> void:
+	for enemy in _current_enemies:
+		if enemy == null or not is_instance_valid(enemy):
+			continue
+		_connect_signal(effect, Signal(enemy.data.hp, signal_name))
 
 
 # 単一信号接続
@@ -150,7 +227,7 @@ func _disconnect_all(clear_state: bool) -> void:
 			continue
 		var callback := effect.queue_activation # 発動要求
 		for source_signal in _connections.get(effect, []):
-			if source_signal.is_connected(callback):
+			if not source_signal.is_null() and source_signal.is_connected(callback):
 				source_signal.disconnect(callback)
 		effect.unbind(clear_state)
 	_installed_effects.clear()

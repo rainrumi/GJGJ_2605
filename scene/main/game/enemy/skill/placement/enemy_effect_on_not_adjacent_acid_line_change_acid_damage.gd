@@ -2,18 +2,26 @@
 extends EnemyEffect
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_REFRESH
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_refresh(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_STOMACH
+var stomach: StomachBoard # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	stomach = installer.get_stomach()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	stomach = null
 
 # ダメージ差分
 @export var acid_damage_delta := 0
 
 # 効果適用
 func apply() -> void:
-	if is_refresh_activation() and get_acid_line_contact_count() == 0: add_acid_damage_delta(source, acid_damage_delta)
+	if EnemyEffectTargetQuery.get_acid_line_contact_count(source, stomach) == 0: EnemyEffectStatChanges.add_acid_damage_delta(source, source, acid_damage_delta)

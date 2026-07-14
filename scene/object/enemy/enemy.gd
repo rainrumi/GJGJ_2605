@@ -1,5 +1,7 @@
 class_name Enemy
 extends Node2D
+
+# 敵ModelとView仲介
 const AcidED_TWEEN_DURATION := EnemySpriteView.ACIDED_TWEEN_DURATION
 const DEFAULT_STATUS_COLOR := EnemyView.DEFAULT_STATUS_COLOR
 const MAIN_EFFECT_STATUS_COLOR := EnemyView.MAIN_EFFECT_STATUS_COLOR
@@ -42,8 +44,12 @@ var display_damage_override: int:
 var attack_multiplier: float:
 	get: return data.attack.multiplier
 	set(value): data.attack.set_multiplier(value)
-var acid_damage_taken_multiplier := 1.0
-var acid_damage_global_multiplier := 1.0
+var acid_damage_taken_multiplier: float:
+	get: return data.defense_status.taken_acid_multiplier
+	set(value): data.defense_status.set_taken_acid_multiplier(value)
+var acid_damage_global_multiplier: float:
+	get: return data.defense_status.global_acid_multiplier
+	set(value): data.defense_status.set_global_acid_multiplier(value)
 var stomach_elapsed_minutes: int:
 	get: return data.stomach_status.elapsed_minutes
 	set(value): data.stomach_status.set_elapsed_minutes(value)
@@ -550,10 +556,10 @@ func set_attack_multiplier(value: float) -> void:
 	data.attack.set_multiplier(value)
 # 消化ダメージtaken倍率設定
 func set_acid_damage_taken_multiplier(value: float) -> void:
-	acid_damage_taken_multiplier = maxf(0.0, value)
+	acid_damage_taken_multiplier = value
 # 消化ダメージglobal倍率設定
 func set_acid_damage_global_multiplier(value: float) -> void:
-	acid_damage_global_multiplier = maxf(0.0, value)
+	acid_damage_global_multiplier = value
 # revivewithhalfHP処理
 func revive_with_half_hp() -> void:
 	revive_with_hp_rate(0.5)

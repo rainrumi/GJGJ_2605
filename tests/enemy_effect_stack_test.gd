@@ -38,6 +38,19 @@ class TestEffect:
 			stack.request(chained_effect, TestActivationData.new(4))
 
 
+class LoopEffect:
+	extends EnemyEffect
+
+	var activation_count := 0 # 発動回数
+	var stack: EnemyEffectStack # 対象スタック
+
+
+	# 試験効果適用
+	func apply() -> void:
+		activation_count += 1
+		stack.request(self, TestActivationData.new(activation_count))
+
+
 # 試験開始
 func _initialize() -> void:
 	call_deferred("_run")
@@ -64,11 +77,26 @@ func _run() -> void:
 	await process_frame
 	_expect(output == [3, 1, 2, 4], "優先度・受付順・次バッチを維持する")
 	_expect(slow.get_activation_data() == null, "実行後に発動値を破棄する")
+	await _test_chain_limit()
 	slow.unbind()
 	fast.unbind()
 	slow_owner.free()
 	fast_owner.free()
 	quit(_failures)
+
+
+# 連鎖上限試験
+func _test_chain_limit() -> void:
+	var stack := EnemyEffectStack.new() # 対象スタック
+	var effect := LoopEffect.new() # 連鎖効果
+	var owner := Enemy.new() # 効果所有者
+	effect.source = owner
+	effect.stack = stack
+	stack.request(effect, TestActivationData.new(0))
+	await process_frame
+	_expect(effect.activation_count == EnemyEffectStack.MAX_REQUESTS_PER_CHAIN, "無限連鎖を上限で停止する")
+	effect.unbind()
+	owner.free()
 
 
 # 期待値確認

@@ -3,10 +3,11 @@ extends RefCounted
 
 signal changed(current_value: int, maximum_value: int)
 signal damaged(amount: int)
+signal healed(amount: int)
 signal depleted
-signal before_acid_damage_requested(data: BeforeAcidDamageActivationData)
-signal after_acid_damage_requested(data: AfterAcidDamageActivationData)
-signal adjacent_acid_damage_requested(data: AdjacentAcidDamageActivationData)
+signal acid_damage_preparing(data: BeforeAcidDamageActivationData)
+signal acid_damage_applied(data: AfterAcidDamageActivationData)
+signal adjacent_acid_damage_applied(data: AdjacentAcidDamageActivationData)
 
 var maximum := 1 # 最大HP
 var current := 1 # 現在HP
@@ -62,7 +63,10 @@ func take_damage(amount: int) -> bool:
 
 # HP回復
 func heal(amount: int) -> void:
-	current = mini(maximum, current + maxi(0, amount))
+	var applied := mini(maximum - current, maxi(0, amount)) # 実回復量
+	current += applied
+	if applied > 0:
+		healed.emit(applied)
 	changed.emit(current, maximum)
 
 
@@ -110,16 +114,16 @@ func reset_modifiers() -> void:
 	modifier_multiplier = 1.0
 
 
-# 消化前通知
-func request_before_acid_damage(data: BeforeAcidDamageActivationData) -> void:
-	before_acid_damage_requested.emit(data)
+# 消化準備通知
+func notify_acid_damage_preparing(data: BeforeAcidDamageActivationData) -> void:
+	acid_damage_preparing.emit(data)
 
 
-# 消化後通知
-func request_after_acid_damage(data: AfterAcidDamageActivationData) -> void:
-	after_acid_damage_requested.emit(data)
+# 消化適用通知
+func notify_acid_damage_applied(data: AfterAcidDamageActivationData) -> void:
+	acid_damage_applied.emit(data)
 
 
 # 隣接被弾通知
-func request_adjacent_acid_damage(data: AdjacentAcidDamageActivationData) -> void:
-	adjacent_acid_damage_requested.emit(data)
+func notify_adjacent_acid_damage(data: AdjacentAcidDamageActivationData) -> void:
+	adjacent_acid_damage_applied.emit(data)

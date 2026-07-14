@@ -2,14 +2,22 @@
 extends EnemyEffect
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_REFRESH
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_refresh_preprocess(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_ENEMIES
+var enemies: Array[Enemy] = [] # 効果…1035 tokens truncated…果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	player_health = installer.get_player_health()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	player_health = null
 
 # 効果倍率
 @export var effect_multiplier := 1.0
@@ -18,7 +26,6 @@ func get_dependency_mask() -> int:
 
 # 効果適用
 func apply() -> void:
-	if not is_refresh_activation(): return
-	var targets := get_adjacent_objects() # 隣接対象
+	var targets := EnemyEffectTargetQuery.get_adjacent_objects(source, enemies) # 隣接対象
 	if targets.size() < required_count: return
-	for enemy in targets: multiply_effect(enemy, effect_multiplier)
+	for enemy in targets: EnemyEffectStatChanges.multiply_effect(enemy, effect_multiplier)

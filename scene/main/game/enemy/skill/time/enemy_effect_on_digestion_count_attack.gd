@@ -2,14 +2,22 @@
 extends EnemyEffect
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_ANY_DIGESTED
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_any_digested(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_PLAYER_HEALTH
+var player_health: PlayerHealth # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	player_health = installer.get_player_health()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	player_health = null
 
 # 必要消化数
 @export_range(1, 10000, 1) var required_count := 1
@@ -20,8 +28,7 @@ func get_dependency_mask() -> int:
 
 # 効果適用
 func apply() -> void:
-	if not is_any_digested_activation(): return
 	var count := get_state_int("digestion_count") + get_activation_digested_enemies().size() # 消化数
 	var triggers := int(count / required_count) # 発火数
 	set_state("digestion_count", count % required_count)
-	attack_player(fixed_damage if fixed_damage > 0 else source.get_damage(), attack_count * triggers)
+	EnemyEffectBattleActions.attack_player(source, player_health, fixed_damage if fixed_damage > 0 else source.get_damage(), attack_count * triggers)

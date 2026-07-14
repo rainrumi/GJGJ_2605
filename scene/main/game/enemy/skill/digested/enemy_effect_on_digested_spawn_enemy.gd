@@ -1,15 +1,23 @@
 ﻿class_name EnemyEffectOnDigestedSpawnEnemy
-extends EnemyEffect
+extends EnemyEffectOnSelfDigested
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_DIGESTED
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_digested(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_SPAWN_QUEUE
+var spawn_queue: EnemySpawnQueue # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	spawn_queue = installer.get_spawn_queue()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	spawn_queue = null
 
 # 生成敵定義
 @export var enemy_info: EnemyInfo
@@ -42,7 +50,6 @@ func get_dependency_mask() -> int:
 
 # 効果適用
 func apply() -> void:
-	if not is_digested_activation() or get_activation_target() != source: return
 	var hp_value := hp_base + roundi(float(resolve_value(hp_source, 0)) * hp_multiplier) + hp_delta # 生成HP
 	var attack_value := attack_base + roundi(float(resolve_value(attack_source, 0)) * attack_multiplier) + attack_delta # 生成攻撃
-	spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)
+	EnemyEffectWorldActions.spawn_enemy(self, spawn_queue, enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)

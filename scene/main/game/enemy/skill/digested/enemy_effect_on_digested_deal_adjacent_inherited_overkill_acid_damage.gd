@@ -1,15 +1,29 @@
 ﻿class_name EnemyEffectOnDigestedDealAdjacentInheritedOverkillAcidDamage
-extends EnemyEffect
+extends EnemyEffectOnSelfDigested
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_DIGESTED
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_digested(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_ENEMIES | DEPENDENCY_STOMACH | DEPENDENCY_DIGESTION_STATE
+var enemies: Array[Enemy] = [] # 効果依存
+var stomach: StomachBoard # 効果依存
+var digestion_state: EnemyDigestionState # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	enemies = installer.get_enemies()
+	stomach = installer.get_stomach()
+	digestion_state = installer.get_digestion_state()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	enemies = []
+	stomach = null
+	digestion_state = null
 
 # 超過倍率
 @export var overkill_multiplier := 1.0
@@ -18,5 +32,5 @@ func get_dependency_mask() -> int:
 
 # 効果適用
 func apply() -> void:
-	if is_digested_activation() and get_activation_target() == source:
-		for enemy in get_targets(target): deal_acid_damage(enemy, roundi(float(get_activation_overkill_damage()) * overkill_multiplier))
+	for enemy in EnemyEffectTargetQuery.get_targets(source, enemies, stomach, target):
+		EnemyEffectBattleActions.deal_acid_damage(self, digestion_state, enemy, roundi(float(get_activation_overkill_damage()) * overkill_multiplier))

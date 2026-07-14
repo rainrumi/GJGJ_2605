@@ -2,21 +2,29 @@
 extends EnemyEffect
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_REFRESH
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_refresh(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_STOMACH
+var stomach: StomachBoard # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	stomach = installer.get_stomach()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	stomach = null
 
 # HP差分
 @export var hp_delta := 0
 
 # 効果適用
 func apply() -> void:
-	if is_refresh_activation():
-		var active := 1 if get_acid_line_contact_count() > 0 else 0 # 接触状態
-		var previous := get_state_int("active") # 直前状態
-		set_state("active", active); change_hp(source, hp_delta * (active - previous))
+	var active := 1 if EnemyEffectTargetQuery.get_acid_line_contact_count(source, stomach) > 0 else 0 # 接触状態
+	var previous := get_state_int("active") # 直前状態
+	set_state("active", active)
+	EnemyEffectStatChanges.change_hp(source, source, hp_delta * (active - previous))

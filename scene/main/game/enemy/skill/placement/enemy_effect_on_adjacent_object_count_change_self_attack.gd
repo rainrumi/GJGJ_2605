@@ -2,14 +2,22 @@
 extends EnemyEffect
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_REFRESH
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_refresh(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_ENEMIES
+var enemies: Array[Enemy] = [] # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	enemies = installer.get_enemies()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	enemies = []
 
 # 攻撃差分
 @export var attack_delta := 0
@@ -18,6 +26,5 @@ func get_dependency_mask() -> int:
 
 # 効果適用
 func apply() -> void:
-	if not is_refresh_activation(): return
-	var count := get_adjacent_objects().size() # 隣接数
-	if count >= minimum_count: add_attack_delta(source, attack_delta * count)
+	var count := EnemyEffectTargetQuery.get_adjacent_objects(source, enemies).size() # 隣接数
+	if count >= minimum_count: EnemyEffectStatChanges.add_attack_delta(source, source, attack_delta * count)

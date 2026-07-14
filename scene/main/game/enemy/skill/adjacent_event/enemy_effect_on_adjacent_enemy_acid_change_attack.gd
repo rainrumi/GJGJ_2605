@@ -1,19 +1,27 @@
 ﻿class_name EnemyEffectOnAdjacentEnemyAcidChangeAttack
-extends EnemyEffect
+extends EnemyEffectOnAdjacentAcidDamage
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_ADJACENT_ACID_DAMAGE
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_adjacent_acid_damage(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_ENEMIES
+var enemies: Array[Enemy] = [] # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	enemies = installer.get_enemies()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	enemies = []
 
 # 攻撃差分
 @export var attack_delta := 0
 
 # 効果適用
 func apply() -> void:
-	if is_adjacent_acid_damage_activation() and get_adjacent_enemies().has(get_activation_target()): source.add_damage(roundi(scale_value(float(attack_delta))))
+	source.add_damage(roundi(EnemyEffectValueCalculator.scale(source, float(attack_delta))))

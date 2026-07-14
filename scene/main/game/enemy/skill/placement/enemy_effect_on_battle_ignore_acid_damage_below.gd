@@ -1,16 +1,22 @@
 ﻿class_name EnemyEffectOnBattleIgnoreAcidDamageBelow
-extends EnemyEffect
+extends EnemyEffectOnSelfBeforeAcidDamage
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_BEFORE_ACID_DAMAGE
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_before_acid_damage(self)
 
 # 閾値
 @export var threshold := 0
 # 閾値参照元
 @export var threshold_source: EnemyEffect.ValueSource = EnemyEffect.ValueSource.FIXED
 
+# 発動条件判定
+func accepts_activation(data: EnemyEffectActivationData) -> bool:
+	return super.accepts_activation(data) \
+		and get_activation_damage_from(data) < resolve_value_from(threshold_source, threshold, data)
+
+
 # 効果適用
 func apply() -> void:
-	if is_before_acid_damage_activation() and get_activation_target() == source and get_activation_damage() < resolve_value(threshold_source, threshold): set_activation_damage(0)
+	set_activation_damage(0)

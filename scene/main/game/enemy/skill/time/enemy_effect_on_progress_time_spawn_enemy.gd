@@ -2,14 +2,22 @@
 extends EnemyEffect
 
 
-# 発動種別取得
-func get_activation_mask() -> int:
-	return ACTIVATION_PROGRESS_TIME
+# 発動Signal接続
+func bind_triggers(installer: EnemyEffectInstaller) -> void:
+	installer.connect_progress_time(self)
 
 
-# 依存種別取得
-func get_dependency_mask() -> int:
-	return DEPENDENCY_SPAWN_QUEUE
+var spawn_queue: EnemySpawnQueue # 効果依存
+
+
+# 依存関係設定
+func bind_dependencies(installer: EnemyEffectInstaller) -> void:
+	spawn_queue = installer.get_spawn_queue()
+
+
+# 依存関係解除
+func clear_dependencies() -> void:
+	spawn_queue = null
 
 # 生成敵定義
 @export var enemy_info: EnemyInfo
@@ -28,4 +36,4 @@ func get_dependency_mask() -> int:
 
 # 効果適用
 func apply() -> void:
-	if is_progress_time_activation(): spawn_enemy(enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, spawn_hp, spawn_attack)
+	EnemyEffectWorldActions.spawn_enemy(self, spawn_queue, enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, spawn_hp, spawn_attack)
