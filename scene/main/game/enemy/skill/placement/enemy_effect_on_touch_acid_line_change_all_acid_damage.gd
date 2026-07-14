@@ -1,4 +1,4 @@
-﻿class_name EnemyEffectOnTouchAcidLineChangeAllAcidDamage
+class_name EnemyEffectOnTouchAcidLineChangeAllAcidDamage
 extends EnemyEffect
 
 
@@ -11,10 +11,14 @@ var stomach: StomachBoard # 効果依存
 var acid_modifiers: EnemyAcidDamageModifiers # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	stomach = installer.get_stomach()
-	acid_modifiers = installer.get_acid_modifiers()
+# 胃袋設定
+func setup_stomach(value: StomachBoard) -> void:
+	stomach = value
+
+
+# 消化補正設定
+func setup_acid_modifiers(value: EnemyAcidDamageModifiers) -> void:
+	acid_modifiers = value
 
 
 # 依存関係解除

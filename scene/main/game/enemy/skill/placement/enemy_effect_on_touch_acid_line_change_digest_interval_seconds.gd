@@ -1,4 +1,4 @@
-﻿class_name EnemyEffectOnTouchAcidLineChangeDigestIntervalSeconds
+class_name EnemyEffectOnTouchAcidLineChangeDigestIntervalSeconds
 extends EnemyEffect
 
 
@@ -11,10 +11,14 @@ var stomach: StomachBoard # 効果依存
 var digestion_interval: DigestionInterval # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	stomach = installer.get_stomach()
-	digestion_interval = installer.get_digestion_interval()
+# 胃袋設定
+func setup_stomach(value: StomachBoard) -> void:
+	stomach = value
+
+
+# 消化間隔設定
+func setup_digestion_interval(value: DigestionInterval) -> void:
+	digestion_interval = value
 
 
 # 依存関係解除

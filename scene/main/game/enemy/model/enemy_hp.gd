@@ -5,9 +5,6 @@ signal changed(current_value: int, maximum_value: int)
 signal damaged(amount: int)
 signal healed(amount: int)
 signal depleted
-signal acid_damage_preparing(data: BeforeAcidDamageActivationData)
-signal acid_damage_applied(data: AfterAcidDamageActivationData)
-signal adjacent_acid_damage_applied(data: AdjacentAcidDamageActivationData)
 
 var maximum := 1 # 最大HP
 var current := 1 # 現在HP
@@ -112,18 +109,3 @@ func apply_modifiers() -> void:
 func reset_modifiers() -> void:
 	modifier_delta = 0
 	modifier_multiplier = 1.0
-
-
-# 消化準備通知
-func notify_acid_damage_preparing(data: BeforeAcidDamageActivationData) -> void:
-	acid_damage_preparing.emit(data)
-
-
-# 消化適用通知
-func notify_acid_damage_applied(data: AfterAcidDamageActivationData) -> void:
-	acid_damage_applied.emit(data)
-
-
-# 隣接被弾通知
-func notify_adjacent_acid_damage(data: AdjacentAcidDamageActivationData) -> void:
-	adjacent_acid_damage_applied.emit(data)

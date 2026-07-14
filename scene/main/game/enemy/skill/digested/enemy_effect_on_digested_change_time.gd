@@ -1,4 +1,4 @@
-﻿class_name EnemyEffectOnDigestedChangeTime
+class_name EnemyEffectOnDigestedChangeTime
 extends EnemyEffectOnSelfDigested
 
 
@@ -10,9 +10,9 @@ func bind_triggers(installer: EnemyEffectInstaller) -> void:
 var battle_clock: BattleClock # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	battle_clock = installer.get_battle_clock()
+# 戦闘時刻設定
+func setup_battle_clock(value: BattleClock) -> void:
+	battle_clock = value
 
 
 # 依存関係解除

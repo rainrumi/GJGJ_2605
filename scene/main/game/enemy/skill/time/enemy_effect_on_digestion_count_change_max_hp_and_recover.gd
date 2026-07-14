@@ -1,5 +1,5 @@
-﻿class_name EnemyEffectOnDigestionCountChangeMaxHpAndRecover
-extends EnemyEffect
+class_name EnemyEffectOnDigestionCountChangeMaxHpAndRecover
+extends EnemyEffectOnDigested
 
 
 # 発動Signal接続

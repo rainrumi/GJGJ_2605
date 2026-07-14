@@ -70,8 +70,7 @@ func get_step_minutes_breakdown(
 func begin_turn(enemies: Array[Enemy], stomach: StomachBoard, minutes: int) -> void:
 	_enemy_effects.refresh(enemies, stomach)
 	_enemy_effects.prepare(enemies, stomach)
-	_battle_clock.notify_turn_started(TurnStartActivationData.new(_step_minutes * 60, minutes * 60))
-	_enemy_effects.execute()
+	_battle_clock.set_time(_step_minutes * 60, minutes * 60)
 	for enemy in enemies:
 		if not enemy.is_Acided() and enemy.can_take_stomach_turn():
 			enemy.data.stomach_status.add_elapsed_minutes(_step_minutes)
@@ -88,64 +87,17 @@ func progress_time(
 	var elapsed_seconds := maxi(0, minutes - previous_minutes) * 60 # 経過秒数
 	var current_seconds := minutes * 60 # 現在秒数
 	_enemy_effects.prepare(enemies, stomach)
-	_battle_clock.notify_progress_resolved(ProgressTimeActivationData.new(elapsed_seconds, current_seconds))
-	_enemy_effects.execute()
+	_battle_clock.set_time(elapsed_seconds, current_seconds)
+	_enemy_effects.notify_progress_time(elapsed_seconds, current_seconds)
 	var digested_enemies := _digestion_state.consume() # 時間消化一覧
 	for enemy in digested_enemies:
-		_notify_digested(enemies, stomach, enemy, elapsed_seconds, current_seconds, digested_enemies)
-		_notify_adjacent_digested(enemies, stomach, enemy, elapsed_seconds, current_seconds, digested_enemies)
-	_notify_digestion_batch(enemies, stomach, elapsed_seconds, current_seconds, digested_enemies)
+		_enemy_effects.notify_digested(enemy, 0, 0, elapsed_seconds, current_seconds, digested_enemies)
+		_enemy_effects.notify_adjacent_digested(enemy, elapsed_seconds, current_seconds, digested_enemies)
+	_enemy_effects.notify_digestion_batch(elapsed_seconds, current_seconds, digested_enemies)
 	_enemy_effects.refresh(enemies, stomach)
 	var result := build_result(digested_enemies) # 時間効果結果
 	result.player_damage_values = _enemy_effects.consume_player_damage()
 	return result
-
-
-# 消化効果実行
-func _notify_digested(
-	enemies: Array[Enemy],
-	stomach: StomachBoard,
-	target: Enemy,
-	elapsed_seconds: int,
-	current_seconds: int,
-	digested_enemies: Array[Enemy]
-) -> void:
-	_enemy_effects.prepare(enemies, stomach)
-	var activation := DigestedActivationData.new() # 消化発動値
-	activation.setup(target, 0, 0, elapsed_seconds, current_seconds, digested_enemies)
-	target.data.stomach_status.notify_digestion_resolved(activation)
-	_enemy_effects.execute()
-
-
-# 隣接消化効果実行
-func _notify_adjacent_digested(
-	enemies: Array[Enemy],
-	stomach: StomachBoard,
-	target: Enemy,
-	elapsed_seconds: int,
-	current_seconds: int,
-	digested_enemies: Array[Enemy]
-) -> void:
-	_enemy_effects.prepare(enemies, stomach)
-	var activation := AdjacentDigestedActivationData.new() # 隣接消化値
-	activation.setup(target, 0, 0, elapsed_seconds, current_seconds, digested_enemies)
-	target.data.stomach_status.notify_adjacent_digestion(activation)
-	_enemy_effects.execute()
-
-
-# 消化群効果実行
-func _notify_digestion_batch(
-	enemies: Array[Enemy],
-	stomach: StomachBoard,
-	elapsed_seconds: int,
-	current_seconds: int,
-	digested_enemies: Array[Enemy]
-) -> void:
-	_enemy_effects.prepare(enemies, stomach)
-	var activation := AnyDigestedActivationData.new() # 消化群値
-	activation.setup(null, 0, 0, elapsed_seconds, current_seconds, digested_enemies)
-	_digestion_state.notify_digestion_batch(activation)
-	_enemy_effects.execute()
 
 
 # ターン結果構築

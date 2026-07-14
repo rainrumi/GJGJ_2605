@@ -1,4 +1,4 @@
-﻿class_name EnemyEffectOnAcidDamageAcquireAttack
+class_name EnemyEffectOnAcidDamageAcquireAttack
 extends EnemyEffectOnSelfAfterAcidDamage
 
 
@@ -10,9 +10,9 @@ func bind_triggers(installer: EnemyEffectInstaller) -> void:
 var stomach: StomachBoard # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	stomach = installer.get_stomach()
+# 胃袋設定
+func setup_stomach(value: StomachBoard) -> void:
+	stomach = value
 
 
 # 依存関係解除

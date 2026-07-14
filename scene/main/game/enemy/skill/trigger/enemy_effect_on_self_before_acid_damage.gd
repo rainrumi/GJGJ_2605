@@ -1,5 +1,5 @@
 class_name EnemyEffectOnSelfBeforeAcidDamage
-extends EnemyEffect
+extends EnemyEffectOnDamage
 
 
 # 発動Signal接続

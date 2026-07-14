@@ -1,8 +1,6 @@
 class_name StomachBoard
 extends Node2D
 
-signal refresh_preparing(data: RefreshActivationData)
-signal refreshed(data: RefreshActivationData)
 
 @export var columns := 4
 @export var rows := 5
@@ -188,16 +186,6 @@ func show_preview(enemy: Enemy, mouse_position: Vector2, grab_cell: Vector2i, ac
 func hide_preview() -> void:
 	if _preview_sprite != null:
 		_preview_sprite.visible = false
-
-
-# 更新準備通知
-func notify_refresh_preparing(data: RefreshActivationData) -> void:
-	refresh_preparing.emit(data)
-
-
-# 更新完了通知
-func notify_refreshed(data: RefreshActivationData) -> void:
-	refreshed.emit(data)
 
 
 # global位置forセル取得

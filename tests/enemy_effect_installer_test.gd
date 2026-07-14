@@ -16,9 +16,9 @@ class TestEffect:
 		installer.connect_progress_time(self)
 
 
-	# 依存関係設定
-	func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-		battle_clock = installer.get_battle_clock()
+	# 戦闘時刻設定
+	func setup_battle_clock(value: BattleClock) -> void:
+		battle_clock = value
 
 
 	# 依存関係解除
@@ -75,7 +75,7 @@ func _run() -> void:
 	_expect(effect.battle_clock == battle_clock, "必要な時刻参照だけを保持する")
 	var property_names := effect.get_property_list().map(func(property: Dictionary) -> StringName: return property.name) # 保持項目
 	_expect(not property_names.has(&"player_health") and not property_names.has(&"stomach"), "未使用参照を保持しない")
-	battle_clock.notify_progress_resolved(ProgressTimeActivationData.new(60, 60))
+	installer.queue_progress_time(ProgressTimeActivationData.new(60, 60))
 	stack.execute()
 	_expect(effect.activation_count == 1, "対象Signalで一度発動する")
 	effect.set_state("counter", 7)
@@ -83,10 +83,10 @@ func _run() -> void:
 	enemies.append(extra_enemy)
 	installer.sync(enemies, null)
 	_expect(effect.get_state_int("counter") == 7, "敵一覧変更で効果状態を維持する")
-	battle_clock.notify_turn_started(TurnStartActivationData.new(60, 60))
+	battle_clock.set_time(60, 60)
 	stack.execute()
 	_expect(effect.activation_count == 1, "対象外Signalでは発動しない")
-	battle_clock.notify_progress_resolved(ProgressTimeActivationData.new(60, 120))
+	installer.queue_progress_time(ProgressTimeActivationData.new(60, 120))
 	stack.execute()
 	_expect(effect.activation_count == 1, "条件外Requestを追加しない")
 	var next_effect := TestEffect.new() # 切替後効果
@@ -95,12 +95,12 @@ func _run() -> void:
 	enemy.data.unbind_skills()
 	enemy.data.main_skill = next_skill
 	installer.sync(enemies, null)
-	battle_clock.notify_progress_resolved(ProgressTimeActivationData.new(60, 120))
+	installer.queue_progress_time(ProgressTimeActivationData.new(60, 120))
 	stack.execute()
 	_expect(effect.activation_count == 1, "切替前効果を再発動しない")
 	_expect(next_effect.activation_count == 1, "切替後効果を接続する")
 	installer.reset()
-	battle_clock.notify_progress_resolved(ProgressTimeActivationData.new(60, 180))
+	installer.queue_progress_time(ProgressTimeActivationData.new(60, 180))
 	stack.execute()
 	_expect(next_effect.activation_count == 1, "解除後は発動しない")
 	_test_effect_duplication()

@@ -46,6 +46,7 @@ var effect_inheritance := EnemyEffectInheritance.new() # 効果継承状態
 var effect_stack := EnemyEffectStack.new() # 効果実行順
 var effect_installer := EnemyEffectInstaller.new() # 効果配線
 var digestion_resolver := EnemyDigestionResolver.new() # 消化処理
+var digestion_processor := EnemyDigestionProcessor.new() # 消化進行
 var attack_resolver := EnemyAttackResolver.new() # 攻撃処理
 var turn_processor := EnemyTurnProcessor.new() # ターン処理
 var acid_controller := EnemyController.new()
@@ -75,11 +76,12 @@ func _ready() -> void:
 		effect_stack,
 		effect_installer
 	)
-	digestion_resolver.setup(seed_effects, DreamSeedBlockAcidResolver.new(), enemy_effects, acid_modifiers, digestion_state)
+	digestion_resolver.setup(seed_effects, DreamSeedBlockAcidResolver.new(), acid_modifiers, digestion_state)
 	attack_resolver.setup(seed_effects, enemy_effects, EnemyController.ACID_DAMAGE)
 	turn_processor.setup(seed_effects, enemy_effects, digestion_interval, battle_clock, digestion_state, EnemyController.STEP_MINUTES)
-	acid_controller.setup(digestion_resolver, attack_resolver, turn_processor, enemy_effects)
 	enemy_presenter.setup(attack_resolver)
+	digestion_processor.setup(digestion_resolver, enemy_effects, enemy_presenter)
+	acid_controller.setup(digestion_resolver, attack_resolver, turn_processor, enemy_effects, digestion_processor)
 	enemy_setup.setup(self, input_controller, stomach)
 	seed_controller.setup(self, stomach, input_controller)
 	_connect_ui()

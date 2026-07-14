@@ -1,5 +1,5 @@
-﻿class_name EnemyEffectOnDigestionCountChangeAttack
-extends EnemyEffect
+class_name EnemyEffectOnDigestionCountChangeAttack
+extends EnemyEffectOnDigested
 
 
 # 発動Signal接続

@@ -1,5 +1,5 @@
-﻿class_name EnemyEffectOnClockCountChangeAcidDamage
-extends EnemyEffect
+class_name EnemyEffectOnClockCountChangeAcidDamage
+extends EnemyEffectOnTimeProgressed
 
 
 # 発動Signal接続

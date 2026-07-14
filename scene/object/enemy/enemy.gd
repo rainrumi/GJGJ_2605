@@ -76,13 +76,18 @@ var _stomach_size_override := Vector2i.ZERO
 var _stomach_shape_override: Array[Vector2i] = []
 var _size_override := 0
 var _texture_override: Texture2D
+var _presenter := EnemyPresenter.new() # Model表示仲介
 
 
 # 表示準備
 func _ready() -> void:
 	enemy_view.setup(self)
-	data.hp.changed.connect(_on_hp_changed)
-	data.attack.changed.connect(_on_attack_changed)
+	_presenter.bind(data, enemy_view)
+
+
+# 表示接続解除
+func _exit_tree() -> void:
+	_presenter.unbind()
 
 
 # setup処理
@@ -280,7 +285,6 @@ func set_Acided(value: bool) -> void:
 	Acided = value
 	if Acided:
 		Aciding = false
-		_play_Acided_tween()
 # 胃袋セル設定
 func set_stomach_cell(cell: Vector2i) -> void:
 	stomach_cell = cell
@@ -565,8 +569,6 @@ func revive_with_half_hp() -> void:
 	revive_with_hp_rate(0.5)
 # revivewithHP率処理
 func revive_with_hp_rate(hp_rate: float) -> void:
-	if enemy_view != null:
-		enemy_view.show_revived()
 	data.stomach_status.record_revive()
 	change_max_hp(ceili(float(max_hp) * hp_rate))
 	current_hp = max_hp
@@ -579,13 +581,3 @@ func revive_with_hp_rate(hp_rate: float) -> void:
 func _update_status_label_colors() -> void:
 	if enemy_view != null:
 		enemy_view.update_status_colors(has_main_effect)
-
-
-# HP変更通知
-func _on_hp_changed(_current: int, _maximum: int) -> void:
-	_update_hp_label()
-
-
-# 攻撃変更通知
-func _on_attack_changed(_display_value: int) -> void:
-	_update_damage_label()

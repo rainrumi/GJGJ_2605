@@ -3,9 +3,8 @@ extends RefCounted
 
 signal placement_changed(is_placed: bool)
 signal digested
+signal revived
 signal elapsed_changed(minutes: int)
-signal digestion_resolved(data: DigestedActivationData)
-signal adjacent_digestion_resolved(data: AdjacentDigestedActivationData)
 
 var is_digesting := false # 消化中
 var is_digested := false # 消化済み
@@ -39,10 +38,13 @@ func set_digesting(value: bool) -> void:
 
 # 消化済み設定
 func set_digested(value: bool) -> void:
+	var was_digested := is_digested # 変更前状態
 	is_digested = value
 	if is_digested:
 		is_digesting = false
 		digested.emit()
+	elif was_digested:
+		revived.emit()
 	placement_changed.emit(is_digesting and not is_digested)
 
 
@@ -60,13 +62,3 @@ func add_elapsed_minutes(value: int) -> void:
 # 復活記録
 func record_revive() -> void:
 	revive_count += 1
-
-
-# 消化結果通知
-func notify_digestion_resolved(data: DigestedActivationData) -> void:
-	digestion_resolved.emit(data)
-
-
-# 隣接消化通知
-func notify_adjacent_digestion(data: AdjacentDigestedActivationData) -> void:
-	adjacent_digestion_resolved.emit(data)

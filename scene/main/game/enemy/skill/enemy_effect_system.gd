@@ -10,7 +10,7 @@ var _digestion_state: EnemyDigestionState # 消化状態
 var _inheritance: EnemyEffectInheritance # 継承効果
 var _effect_stack: EnemyEffectStack # 効果スタック
 var _installer: EnemyEffectInstaller # 効果配線
-var _known_enemies: Dictionary = {} # 戦闘参加敵
+var _refresh_processor := EnemyEffectRefreshProcessor.new() # 補正更新
 
 
 # 依存関係設定
@@ -49,12 +49,7 @@ func setup(
 # 状態初期化
 func reset() -> void:
 	_installer.reset()
-	for enemy in _known_enemies.keys():
-		if enemy != null and is_instance_valid(enemy):
-			enemy.data.defense_status.reset()
-			enemy.data.attack.reset_modifiers()
-			enemy.data.hp.reset_modifiers()
-	_known_enemies.clear()
+	_refresh_processor.reset_all()
 	_player_health.clear()
 	_spawn_queue.clear()
 	_battle_clock.reset()
@@ -69,15 +64,14 @@ func reset() -> void:
 func refresh(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	_register_enemies(enemies)
 	_installer.sync(enemies, stomach)
-	_clear_refresh_modifiers()
+	_refresh_processor.clear_refresh_modifiers()
+	_reset_global_modifiers()
 	var activation := RefreshActivationData.new() # 更新発動値
-	if stomach != null:
-		stomach.notify_refresh_preparing(activation)
+	_installer.queue_refresh_preprocess(activation)
 	_effect_stack.execute()
-	if stomach != null:
-		stomach.notify_refreshed(activation)
+	_installer.queue_refresh(activation)
 	_effect_stack.execute()
-	_apply_max_hp_modifiers(enemies)
+	_refresh_processor.apply_max_hp_modifiers(enemies)
 
 
 
@@ -110,28 +104,82 @@ func execute() -> void:
 	_effect_stack.execute()
 
 
+# 消化前効果実行
+func prepare_acid_damage(target: Enemy, damage: int) -> int:
+	var activation := BeforeAcidDamageActivationData.new(damage, 0, target.data, target) # 消化前値
+	_installer.queue_before_acid_damage(activation)
+	execute()
+	return activation.amount
+
+
+# 消化後効果実行
+func notify_acid_damage_applied(target: Enemy, damage: int, overkill: int) -> void:
+	var activation := AfterAcidDamageActivationData.new(damage, overkill, target.data, target) # 消化後値
+	_installer.queue_after_acid_damage(activation)
+	execute()
+
+
+# 隣接被弾効果実行
+func notify_adjacent_acid_damage(target: Enemy, damage: int, overkill: int) -> void:
+	var activation := AdjacentAcidDamageActivationData.new(damage, overkill, target.data, target) # 隣接被弾値
+	_installer.queue_adjacent_acid_damage(activation)
+	execute()
+
+
+# 時間効果実行
+func notify_progress_time(elapsed_seconds: int, current_seconds: int) -> void:
+	_installer.queue_progress_time(ProgressTimeActivationData.new(elapsed_seconds, current_seconds))
+	execute()
+
+
+# 消化効果実行
+func notify_digested(
+	target: Enemy,
+	damage: int,
+	overkill: int,
+	elapsed_seconds: int,
+	current_seconds: int,
+	digested_enemies: Array[Enemy]
+) -> void:
+	var activation := DigestedActivationData.new() # 消化発動値
+	activation.setup(target, damage, overkill, elapsed_seconds, current_seconds, digested_enemies)
+	_installer.queue_digested(activation)
+	execute()
+
+
+# 消化群効果実行
+func notify_digestion_batch(
+	elapsed_seconds: int,
+	current_seconds: int,
+	digested_enemies: Array[Enemy]
+) -> void:
+	var activation := AnyDigestedActivationData.new() # 消化群値
+	activation.setup(null, 0, 0, elapsed_seconds, current_seconds, digested_enemies)
+	_installer.queue_any_digested(activation)
+	execute()
+
+
+# 隣接消化効果実行
+func notify_adjacent_digested(
+	target: Enemy,
+	elapsed_seconds: int,
+	current_seconds: int,
+	digested_enemies: Array[Enemy]
+) -> void:
+	var activation := AdjacentDigestedActivationData.new() # 隣接消化値
+	activation.setup(target, 0, 0, elapsed_seconds, current_seconds, digested_enemies)
+	_installer.queue_adjacent_digested(activation)
+	execute()
+
+
 
 
 # 敵一覧登録
 func _register_enemies(enemies: Array[Enemy]) -> void:
-	for enemy in enemies:
-		if enemy != null:
-			_known_enemies[enemy] = true
+	_refresh_processor.register(enemies)
 
 
-# 一時補正初期化
-func _clear_refresh_modifiers() -> void:
-	for enemy in _known_enemies.keys():
-		if enemy != null and is_instance_valid(enemy):
-			enemy.data.defense_status.reset_refresh_modifiers()
-			enemy.data.attack.reset_modifiers()
-			enemy.data.hp.reset_modifiers()
+# 全体補正初期化
+func _reset_global_modifiers() -> void:
 	_digestion_interval.reset()
 	_acid_modifiers.reset()
-
-
-# 最大HP補正適用
-func _apply_max_hp_modifiers(enemies: Array[Enemy]) -> void:
-	for enemy in enemies:
-		if enemy != null and not enemy.is_Acided():
-			enemy.data.hp.apply_modifiers()

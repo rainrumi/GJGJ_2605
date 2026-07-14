@@ -5,6 +5,7 @@ const STEP_MINUTES := 30
 const ACID_DAMAGE := 300
 
 var digestion_resolver: EnemyDigestionResolver # 消化処理
+var digestion_processor: EnemyDigestionProcessor # 消化進行
 var attack_resolver: EnemyAttackResolver # 攻撃処理
 var turn_processor: EnemyTurnProcessor # ターン処理
 var enemy_effects: EnemyEffectSystem # 効果窓口
@@ -15,9 +16,11 @@ func setup(
 	digestion: EnemyDigestionResolver,
 	attack: EnemyAttackResolver,
 	turns: EnemyTurnProcessor,
-	effects: EnemyEffectSystem
+	effects: EnemyEffectSystem,
+	processor: EnemyDigestionProcessor = null
 ) -> void:
 	digestion_resolver = digestion
+	digestion_processor = processor
 	attack_resolver = attack
 	turn_processor = turns
 	enemy_effects = effects
@@ -102,7 +105,11 @@ func acid_nightmares(
 	elapsed_minutes: int = STEP_MINUTES
 ) -> Array[Enemy]:
 	var per_cell := int(get_acid_damage_breakdown(enemies, minutes, true, stomach)["total"]) # セル消化値
-	return digestion_resolver.resolve(enemies, stomach, minutes, elapsed_minutes, per_cell)
+	var input := EnemyDigestionInput.new() # 消化入力
+	input.setup(enemies, stomach, minutes, elapsed_minutes, per_cell)
+	if digestion_processor == null:
+		return digestion_resolver.resolve(input).digested_enemies
+	return digestion_processor.process(input).digested_enemies
 
 
 # 敵攻撃解決

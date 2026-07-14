@@ -1,4 +1,4 @@
-﻿class_name EnemyEffectOnAdjacentEmptyCellChangeTakenAcidDamage
+class_name EnemyEffectOnAdjacentEmptyCellChangeTakenAcidDamage
 extends EnemyEffect
 
 
@@ -11,10 +11,14 @@ var enemies: Array[Enemy] = [] # 効果依存
 var stomach: StomachBoard # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	enemies = installer.get_enemies()
-	stomach = installer.get_stomach()
+# 敵一覧設定
+func setup_enemies(value: Array[Enemy]) -> void:
+	enemies = value
+
+
+# 胃袋設定
+func setup_stomach(value: StomachBoard) -> void:
+	stomach = value
 
 
 # 依存関係解除

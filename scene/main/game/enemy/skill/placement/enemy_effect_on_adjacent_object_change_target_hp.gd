@@ -1,4 +1,4 @@
-﻿class_name EnemyEffectOnAdjacentObjectChangeTargetHp
+class_name EnemyEffectOnAdjacentObjectChangeTargetHp
 extends EnemyEffect
 
 
@@ -10,9 +10,9 @@ func bind_triggers(installer: EnemyEffectInstaller) -> void:
 var enemies: Array[Enemy] = [] # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	enemies = installer.get_enemies()
+# 敵一覧設定
+func setup_enemies(value: Array[Enemy]) -> void:
+	enemies = value
 
 
 # 依存関係解除

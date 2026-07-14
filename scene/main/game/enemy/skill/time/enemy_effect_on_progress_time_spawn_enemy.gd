@@ -1,5 +1,5 @@
-﻿class_name EnemyEffectOnProgressTimeSpawnEnemy
-extends EnemyEffect
+class_name EnemyEffectOnProgressTimeSpawnEnemy
+extends EnemyEffectOnTimeProgressed
 
 
 # 発動Signal接続
@@ -10,9 +10,9 @@ func bind_triggers(installer: EnemyEffectInstaller) -> void:
 var spawn_queue: EnemySpawnQueue # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	spawn_queue = installer.get_spawn_queue()
+# 生成要求設定
+func setup_spawn_queue(value: EnemySpawnQueue) -> void:
+	spawn_queue = value
 
 
 # 依存関係解除

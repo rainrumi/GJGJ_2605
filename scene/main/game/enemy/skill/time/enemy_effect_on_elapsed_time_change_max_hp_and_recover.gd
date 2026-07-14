@@ -1,5 +1,5 @@
-﻿class_name EnemyEffectOnElapsedTimeChangeMaxHpAndRecover
-extends EnemyEffect
+class_name EnemyEffectOnElapsedTimeChangeMaxHpAndRecover
+extends EnemyEffectOnTimeProgressed
 
 
 # 発動Signal接続

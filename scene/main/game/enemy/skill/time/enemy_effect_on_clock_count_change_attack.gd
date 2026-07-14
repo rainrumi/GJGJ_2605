@@ -1,5 +1,5 @@
-﻿class_name EnemyEffectOnClockCountChangeAttack
-extends EnemyEffect
+class_name EnemyEffectOnClockCountChangeAttack
+extends EnemyEffectOnTimeProgressed
 
 
 # 発動Signal接続

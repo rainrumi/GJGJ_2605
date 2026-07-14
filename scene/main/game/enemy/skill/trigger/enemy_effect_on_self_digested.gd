@@ -1,5 +1,5 @@
 class_name EnemyEffectOnSelfDigested
-extends EnemyEffect
+extends EnemyEffectOnDigested
 
 
 # 発動Signal接続

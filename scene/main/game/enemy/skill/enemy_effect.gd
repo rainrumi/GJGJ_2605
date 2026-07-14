@@ -60,11 +60,6 @@ func bind_owner(owner_node: Enemy, stack: EnemyEffectStack) -> void:
 	effect_stack = stack
 
 
-# 依存関係設定
-func bind_dependencies(_installer: EnemyEffectInstaller) -> void:
-	pass
-
-
 # 依存関係解除
 func clear_dependencies() -> void:
 	pass
@@ -91,10 +86,13 @@ func can_request(data: EnemyEffectActivationData) -> bool:
 		return false
 	if not source.should_apply_nightmare_skill():
 		return false
-	var lifecycle_allowed := not source.is_Acided() or data is AfterAcidDamageActivationData \
-		or data is AdjacentAcidDamageActivationData \
-		or data is DigestionActivationData
+	var lifecycle_allowed := not source.is_Acided() or can_activate_when_owner_digested()
 	return lifecycle_allowed and accepts_activation(data)
+
+
+# 消化後発動可否
+func can_activate_when_owner_digested() -> bool:
+	return false
 
 
 # 発動条件判定
@@ -129,75 +127,6 @@ func queue_activation(data: EnemyEffectActivationData) -> void:
 		effect_stack.request(self, data)
 
 
-# 発動対象取得
-func get_activation_target() -> Enemy:
-	return get_activation_target_from(_activation_data)
-
-
-# 指定発動対象取得
-func get_activation_target_from(data: EnemyEffectActivationData) -> Enemy:
-	var damage_data := data as DamageActivationData # 被弾値
-	if damage_data != null:
-		return damage_data.target_enemy
-	var digestion_data := data as DigestionActivationData # 消化値
-	return digestion_data.target_enemy if digestion_data != null else null
-
-
-# 発動ダメージ取得
-func get_activation_damage() -> int:
-	return get_activation_damage_from(_activation_data)
-
-
-# 指定発動値取得
-func get_activation_damage_from(data: EnemyEffectActivationData) -> int:
-	var damage_data := data as DamageActivationData # 被弾値
-	if damage_data != null:
-		return damage_data.amount
-	var digestion_data := data as DigestionActivationData # 消化値
-	return digestion_data.damage if digestion_data != null else 0
-
-
-# 発動ダメージ設定
-func set_activation_damage(value: int) -> void:
-	var damage_data := _activation_data as DamageActivationData # 被弾値
-	if damage_data != null:
-		damage_data.set_amount(value)
-
-
-# 超過ダメージ取得
-func get_activation_overkill_damage() -> int:
-	return get_activation_overkill_from(_activation_data)
-
-
-# 指定超過値取得
-func get_activation_overkill_from(data: EnemyEffectActivationData) -> int:
-	var damage_data := data as DamageActivationData # 被弾値
-	if damage_data != null:
-		return damage_data.overkill_amount
-	var digestion_data := data as DigestionActivationData # 消化値
-	return digestion_data.overkill_damage if digestion_data != null else 0
-
-
-# 経過秒数取得
-func get_activation_elapsed_seconds() -> int:
-	var time_data := _activation_data as TimeActivationData # 時刻値
-	return time_data.elapsed_seconds if time_data != null else 0
-
-
-# 現在秒数取得
-func get_activation_current_seconds() -> int:
-	var time_data := _activation_data as TimeActivationData # 時刻値
-	return time_data.current_seconds if time_data != null else 0
-
-
-# 消化済み一覧取得
-func get_activation_digested_enemies() -> Array[Enemy]:
-	var digestion_data := _activation_data as DigestionActivationData # 消化値
-	return digestion_data.digested_enemies if digestion_data != null else []
-
-
-
-
 # 状態整数取得
 func get_state_int(key: String, default_value := 0) -> int:
 	return int(state.get_value(key, default_value))
@@ -206,18 +135,6 @@ func get_state_int(key: String, default_value := 0) -> int:
 # 状態値設定
 func set_state(key: String, value: Variant) -> void:
 	state.set_value(key, value)
-
-
-# 間隔発火数取得
-func consume_interval(interval_seconds: int) -> int:
-	if interval_seconds <= 0:
-		return 0
-	var accumulated := get_state_int("elapsed_seconds") + get_activation_elapsed_seconds() # 累積秒
-	var count := int(accumulated / interval_seconds) # 発火数
-	set_state("elapsed_seconds", accumulated % interval_seconds)
-	return count
-
-
 
 
 # 参照値取得
@@ -235,8 +152,12 @@ func resolve_value_from(
 		ValueSource.SELF_CURRENT_HP: return source.get_current_hp()
 		ValueSource.SELF_MAX_HP: return source.get_max_hp()
 		ValueSource.SELF_ATTACK: return source.data.attack.get_modified_value(source.get_damage())
-		ValueSource.TAKEN_DAMAGE: return get_activation_damage_from(data)
-		ValueSource.OVERKILL_DAMAGE: return get_activation_overkill_from(data)
 		ValueSource.DIGESTED_MINUTES: return source.stomach_elapsed_minutes if source != null else 0
 		ValueSource.LOST_HP: return maxi(0, source.get_max_hp() - source.get_current_hp())
-	return fixed_value
+		ValueSource.FIXED: return fixed_value
+	return get_event_value(source_type, data)
+
+
+# 発動固有値取得
+func get_event_value(_source_type: ValueSource, _data: EnemyEffectActivationData) -> int:
+	return 0

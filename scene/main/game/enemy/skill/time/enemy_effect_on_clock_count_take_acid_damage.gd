@@ -1,5 +1,5 @@
-﻿class_name EnemyEffectOnClockCountTakeAcidDamage
-extends EnemyEffect
+class_name EnemyEffectOnClockCountTakeAcidDamage
+extends EnemyEffectOnTimeProgressed
 
 
 # 発動Signal接続
@@ -10,9 +10,9 @@ func bind_triggers(installer: EnemyEffectInstaller) -> void:
 var digestion_state: EnemyDigestionState # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	digestion_state = installer.get_digestion_state()
+# 消化状態設定
+func setup_digestion_state(value: EnemyDigestionState) -> void:
+	digestion_state = value
 
 
 # 依存関係解除

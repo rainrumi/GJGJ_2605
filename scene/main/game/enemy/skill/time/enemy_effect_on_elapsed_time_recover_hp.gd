@@ -1,5 +1,5 @@
-﻿class_name EnemyEffectOnElapsedTimeRecoverHp
-extends EnemyEffect
+class_name EnemyEffectOnElapsedTimeRecoverHp
+extends EnemyEffectOnTimeProgressed
 
 
 # 発動Signal接続

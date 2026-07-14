@@ -26,15 +26,9 @@ class TestDigestionResolver:
 
 
 	# 消化処理解決
-	func resolve(
-		_enemies: Array[Enemy],
-		_stomach: StomachBoard,
-		_minutes: int,
-		_elapsed_minutes: int,
-		_acid_damage_per_cell: int
-	) -> Array[Enemy]:
+	func resolve(_input: EnemyDigestionInput) -> EnemyDigestionBatchResult:
 		calls.append("digestion")
-		return []
+		return EnemyDigestionBatchResult.new()
 
 
 class TestAttackResolver:

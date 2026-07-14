@@ -1,4 +1,4 @@
-﻿class_name EnemyEffectOnBattleChangeDigestIntervalByObjectCount
+class_name EnemyEffectOnBattleChangeDigestIntervalByObjectCount
 extends EnemyEffect
 
 
@@ -11,10 +11,14 @@ var enemies: Array[Enemy] = [] # 効果依存
 var digestion_interval: DigestionInterval # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	enemies = installer.get_enemies()
-	digestion_interval = installer.get_digestion_interval()
+# 敵一覧設定
+func setup_enemies(value: Array[Enemy]) -> void:
+	enemies = value
+
+
+# 消化間隔設定
+func setup_digestion_interval(value: DigestionInterval) -> void:
+	digestion_interval = value
 
 
 # 依存関係解除

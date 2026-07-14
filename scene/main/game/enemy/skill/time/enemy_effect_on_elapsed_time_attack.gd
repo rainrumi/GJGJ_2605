@@ -1,5 +1,5 @@
-﻿class_name EnemyEffectOnElapsedTimeAttack
-extends EnemyEffect
+class_name EnemyEffectOnElapsedTimeAttack
+extends EnemyEffectOnTimeProgressed
 
 
 # 発動Signal接続
@@ -11,9 +11,9 @@ func bind_triggers(installer: EnemyEffectInstaller) -> void:
 var player_health: PlayerHealth # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	player_health = installer.get_player_health()
+# プレイヤーHP設定
+func setup_player_health(value: PlayerHealth) -> void:
+	player_health = value
 
 
 # 依存関係解除

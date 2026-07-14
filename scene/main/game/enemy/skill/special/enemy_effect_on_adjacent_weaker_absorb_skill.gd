@@ -1,4 +1,4 @@
-﻿class_name EnemyEffectOnAdjacentWeakerAbsorbSkill
+class_name EnemyEffectOnAdjacentWeakerAbsorbSkill
 extends EnemyEffect
 
 
@@ -12,11 +12,19 @@ var digestion_state: EnemyDigestionState # 効果依存
 var inheritance: EnemyEffectInheritance # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	enemies = installer.get_enemies()
-	digestion_state = installer.get_digestion_state()
-	inheritance = installer.get_inheritance()
+# 敵一覧設定
+func setup_enemies(value: Array[Enemy]) -> void:
+	enemies = value
+
+
+# 消化状態設定
+func setup_digestion_state(value: EnemyDigestionState) -> void:
+	digestion_state = value
+
+
+# 継承効果設定
+func setup_inheritance(value: EnemyEffectInheritance) -> void:
+	inheritance = value
 
 
 # 依存関係解除

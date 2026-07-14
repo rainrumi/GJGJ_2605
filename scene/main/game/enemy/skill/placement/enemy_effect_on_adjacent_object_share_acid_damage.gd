@@ -1,4 +1,4 @@
-﻿class_name EnemyEffectOnAdjacentObjectShareAcidDamage
+class_name EnemyEffectOnAdjacentObjectShareAcidDamage
 extends EnemyEffectOnSelfBeforeAcidDamage
 
 
@@ -11,10 +11,14 @@ var enemies: Array[Enemy] = [] # 効果依存
 var digestion_state: EnemyDigestionState # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	enemies = installer.get_enemies()
-	digestion_state = installer.get_digestion_state()
+# 敵一覧設定
+func setup_enemies(value: Array[Enemy]) -> void:
+	enemies = value
+
+
+# 消化状態設定
+func setup_digestion_state(value: EnemyDigestionState) -> void:
+	digestion_state = value
 
 
 # 依存関係解除

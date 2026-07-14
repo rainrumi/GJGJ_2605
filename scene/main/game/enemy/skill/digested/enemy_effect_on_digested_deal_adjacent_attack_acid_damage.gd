@@ -1,4 +1,4 @@
-﻿class_name EnemyEffectOnDigestedDealAdjacentAttackAcidDamage
+class_name EnemyEffectOnDigestedDealAdjacentAttackAcidDamage
 extends EnemyEffectOnSelfDigested
 
 
@@ -12,11 +12,19 @@ var stomach: StomachBoard # 効果依存
 var digestion_state: EnemyDigestionState # 効果依存
 
 
-# 依存関係設定
-func bind_dependencies(installer: EnemyEffectInstaller) -> void:
-	enemies = installer.get_enemies()
-	stomach = installer.get_stomach()
-	digestion_state = installer.get_digestion_state()
+# 敵一覧設定
+func setup_enemies(value: Array[Enemy]) -> void:
+	enemies = value
+
+
+# 胃袋設定
+func setup_stomach(value: StomachBoard) -> void:
+	stomach = value
+
+
+# 消化状態設定
+func setup_digestion_state(value: EnemyDigestionState) -> void:
+	digestion_state = value
 
 
 # 依存関係解除
