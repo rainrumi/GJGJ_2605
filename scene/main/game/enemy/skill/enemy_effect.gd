@@ -56,9 +56,9 @@ enum Event {
 }
 
 # 適用順
-@export var priority := 0
+@export var priority :int = 0
 # 有効状態
-@export var enabled := true
+@export var enabled :bool = true
 var runtime: EnemyEffectRuntime # 実行時値
 
 
