@@ -171,8 +171,8 @@ func show_preview(enemy: Enemy, mouse_position: Vector2, grab_cell: Vector2i, ac
 	if not _is_within_bounds(enemy, top_left):
 		hide_preview()
 		return
-	_preview_sprite.texture = enemy.sprite.texture
-	_preview_sprite.scale = enemy.sprite.scale
+	_preview_sprite.texture = enemy.get_preview_texture()
+	_preview_sprite.scale = enemy.get_preview_scale()
 	_preview_sprite.global_position = get_global_position_for_cell(top_left, enemy.get_stomach_size())
 	_preview_sprite.modulate = Color(1.0, 1.0, 1.0, 0.42)
 	_preview_sprite.self_modulate = Color(0.9411765, 0.8784314, 1.0, 1.0)

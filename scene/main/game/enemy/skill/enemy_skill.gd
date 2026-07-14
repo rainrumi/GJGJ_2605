@@ -22,3 +22,10 @@ func get_effects() -> Array[EnemyEffect]:
 # 効果有無
 func has_effects() -> bool:
 	return not get_effects().is_empty()
+
+
+# 効果接続解除
+func unbind() -> void:
+	for effect in effects:
+		if effect != null:
+			effect.unbind()

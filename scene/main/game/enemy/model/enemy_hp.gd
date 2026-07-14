@@ -7,12 +7,20 @@ signal depleted
 
 var maximum := 1 # 最大HP
 var current := 1 # 現在HP
+var modifier_delta := 0 # 一時最大HP差分
+var modifier_multiplier := 1.0 # 一時最大HP倍率
+var _applied_modifier_delta := 0 # 適用済み差分
+var _follow_current_delta := 0 # 現在HP追従差分
 
 
 # HP初期化
 func setup(maximum_value: int, current_value: int = -1) -> void:
 	maximum = maxi(1, maximum_value)
 	current = maximum if current_value < 0 else clampi(current_value, 0, maximum)
+	modifier_delta = 0
+	modifier_multiplier = 1.0
+	_applied_modifier_delta = 0
+	_follow_current_delta = 0
 	changed.emit(current, maximum)
 
 
@@ -68,3 +76,32 @@ func add_maximum(amount: int, also_heal := true) -> void:
 		current += amount
 	current = maxi(0, current)
 	changed.emit(current, maximum)
+
+
+# 最大HP差分追加
+func add_modifier_delta(value: int, follow_current: bool) -> void:
+	modifier_delta += value
+	if follow_current:
+		_follow_current_delta += value
+
+
+# 最大HP倍率追加
+func multiply_modifier(value: float) -> void:
+	modifier_multiplier *= value
+
+
+# 最大HP補正適用
+func apply_modifiers() -> void:
+	var base_maximum := maxi(1, maximum - _applied_modifier_delta) # 基準最大HP
+	var next_maximum := maxi(1, roundi(float(base_maximum + modifier_delta) * modifier_multiplier)) # 補正最大HP
+	var next_delta := next_maximum - base_maximum # 新適用差分
+	var current_delta := _follow_current_delta - _applied_modifier_delta # 現在HP差分
+	set_values(next_maximum, current + current_delta)
+	_applied_modifier_delta = next_delta
+	_follow_current_delta = 0
+
+
+# 一時補正初期化
+func reset_modifiers() -> void:
+	modifier_delta = 0
+	modifier_multiplier = 1.0

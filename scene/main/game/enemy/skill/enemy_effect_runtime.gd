@@ -268,12 +268,12 @@ func spawn_enemy(
 
 # 状態整数取得
 func get_state_int(key: String, default_value := 0) -> int:
-	return int(resolver.get_state(source, effect, key, default_value))
+	return int(effect.state.get_value(key, default_value))
 
 
 # 状態値設定
 func set_state(key: String, value: Variant) -> void:
-	resolver.set_state(source, effect, key, value)
+	effect.state.set_value(key, value)
 
 
 # 間隔発火数取得
@@ -296,7 +296,7 @@ func get_adjacent_count_delta() -> int:
 
 # 新規隣接取得
 func get_new_adjacent_objects() -> Array[Enemy]:
-	var previous: Array = resolver.get_state(source, effect, "adjacent_ids", []) # 直前ID
+	var previous: Array = effect.state.get_value("adjacent_ids", []) # 直前ID
 	var current_ids: Array[int] = [] # 現在ID
 	var values: Array[Enemy] = [] # 新規対象
 	for enemy in get_adjacent_objects():

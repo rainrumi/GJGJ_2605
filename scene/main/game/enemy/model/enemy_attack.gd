@@ -7,6 +7,9 @@ var value := 0 # 攻撃値
 var base_value := 0 # 基準攻撃値
 var multiplier := 1.0 # 攻撃倍率
 var display_override := -1 # 表示固定値
+var modifier_delta := 0 # 一時攻撃差分
+var modifier_multiplier := 1.0 # 一時攻撃倍率
+var modifier_override := -1 # 一時攻撃固定値
 
 
 # 攻撃初期化
@@ -15,6 +18,7 @@ func setup(attack_value: int) -> void:
 	base_value = value
 	multiplier = 1.0
 	display_override = -1
+	reset_modifiers()
 	changed.emit(get_display_value())
 
 
@@ -52,3 +56,32 @@ func set_multiplier(value_multiplier: float) -> void:
 func set_display_override(display_value: int) -> void:
 	display_override = display_value
 	changed.emit(get_display_value())
+
+
+# 補正攻撃取得
+func get_modified_value(base_attack: int) -> int:
+	if modifier_override >= 0:
+		return modifier_override
+	return maxi(0, roundi(float(base_attack + modifier_delta) * modifier_multiplier))
+
+
+# 一時差分追加
+func add_modifier_delta(value_delta: int) -> void:
+	modifier_delta += value_delta
+
+
+# 一時倍率追加
+func multiply_modifier(value_multiplier: float) -> void:
+	modifier_multiplier *= value_multiplier
+
+
+# 一時固定値設定
+func set_modifier_override(attack_value: int) -> void:
+	modifier_override = maxi(0, attack_value)
+
+
+# 一時補正初期化
+func reset_modifiers() -> void:
+	modifier_delta = 0
+	modifier_multiplier = 1.0
+	modifier_override = -1

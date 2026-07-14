@@ -1,35 +1,18 @@
 class_name EnemyEffectResolver
 extends RefCounted
 
-var _states: Dictionary = {} # 効果状態
-var _attack_deltas: Dictionary = {} # 攻撃差分
-var _attack_multipliers: Dictionary = {} # 攻撃倍率
-var _attack_overrides: Dictionary = {} # 攻撃固定値
-var _max_hp_deltas: Dictionary = {} # 最大HP差分
-var _max_hp_multipliers: Dictionary = {} # 最大HP倍率
-var _applied_max_hp_deltas: Dictionary = {} # 適用済み差分
-var _acid_damage_deltas: Dictionary = {} # 消化差分
-var _acid_damage_multipliers: Dictionary = {} # 消化倍率
-var _effect_multipliers: Dictionary = {} # 効果倍率
-var _chance_deltas: Dictionary = {} # 確率差分
 var _digestion_interval := DigestionInterval.new() # 消化間隔
 var _global_acid_delta := 0 # 全体消化差分
 var _global_acid_multiplier := 1.0 # 全体消化倍率
 var _player_health := PlayerHealth.new() # プレイヤーHP
-var _pending_spawns: Array[BattleSpawnEnemyData] = [] # 生成要求
-var _spawn_counts: Dictionary = {} # 生成数
-var _extra_attacks: Dictionary = {} # 追加攻撃
-var _attack_guards: Dictionary = {} # 攻撃無効
-var _acid_guards: Dictionary = {} # 消化無効
-var _permanent_acid_deltas: Dictionary = {} # 永続消化差分
-var _permanent_acid_multipliers: Dictionary = {} # 永続消化倍率
+var _spawn_queue := EnemySpawnQueue.new() # 生成要求
 var _inherited_effects: Dictionary = {} # 継承効果
-var _default_attack_disabled: Dictionary = {} # 通常攻撃停止
-var _pending_time_delta_seconds := 0 # 時刻差分秒
+var _battle_clock := BattleClock.new() # 戦闘時刻
 var _last_acid_damage := 0 # 直近消化値
 var _pending_digested: Array[Enemy] = [] # 直接消化済み
 var _effect_stack := EnemyEffectStack.new() # 効果スタック
 var _event_source := EnemyEffectEventSource.new() # イベント通知元
+var _known_enemies: Dictionary = {} # 移行中の敵参照
 
 
 # 通知接続
@@ -39,19 +22,16 @@ func _init() -> void:
 
 # 状態初期化
 func reset() -> void:
-	_states.clear()
-	_applied_max_hp_deltas.clear()
 	_player_health.clear()
-	_pending_spawns.clear()
-	_spawn_counts.clear()
-	_extra_attacks.clear()
-	_attack_guards.clear()
-	_acid_guards.clear()
-	_permanent_acid_deltas.clear()
-	_permanent_acid_multipliers.clear()
+	_spawn_queue.clear()
+	for enemy in _known_enemies.keys():
+		if enemy != null and is_instance_valid(enemy):
+			enemy.data.defense_status.reset()
+			enemy.data.attack.reset_modifiers()
+			enemy.data.hp.reset_modifiers()
+	_known_enemies.clear()
 	_inherited_effects.clear()
-	_default_attack_disabled.clear()
-	_pending_time_delta_seconds = 0
+	_battle_clock.reset()
 	_last_acid_damage = 0
 	_pending_digested.clear()
 	_effect_stack.clear()
@@ -97,17 +77,18 @@ func dispatch(
 
 # 攻撃値取得
 func get_attack(enemy: Enemy, base_value: int) -> int:
-	if _attack_overrides.has(enemy):
-		return maxi(0, int(_attack_overrides[enemy]))
-	return maxi(0, roundi(float(base_value + int(_attack_deltas.get(enemy, 0))) * float(_attack_multipliers.get(enemy, 1.0))))
+	return enemy.data.attack.get_modified_value(base_value) if enemy != null else maxi(0, base_value)
 
 
 # 消化値取得
 func get_acid_damage(enemy: Enemy, base_value: int) -> int:
 	if consume_acid_guard(enemy):
 		return 0
-	var value := base_value + _global_acid_delta + int(_acid_damage_deltas.get(enemy, 0)) + int(_permanent_acid_deltas.get(enemy, 0)) # 補正前値
-	value = roundi(float(value) * _global_acid_multiplier * float(_acid_damage_multipliers.get(enemy, 1.0)) * float(_permanent_acid_multipliers.get(enemy, 1.0)))
+	if enemy == null:
+		return maxi(0, base_value)
+	var defense := enemy.data.defense_status # 防御状態
+	var value := base_value + _global_acid_delta + defense.acid_damage_delta + defense.permanent_acid_delta # 補正前値
+	value = roundi(float(value) * _global_acid_multiplier * defense.acid_damage_multiplier * defense.permanent_acid_multiplier)
 	return maxi(0, value)
 
 
@@ -118,39 +99,51 @@ func get_interval_seconds(base_seconds: int) -> int:
 
 # 攻撃差分追加
 func add_attack_delta(enemy: Enemy, value: int) -> void:
-	_attack_deltas[enemy] = int(_attack_deltas.get(enemy, 0)) + value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.attack.add_modifier_delta(value)
 
 
 # 攻撃値固定
 func set_attack_override(enemy: Enemy, value: int) -> void:
-	_attack_overrides[enemy] = value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.attack.set_modifier_override(value)
 
 
 # 攻撃倍率追加
 func multiply_attack(enemy: Enemy, value: float) -> void:
-	_attack_multipliers[enemy] = float(_attack_multipliers.get(enemy, 1.0)) * value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.attack.multiply_modifier(value)
 
 
 # 最大HP差分追加
 func add_max_hp_delta(enemy: Enemy, value: int, follow_hp: bool) -> void:
-	_max_hp_deltas[enemy] = int(_max_hp_deltas.get(enemy, 0)) + value
-	if follow_hp:
-		_states["follow_hp:%s" % enemy.get_instance_id()] = int(_states.get("follow_hp:%s" % enemy.get_instance_id(), 0)) + value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.hp.add_modifier_delta(value, follow_hp)
 
 
 # 最大HP倍率追加
 func multiply_max_hp(enemy: Enemy, value: float) -> void:
-	_max_hp_multipliers[enemy] = float(_max_hp_multipliers.get(enemy, 1.0)) * value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.hp.multiply_modifier(value)
 
 
 # 消化差分追加
 func add_acid_damage_delta(enemy: Enemy, value: int) -> void:
-	_acid_damage_deltas[enemy] = int(_acid_damage_deltas.get(enemy, 0)) + value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.defense_status.add_acid_damage_delta(value)
 
 
 # 消化倍率追加
 func multiply_acid_damage(enemy: Enemy, value: float) -> void:
-	_acid_damage_multipliers[enemy] = float(_acid_damage_multipliers.get(enemy, 1.0)) * value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.defense_status.multiply_acid_damage(value)
 
 
 # 全体消化追加
@@ -171,22 +164,26 @@ func add_interval_rate(value: float) -> void:
 
 # 効果倍率追加
 func multiply_effect(enemy: Enemy, value: float) -> void:
-	_effect_multipliers[enemy] = float(_effect_multipliers.get(enemy, 1.0)) * value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.defense_status.multiply_effect(value)
 
 
 # 効果倍率取得
 func get_effect_multiplier(enemy: Enemy) -> float:
-	return float(_effect_multipliers.get(enemy, 1.0))
+	return enemy.data.defense_status.effect_multiplier if enemy != null else 1.0
 
 
 # 確率差分追加
 func add_chance_delta(enemy: Enemy, value: float) -> void:
-	_chance_deltas[enemy] = float(_chance_deltas.get(enemy, 0.0)) + value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.defense_status.add_chance_delta(value)
 
 
 # 確率差分取得
 func get_chance_delta(enemy: Enemy) -> float:
-	return float(_chance_deltas.get(enemy, 0.0))
+	return enemy.data.defense_status.chance_delta if enemy != null else 0.0
 
 
 # プレイヤーダメージ追加
@@ -230,85 +227,65 @@ func queue_spawn(
 	attack_value: int,
 	inherit_skill: bool
 ) -> void:
-	var key := "%s:%s" % [source.get_instance_id(), effect.get_instance_id()] # 生成キー
-	var current_count := int(_spawn_counts.get(key, 0))
-	var allowed_count := spawn_count
-	if max_spawn_count > 0:
-		allowed_count = mini(allowed_count, maxi(0, max_spawn_count - current_count))
-	for _index in range(allowed_count):
-		var request := BattleSpawnEnemyData.new() # 生成要求
-		request.source_enemy = source
-		request.enemy_info = enemy_info
-		request.skill = source.get_enemy_skill() if inherit_skill else spawn_skill
-		request.spawn_area = spawn_area
-		request.max_hp = hp_value
-		request.current_hp = hp_value
-		request.damage = attack_value
-		_pending_spawns.append(request)
-	_spawn_counts[key] = current_count + allowed_count
+	_spawn_queue.request(source, effect, enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)
 
 
 # 生成要求消費
 func consume_spawns() -> Array[BattleSpawnEnemyData]:
-	var values: Array[BattleSpawnEnemyData] = _pending_spawns.duplicate() # 生成一覧
-	_pending_spawns.clear()
-	return values
+	return _spawn_queue.consume()
 
 
 # 追加攻撃付与
 func add_extra_attacks(enemy: Enemy, value: int) -> void:
-	_extra_attacks[enemy] = int(_extra_attacks.get(enemy, 0)) + value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.defense_status.add_extra_attacks(value)
 
 
 # 攻撃回数取得
 func get_attack_count(enemy: Enemy) -> int:
-	return maxi(0, 1 + int(_extra_attacks.get(enemy, 0)))
+	return maxi(0, 1 + enemy.data.defense_status.extra_attack_count) if enemy != null else 0
 
 
 # 攻撃無効付与
 func add_attack_guards(enemy: Enemy, value: int) -> void:
-	_attack_guards[enemy] = int(_attack_guards.get(enemy, 0)) + value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.defense_status.add_attack_guards(value)
 
 
 # 攻撃無効消費
 func consume_attack_guard(enemy: Enemy) -> bool:
-	var count := int(_attack_guards.get(enemy, 0))
-	if count <= 0:
-		return false
-	_attack_guards[enemy] = count - 1
-	return true
+	return enemy != null and enemy.data.defense_status.consume_attack_guard()
 
 
 # 消化無効付与
 func add_acid_guards(enemy: Enemy, value: int) -> void:
-	_acid_guards[enemy] = int(_acid_guards.get(enemy, 0)) + value
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.defense_status.add_acid_guards(value)
 
 
 # 消化無効消費
 func consume_acid_guard(enemy: Enemy) -> bool:
-	var count := int(_acid_guards.get(enemy, 0))
-	if count <= 0:
-		return false
-	_acid_guards[enemy] = count - 1
-	return true
+	return enemy != null and enemy.data.defense_status.consume_acid_guard()
 
 
 # 永続消化補正
 func add_permanent_acid_modifier(enemy: Enemy, delta: int, multiplier: float) -> void:
-	_permanent_acid_deltas[enemy] = int(_permanent_acid_deltas.get(enemy, 0)) + delta
-	_permanent_acid_multipliers[enemy] = float(_permanent_acid_multipliers.get(enemy, 1.0)) * multiplier
+	if enemy != null:
+		_register_enemy(enemy)
+		enemy.data.defense_status.add_permanent_acid_modifier(delta, multiplier)
 
 
 # 時刻差分追加
 func add_time_delta(seconds: int) -> void:
-	_pending_time_delta_seconds += seconds
+	_battle_clock.request_change(seconds)
 
 
 # 時刻差分消費
 func consume_time_delta_seconds() -> int:
-	var value := _pending_time_delta_seconds # 時刻差分
-	_pending_time_delta_seconds = 0
-	return value
+	return _battle_clock.consume_change()
 
 
 # 効果継承
@@ -322,13 +299,14 @@ func inherit_effects(target: Enemy, source: Enemy) -> void:
 
 # 通常攻撃設定
 func set_default_attack_disabled(enemy: Enemy, value: bool) -> void:
-	if value:
-		_default_attack_disabled[enemy] = true
+	if enemy != null and value:
+		_register_enemy(enemy)
+		enemy.data.defense_status.disable_default_attack(true)
 
 
 # 通常攻撃判定
 func is_default_attack_disabled(enemy: Enemy) -> bool:
-	return bool(_default_attack_disabled.get(enemy, false))
+	return enemy != null and enemy.data.defense_status.default_attack_disabled
 
 
 # 直近消化値設定
@@ -339,16 +317,6 @@ func set_last_acid_damage(value: int) -> void:
 # 直近消化値取得
 func get_last_acid_damage() -> int:
 	return _last_acid_damage
-
-
-# 状態取得
-func get_state(enemy: Enemy, effect: EnemyEffect, key: String, default_value: Variant) -> Variant:
-	return _states.get(_state_key(enemy, effect, key), default_value)
-
-
-# 状態設定
-func set_state(enemy: Enemy, effect: EnemyEffect, key: String, value: Variant) -> void:
-	_states[_state_key(enemy, effect, key)] = value
 
 
 # 効果発動要求
@@ -363,8 +331,7 @@ func _request_effect(
 		return
 	var runtime := EnemyEffectRuntime.new() # 実行時値
 	runtime.setup(source, enemies, stomach, effect, self, event_data)
-	effect.prepare(runtime)
-	_effect_stack.request(effect)
+	_effect_stack.request(effect, EnemyEffectLegacyActivationData.new(runtime))
 
 
 # イベント値作成
@@ -431,16 +398,11 @@ func _can_apply_for_event(enemy: Enemy, event: EnemyEffect.Event) -> bool:
 
 # modifier消去
 func _clear_modifiers() -> void:
-	_attack_deltas.clear()
-	_attack_multipliers.clear()
-	_attack_overrides.clear()
-	_max_hp_deltas.clear()
-	_max_hp_multipliers.clear()
-	_acid_damage_deltas.clear()
-	_acid_damage_multipliers.clear()
-	_effect_multipliers.clear()
-	_chance_deltas.clear()
-	_default_attack_disabled.clear()
+	for enemy in _known_enemies.keys():
+		if enemy != null and is_instance_valid(enemy):
+			enemy.data.defense_status.reset_refresh_modifiers()
+			enemy.data.attack.reset_modifiers()
+			enemy.data.hp.reset_modifiers()
 	_digestion_interval.reset()
 	_global_acid_delta = 0
 	_global_acid_multiplier = 1.0
@@ -451,17 +413,9 @@ func _apply_max_hp_modifiers(enemies: Array[Enemy]) -> void:
 	for enemy in enemies:
 		if enemy == null or enemy.is_Acided():
 			continue
-		var old_delta := int(_applied_max_hp_deltas.get(enemy, 0)) # 旧差分
-		var base_max := maxi(1, enemy.get_max_hp() - old_delta) # 基準最大HP
-		var next_max := maxi(1, roundi(float(base_max + int(_max_hp_deltas.get(enemy, 0))) * float(_max_hp_multipliers.get(enemy, 1.0))))
-		var next_delta := next_max - base_max # 新差分
-		var follow_key := "follow_hp:%s" % enemy.get_instance_id() # 追従キー
-		var hp_delta := int(_states.get(follow_key, 0)) - old_delta
-		enemy.set_hp_values(next_max, enemy.get_current_hp() + hp_delta)
-		_states[follow_key] = 0
-		_applied_max_hp_deltas[enemy] = next_delta
+		enemy.data.hp.apply_modifiers()
 
 
-# 状態キー取得
-func _state_key(enemy: Enemy, effect: EnemyEffect, key: String) -> String:
-	return "%s:%s:%s" % [enemy.get_instance_id(), effect.get_instance_id(), key]
+# 敵参照登録
+func _register_enemy(enemy: Enemy) -> void:
+	_known_enemies[enemy] = true

@@ -1,23 +1,29 @@
 class_name EnemyView
-extends Node
+extends Node2D
 
 const DEFAULT_STATUS_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
 const MAIN_EFFECT_STATUS_COLOR := Color(0.78, 0.18, 0.08, 1.0)
 
 var _enemy: Enemy # 表示対象
-var _sprite: EnemySpriteView # 敵画像
-var _hp_label: EnemyHpText # HP表示
-var _damage_label: EnemyDamageText # 攻撃表示
-var _tooltip: EnemyTooltip # 詳細表示
+@onready var _sprite: EnemySpriteView = $Sprite2D
+@onready var _hp_label: EnemyHpText = $HPText
+@onready var _damage_label: EnemyDamageText = $DamageText
+@onready var _tooltip: EnemyTooltip = $Enemy_tooltip
 
 
 # 表示初期化
-func setup(enemy: Enemy, sprite: EnemySpriteView, hp_label: EnemyHpText, damage_label: EnemyDamageText, tooltip: EnemyTooltip) -> void:
+func setup(enemy: Enemy) -> void:
 	_enemy = enemy
-	_sprite = sprite
-	_hp_label = hp_label
-	_damage_label = damage_label
-	_tooltip = tooltip
+
+
+# プレビュー画像取得
+func get_preview_texture() -> Texture2D:
+	return _sprite.texture if _sprite != null else null
+
+
+# プレビュー倍率取得
+func get_preview_scale() -> Vector2:
+	return _sprite.scale if _sprite != null else Vector2.ONE
 
 
 # 画像設定

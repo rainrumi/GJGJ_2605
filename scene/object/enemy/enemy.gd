@@ -17,14 +17,6 @@ const DEFAULT_NIGHTMARE_STOMACH_SHAPE: Array[Vector2i] = [
 	Vector2i(0, 2),
 	Vector2i(1, 2),
 ]
-# 画像表示
-@onready var sprite: EnemySpriteView = $Sprite2D
-# HP表示
-@onready var hp_label: EnemyHpText = $HPText
-# 攻撃表示
-@onready var damage_label: EnemyDamageText = $DamageText
-# 詳細表示
-@onready var tooltip: EnemyTooltip = $Enemy_tooltip
 # 敵表示
 @onready var enemy_view: EnemyView = $View
 var data := EnemyData.new() # 敵データ
@@ -82,7 +74,7 @@ var _texture_override: Texture2D
 
 # 表示準備
 func _ready() -> void:
-	enemy_view.setup(self, sprite, hp_label, damage_label, tooltip)
+	enemy_view.setup(self)
 	data.hp.changed.connect(_on_hp_changed)
 	data.attack.changed.connect(_on_attack_changed)
 
@@ -368,8 +360,6 @@ func set_hovered(value: bool) -> void:
 func set_presented(value: bool) -> void:
 	if enemy_view != null:
 		enemy_view.set_presented(value)
-	else:
-		visible = value
 
 
 # ツール表示
@@ -382,6 +372,16 @@ func show_tooltip(debug_number_text: String, debug_numbers_visible: bool) -> voi
 func hide_tooltip() -> void:
 	if enemy_view != null:
 		enemy_view.hide_tooltip()
+
+
+# プレビュー画像取得
+func get_preview_texture() -> Texture2D:
+	return enemy_view.get_preview_texture() if enemy_view != null else null
+
+
+# プレビュー倍率取得
+func get_preview_scale() -> Vector2:
+	return enemy_view.get_preview_scale() if enemy_view != null else Vector2.ONE
 # pulsecostラベル処理
 func pulse_cost_label() -> void:
 	if enemy_view != null:
@@ -568,8 +568,6 @@ func revive_with_hp_rate(hp_rate: float) -> void:
 	Aciding = false
 	set_presented(true)
 	return_to_origin()
-	scale = Vector2.ONE
-	modulate.a = 1.0
 	_update_hp_label()
 # 状態ラベルcolors更新
 func _update_status_label_colors() -> void:

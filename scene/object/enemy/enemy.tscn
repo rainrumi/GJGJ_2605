@@ -13,16 +13,16 @@
 z_index = 10
 script = ExtResource("2_script")
 
-[node name="View" type="Node" parent="."]
+[node name="View" type="Node2D" parent="."]
 editor_description = "敵表示を担当"
 script = ExtResource("8_enemy_view")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=713877918]
+[node name="Sprite2D" type="Sprite2D" parent="View" unique_id=713877918]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 texture = ExtResource("1_enemy")
 script = ExtResource("5_sprite_view")
 
-[node name="HPText" type="Label" parent="." unique_id=157147899]
+[node name="HPText" type="Label" parent="View" unique_id=157147899]
 z_index = 5
 offset_left = -37.0
 offset_top = -25.0
@@ -38,9 +38,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("6_hp_text")
 
-[node name="Enemy_tooltip" parent="." unique_id=886606580 instance=ExtResource("4_enemy_tooltip_view")]
+[node name="Enemy_tooltip" parent="View" unique_id=886606580 instance=ExtResource("4_enemy_tooltip_view")]
 
-[node name="DamageText" type="Label" parent="." unique_id=937697251]
+[node name="DamageText" type="Label" parent="View" unique_id=937697251]
 z_index = 5
 offset_left = -37.0
 offset_top = -0.5
