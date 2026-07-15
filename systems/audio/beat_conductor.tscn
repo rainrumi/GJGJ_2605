@@ -1,9 +1,8 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://dpm4cf8ncpl8m"]
 
-[ext_resource type="Script" path="res://systems/audio/beat_conductor.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://8gx1rflxnaa8" path="res://systems/audio/beat_conductor.gd" id="1_script"]
 
-[node name="BeatConductor" type="Node"]
+[node name="BeatConductor" type="Node" unique_id=1851646400]
 script = ExtResource("1_script")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-bus = &"BGM"
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=2110352408]
