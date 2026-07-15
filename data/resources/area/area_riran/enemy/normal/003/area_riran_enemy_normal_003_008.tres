@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="EnemyInfo" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bsahjsfsr1c6w"]
 
-[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
 
 [sub_resource type="Resource" id="AcidBlock"]
 script = ExtResource("2_acid_block")
 max_hp = 32
-damage = 0
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [resource]
@@ -14,4 +13,3 @@ script = ExtResource("1_enemy_info")
 skill_id = 20010003008
 display_name = "E8"
 acid_block = SubResource("AcidBlock")
-nightmare_skill_enabled = true
