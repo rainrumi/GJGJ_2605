@@ -1,6 +1,28 @@
-[gd_resource type="Resource" script_class="NightmareInfo" format=3]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://cetx78kt3moif"]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" uid="uid://c0e3s2s58ncqu" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_empty_cell_change_taken_acid_damage.gd" id="effect_5"]
+
+[sub_resource type="Resource" id="AcidBlock"]
+script = ExtResource("2_acid_block")
+max_hp = 84
+damage = 8
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
+
+[sub_resource type="Resource" id="Effect_1"]
+script = ExtResource("effect_5")
+damage_delta = 8
+
+[sub_resource type="Resource" id="MainSkill"]
+script = ExtResource("4_enemy_skill")
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
 
 [resource]
-script = ExtResource("1_script")
+script = ExtResource("1_enemy_info")
+skill_id = 16020001003
+display_name = "E3"
+acid_block = SubResource("AcidBlock")
+main_skill = SubResource("MainSkill")
