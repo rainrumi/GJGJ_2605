@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="EnemyInfo" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://25x84y03nfp"]
 
-[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_scale_target_hp.gd" id="effect_5"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_scale_target_attack.gd" id="effect_6"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" uid="uid://cx1hjyr02khap" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_scale_target_hp.gd" id="effect_5"]
+[ext_resource type="Script" uid="uid://lhlsu4l41vcc" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_scale_target_attack.gd" id="effect_6"]
 
 [sub_resource type="Resource" id="AcidBlock"]
 script = ExtResource("2_acid_block")
@@ -15,12 +15,10 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1)])
 
 [sub_resource type="Resource" id="Effect_1"]
 script = ExtResource("effect_5")
-priority = 0
 hp_multiplier = 2.0
 
 [sub_resource type="Resource" id="Effect_2"]
 script = ExtResource("effect_6")
-priority = 0
 attack_multiplier = 0.5
 
 [sub_resource type="Resource" id="MainSkill"]
@@ -33,5 +31,4 @@ skill_id = 17010008003
 display_name = "E3"
 acid_block = SubResource("AcidBlock")
 description = "隣接するモノが持つHPを2倍にし、攻撃力を半分にする。"
-nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")
