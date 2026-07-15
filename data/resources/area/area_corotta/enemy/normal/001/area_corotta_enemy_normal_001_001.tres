@@ -1,7 +1,20 @@
-[gd_resource type="Resource" script_class="NightmareInfo" format=3 uid="uid://wwkjr82376xj"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://wwkjr82376xj"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_b63sc"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_dqvbw"]
+[ext_resource type="Texture2D" uid="uid://ceejcrunogkk" path="res://art/enemy/tex_stomach_block_1000.png" id="2_sbcmc"]
+
+[sub_resource type="Resource" id="Resource_sbcmc"]
+script = ExtResource("1_dqvbw")
+max_hp = 280
+damage = 6
+texture = ExtResource("2_sbcmc")
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1), PackedInt32Array(1, 1)])
+metadata/_custom_type_script = "uid://b5wugtj6ua7hh"
 
 [resource]
 script = ExtResource("1_b63sc")
+skill_id = 10010001001
+display_name = "E1"
+acid_block = SubResource("Resource_sbcmc")
 metadata/_custom_type_script = "uid://uwuaqnofrhfp"
