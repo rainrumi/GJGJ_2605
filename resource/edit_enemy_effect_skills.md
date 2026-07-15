@@ -1,0 +1,67 @@
+# Phase1
+- resources/area/area_*/enemyの中にあるboss,endless,normal内の数字で書かれたフォルダ内のarea_*_enemy_*_*_*というファイルのEnemyInfoにuse_stage_concept.mdをもとに対応するデータを入力してください。
+## 入力ルール
+- SkillID
+  - （エリア）（ステージ難易度）（ステージ種）（ステージ内敵ID）をまとめたIDを入力します
+  ### エリア
+  - corotta
+    - 100
+  - elmena
+    - 110
+  - eramia
+    - 120
+  - felis
+    - 130
+  - gonsal
+    - 140
+  - huwahuwa
+    - 150
+  - iriyu
+    - 160
+  - lunova
+    - 170
+  - mirune
+    - 180
+  - nerix
+    - 190
+  - riran
+    - 200
+  - zaika
+    - 210
+  ### ステージ難易度
+  - boss
+    - 200
+  - endless
+    - 300
+  - normal
+    - 100
+  ## ステージ種
+  - 001,002,003…のフォルダ名をそのまま使用
+  ## ステージ内敵ID
+  - area_*_enemy_*_*_@の@の部分の数字をそのまま使用
+  - 001なら001で使用する。1で使用してはいけない。
+- DisplayName
+  - use_stage_concept.mdの対応するSTのE/E*の部分の名称を使用
+  - ST1/E/E1ならE1。ST5/E/E3ならE3を入力する。
+- AcidBlock
+  - AcidBlockInfoをリソース内で作成
+  ### MaxHp
+    - E*内のHP @の@部分を入力
+  ### Damage
+    - E*内のAT @の@部分を入力
+  ### Texture
+    - 未入力でOK
+  ### StomachShape
+    - E*内の*マス*を参考に入力
+    - 二次配列のように入力する
+    - 2*2の四角ならサイズは2。[0]はサイズ2で[0]=1,[1]=1。[1]は[0]=1,[1]=1
+    - 2*3のL字ならサイズは3。[0]はサイズ2で[0]=1,[1]=0,[1]はサイズ2で[0]=1,[1]=0,[2]はサイズ2で[0]=1,[1]=1
+  ### Description
+    - 説明を書きます。今は書かないでください
+  ### NightmareSkillEnabled
+    - Trueで固定
+  ### MainSkill
+    - E*の中にあるSKをもとにEnemySkillからスキルを実装できるクラスのEnemyEffectを組み合わせて実装
+    - priorityは全て0で良い
+## 入力例
+- area_corotta_enemy_normal_001_001.tresは既に入力されているサンプルです。
