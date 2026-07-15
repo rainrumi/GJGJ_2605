@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_b63sc"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_dqvbw"]
 [ext_resource type="Texture2D" uid="uid://ceejcrunogkk" path="res://art/enemy/tex_stomach_block_1000.png" id="2_sbcmc"]
+[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_bkfqw"]
+[ext_resource type="Script" uid="uid://63gxgkmrcowd" path="res://scene/main/game/enemy/skill/special/enemy_effect_on_touch_acid_line_progress_time_take_acid_damage.gd" id="4_5t7p3"]
+[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="5_646y7"]
 
 [sub_resource type="Resource" id="Resource_sbcmc"]
 script = ExtResource("1_dqvbw")
@@ -12,9 +15,19 @@ texture = ExtResource("2_sbcmc")
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1), PackedInt32Array(1, 1)])
 metadata/_custom_type_script = "uid://b5wugtj6ua7hh"
 
+[sub_resource type="Resource" id="Resource_6q7qy"]
+script = ExtResource("4_5t7p3")
+metadata/_custom_type_script = "uid://63gxgkmrcowd"
+
+[sub_resource type="Resource" id="Resource_6jtym"]
+script = ExtResource("5_646y7")
+effects = Array[ExtResource("3_bkfqw")]([SubResource("Resource_6q7qy")])
+metadata/_custom_type_script = "uid://baxftffqfh10a"
+
 [resource]
 script = ExtResource("1_b63sc")
 skill_id = 10010001001
 display_name = "E1"
 acid_block = SubResource("Resource_sbcmc")
+main_skill = SubResource("Resource_6jtym")
 metadata/_custom_type_script = "uid://uwuaqnofrhfp"

@@ -11,19 +11,9 @@ extends Resource
 @export_multiline var description := ""
 # スキル有無
 @export var nightmare_skill_enabled := true
-# スキル
-@export var skill: EnemySkill
 # メインスキル
 @export var main_skill: EnemySkill
-# サブスキル
-@export var sub_skill: EnemySkill
-
 
 # メイン定義取得
 func get_main_skill_definition() -> EnemySkill:
-	return main_skill if main_skill != null else skill
-
-
-# サブ定義取得
-func get_sub_skill_definition() -> EnemySkill:
-	return sub_skill if sub_skill != null else skill
+	return main_skill

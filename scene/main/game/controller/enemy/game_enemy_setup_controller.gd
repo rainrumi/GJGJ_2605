@@ -121,7 +121,7 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 
 # stageスキル有効
 func _is_stage_nightmare_skill_enabled(source_skill: EnemyInfo) -> bool:
-	return source_skill != null and source_skill.skill != null
+	return source_skill != null and source_skill.main_skill != null
 
 
 # 悪夢胃袋サイズ取得

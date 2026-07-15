@@ -14,6 +14,7 @@
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_kr1fv")
 texture = ExtResource("2_lfupt")
+stomach_shape = null
 
 [sub_resource type="Resource" id="Resource_main_effect_1"]
 script = ExtResource("skill_acid_rate")

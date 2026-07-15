@@ -27,7 +27,6 @@ func setup(info: EnemyInfo, maximum_hp: int, attack_value: int, use_main_skill: 
 	main_skill_active = use_main_skill
 	skills_enabled = enable_skills
 	main_skill = _duplicate_skill(info.get_main_skill_definition() if info != null else null)
-	sub_skill = _duplicate_skill(info.get_sub_skill_definition() if info != null else null)
 	skills_changed.emit()
 
 
