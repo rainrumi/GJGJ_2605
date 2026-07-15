@@ -1,8 +1,16 @@
 # Phase1
 - resources/area/area_*/enemyの中にあるboss,endless,normal内の数字で書かれたフォルダ内のarea_*_enemy_*_*_*というファイルのEnemyInfoにuse_stage_concept.mdをもとに対応するデータを入力してください。
 ## 入力ルール
+- 対応するエリア
+  - use_stage_conceptには4つのエリア情報しかないため、この4つのみのエリア情報を入力してください。
+  - 各エリアのSTはnormalとbossのエリア情報が入っています。
+  - 各エリアの4の倍数に当たるSTはbossです。
+  - 4の倍数以外がnormal。
+  - (例)normal1～3はST1～3。normal4～6はST5～7。boss1,2,3はST4,8,12。
+  - endlessは作成していないので入力しなくて構いません。
+
 - SkillID
-  - （エリア）（ステージ難易度）（ステージ種）（ステージ内敵ID）をまとめたIDを入力します
+  - （エリア）（ステージ難易度）（ステージ種）（ステージ内敵ID）をまとめたIDを入力します。
   ### エリア
   - corotta
     - 100
