@@ -94,16 +94,16 @@ func get_presenter() -> EnemyPresenter:
 
 # setup処理
 func setup(nightmare_info: EnemyInfo, target_size: Vector2, has_effect := false, start_position_override := Vector2.INF, skill_enabled_override := true) -> void:
-	data.skill_info = nightmare_info
+	data.definition = nightmare_info
 	seed_info = null
-	data.nightmare_skill_enabled = skill_enabled_override
-	data.has_main_effect = has_effect and data.nightmare_skill_enabled
+	data.skills_enabled = skill_enabled_override
+	data.main_skill_active = has_effect and data.skills_enabled
 	data.setup(
 		nightmare_info,
 		_get_nightmare_max_hp(),
 		_get_nightmare_damage(),
-		data.has_main_effect,
-		data.nightmare_skill_enabled
+		data.main_skill_active,
+		data.skills_enabled
 	)
 	acid_damage_taken_multiplier = 1.0
 	acid_damage_global_multiplier = 1.0
@@ -146,8 +146,8 @@ func reset_for_battle() -> void:
 func get_display_name() -> String:
 	if seed_info != null and not seed_info.display_name.is_empty():
 		return seed_info.display_name
-	if data.skill_info != null and not data.skill_info.display_name.is_empty():
-		return data.skill_info.display_name
+	if data.definition != null and not data.definition.display_name.is_empty():
+		return data.definition.display_name
 	return ""
 
 
@@ -168,12 +168,12 @@ func get_seed() -> SeedInfo:
 
 # 悪夢スキル判定
 func has_nightmare_skill() -> bool:
-	return data.skill_info != null
+	return data.definition != null
 
 
 # 悪夢スキル取得
 func get_nightmare_skill() -> EnemyInfo:
-	return data.skill_info
+	return data.definition
 
 
 # 敵skill取得
@@ -203,7 +203,7 @@ func should_count_for_battle_clear() -> bool:
 
 # shouldapply悪夢スキル処理
 func should_apply_nightmare_skill() -> bool:
-	return is_nightmare() and data.nightmare_skill_enabled
+	return is_nightmare() and data.skills_enabled
 
 
 # shoulddealplayerダメ処理
@@ -478,9 +478,9 @@ func _get_texture() -> Texture2D:
 
 # nightmareblock取得
 func _get_nightmare_block() -> AcidBlockInfo:
-	if data.skill_info == null:
+	if data.definition == null:
 		return null
-	return data.skill_info.acid_block
+	return data.definition.acid_block
 
 
 # nightmareHP取得
@@ -513,13 +513,13 @@ func _get_nightmare_stomach_shape() -> Array[Vector2i]:
 	return block.get_stomach_shape() if block != null else DEFAULT_NIGHTMARE_STOMACH_SHAPE.duplicate()
 # categoryname取得
 func get_category_name() -> String:
-	return EnemyTooltipFormatter.get_category_name(data.has_main_effect, data.skill_info)
+	return EnemyTooltipFormatter.get_category_name(data.main_skill_active, data.definition)
 # categorydetail取得
 func get_category_detail() -> String:
-	return EnemyTooltipFormatter.get_category_detail(data.has_main_effect, data.skill_info)
+	return EnemyTooltipFormatter.get_category_detail(data.main_skill_active, data.definition)
 # maineffect文言取得
 func get_main_effect_text() -> String:
-	return EnemyTooltipFormatter.get_main_effect_text(data.has_main_effect, data.skill_info)
+	return EnemyTooltipFormatter.get_main_effect_text(data.main_skill_active, data.definition)
 # subeffect文言取得
 func get_sub_effect_text() -> String:
 	return "-"
@@ -568,4 +568,4 @@ func revive_with_hp_rate(hp_rate: float) -> void:
 	_update_hp_label()
 # 状態ラベルcolors更新
 func _update_status_label_colors() -> void:
-	_presenter.update_status_colors(data.has_main_effect)
+	_presenter.update_status_colors(data.main_skill_active)

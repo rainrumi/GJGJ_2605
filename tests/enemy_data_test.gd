@@ -35,6 +35,12 @@ func _run() -> void:
 	first.attack.add_value(2)
 	_expect(second.hp.current == 20, "HP変更を他個体へ漏らさない")
 	_expect(second.attack.value == 5, "攻撃変更を他個体へ漏らさない")
+	var enemy := Enemy.new() # Enemy経由の個体
+	enemy.setup(definition, Vector2.ONE, true, Vector2.ZERO, true)
+	_expect(enemy.data.definition == definition, "Enemyが敵定義をEnemyDataへ保持する")
+	_expect(enemy.data.main_skill_active, "Enemyがメインスキル状態をEnemyDataへ保持する")
+	_expect(enemy.data.skills_enabled, "Enemyがスキル有効状態をEnemyDataへ保持する")
+	enemy.free()
 	first.unbind_skills()
 	second.unbind_skills()
 	quit(_failures)

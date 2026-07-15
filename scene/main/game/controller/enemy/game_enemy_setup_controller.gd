@@ -46,7 +46,7 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 			enemy.set_presented(false)
 			enemy.Acided = true
 			enemy.Aciding = false
-			enemy.has_main_effect = false
+			enemy.data.main_skill_active = false
 			continue
 		# 元データスキル
 		var source_skill := _enemy_preset.enemies[i]
