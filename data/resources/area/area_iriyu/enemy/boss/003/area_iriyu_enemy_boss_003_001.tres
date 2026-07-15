@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="EnemyInfo" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bgnqwdvsyfx2b"]
 
-[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/adjacent_event/enemy_effect_on_adjacent_object_digested_revive.gd" id="effect_5"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" uid="uid://bm6rx36j1jjpr" path="res://scene/main/game/enemy/skill/adjacent_event/enemy_effect_on_adjacent_object_digested_revive.gd" id="effect_5"]
 
 [sub_resource type="Resource" id="AcidBlock"]
 script = ExtResource("2_acid_block")
@@ -14,7 +14,6 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(0, 1, 0), PackedInt32A
 
 [sub_resource type="Resource" id="Effect_1"]
 script = ExtResource("effect_5")
-priority = 0
 recovery_rate = 0.5
 
 [sub_resource type="Resource" id="MainSkill"]
@@ -26,5 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16020003001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
-nightmare_skill_enabled = true
+description = "隣接するモノが消化された時、最大HP50%のHPを回復し、復活させる。"
 main_skill = SubResource("MainSkill")

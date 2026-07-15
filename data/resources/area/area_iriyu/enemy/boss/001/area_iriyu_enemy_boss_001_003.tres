@@ -25,4 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16020001003
 display_name = "E3"
 acid_block = SubResource("AcidBlock")
+description = "何も設置されていない胃袋マスに隣接している時、自身の消化ダメージを8×隣接数増やす。"
 main_skill = SubResource("MainSkill")

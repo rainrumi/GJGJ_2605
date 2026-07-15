@@ -25,4 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16020001002
 display_name = "E2"
 acid_block = SubResource("AcidBlock")
+description = "隣接するモノの体力を100増やす。"
 main_skill = SubResource("MainSkill")

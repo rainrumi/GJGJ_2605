@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="NightmarePresetInfo" format=3 uid="uid://dlx07m46n8g50"]
+[gd_resource type="Resource" script_class="EnemyPresetInfo" format=3 uid="uid://dlx07m46n8g50"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_0m42e"]
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/enemy/enemy_preset_info.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/resources/area/area_iriyu/enemy/normal/001/area_iriyu_enemy_normal_001_001.tres" id="2_enemy_001"]
-[ext_resource type="Resource" path="res://data/resources/area/area_iriyu/enemy/normal/001/area_iriyu_enemy_normal_001_002.tres" id="2_enemy_002"]
+[ext_resource type="Resource" uid="uid://oqkv8fdr3pm" path="res://data/resources/area/area_iriyu/enemy/normal/001/area_iriyu_enemy_normal_001_001.tres" id="2_enemy_001"]
+[ext_resource type="Resource" uid="uid://chqu5rj2ybpew" path="res://data/resources/area/area_iriyu/enemy/normal/001/area_iriyu_enemy_normal_001_002.tres" id="2_enemy_002"]
 
 [resource]
 script = ExtResource("1_script")

@@ -25,4 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16020001004
 display_name = "E4"
 acid_block = SubResource("AcidBlock")
+description = "隣接するモノが提供する効果量を2倍にする。"
 main_skill = SubResource("MainSkill")

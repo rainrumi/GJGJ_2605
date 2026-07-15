@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="EnemyInfo" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://tutb8iblrmo4"]
 
-[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/adjacent_event/enemy_effect_on_adjacent_enemy_acid_recover_self.gd" id="effect_5"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/adjacent_event/enemy_effect_on_adjacent_enemy_acid_recover_victim.gd" id="effect_6"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" uid="uid://bx2poiapcsjpr" path="res://scene/main/game/enemy/skill/adjacent_event/enemy_effect_on_adjacent_enemy_acid_recover_self.gd" id="effect_5"]
+[ext_resource type="Script" uid="uid://cyfr53qo0ryyr" path="res://scene/main/game/enemy/skill/adjacent_event/enemy_effect_on_adjacent_enemy_acid_recover_victim.gd" id="effect_6"]
 
 [sub_resource type="Resource" id="AcidBlock"]
 script = ExtResource("2_acid_block")
@@ -15,12 +15,10 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(0, 1, 0), PackedInt32A
 
 [sub_resource type="Resource" id="Effect_1"]
 script = ExtResource("effect_5")
-priority = 0
 recovery_per_adjacent = 30
 
 [sub_resource type="Resource" id="Effect_2"]
 script = ExtResource("effect_6")
-priority = 0
 recovery_per_adjacent = 30
 
 [sub_resource type="Resource" id="MainSkill"]
@@ -32,5 +30,4 @@ script = ExtResource("1_enemy_info")
 skill_id = 16010004001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
-nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")
