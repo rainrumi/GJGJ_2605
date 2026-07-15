@@ -2,10 +2,6 @@ class_name EnemyEffectOnElapsedTimeChangeMaxHpAndRecover
 extends EnemyEffectOnTimeProgressed
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_progress_time(self)
-
 # 発動秒数
 @export_range(1, 86400, 1) var interval_seconds := 60
 # 最大HP差分

@@ -50,7 +50,7 @@ var digestion_processor := EnemyDigestionProcessor.new() # 消化進行
 var attack_resolver := EnemyAttackResolver.new() # 攻撃処理
 var turn_processor := EnemyTurnProcessor.new() # ターン処理
 var acid_controller := EnemyController.new()
-var enemy_presenter := EnemyPresenter.new() # 敵表示仲介
+var enemy_presenter := EnemyPresentationCoordinator.new() # 敵表示調整
 var seed_controller := GameSeedController.new()
 var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
@@ -80,7 +80,7 @@ func _ready() -> void:
 	attack_resolver.setup(seed_effects, enemy_effects, EnemyController.ACID_DAMAGE)
 	turn_processor.setup(seed_effects, enemy_effects, digestion_interval, battle_clock, digestion_state, EnemyController.STEP_MINUTES)
 	enemy_presenter.setup(attack_resolver)
-	digestion_processor.setup(digestion_resolver, enemy_effects, enemy_presenter)
+	digestion_processor.setup(digestion_resolver, enemy_effects, enemy_presenter, digestion_state)
 	acid_controller.setup(digestion_resolver, attack_resolver, turn_processor, enemy_effects, digestion_processor)
 	enemy_setup.setup(self, input_controller, stomach)
 	seed_controller.setup(self, stomach, input_controller)

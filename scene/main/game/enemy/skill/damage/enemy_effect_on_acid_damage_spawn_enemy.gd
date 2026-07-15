@@ -2,10 +2,6 @@ class_name EnemyEffectOnAcidDamageSpawnEnemy
 extends EnemyEffectOnSelfAfterAcidDamage
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_after_acid_damage(self)
-
 
 var spawn_queue: EnemySpawnQueue # 効果依存
 

@@ -90,6 +90,11 @@ func _exit_tree() -> void:
 	_presenter.unbind()
 
 
+# 表示仲介取得
+func get_presenter() -> EnemyPresenter:
+	return _presenter
+
+
 # setup処理
 func setup(nightmare_info: EnemyInfo, target_size: Vector2, has_effect := false, start_position_override := Vector2.INF, skill_enabled_override := true) -> void:
 	skill_info = nightmare_info
@@ -115,8 +120,7 @@ func setup(nightmare_info: EnemyInfo, target_size: Vector2, has_effect := false,
 	if start_position_override != Vector2.INF:
 		origin_position = start_position_override
 	position = origin_position
-	if enemy_view != null:
-		enemy_view.setup_texture(_get_texture(), target_size)
+	_presenter.setup_texture(_get_texture(), target_size)
 	reset_for_battle()
 
 
@@ -296,9 +300,9 @@ func set_stomach_footprint_override(size: Vector2i, shape: Array[Vector2i], cell
 # 画像override設定
 func set_texture_override(texture: Texture2D, target_size: Vector2) -> void:
 	_texture_override = texture
-	if enemy_view == null or _texture_override == null:
+	if _texture_override == null:
 		return
-	enemy_view.setup_texture(_texture_override, target_size)
+	_presenter.setup_texture(_texture_override, target_size)
 	_reset_visuals()
 # setupasoneセル胃袋ブロック処理
 func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
@@ -340,9 +344,7 @@ func setup_as_seed_stomach_block(seed: SeedInfo, target_size: Vector2) -> void:
 
 # 胃袋displayサイズ更新
 func update_stomach_display_size(target_size: Vector2) -> void:
-	if enemy_view == null:
-		return
-	enemy_view.update_display_size(target_size)
+	_presenter.update_display_size(target_size)
 # applygravity判定
 func can_apply_gravity() -> bool:
 	return not gravity_locked
@@ -362,60 +364,54 @@ func return_to_origin() -> void:
 	position = origin_position
 # hovered設定
 func set_hovered(value: bool) -> void:
-	if enemy_view != null:
-		enemy_view.set_hovered(value)
+	_presenter.set_hovered(value)
 
 
 # 表示状態設定
 func set_presented(value: bool) -> void:
-	if enemy_view != null:
-		enemy_view.set_presented(value)
+	_presenter.set_presented(value)
 
 
 # ツール表示
 func show_tooltip(debug_number_text: String, debug_numbers_visible: bool) -> void:
-	if enemy_view != null:
-		enemy_view.show_tooltip(debug_number_text, debug_numbers_visible)
+	_presenter.show_tooltip(debug_number_text, debug_numbers_visible)
 
 
 # ツール非表示
 func hide_tooltip() -> void:
-	if enemy_view != null:
-		enemy_view.hide_tooltip()
+	_presenter.hide_tooltip()
 
 
 # プレビュー画像取得
 func get_preview_texture() -> Texture2D:
-	return enemy_view.get_preview_texture() if enemy_view != null else null
+	return _presenter.get_preview_texture()
 
 
 # プレビュー倍率取得
 func get_preview_scale() -> Vector2:
-	return enemy_view.get_preview_scale() if enemy_view != null else Vector2.ONE
+	return _presenter.get_preview_scale()
 # pulsecostラベル処理
 func pulse_cost_label() -> void:
-	if enemy_view != null:
-		enemy_view.pulse_hp()
+	_presenter.present_hp_pulse()
 # pulseダメージ処理
 func pulse_damage() -> void:
-	if enemy_view != null:
-		enemy_view.pulse_damage()
+	_presenter.present_damage_pulse()
 # take消化ダメージ処理
 func take_acid_damage(amount: int, show_popup := true) -> bool:
-	if show_popup and enemy_view != null:
-		enemy_view.show_damage_popup(amount)
+	if show_popup:
+		_presenter.present_damage_popup(amount)
 	if data.hp.take_damage(amount):
 		set_Acided(true)
 		return true
 	return false
 # 消化ダメージvalues表示
 func show_acid_damage_values(damage_values: Array) -> void:
-	if enemy_view != null:
-		enemy_view.show_damage_values(damage_values)
+	_presenter.present_damage_values(damage_values)
 # globalrect取得
 func get_global_rect() -> Rect2:
-	if enemy_view != null:
-		return enemy_view.get_global_rect()
+	var presented_rect := _presenter.get_global_rect() # 表示矩形
+	if presented_rect.size != Vector2.ZERO:
+		return presented_rect
 	return Rect2(global_position - Vector2(25.0, 25.0), Vector2(50.0, 50.0))
 # grabセル取得
 func get_grab_cell(mouse_position: Vector2) -> Vector2i:
@@ -461,22 +457,18 @@ func _get_nearest_shape_cell(target_cell: Vector2i) -> Vector2i:
 	return nearest_cell
 # 消化済みトゥイーン再生
 func _play_Acided_tween() -> void:
-	if enemy_view != null:
-		enemy_view.play_digested()
+	_presenter.present_digested()
 # visuals初期化
 func _reset_visuals() -> void:
-	if enemy_view != null:
-		enemy_view.reset_visuals()
+	_presenter.reset_visuals()
 # HPラベル更新
 func _update_hp_label() -> void:
-	if enemy_view != null:
-		enemy_view.show_hp(current_hp)
+	_presenter.present_hp(current_hp)
 # displayダメージ設定
 func set_display_damage(value: int) -> void: display_damage_override = maxi(0, value); _update_damage_label()
 # ダメージラベル更新
 func _update_damage_label() -> void:
-	if enemy_view != null:
-		enemy_view.show_damage(get_display_damage())
+	_presenter.present_attack(get_display_damage())
 # 画像取得
 func _get_texture() -> Texture2D:
 	if _texture_override != null:
@@ -579,5 +571,4 @@ func revive_with_hp_rate(hp_rate: float) -> void:
 	_update_hp_label()
 # 状態ラベルcolors更新
 func _update_status_label_colors() -> void:
-	if enemy_view != null:
-		enemy_view.update_status_colors(has_main_effect)
+	_presenter.update_status_colors(has_main_effect)

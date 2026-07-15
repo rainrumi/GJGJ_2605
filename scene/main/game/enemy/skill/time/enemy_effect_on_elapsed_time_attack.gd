@@ -2,11 +2,6 @@ class_name EnemyEffectOnElapsedTimeAttack
 extends EnemyEffectOnTimeProgressed
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_default_attack_refresh(self, suppress_default_attack)
-	installer.connect_progress_time(self)
-
 
 var player_health: PlayerHealth # 効果依存
 
@@ -30,6 +25,11 @@ func clear_dependencies() -> void:
 @export var suppress_default_attack := false
 # ダメージ参照元
 @export var damage_source: EnemyEffect.ValueSource = EnemyEffect.ValueSource.SELF_ATTACK
+
+
+# 通常攻撃停止判定
+func suppresses_default_attack() -> bool:
+	return suppress_default_attack
 
 # 効果適用
 func apply() -> void:

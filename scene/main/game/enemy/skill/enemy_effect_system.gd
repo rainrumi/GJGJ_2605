@@ -42,7 +42,8 @@ func setup(
 		_acid_modifiers,
 		_digestion_state,
 		_inheritance,
-		_effect_stack
+		_effect_stack,
+		_refresh_processor
 	)
 
 
@@ -66,10 +67,9 @@ func refresh(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	_installer.sync(enemies, stomach)
 	_refresh_processor.clear_refresh_modifiers()
 	_reset_global_modifiers()
-	var activation := RefreshActivationData.new() # 更新発動値
-	_installer.queue_refresh_preprocess(activation)
+	_refresh_processor.request_preprocess()
 	_effect_stack.execute()
-	_installer.queue_refresh(activation)
+	_refresh_processor.request_refresh()
 	_effect_stack.execute()
 	_refresh_processor.apply_max_hp_modifiers(enemies)
 
@@ -102,76 +102,6 @@ func prepare(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 # 効果要求実行
 func execute() -> void:
 	_effect_stack.execute()
-
-
-# 消化前効果実行
-func prepare_acid_damage(target: Enemy, damage: int) -> int:
-	var activation := BeforeAcidDamageActivationData.new(damage, 0, target.data, target) # 消化前値
-	_installer.queue_before_acid_damage(activation)
-	execute()
-	return activation.amount
-
-
-# 消化後効果実行
-func notify_acid_damage_applied(target: Enemy, damage: int, overkill: int) -> void:
-	var activation := AfterAcidDamageActivationData.new(damage, overkill, target.data, target) # 消化後値
-	_installer.queue_after_acid_damage(activation)
-	execute()
-
-
-# 隣接被弾効果実行
-func notify_adjacent_acid_damage(target: Enemy, damage: int, overkill: int) -> void:
-	var activation := AdjacentAcidDamageActivationData.new(damage, overkill, target.data, target) # 隣接被弾値
-	_installer.queue_adjacent_acid_damage(activation)
-	execute()
-
-
-# 時間効果実行
-func notify_progress_time(elapsed_seconds: int, current_seconds: int) -> void:
-	_installer.queue_progress_time(ProgressTimeActivationData.new(elapsed_seconds, current_seconds))
-	execute()
-
-
-# 消化効果実行
-func notify_digested(
-	target: Enemy,
-	damage: int,
-	overkill: int,
-	elapsed_seconds: int,
-	current_seconds: int,
-	digested_enemies: Array[Enemy]
-) -> void:
-	var activation := DigestedActivationData.new() # 消化発動値
-	activation.setup(target, damage, overkill, elapsed_seconds, current_seconds, digested_enemies)
-	_installer.queue_digested(activation)
-	execute()
-
-
-# 消化群効果実行
-func notify_digestion_batch(
-	elapsed_seconds: int,
-	current_seconds: int,
-	digested_enemies: Array[Enemy]
-) -> void:
-	var activation := AnyDigestedActivationData.new() # 消化群値
-	activation.setup(null, 0, 0, elapsed_seconds, current_seconds, digested_enemies)
-	_installer.queue_any_digested(activation)
-	execute()
-
-
-# 隣接消化効果実行
-func notify_adjacent_digested(
-	target: Enemy,
-	elapsed_seconds: int,
-	current_seconds: int,
-	digested_enemies: Array[Enemy]
-) -> void:
-	var activation := AdjacentDigestedActivationData.new() # 隣接消化値
-	activation.setup(target, 0, 0, elapsed_seconds, current_seconds, digested_enemies)
-	_installer.queue_adjacent_digested(activation)
-	execute()
-
-
 
 
 # 敵一覧登録

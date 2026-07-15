@@ -2,10 +2,6 @@ class_name EnemyEffectOnClockCountRecoverHp
 extends EnemyEffectOnTimeProgressed
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_progress_time(self)
-
 # 必要回数
 @export_range(1, 10000, 1) var required_count := 1
 # 回復量

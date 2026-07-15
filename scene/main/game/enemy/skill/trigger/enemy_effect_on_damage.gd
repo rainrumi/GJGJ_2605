@@ -1,5 +1,26 @@
 class_name EnemyEffectOnDamage
-extends EnemyEffect
+extends EnemyNodeEffect
+
+var _damage_targets: Array[Enemy] = [] # 被弾Signal対象
+
+
+# 被弾Trigger設定
+func setup_damage_triggers(enemies: Array[Enemy]) -> void:
+	_damage_targets.assign(enemies)
+
+
+# 対象Node取得
+func find_damage_target(target_data: EnemyData) -> Enemy:
+	for enemy in _damage_targets:
+		if enemy != null and enemy.data == target_data:
+			return enemy
+	return null
+
+
+# 発動Signal解除
+func unbind_triggers() -> void:
+	super.unbind_triggers()
+	_damage_targets.clear()
 
 
 # 被弾発動値取得

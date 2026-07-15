@@ -1,6 +1,9 @@
 class_name EnemyEffectRefreshProcessor
 extends RefCounted
 
+signal preprocess_requested(data: RefreshActivationData)
+signal refresh_requested(data: RefreshActivationData)
+
 var _known_enemies: Dictionary = {} # 戦闘参加敵
 
 
@@ -28,6 +31,20 @@ func clear_refresh_modifiers() -> void:
 			enemy.data.defense_status.reset_refresh_modifiers()
 			enemy.data.attack.reset_modifiers()
 			enemy.data.hp.reset_modifiers()
+
+
+# 更新前要求
+func request_preprocess() -> RefreshActivationData:
+	var data := RefreshActivationData.new() # 更新前発動値
+	preprocess_requested.emit(data)
+	return data
+
+
+# 更新要求
+func request_refresh() -> RefreshActivationData:
+	var data := RefreshActivationData.new() # 更新発動値
+	refresh_requested.emit(data)
+	return data
 
 
 # 最大HP補正適用

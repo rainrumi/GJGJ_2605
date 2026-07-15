@@ -2,10 +2,6 @@ class_name EnemyEffectOnAdjacentEnemyAcidRecoverSelf
 extends EnemyEffectOnAdjacentAcidDamage
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_adjacent_acid_damage(self)
-
 
 # 隣接毎回復量
 @export var recovery_per_adjacent := 0

@@ -16,6 +16,12 @@ func set_time(elapsed: int, current: int) -> void:
 	progressed.emit(elapsed_seconds, current_seconds)
 
 
+# 時刻状態同期
+func sync_time(elapsed: int, current: int) -> void:
+	elapsed_seconds = maxi(0, elapsed)
+	current_seconds = maxi(0, current)
+
+
 # 時刻差分追加
 func request_change(delta_seconds: int) -> void:
 	_pending_delta_seconds += delta_seconds

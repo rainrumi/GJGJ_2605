@@ -2,10 +2,6 @@ class_name EnemyEffectOnAcidDamageCountTakeAcidDamage
 extends EnemyEffectOnSelfAfterAcidDamage
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_after_acid_damage(self)
-
 
 var digestion_state: EnemyDigestionState # 効果依存
 

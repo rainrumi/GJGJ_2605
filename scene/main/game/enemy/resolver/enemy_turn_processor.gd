@@ -70,7 +70,7 @@ func get_step_minutes_breakdown(
 func begin_turn(enemies: Array[Enemy], stomach: StomachBoard, minutes: int) -> void:
 	_enemy_effects.refresh(enemies, stomach)
 	_enemy_effects.prepare(enemies, stomach)
-	_battle_clock.set_time(_step_minutes * 60, minutes * 60)
+	_battle_clock.sync_time(_step_minutes * 60, minutes * 60)
 	for enemy in enemies:
 		if not enemy.is_Acided() and enemy.can_take_stomach_turn():
 			enemy.data.stomach_status.add_elapsed_minutes(_step_minutes)
@@ -88,16 +88,27 @@ func progress_time(
 	var current_seconds := minutes * 60 # 現在秒数
 	_enemy_effects.prepare(enemies, stomach)
 	_battle_clock.set_time(elapsed_seconds, current_seconds)
-	_enemy_effects.notify_progress_time(elapsed_seconds, current_seconds)
+	_enemy_effects.execute()
 	var digested_enemies := _digestion_state.consume() # 時間消化一覧
+	var digested_data := _to_enemy_data(digested_enemies) # 消化データ一覧
 	for enemy in digested_enemies:
-		_enemy_effects.notify_digested(enemy, 0, 0, elapsed_seconds, current_seconds, digested_enemies)
-		_enemy_effects.notify_adjacent_digested(enemy, elapsed_seconds, current_seconds, digested_enemies)
-	_enemy_effects.notify_digestion_batch(elapsed_seconds, current_seconds, digested_enemies)
+		enemy.data.stomach_status.publish_digestion(0, 0, elapsed_seconds, current_seconds, digested_data)
+		_enemy_effects.execute()
+	_digestion_state.complete_batch(elapsed_seconds, current_seconds, digested_data)
+	_enemy_effects.execute()
 	_enemy_effects.refresh(enemies, stomach)
 	var result := build_result(digested_enemies) # 時間効果結果
 	result.player_damage_values = _enemy_effects.consume_player_damage()
 	return result
+
+
+# 敵データ変換
+func _to_enemy_data(enemies: Array[Enemy]) -> Array[EnemyData]:
+	var values: Array[EnemyData] = [] # 変換結果
+	for enemy in enemies:
+		if enemy != null:
+			values.append(enemy.data)
+	return values
 
 
 # ターン結果構築

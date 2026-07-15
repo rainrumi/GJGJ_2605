@@ -2,11 +2,6 @@ class_name EnemyEffectOnElapsedTimeGrantExtraAttack
 extends EnemyEffectOnTimeProgressed
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_default_attack_refresh(self, suppress_default_attack)
-	installer.connect_progress_time(self)
-
 
 var enemies: Array[Enemy] = [] # 効果依存
 var stomach: StomachBoard # 効果依存
@@ -37,6 +32,11 @@ func clear_dependencies() -> void:
 @export_range(0, 64, 1) var stack_limit := 1
 # 通常攻撃停止
 @export var suppress_default_attack := false
+
+
+# 通常攻撃停止判定
+func suppresses_default_attack() -> bool:
+	return suppress_default_attack
 
 # 効果適用
 func apply() -> void:

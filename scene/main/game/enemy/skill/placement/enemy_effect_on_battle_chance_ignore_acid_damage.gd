@@ -2,10 +2,6 @@
 extends EnemyEffectOnSelfBeforeAcidDamage
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_before_acid_damage(self)
-
 # 無効率
 @export_range(0.0, 1.0, 0.01) var chance := 1.0
 # 失敗率扱い

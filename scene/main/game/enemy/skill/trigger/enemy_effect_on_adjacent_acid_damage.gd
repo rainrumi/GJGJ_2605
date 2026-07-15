@@ -1,12 +1,7 @@
 class_name EnemyEffectOnAdjacentAcidDamage
-extends EnemyEffectOnDamage
+extends EnemyEffectOnAfterAcidDamage
 
 var enemies: Array[Enemy] = [] # 判定対象一覧
-
-
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_adjacent_acid_damage(self)
 
 
 # 隣接被弾判定

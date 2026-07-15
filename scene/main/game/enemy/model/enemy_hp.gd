@@ -5,6 +5,8 @@ signal changed(current_value: int, maximum_value: int)
 signal damaged(amount: int)
 signal healed(amount: int)
 signal depleted
+signal damage_requested(request: EnemyDamageRequest)
+signal damage_resolved(amount: int, overkill: int)
 
 var maximum := 1 # 最大HP
 var current := 1 # 現在HP
@@ -45,13 +47,23 @@ func set_current(value: int) -> void:
 		depleted.emit()
 
 
+# ダメージ要求作成
+func request_damage(amount: int, target: EnemyData) -> EnemyDamageRequest:
+	var request := EnemyDamageRequest.new(amount, target) # 可変要求
+	damage_requested.emit(request)
+	return request
+
+
 # ダメージ適用
 func take_damage(amount: int) -> bool:
+	var requested := maxi(0, amount) # 要求量
+	var before := current # 適用前HP
 	var applied := maxi(0, mini(current, amount)) # 適用量
-	current = maxi(0, current - maxi(0, amount))
+	current = maxi(0, current - requested)
 	if applied > 0:
 		damaged.emit(applied)
 	changed.emit(current, maximum)
+	damage_resolved.emit(requested, maxi(0, requested - before))
 	if current == 0:
 		depleted.emit()
 		return true

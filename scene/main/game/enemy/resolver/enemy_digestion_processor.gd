@@ -3,40 +3,37 @@ extends RefCounted
 
 var _resolver: EnemyDigestionResolver # 消化計算
 var _enemy_effects: EnemyEffectSystem # 効果実行
-var _presenter: EnemyPresenter # 結果表示
+var _presenter: EnemyPresentationCoordinator # 結果表示
+var _digestion_state: EnemyDigestionState # 消化一括Signal元
 
 
 # 依存関係設定
 func setup(
 	resolver: EnemyDigestionResolver,
 	enemy_effects: EnemyEffectSystem,
-	presenter: EnemyPresenter
+	presenter: EnemyPresentationCoordinator,
+	digestion_state: EnemyDigestionState
 ) -> void:
 	_resolver = resolver
 	_enemy_effects = enemy_effects
 	_presenter = presenter
+	_digestion_state = digestion_state
 
 
 # 消化処理実行
 func process(input: EnemyDigestionInput) -> EnemyDigestionBatchResult:
 	var batch := _resolver.create_results(input) # 計算結果
 	_enemy_effects.prepare(input.enemies, input.stomach)
+	_presenter.sync(input.enemies)
 	for result in batch.results:
-		var damage := _enemy_effects.prepare_acid_damage(result.enemy, result.total_damage) # 補正後消化値
-		_resolver.apply_result(result, damage)
+		var request := _resolver.request_damage(result) # 消化要求
+		_enemy_effects.execute()
+		_resolver.apply_result(result, request.amount if request != null else result.total_damage)
+		_enemy_effects.execute()
 		batch.received_damage[result.enemy] = result.total_damage
 		_presenter.present_digestion_result(result)
-		_enemy_effects.notify_acid_damage_applied(
-			result.enemy,
-			result.total_damage,
-			result.overkill_damage
-		)
-		_enemy_effects.notify_adjacent_acid_damage(
-			result.enemy,
-			result.total_damage,
-			result.overkill_damage
-		)
 	var candidates := _resolver.collect_digested(input, batch) # 消化候補
+	var candidate_data := _to_enemy_data(candidates) # 消化候補データ
 	var final_digested: Array[Enemy] = [] # 最終消化一覧
 	for enemy in candidates:
 		var result := batch.find_result(enemy) # 対象結果
@@ -45,14 +42,14 @@ func process(input: EnemyDigestionInput) -> EnemyDigestionBatchResult:
 			0,
 			damage - int(batch.turn_start_hp.get(enemy, 0))
 		) # 超過値
-		_enemy_effects.notify_digested(
-			enemy,
+		enemy.data.stomach_status.publish_digestion(
 			damage,
 			overkill,
 			input.elapsed_minutes * 60,
 			input.minutes * 60,
-			candidates
+			candidate_data
 		)
+		_enemy_effects.execute()
 		if not enemy.is_Acided():
 			if result != null:
 				result.was_digested = false
@@ -60,16 +57,19 @@ func process(input: EnemyDigestionInput) -> EnemyDigestionBatchResult:
 		_resolver.apply_seed_block_effects(input, enemy, batch, candidates)
 		final_digested.append(enemy)
 	batch.digested_enemies = final_digested
-	_enemy_effects.notify_digestion_batch(
+	_digestion_state.complete_batch(
 		input.elapsed_minutes * 60,
 		input.minutes * 60,
-		final_digested
+		_to_enemy_data(final_digested)
 	)
-	for enemy in final_digested:
-		_enemy_effects.notify_adjacent_digested(
-			enemy,
-			input.elapsed_minutes * 60,
-			input.minutes * 60,
-			final_digested
-		)
+	_enemy_effects.execute()
 	return batch
+
+
+# 敵データ変換
+func _to_enemy_data(enemies: Array[Enemy]) -> Array[EnemyData]:
+	var values: Array[EnemyData] = [] # 変換結果
+	for enemy in enemies:
+		if enemy != null:
+			values.append(enemy.data)
+	return values

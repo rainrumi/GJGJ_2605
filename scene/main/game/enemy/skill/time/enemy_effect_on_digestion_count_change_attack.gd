@@ -1,10 +1,6 @@
 class_name EnemyEffectOnDigestionCountChangeAttack
-extends EnemyEffectOnDigested
+extends EnemyEffectOnDigestionBatch
 
-
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_any_digested(self)
 
 # 必要消化数
 @export_range(1, 10000, 1) var required_count := 1

@@ -1,10 +1,6 @@
 class_name EnemyEffectOnNotAdjacentAcidLineChangeHp
-extends EnemyEffect
+extends EnemyEffectOnRefresh
 
-
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_refresh(self)
 
 
 var stomach: StomachBoard # 効果依存

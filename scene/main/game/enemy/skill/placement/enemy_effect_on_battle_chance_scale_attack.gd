@@ -1,10 +1,6 @@
 ﻿class_name EnemyEffectOnBattleChanceScaleAttack
-extends EnemyEffect
+extends EnemyEffectOnRefresh
 
-
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_refresh(self)
 
 # 攻撃倍率
 @export var attack_multiplier := 1.0

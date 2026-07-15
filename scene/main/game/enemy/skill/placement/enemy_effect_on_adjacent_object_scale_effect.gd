@@ -1,23 +1,19 @@
 class_name EnemyEffectOnAdjacentObjectScaleEffect
-extends EnemyEffect
+extends EnemyEffectOnRefreshPreprocess
 
-
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_refresh_preprocess(self)
 
 
 var enemies: Array[Enemy] = [] # 効果…1035 tokens truncated…果依存
 
 
-# プレイヤーHP設定
-func setup_player_health(value: PlayerHealth) -> void:
-	player_health = value
+# 敵一覧設定
+func setup_enemies(value: Array[Enemy]) -> void:
+	enemies = value
 
 
 # 依存関係解除
 func clear_dependencies() -> void:
-	player_health = null
+	enemies = []
 
 # 効果倍率
 @export var effect_multiplier := 1.0

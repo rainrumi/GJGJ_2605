@@ -2,10 +2,6 @@ class_name EnemyEffectOnAdjacentObjectTransferAcidDamage
 extends EnemyEffectOnSelfBeforeAcidDamage
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_before_acid_damage(self)
-
 
 var enemies: Array[Enemy] = [] # 効果依存
 var digestion_state: EnemyDigestionState # 効果依存

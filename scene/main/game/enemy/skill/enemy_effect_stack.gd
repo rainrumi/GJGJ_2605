@@ -86,6 +86,6 @@ func _report_chain_limit(request_value: EnemyEffectRequest) -> void:
 	var owner_name := "<unknown>" # 所有者名
 	if request_value != null and request_value.effect != null:
 		effect_name = request_value.effect.get_script().resource_path
-		if request_value.effect.source != null:
-			owner_name = request_value.effect.source.name
+		if request_value.effect.owner != null and request_value.effect.owner.definition != null:
+			owner_name = request_value.effect.owner.definition.display_name
 	push_error("EnemyEffectの連鎖上限を超過: effect=%s owner=%s sequence=%d" % [effect_name, owner_name, request_value.sequence if request_value != null else -1])

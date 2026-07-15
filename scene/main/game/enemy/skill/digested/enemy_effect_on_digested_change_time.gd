@@ -2,10 +2,6 @@ class_name EnemyEffectOnDigestedChangeTime
 extends EnemyEffectOnSelfDigested
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_digested(self)
-
 
 var battle_clock: BattleClock # 効果依存
 

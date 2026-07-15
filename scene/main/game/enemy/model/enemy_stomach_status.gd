@@ -5,6 +5,13 @@ signal placement_changed(is_placed: bool)
 signal digested
 signal revived
 signal elapsed_changed(minutes: int)
+signal digestion_resolved(
+	damage: int,
+	overkill: int,
+	elapsed_seconds: int,
+	current_seconds: int,
+	digested_enemies: Array[EnemyData]
+)
 
 var is_digesting := false # 消化中
 var is_digested := false # 消化済み
@@ -62,3 +69,20 @@ func add_elapsed_minutes(value: int) -> void:
 # 復活記録
 func record_revive() -> void:
 	revive_count += 1
+
+
+# 消化結果通知
+func publish_digestion(
+	damage: int,
+	overkill: int,
+	elapsed_seconds: int,
+	current_seconds: int,
+	digested_enemies: Array[EnemyData]
+) -> void:
+	digestion_resolved.emit(
+		maxi(0, damage),
+		maxi(0, overkill),
+		maxi(0, elapsed_seconds),
+		maxi(0, current_seconds),
+		digested_enemies
+	)

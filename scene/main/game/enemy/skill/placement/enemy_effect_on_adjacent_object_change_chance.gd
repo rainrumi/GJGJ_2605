@@ -1,10 +1,6 @@
 class_name EnemyEffectOnAdjacentObjectChangeChance
-extends EnemyEffect
+extends EnemyEffectOnRefreshPreprocess
 
-
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_refresh_preprocess(self)
 
 
 var enemies: Array[Enemy] = [] # 効果依存

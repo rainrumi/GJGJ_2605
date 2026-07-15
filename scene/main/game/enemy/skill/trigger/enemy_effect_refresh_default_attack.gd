@@ -1,5 +1,5 @@
 class_name EnemyEffectRefreshDefaultAttack
-extends EnemyEffect
+extends EnemyEffectOnRefresh
 
 var disabled := false # 通常攻撃停止
 

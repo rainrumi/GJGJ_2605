@@ -2,10 +2,6 @@ class_name EnemyEffectOnClockCountTakeAcidDamage
 extends EnemyEffectOnTimeProgressed
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_progress_time(self)
-
 
 var digestion_state: EnemyDigestionState # 効果依存
 

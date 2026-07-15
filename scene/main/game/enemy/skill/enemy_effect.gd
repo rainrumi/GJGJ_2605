@@ -49,15 +49,23 @@ enum ValueSource {
 var state := EnemyEffectState.new() # 個体効果状態
 var _activation_data: EnemyEffectActivationData # 発動時値
 var owner: EnemyData # 効果所有データ
-var source: Enemy # 効果所有者
 var effect_stack: EnemyEffectStack # 効果スタック
 
 
-# 所有者設定
-func bind_owner(owner_node: Enemy, stack: EnemyEffectStack) -> void:
-	source = owner_node
-	owner = owner_node.data if owner_node != null else null
+# 所有データ設定
+func bind_owner(owner_data: EnemyData, stack: EnemyEffectStack) -> void:
+	owner = owner_data
 	effect_stack = stack
+
+
+# 発動Signal接続
+func bind() -> void:
+	pass
+
+
+# 発動Signal解除
+func unbind_triggers() -> void:
+	pass
 
 
 # 依存関係解除
@@ -82,11 +90,11 @@ func end_activation() -> void:
 
 # 要求可能判定
 func can_request(data: EnemyEffectActivationData) -> bool:
-	if not enabled or source == null or not is_instance_valid(source) or data == null or not data.is_valid():
+	if not enabled or owner == null or data == null or not data.is_valid():
 		return false
-	if not source.should_apply_nightmare_skill():
+	if not owner.skills_enabled:
 		return false
-	var lifecycle_allowed := not source.is_Acided() or can_activate_when_owner_digested()
+	var lifecycle_allowed := not owner.stomach_status.is_digested or can_activate_when_owner_digested()
 	return lifecycle_allowed and accepts_activation(data)
 
 
@@ -103,9 +111,9 @@ func accepts_activation(_data: EnemyEffectActivationData) -> bool:
 # 接続解除
 func unbind(clear_state := true) -> void:
 	_activation_data = null
+	unbind_triggers()
 	clear_dependencies()
 	owner = null
-	source = null
 	effect_stack = null
 	if clear_state:
 		state.clear()
@@ -113,11 +121,6 @@ func unbind(clear_state := true) -> void:
 
 # 効果適用
 func apply() -> void:
-	pass
-
-
-# 発動Signal接続
-func bind_triggers(_installer: EnemyEffectInstaller) -> void:
 	pass
 
 
@@ -149,11 +152,11 @@ func resolve_value_from(
 	data: EnemyEffectActivationData
 ) -> int:
 	match source_type:
-		ValueSource.SELF_CURRENT_HP: return source.get_current_hp()
-		ValueSource.SELF_MAX_HP: return source.get_max_hp()
-		ValueSource.SELF_ATTACK: return source.data.attack.get_modified_value(source.get_damage())
-		ValueSource.DIGESTED_MINUTES: return source.stomach_elapsed_minutes if source != null else 0
-		ValueSource.LOST_HP: return maxi(0, source.get_max_hp() - source.get_current_hp())
+		ValueSource.SELF_CURRENT_HP: return owner.hp.current if owner != null else 0
+		ValueSource.SELF_MAX_HP: return owner.hp.maximum if owner != null else 0
+		ValueSource.SELF_ATTACK: return owner.attack.get_modified_value(owner.attack.get_value()) if owner != null else 0
+		ValueSource.DIGESTED_MINUTES: return owner.stomach_status.elapsed_minutes if owner != null else 0
+		ValueSource.LOST_HP: return maxi(0, owner.hp.maximum - owner.hp.current) if owner != null else 0
 		ValueSource.FIXED: return fixed_value
 	return get_event_value(source_type, data)
 

@@ -2,10 +2,6 @@ class_name EnemyEffectOnDigestedSpawnEnemy
 extends EnemyEffectOnSelfDigested
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_digested(self)
-
 
 var spawn_queue: EnemySpawnQueue # 効果依存
 

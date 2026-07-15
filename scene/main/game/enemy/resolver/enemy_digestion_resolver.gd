@@ -89,6 +89,13 @@ func apply_result(result: EnemyDigestionResult, damage: int) -> void:
 	result.was_digested = result.enemy.take_acid_damage(result.total_damage, false)
 
 
+# ダメージ要求作成
+func request_damage(result: EnemyDigestionResult) -> EnemyDamageRequest:
+	if result == null or result.enemy == null:
+		return null
+	return result.enemy.data.hp.request_damage(result.total_damage, result.enemy.data)
+
+
 # 消化候補取得
 func collect_digested(
 	input: EnemyDigestionInput,

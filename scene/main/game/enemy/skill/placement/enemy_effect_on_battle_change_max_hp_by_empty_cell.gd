@@ -1,10 +1,6 @@
 class_name EnemyEffectOnBattleChangeMaxHpByEmptyCell
-extends EnemyEffect
+extends EnemyEffectOnRefresh
 
-
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_refresh(self)
 
 
 var enemies: Array[Enemy] = [] # 効果依存

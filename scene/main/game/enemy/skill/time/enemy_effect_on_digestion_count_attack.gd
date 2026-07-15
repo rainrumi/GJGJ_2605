@@ -1,10 +1,6 @@
 class_name EnemyEffectOnDigestionCountAttack
-extends EnemyEffectOnDigested
+extends EnemyEffectOnDigestionBatch
 
-
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_any_digested(self)
 
 
 var player_health: PlayerHealth # 効果依存

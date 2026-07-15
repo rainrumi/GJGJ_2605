@@ -2,10 +2,6 @@
 extends EnemyEffectOnSelfBeforeAcidDamage
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_before_acid_damage(self)
-
 # 閾値
 @export var threshold := 0
 # 閾値参照元

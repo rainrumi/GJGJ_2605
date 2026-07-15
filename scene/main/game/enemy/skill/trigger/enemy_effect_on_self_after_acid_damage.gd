@@ -1,15 +1,11 @@
 class_name EnemyEffectOnSelfAfterAcidDamage
-extends EnemyEffectOnDamage
-
-
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_after_acid_damage(self)
+extends EnemyEffectOnAfterAcidDamage
 
 
 # 自身被弾判定
 func accepts_activation(data: EnemyEffectActivationData) -> bool:
-	return get_activation_target_from(data) == source
+	var damage_data := get_damage_activation_from(data) # 被弾発動値
+	return damage_data != null and damage_data.target == owner
 
 
 # 消化後発動許可

@@ -1,14 +1,8 @@
 class_name EnemyPresenter
 extends RefCounted
 
-var _attack_resolver: EnemyAttackResolver # 攻撃値計算
 var _model: EnemyData # 敵モデル
 var _view: EnemyView # 敵表示
-
-
-# 依存関係設定
-func setup(attack_resolver: EnemyAttackResolver) -> void:
-	_attack_resolver = attack_resolver
 
 
 # Model表示接続
@@ -84,19 +78,117 @@ func _on_revived() -> void:
 
 # 消化結果表示
 func present_digestion_result(result: EnemyDigestionResult) -> void:
-	if result == null or result.enemy == null or result.enemy.enemy_view == null:
+	if result == null or result.enemy == null or result.enemy.data != _model or _view == null:
 		return
-	result.enemy.enemy_view.show_damage_values(result.damage_values)
+	_view.show_damage_values(result.damage_values)
 
 
-# 攻撃表示更新
-func refresh_attack_displays(
-	enemies: Array[Enemy],
-	stomach: StomachBoard,
-	minutes := 0
-) -> void:
-	for enemy in enemies:
-		if enemy == null or enemy.is_Acided():
-			continue
-		var display_damage := _attack_resolver.get_enemy_attack_damage(enemy, enemies, stomach, minutes) # 表示攻撃値
-		enemy.set_display_damage(display_damage)
+# 攻撃表示反映
+func present_attack(value: int) -> void:
+	if _view != null:
+		_view.show_damage(value)
+
+
+# 攻撃表示値設定
+func set_attack_display(value: int) -> void:
+	if _model != null:
+		_model.attack.set_display_override(maxi(0, value))
+
+
+# HP表示反映
+func present_hp(value: int) -> void:
+	if _view != null:
+		_view.show_hp(value)
+
+
+# 消化表示反映
+func present_digested() -> void:
+	if _view != null:
+		_view.play_digested()
+
+
+# 画像設定
+func setup_texture(texture: Texture2D, target_size: Vector2) -> void:
+	if _view != null:
+		_view.setup_texture(texture, target_size)
+
+
+# 表示サイズ更新
+func update_display_size(target_size: Vector2) -> void:
+	if _view != null:
+		_view.update_display_size(target_size)
+
+
+# 表示状態設定
+func set_presented(value: bool) -> void:
+	if _view != null:
+		_view.set_presented(value)
+
+
+# ホバー設定
+func set_hovered(value: bool) -> void:
+	if _view != null:
+		_view.set_hovered(value)
+
+
+# ツール表示
+func show_tooltip(debug_text: String, debug_visible: bool) -> void:
+	if _view != null:
+		_view.show_tooltip(debug_text, debug_visible)
+
+
+# ツール非表示
+func hide_tooltip() -> void:
+	if _view != null:
+		_view.hide_tooltip()
+
+
+# プレビュー画像取得
+func get_preview_texture() -> Texture2D:
+	return _view.get_preview_texture() if _view != null else null
+
+
+# プレビュー倍率取得
+func get_preview_scale() -> Vector2:
+	return _view.get_preview_scale() if _view != null else Vector2.ONE
+
+
+# HP強調
+func present_hp_pulse() -> void:
+	if _view != null:
+		_view.pulse_hp()
+
+
+# 被弾強調
+func present_damage_pulse() -> void:
+	if _view != null:
+		_view.pulse_damage()
+
+
+# 被弾値表示
+func present_damage_popup(amount: int) -> void:
+	if _view != null:
+		_view.show_damage_popup(amount)
+
+
+# 被弾一覧表示
+func present_damage_values(values: Array) -> void:
+	if _view != null:
+		_view.show_damage_values(values)
+
+
+# 表示矩形取得
+func get_global_rect() -> Rect2:
+	return _view.get_global_rect() if _view != null else Rect2()
+
+
+# 見た目初期化
+func reset_visuals() -> void:
+	if _view != null:
+		_view.reset_visuals()
+
+
+# 状態色更新
+func update_status_colors(has_main_effect: bool) -> void:
+	if _view != null:
+		_view.update_status_colors(has_main_effect)

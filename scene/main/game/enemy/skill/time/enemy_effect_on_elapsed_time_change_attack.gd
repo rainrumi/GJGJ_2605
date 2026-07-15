@@ -2,10 +2,6 @@ class_name EnemyEffectOnElapsedTimeChangeAttack
 extends EnemyEffectOnTimeProgressed
 
 
-# 発動Signal接続
-func bind_triggers(installer: EnemyEffectInstaller) -> void:
-	installer.connect_progress_time(self)
-
 # 発動秒数
 @export_range(1, 86400, 1) var interval_seconds := 60
 # 攻撃差分
