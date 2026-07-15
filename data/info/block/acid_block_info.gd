@@ -4,7 +4,6 @@ extends Resource
 @export var max_hp := 1
 @export var damage := 0
 @export var texture: Texture2D
-@export var stomach_size := Vector2i.ONE
 @export var stomach_shape: Array[Vector2i] = [Vector2i.ZERO]
 
 
@@ -16,11 +15,6 @@ func get_max_hp() -> int:
 # ダメージ取得
 func get_damage() -> int:
 	return maxi(0, damage)
-
-
-# 胃袋サイズ取得
-func get_stomach_size() -> Vector2i:
-	return Vector2i(maxi(1, stomach_size.x), maxi(1, stomach_size.y))
 
 
 # 胃袋形状取得
