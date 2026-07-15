@@ -26,5 +26,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 20010009002
 display_name = "E2"
 acid_block = SubResource("AcidBlock")
+description = "E1が消化時に受けた消化ダメージ以下のダメージを無効化する。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

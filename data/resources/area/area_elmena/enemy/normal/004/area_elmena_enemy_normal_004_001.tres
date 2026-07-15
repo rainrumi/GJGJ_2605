@@ -27,5 +27,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 11010004001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "胃袋の中で3時間経過するたびに999消化ダメージを受ける。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

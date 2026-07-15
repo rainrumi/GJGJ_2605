@@ -28,5 +28,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010009003
 display_name = "E3"
 acid_block = SubResource("AcidBlock")
+description = "時間経過時に攻撃を行わない。胃袋の中で10分経過するたびに隣接するモノのHPを100回復する。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

@@ -31,5 +31,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 20020002004
 display_name = "E4"
 acid_block = SubResource("AcidBlock")
+description = "ダメージを受けた時、消化時に隣接するモノにダメージを与える寄生型悪夢を生成する。（最大2マス）"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

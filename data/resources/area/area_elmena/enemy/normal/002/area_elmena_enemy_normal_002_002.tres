@@ -27,5 +27,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 11010002002
 display_name = "E2"
 acid_block = SubResource("AcidBlock")
+description = "時刻が4回進むたびに50消化ダメージを受ける。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

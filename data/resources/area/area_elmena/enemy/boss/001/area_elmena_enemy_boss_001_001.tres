@@ -27,5 +27,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 11020001001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "時刻が6回進むたびに悪夢ダメージ80の攻撃を行う。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

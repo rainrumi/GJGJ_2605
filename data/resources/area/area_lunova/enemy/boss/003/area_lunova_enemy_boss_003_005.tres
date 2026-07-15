@@ -25,5 +25,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 17020003005
 display_name = "E5"
 acid_block = SubResource("AcidBlock")
+description = "消化されたとき、隣接するモノに自身の攻撃力と同等の消化ダメージを与える。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

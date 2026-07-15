@@ -32,5 +32,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010008003
 display_name = "E3"
 acid_block = SubResource("AcidBlock")
+description = "隣接するモノが持つHPを2倍にし、攻撃力を半分にする。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

@@ -25,5 +25,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 11010008005
 display_name = "E5"
 acid_block = SubResource("AcidBlock")
+description = "消化されたとき、ほかのモノが存在する場合最大HPで復活する。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

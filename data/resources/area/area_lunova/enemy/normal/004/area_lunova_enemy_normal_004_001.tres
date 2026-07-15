@@ -27,5 +27,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010004001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "胃袋の中で時間が経過するたびに、胃袋マスに存在する他のモノひとつに攻撃時に追加で攻撃を1回行う効果[災禍]を付与する。この効果は重複しない。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

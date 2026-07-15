@@ -28,5 +28,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 11020003005
 display_name = "E5"
 acid_block = SubResource("AcidBlock")
+description = "胃袋の中でモノの消化が3回されるたびに胃袋マスに存在するすべてのモノに消化ダメージ1を6回与える。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

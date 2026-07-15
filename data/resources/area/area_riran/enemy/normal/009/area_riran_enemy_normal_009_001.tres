@@ -29,5 +29,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 20010009001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "消化された時、この悪夢が最後に受けた消化ダメージ以下のダメージを無効化するスキルを持った寄生型悪夢を生成する。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

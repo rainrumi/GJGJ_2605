@@ -27,5 +27,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 17020002001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "消化された時に同じステータスで復活する。この効果は1%の確率で無効化される。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

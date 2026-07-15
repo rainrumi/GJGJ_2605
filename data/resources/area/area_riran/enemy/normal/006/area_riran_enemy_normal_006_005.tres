@@ -29,5 +29,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 20010006005
 display_name = "E5"
 acid_block = SubResource("AcidBlock")
+description = "消化された時に受けた超過ダメージ分のATを持つ寄生型悪夢を生成する。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

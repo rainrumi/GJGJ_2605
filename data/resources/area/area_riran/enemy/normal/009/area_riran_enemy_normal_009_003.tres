@@ -26,5 +26,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 20010009003
 display_name = "E3"
 acid_block = SubResource("AcidBlock")
+description = "10×胃袋マスに存在するモノの数の時間（分）を消化間隔に追加する。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

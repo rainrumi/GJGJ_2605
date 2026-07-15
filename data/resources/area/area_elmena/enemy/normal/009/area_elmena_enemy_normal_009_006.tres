@@ -26,5 +26,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 11010009006
 display_name = "E6"
 acid_block = SubResource("AcidBlock")
+description = "隣接するモノが持つ最大HPを200増やす。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

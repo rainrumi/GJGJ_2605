@@ -29,5 +29,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 20020001005
 display_name = "E5"
 acid_block = SubResource("AcidBlock")
+description = "消化された合計時間（分）の体力を持った寄生型悪夢を生成する。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

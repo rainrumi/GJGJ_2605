@@ -31,5 +31,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 20020002002
 display_name = "E2"
 acid_block = SubResource("AcidBlock")
+description = "消化された時、埋まってない胃袋マスに寄生型悪夢を生成する。（最大4マス）"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

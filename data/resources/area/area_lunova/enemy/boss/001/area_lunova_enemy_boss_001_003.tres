@@ -28,5 +28,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 17020001003
 display_name = "E3"
 acid_block = SubResource("AcidBlock")
+description = "消化ダメージを受けたとき、全ての胃袋マスに存在するモノの体力を777回復する。この効果は40%の確率で無効化される。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

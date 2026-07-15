@@ -27,5 +27,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 11010005002
 display_name = "E2"
 acid_block = SubResource("AcidBlock")
+description = "胃袋の中で1時間経過するたびにHPを最大HP50%のHP回復する"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

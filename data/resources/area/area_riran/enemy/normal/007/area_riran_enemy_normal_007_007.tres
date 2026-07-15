@@ -29,5 +29,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 20010007007
 display_name = "E7"
 acid_block = SubResource("AcidBlock")
+description = "消化された時、HP80と強力な増殖スキルを持つ寄生型悪夢を生成する。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

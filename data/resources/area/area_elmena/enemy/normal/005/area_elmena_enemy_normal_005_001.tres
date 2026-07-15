@@ -27,5 +27,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 11010005001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "胃袋の中で30分経過するたびに攻撃力が5上がる。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

@@ -34,5 +34,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010006001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "隣接するモノの攻撃力を20増やし、自身の攻撃力を20減らす。この効果はひとつのモノにつき1回まで発動する。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

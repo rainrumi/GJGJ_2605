@@ -26,5 +26,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010007001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "自身のHPを100×何も設置されていない消化マスの数増やす"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

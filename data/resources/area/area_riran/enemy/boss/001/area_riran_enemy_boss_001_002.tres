@@ -26,5 +26,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 20020001002
 display_name = "E2"
 acid_block = SubResource("AcidBlock")
+description = "消化された時、時刻を10分経過させる。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

@@ -26,5 +26,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 20020002001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "時間が経過した時、自身の攻撃力バフを5×場に存在するモノの数で上書きする"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

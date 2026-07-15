@@ -27,5 +27,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 11010007005
 display_name = "E5"
 acid_block = SubResource("AcidBlock")
+description = "自身が受けた消化ダメージの半分を隣接する一番HPが少ない敵に譲渡する。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")

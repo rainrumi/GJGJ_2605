@@ -33,5 +33,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 17020003001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "消化されたとき、胃袋内から吐き出されて新しい悪夢[E2]に生まれ変わる。胃袋の端に隣接しているとき、時間が経過するたびに胃袋マスに接触している何らかのモノに200消化ダメージを与える。"
 nightmare_skill_enabled = true
 main_skill = SubResource("MainSkill")
