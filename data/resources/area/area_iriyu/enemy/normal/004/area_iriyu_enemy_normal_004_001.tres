@@ -30,4 +30,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16010004001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "隣接する悪夢が消化ダメージを受けた時、その悪夢と自身のHPを隣接数×30回復する。"
 main_skill = SubResource("MainSkill")

@@ -25,4 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16010003001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "胃袋に隣接している時、自身の消化間隔を10×接触数の割合増やす。"
 main_skill = SubResource("MainSkill")

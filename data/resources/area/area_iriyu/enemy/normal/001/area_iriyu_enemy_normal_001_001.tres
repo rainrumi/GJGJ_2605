@@ -25,4 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16010001001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "消化ラインに接触している時、時間が経過するたびに10×接触数の消化ダメージを受ける。"
 main_skill = SubResource("MainSkill")

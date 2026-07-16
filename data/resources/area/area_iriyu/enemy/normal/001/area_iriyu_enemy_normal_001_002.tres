@@ -25,4 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16010001002
 display_name = "E2"
 acid_block = SubResource("AcidBlock")
+description = "胃袋に隣接している時、自身の攻撃力を8×隣接数下げる。"
 main_skill = SubResource("MainSkill")
