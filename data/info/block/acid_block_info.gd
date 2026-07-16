@@ -17,6 +17,14 @@ func get_damage() -> int:
 	return maxi(0, damage)
 
 
+# 胃袋サイズ取得
+func get_stomach_size() -> Vector2i:
+	var width := 1
+	for row: PackedInt32Array in stomach_shape:
+		width = maxi(width, row.size())
+	return Vector2i(width, maxi(1, stomach_shape.size()))
+
+
 # 胃袋形状取得
 func get_stomach_shape() -> Array[Vector2i]:
 	# 形状
