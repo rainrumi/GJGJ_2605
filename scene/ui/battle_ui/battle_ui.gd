@@ -6,6 +6,8 @@ signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
+signal nightmare_previous_page_requested
+signal nightmare_next_page_requested
 signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
@@ -17,6 +19,8 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 @onready var time_view: TimeView = $TimeView
 @onready var acid_button: AcidButton = $AcidButton
 @onready var debug_panel: DebugPanel = $DebugPanel
+@onready var nightmare_previous_page_button: Button = $NightmarePreviousPageButton
+@onready var nightmare_next_page_button: Button = $NightmareNextPageButton
 
 var _rest_minutes := 30
 var _rest_hp_rate := 0.1
@@ -179,6 +183,12 @@ func set_acid_button_visible(is_visible: bool) -> void:
 	acid_button.set_button_visible(is_visible)
 
 
+# 悪夢ページ移動ボタン表示設定
+func set_nightmare_page_navigation(has_previous: bool, has_next: bool) -> void:
+	nightmare_previous_page_button.visible = has_previous
+	nightmare_next_page_button.visible = has_next
+
+
 # 消化ボタンhit判定
 func is_acid_button_hit(mouse_position: Vector2) -> bool:
 	return acid_button.is_hit(mouse_position)
@@ -217,6 +227,8 @@ func show_hp_damage_values(damage_values: Array[int]) -> void:
 func _connect_child_signals() -> void:
 	
 	acid_button.Acidion_requested.connect(_on_Acidion_requested)
+	nightmare_previous_page_button.pressed.connect(_on_nightmare_previous_page_requested)
+	nightmare_next_page_button.pressed.connect(_on_nightmare_next_page_requested)
 	
 	debug_panel.debug_message_requested.connect(_on_debug_message_requested)
 	debug_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
@@ -298,6 +310,16 @@ func _on_tooltip_hide_requested(view: Object) -> void:
 # 消化開始要求
 func _on_Acidion_requested() -> void:
 	Acidion_requested.emit()
+
+
+# 前の悪夢ページ要求
+func _on_nightmare_previous_page_requested() -> void:
+	nightmare_previous_page_requested.emit()
+
+
+# 次の悪夢ページ要求
+func _on_nightmare_next_page_requested() -> void:
+	nightmare_next_page_requested.emit()
 
 # -----------------------------------------------------------
 

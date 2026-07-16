@@ -167,6 +167,7 @@ func cancel_battle() -> void:
 	acid_turn_in_progress = false
 	_clear_scheduled_acid_events()
 	_update_auto_acid_timer()
+	_refresh_nightmare_page_navigation()
 
 
 # 胃袋列取得
@@ -182,6 +183,8 @@ func get_stomach_rows() -> int:
 # UI接続
 func _connect_ui() -> void:
 	ui.Acidion_requested.connect(_on_Acidion_requested)
+	ui.nightmare_previous_page_requested.connect(_on_nightmare_previous_page_requested)
+	ui.nightmare_next_page_requested.connect(_on_nightmare_next_page_requested)
 	ui.debug_message_requested.connect(_on_debug_message_requested)
 	ui.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	ui.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
@@ -275,6 +278,26 @@ func _on_Acidion_requested() -> void:
 		stomach.apply_gravity(enemies)
 	_refresh_ui()
 	_advance_acid_turn()
+
+
+# 前の悪夢ページ要求
+func _on_nightmare_previous_page_requested() -> void:
+	if not battle_active or not enemy_setup.has_previous_enemy_page():
+		return
+	_set_hovered_enemy(null)
+	if enemy_setup.show_previous_enemy_page(enemies):
+		_play_click_se()
+		_refresh_nightmare_page_navigation()
+
+
+# 次の悪夢ページ要求
+func _on_nightmare_next_page_requested() -> void:
+	if not battle_active or not enemy_setup.has_next_enemy_page():
+		return
+	_set_hovered_enemy(null)
+	if enemy_setup.show_next_enemy_page(enemies):
+		_play_click_se()
+		_refresh_nightmare_page_navigation()
 # イベント処理
 func _on_Acidion_timer_timeout() -> void:
 	if not auto_acid_enabled or auto_acid_paused_for_drag:
@@ -496,6 +519,7 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	if damage > 0:
 		ui.show_hp_damage_values(damage_values)
 		hp = maxi(0, hp - damage)
+	enemy_setup.refresh_enemy_page_visibility(enemies)
 	_refresh_after_battle_event()
 # advance消化turn処理
 func _advance_acid_turn() -> void:
@@ -658,7 +682,16 @@ func _refresh_ui() -> void:
 	enemy_presenter.refresh_attack_displays(enemies, stomach, minutes)
 	_refresh_acid_ui()
 	_refresh_status_ui()
+	_refresh_nightmare_page_navigation()
 	_refresh_hover_tooltip()
+
+
+# 悪夢ページ移動表示更新
+func _refresh_nightmare_page_navigation() -> void:
+	ui.set_nightmare_page_navigation(
+		battle_active and enemy_setup.has_previous_enemy_page(),
+		battle_active and enemy_setup.has_next_enemy_page()
+	)
 
 
 # 消化UI更新

@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://dmb2qmc7m87fa" path="res://scene/ui/battle_ui/button/acid/acid_button.tscn" id="33_acid_button_scene"]
 [ext_resource type="PackedScene" uid="uid://b6fh1poo6sv5f" path="res://scene/ui/battle_ui/debug/debug_panel.tscn" id="34_status_panel_scene"]
 [ext_resource type="PackedScene" uid="uid://dnxj6x3i60rbc" path="res://scene/ui/seed/seed_button_list/seed_button_list.tscn" id="41_seed_button_list_scene"]
+[ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="42_battle_button_scene"]
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
@@ -79,5 +80,25 @@ offset_right = 155.0
 offset_bottom = 342.0
 
 [node name="AcidButton" parent="UI" unique_id=75896202 instance=ExtResource("33_acid_button_scene")]
+
+[node name="NightmarePreviousPageButton" parent="UI" instance=ExtResource("42_battle_button_scene")]
+visible = false
+offset_left = 350.0
+offset_top = 179.0
+offset_right = 382.0
+offset_bottom = 211.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "←"
+
+[node name="NightmareNextPageButton" parent="UI" instance=ExtResource("42_battle_button_scene")]
+visible = false
+offset_left = 606.0
+offset_top = 179.0
+offset_right = 638.0
+offset_bottom = 211.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "→"
 
 [node name="DebugPanel" parent="UI" unique_id=1605446388 instance=ExtResource("34_status_panel_scene")]

@@ -7,6 +7,7 @@ const ENEMY_BOTTOM_Y := 252.5
 const ENEMY_LEFT_X := 425.0
 const ENEMY_CENTER_X := 500.0
 const ENEMY_RIGHT_X := 575.0
+const ENEMIES_PER_PAGE := 6
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 const DEFAULT_NIGHTMARE_STOMACH_SIZE := Vector2i(2, 3)
 
@@ -14,6 +15,7 @@ var _owner: Node
 var _input_controller: GameInputController
 var _stomach: StomachBoard
 var _enemy_preset: EnemyPresetInfo
+var _current_enemy_page := 0
 
 
 # setup処理
@@ -31,15 +33,47 @@ func setup(
 
 # setup敵処理
 func setup_enemies(enemies: Array[Enemy]) -> void:
+	_current_enemy_page = 0
 	if _enemy_preset != null and not _enemy_preset.enemies.is_empty():
 		_setup_preset_enemies(enemies)
 		return
 
+
+# 前の悪夢ページ表示
+func show_previous_enemy_page(enemies: Array[Enemy]) -> bool:
+	if not has_previous_enemy_page():
+		return false
+	_current_enemy_page -= 1
+	_apply_enemy_page_visibility(enemies)
+	return true
+
+
+# 次の悪夢ページ表示
+func show_next_enemy_page(enemies: Array[Enemy]) -> bool:
+	if not has_next_enemy_page():
+		return false
+	_current_enemy_page += 1
+	_apply_enemy_page_visibility(enemies)
+	return true
+
+
+# 前の悪夢ページ有無
+func has_previous_enemy_page() -> bool:
+	return _current_enemy_page > 0
+
+
+# 次の悪夢ページ有無
+func has_next_enemy_page() -> bool:
+	return _current_enemy_page + 1 < _get_enemy_page_count()
+
+
+# 現在ページに合わせて悪夢表示を更新
+func refresh_enemy_page_visibility(enemies: Array[Enemy]) -> void:
+	_apply_enemy_page_visibility(enemies)
+
 # setup編成敵処理
 func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 	_ensure_enemy_capacity(enemies, _enemy_preset.enemies.size())
-	# 敵positions
-	var enemy_positions := _get_enemy_positions(_enemy_preset.enemies.size())
 	for i in range(enemies.size()):
 		# 敵値
 		var enemy := enemies[i]
@@ -57,6 +91,10 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 		var skill_enabled := _is_stage_nightmare_skill_enabled(source_skill)
 		# 胃袋サイズ
 		var stomach_size := _get_nightmare_stomach_size(source_skill)
+		# ページ内位置
+		var page_start := i - i % ENEMIES_PER_PAGE
+		var page_enemy_count := mini(ENEMIES_PER_PAGE, _enemy_preset.enemies.size() - page_start)
+		var enemy_positions := _get_enemy_positions(page_enemy_count)
 		enemy.setup(
 			source_skill,
 			Vector2(
@@ -64,9 +102,35 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 				_stomach.get_span_size(stomach_size.y)
 			),
 			skill_enabled,
-			enemy_positions[i],
+			enemy_positions[i % ENEMIES_PER_PAGE],
 			skill_enabled
 		)
+	_apply_enemy_page_visibility(enemies)
+
+
+# 悪夢ページ表示反映
+func _apply_enemy_page_visibility(enemies: Array[Enemy]) -> void:
+	if _enemy_preset == null or _enemy_preset.enemies.is_empty():
+		return
+	var page_start := _current_enemy_page * ENEMIES_PER_PAGE
+	var page_end := mini(page_start + ENEMIES_PER_PAGE, _enemy_preset.enemies.size())
+	for i in range(enemies.size()):
+		var enemy := enemies[i]
+		if enemy == null:
+			continue
+		var is_current_page := i >= page_start and i < page_end
+		var is_preset_enemy := i < _enemy_preset.enemies.size()
+		var should_present := is_preset_enemy and not enemy.is_Acided() and (
+			is_current_page or enemy.is_active_in_stomach()
+		)
+		enemy.set_presented(should_present)
+
+
+# 悪夢ページ数取得
+func _get_enemy_page_count() -> int:
+	if _enemy_preset == null:
+		return 0
+	return ceili(float(_enemy_preset.enemies.size()) / float(ENEMIES_PER_PAGE))
 
 # プリセット敵数に必要なEnemyを補充
 func _ensure_enemy_capacity(enemies: Array[Enemy], required_count: int) -> void:
