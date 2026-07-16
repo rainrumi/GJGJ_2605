@@ -37,6 +37,7 @@ func setup_enemies(enemies: Array[Enemy]) -> void:
 
 # setup編成敵処理
 func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
+	_ensure_enemy_capacity(enemies, _enemy_preset.enemies.size())
 	# 敵positions
 	var enemy_positions := _get_enemy_positions(_enemy_preset.enemies.size())
 	for i in range(enemies.size()):
@@ -66,6 +67,18 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 			enemy_positions[i],
 			skill_enabled
 		)
+
+# プリセット敵数に必要なEnemyを補充
+func _ensure_enemy_capacity(enemies: Array[Enemy], required_count: int) -> void:
+	var added := false
+	while enemies.size() < required_count:
+		var enemy := ENEMY_SCENE.instantiate() as Enemy
+		_owner.add_child(enemy)
+		enemies.append(enemy)
+		added = true
+	if added:
+		_input_controller.setup(enemies)
+
 
 # 生成nuisance悪夢処理
 func spawn_nuisance_nightmare(
@@ -144,6 +157,23 @@ func _get_enemy_positions(enemy_count: int) -> Array[Vector2]:
 				Vector2(ENEMY_RIGHT_X, ENEMY_TOP_Y),
 				Vector2(ENEMY_RIGHT_X, ENEMY_BOTTOM_Y),
 				Vector2(ENEMY_LEFT_X, ENEMY_TOP_Y),
+			]
+		5:
+			return [
+				Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y),
+				Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y),
+				Vector2(ENEMY_RIGHT_X, ENEMY_BOTTOM_Y),
+				Vector2(ENEMY_LEFT_X, ENEMY_TOP_Y),
+				Vector2(ENEMY_RIGHT_X, ENEMY_TOP_Y),
+			]
+		6:
+			return [
+				Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y),
+				Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y),
+				Vector2(ENEMY_RIGHT_X, ENEMY_BOTTOM_Y),
+				Vector2(ENEMY_LEFT_X, ENEMY_TOP_Y),
+				Vector2(ENEMY_RIGHT_X, ENEMY_TOP_Y),
+				Vector2(ENEMY_CENTER_X, ENEMY_BOTTOM_Y),
 			]
 	return [
 		Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y),

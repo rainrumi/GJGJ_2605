@@ -1,5 +1,5 @@
-E 0:01:04:308   game_enemy_setup_controller.gd:59 @ _setup_preset_enemies(): Parameter "mesh" is null.
-  <C++ ソース>     drivers/gles3/storage/mesh_storage.cpp:673 @ mesh_get_surface_count()
+E 0:02:14:258   GameEnemySetupController._setup_preset_enemies: Out of bounds get index '3' (on base: 'Array[Vector2]')
+  <GDScript ソース>game_enemy_setup_controller.gd:59 @ GameEnemySetupController._setup_preset_enemies()
   <スタックトレース>    game_enemy_setup_controller.gd:59 @ _setup_preset_enemies()
                 game_enemy_setup_controller.gd:35 @ setup_enemies()
                 game.gd:130 @ start_battle()
