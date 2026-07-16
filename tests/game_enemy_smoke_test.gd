@@ -25,6 +25,17 @@ func _run() -> void:
 	_expect(controller.digestion_resolver != null, "消化Resolverを注入する")
 	_expect(controller.attack_resolver != null, "攻撃Resolverを注入する")
 	_expect(controller.turn_processor != null, "TurnProcessorを注入する")
+	var iriyu_enemy_data := load("res://data/resources/area/area_iriyu/area_iriyu_enemy.tres") as StageEnemyInfo
+	_expect(iriyu_enemy_data != null, "イリユの敵編成を読み込める")
+	if iriyu_enemy_data != null:
+		_expect(iriyu_enemy_data.normal_enemy_presets.size() == 9, "イリユST1からST9を順番に登録する")
+		var run_state := RunState.new()
+		var stage := StageInfo.new()
+		stage.enemy_data = iriyu_enemy_data
+		var stage_1_preset := run_state.pick_enemy_preset(stage)
+		var stage_2_preset := run_state.pick_enemy_preset(stage)
+		_expect(stage_1_preset == iriyu_enemy_data.normal_enemy_presets[0], "初回はイリユST1を選ぶ")
+		_expect(stage_2_preset == iriyu_enemy_data.normal_enemy_presets[1], "ST1の次はイリユST2を選ぶ")
 	controller = null
 	game.call("cancel_battle")
 	root.remove_child(game)
