@@ -25,4 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16010002001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
+description = "モノに隣接している時、自身の攻撃力が6になる。"
 main_skill = SubResource("MainSkill")

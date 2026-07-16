@@ -25,4 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16010003003
 display_name = "E3"
 acid_block = SubResource("AcidBlock")
+description = "消化ラインに接触していない時、自身の消化ダメージを5増やす。"
 main_skill = SubResource("MainSkill")
