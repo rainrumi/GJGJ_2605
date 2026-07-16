@@ -87,10 +87,15 @@ func _rebuild_mesh() -> void:
 	arrays[Mesh.ARRAY_VERTEX] = vertices
 	arrays[Mesh.ARRAY_TEX_UV] = uvs
 	arrays[Mesh.ARRAY_INDEX] = indices
-	# arraymesh
-	var array_mesh := ArrayMesh.new()
+	# 描画中にMesh RIDを差し替えると、GLES3が解放済みのRIDを参照することがある。
+	# Sceneが保持しているArrayMeshを再利用し、MeshInstance2Dの参照を維持する。
+	var array_mesh := mesh as ArrayMesh
+	if array_mesh == null:
+		array_mesh = ArrayMesh.new()
+		mesh = array_mesh
+	else:
+		array_mesh.clear_surfaces()
 	array_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	mesh = array_mesh
 
 
 # 列rect設定
