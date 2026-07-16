@@ -25,17 +25,10 @@ func _run() -> void:
 	_expect(controller.digestion_resolver != null, "消化Resolverを注入する")
 	_expect(controller.attack_resolver != null, "攻撃Resolverを注入する")
 	_expect(controller.turn_processor != null, "TurnProcessorを注入する")
-	var iriyu_enemy_data := load("res://data/resources/area/area_iriyu/area_iriyu_enemy.tres") as StageEnemyInfo
-	_expect(iriyu_enemy_data != null, "イリユの敵編成を読み込める")
-	if iriyu_enemy_data != null:
-		_expect(iriyu_enemy_data.normal_enemy_presets.size() == 9, "イリユST1からST9を順番に登録する")
-		var run_state := RunState.new()
-		var stage := StageInfo.new()
-		stage.enemy_data = iriyu_enemy_data
-		var stage_1_preset := run_state.pick_enemy_preset(stage)
-		var stage_2_preset := run_state.pick_enemy_preset(stage)
-		_expect(stage_1_preset == iriyu_enemy_data.normal_enemy_presets[0], "初回はイリユST1を選ぶ")
-		_expect(stage_2_preset == iriyu_enemy_data.normal_enemy_presets[1], "ST1の次はイリユST2を選ぶ")
+	_check_normal_stage_progression("area_iriyu", "イリユ")
+	_check_normal_stage_progression("area_elmena", "エルメナ")
+	_check_normal_stage_progression("area_lunova", "ルノヴァ")
+	_check_normal_stage_progression("area_riran", "リラン")
 	controller = null
 	game.call("cancel_battle")
 	root.remove_child(game)
@@ -44,6 +37,25 @@ func _run() -> void:
 	packed = null
 	await process_frame
 	quit(_failures)
+
+
+# 通常ステージ進行確認
+func _check_normal_stage_progression(area_name: String, display_name: String) -> void:
+	var path := "res://data/resources/area/%s/%s_enemy.tres" % [area_name, area_name]
+	var enemy_data := load(path) as StageEnemyInfo
+	_expect(enemy_data != null, "%sの敵編成を読み込める" % display_name)
+	if enemy_data == null:
+		return
+	_expect(enemy_data.normal_enemy_presets.size() == 9, "%s ST1からST9を順番に登録する" % display_name)
+	if enemy_data.normal_enemy_presets.size() < 2:
+		return
+	var run_state := RunState.new()
+	var stage := StageInfo.new()
+	stage.enemy_data = enemy_data
+	var stage_1_preset := run_state.pick_enemy_preset(stage)
+	var stage_2_preset := run_state.pick_enemy_preset(stage)
+	_expect(stage_1_preset == enemy_data.normal_enemy_presets[0], "%sの初回はST1を選ぶ" % display_name)
+	_expect(stage_2_preset == enemy_data.normal_enemy_presets[1], "%s ST1の次はST2を選ぶ" % display_name)
 
 
 # 期待値確認

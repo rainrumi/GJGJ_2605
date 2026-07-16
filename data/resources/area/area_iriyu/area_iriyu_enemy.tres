@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StageEnemySetDefinition" format=3 uid="uid://bmohx2p1vvjbg"]
+[gd_resource type="Resource" script_class="StageEnemyInfo" format=3 uid="uid://bmohx2p1vvjbg"]
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/enemy/enemy_preset_info.gd" id="1_em1by"]
 [ext_resource type="Script" uid="uid://clqarc0s67i01" path="res://data/info/stage/stage_enemy_info.gd" id="1_script"]
