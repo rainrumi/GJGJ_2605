@@ -7,6 +7,7 @@ const DAMAGE_PULSE_SCALE := 1.12
 const DAMAGE_PULSE_DURATION := 0.18
 const ACIDED_SCALE := 1.2
 const ACIDED_TWEEN_DURATION := 0.5
+const CELL_INSET_PIXELS := 1
 
 var base_scale := Vector2.ONE
 var _hover_tween: Tween
@@ -45,12 +46,40 @@ static func create_shape_texture(
 		)
 		if is_outside_shape:
 			continue
-		shape_image.blit_rect(
+		var cell_position := Vector2i(cell.x * cell_size.x, cell.y * cell_size.y)
+		var cell_center_twice := cell_position * 2 + cell_size
+		var center_direction := Vector2i(
+			signi(texture_size.x - cell_center_twice.x),
+			signi(texture_size.y - cell_center_twice.y)
+		)
+		cell_position += center_direction * CELL_INSET_PIXELS
+		shape_image.blend_rect(
 			cell_image,
 			cell_rect,
-			Vector2i(cell.x * cell_size.x, cell.y * cell_size.y)
+			cell_position
 		)
+	_clear_outer_margin(shape_image, texture_size)
 	return ImageTexture.create_from_image(shape_image)
+
+
+# 個体外周余白設定
+static func _clear_outer_margin(shape_image: Image, texture_size: Vector2i) -> void:
+	shape_image.fill_rect(
+		Rect2i(0, 0, texture_size.x, CELL_INSET_PIXELS),
+		Color.TRANSPARENT
+	)
+	shape_image.fill_rect(
+		Rect2i(0, 0, CELL_INSET_PIXELS, texture_size.y),
+		Color.TRANSPARENT
+	)
+	shape_image.fill_rect(
+		Rect2i(0, texture_size.y - CELL_INSET_PIXELS, texture_size.x, CELL_INSET_PIXELS),
+		Color.TRANSPARENT
+	)
+	shape_image.fill_rect(
+		Rect2i(texture_size.x - CELL_INSET_PIXELS, 0, CELL_INSET_PIXELS, texture_size.y),
+		Color.TRANSPARENT
+	)
 
 
 # 画像設定

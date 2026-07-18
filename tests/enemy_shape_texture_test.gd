@@ -33,22 +33,56 @@ func _run() -> void:
 		var shape_image := shape_texture.get_image()
 		var cell_image := CELL_TEXTURE.get_image()
 		_expect(
-			_same_pixel(shape_image, cell_image, Vector2i(20, 20), Vector2i(20, 20)),
-			"左上セルへ共通画像を配置する"
+			_same_pixel(shape_image, cell_image, Vector2i(21, 21), Vector2i(20, 20)),
+			"左上セルを敵の中心へ1px寄せる"
 		)
 		_expect(shape_image.get_pixelv(Vector2i(60, 20)).a == 0.0, "無効な右上セルは透明にする")
 		_expect(
-			_same_pixel(shape_image, cell_image, Vector2i(20, 60), Vector2i(20, 20)),
-			"左下セルへ共通画像を配置する"
+			_same_pixel(shape_image, cell_image, Vector2i(21, 59), Vector2i(20, 20)),
+			"左下セルを敵の中心へ1px寄せる"
 		)
 		_expect(
-			_same_pixel(shape_image, cell_image, Vector2i(60, 60), Vector2i(20, 20)),
-			"右下セルへ共通画像を配置する"
+			_same_pixel(shape_image, cell_image, Vector2i(59, 59), Vector2i(20, 20)),
+			"右下セルを敵の中心へ1px寄せる"
 		)
+		_expect(shape_image.get_pixelv(Vector2i(0, 21)).a == 0.0, "敵の左端に1pxの余白を空ける")
+		_expect(shape_image.get_pixelv(Vector2i(59, 79)).a == 0.0, "敵の下端に1pxの余白を空ける")
+		_expect(shape_image.get_pixelv(Vector2i(21, 39)).a > 0.0, "同じ敵の上下セルを接続する")
+		_expect(shape_image.get_pixelv(Vector2i(39, 59)).a > 0.0, "同じ敵の左右セルを接続する")
+	_test_single_cell_margin()
 
 	root.remove_child(enemy)
 	enemy.free()
 	quit(_failures)
+
+
+func _test_single_cell_margin() -> void:
+	var single_shape: Array[Vector2i] = [Vector2i.ZERO]
+	var single_texture := EnemySpriteView.create_shape_texture(
+		CELL_TEXTURE,
+		Vector2i.ONE,
+		single_shape
+	)
+	_expect(single_texture != null, "1セルの敵画像を生成する")
+	if single_texture == null:
+		return
+	var single_image := single_texture.get_image()
+	_expect(
+		single_image.get_pixelv(Vector2i(0, 20)).a == 0.0,
+		"1セルの敵も左端に余白を空ける"
+	)
+	_expect(
+		single_image.get_pixelv(Vector2i(39, 20)).a == 0.0,
+		"1セルの敵も右端に余白を空ける"
+	)
+	_expect(
+		single_image.get_pixelv(Vector2i(20, 0)).a == 0.0,
+		"1セルの敵も上端に余白を空ける"
+	)
+	_expect(
+		single_image.get_pixelv(Vector2i(20, 39)).a == 0.0,
+		"1セルの敵も下端に余白を空ける"
+	)
 
 
 func _create_custom_texture() -> Texture2D:
