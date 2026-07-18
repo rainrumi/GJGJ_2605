@@ -232,6 +232,10 @@ func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offs
 	dragged_enemy_original_global_position = enemy.global_position
 	auto_acid_paused_for_drag = auto_acid_enabled
 	_update_auto_acid_timer()
+	if dragged_enemy_was_Aciding and not seed_effects.is_remove_from_stomach_disabled():
+		ui.show_nightmare_return_hint(_get_remove_from_stomach_damage())
+	else:
+		ui.hide_nightmare_return_hint()
 	_play_click_se()
 # 移動処理
 func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i) -> void:
@@ -255,6 +259,7 @@ func _finish_enemy_drag_release(enemy: Enemy, mouse_position: Vector2) -> void:
 	_play_click_se()
 	stomach.hide_preview()
 	ui.hide_hp_damage_preview()
+	ui.hide_nightmare_return_hint()
 	if stomach.contains_global_position(mouse_position):
 		_try_start_Aciding(enemy, mouse_position)
 	else:
@@ -442,6 +447,7 @@ func _prepare_debug_battle_change() -> void:
 	_update_auto_acid_timer()
 	stomach.hide_preview()
 	ui.hide_hp_damage_preview()
+	ui.hide_nightmare_return_hint()
 	_set_hovered_enemy(null)
 
 

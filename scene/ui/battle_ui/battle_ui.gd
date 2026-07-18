@@ -21,6 +21,8 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 @onready var debug_panel: DebugPanel = $DebugPanel
 @onready var nightmare_previous_page_button: Button = $NightmarePreviousPageButton
 @onready var nightmare_next_page_button: Button = $NightmareNextPageButton
+@onready var nightmare_return_hint: PanelContainer = $NightmareReturnHint
+@onready var nightmare_return_damage_value_label: Label = $NightmareReturnHint/CenterContainer/TextContainer/DamageRow/ValueLabel
 
 var _rest_minutes := 30
 var _rest_hp_rate := 0.1
@@ -78,6 +80,7 @@ func reset_for_battle(
 	set_acidion_count(0)
 	set_acid_button_visible(true)
 	hide_hp_damage_preview()
+	hide_nightmare_return_hint()
 	hide_time_elapsed()
 	_hide_all_tooltips()
 
@@ -187,6 +190,17 @@ func set_acid_button_visible(is_visible: bool) -> void:
 func set_nightmare_page_navigation(has_previous: bool, has_next: bool) -> void:
 	nightmare_previous_page_button.visible = has_previous
 	nightmare_next_page_button.visible = has_next
+
+
+# 悪夢吐き戻し案内表示
+func show_nightmare_return_hint(damage: int) -> void:
+	nightmare_return_damage_value_label.text = "%d" % absi(damage)
+	nightmare_return_hint.visible = true
+
+
+# 悪夢吐き戻し案内非表示
+func hide_nightmare_return_hint() -> void:
+	nightmare_return_hint.visible = false
 
 
 # 消化ボタンhit判定

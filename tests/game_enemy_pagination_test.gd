@@ -26,13 +26,26 @@ func _run() -> void:
 	await process_frame
 	var previous_button := game.get_node("UI/NightmarePreviousPageButton") as Button
 	var next_button := game.get_node("UI/NightmareNextPageButton") as Button
+	var return_hint := game.get_node("UI/NightmareReturnHint") as PanelContainer
+	var return_damage_value_label := game.get_node("UI/NightmareReturnHint/CenterContainer/TextContainer/DamageRow/ValueLabel") as Label
 	var click_se := game.get_node("ClickSe") as AudioStreamPlayer
 	click_se.stream = null
 	_expect(previous_button != null, "前ページボタンを構成する")
 	_expect(next_button != null, "次ページボタンを構成する")
+	_expect(return_hint != null, "悪夢吐き戻し案内を構成する")
+	_expect(return_damage_value_label != null, "悪夢吐き戻しダメージ数値を構成する")
+	_expect(return_damage_value_label.get_theme_color("font_color").is_equal_approx(Color(1, 0.2, 0.2)), "吐き戻しダメージ数値を赤色にする")
+	var return_hint_style := return_hint.get_theme_stylebox("panel") as StyleBoxFlat
+	_expect(return_hint_style != null, "悪夢吐き戻し案内に長方形パネルを構成する")
+	_expect(
+		return_hint_style != null and return_hint_style.bg_color.a > 0.0 and return_hint_style.bg_color.a < 1.0,
+		"悪夢吐き戻し案内の背景を半透明にする"
+	)
+	_expect(return_hint.get_node_or_null("CenterContainer/TextContainer") != null, "吐き戻し文言をページ中央へ配置する")
+	_expect(not return_hint.visible, "通常時は悪夢吐き戻し案内を隠す")
 	_check_six_enemy_page(game, previous_button, next_button)
 	_check_seven_enemy_pages(game, previous_button, next_button)
-	_check_drag_compacts_enemy_page(game, previous_button, next_button)
+	_check_drag_compacts_enemy_page(game, previous_button, next_button, return_hint, return_damage_value_label)
 	await _check_stomach_damage_visuals(game)
 	_check_eleven_enemy_pages(game, previous_button, next_button)
 	_check_thirteen_enemy_pages(game, previous_button, next_button)
@@ -42,6 +55,8 @@ func _run() -> void:
 	click_se = null
 	previous_button = null
 	next_button = null
+	return_hint = null
+	return_damage_value_label = null
 	game = null
 	packed = null
 	await process_frame
@@ -73,8 +88,14 @@ func _check_seven_enemy_pages(game: Node, previous_button: Button, next_button: 
 	_expect_visible_range(enemies, 0, 6, 7, "前ページへ戻った表示")
 
 
-# 胃袋への移動後の前詰めとページ再表示試験
-func _check_drag_compacts_enemy_page(game: Node, previous_button: Button, next_button: Button) -> void:
+# 胃袋への移動後の前詰め・吐き戻し案内・ページ再表示試験
+func _check_drag_compacts_enemy_page(
+	game: Node,
+	previous_button: Button,
+	next_button: Button,
+	return_hint: PanelContainer,
+	return_damage_value_label: Label
+) -> void:
 	_start_battle_with_enemy_count(game, 7)
 	var enemies: Array[Enemy] = game.get("enemies")
 	var stomach := game.get_node("Stomach") as StomachBoard
@@ -87,8 +108,11 @@ func _check_drag_compacts_enemy_page(game: Node, previous_button: Button, next_b
 	_expect(enemies[2].position == Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y), "空いた2枠目へ後続の悪夢を前詰めする")
 	_expect(not previous_button.visible, "胃袋外が6体になったら前ページボタンを隠す")
 	_expect(not next_button.visible, "胃袋外が6体になったら次ページボタンを隠す")
-	game.set("dragged_enemy_was_Aciding", true)
-	game.call("_remove_enemy_from_stomach", moved_enemy)
+	game.call("_on_enemy_drag_started", moved_enemy, drop_position, Vector2.ZERO, Vector2i.ZERO)
+	_expect(return_hint.visible, "胃袋内の悪夢をドラッグ中は吐き戻し案内を表示する")
+	_expect(return_damage_value_label.text == "5", "吐き戻しダメージを正の値で表示する")
+	game.call("_on_enemy_drag_released", moved_enemy, moved_enemy.origin_position)
+	_expect(not return_hint.visible, "悪夢のドラッグ終了時は吐き戻し案内を隠す")
 	_expect(not moved_enemy.is_active_in_stomach(), "悪夢を胃袋から取り出せる")
 	_expect(enemies[1].position == Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y), "戻った悪夢をページ内へ詰め直す")
 	_expect(not previous_button.visible, "7体へ戻った1ページ目では前ページボタンを隠す")

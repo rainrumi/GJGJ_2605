@@ -16,6 +16,15 @@
 [ext_resource type="PackedScene" uid="uid://b6fh1poo6sv5f" path="res://scene/ui/battle_ui/debug/debug_panel.tscn" id="34_status_panel_scene"]
 [ext_resource type="PackedScene" uid="uid://dnxj6x3i60rbc" path="res://scene/ui/seed/seed_button_list/seed_button_list.tscn" id="41_seed_button_list_scene"]
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="42_battle_button_scene"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="43_bestten_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nightmare_return_hint"]
+bg_color = Color(0.07, 0.06, 0.09, 0.78)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.88, 0.78, 0.95, 0.8)
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
@@ -100,5 +109,55 @@ offset_bottom = 211.0
 focus_mode = 0
 theme_override_font_sizes/font_size = 20
 text = "→"
+
+[node name="NightmareReturnHint" type="PanelContainer" parent="UI"]
+visible = false
+offset_left = 350.0
+offset_top = 60.0
+offset_right = 638.0
+offset_bottom = 330.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nightmare_return_hint")
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/NightmareReturnHint"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TextContainer" type="VBoxContainer" parent="UI/NightmareReturnHint/CenterContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="InstructionLabel" type="Label" parent="UI/NightmareReturnHint/CenterContainer/TextContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("43_bestten_font")
+theme_override_font_sizes/font_size = 14
+text = "ここにドラッグすると吐き戻せます"
+horizontal_alignment = 1
+
+[node name="DamageRow" type="HBoxContainer" parent="UI/NightmareReturnHint/CenterContainer/TextContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="PrefixLabel" type="Label" parent="UI/NightmareReturnHint/CenterContainer/TextContainer/DamageRow"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("43_bestten_font")
+theme_override_font_sizes/font_size = 14
+text = "受けるダメージ："
+
+[node name="ValueLabel" type="Label" parent="UI/NightmareReturnHint/CenterContainer/TextContainer/DamageRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("43_bestten_font")
+theme_override_font_sizes/font_size = 14
+text = "0"
 
 [node name="DebugPanel" parent="UI" unique_id=1605446388 instance=ExtResource("34_status_panel_scene")]
