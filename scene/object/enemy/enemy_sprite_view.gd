@@ -15,6 +15,44 @@ var _Acided_tween: Tween
 var _hovered := false
 
 
+# セル形状画像生成
+static func create_shape_texture(
+	cell_texture: Texture2D,
+	shape_size: Vector2i,
+	shape: Array[Vector2i]
+) -> Texture2D:
+	if cell_texture == null:
+		return null
+	var cell_image := cell_texture.get_image() # セル画像
+	if cell_image == null or cell_image.is_empty():
+		return null
+	cell_image.convert(Image.FORMAT_RGBA8)
+	var safe_shape_size := Vector2i(maxi(1, shape_size.x), maxi(1, shape_size.y))
+	var cell_size := cell_image.get_size() # セル画像寸法
+	var texture_size := Vector2i(
+		cell_size.x * safe_shape_size.x,
+		cell_size.y * safe_shape_size.y
+	)
+	var shape_image := Image.create(texture_size.x, texture_size.y, false, Image.FORMAT_RGBA8)
+	shape_image.fill(Color.TRANSPARENT)
+	var cell_rect := Rect2i(Vector2i.ZERO, cell_size)
+	for cell: Vector2i in shape:
+		var is_outside_shape := (
+			cell.x < 0
+			or cell.x >= safe_shape_size.x
+			or cell.y < 0
+			or cell.y >= safe_shape_size.y
+		)
+		if is_outside_shape:
+			continue
+		shape_image.blit_rect(
+			cell_image,
+			cell_rect,
+			Vector2i(cell.x * cell_size.x, cell.y * cell_size.y)
+		)
+	return ImageTexture.create_from_image(shape_image)
+
+
 # 画像設定
 func setup_texture(next_texture: Texture2D, target_size: Vector2) -> void:
 	texture = next_texture

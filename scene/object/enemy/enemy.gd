@@ -5,7 +5,7 @@ extends Node2D
 const AcidED_TWEEN_DURATION := EnemySpriteView.ACIDED_TWEEN_DURATION
 const DEFAULT_STATUS_COLOR := EnemyView.DEFAULT_STATUS_COLOR
 const MAIN_EFFECT_STATUS_COLOR := EnemyView.MAIN_EFFECT_STATUS_COLOR
-const DEFAULT_NIGHTMARE_TEXTURE := preload("res://art/enemy/tex_enemy_1000_No_100.png")
+const NIGHTMARE_CELL_TEXTURE := preload("res://art/enemy/tex_enemy_1_1_100.png")
 const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_1000.png")
 const DEFAULT_NIGHTMARE_MAX_HP := 1400
 const DEFAULT_NIGHTMARE_SIZE := 6
@@ -328,8 +328,6 @@ func setup_as_seed_stomach_block(seed: SeedInfo, target_size: Vector2) -> void:
 		setup_as_one_cell_stomach_block(target_size)
 		activation_deferred = false
 	seed_info = seed
-	if block_definition != null and block_definition.texture != null:
-		set_texture_override(block_definition.texture, target_size)
 	max_hp = block_definition.get_max_hp() if block_definition != null else 1
 	current_hp = max_hp
 	damage = block_definition.get_damage() if block_definition != null else 0
@@ -470,10 +468,11 @@ func _update_damage_label() -> void:
 func _get_texture() -> Texture2D:
 	if _texture_override != null:
 		return _texture_override
-	var block := _get_nightmare_block()
-	if block != null and block.texture != null:
-		return block.texture
-	return DEFAULT_NIGHTMARE_TEXTURE
+	return EnemySpriteView.create_shape_texture(
+		NIGHTMARE_CELL_TEXTURE,
+		get_stomach_size(),
+		get_stomach_shape()
+	)
 
 
 # nightmareblock取得
