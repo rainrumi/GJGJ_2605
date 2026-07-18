@@ -6,7 +6,6 @@ const AcidED_TWEEN_DURATION := EnemySpriteView.ACIDED_TWEEN_DURATION
 const DEFAULT_STATUS_COLOR := EnemyView.DEFAULT_STATUS_COLOR
 const MAIN_EFFECT_STATUS_COLOR := EnemyView.MAIN_EFFECT_STATUS_COLOR
 const NIGHTMARE_CELL_TEXTURE := preload("res://art/enemy/tex_enemy_1_1_100.png")
-const ONE_CELL_STOMACH_TEXTURE := preload("res://art/enemy/tex_stomach_block_1000.png")
 const DEFAULT_NIGHTMARE_MAX_HP := 1400
 const DEFAULT_NIGHTMARE_SIZE := 6
 const DEFAULT_NIGHTMARE_DAMAGE := 2
@@ -306,7 +305,6 @@ func setup_as_one_cell_stomach_block(target_size: Vector2) -> void:
 	# ブロック形状
 	var block_shape: Array[Vector2i] = [Vector2i.ZERO]
 	set_stomach_footprint_override(Vector2i.ONE, block_shape, 1)
-	set_texture_override(ONE_CELL_STOMACH_TEXTURE, target_size)
 	gravity_locked = true
 	activation_deferred = true
 
@@ -321,7 +319,6 @@ func setup_as_seed_stomach_block(seed: SeedInfo, target_size: Vector2) -> void:
 			block_definition.get_stomach_shape(),
 			block_definition.get_cell_count()
 		)
-		set_texture_override(ONE_CELL_STOMACH_TEXTURE, target_size)
 		gravity_locked = true
 		activation_deferred = false
 	else:
