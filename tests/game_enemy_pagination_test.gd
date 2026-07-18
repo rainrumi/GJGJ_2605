@@ -33,6 +33,7 @@ func _run() -> void:
 	_check_six_enemy_page(game, previous_button, next_button)
 	_check_seven_enemy_pages(game, previous_button, next_button)
 	_check_drag_compacts_enemy_page(game, previous_button, next_button)
+	await _check_stomach_damage_visuals(game)
 	_check_eleven_enemy_pages(game, previous_button, next_button)
 	_check_thirteen_enemy_pages(game, previous_button, next_button)
 	game.call("cancel_battle")
@@ -92,6 +93,47 @@ func _check_drag_compacts_enemy_page(game: Node, previous_button: Button, next_b
 	_expect(enemies[1].position == Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y), "戻った悪夢をページ内へ詰め直す")
 	_expect(not previous_button.visible, "7体へ戻った1ページ目では前ページボタンを隠す")
 	_expect(next_button.visible, "胃袋外が7体へ戻ったら次ページボタンを再表示する")
+
+
+# 胃袋内の悪夢に対する被弾表示と死亡演出の維持試験
+func _check_stomach_damage_visuals(game: Node) -> void:
+	_start_battle_with_enemy_count(game, 7)
+	var enemies: Array[Enemy] = game.get("enemies")
+	var stomach := game.get_node("Stomach") as StomachBoard
+	var enemy_setup := game.get("enemy_setup") as GameEnemySetupController
+	var target := enemies[0]
+	var drop_position := stomach.get_global_position_for_cell(Vector2i.ZERO, target.get_stomach_size())
+	game.set("dragged_enemy_was_Aciding", false)
+	game.set("drag_grab_cell", Vector2i.ZERO)
+	game.call("_try_start_Aciding", target, drop_position)
+	target.take_acid_damage(1, false)
+	target.show_acid_damage_values([1])
+	enemy_setup.refresh_enemy_page_visibility(enemies)
+	_expect(target.visible, "胃袋内で被弾した悪夢をページ更新後も表示する")
+	_expect(_has_visible_damage_popup(target), "胃袋内で受けたダメージ数を表示する")
+	await create_timer(
+		EnemyDamagePopup.DURATION * 2.0 + EnemyDamagePopup.HIDE_DELAY + 0.05
+	).timeout
+	_expect(not _has_visible_damage_popup(target), "被弾ダメージ数の表示を終了する")
+	var lethal_damage := target.current_hp
+	target.take_acid_damage(lethal_damage, false)
+	target.show_acid_damage_values([lethal_damage])
+	enemy_setup.refresh_enemy_page_visibility(enemies)
+	await process_frame
+	_expect(target.visible, "消化直後は死亡演出のため悪夢を表示したままにする")
+	_expect(_has_visible_damage_popup(target), "死亡時もダメージ数を表示する")
+	await create_timer(
+		EnemyDamagePopup.DURATION * 2.0 + EnemyDamagePopup.HIDE_DELAY + 0.05
+	).timeout
+	_expect(not target.visible, "死亡演出の完了後に悪夢を隠す")
+
+
+# 表示中ダメージポップアップ有無
+func _has_visible_damage_popup(enemy: Enemy) -> bool:
+	for child in enemy.get_children():
+		if child is Label and child.is_visible_in_tree():
+			return true
+	return false
 
 
 # 11体表示試験

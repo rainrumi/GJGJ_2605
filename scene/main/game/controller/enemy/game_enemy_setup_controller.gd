@@ -121,6 +121,10 @@ func _apply_enemy_page_visibility(enemies: Array[Enemy]) -> void:
 	for enemy in enemies:
 		if enemy == null:
 			continue
+		# 消化済み悪夢は死亡Tweenが表示終了までを管理する。
+		# ページ更新で即座に隠すと、同じNode配下のダメージ表示も消えてしまう。
+		if enemy.is_Acided():
+			continue
 		enemy.set_presented(enemy.is_active_in_stomach())
 	for i in range(pageable_enemies.size()):
 		pageable_enemies[i].set_presented(i >= page_start and i < page_end)
