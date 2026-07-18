@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="4_aq1du"]
 [ext_resource type="Script" uid="uid://4dull42pg76m" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_disable_clear_recovery.gd" id="skill_clear_recovery"]
 [ext_resource type="Script" uid="uid://bqdcytghynb40" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_add_extra_choice_after_clock.gd" id="skill_extra_choice"]
-[ext_resource type="Script" uid="uid://cq36h2j85k72s" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate_after_clock.gd" id="skill_pending_acid"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate_after_clock.gd" id="skill_pending_acid"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_drag_block"]

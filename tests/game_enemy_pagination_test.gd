@@ -32,6 +32,7 @@ func _run() -> void:
 	_expect(next_button != null, "次ページボタンを構成する")
 	_check_six_enemy_page(game, previous_button, next_button)
 	_check_seven_enemy_pages(game, previous_button, next_button)
+	_check_drag_compacts_enemy_page(game, previous_button, next_button)
 	_check_eleven_enemy_pages(game, previous_button, next_button)
 	_check_thirteen_enemy_pages(game, previous_button, next_button)
 	game.call("cancel_battle")
@@ -69,6 +70,28 @@ func _check_seven_enemy_pages(game: Node, previous_button: Button, next_button: 
 	_expect(not next_button.visible, "最終ページでは次ページボタンを隠す")
 	previous_button.pressed.emit()
 	_expect_visible_range(enemies, 0, 6, 7, "前ページへ戻った表示")
+
+
+# 胃袋への移動後の前詰めとページ再表示試験
+func _check_drag_compacts_enemy_page(game: Node, previous_button: Button, next_button: Button) -> void:
+	_start_battle_with_enemy_count(game, 7)
+	var enemies: Array[Enemy] = game.get("enemies")
+	var stomach := game.get_node("Stomach") as StomachBoard
+	var moved_enemy := enemies[1]
+	var drop_position := stomach.get_global_position_for_cell(Vector2i.ZERO, moved_enemy.get_stomach_size())
+	game.set("dragged_enemy_was_Aciding", false)
+	game.set("drag_grab_cell", Vector2i.ZERO)
+	game.call("_try_start_Aciding", moved_enemy, drop_position)
+	_expect(moved_enemy.is_active_in_stomach(), "悪夢を胃袋へ移動できる")
+	_expect(enemies[2].position == Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y), "空いた2枠目へ後続の悪夢を前詰めする")
+	_expect(not previous_button.visible, "胃袋外が6体になったら前ページボタンを隠す")
+	_expect(not next_button.visible, "胃袋外が6体になったら次ページボタンを隠す")
+	game.set("dragged_enemy_was_Aciding", true)
+	game.call("_remove_enemy_from_stomach", moved_enemy)
+	_expect(not moved_enemy.is_active_in_stomach(), "悪夢を胃袋から取り出せる")
+	_expect(enemies[1].position == Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y), "戻った悪夢をページ内へ詰め直す")
+	_expect(not previous_button.visible, "7体へ戻った1ページ目では前ページボタンを隠す")
+	_expect(next_button.visible, "胃袋外が7体へ戻ったら次ページボタンを再表示する")
 
 
 # 11体表示試験

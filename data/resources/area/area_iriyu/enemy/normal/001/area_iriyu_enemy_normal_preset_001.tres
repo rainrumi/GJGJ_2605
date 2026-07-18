@@ -8,7 +8,8 @@
 [ext_resource type="Resource" uid="uid://otraxnce08mg" path="res://data/resources/area/area_iriyu/enemy/normal/001/area_iriyu_enemy_normal_001_004.tres" id="5_fvbqr"]
 [ext_resource type="Resource" uid="uid://vac2vs3ul2kg" path="res://data/resources/area/area_iriyu/enemy/normal/001/area_iriyu_enemy_normal_001_005.tres" id="6_1phop"]
 [ext_resource type="Resource" uid="uid://b375ljo7uphuq" path="res://data/resources/area/area_iriyu/enemy/normal/001/area_iriyu_enemy_normal_001_006.tres" id="7_6nh78"]
+[ext_resource type="Resource" uid="uid://ds33id821qu3c" path="res://data/resources/area/area_iriyu/enemy/normal/001/area_iriyu_enemy_normal_001_007.tres" id="8_fvbqr"]
 
 [resource]
 script = ExtResource("1_script")
-enemies = Array[ExtResource("1_0m42e")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_002"), ExtResource("4_0hygy"), ExtResource("5_fvbqr"), ExtResource("6_1phop"), ExtResource("7_6nh78")])
+enemies = Array[ExtResource("1_0m42e")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_002"), ExtResource("4_0hygy"), ExtResource("5_fvbqr"), ExtResource("6_1phop"), ExtResource("7_6nh78"), ExtResource("8_fvbqr")])

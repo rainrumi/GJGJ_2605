@@ -16,6 +16,7 @@ var _input_controller: GameInputController
 var _stomach: StomachBoard
 var _enemy_preset: EnemyPresetInfo
 var _current_enemy_page := 0
+var _pageable_enemy_count := 0
 
 
 # setup処理
@@ -34,6 +35,7 @@ func setup(
 # setup敵処理
 func setup_enemies(enemies: Array[Enemy]) -> void:
 	_current_enemy_page = 0
+	_pageable_enemy_count = 0
 	if _enemy_preset != null and not _enemy_preset.enemies.is_empty():
 		_setup_preset_enemies(enemies)
 		return
@@ -110,27 +112,44 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 
 # 悪夢ページ表示反映
 func _apply_enemy_page_visibility(enemies: Array[Enemy]) -> void:
-	if _enemy_preset == null or _enemy_preset.enemies.is_empty():
-		return
+	var pageable_enemies := _get_pageable_enemies(enemies)
+	_pageable_enemy_count = pageable_enemies.size()
+	_current_enemy_page = clampi(_current_enemy_page, 0, maxi(0, _get_enemy_page_count() - 1))
+	_layout_pageable_enemies(pageable_enemies)
 	var page_start := _current_enemy_page * ENEMIES_PER_PAGE
-	var page_end := mini(page_start + ENEMIES_PER_PAGE, _enemy_preset.enemies.size())
-	for i in range(enemies.size()):
-		var enemy := enemies[i]
+	var page_end := mini(page_start + ENEMIES_PER_PAGE, pageable_enemies.size())
+	for enemy in enemies:
 		if enemy == null:
 			continue
-		var is_current_page := i >= page_start and i < page_end
-		var is_preset_enemy := i < _enemy_preset.enemies.size()
-		var should_present := is_preset_enemy and not enemy.is_Acided() and (
-			is_current_page or enemy.is_active_in_stomach()
-		)
-		enemy.set_presented(should_present)
+		enemy.set_presented(enemy.is_active_in_stomach())
+	for i in range(pageable_enemies.size()):
+		pageable_enemies[i].set_presented(i >= page_start and i < page_end)
+
+
+# 胃袋外の未消化悪夢取得
+func _get_pageable_enemies(enemies: Array[Enemy]) -> Array[Enemy]:
+	var pageable_enemies: Array[Enemy] = []
+	for enemy in enemies:
+		if enemy == null or enemy.is_Acided() or enemy.is_active_in_stomach():
+			continue
+		pageable_enemies.append(enemy)
+	return pageable_enemies
+
+
+# 胃袋外の悪夢をページ内の枠へ前詰め
+func _layout_pageable_enemies(pageable_enemies: Array[Enemy]) -> void:
+	for page_start in range(0, pageable_enemies.size(), ENEMIES_PER_PAGE):
+		var page_enemy_count := mini(ENEMIES_PER_PAGE, pageable_enemies.size() - page_start)
+		var enemy_positions := _get_enemy_positions(page_enemy_count)
+		for page_index in range(page_enemy_count):
+			var enemy := pageable_enemies[page_start + page_index]
+			enemy.origin_position = enemy_positions[page_index]
+			enemy.return_to_origin()
 
 
 # 悪夢ページ数取得
 func _get_enemy_page_count() -> int:
-	if _enemy_preset == null:
-		return 0
-	return ceili(float(_enemy_preset.enemies.size()) / float(ENEMIES_PER_PAGE))
+	return ceili(float(_pageable_enemy_count) / float(ENEMIES_PER_PAGE))
 
 # プリセット敵数に必要なEnemyを補充
 func _ensure_enemy_capacity(enemies: Array[Enemy], required_count: int) -> void:
@@ -268,6 +287,7 @@ func apply_spawn_requests(
 			request.global_acid_damage_rate
 		):
 			break
+	_apply_enemy_page_visibility(enemies)
 
 
 # effect敵生成

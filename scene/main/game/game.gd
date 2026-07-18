@@ -519,7 +519,6 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	if damage > 0:
 		ui.show_hp_damage_values(damage_values)
 		hp = maxi(0, hp - damage)
-	enemy_setup.refresh_enemy_page_visibility(enemies)
 	_refresh_after_battle_event()
 # advance消化turn処理
 func _advance_acid_turn() -> void:
@@ -720,6 +719,7 @@ func _refresh_hover_tooltip() -> void:
 # after戦闘イベント更新
 func _refresh_after_battle_event() -> void:
 	acid_controller.refresh_enemy_effects(enemies, stomach)
+	enemy_setup.refresh_enemy_page_visibility(enemies)
 	_refresh_ui()
 # ツールデバッグ番号文言取得
 func _get_tooltip_debug_number_text(enemy: Enemy) -> String:
