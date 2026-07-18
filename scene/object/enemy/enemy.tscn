@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bdwlmrqlmsor3"]
 
-[ext_resource type="Texture2D" uid="uid://ch5ohl873x4x4" path="res://art/enemy/tex_enemy_1000_No_100.png" id="1_enemy"]
 [ext_resource type="Script" uid="uid://ccx2iw1mxklqy" path="res://scene/object/enemy/enemy.gd" id="2_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="3_font"]
+[ext_resource type="Texture2D" uid="uid://qrh5nxb0ccy5" path="res://art/enemy/tex_enemy_1_1_100.png" id="3_h2vg7"]
 [ext_resource type="PackedScene" uid="uid://cki5epcjxetrf" path="res://scene/object/enemy/tooltip/enemy_tooltip.tscn" id="4_enemy_tooltip_view"]
 [ext_resource type="Script" uid="uid://xmsmswgpbyg0" path="res://scene/object/enemy/enemy_sprite_view.gd" id="5_sprite_view"]
 [ext_resource type="Script" uid="uid://bnx1c14fi5uuu" path="res://scene/object/enemy/enemy_hp_text.gd" id="6_hp_text"]
@@ -13,13 +13,13 @@
 z_index = 10
 script = ExtResource("2_script")
 
-[node name="View" type="Node2D" parent="."]
+[node name="View" type="Node2D" parent="." unique_id=1085956488]
 editor_description = "敵表示を担当"
 script = ExtResource("8_enemy_view")
 
 [node name="Sprite2D" type="Sprite2D" parent="View" unique_id=713877918]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-texture = ExtResource("1_enemy")
+texture = ExtResource("3_h2vg7")
 script = ExtResource("5_sprite_view")
 
 [node name="HPText" type="Label" parent="View" unique_id=157147899]

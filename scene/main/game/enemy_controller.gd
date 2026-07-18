@@ -2,7 +2,7 @@ class_name EnemyController
 extends RefCounted
 
 const STEP_MINUTES := 30
-const ACID_DAMAGE := 300
+const ACID_DAMAGE := 50
 
 var digestion_resolver: EnemyDigestionResolver # 消化処理
 var digestion_processor: EnemyDigestionProcessor # 消化進行

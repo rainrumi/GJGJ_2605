@@ -5,7 +5,7 @@ const STEP_MINUTES := 30
 
 var _seed_effects: SeedEffectResolver # 種効果計算
 var _enemy_effects: EnemyEffectSystem # 敵効果窓口
-var _base_acid_damage := 300 # 基準消化値
+var _base_acid_damage := 0 # setupで注入される基準消化値
 var _battle_start_minutes := 0 # 戦闘開始分
 
 
