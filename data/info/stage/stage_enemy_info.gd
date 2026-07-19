@@ -7,19 +7,19 @@ extends Resource
 
 
 # ステージ名取得
-func get_stage_name(enemy_preset: EnemyPresetInfo) -> String:
+func get_stage_name(enemy_preset: EnemyPresetInfo, stage_initial: String) -> String:
 	if enemy_preset == null:
 		return ""
 	# 通常番号
 	var normal_index := normal_enemy_presets.find(enemy_preset)
 	if normal_index >= 0:
-		return "ST-N-%d" % (normal_index + 1)
+		return "%s-N-%d" % [stage_initial, normal_index + 1]
 	# boss番号
 	var boss_index := strengthened_enemy_presets.find(enemy_preset)
 	if boss_index >= 0:
-		return "ST-B-%d" % (boss_index + 1)
+		return "%s-B-%d" % [stage_initial, boss_index + 1]
 	if endless_enemy_presets.has(enemy_preset):
-		return "ST-E"
+		return "%s-E" % stage_initial
 	return ""
 
 

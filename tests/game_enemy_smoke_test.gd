@@ -26,7 +26,8 @@ func _run() -> void:
 	enemy_data.endless_enemy_presets.append(EnemyPresetInfo.new())
 	var stage := StageInfo.new()
 	stage.stage_id = 3
-	stage.location = "エルメナ大学"
+	stage.location = "イリユ洞窟"
+	stage.initial = "IC"
 	stage.enemy_data = enemy_data
 	var battle_context := BattleInfo.new()
 	battle_context.stage = stage
@@ -66,12 +67,12 @@ func _check_stage_info_display(game: Node, stage: StageInfo) -> void:
 	_expect(stage_name_label != null, "ステージ名表示を構成する")
 	if area_name_label == null or stage_name_label == null or stage == null or stage.enemy_data == null:
 		return
-	_expect(area_name_label.text == "エルメナ大学", "正式エリア名を表示する")
-	_expect(stage_name_label.text == "ST-N-1", "通常ステージ名を表示する")
+	_expect(area_name_label.text == "イリユ洞窟", "正式エリア名を表示する")
+	_expect(stage_name_label.text == "IC-N-1", "エリア略称を使って通常ステージ名を表示する")
 	var enemy_data := stage.enemy_data
-	_expect(enemy_data.get_stage_name(enemy_data.normal_enemy_presets[8]) == "ST-N-9", "通常ステージの進行番号を表示する")
-	_expect(enemy_data.get_stage_name(enemy_data.strengthened_enemy_presets[2]) == "ST-B-3", "bossステージの進行番号を表示する")
-	_expect(enemy_data.get_stage_name(enemy_data.endless_enemy_presets[0]) == "ST-E", "endlessステージは番号なしで表示する")
+	_expect(enemy_data.get_stage_name(enemy_data.normal_enemy_presets[8], stage.initial) == "IC-N-9", "通常ステージの進行番号を表示する")
+	_expect(enemy_data.get_stage_name(enemy_data.strengthened_enemy_presets[2], stage.initial) == "IC-B-3", "bossステージの進行番号を表示する")
+	_expect(enemy_data.get_stage_name(enemy_data.endless_enemy_presets[0], stage.initial) == "IC-E", "endlessステージは番号なしで表示する")
 
 
 # 通常ステージ進行確認

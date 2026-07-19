@@ -481,7 +481,7 @@ func _get_current_area_name() -> String:
 func _get_current_stage_name() -> String:
 	if current_stage == null or current_stage.enemy_data == null:
 		return ""
-	return current_stage.enemy_data.get_stage_name(current_enemy_preset)
+	return current_stage.enemy_data.get_stage_name(current_enemy_preset, current_stage.initial)
 
 
 # setup敵編成処理
