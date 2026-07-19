@@ -8,7 +8,7 @@
 
 [sub_resource type="Resource" id="AcidBlock"]
 script = ExtResource("2_acid_block")
-max_hp = 280
+max_hp = 280000
 damage = 6
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1), PackedInt32Array(1, 1)])
 
