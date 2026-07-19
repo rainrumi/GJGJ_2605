@@ -93,6 +93,8 @@ func can_place(enemy: Enemy, top_left: Vector2i, active_enemies: Array[Enemy]) -
 func try_rotate_enemy_clockwise(enemy: Enemy, active_enemies: Array[Enemy]) -> bool:
 	if enemy == null:
 		return false
+	if enemy.is_nightmare() and enemy.is_active_in_stomach():
+		return false
 	var rotated_size := enemy.get_clockwise_rotated_stomach_size()
 	var rotated_shape := enemy.get_clockwise_rotated_stomach_shape()
 	if enemy.is_active_in_stomach() and not _can_place_shape(

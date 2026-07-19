@@ -79,8 +79,8 @@ func _run() -> void:
 	)
 	stomach.place_enemy(nightmare, Vector2i.ZERO)
 	input_controller.call("_handle_press", nightmare.global_position)
-	_expect(nightmare.get_stomach_size() == Vector2i(2, 3), "配置可能な胃袋内悪夢は回転する")
-	_expect(nightmare.stomach_cell == Vector2i.ZERO, "胃袋内回転後も基準セルを維持する")
+	_expect(nightmare.get_stomach_size() == Vector2i(3, 2), "配置可能でも胃袋内悪夢は回転しない")
+	_expect(nightmare.stomach_cell == Vector2i.ZERO, "回転拒否後も胃袋内悪夢の基準セルを維持する")
 
 	var seed_button_list := game.get_node("UI/SeedButtonList") as SeedButtonList
 	var seed_button := seed_button_list.get_child(0) as SeedButton
