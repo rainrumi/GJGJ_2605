@@ -1,5 +1,7 @@
 extends Node2D
 
+const DEBUG_STAGE_CATALOG_PATH := "res://data/resources/area/debug_stage_catalog.tres"
+
 signal stage_selected(stage: StageInfo)
 
 @export var stage_catalog: StageCatalogInfo
@@ -22,6 +24,7 @@ var stage_selection_service := StageSelectionService.new()
 # 初期化
 func _ready() -> void:
 	_connect_stage_choice_list()
+	_connect_debug_state()
 	setup_stage_choices()
 
 
@@ -63,6 +66,22 @@ func _connect_stage_choice_list() -> void:
 	stage_choice_list.choice_pressed.connect(_on_stage_choice_pressed)
 	stage_choice_list.choice_hovered.connect(_on_stage_choice_hovered)
 	stage_choice_list.choice_unhovered.connect(_on_stage_choice_unhovered)
+
+
+# debug状態接続
+func _connect_debug_state() -> void:
+	if not DebugState.debug_enabled_changed.is_connected(_on_debug_enabled_changed):
+		DebugState.debug_enabled_changed.connect(_on_debug_enabled_changed)
+
+
+# debug状態変更処理
+func _on_debug_enabled_changed(_is_enabled: bool) -> void:
+	setup_stage_choices(
+		_current_stage_definition,
+		_current_day,
+		_unlocked_high_difficulty_stage_ids,
+		_run_state
+	)
 
 
 # 押下処理
@@ -111,15 +130,28 @@ func _get_stage_definitions() -> Array[StageInfo]:
 
 # ランダム定義取得
 func _get_random_stage_definitions() -> Array[StageInfo]:
-	var definitions := stage_selection_service.get_candidate_stages(
-		_get_stage_definitions(),
-		_current_stage_definition,
-		_current_day,
-		_unlocked_high_difficulty_stage_ids
-	)
+	var definitions: Array[StageInfo] = []
+	if DebugState.debug_enabled:
+		definitions = _get_debug_stage_definitions()
+	else:
+		definitions = stage_selection_service.get_candidate_stages(
+			_get_stage_definitions(),
+			_current_stage_definition,
+			_current_day,
+			_unlocked_high_difficulty_stage_ids
+		)
 	definitions.shuffle()
 	_move_current_location_to_front(definitions)
 	return definitions
+
+
+# debug用ステージ定義取得
+func _get_debug_stage_definitions() -> Array[StageInfo]:
+	var debug_stage_catalog := load(DEBUG_STAGE_CATALOG_PATH) as StageCatalogInfo
+	if debug_stage_catalog == null:
+		push_error("StageSelect: debug用ステージカタログを読み込めません: %s" % DEBUG_STAGE_CATALOG_PATH)
+		return []
+	return debug_stage_catalog.stages.duplicate()
 
 
 # 現在地を先頭へ

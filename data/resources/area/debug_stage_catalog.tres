@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="StageCatalog" format=3]
+
+[ext_resource type="Script" uid="uid://da3llhh44qyrx" path="res://data/info/stage/stage_catalog_info.gd" id="1_catalog_script"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/info/stage/stage_info.gd" id="2_stage_script"]
+[ext_resource type="Resource" uid="uid://bkvf8y2r5p72b" path="res://data/resources/area/area_lunova/area_lunova.tres" id="3_lunova"]
+[ext_resource type="Resource" uid="uid://dywec106nntv" path="res://data/resources/area/area_eramia/area_eramia.tres" id="4_eramia"]
+[ext_resource type="Resource" uid="uid://b6tbcorsqf4gt" path="res://data/resources/area/area_elmena/area_elmena.tres" id="5_elmena"]
+[ext_resource type="Resource" uid="uid://djow7j6lgdm7j" path="res://data/resources/area/area_gonsal/area_gonsal.tres" id="6_gonsal"]
+[ext_resource type="Resource" uid="uid://co88keexjcsl8" path="res://data/resources/area/area_riran/area_riran.tres" id="7_riran"]
+[ext_resource type="Resource" uid="uid://dowauut6ow0bc" path="res://data/resources/area/area_felis/area_felis.tres" id="8_felis"]
+[ext_resource type="Resource" uid="uid://d4k64x6xx4wbi" path="res://data/resources/area/area_nerix/area_nerix.tres" id="9_nerix"]
+[ext_resource type="Resource" uid="uid://dbix0t0o43tuy" path="res://data/resources/area/area_zaika/area_zaika.tres" id="10_zaika"]
+[ext_resource type="Resource" uid="uid://bk8l73pakx1da" path="res://data/resources/area/area_mirune/area_mirune.tres" id="11_mirune"]
+[ext_resource type="Resource" uid="uid://o81s64xkk4hu" path="res://data/resources/area/area_corotta/area_corotta.tres" id="12_corotta"]
+[ext_resource type="Resource" uid="uid://b7f2dqt8cxtw1" path="res://data/resources/area/area_iriyu/area_iriyu.tres" id="13_iriyu"]
+
+[resource]
+script = ExtResource("1_catalog_script")
+stages = Array[ExtResource("2_stage_script")]([ExtResource("3_lunova"), ExtResource("4_eramia"), ExtResource("5_elmena"), ExtResource("6_gonsal"), ExtResource("7_riran"), ExtResource("8_felis"), ExtResource("9_nerix"), ExtResource("10_zaika"), ExtResource("11_mirune"), ExtResource("12_corotta"), ExtResource("13_iriyu")])
