@@ -86,7 +86,7 @@ func show_stage_select() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	if stage_select.has_method("setup_stage_choices"):
-		stage_select.call("setup_stage_choices", run_state.selected_stage, run_state.current_day, _get_unlocked_high_difficulty_stage_ids(), run_state)
+		stage_select.call("setup_stage_choices", run_state.current_area_stage, run_state.current_day, _get_unlocked_high_difficulty_stage_ids(), run_state)
 
 
 # ゲーム表示
@@ -217,8 +217,7 @@ func show_day_intro() -> void:
 func _on_stage_select_stage_selected(stage: StageInfo) -> void:
 	if stage == null:
 		return
-	run_state.selected_stage_id = stage.stage_id
-	run_state.selected_stage = stage
+	run_state.select_stage(stage)
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
 
@@ -302,8 +301,7 @@ func _setup_initial_stage_position() -> void:
 	var initial_stage := stage_select.call("get_stage_definition_by_id", INITIAL_STAGE_ID) as StageInfo
 	if initial_stage == null:
 		return
-	run_state.selected_stage_id = initial_stage.stage_id
-	run_state.selected_stage = initial_stage
+	run_state.select_stage(initial_stage)
 
 
 # ゲームclearノベル表示

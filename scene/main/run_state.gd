@@ -16,6 +16,7 @@ var stomach_columns := DEFAULT_STOMACH_COLUMNS
 var stomach_rows := DEFAULT_STOMACH_ROWS
 var selected_stage_id := 0
 var selected_stage: StageInfo
+var current_area_stage: StageInfo
 var planted_flowers: Array[SeedInfo] = []
 var permanent_acid_damage_bonus_rate := 0.0
 var last_time_over_recovery_percent := 0
@@ -34,6 +35,7 @@ func reset() -> void:
 	stomach_rows = DEFAULT_STOMACH_ROWS
 	selected_stage_id = 0
 	selected_stage = null
+	current_area_stage = null
 	planted_flowers.clear()
 	permanent_acid_damage_bonus_rate = 0.0
 	last_time_over_recovery_percent = 0
@@ -42,6 +44,16 @@ func reset() -> void:
 	normal_enemy_defeat_counts.clear()
 	strengthened_enemy_defeat_counts.clear()
 	played_stage_novel_indices.clear()
+
+
+# 戦闘ステージ選択
+func select_stage(stage: StageInfo) -> void:
+	if stage == null:
+		return
+	selected_stage_id = stage.stage_id
+	selected_stage = stage
+	if stage.stage_area != StageInfo.StageArea.huwahuwaSchool:
+		current_area_stage = stage
 
 
 # 敵編成選択
