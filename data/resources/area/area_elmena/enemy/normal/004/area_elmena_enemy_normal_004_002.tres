@@ -10,7 +10,7 @@
 script = ExtResource("2_acid_block")
 max_hp = 1000
 damage = 3
-stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 0, 0, 0, 1), PackedInt32Array(1, 1, 0, 1, 1), PackedInt32Array(1, 0, 0, 0, 1)])
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(0, 1, 0, 1, 0), PackedInt32Array(1, 0, 1, 0, 1), PackedInt32Array(1, 0, 1, 0, 1)])
 
 [sub_resource type="Resource" id="Effect_1"]
 script = ExtResource("effect_5")
