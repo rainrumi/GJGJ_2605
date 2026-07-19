@@ -38,6 +38,8 @@ func _run() -> void:
 
 	var time_view := game.get_node("UI/TimeView") as Control
 	var rotate_button := game.get_node("UI/RotateModeButton") as CheckButton
+	var warning_label := game.get_node("UI/WarningMessageLabel") as Label
+	var ui := game.get_node("UI") as BattleUI
 	var input_controller := game.get_node("GameInputController") as GameInputController
 	var stomach := game.get_node("Stomach") as StomachBoard
 	var enemies: Array[Enemy] = game.get("enemies")
@@ -51,6 +53,7 @@ func _run() -> void:
 	)
 	_expect(not rotate_button.button_pressed, "戦闘開始時は回転モードが無効")
 	_expect(rotate_button.text == "回転", "回転モード無効時は回転と表示する")
+	_expect(not warning_label.visible, "警告文言は戦闘開始時に非表示")
 	rotate_button.set_pressed_no_signal(true)
 	rotate_button.toggled.emit(true)
 	await process_frame
@@ -70,17 +73,27 @@ func _run() -> void:
 	)
 
 	nightmare.set_Aciding(true)
-	stomach.place_enemy(nightmare, Vector2i(1, 3))
+	stomach.place_enemy(nightmare, Vector2i.ZERO)
 	var size_before_rejected_rotation := nightmare.get_stomach_size()
 	input_controller.call("_handle_press", nightmare.global_position)
+	await process_frame
 	_expect(
 		nightmare.get_stomach_size() == size_before_rejected_rotation,
-		"胃袋外へはみ出す回転は適用しない"
+		"胃袋内悪夢の回転は適用しない"
 	)
-	stomach.place_enemy(nightmare, Vector2i.ZERO)
-	input_controller.call("_handle_press", nightmare.global_position)
-	_expect(nightmare.get_stomach_size() == Vector2i(3, 2), "配置可能でも胃袋内悪夢は回転しない")
 	_expect(nightmare.stomach_cell == Vector2i.ZERO, "回転拒否後も胃袋内悪夢の基準セルを維持する")
+	_expect(warning_label.visible, "胃袋内悪夢の回転時に警告文言を表示する")
+	_expect(warning_label.text == "胃袋内のモノは回転できません", "胃袋内回転の警告文言が正しい")
+	_expect(
+		warning_label.get_theme_color("font_color").is_equal_approx(Color(1, 0.2, 0.2, 1)),
+		"胃袋内回転の警告文言を赤色にする"
+	)
+	_expect(warning_label.position.y < 100.0, "胃袋内回転の警告文言を画面上部に表示する")
+	var warning_tween := ui.get("_warning_message_tween") as Tween
+	_expect(warning_tween != null and warning_tween.is_valid(), "胃袋内回転の警告文言をTween表示する")
+	if warning_tween != null and warning_tween.is_valid():
+		await warning_tween.finished
+	_expect(not warning_label.visible, "胃袋内回転の警告文言は表示後に消える")
 
 	var seed_button_list := game.get_node("UI/SeedButtonList") as SeedButtonList
 	var seed_button := seed_button_list.get_child(0) as SeedButton

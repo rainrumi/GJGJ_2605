@@ -3,6 +3,10 @@ extends CanvasLayer
 
 const ROTATION_MODE_DISABLED_TEXT := "回転"
 const ROTATION_MODE_ENABLED_TEXT := "回転（有効中）"
+const WARNING_MESSAGE_FLOAT_DISTANCE := 6.0
+const WARNING_MESSAGE_FADE_IN_DURATION := 0.2
+const WARNING_MESSAGE_HOLD_DURATION := 0.65
+const WARNING_MESSAGE_FADE_OUT_DURATION := 0.25
 
 signal Acidion_requested
 signal debug_message_requested(is_active: bool)
@@ -28,6 +32,7 @@ signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 @onready var seed_button_list: SeedButtonList = $SeedButtonList
 @onready var time_view: TimeView = $TimeView
 @onready var rotate_mode_button: CheckButton = $RotateModeButton
+@onready var warning_message_label: Label = $WarningMessageLabel
 @onready var acid_button: AcidButton = $AcidButton
 @onready var debug_panel: DebugPanel = $DebugPanel
 @onready var nightmare_previous_page_button: Button = $NightmarePreviousPageButton
@@ -43,12 +48,17 @@ var _rest_hp_rate := 0.1
 var _rest_recovery_bonus_rate := 0.0
 var _current_tooltip_owner: Object = null
 var _current_tooltip_hide: Callable = Callable()
+var _warning_message_base_position := Vector2.ZERO
+var _warning_message_tween: Tween
 
 # -----------------------------------------------------------
 
 # 初期化
 func _ready() -> void:
 	seed_button_list.set_sub_skill_drag_enabled(true)
+	_warning_message_base_position = warning_message_label.position
+	warning_message_label.pivot_offset = warning_message_label.size * 0.5
+	hide_warning_message()
 	_connect_child_signals()
 	_hide_all_tooltips()
 
@@ -101,6 +111,7 @@ func reset_for_battle(
 	hide_nightmare_return_hint()
 	hide_time_over_decision()
 	hide_time_elapsed()
+	hide_warning_message()
 	_hide_all_tooltips()
 
 # -----------------------------------------------------------
@@ -125,6 +136,61 @@ func set_rotation_mode_enabled(is_enabled: bool) -> void:
 	rotate_mode_button.set_pressed_no_signal(is_enabled)
 	rotate_mode_button.text = ROTATION_MODE_ENABLED_TEXT if is_enabled else ROTATION_MODE_DISABLED_TEXT
 	seed_button_list.set_rotation_mode_enabled(is_enabled)
+
+
+# 警告文言表示
+func show_warning_message(message: String) -> void:
+	hide_warning_message()
+	warning_message_label.text = message
+	warning_message_label.position = _warning_message_base_position
+	warning_message_label.scale = Vector2(0.96, 0.96)
+	warning_message_label.modulate.a = 0.0
+	warning_message_label.visible = true
+	_warning_message_tween = create_tween()
+	_warning_message_tween.set_trans(Tween.TRANS_QUART)
+	_warning_message_tween.set_ease(Tween.EASE_OUT)
+	_warning_message_tween.tween_property(
+		warning_message_label,
+		"modulate:a",
+		1.0,
+		WARNING_MESSAGE_FADE_IN_DURATION
+	)
+	_warning_message_tween.parallel().tween_property(
+		warning_message_label,
+		"position:y",
+		_warning_message_base_position.y - WARNING_MESSAGE_FLOAT_DISTANCE,
+		WARNING_MESSAGE_FADE_IN_DURATION
+	)
+	_warning_message_tween.parallel().tween_property(
+		warning_message_label,
+		"scale",
+		Vector2.ONE,
+		WARNING_MESSAGE_FADE_IN_DURATION
+	)
+	_warning_message_tween.tween_interval(WARNING_MESSAGE_HOLD_DURATION)
+	_warning_message_tween.tween_property(
+		warning_message_label,
+		"modulate:a",
+		0.0,
+		WARNING_MESSAGE_FADE_OUT_DURATION
+	)
+	_warning_message_tween.tween_callback(_finish_warning_message)
+
+
+# 警告文言非表示
+func hide_warning_message() -> void:
+	if _warning_message_tween != null and _warning_message_tween.is_valid():
+		_warning_message_tween.kill()
+	_finish_warning_message()
+
+
+# 警告文言表示終了
+func _finish_warning_message() -> void:
+	_warning_message_tween = null
+	warning_message_label.visible = false
+	warning_message_label.position = _warning_message_base_position
+	warning_message_label.scale = Vector2.ONE
+	warning_message_label.modulate.a = 0.0
 
 
 # ステージ情報設定

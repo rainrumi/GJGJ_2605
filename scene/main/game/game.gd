@@ -15,6 +15,7 @@ const TIME_OVER_HP_RECOVERY_RATE: float = 0.7
 const acid_AUTO_INTERVAL: float = 0.05
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
+const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
@@ -340,6 +341,9 @@ func _on_enemy_rotation_requested(enemy: Enemy) -> void:
 	):
 		return
 	_set_hovered_enemy(null)
+	if enemy.is_nightmare() and enemy.is_active_in_stomach():
+		ui.show_warning_message(STOMACH_ROTATION_BLOCKED_MESSAGE)
+		return
 	if not stomach.try_rotate_enemy_clockwise(enemy, enemies):
 		return
 	_play_click_se()
