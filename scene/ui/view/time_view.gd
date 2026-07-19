@@ -3,6 +3,17 @@ extends TextureRect
 
 const TIME_PULSE_SCALE := 1.1
 const TIME_PULSE_DURATION := 0.2
+const TIME_NORMAL_COLOR := Color(0.9411765, 0.8784314, 1.0, 1.0)
+const TIME_WARNING_COLOR := Color(0.96, 0.64, 0.72, 1.0)
+const TIME_DANGER_COLOR := Color(1.0, 0.2, 0.2, 1.0)
+const TIME_WARNING_START_MINUTES := 4 * 60
+const TIME_DANGER_START_MINUTES := 5 * 60
+const TIME_HEARTBEAT_START_MINUTES := 5 * 60 + 30
+const TIME_DANGER_END_MINUTES := 6 * 60
+const TIME_HEARTBEAT_SCALE := 1.12
+const TIME_HEARTBEAT_GROW_DURATION := 0.12
+const TIME_HEARTBEAT_SHRINK_DURATION := 0.22
+const TIME_HEARTBEAT_INTERVAL := 0.55
 const TIME_ELAPSED_FLOAT_DISTANCE := 5.0
 const TIME_ELAPSED_TWEEN_DURATION := 0.3
 const TIME_ELAPSED_HIDE_DELAY := 0.2
@@ -15,6 +26,7 @@ signal tooltip_hide_requested(view: TimeView)
 
 var _time_text_base_scale := Vector2.ONE
 var _time_text_pulse_tween: Tween
+var _time_text_heartbeat_tween: Tween
 var _time_elapsed_label: Label
 var _time_elapsed_label_base_position := Vector2.ZERO
 var _time_elapsed_tween: Tween
@@ -37,6 +49,7 @@ func set_time(minutes: int) -> void:
 	# Minute
 	var minute := minutes % 60
 	time_text.text = "%02d:%02d" % [hour, minute]
+	_update_time_urgency(posmod(minutes, 24 * 60))
 
 
 # Show elapsed
@@ -126,6 +139,8 @@ func _create_time_elapsed_label() -> void:
 
 # Pulse time
 func _pulse_time_text() -> void:
+	if _time_text_heartbeat_tween != null and _time_text_heartbeat_tween.is_valid():
+		return
 	if _time_text_pulse_tween != null and _time_text_pulse_tween.is_valid():
 		_time_text_pulse_tween.kill()
 	time_text.scale = _time_text_base_scale
@@ -134,6 +149,58 @@ func _pulse_time_text() -> void:
 	_time_text_pulse_tween.set_ease(Tween.EASE_OUT)
 	_time_text_pulse_tween.tween_property(time_text, "scale", _time_text_base_scale * TIME_PULSE_SCALE, TIME_PULSE_DURATION * 0.5)
 	_time_text_pulse_tween.tween_property(time_text, "scale", _time_text_base_scale, TIME_PULSE_DURATION * 0.5)
+
+
+# Update urgency
+func _update_time_urgency(clock_minutes: int) -> void:
+	if clock_minutes < TIME_WARNING_START_MINUTES or clock_minutes >= TIME_DANGER_END_MINUTES:
+		time_text.self_modulate = TIME_NORMAL_COLOR
+		_stop_time_heartbeat()
+		return
+	if clock_minutes < TIME_DANGER_START_MINUTES:
+		var danger_weight := inverse_lerp(
+			float(TIME_WARNING_START_MINUTES),
+			float(TIME_DANGER_START_MINUTES),
+			float(clock_minutes)
+		)
+		time_text.self_modulate = TIME_WARNING_COLOR.lerp(TIME_DANGER_COLOR, danger_weight)
+	else:
+		time_text.self_modulate = TIME_DANGER_COLOR
+	if clock_minutes >= TIME_HEARTBEAT_START_MINUTES:
+		_start_time_heartbeat()
+	else:
+		_stop_time_heartbeat()
+
+
+# Start heartbeat
+func _start_time_heartbeat() -> void:
+	if _time_text_heartbeat_tween != null and _time_text_heartbeat_tween.is_valid():
+		return
+	if _time_text_pulse_tween != null and _time_text_pulse_tween.is_valid():
+		_time_text_pulse_tween.kill()
+	time_text.scale = _time_text_base_scale
+	_time_text_heartbeat_tween = create_tween().set_loops()
+	_time_text_heartbeat_tween.tween_property(
+		time_text,
+		"scale",
+		_time_text_base_scale * TIME_HEARTBEAT_SCALE,
+		TIME_HEARTBEAT_GROW_DURATION
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_time_text_heartbeat_tween.tween_property(
+		time_text,
+		"scale",
+		_time_text_base_scale,
+		TIME_HEARTBEAT_SHRINK_DURATION
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_time_text_heartbeat_tween.tween_interval(TIME_HEARTBEAT_INTERVAL)
+
+
+# Stop heartbeat
+func _stop_time_heartbeat() -> void:
+	if _time_text_heartbeat_tween != null and _time_text_heartbeat_tween.is_valid():
+		_time_text_heartbeat_tween.kill()
+	_time_text_heartbeat_tween = null
+	time_text.scale = _time_text_base_scale
 
 
 # Format elapsed
