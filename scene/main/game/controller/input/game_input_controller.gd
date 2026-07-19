@@ -5,6 +5,7 @@ signal enemy_drag_started(enemy: Enemy, pointer_position: Vector2, pointer_offse
 signal enemy_drag_moved(enemy: Enemy, pointer_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i)
 signal enemy_drag_released(enemy: Enemy, pointer_position: Vector2)
 signal enemy_hover_requested(enemy: Enemy)
+signal enemy_rotation_requested(enemy: Enemy)
 
 var _active := false
 var _enemies: Array[Enemy] = []
@@ -12,6 +13,7 @@ var _dragging_enemy: Enemy
 var _drag_offset := Vector2.ZERO
 var _drag_grab_cell := Vector2i.ZERO
 var _hovered_enemy: Enemy
+var _rotation_mode_enabled := false
 
 
 # setup処理
@@ -25,6 +27,18 @@ func set_active(value: bool) -> void:
 	if not _active:
 		clear_drag()
 		_request_hover(null)
+
+
+# 回転モード設定
+func set_rotation_mode_enabled(value: bool) -> void:
+	_rotation_mode_enabled = value
+	if _rotation_mode_enabled:
+		clear_drag()
+
+
+# 回転モード判定
+func is_rotation_mode_enabled() -> bool:
+	return _rotation_mode_enabled
 
 
 # ドラッグ消去
@@ -68,6 +82,10 @@ func _handle_press(mouse_position: Vector2) -> void:
 		var enemy := _enemies[i]
 		if not _can_point_enemy(enemy, mouse_position):
 			continue
+		if _rotation_mode_enabled:
+			_request_hover(null)
+			enemy_rotation_requested.emit(enemy)
+			return
 		_dragging_enemy = enemy
 		_drag_offset = enemy.global_position - mouse_position
 		_drag_grab_cell = enemy.get_grab_cell(mouse_position)

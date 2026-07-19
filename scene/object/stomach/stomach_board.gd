@@ -86,10 +86,44 @@ func get_drop_cell(enemy: Enemy, mouse_position: Vector2, grab_cell: Vector2i, a
 
 # place判定
 func can_place(enemy: Enemy, top_left: Vector2i, active_enemies: Array[Enemy]) -> bool:
-	if not _is_within_bounds(enemy, top_left):
+	return _can_place_shape(enemy, top_left, enemy.get_stomach_shape(), active_enemies)
+
+
+# 90度右回転試行
+func try_rotate_enemy_clockwise(enemy: Enemy, active_enemies: Array[Enemy]) -> bool:
+	if enemy == null:
 		return false
-	# occupiedcells
-	var occupied_cells: Array[Vector2i] = enemy.get_occupied_cells(top_left)
+	var rotated_size := enemy.get_clockwise_rotated_stomach_size()
+	var rotated_shape := enemy.get_clockwise_rotated_stomach_shape()
+	if enemy.is_active_in_stomach() and not _can_place_shape(
+		enemy,
+		enemy.stomach_cell,
+		rotated_shape,
+		active_enemies
+	):
+		return false
+	enemy.rotate_stomach_footprint_clockwise(Vector2(
+		get_span_size(rotated_size.x),
+		get_span_size(rotated_size.y)
+	))
+	if enemy.is_active_in_stomach():
+		place_enemy(enemy, enemy.stomach_cell)
+	return true
+
+
+# 指定形状の配置判定
+func _can_place_shape(
+	enemy: Enemy,
+	top_left: Vector2i,
+	shape: Array[Vector2i],
+	active_enemies: Array[Enemy]
+) -> bool:
+	var occupied_cells: Array[Vector2i] = []
+	for offset: Vector2i in shape:
+		var cell := top_left + offset
+		if cell.x < 0 or cell.x >= columns or cell.y < 0 or cell.y >= rows:
+			return false
+		occupied_cells.append(cell)
 	for other: Enemy in active_enemies:
 		if other == enemy or not other.is_active_in_stomach():
 			continue

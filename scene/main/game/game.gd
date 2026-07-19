@@ -144,6 +144,7 @@ func start_battle(context: BattleInfo = null) -> void:
 	stomach.hide_preview()
 	battle_active = true
 	input_controller.set_active(true)
+	input_controller.set_rotation_mode_enabled(false)
 	_refresh_ui()
 # HP取得
 func get_current_hp() -> int:
@@ -163,6 +164,8 @@ func get_last_time_over_recovery_percent() -> int:
 func cancel_battle() -> void:
 	battle_active = false
 	input_controller.set_active(false)
+	input_controller.set_rotation_mode_enabled(false)
+	ui.set_rotation_mode_enabled(false)
 	auto_acid_enabled = false
 	auto_acid_paused_for_drag = false
 	acid_turn_in_progress = false
@@ -186,6 +189,7 @@ func _connect_ui() -> void:
 	ui.Acidion_requested.connect(_on_Acidion_requested)
 	ui.nightmare_previous_page_requested.connect(_on_nightmare_previous_page_requested)
 	ui.nightmare_next_page_requested.connect(_on_nightmare_next_page_requested)
+	ui.rotation_mode_changed.connect(_on_rotation_mode_changed)
 	ui.debug_message_requested.connect(_on_debug_message_requested)
 	ui.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	ui.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
@@ -193,6 +197,7 @@ func _connect_ui() -> void:
 	ui.seed_drag_started.connect(_on_seed_drag_started)
 	ui.seed_drag_moved.connect(_on_seed_drag_moved)
 	ui.seed_drag_released.connect(_on_seed_drag_released)
+	ui.seed_rotation_requested.connect(_on_seed_rotation_requested)
 # 入力接続
 func _connect_input() -> void:
 	input_controller.setup(enemies)
@@ -200,6 +205,7 @@ func _connect_input() -> void:
 	input_controller.enemy_drag_moved.connect(_on_enemy_drag_moved)
 	input_controller.enemy_drag_released.connect(_on_enemy_drag_released)
 	input_controller.enemy_hover_requested.connect(_set_hovered_enemy)
+	input_controller.enemy_rotation_requested.connect(_on_enemy_rotation_requested)
 # 戦闘flags設定
 func _set_battle_flags(is_active: bool) -> void:
 	battle_active = is_active
@@ -304,6 +310,35 @@ func _on_nightmare_next_page_requested() -> void:
 	if enemy_setup.show_next_enemy_page(enemies):
 		_play_click_se()
 		_refresh_nightmare_page_navigation()
+
+
+# 回転モード変更
+func _on_rotation_mode_changed(is_enabled: bool) -> void:
+	input_controller.set_rotation_mode_enabled(is_enabled)
+	if battle_active:
+		_play_click_se()
+
+
+# 悪夢・胃袋内ブロック回転要求
+func _on_enemy_rotation_requested(enemy: Enemy) -> void:
+	if (
+		not battle_active
+		or drag_mode != DragMode.NONE
+		or acid_turn_in_progress
+		or enemy == null
+	):
+		return
+	_set_hovered_enemy(null)
+	if not stomach.try_rotate_enemy_clockwise(enemy, enemies):
+		return
+	_play_click_se()
+	_refresh_after_battle_event()
+
+
+# 種ボタン回転要求
+func _on_seed_rotation_requested(_button: SeedButton, _seed: SeedInfo) -> void:
+	if battle_active and input_controller.is_rotation_mode_enabled():
+		_play_click_se()
 # イベント処理
 func _on_Acidion_timer_timeout() -> void:
 	if not auto_acid_enabled or auto_acid_paused_for_drag:

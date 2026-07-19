@@ -4,6 +4,7 @@ extends Button
 signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
+signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 
 const TOOLTIP_SCENE := preload("res://scene/ui/seed/tooltip/seed_tooltip.tscn")
 const LOW_SUB_SKILL_USES_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
@@ -19,9 +20,11 @@ var seed: SeedInfo
 var tooltip_panel: SeedTooltip
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
+var rotation_mode_enabled := false
 # 現状はUI表示を兼ねた一時的な使用回数。永続状態が必要になったらRuntimeStateへ移す。
 var _display_remaining_sub_skill_uses := 0
 var _dragging := false
+var _rotation_quarter_turns := 0
 
 
 # 初期化
@@ -32,6 +35,7 @@ func _ready() -> void:
 	focus_mode = Control.FOCUS_NONE
 	flat = true
 	icon_rect.visible = icon_rect.texture != null
+	icon_rect.pivot_offset = icon_rect.size * 0.5
 	_create_tooltip_panel()
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
@@ -87,6 +91,24 @@ func set_debug_numbers_visible(is_visible: bool) -> void:
 func set_sub_skill_drag_enabled(is_enabled: bool) -> void:
 	sub_skill_drag_enabled = is_enabled
 	_update_drag_state()
+
+
+# 回転モード設定
+func set_rotation_mode_enabled(is_enabled: bool) -> void:
+	rotation_mode_enabled = is_enabled
+	_update_drag_state()
+
+
+# 種ブロック回転数設定
+func set_rotation_quarter_turns(quarter_turns: int) -> void:
+	_rotation_quarter_turns = posmod(quarter_turns, 4)
+	if icon_rect != null:
+		icon_rect.rotation_degrees = float(_rotation_quarter_turns * 90)
+
+
+# 種ブロック回転数取得
+func get_rotation_quarter_turns() -> int:
+	return _rotation_quarter_turns
 
 
 # subスキルuse消費
@@ -186,6 +208,12 @@ func _is_rare_seed() -> bool:
 
 # usesubスキル試行
 func _try_use_sub_skill(mouse_position: Vector2) -> void:
+	if rotation_mode_enabled:
+		if not _can_use_sub_skill():
+			return
+		set_rotation_quarter_turns(_rotation_quarter_turns + 1)
+		seed_rotation_requested.emit(self, seed)
+		return
 	if not _can_use_sub_skill():
 		return
 	_dragging = true

@@ -262,6 +262,32 @@ func get_stomach_shape() -> Array[Vector2i]:
 	return _get_nightmare_stomach_shape()
 
 
+# 90度右回転後の胃袋サイズ取得
+func get_clockwise_rotated_stomach_size() -> Vector2i:
+	var current_size := get_stomach_size()
+	return Vector2i(current_size.y, current_size.x)
+
+
+# 90度右回転後の胃袋形状取得
+func get_clockwise_rotated_stomach_shape() -> Array[Vector2i]:
+	var current_size := get_stomach_size()
+	var rotated_shape: Array[Vector2i] = []
+	for cell: Vector2i in get_stomach_shape():
+		rotated_shape.append(Vector2i(current_size.y - 1 - cell.y, cell.x))
+	return rotated_shape
+
+
+# 胃袋形状90度右回転
+func rotate_stomach_footprint_clockwise(target_size: Vector2) -> void:
+	set_stomach_footprint_override(
+		get_clockwise_rotated_stomach_size(),
+		get_clockwise_rotated_stomach_shape(),
+		get_size()
+	)
+	_presenter.setup_texture(_get_texture(), target_size)
+	_reset_visuals()
+
+
 # ドラッグ判定
 func can_drag() -> bool:
 	return not Acided

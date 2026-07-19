@@ -1,6 +1,9 @@
 class_name BattleUI
 extends CanvasLayer
 
+const ROTATION_MODE_DISABLED_TEXT := "回転"
+const ROTATION_MODE_ENABLED_TEXT := "回転（有効中）"
+
 signal Acidion_requested
 signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
@@ -8,9 +11,11 @@ signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
 signal nightmare_previous_page_requested
 signal nightmare_next_page_requested
+signal rotation_mode_changed(is_enabled: bool)
 signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
+signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 
 @onready var acid_damage_view: AcidDamageView = $AcidDamageView
 @onready var acid_interval_view: AcidIntervalView = $AcidIntervalView
@@ -20,6 +25,7 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 @onready var hp_view: HpView = $HpView
 @onready var seed_button_list: SeedButtonList = $SeedButtonList
 @onready var time_view: TimeView = $TimeView
+@onready var rotate_mode_button: CheckButton = $RotateModeButton
 @onready var acid_button: AcidButton = $AcidButton
 @onready var debug_panel: DebugPanel = $DebugPanel
 @onready var nightmare_previous_page_button: Button = $NightmarePreviousPageButton
@@ -78,6 +84,8 @@ func reset_for_battle(
 	set_message(message)
 	set_debug_message("")
 	set_seed_sources([])
+	seed_button_list.reset_rotations()
+	set_rotation_mode_enabled(false)
 	set_seed_debug_numbers_visible(DebugState.debug_enabled)
 	set_debug_button_active(DebugState.debug_enabled)
 	set_acidion_count(0)
@@ -102,6 +110,13 @@ func set_rest_recovery_bonus_rate(rest_recovery_bonus_rate: float) -> void:
 # 時間設定
 func set_time(minutes: int) -> void:
 	time_view.set_time(minutes)
+
+
+# 回転モード表示設定
+func set_rotation_mode_enabled(is_enabled: bool) -> void:
+	rotate_mode_button.set_pressed_no_signal(is_enabled)
+	rotate_mode_button.text = ROTATION_MODE_ENABLED_TEXT if is_enabled else ROTATION_MODE_DISABLED_TEXT
+	seed_button_list.set_rotation_mode_enabled(is_enabled)
 
 
 # ステージ情報設定
@@ -275,6 +290,9 @@ func _connect_child_signals() -> void:
 	hp_view.tooltip_requested.connect(_on_view_tooltip_requested)
 	hp_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
 
+	rotate_mode_button.toggled.connect(_on_rotate_mode_button_toggled)
+	seed_button_list.seed_rotation_requested.connect(_on_seed_rotation_requested)
+
 # -----------------------------------------------------------
 
 # 排他ツール表示
@@ -345,6 +363,12 @@ func _on_nightmare_previous_page_requested() -> void:
 func _on_nightmare_next_page_requested() -> void:
 	nightmare_next_page_requested.emit()
 
+
+# 回転モード変更
+func _on_rotate_mode_button_toggled(is_enabled: bool) -> void:
+	set_rotation_mode_enabled(is_enabled)
+	rotation_mode_changed.emit(is_enabled)
+
 # -----------------------------------------------------------
 
 # デバッグ開始要求
@@ -394,3 +418,8 @@ func _on_seed_drag_released(
 	mouse_position: Vector2
 ) -> void:
 	seed_drag_released.emit(button, seed, mouse_position)
+
+
+# 種ブロック回転要求
+func _on_seed_rotation_requested(button: SeedButton, seed: SeedInfo) -> void:
+	seed_rotation_requested.emit(button, seed)

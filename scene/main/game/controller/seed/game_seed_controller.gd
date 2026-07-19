@@ -101,6 +101,7 @@ func start_drag(
 	_dragging_seed_button_list = button
 	_dragging_seed = seed
 	_dragging_seed_block = seed_block
+	_apply_seed_block_rotation(_dragging_seed_block, button.get_rotation_quarter_turns())
 	_dragging_seed_block.global_position = mouse_position
 	_dragging_seed_block.modulate.a = SEED_BLOCK_DRAG_ALPHA
 	result.started = true
@@ -206,6 +207,18 @@ func _get_seed_block_stomach_size(seed: SeedInfo) -> Vector2i:
 	if seed != null and seed.acid_block != null:
 		return seed.acid_block.get_stomach_size()
 	return Vector2i.ONE
+
+
+# 種ボタンで選択した向きを生成ブロックへ適用
+func _apply_seed_block_rotation(seed_block: Enemy, quarter_turns: int) -> void:
+	if seed_block == null:
+		return
+	for _turn in posmod(quarter_turns, 4):
+		var rotated_size := seed_block.get_clockwise_rotated_stomach_size()
+		seed_block.rotate_stomach_footprint_clockwise(Vector2(
+			_stomach.get_span_size(rotated_size.x),
+			_stomach.get_span_size(rotated_size.y)
+		))
 
 
 # direct消化済み種effects適用
