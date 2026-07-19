@@ -21,6 +21,7 @@ enum StageArea {
 @export var reachable_stage_areas: Array[StageArea] = []
 @export var difficulty_level := 1
 @export var location := ""
+@export var initial := ""
 @export var map_position := Vector2.ZERO
 @export var reward_icon: Texture2D
 @export var enemy_data: StageEnemyInfo

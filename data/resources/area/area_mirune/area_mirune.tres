@@ -14,6 +14,7 @@ stage_id = 9
 stage_area = 9
 reachable_stage_areas = Array[int]([10, 2, 9])
 location = "ミルネ街"
+initial = "MS"
 map_position = Vector2(-105, 105)
 enemy_data = ExtResource("2_enemy_data")
 drop_seed_skill_pool = ExtResource("4_seed_pool")

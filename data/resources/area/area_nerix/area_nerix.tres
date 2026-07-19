@@ -15,6 +15,7 @@ stage_area = 7
 reachable_stage_areas = Array[int]([2, 10, 3, 7])
 difficulty_level = 2
 location = "ネリクス魔法学校"
+initial = "NMS"
 map_position = Vector2(-20, 30)
 enemy_data = ExtResource("2_enemy_data")
 drop_seed_skill_pool = ExtResource("4_seed_pool")

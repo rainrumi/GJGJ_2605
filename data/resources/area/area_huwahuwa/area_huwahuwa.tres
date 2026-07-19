@@ -9,6 +9,7 @@
 script = ExtResource("1_script")
 stage_area = 12
 location = "ふわふわ学校"
+initial = "HS"
 map_position = Vector2(100, 100)
 enemy_data = ExtResource("2_enemy_data")
 stage_unlock_novel_texts = Array[ExtResource("3_5av6i")]([ExtResource("3_stage_novel_001")])

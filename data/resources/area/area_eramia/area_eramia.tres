@@ -15,6 +15,7 @@ stage_area = 2
 reachable_stage_areas = Array[int]([9, 10, 7, 6, 2])
 difficulty_level = 3
 location = "エラミア区"
+initial = "ED"
 map_position = Vector2(-80, 35)
 enemy_data = ExtResource("2_enemy_data")
 drop_seed_skill_pool = ExtResource("4_seed_pool")
