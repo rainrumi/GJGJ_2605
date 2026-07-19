@@ -18,13 +18,28 @@ func _run() -> void:
 	var game := packed.instantiate() # 戦闘画面
 	root.add_child(game)
 	await process_frame
-	game.call("start_battle", BattleInfo.new())
+	var enemy_data := StageEnemyInfo.new()
+	for _index in range(9):
+		enemy_data.normal_enemy_presets.append(EnemyPresetInfo.new())
+	for _index in range(3):
+		enemy_data.strengthened_enemy_presets.append(EnemyPresetInfo.new())
+	enemy_data.endless_enemy_presets.append(EnemyPresetInfo.new())
+	var stage := StageInfo.new()
+	stage.stage_id = 3
+	stage.location = "エルメナ大学"
+	stage.enemy_data = enemy_data
+	var battle_context := BattleInfo.new()
+	battle_context.stage = stage
+	battle_context.stage_id = stage.stage_id
+	battle_context.enemy_preset = enemy_data.normal_enemy_presets[0]
+	game.call("start_battle", battle_context)
 	await process_frame
 	var controller := game.get("acid_controller") as EnemyController # 敵調整役
 	_expect(controller != null, "EnemyControllerを構成する")
 	_expect(controller.digestion_resolver != null, "消化Resolverを注入する")
 	_expect(controller.attack_resolver != null, "攻撃Resolverを注入する")
 	_expect(controller.turn_processor != null, "TurnProcessorを注入する")
+	_check_stage_info_display(game, stage)
 	_check_normal_stage_progression("area_iriyu", "イリユ")
 	_check_normal_stage_progression("area_elmena", "エルメナ")
 	_check_normal_stage_progression("area_lunova", "ルノヴァ")
@@ -35,9 +50,28 @@ func _run() -> void:
 	root.remove_child(game)
 	game.free()
 	game = null
+	battle_context = null
+	stage = null
+	enemy_data = null
 	packed = null
 	await process_frame
 	quit(_failures)
+
+
+# ステージ情報表示確認
+func _check_stage_info_display(game: Node, stage: StageInfo) -> void:
+	var area_name_label := game.get_node_or_null("UI/StageInfo/AreaNameLabel") as Label
+	var stage_name_label := game.get_node_or_null("UI/StageInfo/StageNameLabel") as Label
+	_expect(area_name_label != null, "エリア名表示を構成する")
+	_expect(stage_name_label != null, "ステージ名表示を構成する")
+	if area_name_label == null or stage_name_label == null or stage == null or stage.enemy_data == null:
+		return
+	_expect(area_name_label.text == "エルメナ大学", "正式エリア名を表示する")
+	_expect(stage_name_label.text == "ST-N-1", "通常ステージ名を表示する")
+	var enemy_data := stage.enemy_data
+	_expect(enemy_data.get_stage_name(enemy_data.normal_enemy_presets[8]) == "ST-N-9", "通常ステージの進行番号を表示する")
+	_expect(enemy_data.get_stage_name(enemy_data.strengthened_enemy_presets[2]) == "ST-B-3", "bossステージの進行番号を表示する")
+	_expect(enemy_data.get_stage_name(enemy_data.endless_enemy_presets[0]) == "ST-E", "endlessステージは番号なしで表示する")
 
 
 # 通常ステージ進行確認

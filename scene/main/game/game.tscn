@@ -58,6 +58,30 @@ stream = ExtResource("21_click_se")
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]
 script = ExtResource("3_battle_ui_script")
 
+[node name="StageInfo" type="VBoxContainer" parent="UI" unique_id=992397045]
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 147.0
+offset_bottom = 52.0
+mouse_filter = 2
+theme_override_constants/separation = 1
+
+[node name="AreaNameLabel" type="Label" parent="UI/StageInfo" unique_id=1605438150]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("43_bestten_font")
+theme_override_font_sizes/font_size = 14
+text = "エリア名"
+
+[node name="StageNameLabel" type="Label" parent="UI/StageInfo" unique_id=667789759]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("43_bestten_font")
+theme_override_font_sizes/font_size = 14
+text = "ST-N-1"
+
 [node name="AcidDamageView" parent="UI" unique_id=633967596 instance=ExtResource("4_acid_damage_view_scene")]
 offset_left = 159.0
 offset_top = 12.0

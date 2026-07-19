@@ -14,6 +14,9 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 
 @onready var acid_damage_view: AcidDamageView = $AcidDamageView
 @onready var acid_interval_view: AcidIntervalView = $AcidIntervalView
+@onready var stage_info: VBoxContainer = $StageInfo
+@onready var area_name_label: Label = $StageInfo/AreaNameLabel
+@onready var stage_name_label: Label = $StageInfo/StageNameLabel
 @onready var hp_view: HpView = $HpView
 @onready var seed_button_list: SeedButtonList = $SeedButtonList
 @onready var time_view: TimeView = $TimeView
@@ -99,6 +102,13 @@ func set_rest_recovery_bonus_rate(rest_recovery_bonus_rate: float) -> void:
 # 時間設定
 func set_time(minutes: int) -> void:
 	time_view.set_time(minutes)
+
+
+# ステージ情報設定
+func set_stage_info(area_name: String, stage_name: String) -> void:
+	area_name_label.text = area_name
+	stage_name_label.text = stage_name
+	stage_info.visible = not area_name.is_empty() or not stage_name.is_empty()
 
 
 # 文言設定

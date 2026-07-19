@@ -138,6 +138,7 @@ func start_battle(context: BattleInfo = null) -> void:
 		seed_effects.get_rest_recovery_bonus_rate(),
 		float(acid_controller.get_base_step_minutes())
 	)
+	ui.set_stage_info(_get_current_area_name(), _get_current_stage_name())
 	ui.set_seed_sources(seed_controller.get_flowers())
 	ui.set_seed_debug_numbers_visible(debug_numbers_visible)
 	stomach.hide_preview()
@@ -467,6 +468,20 @@ func _refresh_enemy_stomach_display_sizes() -> void:
 # 戦闘敵編成取得
 func _get_battle_enemy_preset() -> EnemyPresetInfo:
 	return current_enemy_preset
+
+
+# currentエリア名取得
+func _get_current_area_name() -> String:
+	if current_stage == null:
+		return ""
+	return current_stage.location
+
+
+# currentステージ名取得
+func _get_current_stage_name() -> String:
+	if current_stage == null or current_stage.enemy_data == null:
+		return ""
+	return current_stage.enemy_data.get_stage_name(current_enemy_preset)
 
 
 # setup敵編成処理
