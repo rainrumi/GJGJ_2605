@@ -62,6 +62,9 @@ var dragged_enemy_original_global_position := Vector2.ZERO
 var hovered_enemy: Enemy
 var last_time_over_recovery_percent := 0
 var effective_max_hp := MAX_HP
+var _battle_start_context: BattleInfo
+var _awaiting_time_over_decision := false
+var _pending_depleted_seed_sources: Array[Resource] = []
 # 初期化
 func _ready() -> void:
 	randomize()
@@ -95,6 +98,9 @@ func set_beat_conductor(conductor: BeatConductor) -> void:
 func start_battle(context: BattleInfo = null) -> void:
 	# 戦闘文脈
 	var battle_context := context if context != null else BattleInfo.new()
+	_battle_start_context = _copy_battle_context(battle_context)
+	_awaiting_time_over_decision = false
+	_pending_depleted_seed_sources.clear()
 	minutes = START_HOUR * 60
 	effective_max_hp = MAX_HP
 	hp = clampi(battle_context.starting_hp, 0, effective_max_hp)
@@ -162,6 +168,8 @@ func get_last_time_over_recovery_percent() -> int:
 
 # 戦闘取消
 func cancel_battle() -> void:
+	_awaiting_time_over_decision = false
+	_pending_depleted_seed_sources.clear()
 	battle_active = false
 	input_controller.set_active(false)
 	input_controller.set_rotation_mode_enabled(false)
@@ -172,6 +180,7 @@ func cancel_battle() -> void:
 	_clear_scheduled_acid_events()
 	_update_auto_acid_timer()
 	_refresh_nightmare_page_navigation()
+	ui.hide_time_over_decision()
 
 
 # 胃袋列取得
@@ -189,6 +198,8 @@ func _connect_ui() -> void:
 	ui.Acidion_requested.connect(_on_Acidion_requested)
 	ui.nightmare_previous_page_requested.connect(_on_nightmare_previous_page_requested)
 	ui.nightmare_next_page_requested.connect(_on_nightmare_next_page_requested)
+	ui.time_over_retry_requested.connect(_on_time_over_retry_requested)
+	ui.time_over_abandon_requested.connect(_on_time_over_abandon_requested)
 	ui.rotation_mode_changed.connect(_on_rotation_mode_changed)
 	ui.debug_message_requested.connect(_on_debug_message_requested)
 	ui.debug_reroll_requested.connect(_on_debug_reroll_requested)
@@ -667,9 +678,10 @@ func _finish_acid_turn() -> void:
 
 
 # depleted夢種sources発火
-func _emit_depleted_seed_sources(Acided_enemies: Array[Enemy]) -> void:
+func _queue_depleted_seed_sources(Acided_enemies: Array[Enemy]) -> void:
 	for source in seed_controller.collect_depleted_sources(Acided_enemies):
-		seed_depleted.emit(source)
+		if source != null and not _pending_depleted_seed_sources.has(source):
+			_pending_depleted_seed_sources.append(source)
 
 
 # check戦闘end処理
@@ -678,16 +690,72 @@ func _check_battle_end() -> void:
 		_finish_battle(true, "すべての悪夢を消化しました")
 		return
 	if minutes >= END_HOUR * 60:
-		_apply_time_over_recovery()
-		_finish_battle(false, "朝までに消化しきれませんでした")
+		_begin_time_over_decision()
+
+
+# 時間切れ選択開始
+func _begin_time_over_decision() -> void:
+	if _awaiting_time_over_decision:
+		return
+	_awaiting_time_over_decision = true
+	_set_battle_flags(false)
+	input_controller.set_rotation_mode_enabled(false)
+	ui.set_rotation_mode_enabled(false)
+	_clear_scheduled_acid_events()
+	_update_auto_acid_timer()
+	_refresh_after_battle_event()
+	ui.show_time_over_decision()
+
+
+# 再挑戦要求処理
+func _on_time_over_retry_requested() -> void:
+	if not _awaiting_time_over_decision or _battle_start_context == null:
+		return
+	start_battle(_battle_start_context)
+
+
+# 諦める要求処理
+func _on_time_over_abandon_requested() -> void:
+	if not _awaiting_time_over_decision:
+		return
+	_awaiting_time_over_decision = false
+	ui.hide_time_over_decision()
+	_apply_time_over_recovery()
+	_finish_battle(false, "朝までに消化しきれませんでした")
+
+
+# 戦闘開始文脈複製
+func _copy_battle_context(source: BattleInfo) -> BattleInfo:
+	var copy := BattleInfo.new()
+	copy.starting_hp = source.starting_hp
+	copy.day = source.day
+	copy.stage_id = source.stage_id
+	copy.stage = source.stage
+	copy.enemy_preset = source.enemy_preset
+	copy.stomach_columns = source.stomach_columns
+	copy.stomach_rows = source.stomach_rows
+	copy.flowers = source.flowers.duplicate()
+	copy.permanent_acid_damage_bonus_rate = source.permanent_acid_damage_bonus_rate
+	return copy
+
+
+# 枯渇種確定
+func _commit_depleted_seed_sources() -> void:
+	for source in _pending_depleted_seed_sources:
+		if source != null:
+			seed_depleted.emit(source)
+	_pending_depleted_seed_sources.clear()
 # 戦闘終了
 func _finish_battle(won: bool, _message: String) -> void:
+	_awaiting_time_over_decision = false
 	battle_active = false
 	input_controller.set_active(false)
 	auto_acid_enabled = false
 	_clear_scheduled_acid_events()
 	_update_auto_acid_timer()
 	_refresh_after_battle_event()
+	ui.hide_time_over_decision()
+	_commit_depleted_seed_sources()
 	battle_finished.emit(won)
 # 時間over回復適用
 func _apply_time_over_recovery() -> void:
@@ -852,7 +920,7 @@ func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	for seed in seed_controller.collect_Acided_seeds(Acided_enemies):
 		seed_effects.add_Acided_seed_effect(seed, minutes, stomach)
 	_apply_Acided_seed_hp_effects(Acided_enemies)
-	_emit_depleted_seed_sources(Acided_enemies)
+	_queue_depleted_seed_sources(Acided_enemies)
 
 
 # playerダメージvalues適用

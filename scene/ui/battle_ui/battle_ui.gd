@@ -11,6 +11,8 @@ signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
 signal nightmare_previous_page_requested
 signal nightmare_next_page_requested
+signal time_over_abandon_requested
+signal time_over_retry_requested
 signal rotation_mode_changed(is_enabled: bool)
 signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
@@ -32,6 +34,9 @@ signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 @onready var nightmare_next_page_button: Button = $NightmareNextPageButton
 @onready var nightmare_return_hint: PanelContainer = $NightmareReturnHint
 @onready var nightmare_return_damage_value_label: Label = $NightmareReturnHint/CenterContainer/TextContainer/DamageRow/ValueLabel
+@onready var time_over_decision: ColorRect = $TimeOverDecision
+@onready var time_over_retry_button: Button = $TimeOverDecision/CenterContainer/PanelContainer/MarginContainer/Content/Buttons/RetryButton
+@onready var time_over_abandon_button: Button = $TimeOverDecision/CenterContainer/PanelContainer/MarginContainer/Content/Buttons/AbandonButton
 
 var _rest_minutes := 30
 var _rest_hp_rate := 0.1
@@ -51,6 +56,8 @@ func _ready() -> void:
 
 # 未処理入力
 func _unhandled_input(event: InputEvent) -> void:
+	if time_over_decision.visible:
+		return
 	if event is InputEventKey:
 		# keyイベント
 		var key_event := event as InputEventKey
@@ -92,6 +99,7 @@ func reset_for_battle(
 	set_acid_button_visible(true)
 	hide_hp_damage_preview()
 	hide_nightmare_return_hint()
+	hide_time_over_decision()
 	hide_time_elapsed()
 	_hide_all_tooltips()
 
@@ -228,6 +236,18 @@ func hide_nightmare_return_hint() -> void:
 	nightmare_return_hint.visible = false
 
 
+# 時間切れ選択表示
+func show_time_over_decision() -> void:
+	_hide_all_tooltips()
+	time_over_decision.visible = true
+	time_over_retry_button.grab_focus()
+
+
+# 時間切れ選択非表示
+func hide_time_over_decision() -> void:
+	time_over_decision.visible = false
+
+
 # 消化ボタンhit判定
 func is_acid_button_hit(mouse_position: Vector2) -> bool:
 	return acid_button.is_hit(mouse_position)
@@ -268,6 +288,8 @@ func _connect_child_signals() -> void:
 	acid_button.Acidion_requested.connect(_on_Acidion_requested)
 	nightmare_previous_page_button.pressed.connect(_on_nightmare_previous_page_requested)
 	nightmare_next_page_button.pressed.connect(_on_nightmare_next_page_requested)
+	time_over_retry_button.pressed.connect(_on_time_over_retry_requested)
+	time_over_abandon_button.pressed.connect(_on_time_over_abandon_requested)
 	
 	debug_panel.debug_message_requested.connect(_on_debug_message_requested)
 	debug_panel.debug_reroll_requested.connect(_on_debug_reroll_requested)
@@ -362,6 +384,16 @@ func _on_nightmare_previous_page_requested() -> void:
 # 次の悪夢ページ要求
 func _on_nightmare_next_page_requested() -> void:
 	nightmare_next_page_requested.emit()
+
+
+# 再挑戦要求
+func _on_time_over_retry_requested() -> void:
+	time_over_retry_requested.emit()
+
+
+# 諦める要求
+func _on_time_over_abandon_requested() -> void:
+	time_over_abandon_requested.emit()
 
 
 # 回転モード変更

@@ -26,6 +26,18 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.88, 0.78, 0.95, 0.8)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_time_over_decision"]
+bg_color = Color(0.07, 0.06, 0.09, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.88, 0.78, 0.95, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
 
@@ -206,3 +218,71 @@ text = "0"
 
 [node name="DebugPanel" parent="UI" unique_id=1605446388 instance=ExtResource("34_status_panel_scene")]
 visible = false
+
+[node name="TimeOverDecision" type="ColorRect" parent="UI" unique_id=360704359]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.015, 0.01, 0.035, 0.68)
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/TimeOverDecision" unique_id=1896500740]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="UI/TimeOverDecision/CenterContainer" unique_id=40784614]
+custom_minimum_size = Vector2(300, 150)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_time_over_decision")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/TimeOverDecision/CenterContainer/PanelContainer" unique_id=1237576714]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="UI/TimeOverDecision/CenterContainer/PanelContainer/MarginContainer" unique_id=315146502]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="MessageLabel" type="Label" parent="UI/TimeOverDecision/CenterContainer/PanelContainer/MarginContainer/Content" unique_id=1731210552]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9411765, 0.8784314, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("43_bestten_font")
+theme_override_font_sizes/font_size = 16
+text = "消化しきれなかった……"
+horizontal_alignment = 1
+
+[node name="PromptLabel" type="Label" parent="UI/TimeOverDecision/CenterContainer/PanelContainer/MarginContainer/Content" unique_id=1686224338]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9411765, 0.8784314, 1, 1)
+theme_override_fonts/font = ExtResource("43_bestten_font")
+theme_override_font_sizes/font_size = 13
+text = "どうしますか？"
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="UI/TimeOverDecision/CenterContainer/PanelContainer/MarginContainer/Content" unique_id=908015314]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="RetryButton" parent="UI/TimeOverDecision/CenterContainer/PanelContainer/MarginContainer/Content/Buttons" unique_id=1586101289 instance=ExtResource("42_battle_button_scene")]
+custom_minimum_size = Vector2(108, 36)
+layout_mode = 2
+text = "再挑戦"
+
+[node name="AbandonButton" parent="UI/TimeOverDecision/CenterContainer/PanelContainer/MarginContainer/Content/Buttons" unique_id=1805240530 instance=ExtResource("42_battle_button_scene")]
+custom_minimum_size = Vector2(108, 36)
+layout_mode = 2
+text = "諦める"
