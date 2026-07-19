@@ -62,7 +62,6 @@ func _pick_normal_enemy_preset(stage: StageInfo) -> EnemyPresetInfo:
 	# 編成
 	var preset := stage.enemy_data.get_normal_enemy_preset(index)
 	if preset != null:
-		normal_enemy_preset_indices[key] = index + 1
 		return preset
 	return stage.enemy_data.pick_endless_enemy_preset()
 
@@ -84,7 +83,6 @@ func _pick_strengthened_enemy_preset(stage: StageInfo) -> EnemyPresetInfo:
 	# 編成
 	var preset := stage.enemy_data.get_strengthened_enemy_preset(index)
 	if preset != null:
-		strengthened_enemy_preset_indices[key] = index + 1
 		return preset
 	return stage.enemy_data.get_last_strengthened_enemy_preset()
 
@@ -96,6 +94,10 @@ func record_normal_stage_clear(stage: StageInfo) -> void:
 	# key
 	var key := _get_stage_progress_key(stage)
 	normal_enemy_defeat_counts[key] = int(normal_enemy_defeat_counts.get(key, 0)) + 1
+	# 番号
+	var index := int(normal_enemy_preset_indices.get(key, 0))
+	if stage.enemy_data != null and stage.enemy_data.get_normal_enemy_preset(index) != null:
+		normal_enemy_preset_indices[key] = index + 1
 
 
 # ステージclear記録
@@ -115,6 +117,17 @@ func record_strengthened_stage_clear(stage: StageInfo) -> void:
 	# key
 	var key := _get_stage_progress_key(stage)
 	strengthened_enemy_defeat_counts[key] = int(strengthened_enemy_defeat_counts.get(key, 0)) + 1
+	if stage.enemy_data == null:
+		return
+	# 番号
+	var index := int(strengthened_enemy_preset_indices.get(key, 0))
+	# 最大番号
+	var max_index := get_strengthened_enemy_unlock_count(stage) - 1
+	if max_index < 0:
+		return
+	index = mini(index, max_index)
+	if stage.enemy_data.get_strengthened_enemy_preset(index) != null:
+		strengthened_enemy_preset_indices[key] = index + 1
 
 
 # ステージexploration割合取得

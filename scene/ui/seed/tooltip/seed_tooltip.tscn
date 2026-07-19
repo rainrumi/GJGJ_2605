@@ -15,17 +15,18 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
-[node name="SeedTooltip" type="Panel" unique_id=954225524]
+[node name="SeedTooltip" type="CanvasLayer" unique_id=954225524]
 visible = false
-top_level = true
-z_index = 100
+layer = 100
+script = ExtResource("1_go3nn")
+
+[node name="Panel" type="Panel" parent="."]
 offset_right = 220.0
 offset_bottom = 24.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_seed_skill_tooltip")
-script = ExtResource("1_go3nn")
 
-[node name="TooltipLabel" type="Label" parent="." unique_id=2031412385]
+[node name="TooltipLabel" type="Label" parent="Panel" unique_id=2031412385]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 8.0

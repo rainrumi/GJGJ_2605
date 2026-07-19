@@ -5,7 +5,6 @@ signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vec
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 
-const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
 const TOOLTIP_SCENE := preload("res://scene/ui/seed/tooltip/seed_tooltip.tscn")
 const LOW_SUB_SKILL_USES_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
 const NORMAL_ICON_COLOR := Color(1.0, 1.0, 1.0, 1.0)
@@ -164,19 +163,13 @@ func _create_tooltip_panel() -> void:
 func _on_mouse_entered() -> void:
 	if seed == null or tooltip_panel == null:
 		return
-	tooltip_panel.global_position = TooltipPositioner.get_tooltip_position(
-		global_position,
-		tooltip_panel.size,
-		get_viewport().get_visible_rect(),
-		TOOLTIP_OFFSET
-	)
-	tooltip_panel.visible = true
+	tooltip_panel.show_tooltip_at(global_position)
 
 
 # ホバー終了
 func _on_mouse_exited() -> void:
 	if tooltip_panel != null:
-		tooltip_panel.visible = false
+		tooltip_panel.hide_tooltip()
 
 
 # title文言取得

@@ -35,5 +35,4 @@ text = "22:00"
 vertical_alignment = 1
 
 [node name="TimeView_tooltip" parent="." instance=ExtResource("4_left_tooltip")]
-layout_mode = 0
 script = ExtResource("5_time_tooltip")

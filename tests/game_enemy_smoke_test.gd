@@ -29,6 +29,7 @@ func _run() -> void:
 	_check_normal_stage_progression("area_elmena", "エルメナ")
 	_check_normal_stage_progression("area_lunova", "ルノヴァ")
 	_check_normal_stage_progression("area_riran", "リラン")
+	_check_strengthened_stage_progression()
 	controller = null
 	game.call("cancel_battle")
 	root.remove_child(game)
@@ -53,9 +54,32 @@ func _check_normal_stage_progression(area_name: String, display_name: String) ->
 	var stage := StageInfo.new()
 	stage.enemy_data = enemy_data
 	var stage_1_preset := run_state.pick_enemy_preset(stage)
+	var retry_stage_1_preset := run_state.pick_enemy_preset(stage)
+	run_state.record_stage_clear(stage)
 	var stage_2_preset := run_state.pick_enemy_preset(stage)
 	_expect(stage_1_preset == enemy_data.normal_enemy_presets[0], "%sの初回はST1を選ぶ" % display_name)
-	_expect(stage_2_preset == enemy_data.normal_enemy_presets[1], "%s ST1の次はST2を選ぶ" % display_name)
+	_expect(retry_stage_1_preset == enemy_data.normal_enemy_presets[0], "%s ST1未クリアの再挑戦はST1を選ぶ" % display_name)
+	_expect(stage_2_preset == enemy_data.normal_enemy_presets[1], "%s ST1クリア後はST2を選ぶ" % display_name)
+
+
+# 強化ステージ進行確認
+func _check_strengthened_stage_progression() -> void:
+	var enemy_data := load("res://data/resources/area/area_elmena/area_elmena_enemy.tres") as StageEnemyInfo
+	_expect(enemy_data != null, "強化敵編成を読み込める")
+	if enemy_data == null or enemy_data.strengthened_enemy_presets.size() < 2:
+		return
+	var run_state := RunState.new()
+	run_state.current_day = 8
+	var stage := StageInfo.new()
+	stage.is_high_difficulty = true
+	stage.enemy_data = enemy_data
+	var strengthened_1_preset := run_state.pick_enemy_preset(stage)
+	var retry_strengthened_1_preset := run_state.pick_enemy_preset(stage)
+	run_state.record_stage_clear(stage)
+	var strengthened_2_preset := run_state.pick_enemy_preset(stage)
+	_expect(strengthened_1_preset == enemy_data.strengthened_enemy_presets[0], "強化ステージの初回は強化ST1を選ぶ")
+	_expect(retry_strengthened_1_preset == enemy_data.strengthened_enemy_presets[0], "強化ST1未クリアの再挑戦は強化ST1を選ぶ")
+	_expect(strengthened_2_preset == enemy_data.strengthened_enemy_presets[1], "強化ST1クリア後は強化ST2を選ぶ")
 
 
 # 期待値確認

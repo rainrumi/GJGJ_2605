@@ -33,6 +33,5 @@ text = "30min"
 vertical_alignment = 1
 
 [node name="AcidIntervalView_tooltip" parent="." instance=ExtResource("3_left_tooltip")]
-layout_mode = 0
 script = ExtResource("4_acid_interval_tooltip")
 note_visible = true

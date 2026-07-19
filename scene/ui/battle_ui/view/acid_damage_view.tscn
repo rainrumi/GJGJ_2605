@@ -35,5 +35,4 @@ text = "300"
 vertical_alignment = 1
 
 [node name="AcidDamageView_tooltip" parent="." instance=ExtResource("3_left_tooltip")]
-layout_mode = 0
 script = ExtResource("4_acid_damage_tooltip")

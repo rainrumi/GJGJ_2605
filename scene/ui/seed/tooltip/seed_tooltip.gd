@@ -1,7 +1,10 @@
 class_name SeedTooltip
-extends Panel
+extends CanvasLayer
 
-@onready var tooltip_label: Label = $TooltipLabel
+const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
+
+@onready var tooltip_panel: Panel = $Panel
+@onready var tooltip_label: Label = $Panel/TooltipLabel
 
 var _pending_text := ""
 
@@ -19,6 +22,22 @@ func set_text(text: String) -> void:
 	_apply_text()
 
 
+# ツール表示
+func show_tooltip_at(anchor_global_position: Vector2) -> void:
+	tooltip_panel.global_position = TooltipPositioner.get_tooltip_position(
+		anchor_global_position,
+		tooltip_panel.size,
+		get_viewport().get_visible_rect(),
+		TOOLTIP_OFFSET
+	)
+	visible = true
+
+
+# ツール非表示
+func hide_tooltip() -> void:
+	visible = false
+
+
 # 文言適用
 func _apply_text() -> void:
-	TooltipTextLayout.apply_to_panel(self, tooltip_label, _pending_text)
+	TooltipTextLayout.apply_to_panel(tooltip_panel, tooltip_label, _pending_text)

@@ -1,5 +1,5 @@
 class_name LeftTooltip
-extends Panel
+extends CanvasLayer
 
 @export var tooltip_title := ""
 @export_multiline var note_text := ""
@@ -7,7 +7,8 @@ extends Panel
 
 const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
 
-@onready var tooltip_label: Label = $TooltipLabel
+@onready var tooltip_panel: Panel = $Panel
+@onready var tooltip_label: Label = $Panel/TooltipLabel
 
 var _entries: Array = []
 var _note_text := ""
@@ -29,9 +30,9 @@ func show_tooltip() -> void:
 # ツールat表示
 func show_tooltip_at(anchor_global_position: Vector2) -> void:
 	_apply_text()
-	global_position = TooltipPositioner.get_tooltip_position(
+	tooltip_panel.global_position = TooltipPositioner.get_tooltip_position(
 		anchor_global_position,
-		size,
+		tooltip_panel.size,
 		get_viewport().get_visible_rect(),
 		TOOLTIP_OFFSET
 	)
@@ -67,7 +68,7 @@ func set_note(text: String, is_visible: bool) -> void:
 func _apply_text() -> void:
 	if not is_node_ready():
 		return
-	TooltipTextLayout.apply_to_panel(self, tooltip_label, _get_tooltip_text())
+	TooltipTextLayout.apply_to_panel(tooltip_panel, tooltip_label, _get_tooltip_text())
 
 
 # ツール文言取得
