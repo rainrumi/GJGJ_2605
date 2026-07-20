@@ -21,12 +21,20 @@ static func multiply_attack(source: Enemy, enemy: Enemy, value: float) -> void:
 
 
 # HP変更
-static func change_hp(source: Enemy, enemy: Enemy, value: int) -> void:
+static func change_hp(
+	source: Enemy,
+	enemy: Enemy,
+	value: int,
+	heal_over_maximum := false
+) -> void:
 	if enemy == null or value == 0:
 		return
 	var scaled := roundi(EnemyEffectValueCalculator.scale(source, float(value))) # 補正値
 	if scaled > 0:
-		enemy.heal(scaled)
+		if heal_over_maximum:
+			enemy.heal_over_max(scaled)
+		else:
+			enemy.heal(scaled)
 	else:
 		enemy.take_acid_damage(-scaled)
 

@@ -17,9 +17,18 @@ func clear_dependencies() -> void:
 
 # HP差分
 @export var hp_delta := 0
+# 最大HP補正確定前の上限外回復
+@export var heal_over_maximum := false
 # 対象毎上限
 @export_range(0, 64, 1) var max_activations_per_target := 0
 
 # 効果適用
 func apply() -> void:
-	for enemy in EnemyEffectTracking.get_activatable_new_adjacent(state, source, enemies, max_activations_per_target): EnemyEffectStatChanges.change_hp(source, enemy, hp_delta)
+	var targets := EnemyEffectTracking.get_activatable_new_adjacent(
+		state,
+		source,
+		enemies,
+		max_activations_per_target
+	)
+	for enemy in targets:
+		EnemyEffectStatChanges.change_hp(source, enemy, hp_delta, heal_over_maximum)

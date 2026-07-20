@@ -4,7 +4,8 @@
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
 [ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
 [ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" uid="uid://y771mmxghcrl" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_change_target_hp.gd" id="effect_5"]
+[ext_resource type="Script" uid="uid://dxkuo4oepof25" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_change_target_max_hp.gd" id="effect_5"]
+[ext_resource type="Script" uid="uid://y771mmxghcrl" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_change_target_hp.gd" id="effect_6"]
 
 [sub_resource type="Resource" id="AcidBlock"]
 script = ExtResource("2_acid_block")
@@ -14,16 +15,21 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Effect_1"]
 script = ExtResource("effect_5")
+max_hp_delta = 100
+
+[sub_resource type="Resource" id="Effect_2"]
+script = ExtResource("effect_6")
 hp_delta = 100
+heal_over_maximum = true
 
 [sub_resource type="Resource" id="MainSkill"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1"), SubResource("Effect_2")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 16010004004
 display_name = "E4"
 acid_block = SubResource("AcidBlock")
-description = "隣接するモノの体力を100増やす。"
+description = "隣接するモノの最大体力を100増やし、100回復させる。"
 main_skill = SubResource("MainSkill")
