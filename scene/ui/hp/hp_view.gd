@@ -35,7 +35,12 @@ func _ready() -> void:
 
 
 # HP設定
-func set_hp(current_hp: int, max_hp: int, animated: bool = true) -> void:
+func set_hp(
+	current_hp: int,
+	max_hp: int,
+	animated: bool = true,
+	explicit_recovered_hp: int = -1
+) -> void:
 	# HP
 	var previous_hp := _current_hp
 	_max_hp = maxi(1, max_hp)
@@ -48,7 +53,11 @@ func set_hp(current_hp: int, max_hp: int, animated: bool = true) -> void:
 	# 回復判定
 	var is_recovering := _has_hp_value and animated and _current_hp > previous_hp
 	# 回復HP
-	var recovered_hp := _current_hp - previous_hp
+	var recovered_hp := (
+		_current_hp - previous_hp
+		if explicit_recovered_hp < 0
+		else explicit_recovered_hp
+	)
 	_has_hp_value = true
 	hp_gauge.kill_width_tween()
 	_is_hp_recovering = is_recovering
@@ -61,9 +70,9 @@ func set_hp(current_hp: int, max_hp: int, animated: bool = true) -> void:
 		return
 	if is_recovering:
 		_show_hp_heal_plan(target_width)
-		_show_heal_value(recovered_hp)
 	else:
 		_update_hp_heal_plan()
+	_show_heal_value(recovered_hp)
 	hp_gauge.animate_width(target_width, HP_GAUGE_TWEEN_DURATION, _current_hp == 0)
 
 
@@ -73,9 +82,10 @@ func set_battle_hp_info(
 	max_hp: int,
 	rest_minutes: int,
 	rest_hp_rate: float,
-	rest_recovery_bonus_rate: float
+	rest_recovery_bonus_rate: float,
+	explicit_recovered_hp: int = -1
 ) -> void:
-	set_hp(current_hp, max_hp)
+	set_hp(current_hp, max_hp, true, explicit_recovered_hp)
 	hp_tooltip.set_hp_info(current_hp, max_hp, rest_minutes, rest_hp_rate, rest_recovery_bonus_rate)
 
 

@@ -652,12 +652,13 @@ func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
 		seed_effects.add_revive_event()
 		_refresh_effective_max_hp(true)
 		hp = seed_effects.get_rest_hp(effective_max_hp, REST_HP_RATE)
+		var revived_hp := hp
 		if not seed_controller.consume_rest_time_skip():
 			minutes += REST_MINUTES
 			elapsed_minutes += REST_MINUTES
 		effect_result = acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
 		_apply_progress_effect_result(effect_result)
-		_refresh_after_battle_event()
+		_refresh_after_battle_event(revived_hp)
 	else:
 		effect_result = acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
 		_apply_progress_effect_result(effect_result)
@@ -810,10 +811,10 @@ func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 	else:
 		ui.hide_hp_damage_preview()
 # UI更新
-func _refresh_ui() -> void:
+func _refresh_ui(explicit_recovered_hp: int = -1) -> void:
 	enemy_presenter.refresh_attack_displays(enemies, stomach, minutes)
 	_refresh_acid_ui()
-	_refresh_status_ui()
+	_refresh_status_ui(explicit_recovered_hp)
 	_refresh_nightmare_page_navigation()
 	_refresh_hover_tooltip()
 
@@ -838,8 +839,8 @@ func _refresh_acid_ui() -> void:
 
 
 # 状態UI更新
-func _refresh_status_ui() -> void:
-	ui.set_hp(hp, effective_max_hp)
+func _refresh_status_ui(explicit_recovered_hp: int = -1) -> void:
+	ui.set_hp(hp, effective_max_hp, explicit_recovered_hp)
 	ui.set_time(minutes)
 	ui.set_acidion_count(_active_acid_count())
 	ui.set_acid_button_visible(battle_active and not auto_acid_enabled)
@@ -850,10 +851,10 @@ func _refresh_hover_tooltip() -> void:
 	if hovered_enemy != null:
 		ui.show_enemy_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 # after戦闘イベント更新
-func _refresh_after_battle_event() -> void:
+func _refresh_after_battle_event(explicit_recovered_hp: int = -1) -> void:
 	acid_controller.refresh_enemy_effects(enemies, stomach)
 	enemy_setup.refresh_enemy_page_visibility(enemies)
-	_refresh_ui()
+	_refresh_ui(explicit_recovered_hp)
 # ツールデバッグ番号文言取得
 func _get_tooltip_debug_number_text(enemy: Enemy) -> String:
 	if enemy.has_seed():

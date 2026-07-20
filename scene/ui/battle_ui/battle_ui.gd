@@ -117,8 +117,15 @@ func reset_for_battle(
 # -----------------------------------------------------------
 
 # HP設定
-func set_hp(current_hp: int, max_hp: int) -> void:
-	hp_view.set_battle_hp_info(current_hp, max_hp, _rest_minutes, _rest_hp_rate, _rest_recovery_bonus_rate)
+func set_hp(current_hp: int, max_hp: int, explicit_recovered_hp: int = -1) -> void:
+	hp_view.set_battle_hp_info(
+		current_hp,
+		max_hp,
+		_rest_minutes,
+		_rest_hp_rate,
+		_rest_recovery_bonus_rate,
+		explicit_recovered_hp
+	)
 
 
 # 休憩回復補正率設定
