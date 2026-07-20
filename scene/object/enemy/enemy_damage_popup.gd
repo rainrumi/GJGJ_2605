@@ -4,6 +4,7 @@ extends RefCounted
 const FLOAT_DISTANCE := 8.0
 const DURATION := 0.35
 const HIDE_DELAY := 0.15
+const TOTAL_DURATION := DURATION * 2.0 + HIDE_DELAY
 const POPUP_META := &"enemy_damage_popup"
 const POPUP_FRAME_META := &"enemy_damage_popup_frame"
 

@@ -48,6 +48,17 @@ func _run() -> void:
 			"新しい被弾ダメージUIを基準Y座標から表示する"
 		)
 
+	_expect(
+		is_equal_approx(
+			EnemyDamagePopup.TOTAL_DURATION,
+			EnemyDamagePopup.DURATION * 2.0 + EnemyDamagePopup.HIDE_DELAY
+		),
+		"消化ダメージ表示の完了時間に表示・待機・非表示の全時間を含める"
+	)
+	await create_timer(EnemyDamagePopup.TOTAL_DURATION).timeout
+	await process_frame
+	_expect(not is_instance_valid(latest_popup), "完了時間後に消化ダメージ表示を解放する")
+
 	owner.queue_free()
 	quit(_failures)
 

@@ -47,6 +47,7 @@ func _run() -> void:
 	_check_seven_enemy_pages(game, previous_button, next_button)
 	_check_drag_compacts_enemy_page(game, previous_button, next_button, return_hint, return_damage_value_label)
 	await _check_stomach_damage_visuals(game)
+	await _check_time_effect_damage_visuals(game)
 	_check_eleven_enemy_pages(game, previous_button, next_button)
 	_check_thirteen_enemy_pages(game, previous_button, next_button)
 	game.call("cancel_battle")
@@ -152,10 +153,51 @@ func _check_stomach_damage_visuals(game: Node) -> void:
 	_expect(not target.visible, "死亡演出の完了後に悪夢を隠す")
 
 
+# 時間効果による消化ダメージ表示試験
+func _check_time_effect_damage_visuals(game: Node) -> void:
+	var skill := load(
+		"res://data/resources/area/area_elmena/enemy/normal/001/area_elmena_enemy_normal_001_001.tres"
+	) as EnemyInfo
+	var preset := EnemyPresetInfo.new()
+	var enemy_infos: Array[EnemyInfo] = [skill]
+	preset.enemies = enemy_infos
+	var battle := BattleInfo.new()
+	battle.enemy_preset = preset
+	game.call("start_battle", battle)
+	var enemies: Array[Enemy] = game.get("enemies")
+	var target := enemies[0]
+	var stomach := game.get_node("Stomach") as StomachBoard
+	var drop_position := stomach.get_global_position_for_cell(Vector2i.ZERO, target.get_stomach_size())
+	game.set("dragged_enemy_was_Aciding", false)
+	game.set("drag_grab_cell", Vector2i.ZERO)
+	game.call("_try_start_Aciding", target, drop_position)
+	for _index in range(3):
+		game.call("_apply_elapsed_time", 30)
+	var battle_results: Array[bool] = []
+	game.connect("battle_finished", func(won: bool) -> void: battle_results.append(won), CONNECT_ONE_SHOT)
+	game.call("_advance_acid_turn")
+	await process_frame
+	await process_frame
+	_expect(target.is_Acided(), "11010001001の時間効果で対象が消化される")
+	_expect(_has_visible_damage_popup_text(target, "-999"), "時間効果で受けた999消化ダメージを表示する")
+	_expect(battle_results.is_empty(), "999消化ダメージの表示中はステージクリアを通知しない")
+	await create_timer(EnemyDamagePopup.TOTAL_DURATION + 0.1).timeout
+	_expect(not _has_visible_damage_popup(target), "999消化ダメージの表示完了後に演出待機を終える")
+	_expect(battle_results == [true], "999消化ダメージの表示完了後にステージクリアを通知する")
+
+
 # 表示中ダメージポップアップ有無
 func _has_visible_damage_popup(enemy: Enemy) -> bool:
 	for child in enemy.get_children():
 		if child is Label and child.is_visible_in_tree():
+			return true
+	return false
+
+
+# 指定文言の表示中ダメージポップアップ有無
+func _has_visible_damage_popup_text(enemy: Enemy, text: String) -> bool:
+	for child in enemy.get_children():
+		if child is Label and child.is_visible_in_tree() and (child as Label).text == text:
 			return true
 	return false
 

@@ -606,7 +606,10 @@ func _advance_acid_turn() -> void:
 	_apply_Acided_nightmare_seed_effects(acid_result.Acided_enemies)
 	_apply_Acided_seed_effects(acid_result.Acided_enemies)
 	_apply_player_damage_values()
-	_apply_elapsed_time(elapsed_minutes + acid_result.extra_elapsed_minutes)
+	var progress_digested := _apply_elapsed_time(elapsed_minutes + acid_result.extra_elapsed_minutes)
+	for enemy in progress_digested:
+		if not acid_result.Acided_enemies.has(enemy):
+			acid_result.Acided_enemies.append(enemy)
 	if acid_result.time_override_minutes >= 0:
 		minutes = acid_result.time_override_minutes
 		_refresh_after_battle_event()
@@ -641,9 +644,10 @@ func _finish_empty_acid_turn() -> void:
 	_refresh_after_battle_event()
 	acid_turn_in_progress = false
 # elapsed時間適用
-func _apply_elapsed_time(elapsed_minutes: int) -> void:
+func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
 	var previous_minutes := minutes # 前時刻
 	minutes += elapsed_minutes
+	var effect_result: BattleTurnResultData
 	if hp <= 0:
 		seed_effects.add_revive_event()
 		_refresh_effective_max_hp(true)
@@ -651,14 +655,15 @@ func _apply_elapsed_time(elapsed_minutes: int) -> void:
 		if not seed_controller.consume_rest_time_skip():
 			minutes += REST_MINUTES
 			elapsed_minutes += REST_MINUTES
-		var effect_result := acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
+		effect_result = acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
 		_apply_progress_effect_result(effect_result)
 		_refresh_after_battle_event()
 	else:
-		var effect_result := acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
+		effect_result = acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
 		_apply_progress_effect_result(effect_result)
 		_refresh_after_battle_event()
 	ui.show_time_elapsed(elapsed_minutes)
+	return effect_result.Acided_enemies if effect_result != null else []
 
 
 # 時間effect結果適用
@@ -1081,7 +1086,8 @@ func _apply_seed_acid_line_effects() -> void:
 func _resolve_post_acid_visuals(Acided_enemies: Array[Enemy]) -> void:
 	if Acided_enemies.is_empty():
 		return
-	await get_tree().create_timer(Enemy.AcidED_TWEEN_DURATION).timeout
+	var visual_duration := maxf(Enemy.AcidED_TWEEN_DURATION, EnemyDamagePopup.TOTAL_DURATION)
+	await get_tree().create_timer(visual_duration).timeout
 	acid_controller.unlock_deferred_nuisance_gravity(enemies)
 	stomach.apply_gravity(enemies)
 
