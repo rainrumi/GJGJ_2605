@@ -161,24 +161,24 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="StatusPreview" type="VBoxContainer" parent="UI"]
+[node name="StatusPreview" type="VBoxContainer" parent="UI" unique_id=1981558383]
 layout_mode = 0
 offset_left = 165.0
-offset_top = 82.0
-offset_right = 300.0
-offset_bottom = 190.0
+offset_top = 12.0
+offset_right = 299.9996
+offset_bottom = 120.00009
 mouse_filter = 2
 theme_override_constants/separation = 4
 
-[node name="AcidDamageRow" type="HBoxContainer" parent="UI/StatusPreview"]
+[node name="AcidDamageRow" type="HBoxContainer" parent="UI/StatusPreview" unique_id=1227197432]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="AcidDamageView" parent="UI/StatusPreview/AcidDamageRow" instance=ExtResource("21_acid_damage_view")]
+[node name="AcidDamageView" parent="UI/StatusPreview/AcidDamageRow" unique_id=205531699 instance=ExtResource("21_acid_damage_view")]
 custom_minimum_size = Vector2(95, 34)
 layout_mode = 2
 
-[node name="Delta" type="Label" parent="UI/StatusPreview/AcidDamageRow"]
+[node name="Delta" type="Label" parent="UI/StatusPreview/AcidDamageRow" unique_id=1724300119]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 1, 0.45, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -187,15 +187,15 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
 vertical_alignment = 1
 
-[node name="AcidIntervalRow" type="HBoxContainer" parent="UI/StatusPreview"]
+[node name="AcidIntervalRow" type="HBoxContainer" parent="UI/StatusPreview" unique_id=1556287705]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 10
 
-[node name="AcidIntervalView" parent="UI/StatusPreview/AcidIntervalRow" instance=ExtResource("22_acid_interval_view")]
+[node name="AcidIntervalView" parent="UI/StatusPreview/AcidIntervalRow" unique_id=1586561440 instance=ExtResource("22_acid_interval_view")]
 custom_minimum_size = Vector2(95, 34)
 layout_mode = 2
 
-[node name="Delta" type="Label" parent="UI/StatusPreview/AcidIntervalRow"]
+[node name="Delta" type="Label" parent="UI/StatusPreview/AcidIntervalRow" unique_id=1412610384]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 1, 0.45, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -204,11 +204,11 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
 vertical_alignment = 1
 
-[node name="HpRow" type="HBoxContainer" parent="UI/StatusPreview"]
+[node name="HpRow" type="HBoxContainer" parent="UI/StatusPreview" unique_id=141011107]
 layout_mode = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 10
 
-[node name="Hp" type="Label" parent="UI/StatusPreview/HpRow"]
+[node name="Hp" type="Label" parent="UI/StatusPreview/HpRow" unique_id=905640110]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -217,7 +217,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 text = "HP：100"
 
-[node name="Delta" type="Label" parent="UI/StatusPreview/HpRow"]
+[node name="Delta" type="Label" parent="UI/StatusPreview/HpRow" unique_id=1384076805]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 1, 0.45, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
