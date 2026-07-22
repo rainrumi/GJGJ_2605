@@ -12,7 +12,7 @@
 script = ExtResource("1_script")
 stage_id = 5
 stage_area = 5
-reachable_stage_areas = Array[int]([1, 11, 5])
+reachable_stage_areas = Array[int]([1, 11, 5, 3])
 difficulty_level = 3
 location = "大樹リラン駐屯地"
 initial = "RTG"

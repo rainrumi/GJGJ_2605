@@ -11,7 +11,7 @@
 script = ExtResource("1_script")
 stage_id = 3
 stage_area = 3
-reachable_stage_areas = Array[int]([6, 7, 4, 3])
+reachable_stage_areas = Array[int]([6, 7, 4, 3, 11, 1, 5])
 difficulty_level = 3
 location = "エルメナ大学"
 initial = "EU"

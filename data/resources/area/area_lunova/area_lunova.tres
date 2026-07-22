@@ -11,7 +11,7 @@
 [resource]
 script = ExtResource("1_script")
 stage_id = 1
-reachable_stage_areas = Array[int]([8, 5, 1])
+reachable_stage_areas = Array[int]([8, 5, 1, 11, 3])
 difficulty_level = 4
 location = "ルノヴァ旧市街"
 initial = "LOC"
