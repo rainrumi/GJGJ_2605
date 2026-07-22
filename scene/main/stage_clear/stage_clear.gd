@@ -8,6 +8,7 @@ const CLEAR_RECOVERY_END_HOUR := 27
 const CLEAR_RECOVERY_BASE_RATE := 0.5
 const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
 const MAX_HP := 100
+const BATTLE_START_MINUTES := 22 * 60
 
 @export var max_flowers := 50
 @export var initial_flower: SeedInfo
@@ -31,6 +32,8 @@ var _extra_seed_choice_granted := false
 var _seed_choice_active := false
 var _base_seed_options: Array[SeedInfo] = []
 var _current_clear_stage: StageInfo
+var _stomach_columns := RunState.DEFAULT_STOMACH_COLUMNS
+var _stomach_rows := RunState.DEFAULT_STOMACH_ROWS
 var reward_service := StageClearReward.new()
 
 
@@ -56,9 +59,17 @@ func setup_hp(value: int) -> void:
 
 
 # clear結果設定
-func setup_clear_result(value: int, cleared_minutes: int, cleared_stage: StageInfo = null) -> void:
+func setup_clear_result(
+	value: int,
+	cleared_minutes: int,
+	cleared_stage: StageInfo = null,
+	stomach_columns: int = RunState.DEFAULT_STOMACH_COLUMNS,
+	stomach_rows: int = RunState.DEFAULT_STOMACH_ROWS
+) -> void:
 	_set_clear_result_state(value, cleared_minutes)
 	_current_clear_stage = cleared_stage
+	_stomach_columns = maxi(1, stomach_columns)
+	_stomach_rows = maxi(1, stomach_rows)
 	_restore_base_seed_options()
 	_apply_stage_drop_options(cleared_stage)
 	if is_node_ready():
@@ -435,12 +446,17 @@ func _set_hp(value: int, animated: bool) -> void:
 
 # 回復予定更新
 func _update_hp_heal_plan() -> void:
-	character_area.set_planned_recovery_rate(_get_planned_clear_recovery_rate())
+	var recovery_rate := _get_planned_clear_recovery_rate()
+	character_area.set_planned_recovery_rate(recovery_rate)
+	_update_status_preview(planted_flowers, recovery_rate)
 
 
 # 種hover開始
 func _on_seed_choice_mouse_entered(seed_index: int) -> void:
-	character_area.set_planned_recovery_rate(_get_seed_choice_recovery_rate(seed_index))
+	var recovery_rate := _get_seed_choice_recovery_rate(seed_index)
+	character_area.set_planned_recovery_rate(recovery_rate)
+	var seed := _get_seed_option(seed_index)
+	_update_status_preview(_get_preview_flowers_for_seed(seed), recovery_rate)
 
 
 # 種hover終了
@@ -450,9 +466,99 @@ func _on_seed_choice_mouse_exited() -> void:
 
 # 放棄hover開始
 func _on_abandon_button_mouse_entered() -> void:
-	character_area.set_planned_recovery_rate(_get_abandon_recovery_rate())
+	var recovery_rate := _get_abandon_recovery_rate()
+	character_area.set_planned_recovery_rate(recovery_rate)
+	_update_status_preview(planted_flowers, recovery_rate)
 
 
 # 放棄hover終了
 func _on_abandon_button_mouse_exited() -> void:
 	_update_hp_heal_plan()
+
+
+# 状態予測更新
+func _update_status_preview(flowers: Array[SeedInfo], recovery_rate: float) -> void:
+	var base_status := _get_status_preview(
+		planted_flowers,
+		_get_planned_clear_recovery_rate()
+	)
+	var preview_status := _get_status_preview(flowers, recovery_rate)
+	var base_damage_info := base_status["acid_damage_info"] as Dictionary
+	var base_interval_info := base_status["acid_interval_info"] as Dictionary
+	ui.set_status_preview(
+		base_damage_info,
+		base_interval_info,
+		int(base_status["hp"]),
+		int((preview_status["acid_damage_info"] as Dictionary)["total"]),
+		int((preview_status["acid_interval_info"] as Dictionary)["total"]),
+		int(preview_status["hp"])
+	)
+
+
+# 状態予測取得
+func _get_status_preview(flowers: Array[SeedInfo], recovery_rate: float) -> Dictionary:
+	var seed_effects := SeedEffectResolver.new()
+	seed_effects.setup(flowers)
+	seed_effects.add_acid_damage_bonus_rate(
+		_get_preview_permanent_acid_damage_bonus_rate(flowers)
+	)
+	var stomach_size := _get_preview_stomach_size(flowers)
+	var damage_info := seed_effects.get_acid_damage_breakdown(
+		EnemyController.ACID_DAMAGE,
+		0.0,
+		BATTLE_START_MINUTES,
+		false,
+		stomach_size.x,
+		stomach_size.y
+	)
+	var time_reduction_rate := seed_effects.get_time_reduction_rate(
+		false,
+		BATTLE_START_MINUTES,
+		BATTLE_START_MINUTES,
+		EnemyController.STEP_MINUTES
+	)
+	var acid_interval_minutes := maxi(
+		1,
+		roundi(float(EnemyController.STEP_MINUTES) * (1.0 - time_reduction_rate))
+	)
+	var acid_interval_info := {
+		"total": acid_interval_minutes,
+		"base": EnemyController.STEP_MINUTES,
+		"seed_buff": acid_interval_minutes - EnemyController.STEP_MINUTES,
+		"seed_rate": -time_reduction_rate,
+		"nightmare_buff": 0,
+		"nightmare_rate": 0.0,
+	}
+	var preview_hp := current_hp
+	if not _clear_recovery_applied:
+		preview_hp = mini(MAX_HP, current_hp + ceili(float(MAX_HP) * recovery_rate))
+	return {
+		"acid_damage_info": damage_info,
+		"acid_interval_info": acid_interval_info,
+		"hp": preview_hp,
+	}
+
+
+# 予測永続消化補正取得
+func _get_preview_permanent_acid_damage_bonus_rate(flowers: Array[SeedInfo]) -> float:
+	var rate := permanent_acid_damage_bonus_rate
+	if _selected_rewerd_effect_applied:
+		return rate
+	var context := StageClearCalculatorRecovery.get_selected_rewerd_context(flowers, clear_minutes)
+	return rate + float(context.get("permanent_acid_rate", 0.0))
+
+
+# 予測胃袋サイズ取得
+func _get_preview_stomach_size(flowers: Array[SeedInfo]) -> Vector2i:
+	var has_column_bonus := false
+	var has_row_bonus := false
+	for flower in flowers:
+		if flower == null or flower.get_main_skill() == null:
+			continue
+		var skill := flower.get_main_skill()
+		has_column_bonus = has_column_bonus or skill.get_stomach_columns_delta() > 0
+		has_row_bonus = has_row_bonus or skill.get_stomach_rows_delta() > 0
+	return Vector2i(
+		_stomach_columns + (1 if has_column_bonus else 0),
+		_stomach_rows + (1 if has_row_bonus else 0)
+	)

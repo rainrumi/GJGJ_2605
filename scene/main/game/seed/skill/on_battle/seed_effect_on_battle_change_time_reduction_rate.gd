@@ -27,8 +27,6 @@ func _get_elapsed_step_count(minutes: int, start_minutes: int, step_minutes: int
 
 # 間隔率制限
 func _clamp_interval_rate(reduction_rate: float) -> float:
-	var interval_rate := -reduction_rate # 間隔率
 	var min_rate := minf(min_interval_rate, max_interval_rate) # 下限率
 	var max_rate := maxf(min_interval_rate, max_interval_rate) # 上限率
-	interval_rate = clampf(interval_rate, min_rate, max_rate)
-	return -interval_rate
+	return clampf(reduction_rate, min_rate, max_rate)

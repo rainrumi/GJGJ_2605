@@ -111,7 +111,13 @@ func show_stage_clear() -> void:
 	game.visible = false
 	game_ui.visible = false
 	if stage_clear.has_method("setup_clear_result") and game.has_method("get_current_hp") and game.has_method("get_clear_minutes"):
-		stage_clear.setup_clear_result(game.get_current_hp(), game.get_clear_minutes(), run_state.selected_stage)
+		stage_clear.setup_clear_result(
+			game.get_current_hp(),
+			game.get_clear_minutes(),
+			run_state.selected_stage,
+			run_state.stomach_columns,
+			run_state.stomach_rows
+		)
 	elif stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
 		stage_clear.setup_hp(game.get_current_hp())
 	stage_clear.visible = true
