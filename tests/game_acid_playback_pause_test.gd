@@ -113,11 +113,18 @@ func _run() -> void:
 	)
 	_expect(game.get("auto_acid_paused_by_user"), "夢の種設置後も消化の一時停止を維持する")
 
+	var auto_acid_timer := game.get("Acidion_timer") as Timer
 	playback_button.pressed.emit()
 	_expect(playback_button.text == "一時停止", "再生再開後は一時停止と表示する")
 	_expect(not game.get("auto_acid_paused_by_user"), "再生クリックで停止状態を解除する")
+	_expect(auto_acid_timer.is_stopped(), "保留中の消化完了前は次の消化Timerを開始しない")
 	await process_frame
 	_expect(game.get("minutes") > minutes_before, "再生後は保留中の消化を進める")
+	_expect(not auto_acid_timer.is_stopped(), "保留中の消化完了後から次の消化Timerを開始する")
+	_expect(
+		auto_acid_timer.time_left > auto_acid_timer.wait_time * 0.5,
+		"次の消化間隔を消化完了後から数える"
+	)
 
 	playback_button.pressed.emit()
 	game.call("cancel_battle")
@@ -125,6 +132,7 @@ func _run() -> void:
 	game.free()
 	placed_seed_block = null
 	release_event = null
+	auto_acid_timer = null
 	rotation_target = null
 	second_nightmare = null
 	nightmare = null

@@ -725,9 +725,9 @@ func _apply_progress_effect_result(result: BattleTurnResultData) -> void:
 # 消化turn終了
 func _finish_acid_turn() -> void:
 	_check_battle_end()
+	acid_turn_in_progress = false
 	_update_auto_acid_timer()
 	acid_controller.activate_deferred_nuisance_enemies(enemies)
-	acid_turn_in_progress = false
 
 
 # depleted夢種sources発火
@@ -832,6 +832,7 @@ func _update_auto_acid_timer() -> void:
 		and battle_active
 		and not auto_acid_paused_for_drag
 		and not auto_acid_paused_by_user
+		and not acid_turn_in_progress
 		and active_acid_count > 0
 	):
 		if Acidion_timer.is_stopped():
