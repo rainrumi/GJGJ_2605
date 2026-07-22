@@ -132,14 +132,13 @@ theme_override_font_sizes/font_size = 14
 text = "回転"
 alignment = 2
 
-[node name="WarningMessageLabel" type="Label" parent="UI"]
+[node name="WarningMessageLabel" type="Label" parent="UI" unique_id=389615098]
 visible = false
 z_index = 100
 offset_left = 120.0
 offset_top = 56.0
 offset_right = 520.0
 offset_bottom = 84.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
@@ -161,6 +160,10 @@ offset_right = 155.0
 offset_bottom = 342.0
 
 [node name="AcidButton" parent="UI" unique_id=75896202 instance=ExtResource("33_acid_button_scene")]
+offset_left = 490.5
+offset_top = 303.0
+offset_right = 628.5
+offset_bottom = 347.0
 
 [node name="NightmarePreviousPageButton" parent="UI" unique_id=1482538654 instance=ExtResource("42_battle_button_scene")]
 visible = false
