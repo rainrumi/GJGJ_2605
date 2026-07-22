@@ -21,8 +21,8 @@ func _refresh_text() -> void:
 # 効果文取得
 func _get_seed_effect_text(seed: SeedInfo) -> String:
 	var lines: Array[String] = [
-		"メインスキル: %s" % SeedDescription.get_main_description(seed),
-	]
+		"メインスキル  %s" % SeedDescription.get_main_description(seed),
+	]  
 	if SeedDescription.has_sub_skill(seed):
-		lines.append("サブスキル: %s" % SeedDescription.get_sub_description(seed))
+		lines.append("サブスキル    %s" % SeedDescription.get_sub_description(seed))
 	return "\n".join(lines)
