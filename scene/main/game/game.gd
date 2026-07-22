@@ -30,6 +30,8 @@ var current_enemy_preset: EnemyPresetInfo
 var battle_active := false
 var auto_acid_enabled := false
 var auto_acid_paused_for_drag := false
+var auto_acid_paused_by_user := false
+var _acid_pause_ready_for_interaction := false
 var acid_turn_in_progress := false
 var drag_mode := DragMode.NONE
 var debug_numbers_visible := false
@@ -177,6 +179,8 @@ func cancel_battle() -> void:
 	ui.set_rotation_mode_enabled(false)
 	auto_acid_enabled = false
 	auto_acid_paused_for_drag = false
+	auto_acid_paused_by_user = false
+	_acid_pause_ready_for_interaction = false
 	acid_turn_in_progress = false
 	_clear_scheduled_acid_events()
 	_update_auto_acid_timer()
@@ -202,6 +206,7 @@ func _connect_ui() -> void:
 	ui.time_over_retry_requested.connect(_on_time_over_retry_requested)
 	ui.time_over_abandon_requested.connect(_on_time_over_abandon_requested)
 	ui.rotation_mode_changed.connect(_on_rotation_mode_changed)
+	ui.acid_playback_requested.connect(_on_acid_playback_requested)
 	ui.debug_message_requested.connect(_on_debug_message_requested)
 	ui.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	ui.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
@@ -224,6 +229,8 @@ func _set_battle_flags(is_active: bool) -> void:
 	input_controller.set_active(is_active)
 	auto_acid_enabled = false
 	auto_acid_paused_for_drag = false
+	auto_acid_paused_by_user = false
+	_acid_pause_ready_for_interaction = false
 	acid_turn_in_progress = false
 	drag_mode = DragMode.NONE
 	seed_controller.cancel_drag()
@@ -298,6 +305,8 @@ func _on_Acidion_requested() -> void:
 		return
 	auto_acid_enabled = true
 	auto_acid_paused_for_drag = false
+	auto_acid_paused_by_user = false
+	_acid_pause_ready_for_interaction = false
 	if not stomach.has_bottom_touching_enemy(enemies):
 		stomach.apply_gravity(enemies)
 	_refresh_ui()
@@ -331,14 +340,31 @@ func _on_rotation_mode_changed(is_enabled: bool) -> void:
 		_play_click_se()
 
 
+# 消化再生状態変更要求
+func _on_acid_playback_requested(should_play: bool) -> void:
+	if not battle_active:
+		return
+	if should_play:
+		if not auto_acid_enabled:
+			_on_Acidion_requested()
+			if auto_acid_enabled:
+				_play_click_se()
+			return
+		if not auto_acid_paused_by_user:
+			return
+		auto_acid_paused_by_user = false
+		_acid_pause_ready_for_interaction = false
+	else:
+		if not auto_acid_enabled or auto_acid_paused_by_user:
+			return
+		auto_acid_paused_by_user = true
+	_update_auto_acid_timer()
+	_play_click_se()
+
+
 # 悪夢・胃袋内ブロック回転要求
 func _on_enemy_rotation_requested(enemy: Enemy) -> void:
-	if (
-		not battle_active
-		or drag_mode != DragMode.NONE
-		or acid_turn_in_progress
-		or enemy == null
-	):
+	if not _can_use_battle_interaction() or enemy == null:
 		return
 	_set_hovered_enemy(null)
 	if enemy.is_nightmare() and enemy.is_active_in_stomach():
@@ -478,23 +504,34 @@ func _sync_seed_sources() -> void:
 
 # start敵ドラッグ判定
 func _can_start_enemy_drag() -> bool:
-	return battle_active and drag_mode == DragMode.NONE and not acid_turn_in_progress
+	return _can_use_battle_interaction()
 
 
 # start種ドラッグ判定
 func _can_start_seed_drag() -> bool:
-	return battle_active and drag_mode == DragMode.NONE and not acid_turn_in_progress
+	return _can_use_battle_interaction()
 
 
 # useデバッグaction判定
 func _can_use_debug_action() -> bool:
-	return battle_active and debug_numbers_visible and drag_mode == DragMode.NONE and not acid_turn_in_progress
+	return debug_numbers_visible and _can_use_battle_interaction()
+
+
+# 戦闘操作可能判定
+func _can_use_battle_interaction() -> bool:
+	return (
+		battle_active
+		and drag_mode == DragMode.NONE
+		and (not acid_turn_in_progress or _acid_pause_ready_for_interaction)
+	)
 
 
 # デバッグ戦闘change準備
 func _prepare_debug_battle_change() -> void:
 	auto_acid_enabled = false
 	auto_acid_paused_for_drag = false
+	auto_acid_paused_by_user = false
+	_acid_pause_ready_for_interaction = false
 	_update_auto_acid_timer()
 	stomach.hide_preview()
 	ui.hide_hp_damage_preview()
@@ -600,6 +637,10 @@ func _advance_acid_turn() -> void:
 	# elapsed分数
 	var elapsed_minutes := acid_controller.get_step_minutes(enemies, minutes)
 	await _wait_for_next_acid_beat()
+	await _wait_while_acid_paused()
+	if not battle_active or _active_acid_count() == 0:
+		acid_turn_in_progress = false
+		return
 	# 消化結果
 	var acid_result := _run_acid_core(minutes, elapsed_minutes)
 	_apply_acid_damage_seed_heal()
@@ -619,7 +660,7 @@ func _advance_acid_turn() -> void:
 
 # begin消化turn処理
 func _begin_acid_turn() -> bool:
-	if acid_turn_in_progress:
+	if acid_turn_in_progress or auto_acid_paused_by_user:
 		return false
 	acid_turn_in_progress = true
 	if _active_acid_count() == 0:
@@ -641,6 +682,8 @@ func _run_acid_core(current_minutes: int, elapsed_minutes: int) -> BattleTurnRes
 # empty消化turn終了
 func _finish_empty_acid_turn() -> void:
 	auto_acid_enabled = false
+	auto_acid_paused_by_user = false
+	_acid_pause_ready_for_interaction = false
 	_refresh_after_battle_event()
 	acid_turn_in_progress = false
 # elapsed時間適用
@@ -761,6 +804,8 @@ func _finish_battle(won: bool, _message: String) -> void:
 	battle_active = false
 	input_controller.set_active(false)
 	auto_acid_enabled = false
+	auto_acid_paused_by_user = false
+	_acid_pause_ready_for_interaction = false
 	_clear_scheduled_acid_events()
 	_update_auto_acid_timer()
 	_refresh_after_battle_event()
@@ -780,7 +825,15 @@ func _update_auto_acid_timer() -> void:
 	if auto_acid_enabled and active_acid_count == 0:
 		auto_acid_enabled = false
 		auto_acid_paused_for_drag = false
-	if auto_acid_enabled and battle_active and not auto_acid_paused_for_drag and active_acid_count > 0:
+		auto_acid_paused_by_user = false
+		_acid_pause_ready_for_interaction = false
+	if (
+		auto_acid_enabled
+		and battle_active
+		and not auto_acid_paused_for_drag
+		and not auto_acid_paused_by_user
+		and active_acid_count > 0
+	):
 		if Acidion_timer.is_stopped():
 			Acidion_timer.start()
 	else:
@@ -844,6 +897,7 @@ func _refresh_status_ui(explicit_recovered_hp: int = -1) -> void:
 	ui.set_time(minutes)
 	ui.set_acidion_count(_active_acid_count())
 	ui.set_acid_button_visible(battle_active and not auto_acid_enabled)
+	ui.set_acid_playing(auto_acid_enabled and not auto_acid_paused_by_user)
 
 
 # hoverツール更新
@@ -906,6 +960,16 @@ func _wait_for_next_acid_beat() -> void:
 		await get_tree().process_frame
 		return
 	await beat_conductor.wait_until_next_beat()
+
+
+# ユーザーによる消化一時停止待機
+func _wait_while_acid_paused() -> void:
+	if not battle_active or not auto_acid_enabled or not auto_acid_paused_by_user:
+		return
+	_acid_pause_ready_for_interaction = true
+	while battle_active and auto_acid_enabled and auto_acid_paused_by_user:
+		await get_tree().process_frame
+	_acid_pause_ready_for_interaction = false
 
 
 # scheduled消化events消去

@@ -3,6 +3,8 @@ extends CanvasLayer
 
 const ROTATION_MODE_DISABLED_TEXT := "回転"
 const ROTATION_MODE_ENABLED_TEXT := "回転（有効中）"
+const ACID_PLAY_TEXT := "再生"
+const ACID_PAUSE_TEXT := "一時停止"
 const WARNING_MESSAGE_FLOAT_DISTANCE := 6.0
 const WARNING_MESSAGE_FADE_IN_DURATION := 0.2
 const WARNING_MESSAGE_HOLD_DURATION := 0.65
@@ -18,6 +20,7 @@ signal nightmare_next_page_requested
 signal time_over_abandon_requested
 signal time_over_retry_requested
 signal rotation_mode_changed(is_enabled: bool)
+signal acid_playback_requested(should_play: bool)
 signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
@@ -32,6 +35,7 @@ signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 @onready var seed_button_list: SeedButtonList = $SeedButtonList
 @onready var time_view: TimeView = $TimeView
 @onready var rotate_mode_button: CheckButton = $RotateModeButton
+@onready var acid_playback_button: Button = $AcidPlaybackButton
 @onready var warning_message_label: Label = $WarningMessageLabel
 @onready var acid_button: AcidButton = $AcidButton
 @onready var debug_panel: DebugPanel = $DebugPanel
@@ -50,6 +54,7 @@ var _current_tooltip_owner: Object = null
 var _current_tooltip_hide: Callable = Callable()
 var _warning_message_base_position := Vector2.ZERO
 var _warning_message_tween: Tween
+var _acid_is_playing := false
 
 # -----------------------------------------------------------
 
@@ -103,6 +108,7 @@ func reset_for_battle(
 	set_seed_sources([])
 	seed_button_list.reset_rotations()
 	set_rotation_mode_enabled(false)
+	set_acid_playing(false)
 	set_seed_debug_numbers_visible(DebugState.debug_enabled)
 	set_debug_button_active(DebugState.debug_enabled)
 	set_acidion_count(0)
@@ -143,6 +149,12 @@ func set_rotation_mode_enabled(is_enabled: bool) -> void:
 	rotate_mode_button.set_pressed_no_signal(is_enabled)
 	rotate_mode_button.text = ROTATION_MODE_ENABLED_TEXT if is_enabled else ROTATION_MODE_DISABLED_TEXT
 	seed_button_list.set_rotation_mode_enabled(is_enabled)
+
+
+# 消化再生状態設定
+func set_acid_playing(is_playing: bool) -> void:
+	_acid_is_playing = is_playing
+	acid_playback_button.text = ACID_PAUSE_TEXT if is_playing else ACID_PLAY_TEXT
 
 
 # 警告文言表示
@@ -386,6 +398,7 @@ func _connect_child_signals() -> void:
 	hp_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
 
 	rotate_mode_button.toggled.connect(_on_rotate_mode_button_toggled)
+	acid_playback_button.pressed.connect(_on_acid_playback_button_pressed)
 	seed_button_list.seed_rotation_requested.connect(_on_seed_rotation_requested)
 
 # -----------------------------------------------------------
@@ -473,6 +486,11 @@ func _on_time_over_abandon_requested() -> void:
 func _on_rotate_mode_button_toggled(is_enabled: bool) -> void:
 	set_rotation_mode_enabled(is_enabled)
 	rotation_mode_changed.emit(is_enabled)
+
+
+# 消化再生状態変更要求
+func _on_acid_playback_button_pressed() -> void:
+	acid_playback_requested.emit(not _acid_is_playing)
 
 # -----------------------------------------------------------
 
