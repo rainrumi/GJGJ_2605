@@ -17,6 +17,7 @@ const LOW_SUB_SKILL_USES_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
 const NORMAL_ICON_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const SUB_SKILL_USE_COUNT := 1
 const LONG_PRESS_DURATION_MSEC := 500
+const DEFAULT_SLOT_SIZE := Vector2(16.0, 16.0)
 
 @onready var frame: Control = $Frame
 @onready var icon_rect: TextureRect = $Icon
@@ -32,6 +33,7 @@ var source_collection := SourceCollection.EQUIPPED
 var frame_visible := true
 var icon_color := NORMAL_ICON_COLOR
 var use_remaining_sub_skill_color := true
+var slot_size := DEFAULT_SLOT_SIZE
 # 現状はUI表示を兼ねた一時的な使用回数。永続状態が必要になったらRuntimeStateへ移す。
 var _display_remaining_sub_skill_uses := 0
 var _pressing := false
@@ -43,8 +45,7 @@ var _rotation_quarter_turns := 0
 
 # 初期化
 func _ready() -> void:
-	custom_minimum_size = Vector2(16.0, 16.0)
-	size = custom_minimum_size
+	_apply_slot_size()
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_NONE
 	flat = true
@@ -136,6 +137,13 @@ func set_display_style(
 	if frame != null:
 		frame.visible = frame_visible
 	_update_drag_state()
+
+
+# 表示枠サイズ設定
+func set_slot_size(value: Vector2) -> void:
+	slot_size = Vector2(maxf(1.0, value.x), maxf(1.0, value.y))
+	if is_node_ready():
+		_apply_slot_size()
 
 
 # 種ブロック回転数設定
@@ -312,3 +320,15 @@ func _update_drag_state() -> void:
 	if icon_rect != null:
 		icon_rect.self_modulate = LOW_SUB_SKILL_USES_COLOR if use_remaining_sub_skill_color and _can_use_sub_skill() and _display_remaining_sub_skill_uses <= 1 else icon_color
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if _can_interact() else Control.CURSOR_ARROW
+
+
+# 表示枠サイズ適用
+func _apply_slot_size() -> void:
+	custom_minimum_size = slot_size
+	size = slot_size
+	frame.position = Vector2.ZERO
+	frame.size = slot_size
+	var icon_margin := floorf(minf(slot_size.x, slot_size.y) * 0.1)
+	icon_rect.position = Vector2(icon_margin, icon_margin)
+	icon_rect.size = slot_size - Vector2(icon_margin, icon_margin) * 2.0
+	icon_rect.pivot_offset = icon_rect.size * 0.5

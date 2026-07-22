@@ -12,6 +12,8 @@ signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 const EQUIPPED_SLOT_COUNT := 6
 const STORED_PAGE_SIZE := 12
 const SLOT_ICON_COLOR := Color(0.015, 0.01, 0.02, 1.0)
+const SLOT_SIZE := Vector2(30.0, 30.0)
+const SLOT_SEPARATION := 10
 
 @onready var equipped_list: SeedButtonList = $UpperArea/EquippedList
 @onready var stored_list: SeedButtonList = $StoredArea/StoredList
@@ -65,11 +67,13 @@ func close_panel() -> void:
 
 # 種list設定
 func _configure_seed_lists() -> void:
+	equipped_list.set_slot_layout(SLOT_SIZE, SLOT_SEPARATION)
 	equipped_list.set_minimum_slot_count(EQUIPPED_SLOT_COUNT)
 	equipped_list.set_source_collection(SeedButton.SourceCollection.EQUIPPED)
 	equipped_list.set_loadout_edit_enabled(true)
 	equipped_list.set_sub_skill_drag_enabled(true)
 	equipped_list.set_display_style(true, SLOT_ICON_COLOR)
+	stored_list.set_slot_layout(SLOT_SIZE, SLOT_SEPARATION)
 	stored_list.set_minimum_slot_count(STORED_PAGE_SIZE)
 	stored_list.set_source_collection(SeedButton.SourceCollection.STORED)
 	stored_list.set_loadout_edit_enabled(true)

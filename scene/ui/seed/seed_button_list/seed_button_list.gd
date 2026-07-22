@@ -17,14 +17,15 @@ var minimum_slot_count := 0
 var frame_visible := true
 var icon_color := Color.WHITE
 var use_remaining_sub_skill_color := true
+var slot_size := Vector2(16.0, 16.0)
+var slot_separation := 2
 var _rotation_quarter_turns_by_source: Dictionary = {}
 
 
 # 初期化
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_theme_constant_override("h_separation", 2)
-	add_theme_constant_override("v_separation", 2)
+	_apply_slot_separation()
 
 
 # 種sources設定
@@ -76,6 +77,17 @@ func set_minimum_slot_count(count: int) -> void:
 	minimum_slot_count = maxi(0, count)
 
 
+# 枠layout設定
+func set_slot_layout(size_value: Vector2, separation: int) -> void:
+	slot_size = Vector2(maxf(1.0, size_value.x), maxf(1.0, size_value.y))
+	slot_separation = maxi(0, separation)
+	if is_node_ready():
+		_apply_slot_separation()
+	for child in get_children():
+		if child is SeedButton:
+			(child as SeedButton).set_slot_size(slot_size)
+
+
 # 表示style設定
 func set_display_style(
 	is_frame_visible: bool,
@@ -104,6 +116,7 @@ func _add_seed_button_list(source: Resource) -> void:
 	var button := BUTTON_SCENE.instantiate() as SeedButton
 	add_child(button)
 	button.set_seed_source(source)
+	button.set_slot_size(slot_size)
 	button.set_debug_numbers_visible(debug_numbers_visible)
 	button.set_sub_skill_drag_enabled(sub_skill_drag_enabled)
 	button.set_loadout_edit_enabled(loadout_edit_enabled)
@@ -122,6 +135,7 @@ func _add_empty_slot() -> void:
 	var button := BUTTON_SCENE.instantiate() as SeedButton
 	add_child(button)
 	button.set_seed_source(null)
+	button.set_slot_size(slot_size)
 	button.set_display_style(true, icon_color, use_remaining_sub_skill_color)
 	button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -136,6 +150,12 @@ func _clear_buttons() -> void:
 # 種スキル判定
 func _has_seed(source: Resource) -> bool:
 	return source is SeedInfo
+
+
+# 枠間隔適用
+func _apply_slot_separation() -> void:
+	add_theme_constant_override("h_separation", slot_separation)
+	add_theme_constant_override("v_separation", slot_separation)
 
 
 # 開始処理

@@ -45,6 +45,29 @@ func _check_owned_seed_panel() -> void:
 
 	var equipped_list := panel.get_node("UpperArea/EquippedList") as SeedButtonList
 	var stored_list := panel.get_node("StoredArea/StoredList") as SeedButtonList
+	_expect(panel.size.is_equal_approx(Vector2(192.0, 360.0)), "所有種パネルを画面左30%・全高にする")
+	var panel_style := panel.get_theme_stylebox("panel") as StyleBoxFlat
+	_expect(panel_style != null and is_equal_approx(panel_style.bg_color.a, 0.3), "パネル背景を透明度30%にする")
+	_expect(
+		panel_style != null
+		and panel_style.border_width_left == 0
+		and panel_style.border_width_top == 0
+		and panel_style.border_width_right == 0
+		and panel_style.border_width_bottom == 0,
+		"パネルの白い外枠を表示しない"
+	)
+	var close_button := panel.get_node("UpperArea/CloseButton") as Button
+	_expect(close_button.position.x <= 2.0 and close_button.position.y <= 2.0, "閉じるボタンを左上に置く")
+	_expect(is_equal_approx(equipped_list.position.x + equipped_list.size.x * 0.5, panel.size.x * 0.5), "装備枠をパネル中央に揃える")
+	_expect(is_equal_approx(stored_list.position.x, 21.0), "所持枠を左端から約20px離す")
+	_expect(
+		is_equal_approx(panel.size.x - (stored_list.position.x + stored_list.size.x), 21.0),
+		"所持枠を右端から約20px離す"
+	)
+	_expect(equipped_list.get_theme_constant("h_separation") == 10, "装備枠の横間隔を10pxにする")
+	_expect(equipped_list.get_theme_constant("v_separation") == 10, "装備枠の縦間隔を10pxにする")
+	_expect(stored_list.get_theme_constant("h_separation") == 10, "所持枠の横間隔を10pxにする")
+	_expect(stored_list.get_theme_constant("v_separation") == 10, "所持枠の縦間隔を10pxにする")
 	_expect(equipped_list.get_child_count() == 6, "装備枠を3×2相当の6枠表示する")
 	_expect(stored_list.get_child_count() == 12, "所持枠を4×3相当の12枠表示する")
 	_expect(_count_populated_buttons(stored_list) == 12, "1ページ目に12個の所持種を表示する")
@@ -61,7 +84,15 @@ func _check_owned_seed_panel() -> void:
 	_expect(bool(equip_request_received[0]), "所持枠の短押しで装備要求を送る")
 
 	var equipped_button := equipped_list.get_child(0) as SeedButton
+	_expect(equipped_button.size.is_equal_approx(Vector2(30.0, 30.0)), "装備枠を30px角にする")
+	_expect(stored_button.size.is_equal_approx(Vector2(30.0, 30.0)), "所持枠を装備枠と同じ30px角にする")
 	_expect(equipped_button.frame.visible, "パネル内の装備枠に四角い枠を表示する")
+	var slot_style := equipped_button.frame.get_theme_stylebox("panel") as StyleBoxFlat
+	_expect(
+		slot_style != null
+		and slot_style.bg_color.is_equal_approx(Color(1.0, 0.72, 0.82, 0.3)),
+		"装備枠を薄いピンクの透明度30%で塗る"
+	)
 	_expect(
 		equipped_button.icon_rect.self_modulate.is_equal_approx(OwnedSeedPanel.SLOT_ICON_COLOR),
 		"パネル内の種テクスチャを黒色にする"

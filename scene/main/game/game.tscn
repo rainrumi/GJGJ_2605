@@ -153,10 +153,8 @@ text = "種"
 
 [node name="OwnedSeedPanel" parent="UI" unique_id=1394077475 instance=ExtResource("44_owned_seed_panel")]
 visible = false
-offset_left = 29.0
-offset_top = 66.0
-offset_right = 155.0
-offset_bottom = 220.0
+offset_right = 192.0
+offset_bottom = 360.0
 
 [node name="AcidButton" parent="UI" unique_id=75896202 instance=ExtResource("33_acid_button_scene")]
 offset_left = 490.5
