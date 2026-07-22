@@ -132,10 +132,28 @@ func _check_game_inventory_integration() -> void:
 	var ui := game.get_node("UI") as BattleUI
 	var closed_list := game.get_node("UI/SeedButtonList") as SeedButtonList
 	var closed_button := closed_list.get_child(0) as SeedButton
+	_expect(closed_list.position.is_equal_approx(Vector2(40.0, 54.0)), "通常時装備種をキャラクター頭頂部へ置く")
+	_expect(closed_list.size.is_equal_approx(Vector2(110.0, 70.0)), "通常時装備種を3列×2行の領域に置く")
+	_expect(closed_list.get_theme_constant("h_separation") == 10, "通常時装備種の横間隔を10pxにする")
+	_expect(closed_list.get_theme_constant("v_separation") == 10, "通常時装備種の縦間隔を10pxにする")
+	_expect(closed_list.get_child_count() == 6, "通常時に装備中の6種を表示する")
+	_expect(closed_button.size.is_equal_approx(Vector2(30.0, 30.0)), "通常時装備種の透明当たり判定を30px角にする")
+	_expect(closed_button.mouse_filter == Control.MOUSE_FILTER_STOP, "通常時装備種の透明四角で入力を受ける")
+	_expect(closed_button.flat, "通常時装備種の当たり判定背景を無色にする")
 	_expect(not closed_button.frame.visible, "パネルを閉じた装備表示はテクスチャだけにする")
 	_expect(
-		closed_button.icon_rect.self_modulate.is_equal_approx(Color(0.941176, 0.878431, 1.0, 1.0)),
-		"閉じた装備表示を文字と同系色にする"
+		closed_button.icon_rect.self_modulate.is_equal_approx(BattleUI.EQUIPPED_SEED_ICON_COLOR),
+		"閉じた装備表示を薄いピンクにする"
+	)
+	_expect(closed_button.tooltip_panel != null, "通常時装備種の透明当たり判定にツールチップを設定する")
+	closed_button.call("_on_mouse_entered")
+	_expect(closed_button.tooltip_panel.visible, "通常時装備種へホバーするとツールチップを表示する")
+	closed_button.call("_on_mouse_exited")
+	_expect(not closed_button.tooltip_panel.visible, "通常時装備種から離れるとツールチップを隠す")
+	var fourth_closed_button := closed_list.get_child(3) as SeedButton
+	_expect(
+		fourth_closed_button.position.is_equal_approx(Vector2(0.0, 40.0)),
+		"通常時装備種を中央揃えの3列2段にする"
 	)
 	closed_button.call("_handle_press", closed_button.global_position)
 	closed_button.call("_handle_release", closed_button.global_position)
@@ -150,6 +168,7 @@ func _check_game_inventory_integration() -> void:
 	game.call("_on_seed_drag_released", closed_button, closed_button.seed, Vector2.ZERO)
 	ui.call("_open_owned_seed_panel")
 	_expect((game.get_node("UI/OwnedSeedPanel") as OwnedSeedPanel).visible, "所有種パネルを開ける")
+	_expect(not closed_list.visible, "所有種パネルを開くと通常時装備種を非表示にする")
 	await _capture_viewport_if_requested()
 	ui.call("_close_owned_seed_panel")
 	_expect(closed_list.visible, "所有種パネルを閉じると頭部の装備表示へ戻る")

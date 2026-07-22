@@ -5,6 +5,9 @@ const WARNING_MESSAGE_FLOAT_DISTANCE := 6.0
 const WARNING_MESSAGE_FADE_IN_DURATION := 0.2
 const WARNING_MESSAGE_HOLD_DURATION := 0.65
 const WARNING_MESSAGE_FADE_OUT_DURATION := 0.25
+const EQUIPPED_SEED_ICON_COLOR := Color(1.0, 0.72, 0.82, 1.0)
+const EQUIPPED_SEED_SLOT_SIZE := Vector2(30.0, 30.0)
+const EQUIPPED_SEED_SLOT_SEPARATION := 10
 
 signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
@@ -55,9 +58,10 @@ var _warning_message_tween: Tween
 
 # 初期化
 func _ready() -> void:
+	seed_button_list.set_slot_layout(EQUIPPED_SEED_SLOT_SIZE, EQUIPPED_SEED_SLOT_SEPARATION)
 	seed_button_list.set_sub_skill_drag_enabled(true)
 	seed_button_list.set_source_collection(SeedButton.SourceCollection.EQUIPPED)
-	seed_button_list.set_display_style(false, Color(0.941176, 0.878431, 1.0, 1.0))
+	seed_button_list.set_display_style(false, EQUIPPED_SEED_ICON_COLOR)
 	_warning_message_base_position = warning_message_label.position
 	warning_message_label.pivot_offset = warning_message_label.size * 0.5
 	hide_warning_message()
