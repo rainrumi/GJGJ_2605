@@ -47,6 +47,7 @@
 [ext_resource type="Script" uid="uid://dug83pdl1h0si" path="res://scene/main/stage_select/debug/stage_select_debug_label.gd" id="45_debug_seed_pool_title_label"]
 [ext_resource type="Script" uid="uid://bqorv7jk0nlas" path="res://scene/main/stage_select/debug/stage_select_debug_scroll.gd" id="46_debug_seed_pool_scroll"]
 [ext_resource type="Script" uid="uid://db60itn8qj4ap" path="res://scene/main/stage_select/debug/stage_select_debug_text.gd" id="47_debug_seed_pool_text"]
+[ext_resource type="PackedScene" uid="uid://bk0m5bk7vnrh8" path="res://scene/ui/view/time_view.tscn" id="48_time_view_scene"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_debug_seed_pool"]
 bg_color = Color(0, 0, 0, 0.78)
@@ -135,6 +136,13 @@ theme_override_font_sizes/font_size = 28
 text = "夢の主を選択"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TimeView" parent="UI" unique_id=2103301401 instance=ExtResource("48_time_view_scene")]
+layout_mode = 0
+offset_left = 515.0
+offset_top = 14.0
+offset_right = 623.0
+offset_bottom = 48.0
 
 [node name="StageChoicesScroll" type="ScrollContainer" parent="UI" unique_id=104671176]
 layout_mode = 0
