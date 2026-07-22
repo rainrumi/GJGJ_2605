@@ -46,6 +46,31 @@ func _run() -> void:
 	_expect(acid_damage_delta.text.is_empty(), "通常時は消化ダメージ差分を表示しない")
 	_expect(acid_interval_delta.text.is_empty(), "通常時は消化間隔差分を表示しない")
 	_expect(hp_delta.text.is_empty(), "通常時はHP差分を表示しない")
+	var hp_view := stage_clear.get_node("CharacterArea/HpView") as HpView
+	hp_view.mouse_entered.emit()
+	_expect(hp_view.hp_tooltip.visible, "HPバーのホバーでHPの説明を表示する")
+	hp_view.mouse_exited.emit()
+	_expect(hp_label.mouse_filter == Control.MOUSE_FILTER_STOP, "HPラベルがマウスhoverを受け取る")
+	hp_label.mouse_entered.emit()
+	_expect(hp_view.hp_tooltip.visible, "HPラベルのホバーでHPバーの説明を表示する")
+	_expect(
+		hp_view.hp_tooltip.tooltip_label.text.contains("HP: 20/100"),
+		"HPバーと同じHP情報を表示する"
+	)
+	var expected_hp_tooltip_position := TooltipPositioner.get_tooltip_position(
+		hp_label.global_position,
+		hp_view.hp_tooltip.tooltip_panel.size,
+		get_viewport().get_visible_rect(),
+		LeftTooltip.TOOLTIP_OFFSET
+	)
+	_expect(
+		hp_view.hp_tooltip.tooltip_panel.global_position.is_equal_approx(
+			expected_hp_tooltip_position
+		),
+		"HPラベルを基準にほかの状態ツールと同じ位置関係で表示する"
+	)
+	hp_label.mouse_exited.emit()
+	_expect(not hp_view.hp_tooltip.visible, "HPラベルのホバー終了でHPバーの説明を隠す")
 	acid_damage_view.mouse_entered.emit()
 	_expect(acid_damage_view.acid_damage_view_tooltip.visible, "消化ダメージの説明をホバー表示する")
 	_expect(

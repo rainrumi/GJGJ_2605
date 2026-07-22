@@ -9,6 +9,8 @@ signal abandon_hovered
 signal abandon_unhovered
 signal reroll_pressed
 signal debug_pressed
+signal hp_tooltip_requested(anchor_global_position: Vector2)
+signal hp_tooltip_hide_requested
 
 const SELECT_GUIDE_TEXT := "夢の種をひとつ選んでください"
 const DEBUG_BUTTON_NORMAL_FONT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
@@ -48,6 +50,7 @@ var _seed_choice_active := false
 
 # 初期化
 func _ready() -> void:
+	hp_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	_connect_child_signals()
 	_apply_debug_button_state()
 	_update_reroll_button_state()
@@ -163,6 +166,8 @@ func _connect_child_signals() -> void:
 	acid_damage_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
 	acid_interval_view.tooltip_requested.connect(_on_status_tooltip_requested)
 	acid_interval_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
+	hp_label.mouse_entered.connect(_on_hp_label_mouse_entered)
+	hp_label.mouse_exited.connect(_on_hp_label_mouse_exited)
 
 
 # debug外観更新
@@ -243,6 +248,16 @@ func _on_reroll_button_pressed() -> void:
 # debug通知
 func _on_debug_button_pressed() -> void:
 	debug_pressed.emit()
+
+
+# HPラベルhover通知
+func _on_hp_label_mouse_entered() -> void:
+	hp_tooltip_requested.emit(hp_label.global_position)
+
+
+# HPラベルhover解除通知
+func _on_hp_label_mouse_exited() -> void:
+	hp_tooltip_hide_requested.emit()
 
 
 # 状態ツール表示

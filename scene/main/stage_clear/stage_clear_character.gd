@@ -23,6 +23,8 @@ var _debug_numbers_visible := false
 
 # 初期化
 func _ready() -> void:
+	hp_view.tooltip_requested.connect(_on_hp_view_tooltip_requested)
+	hp_view.tooltip_hide_requested.connect(_on_hp_view_tooltip_hide_requested)
 	_setup_flower_slots()
 	_refresh_flower_slots()
 	_refresh_seed_button_list()
@@ -34,6 +36,40 @@ func set_hp(value: int, max_value: int, animated: bool) -> void:
 	_max_hp = maxi(1, max_value)
 	hp_view.set_hp(_current_hp, _max_hp, animated)
 	hp_view.set_planned_recovery_rate(_planned_recovery_rate)
+
+
+# HPツール情報設定
+func set_hp_tooltip_info(
+	rest_minutes: int,
+	rest_hp_rate: float,
+	rest_recovery_bonus_rate: float
+) -> void:
+	hp_view.set_tooltip_info(rest_minutes, rest_hp_rate, rest_recovery_bonus_rate)
+
+
+# HPツール表示
+func show_hp_tooltip() -> void:
+	hp_view.show_tooltip()
+
+
+# HPツールat表示
+func show_hp_tooltip_at(anchor_global_position: Vector2) -> void:
+	hp_view.show_tooltip_at(anchor_global_position)
+
+
+# HPツール非表示
+func hide_hp_tooltip() -> void:
+	hp_view.hide_tooltip()
+
+
+# HP表示hover通知
+func _on_hp_view_tooltip_requested(_view: HpView) -> void:
+	show_hp_tooltip()
+
+
+# HP表示hover解除通知
+func _on_hp_view_tooltip_hide_requested(_view: HpView) -> void:
+	hide_hp_tooltip()
 
 
 # 回復予定設定

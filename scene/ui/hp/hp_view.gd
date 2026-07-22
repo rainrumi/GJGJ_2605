@@ -86,7 +86,22 @@ func set_battle_hp_info(
 	explicit_recovered_hp: int = -1
 ) -> void:
 	set_hp(current_hp, max_hp, true, explicit_recovered_hp)
-	hp_tooltip.set_hp_info(current_hp, max_hp, rest_minutes, rest_hp_rate, rest_recovery_bonus_rate)
+	set_tooltip_info(rest_minutes, rest_hp_rate, rest_recovery_bonus_rate)
+
+
+# HPツール情報設定
+func set_tooltip_info(
+	rest_minutes: int,
+	rest_hp_rate: float,
+	rest_recovery_bonus_rate: float
+) -> void:
+	hp_tooltip.set_hp_info(
+		_current_hp,
+		_max_hp,
+		rest_minutes,
+		rest_hp_rate,
+		rest_recovery_bonus_rate
+	)
 
 
 # 予定回復率設定
@@ -124,7 +139,12 @@ func show_damage_values(damage_values: Array[int]) -> void:
 
 # ツール表示
 func show_tooltip() -> void:
-	hp_tooltip.show_tooltip_at(global_position)
+	show_tooltip_at(global_position)
+
+
+# ツールat表示
+func show_tooltip_at(anchor_global_position: Vector2) -> void:
+	hp_tooltip.show_tooltip_at(anchor_global_position)
 
 
 # ツール非表示

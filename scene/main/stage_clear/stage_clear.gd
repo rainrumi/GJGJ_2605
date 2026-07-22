@@ -9,6 +9,8 @@ const CLEAR_RECOVERY_BASE_RATE := 0.5
 const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
 const MAX_HP := 100
 const BATTLE_START_MINUTES := 22 * 60
+const REST_MINUTES := 30
+const REST_HP_RATE := 0.1
 
 @export var max_flowers := 50
 @export var initial_flower: SeedInfo
@@ -132,6 +134,8 @@ func _connect_ui_signals() -> void:
 	ui.abandon_unhovered.connect(_on_abandon_button_mouse_exited)
 	ui.reroll_pressed.connect(_on_reroll_button_pressed)
 	ui.debug_pressed.connect(_on_debug_button_pressed)
+	ui.hp_tooltip_requested.connect(_on_hp_tooltip_requested)
+	ui.hp_tooltip_hide_requested.connect(_on_hp_tooltip_hide_requested)
 
 
 # 花初期化
@@ -202,6 +206,16 @@ func _get_seed_display_name(seed: SeedInfo) -> String:
 # debug押下
 func _on_debug_button_pressed() -> void:
 	DebugState.toggle_debug_enabled()
+
+
+# HPツール表示
+func _on_hp_tooltip_requested(anchor_global_position: Vector2) -> void:
+	character_area.show_hp_tooltip_at(anchor_global_position)
+
+
+# HPツール非表示
+func _on_hp_tooltip_hide_requested() -> void:
+	character_area.hide_hp_tooltip()
 
 
 # debug接続
@@ -426,6 +440,7 @@ func _refresh_after_reward_state_changed() -> void:
 func _refresh_reward_ui() -> void:
 	character_area.set_planted_flowers(get_planted_flowers())
 	ui.setup_seed_choices(seed_options, _get_seed_selectable_states())
+	_update_hp_tooltip_info()
 	_update_hp_heal_plan()
 
 
@@ -441,7 +456,19 @@ func _get_seed_selectable_states() -> Array[bool]:
 func _set_hp(value: int, animated: bool) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
 	character_area.set_hp(current_hp, MAX_HP, animated)
+	_update_hp_tooltip_info()
 	_update_hp_heal_plan()
+
+
+# HPツール情報更新
+func _update_hp_tooltip_info() -> void:
+	var seed_effects := SeedEffectResolver.new()
+	seed_effects.setup(planted_flowers)
+	character_area.set_hp_tooltip_info(
+		REST_MINUTES,
+		REST_HP_RATE,
+		seed_effects.get_rest_recovery_bonus_rate()
+	)
 
 
 # 回復予定更新
