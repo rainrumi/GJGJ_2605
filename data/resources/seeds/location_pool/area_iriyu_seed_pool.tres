@@ -2,12 +2,12 @@
 
 [ext_resource type="Script" uid="uid://dxuaadwlh5qe4" path="res://data/info/seed/seed_pool_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="2_definition"]
-[ext_resource type="Resource" uid="uid://bxcifnl46c450" path="res://data/resources/seeds/skills/seed_100_101.tres" id="1001_skill"]
-[ext_resource type="Resource" uid="uid://cve63i3l8a6g4" path="res://data/resources/seeds/skills/seed_100_102.tres" id="1002_skill"]
-[ext_resource type="Resource" uid="uid://bg1b12x08p6jm" path="res://data/resources/seeds/skills/seed_100_103.tres" id="1003_skill"]
-[ext_resource type="Resource" uid="uid://fbm4hc4uq0w5" path="res://data/resources/seeds/skills/seed_100_104.tres" id="1004_skill"]
-[ext_resource type="Resource" uid="uid://ccow82okjb45w" path="res://data/resources/seeds/skills/seed_100_109.tres" id="2107_skill"]
-[ext_resource type="Resource" uid="uid://cb2k70jpa5id" path="res://data/resources/seeds/skills/seed_100_116.tres" id="2119_skill"]
+[ext_resource type="Resource" uid="uid://sqlt6j4xlv0b" path="res://data/resources/seeds/skills/seed_100_101.tres" id="1001_skill"]
+[ext_resource type="Resource" uid="uid://c6y5aptnps475" path="res://data/resources/seeds/skills/seed_100_102.tres" id="1002_skill"]
+[ext_resource type="Resource" uid="uid://d02kf3ks5jgm1" path="res://data/resources/seeds/skills/seed_100_103.tres" id="1003_skill"]
+[ext_resource type="Resource" uid="uid://0qcftv2ma4xf" path="res://data/resources/seeds/skills/seed_100_104.tres" id="1004_skill"]
+[ext_resource type="Resource" uid="uid://0gwolci0jjoi" path="res://data/resources/seeds/skills/seed_100_109.tres" id="2107_skill"]
+[ext_resource type="Resource" uid="uid://brl8pyw32nhqp" path="res://data/resources/seeds/skills/seed_100_116.tres" id="2119_skill"]
 
 
 [resource]
