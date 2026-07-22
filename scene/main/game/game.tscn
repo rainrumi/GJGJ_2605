@@ -132,23 +132,6 @@ theme_override_font_sizes/font_size = 14
 text = "回転"
 alignment = 2
 
-[node name="AcidPlaybackButton" type="Button" parent="UI"]
-offset_left = 458.0
-offset_top = 74.0
-offset_right = 621.0
-offset_bottom = 98.0
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("43_bestten_font")
-theme_override_font_sizes/font_size = 14
-text = "再生"
-flat = true
-alignment = 2
-
 [node name="WarningMessageLabel" type="Label" parent="UI"]
 visible = false
 z_index = 100

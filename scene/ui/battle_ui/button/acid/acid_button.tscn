@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dpf6pkf1ttb3w" path="res://art/ui/button/ui_button_digestiveSTART.png" id="1_digestion"]
 [ext_resource type="Script" uid="uid://cb3ps8imae8l4" path="res://scene/ui/battle_ui/button/acid/acid_button.gd" id="2_acid_button_script"]
+[ext_resource type="Texture2D" uid="uid://d30hkhkxt117d" path="res://art/ui/button/ui_button_digestiveSTOP.png" id="3_stop"]
 
 [node name="AcidButton" type="TextureRect"]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
@@ -11,4 +12,8 @@ offset_right = 629.5
 offset_bottom = 357.0
 mouse_filter = 2
 texture = ExtResource("1_digestion")
+expand_mode = 1
+stretch_mode = 5
 script = ExtResource("2_acid_button_script")
+start_texture = ExtResource("1_digestion")
+stop_texture = ExtResource("3_stop")

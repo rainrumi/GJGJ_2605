@@ -3,14 +3,11 @@ extends CanvasLayer
 
 const ROTATION_MODE_DISABLED_TEXT := "回転"
 const ROTATION_MODE_ENABLED_TEXT := "回転（有効中）"
-const ACID_PLAY_TEXT := "再生"
-const ACID_PAUSE_TEXT := "一時停止"
 const WARNING_MESSAGE_FLOAT_DISTANCE := 6.0
 const WARNING_MESSAGE_FADE_IN_DURATION := 0.2
 const WARNING_MESSAGE_HOLD_DURATION := 0.65
 const WARNING_MESSAGE_FADE_OUT_DURATION := 0.25
 
-signal Acidion_requested
 signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
@@ -35,7 +32,6 @@ signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 @onready var seed_button_list: SeedButtonList = $SeedButtonList
 @onready var time_view: TimeView = $TimeView
 @onready var rotate_mode_button: CheckButton = $RotateModeButton
-@onready var acid_playback_button: Button = $AcidPlaybackButton
 @onready var warning_message_label: Label = $WarningMessageLabel
 @onready var acid_button: AcidButton = $AcidButton
 @onready var debug_panel: DebugPanel = $DebugPanel
@@ -54,7 +50,6 @@ var _current_tooltip_owner: Object = null
 var _current_tooltip_hide: Callable = Callable()
 var _warning_message_base_position := Vector2.ZERO
 var _warning_message_tween: Tween
-var _acid_is_playing := false
 
 # -----------------------------------------------------------
 
@@ -153,8 +148,7 @@ func set_rotation_mode_enabled(is_enabled: bool) -> void:
 
 # 消化再生状態設定
 func set_acid_playing(is_playing: bool) -> void:
-	_acid_is_playing = is_playing
-	acid_playback_button.text = ACID_PAUSE_TEXT if is_playing else ACID_PLAY_TEXT
+	acid_button.set_playing(is_playing)
 
 
 # 警告文言表示
@@ -370,7 +364,7 @@ func show_hp_damage_values(damage_values: Array[int]) -> void:
 # childsignals接続
 func _connect_child_signals() -> void:
 	
-	acid_button.Acidion_requested.connect(_on_Acidion_requested)
+	acid_button.playback_requested.connect(_on_acid_playback_requested)
 	nightmare_previous_page_button.pressed.connect(_on_nightmare_previous_page_requested)
 	nightmare_next_page_button.pressed.connect(_on_nightmare_next_page_requested)
 	time_over_retry_button.pressed.connect(_on_time_over_retry_requested)
@@ -398,7 +392,6 @@ func _connect_child_signals() -> void:
 	hp_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
 
 	rotate_mode_button.toggled.connect(_on_rotate_mode_button_toggled)
-	acid_playback_button.pressed.connect(_on_acid_playback_button_pressed)
 	seed_button_list.seed_rotation_requested.connect(_on_seed_rotation_requested)
 
 # -----------------------------------------------------------
@@ -457,11 +450,6 @@ func _on_tooltip_hide_requested(view: Object) -> void:
 
 # -----------------------------------------------------------
 
-# 消化開始要求
-func _on_Acidion_requested() -> void:
-	Acidion_requested.emit()
-
-
 # 前の悪夢ページ要求
 func _on_nightmare_previous_page_requested() -> void:
 	nightmare_previous_page_requested.emit()
@@ -489,8 +477,8 @@ func _on_rotate_mode_button_toggled(is_enabled: bool) -> void:
 
 
 # 消化再生状態変更要求
-func _on_acid_playback_button_pressed() -> void:
-	acid_playback_requested.emit(not _acid_is_playing)
+func _on_acid_playback_requested(should_play: bool) -> void:
+	acid_playback_requested.emit(should_play)
 
 # -----------------------------------------------------------
 

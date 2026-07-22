@@ -45,7 +45,7 @@ func _run() -> void:
 	await process_frame
 
 	var rotate_button := game.get_node("UI/RotateModeButton") as CheckButton
-	var playback_button := game.get_node("UI/AcidPlaybackButton") as Button
+	var acid_button := game.get_node("UI/AcidButton") as AcidButton
 	var seed_button_list := game.get_node("UI/SeedButtonList") as SeedButtonList
 	var seed_button := seed_button_list.get_child(0) as SeedButton
 	var stomach := game.get_node("Stomach") as StomachBoard
@@ -60,24 +60,26 @@ func _run() -> void:
 	second_nightmare.set_Aciding(true)
 	stomach.place_enemy(second_nightmare, Vector2i(1, 0))
 
-	_expect(playback_button != null, "回転トグルの下に消化再生ボタンがある")
+	_expect(not game.has_node("UI/AcidPlaybackButton"), "独立した再生・停止ボタンを表示しない")
+	_expect(acid_button != null and acid_button.visible, "消化開始ボタンを表示する")
 	_expect(
-		playback_button.alignment == HORIZONTAL_ALIGNMENT_RIGHT,
-		"消化再生ボタンを右揃えにする"
+		acid_button.texture.resource_path == "res://art/ui/button/ui_button_digestiveSTART.png",
+		"消化開始前は開始画像を表示する"
 	)
-	_expect(
-		playback_button.position.y >= rotate_button.position.y + rotate_button.size.y,
-		"消化再生ボタンを回転トグルより下に配置する"
-	)
-	_expect(playback_button.text == "再生", "消化開始前は再生と表示する")
 
 	var minutes_before := int(game.get("minutes"))
-	playback_button.pressed.emit()
-	_expect(playback_button.text == "一時停止", "再生クリック後は一時停止と表示する")
-	_expect(game.get("auto_acid_enabled"), "再生クリックで自動消化を開始する")
-	playback_button.pressed.emit()
-	_expect(playback_button.text == "再生", "一時停止クリック後は再生と表示する")
-	_expect(game.get("auto_acid_paused_by_user"), "一時停止クリックで消化を停止状態にする")
+	_press_acid_button(acid_button)
+	_expect(
+		acid_button.texture.resource_path == "res://art/ui/button/ui_button_digestiveSTOP.png",
+		"消化開始クリック後は停止画像へ切り替える"
+	)
+	_expect(game.get("auto_acid_enabled"), "消化開始クリックで自動消化を開始する")
+	_press_acid_button(acid_button)
+	_expect(
+		acid_button.texture.resource_path == "res://art/ui/button/ui_button_digestiveSTART.png",
+		"停止クリック後は開始画像へ切り替える"
+	)
+	_expect(game.get("auto_acid_paused_by_user"), "停止クリックで消化を停止状態にする")
 	await process_frame
 	await process_frame
 	await process_frame
@@ -114,9 +116,12 @@ func _run() -> void:
 	_expect(game.get("auto_acid_paused_by_user"), "夢の種設置後も消化の一時停止を維持する")
 
 	var auto_acid_timer := game.get("Acidion_timer") as Timer
-	playback_button.pressed.emit()
-	_expect(playback_button.text == "一時停止", "再生再開後は一時停止と表示する")
-	_expect(not game.get("auto_acid_paused_by_user"), "再生クリックで停止状態を解除する")
+	_press_acid_button(acid_button)
+	_expect(
+		acid_button.texture.resource_path == "res://art/ui/button/ui_button_digestiveSTOP.png",
+		"消化再開後は停止画像へ切り替える"
+	)
+	_expect(not game.get("auto_acid_paused_by_user"), "消化開始クリックで停止状態を解除する")
 	_expect(auto_acid_timer.is_stopped(), "保留中の消化完了前は次の消化Timerを開始しない")
 	await process_frame
 	_expect(game.get("minutes") > minutes_before, "再生後は保留中の消化を進める")
@@ -126,7 +131,7 @@ func _run() -> void:
 		"次の消化間隔を消化完了後から数える"
 	)
 
-	playback_button.pressed.emit()
+	_press_acid_button(acid_button)
 	game.call("cancel_battle")
 	root.remove_child(game)
 	game.free()
@@ -142,7 +147,7 @@ func _run() -> void:
 	seed_controller = null
 	seed_button = null
 	seed_button_list = null
-	playback_button = null
+	acid_button = null
 	rotate_button = null
 	context = null
 	flowers.clear()
@@ -157,6 +162,13 @@ func _run() -> void:
 	packed = null
 	await process_frame
 	quit(_failures)
+
+
+func _press_acid_button(acid_button: AcidButton) -> void:
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = true
+	acid_button.gui_input.emit(event)
 
 
 func _expect(condition: bool, message: String) -> void:

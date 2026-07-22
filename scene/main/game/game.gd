@@ -200,7 +200,6 @@ func get_stomach_rows() -> int:
 
 # UI接続
 func _connect_ui() -> void:
-	ui.Acidion_requested.connect(_on_Acidion_requested)
 	ui.nightmare_previous_page_requested.connect(_on_nightmare_previous_page_requested)
 	ui.nightmare_next_page_requested.connect(_on_nightmare_next_page_requested)
 	ui.time_over_retry_requested.connect(_on_time_over_retry_requested)
@@ -897,7 +896,7 @@ func _refresh_status_ui(explicit_recovered_hp: int = -1) -> void:
 	ui.set_hp(hp, effective_max_hp, explicit_recovered_hp)
 	ui.set_time(minutes)
 	ui.set_acidion_count(_active_acid_count())
-	ui.set_acid_button_visible(battle_active and not auto_acid_enabled)
+	ui.set_acid_button_visible(battle_active)
 	ui.set_acid_playing(auto_acid_enabled and not auto_acid_paused_by_user)
 
 
