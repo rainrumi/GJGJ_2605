@@ -3,7 +3,15 @@
 [ext_resource type="Script" uid="uid://brr8dii6f2ecs" path="res://scene/ui/seed/seed_button.gd" id="1_di3tq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_seed_slot"]
-bg_color = Color(1, 0.72, 0.82, 0.3)
+bg_color = Color(0.941176, 0.878431, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_empty_seed_slot"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.941176, 0.878431, 1, 1)
 
 [node name="SeedButton" type="Button" unique_id=578486141]
 custom_minimum_size = Vector2(16, 16)
@@ -12,6 +20,8 @@ offset_bottom = 16.0
 focus_mode = 0
 flat = true
 script = ExtResource("1_di3tq")
+populated_slot_style = SubResource("StyleBox_seed_slot")
+empty_slot_style = SubResource("StyleBox_empty_seed_slot")
 
 [node name="Frame" type="Panel" parent="." unique_id=701617758]
 layout_mode = 0

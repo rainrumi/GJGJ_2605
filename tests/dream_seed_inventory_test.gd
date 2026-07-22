@@ -40,7 +40,7 @@ func _check_owned_seed_panel() -> void:
 	var panel := packed.instantiate() as OwnedSeedPanel
 	get_tree().root.add_child(panel)
 	await get_tree().process_frame
-	panel.set_seed_inventory(_create_seeds(6), _create_seeds(13, 100))
+	panel.set_seed_inventory(_create_seeds(5), _create_seeds(13, 100))
 	await get_tree().process_frame
 
 	var equipped_list := panel.get_node("UpperArea/EquippedList") as SeedButtonList
@@ -59,20 +59,28 @@ func _check_owned_seed_panel() -> void:
 	var close_button := panel.get_node("UpperArea/CloseButton") as Button
 	_expect(close_button.position.x <= 2.0 and close_button.position.y <= 2.0, "閉じるボタンを左上に置く")
 	_expect(is_equal_approx(equipped_list.position.x + equipped_list.size.x * 0.5, panel.size.x * 0.5), "装備枠をパネル中央に揃える")
-	_expect(is_equal_approx(stored_list.position.x, 21.0), "所持枠を左端から約20px離す")
+	_expect(
+		is_equal_approx(
+			stored_list.global_position.y - (equipped_list.global_position.y + equipped_list.size.y),
+			20.0
+		),
+		"装備枠と所持枠の間に縦20pxの余白を設ける"
+	)
+	_expect(is_equal_approx(stored_list.position.x, 21.0), "所持枠の左余白を約20pxにする")
 	_expect(
 		is_equal_approx(panel.size.x - (stored_list.position.x + stored_list.size.x), 21.0),
-		"所持枠を右端から約20px離す"
+		"所持枠の右余白を約20pxにする"
 	)
 	_expect(equipped_list.get_theme_constant("h_separation") == 10, "装備枠の横間隔を10pxにする")
 	_expect(equipped_list.get_theme_constant("v_separation") == 10, "装備枠の縦間隔を10pxにする")
 	_expect(stored_list.get_theme_constant("h_separation") == 10, "所持枠の横間隔を10pxにする")
 	_expect(stored_list.get_theme_constant("v_separation") == 10, "所持枠の縦間隔を10pxにする")
-	_expect(equipped_list.get_child_count() == 6, "装備枠を3×2相当の6枠表示する")
-	_expect(stored_list.get_child_count() == 12, "所持枠を4×3相当の12枠表示する")
+	_expect(equipped_list.get_child_count() == 6, "装備枠を横3列・縦2行の6枠表示する")
+	_expect(stored_list.get_child_count() == 12, "所持枠を横4列・縦3行の12枠表示する")
 	_expect(_count_populated_buttons(stored_list) == 12, "1ページ目に12個の所持種を表示する")
 	_expect((panel.get_node("StoredArea/NextPageButton") as Button).visible, "13個目があると右矢印を表示する")
 	panel.call("_on_next_page_pressed")
+	await get_tree().process_frame
 	_expect(_count_populated_buttons(stored_list) == 1, "2ページ目に残りの所持種を表示する")
 	_expect((panel.get_node("StoredArea/PreviousPageButton") as Button).visible, "2ページ目で左矢印を表示する")
 	_expect((panel.get_node("StoredArea/PageLabel") as Label).text == "2 / 2", "現在ページを表示する")
@@ -84,14 +92,53 @@ func _check_owned_seed_panel() -> void:
 	_expect(bool(equip_request_received[0]), "所持枠の短押しで装備要求を送る")
 
 	var equipped_button := equipped_list.get_child(0) as SeedButton
+	var empty_equipped_button := equipped_list.get_child(5) as SeedButton
+	var empty_stored_button := stored_list.get_child(1) as SeedButton
 	_expect(equipped_button.size.is_equal_approx(Vector2(30.0, 30.0)), "装備枠を30px角にする")
 	_expect(stored_button.size.is_equal_approx(Vector2(30.0, 30.0)), "所持枠を装備枠と同じ30px角にする")
+	_expect(
+		(stored_list.get_child(3) as SeedButton).position.is_equal_approx(Vector2(120.0, 0.0)),
+		"所持枠を10px間隔の横4列で表示する"
+	)
+	_expect(
+		(stored_list.get_child(4) as SeedButton).position.is_equal_approx(Vector2(0.0, 40.0)),
+		"所持枠を4個ごとに次の行へ折り返す"
+	)
+	_expect(
+		(stored_list.get_child(8) as SeedButton).position.is_equal_approx(Vector2(0.0, 80.0)),
+		"所持枠を縦3行で表示する"
+	)
 	_expect(equipped_button.frame.visible, "パネル内の装備枠に四角い枠を表示する")
 	var slot_style := equipped_button.frame.get_theme_stylebox("panel") as StyleBoxFlat
+	var stored_slot_style := stored_button.frame.get_theme_stylebox("panel") as StyleBoxFlat
 	_expect(
 		slot_style != null
-		and slot_style.bg_color.is_equal_approx(Color(1.0, 0.72, 0.82, 0.3)),
-		"装備枠を薄いピンクの透明度30%で塗る"
+		and slot_style.bg_color.is_equal_approx(Color("f0e0ff")),
+		"種がある装備枠を完全不透明の#f0e0ffで塗る"
+	)
+	_expect(
+		stored_slot_style != null
+		and stored_slot_style.bg_color.is_equal_approx(Color("f0e0ff")),
+		"種がある所持枠を完全不透明の#f0e0ffで塗る"
+	)
+	var empty_slot_style := empty_equipped_button.frame.get_theme_stylebox("panel") as StyleBoxFlat
+	_expect(
+		empty_slot_style != null
+		and is_zero_approx(empty_slot_style.bg_color.a)
+		and empty_slot_style.border_width_left == 1
+		and empty_slot_style.border_width_top == 1
+		and empty_slot_style.border_width_right == 1
+		and empty_slot_style.border_width_bottom == 1
+		and empty_slot_style.border_color.is_equal_approx(Color("f0e0ff")),
+		"種がない装備枠を透明背景と1pxの#f0e0ff縁だけにする"
+	)
+	var empty_stored_slot_style := empty_stored_button.frame.get_theme_stylebox("panel") as StyleBoxFlat
+	_expect(
+		empty_stored_slot_style != null
+		and is_zero_approx(empty_stored_slot_style.bg_color.a)
+		and empty_stored_slot_style.border_width_left == 1
+		and empty_stored_slot_style.border_color.is_equal_approx(Color("f0e0ff")),
+		"種がない所持枠にも透明背景と#f0e0ff縁を適用する"
 	)
 	_expect(
 		equipped_button.icon_rect.self_modulate.is_equal_approx(OwnedSeedPanel.SLOT_ICON_COLOR),
@@ -99,6 +146,7 @@ func _check_owned_seed_panel() -> void:
 	)
 	_expect(equipped_button.tooltip_panel != null, "装備枠の種に従来のツールチップを設定する")
 	_expect(stored_button.tooltip_panel != null, "所持枠の種に従来のツールチップを設定する")
+	await _capture_viewport_from_environment("DREAM_SEED_EMPTY_CAPTURE_PATH")
 	_dispose(panel)
 	await get_tree().process_frame
 
@@ -144,6 +192,10 @@ func _check_game_inventory_integration() -> void:
 	_expect(
 		closed_button.icon_rect.self_modulate.is_equal_approx(BattleUI.EQUIPPED_SEED_ICON_COLOR),
 		"閉じた装備表示を薄いピンクにする"
+	)
+	_expect(
+		BattleUI.EQUIPPED_SEED_ICON_COLOR.is_equal_approx(Color("f0e0ff")),
+		"閉じた装備表示の薄いピンクにも#f0e0ffを使用する"
 	)
 	_expect(closed_button.tooltip_panel != null, "通常時装備種の透明当たり判定にツールチップを設定する")
 	closed_button.call("_on_mouse_entered")

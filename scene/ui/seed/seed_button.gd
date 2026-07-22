@@ -19,7 +19,10 @@ const SUB_SKILL_USE_COUNT := 1
 const LONG_PRESS_DURATION_MSEC := 500
 const DEFAULT_SLOT_SIZE := Vector2(16.0, 16.0)
 
-@onready var frame: Control = $Frame
+@export var populated_slot_style: StyleBox
+@export var empty_slot_style: StyleBox
+
+@onready var frame: Panel = $Frame
 @onready var icon_rect: TextureRect = $Icon
 
 var source_data: Resource
@@ -49,7 +52,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_NONE
 	flat = true
-	frame.visible = frame_visible
+	_apply_frame_style()
 	icon_rect.visible = icon_rect.texture != null
 	icon_rect.self_modulate = icon_color
 	icon_rect.pivot_offset = icon_rect.size * 0.5
@@ -66,6 +69,7 @@ func set_seed_source(source: Resource) -> void:
 		seed = source as SeedInfo
 	set_seed_icon_source(source)
 	_display_remaining_sub_skill_uses = SUB_SKILL_USE_COUNT if seed != null else 0
+	_apply_frame_style()
 	disabled = seed == null
 	_update_drag_state()
 	_refresh_tooltip()
@@ -134,8 +138,7 @@ func set_display_style(
 	frame_visible = is_frame_visible
 	icon_color = color
 	use_remaining_sub_skill_color = show_remaining_sub_skill_color
-	if frame != null:
-		frame.visible = frame_visible
+	_apply_frame_style()
 	_update_drag_state()
 
 
@@ -320,6 +323,16 @@ func _update_drag_state() -> void:
 	if icon_rect != null:
 		icon_rect.self_modulate = LOW_SUB_SKILL_USES_COLOR if use_remaining_sub_skill_color and _can_use_sub_skill() and _display_remaining_sub_skill_uses <= 1 else icon_color
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if _can_interact() else Control.CURSOR_ARROW
+
+
+# 枠style適用
+func _apply_frame_style() -> void:
+	if frame == null:
+		return
+	frame.visible = frame_visible
+	var slot_style := empty_slot_style if seed == null else populated_slot_style
+	if slot_style != null:
+		frame.add_theme_stylebox_override("panel", slot_style)
 
 
 # 表示枠サイズ適用
