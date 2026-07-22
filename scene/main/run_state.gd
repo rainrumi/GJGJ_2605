@@ -18,6 +18,7 @@ var selected_stage_id := 0
 var selected_stage: StageInfo
 var current_area_stage: StageInfo
 var planted_flowers: Array[SeedInfo] = []
+var stored_seeds: Array[SeedInfo] = []
 var permanent_acid_damage_bonus_rate := 0.0
 var last_time_over_recovery_percent := 0
 var normal_enemy_preset_indices := {}
@@ -37,6 +38,7 @@ func reset() -> void:
 	selected_stage = null
 	current_area_stage = null
 	planted_flowers.clear()
+	stored_seeds.clear()
 	permanent_acid_damage_bonus_rate = 0.0
 	last_time_over_recovery_percent = 0
 	normal_enemy_preset_indices.clear()

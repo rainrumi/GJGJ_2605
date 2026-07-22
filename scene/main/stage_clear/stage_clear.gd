@@ -11,8 +11,9 @@ const MAX_HP := 100
 const BATTLE_START_MINUTES := 22 * 60
 const REST_MINUTES := 30
 const REST_HP_RATE := 0.1
+const MAX_EQUIPPED_SEEDS := 6
 
-@export var max_flowers := 50
+@export var max_flowers := MAX_EQUIPPED_SEEDS
 @export var initial_flower: SeedInfo
 @export var seed_options: Array[SeedInfo] = []
 
@@ -22,6 +23,7 @@ const REST_HP_RATE := 0.1
 @onready var ui: StageClearUi = $UI
 
 var planted_flowers: Array[SeedInfo] = []
+var stored_seeds: Array[SeedInfo] = []
 var current_hp := MAX_HP
 var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
 var permanent_acid_damage_bonus_rate := 0.0
@@ -104,6 +106,33 @@ func get_planted_flowers() -> Array[SeedInfo]:
 	return flowers
 
 
+# 所持種取得
+func get_stored_seeds() -> Array[SeedInfo]:
+	var seeds: Array[SeedInfo] = []
+	for seed in stored_seeds:
+		if seed != null:
+			seeds.append(seed)
+	return seeds
+
+
+# 種inventory設定
+func set_seed_inventory(equipped_seeds: Array, possession_seeds: Array) -> void:
+	planted_flowers.clear()
+	stored_seeds.clear()
+	for source in equipped_seeds:
+		if not (source is SeedInfo):
+			continue
+		if planted_flowers.size() < MAX_EQUIPPED_SEEDS:
+			planted_flowers.append(source as SeedInfo)
+		else:
+			stored_seeds.append(source as SeedInfo)
+	for source in possession_seeds:
+		if source is SeedInfo:
+			stored_seeds.append(source as SeedInfo)
+	if is_node_ready():
+		_refresh_after_reward_state_changed()
+
+
 # 永続酸率取得
 func get_permanent_acid_damage_bonus_rate() -> float:
 	return permanent_acid_damage_bonus_rate
@@ -113,13 +142,13 @@ func get_permanent_acid_damage_bonus_rate() -> float:
 func remove_planted_flower(source: Resource) -> void:
 	if source == null:
 		return
-	for i in range(planted_flowers.size() - 1, -1, -1):
-		var flower := planted_flowers[i]
-		if flower == source:
-			planted_flowers.remove_at(i)
-			continue
-		if source is SeedInfo:
-			planted_flowers.remove_at(i)
+	var equipped_index := planted_flowers.find(source)
+	if equipped_index >= 0:
+		planted_flowers.remove_at(equipped_index)
+	else:
+		var stored_index := stored_seeds.find(source)
+		if stored_index >= 0:
+			stored_seeds.remove_at(stored_index)
 	if is_node_ready():
 		_refresh_after_reward_state_changed()
 
@@ -141,6 +170,7 @@ func _connect_ui_signals() -> void:
 # 花初期化
 func _initialize_planted_flowers() -> void:
 	planted_flowers.clear()
+	stored_seeds.clear()
 	if initial_flower != null:
 		planted_flowers.append(initial_flower)
 	if is_node_ready():
@@ -288,10 +318,10 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 		var recovered_rate := _apply_selection_recovery(0.0)
 		_finish_seed_choice(recovered_rate, "%sを植えました" % _get_seed_display_name(seed))
 		return
-	reward_service.replace_first_flower(planted_flowers, seed)
+	stored_seeds.append(seed)
 	_refresh_after_reward_state_changed()
-	var replacement_recovered_rate := _apply_selection_recovery(0.0)
-	_finish_seed_choice(replacement_recovered_rate, "%sを植え替えました" % _get_seed_display_name(seed))
+	var stored_recovered_rate := _apply_selection_recovery(0.0)
+	_finish_seed_choice(stored_recovered_rate, "%sを所持枠へ加えました" % _get_seed_display_name(seed))
 
 
 # 放棄押下
@@ -320,7 +350,7 @@ func _can_plant_seed(seed: SeedInfo) -> bool:
 
 # 入手可否
 func _can_receive_seed(seed: SeedInfo) -> bool:
-	return reward_service.can_receive_seed(seed, planted_flowers)
+	return reward_service.can_receive_seed(seed, _get_all_owned_seeds())
 
 
 # 種選択完了
@@ -383,6 +413,13 @@ func _get_abandon_extra_recovery_rate() -> float:
 # preview花取得
 func _get_preview_flowers_for_seed(seed: SeedInfo) -> Array[SeedInfo]:
 	return reward_service.get_preview_flowers_for_seed(seed, planted_flowers, max_flowers)
+
+
+# 全所有種取得
+func _get_all_owned_seeds() -> Array[SeedInfo]:
+	var seeds := get_planted_flowers()
+	seeds.append_array(get_stored_seeds())
+	return seeds
 
 
 # 追加選択初期化

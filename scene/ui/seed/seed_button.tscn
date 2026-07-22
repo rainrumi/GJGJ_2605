@@ -1,7 +1,14 @@
 [gd_scene format=3 uid="uid://0rqo8pnylyv4"]
 
 [ext_resource type="Script" uid="uid://brr8dii6f2ecs" path="res://scene/ui/seed/seed_button.gd" id="1_di3tq"]
-[ext_resource type="Texture2D" uid="uid://ghhnhnth2o7w" path="res://art/ui/button/frame/skill/ui_button_frame_skill_seed.png" id="2_r0akp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_seed_slot"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.941176, 0.878431, 1, 1)
 
 [node name="SeedButton" type="Button" unique_id=578486141]
 custom_minimum_size = Vector2(16, 16)
@@ -11,14 +18,12 @@ focus_mode = 0
 flat = true
 script = ExtResource("1_di3tq")
 
-[node name="Frame" type="TextureRect" parent="." unique_id=701617758]
+[node name="Frame" type="Panel" parent="." unique_id=701617758]
 layout_mode = 0
 offset_right = 16.0
 offset_bottom = 16.0
 mouse_filter = 2
-texture = ExtResource("2_r0akp")
-expand_mode = 1
-stretch_mode = 5
+theme_override_styles/panel = SubResource("StyleBox_seed_slot")
 
 [node name="Icon" type="TextureRect" parent="." unique_id=926159565]
 visible = false

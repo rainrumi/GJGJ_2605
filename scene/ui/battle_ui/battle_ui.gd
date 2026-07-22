@@ -19,6 +19,8 @@ signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vec
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
+signal seed_equip_requested(seed: SeedInfo)
+signal seed_unequip_requested(seed: SeedInfo)
 
 @onready var acid_damage_view: AcidDamageView = $AcidDamageView
 @onready var acid_interval_view: AcidIntervalView = $AcidIntervalView
@@ -27,6 +29,8 @@ signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 @onready var stage_name_label: Label = $StageInfo/StageNameLabel
 @onready var hp_view: HpView = $HpView
 @onready var seed_button_list: SeedButtonList = $SeedButtonList
+@onready var owned_seed_panel: OwnedSeedPanel = $OwnedSeedPanel
+@onready var owned_seed_open_button: Button = $OwnedSeedOpenButton
 @onready var time_view: TimeView = $TimeView
 @onready var warning_message_label: Label = $WarningMessageLabel
 @onready var acid_button: AcidButton = $AcidButton
@@ -52,11 +56,14 @@ var _warning_message_tween: Tween
 # 初期化
 func _ready() -> void:
 	seed_button_list.set_sub_skill_drag_enabled(true)
+	seed_button_list.set_source_collection(SeedButton.SourceCollection.EQUIPPED)
+	seed_button_list.set_display_style(false, Color(0.941176, 0.878431, 1.0, 1.0))
 	_warning_message_base_position = warning_message_label.position
 	warning_message_label.pivot_offset = warning_message_label.size * 0.5
 	hide_warning_message()
 	_connect_child_signals()
 	_hide_all_tooltips()
+	_close_owned_seed_panel()
 
 # -----------------------------------------------------------
 
@@ -96,7 +103,7 @@ func reset_for_battle(
 	time_view.set_tooltip_info()
 	set_message(message)
 	set_debug_message("")
-	set_seed_sources([])
+	set_seed_inventory([], [])
 	seed_button_list.reset_rotations()
 	set_acid_playing(false)
 	set_seed_debug_numbers_visible(DebugState.debug_enabled)
@@ -109,6 +116,7 @@ func reset_for_battle(
 	hide_time_elapsed()
 	hide_warning_message()
 	_hide_all_tooltips()
+	_close_owned_seed_panel()
 
 # -----------------------------------------------------------
 
@@ -213,12 +221,19 @@ func set_debug_message(message: String) -> void:
 
 # 夢種スキルsources設定
 func set_seed_sources(sources: Array) -> void:
-	seed_button_list.set_seed_sources(sources)
+	set_seed_inventory(sources, [])
+
+
+# 夢種inventory設定
+func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
+	seed_button_list.set_seed_sources(equipped_seeds)
+	owned_seed_panel.set_seed_inventory(equipped_seeds, stored_seeds)
 
 
 # 夢種デバッグ番号visible設定
 func set_seed_debug_numbers_visible(is_visible: bool) -> void:
 	seed_button_list.set_debug_numbers_visible(is_visible)
+	owned_seed_panel.set_debug_numbers_visible(is_visible)
 
 # -----------------------------------------------------------
 
@@ -380,6 +395,14 @@ func _connect_child_signals() -> void:
 	hp_view.tooltip_hide_requested.connect(_on_tooltip_hide_requested)
 
 	seed_button_list.seed_rotation_requested.connect(_on_seed_rotation_requested)
+	owned_seed_open_button.pressed.connect(_open_owned_seed_panel)
+	owned_seed_panel.closed.connect(_close_owned_seed_panel)
+	owned_seed_panel.equip_requested.connect(_on_seed_equip_requested)
+	owned_seed_panel.unequip_requested.connect(_on_seed_unequip_requested)
+	owned_seed_panel.seed_drag_started.connect(_on_seed_drag_started)
+	owned_seed_panel.seed_drag_moved.connect(_on_seed_drag_moved)
+	owned_seed_panel.seed_drag_released.connect(_on_seed_drag_released)
+	owned_seed_panel.seed_rotation_requested.connect(_on_seed_rotation_requested)
 
 # -----------------------------------------------------------
 
@@ -515,3 +538,29 @@ func _on_seed_drag_released(
 # 種ブロック回転要求
 func _on_seed_rotation_requested(button: SeedButton, seed: SeedInfo) -> void:
 	seed_rotation_requested.emit(button, seed)
+
+
+# 所有種panel表示
+func _open_owned_seed_panel() -> void:
+	_hide_all_tooltips()
+	seed_button_list.visible = false
+	owned_seed_open_button.visible = false
+	owned_seed_panel.open_panel()
+
+
+# 所有種panel非表示
+func _close_owned_seed_panel() -> void:
+	_hide_all_tooltips()
+	owned_seed_panel.visible = false
+	seed_button_list.visible = true
+	owned_seed_open_button.visible = true
+
+
+# 種装備要求
+func _on_seed_equip_requested(seed: SeedInfo) -> void:
+	seed_equip_requested.emit(seed)
+
+
+# 種装備解除要求
+func _on_seed_unequip_requested(seed: SeedInfo) -> void:
+	seed_unequip_requested.emit(seed)

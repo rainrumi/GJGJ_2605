@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://d16ai8er5icqr" path="res://tests/dream_seed_inventory_test.gd" id="1_script"]
+
+[node name="DreamSeedInventoryTest" type="Node"]
+script = ExtResource("1_script")

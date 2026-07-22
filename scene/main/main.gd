@@ -48,6 +48,8 @@ func _ready() -> void:
 		game.connect("battle_finished", battle_finished_callback)
 	if game.has_signal("seed_depleted"):
 		game.connect("seed_depleted", Callable(self, "_on_game_seed_depleted"))
+	if game.has_signal("seed_inventory_changed"):
+		game.connect("seed_inventory_changed", Callable(self, "_on_game_seed_inventory_changed"))
 	_play_bgm()
 	show_title()
 
@@ -110,6 +112,8 @@ func show_stage_clear() -> void:
 	stage_select.visible = false
 	game.visible = false
 	game_ui.visible = false
+	_sync_seed_inventory_from_game()
+	_sync_stage_clear_seed_inventory()
 	if stage_clear.has_method("setup_clear_result") and game.has_method("get_current_hp") and game.has_method("get_clear_minutes"):
 		stage_clear.setup_clear_result(
 			game.get_current_hp(),
@@ -240,9 +244,19 @@ func _on_game_battle_finished(won: bool) -> void:
 
 # 枯渇処理
 func _on_game_seed_depleted(source: Resource) -> void:
-	if stage_clear.has_method("remove_planted_flower"):
-		stage_clear.remove_planted_flower(source)
-	_sync_run_state_from_stage_clear()
+	if source != null:
+		_sync_seed_inventory_from_game()
+		_sync_stage_clear_seed_inventory()
+
+
+# 戦闘種inventory変更
+func _on_game_seed_inventory_changed(
+	equipped_seeds: Array[SeedInfo],
+	stored_seeds: Array[SeedInfo]
+) -> void:
+	run_state.planted_flowers = equipped_seeds.duplicate()
+	run_state.stored_seeds = stored_seeds.duplicate()
+	_sync_stage_clear_seed_inventory()
 
 
 # endgameoverノベル表示
@@ -470,6 +484,7 @@ func _create_battle_start_context(reset_player_state: bool) -> BattleInfo:
 	context.stomach_columns = run_state.stomach_columns
 	context.stomach_rows = run_state.stomach_rows
 	context.flowers = run_state.planted_flowers.duplicate()
+	context.stored_seeds = run_state.stored_seeds.duplicate()
 	context.permanent_acid_damage_bonus_rate = run_state.permanent_acid_damage_bonus_rate
 	return context
 
@@ -488,6 +503,8 @@ func _sync_run_state_from_stage_clear() -> void:
 		run_state.current_hp = stage_clear.get_current_hp()
 	if stage_clear.has_method("get_planted_flowers"):
 		run_state.planted_flowers = stage_clear.get_planted_flowers()
+	if stage_clear.has_method("get_stored_seeds"):
+		run_state.stored_seeds = stage_clear.get_stored_seeds()
 	if stage_clear.has_method("get_permanent_acid_damage_bonus_rate"):
 		run_state.permanent_acid_damage_bonus_rate = stage_clear.get_permanent_acid_damage_bonus_rate()
 
@@ -509,6 +526,20 @@ func _get_planted_flowers() -> Array[SeedInfo]:
 		if flower != null:
 			flowers.append(flower)
 	return flowers
+
+
+# 戦闘から種inventory同期
+func _sync_seed_inventory_from_game() -> void:
+	if game.has_method("get_equipped_seeds"):
+		run_state.planted_flowers = game.get_equipped_seeds()
+	if game.has_method("get_stored_seeds"):
+		run_state.stored_seeds = game.get_stored_seeds()
+
+
+# stageclearへ種inventory同期
+func _sync_stage_clear_seed_inventory() -> void:
+	if stage_clear.has_method("set_seed_inventory"):
+		stage_clear.set_seed_inventory(run_state.planted_flowers, run_state.stored_seeds)
 
 
 # BGM再生

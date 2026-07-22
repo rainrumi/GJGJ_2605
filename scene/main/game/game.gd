@@ -1,6 +1,7 @@
 extends Node2D
 signal battle_finished(won: bool)
 signal seed_depleted(source: Resource)
+signal seed_inventory_changed(equipped_seeds: Array[SeedInfo], stored_seeds: Array[SeedInfo])
 enum DragMode {
 	NONE,
 	ENEMY,
@@ -117,9 +118,8 @@ func start_battle(context: BattleInfo = null) -> void:
 	debug_numbers_visible = DebugState.debug_enabled
 	_set_battle_flags(false)
 	_clear_scheduled_acid_events()
-	seed_controller.set_flowers(battle_context.flowers)
-	_apply_seed_stomach_size_effects()
-	_apply_seed_acid_line_effects()
+	seed_controller.set_seed_inventory(battle_context.flowers, battle_context.stored_seeds)
+	_refresh_seed_structural_effects()
 	acid_controller.set_battle_start_minutes(START_HOUR * 60)
 	seed_effects.setup(seed_controller.get_flowers())
 	enemy_effects.reset()
@@ -148,7 +148,7 @@ func start_battle(context: BattleInfo = null) -> void:
 		float(acid_controller.get_base_step_minutes())
 	)
 	ui.set_stage_info(_get_current_area_name(), _get_current_stage_name())
-	ui.set_seed_sources(seed_controller.get_flowers())
+	ui.set_seed_inventory(seed_controller.get_flowers(), seed_controller.get_stored_seeds())
 	ui.set_seed_debug_numbers_visible(debug_numbers_visible)
 	stomach.hide_preview()
 	battle_active = true
@@ -195,6 +195,16 @@ func get_stomach_rows() -> int:
 	return stomach.rows
 
 
+# 装備種取得
+func get_equipped_seeds() -> Array[SeedInfo]:
+	return seed_controller.get_flowers().duplicate()
+
+
+# 所持種取得
+func get_stored_seeds() -> Array[SeedInfo]:
+	return seed_controller.get_stored_seeds().duplicate()
+
+
 # UI接続
 func _connect_ui() -> void:
 	ui.nightmare_previous_page_requested.connect(_on_nightmare_previous_page_requested)
@@ -210,6 +220,8 @@ func _connect_ui() -> void:
 	ui.seed_drag_moved.connect(_on_seed_drag_moved)
 	ui.seed_drag_released.connect(_on_seed_drag_released)
 	ui.seed_rotation_requested.connect(_on_seed_rotation_requested)
+	ui.seed_equip_requested.connect(_on_seed_equip_requested)
+	ui.seed_unequip_requested.connect(_on_seed_unequip_requested)
 # 入力接続
 func _connect_input() -> void:
 	input_controller.setup(enemies)
@@ -368,6 +380,24 @@ func _on_enemy_rotation_requested(enemy: Enemy) -> void:
 func _on_seed_rotation_requested(_button: SeedButton, _seed: SeedInfo) -> void:
 	if battle_active:
 		_play_click_se()
+
+
+# 種装備要求
+func _on_seed_equip_requested(seed: SeedInfo) -> void:
+	if not _can_use_battle_interaction() or not seed_controller.equip_seed(seed):
+		return
+	_sync_seed_sources()
+	_refresh_after_battle_event()
+	_play_click_se()
+
+
+# 種装備解除要求
+func _on_seed_unequip_requested(seed: SeedInfo) -> void:
+	if not _can_use_battle_interaction() or not seed_controller.unequip_seed(seed):
+		return
+	_sync_seed_sources()
+	_refresh_after_battle_event()
+	_play_click_se()
 # イベント処理
 func _on_Acidion_timer_timeout() -> void:
 	if not auto_acid_enabled or auto_acid_paused_for_drag:
@@ -487,7 +517,12 @@ func _sync_seed_sources() -> void:
 	# 花値
 	var flowers := seed_controller.get_flowers()
 	seed_effects.setup(flowers)
-	ui.set_seed_sources(flowers)
+	seed_effects.set_day(current_day)
+	if _battle_start_context != null:
+		seed_effects.add_acid_damage_bonus_rate(_battle_start_context.permanent_acid_damage_bonus_rate)
+	_refresh_seed_structural_effects()
+	ui.set_seed_inventory(flowers, seed_controller.get_stored_seeds())
+	seed_inventory_changed.emit(flowers.duplicate(), seed_controller.get_stored_seeds().duplicate())
 
 
 # start敵ドラッグ判定
@@ -774,6 +809,7 @@ func _copy_battle_context(source: BattleInfo) -> BattleInfo:
 	copy.stomach_columns = source.stomach_columns
 	copy.stomach_rows = source.stomach_rows
 	copy.flowers = source.flowers.duplicate()
+	copy.stored_seeds = source.stored_seeds.duplicate()
 	copy.permanent_acid_damage_bonus_rate = source.permanent_acid_damage_bonus_rate
 	return copy
 
@@ -1132,6 +1168,29 @@ func _apply_seed_acid_line_effects() -> void:
 		line_delta += skill.get_acid_line_rows_delta()
 	if line_delta != 0:
 		stomach.add_acid_line_rows(line_delta)
+
+
+# 種構造effects再適用
+func _refresh_seed_structural_effects() -> void:
+	if _battle_start_context == null:
+		return
+	var has_column_bonus := false
+	var has_row_bonus := false
+	var acid_line_rows := 1
+	for flower in seed_controller.get_flowers():
+		if flower == null or flower.get_main_skill() == null:
+			continue
+		var skill := flower.get_main_skill()
+		has_column_bonus = has_column_bonus or skill.get_stomach_columns_delta() > 0
+		has_row_bonus = has_row_bonus or skill.get_stomach_rows_delta() > 0
+		acid_line_rows += skill.get_acid_line_rows_delta()
+	var target_columns := _battle_start_context.stomach_columns + (1 if has_column_bonus else 0)
+	var target_rows := _battle_start_context.stomach_rows + (1 if has_row_bonus else 0)
+	if stomach.columns != target_columns or stomach.rows != target_rows:
+		stomach.set_grid_size(target_columns, target_rows)
+		if not enemies.is_empty():
+			_refresh_enemy_stomach_display_sizes()
+	stomach.set_acid_line_rows(maxi(1, acid_line_rows))
 
 
 # resolvepost消化visua処理

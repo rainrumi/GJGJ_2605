@@ -5,6 +5,12 @@ signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vec
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
+signal loadout_edit_requested(button: SeedButton, seed: SeedInfo)
+
+enum SourceCollection {
+	EQUIPPED,
+	STORED,
+}
 
 const TOOLTIP_SCENE := preload("res://scene/ui/seed/tooltip/seed_tooltip.tscn")
 const LOW_SUB_SKILL_USES_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
@@ -12,7 +18,7 @@ const NORMAL_ICON_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const SUB_SKILL_USE_COUNT := 1
 const LONG_PRESS_DURATION_MSEC := 500
 
-@onready var frame: TextureRect = $Frame
+@onready var frame: Control = $Frame
 @onready var icon_rect: TextureRect = $Icon
 
 var source_data: Resource
@@ -21,6 +27,11 @@ var seed: SeedInfo
 var tooltip_panel: SeedTooltip
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
+var loadout_edit_enabled := false
+var source_collection := SourceCollection.EQUIPPED
+var frame_visible := true
+var icon_color := NORMAL_ICON_COLOR
+var use_remaining_sub_skill_color := true
 # 現状はUI表示を兼ねた一時的な使用回数。永続状態が必要になったらRuntimeStateへ移す。
 var _display_remaining_sub_skill_uses := 0
 var _pressing := false
@@ -37,7 +48,9 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_NONE
 	flat = true
+	frame.visible = frame_visible
 	icon_rect.visible = icon_rect.texture != null
+	icon_rect.self_modulate = icon_color
 	icon_rect.pivot_offset = icon_rect.size * 0.5
 	_create_tooltip_panel()
 	mouse_entered.connect(_on_mouse_entered)
@@ -51,7 +64,7 @@ func set_seed_source(source: Resource) -> void:
 	if source is SeedInfo:
 		seed = source as SeedInfo
 	set_seed_icon_source(source)
-	_display_remaining_sub_skill_uses = SUB_SKILL_USE_COUNT if _has_sub_skill() else 0
+	_display_remaining_sub_skill_uses = SUB_SKILL_USE_COUNT if seed != null else 0
 	disabled = seed == null
 	_update_drag_state()
 	_refresh_tooltip()
@@ -93,6 +106,35 @@ func set_debug_numbers_visible(is_visible: bool) -> void:
 # subスキルドラッグenabled設定
 func set_sub_skill_drag_enabled(is_enabled: bool) -> void:
 	sub_skill_drag_enabled = is_enabled
+	_update_drag_state()
+
+
+# 編成短押し設定
+func set_loadout_edit_enabled(is_enabled: bool) -> void:
+	loadout_edit_enabled = is_enabled
+
+
+# 元collection設定
+func set_source_collection(collection: int) -> void:
+	source_collection = collection
+
+
+# 元collection取得
+func get_source_collection() -> int:
+	return source_collection
+
+
+# 表示style設定
+func set_display_style(
+	is_frame_visible: bool,
+	color: Color,
+	show_remaining_sub_skill_color: bool = false
+) -> void:
+	frame_visible = is_frame_visible
+	icon_color = color
+	use_remaining_sub_skill_color = show_remaining_sub_skill_color
+	if frame != null:
+		frame.visible = frame_visible
 	_update_drag_state()
 
 
@@ -210,7 +252,7 @@ func _is_rare_seed() -> bool:
 
 # 押下処理
 func _handle_press(mouse_position: Vector2) -> void:
-	if not _can_use_sub_skill():
+	if not _can_interact():
 		return
 	_pressing = true
 	_press_started_msec = Time.get_ticks_msec()
@@ -227,6 +269,9 @@ func _handle_release(mouse_position: Vector2) -> void:
 	if _dragging:
 		_dragging = false
 		seed_drag_released.emit(self, seed, mouse_position)
+		return
+	if loadout_edit_enabled:
+		loadout_edit_requested.emit(self, seed)
 		return
 	if not _can_use_sub_skill():
 		return
@@ -249,7 +294,12 @@ func _has_long_press_elapsed() -> bool:
 
 # usesubスキル判定
 func _can_use_sub_skill() -> bool:
-	return sub_skill_drag_enabled and seed != null and seed.sub_skill_mode != SeedInfo.SubSkillMode.None and _has_sub_skill() and _display_remaining_sub_skill_uses > 0
+	return sub_skill_drag_enabled and seed != null and _display_remaining_sub_skill_uses > 0
+
+
+# 操作可能判定
+func _can_interact() -> bool:
+	return (loadout_edit_enabled and seed != null) or _can_use_sub_skill()
 
 
 # subスキル判定
@@ -260,5 +310,5 @@ func _has_sub_skill() -> bool:
 # ドラッグstate更新
 func _update_drag_state() -> void:
 	if icon_rect != null:
-		icon_rect.self_modulate = LOW_SUB_SKILL_USES_COLOR if _can_use_sub_skill() and _display_remaining_sub_skill_uses <= 1 else NORMAL_ICON_COLOR
-	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if _can_use_sub_skill() else Control.CURSOR_ARROW
+		icon_rect.self_modulate = LOW_SUB_SKILL_USES_COLOR if use_remaining_sub_skill_color and _can_use_sub_skill() and _display_remaining_sub_skill_uses <= 1 else icon_color
+	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if _can_interact() else Control.CURSOR_ARROW

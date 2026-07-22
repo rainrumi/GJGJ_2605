@@ -43,8 +43,6 @@ func get_preview_flowers_for_seed(
 		return preview_flowers
 	if can_plant_seed(seed, preview_flowers, max_flowers):
 		preview_flowers.append(seed)
-		return preview_flowers
-	replace_first_flower(preview_flowers, seed)
 	return preview_flowers
 
 

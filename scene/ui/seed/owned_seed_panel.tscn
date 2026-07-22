@@ -1,0 +1,93 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" uid="uid://njv64edcix1j" path="res://scene/ui/seed/owned_seed_panel.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://dnxj6x3i60rbc" path="res://scene/ui/seed/seed_button_list/seed_button_list.tscn" id="2_seed_list"]
+[ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="3_button"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="4_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
+bg_color = Color(0.035, 0.02, 0.055, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.941176, 0.878431, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_stored"]
+bg_color = Color(0.12, 0.09, 0.15, 0.94)
+
+[node name="OwnedSeedPanel" type="Panel"]
+custom_minimum_size = Vector2(126, 154)
+offset_right = 126.0
+offset_bottom = 154.0
+theme_override_styles/panel = SubResource("StyleBox_panel")
+script = ExtResource("1_script")
+
+[node name="UpperArea" type="Control" parent="."]
+layout_mode = 0
+offset_right = 126.0
+offset_bottom = 44.0
+mouse_filter = 2
+
+[node name="EquippedList" parent="UpperArea" instance=ExtResource("2_seed_list")]
+offset_left = 8.0
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 39.0
+
+[node name="CloseButton" parent="UpperArea" instance=ExtResource("3_button")]
+offset_left = 104.0
+offset_top = 2.0
+offset_right = 123.0
+offset_bottom = 21.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 10
+text = "×"
+
+[node name="StoredArea" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 126.0
+offset_bottom = 154.0
+theme_override_styles/panel = SubResource("StyleBox_stored")
+
+[node name="StoredList" parent="StoredArea" instance=ExtResource("2_seed_list")]
+offset_left = 28.0
+offset_top = 12.0
+offset_right = 98.0
+offset_bottom = 64.0
+
+[node name="PreviousPageButton" parent="StoredArea" instance=ExtResource("3_button")]
+visible = false
+offset_left = 2.0
+offset_top = 28.0
+offset_right = 24.0
+offset_bottom = 52.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 12
+text = "←"
+
+[node name="NextPageButton" parent="StoredArea" instance=ExtResource("3_button")]
+visible = false
+offset_left = 102.0
+offset_top = 28.0
+offset_right = 124.0
+offset_bottom = 52.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 12
+text = "→"
+
+[node name="PageLabel" type="Label" parent="StoredArea"]
+offset_left = 28.0
+offset_top = 82.0
+offset_right = 98.0
+offset_bottom = 103.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.941176, 0.878431, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 9
+text = "1 / 1"
+horizontal_alignment = 1

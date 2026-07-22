@@ -3,9 +3,11 @@ extends RefCounted
 
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 const SEED_BLOCK_DRAG_ALPHA := 0.58
+const MAX_EQUIPPED_SEEDS := 6
 
 var rest_time_skip_count := 0
 var _flowers: Array[SeedInfo] = []
+var _stored_seeds: Array[SeedInfo] = []
 var _owner: Node
 var _stomach: StomachBoard
 var _input_controller: GameInputController
@@ -29,17 +31,59 @@ func setup(
 
 # 花値設定
 func set_flowers(flowers: Array) -> void:
+	set_seed_inventory(flowers, [])
+
+
+# 種inventory設定
+func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
 	_flowers.clear()
+	_stored_seeds.clear()
 	_pending_depleted_sources_by_block.clear()
 	rest_time_skip_count = 0
-	for flower in flowers:
-		if flower is SeedInfo:
-			_flowers.append(flower as SeedInfo)
+	for source in equipped_seeds:
+		if not (source is SeedInfo):
+			continue
+		if _flowers.size() < MAX_EQUIPPED_SEEDS:
+			_flowers.append(source as SeedInfo)
+		else:
+			_stored_seeds.append(source as SeedInfo)
+	for source in stored_seeds:
+		if source is SeedInfo:
+			_stored_seeds.append(source as SeedInfo)
 
 
 # 花値取得
 func get_flowers() -> Array[SeedInfo]:
 	return _flowers
+
+
+# 所持種取得
+func get_stored_seeds() -> Array[SeedInfo]:
+	return _stored_seeds
+
+
+# 種装備
+func equip_seed(seed: SeedInfo) -> bool:
+	if seed == null or _flowers.size() >= MAX_EQUIPPED_SEEDS:
+		return false
+	var index := _stored_seeds.find(seed)
+	if index < 0:
+		return false
+	_stored_seeds.remove_at(index)
+	_flowers.append(seed)
+	return true
+
+
+# 種装備解除
+func unequip_seed(seed: SeedInfo) -> bool:
+	if seed == null:
+		return false
+	var index := _flowers.find(seed)
+	if index < 0:
+		return false
+	_flowers.remove_at(index)
+	_stored_seeds.append(seed)
+	return true
 
 
 # 元データwhilein胃袋削除
@@ -50,7 +94,7 @@ func remove_source_while_in_stomach(button: SeedButton, seed_block: Enemy) -> vo
 	var source := button.get_seed_source()
 	if source == null:
 		return
-	remove_source(source)
+	remove_source(source, button.get_source_collection())
 	if seed_block != null:
 		_pending_depleted_sources_by_block[seed_block] = source
 
@@ -71,15 +115,13 @@ func collect_depleted_sources(Acided_enemies: Array[Enemy]) -> Array[Resource]:
 
 
 # 元データ削除
-func remove_source(source: Resource) -> void:
-	for i in range(_flowers.size() - 1, -1, -1):
-		# 花値
-		var flower := _flowers[i]
-		if flower == source:
-			_flowers.remove_at(i)
-			continue
-		if source is SeedInfo:
-			_flowers.remove_at(i)
+func remove_source(source: Resource, collection := SeedButton.SourceCollection.EQUIPPED) -> void:
+	if source == null:
+		return
+	var seeds := _flowers if collection == SeedButton.SourceCollection.EQUIPPED else _stored_seeds
+	var index := seeds.find(source)
+	if index >= 0:
+		seeds.remove_at(index)
 
 
 # ドラッグ開始
@@ -310,5 +352,8 @@ func add_random_debug_seed() -> bool:
 	var flower := debug_factory.create_random_debug_seed_flower()
 	if flower == null:
 		return false
-	_flowers.append(flower)
+	if _flowers.size() < MAX_EQUIPPED_SEEDS:
+		_flowers.append(flower)
+	else:
+		_stored_seeds.append(flower)
 	return true

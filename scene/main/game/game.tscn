@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://dnxj6x3i60rbc" path="res://scene/ui/seed/seed_button_list/seed_button_list.tscn" id="41_seed_button_list_scene"]
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="42_battle_button_scene"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="43_bestten_font"]
+[ext_resource type="PackedScene" path="res://scene/ui/seed/owned_seed_panel.tscn" id="44_owned_seed_panel"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nightmare_return_hint"]
 bg_color = Color(0.07, 0.06, 0.09, 0.78)
@@ -136,10 +137,27 @@ offset_right = 155.0
 offset_bottom = 266.0
 
 [node name="SeedButtonList" parent="UI" unique_id=1206675277 instance=ExtResource("41_seed_button_list_scene")]
+offset_left = 60.0
+offset_top = 142.0
+offset_right = 112.0
+offset_bottom = 176.0
+
+[node name="OwnedSeedOpenButton" parent="UI" instance=ExtResource("42_battle_button_scene")]
+offset_left = 32.0
+offset_top = 142.0
+offset_right = 56.0
+offset_bottom = 166.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("43_bestten_font")
+theme_override_font_sizes/font_size = 9
+text = "種"
+
+[node name="OwnedSeedPanel" parent="UI" instance=ExtResource("44_owned_seed_panel")]
+visible = false
 offset_left = 29.0
-offset_top = 270.0
+offset_top = 66.0
 offset_right = 155.0
-offset_bottom = 342.0
+offset_bottom = 220.0
 
 [node name="AcidButton" parent="UI" unique_id=75896202 instance=ExtResource("33_acid_button_scene")]
 offset_left = 490.5
