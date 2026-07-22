@@ -10,17 +10,21 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 
 const EQUIPPED_SLOT_COUNT := 6
-const STORED_PAGE_SIZE := 12
+const STORED_PAGE_SIZE := 16
 const SLOT_ICON_COLOR := Color(0.015, 0.01, 0.02, 1.0)
 const SLOT_SIZE := Vector2(30.0, 30.0)
 const SLOT_SEPARATION := 10
+const EQUIPPED_TOOLTIP_TEXT := "ここに入れている夢の種はメインスキルの効果を発揮します。ドラッグして食べるとサブスキルの効果を発揮します。"
+const STORED_TOOLTIP_TEXT := "現在所持している夢の種です。何も効果を発揮しませんが、ドラッグして食べるとサブスキルの効果を発揮します"
 
 @onready var equipped_list: SeedButtonList = $UpperArea/EquippedList
 @onready var stored_list: SeedButtonList = $StoredArea/StoredList
+@onready var equipped_label: Label = $UpperArea/EquippedLabel
+@onready var stored_label: Label = $StoredArea/StoredLabel
 @onready var close_button: Button = $UpperArea/CloseButton
 @onready var previous_page_button: Button = $StoredArea/PreviousPageButton
 @onready var next_page_button: Button = $StoredArea/NextPageButton
-@onready var page_label: Label = $StoredArea/PageLabel
+@onready var heading_tooltip: SeedTooltip = $HeadingTooltip
 
 var _equipped_seeds: Array[SeedInfo] = []
 var _stored_seeds: Array[SeedInfo] = []
@@ -61,6 +65,7 @@ func open_panel() -> void:
 
 # panel非表示
 func close_panel() -> void:
+	heading_tooltip.hide_tooltip()
 	visible = false
 	closed.emit()
 
@@ -86,6 +91,11 @@ func _connect_signals() -> void:
 	close_button.pressed.connect(close_panel)
 	previous_page_button.pressed.connect(_on_previous_page_pressed)
 	next_page_button.pressed.connect(_on_next_page_pressed)
+	equipped_label.mouse_entered.connect(_on_equipped_label_mouse_entered)
+	equipped_label.mouse_exited.connect(_on_heading_label_mouse_exited)
+	stored_label.mouse_entered.connect(_on_stored_label_mouse_entered)
+	stored_label.mouse_exited.connect(_on_heading_label_mouse_exited)
+	visibility_changed.connect(_on_visibility_changed)
 	equipped_list.loadout_edit_requested.connect(_on_unequip_requested)
 	stored_list.loadout_edit_requested.connect(_on_equip_requested)
 	_connect_seed_list_signals(equipped_list)
@@ -106,8 +116,6 @@ func _refresh() -> void:
 	stored_list.set_seed_sources(_get_stored_page_seeds())
 	equipped_list.set_debug_numbers_visible(_debug_numbers_visible)
 	stored_list.set_debug_numbers_visible(_debug_numbers_visible)
-	var page_count := maxi(1, _get_last_page() + 1)
-	page_label.text = "%d / %d" % [_stored_page + 1, page_count]
 	previous_page_button.visible = _stored_page > 0
 	next_page_button.visible = _stored_page < _get_last_page()
 
@@ -138,6 +146,29 @@ func _get_valid_seeds(sources: Array, limit: int = -1) -> Array[SeedInfo]:
 			if limit >= 0 and seeds.size() >= limit:
 				break
 	return seeds
+
+
+# 装備見出しhover開始
+func _on_equipped_label_mouse_entered() -> void:
+	heading_tooltip.set_text(EQUIPPED_TOOLTIP_TEXT)
+	heading_tooltip.show_tooltip_at(equipped_label.global_position)
+
+
+# 所持見出しhover開始
+func _on_stored_label_mouse_entered() -> void:
+	heading_tooltip.set_text(STORED_TOOLTIP_TEXT)
+	heading_tooltip.show_tooltip_at(stored_label.global_position)
+
+
+# 見出しhover終了
+func _on_heading_label_mouse_exited() -> void:
+	heading_tooltip.hide_tooltip()
+
+
+# 表示状態変更
+func _on_visibility_changed() -> void:
+	if not visible and heading_tooltip != null:
+		heading_tooltip.hide_tooltip()
 
 
 # 前page押下

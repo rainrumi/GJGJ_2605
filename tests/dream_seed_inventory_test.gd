@@ -40,14 +40,14 @@ func _check_owned_seed_panel() -> void:
 	var panel := packed.instantiate() as OwnedSeedPanel
 	get_tree().root.add_child(panel)
 	await get_tree().process_frame
-	panel.set_seed_inventory(_create_seeds(5), _create_seeds(13, 100))
+	panel.set_seed_inventory(_create_seeds(5), _create_seeds(17, 100))
 	await get_tree().process_frame
 
 	var equipped_list := panel.get_node("UpperArea/EquippedList") as SeedButtonList
 	var stored_list := panel.get_node("StoredArea/StoredList") as SeedButtonList
 	_expect(panel.size.is_equal_approx(Vector2(192.0, 360.0)), "所有種パネルを画面左30%・全高にする")
 	var panel_style := panel.get_theme_stylebox("panel") as StyleBoxFlat
-	_expect(panel_style != null and is_equal_approx(panel_style.bg_color.a, 0.3), "パネル背景を透明度30%にする")
+	_expect(panel_style != null and is_equal_approx(panel_style.bg_color.a, 0.7), "パネル背景を透明度30%にする")
 	_expect(
 		panel_style != null
 		and panel_style.border_width_left == 0
@@ -58,14 +58,50 @@ func _check_owned_seed_panel() -> void:
 	)
 	var close_button := panel.get_node("UpperArea/CloseButton") as Button
 	_expect(close_button.position.x <= 2.0 and close_button.position.y <= 2.0, "閉じるボタンを左上に置く")
+	_expect(close_button.get_theme_font_size("font_size") == 20, "閉じるボタンの文字を2倍にする")
+	var equipped_label := panel.get_node("UpperArea/EquippedLabel") as Label
+	var stored_label := panel.get_node("StoredArea/StoredLabel") as Label
+	_expect(equipped_label.text == "装備", "装備枠の上に見出しを表示する")
+	_expect(stored_label.text == "所持している種", "所持枠の上に見出しを表示する")
+	_expect(equipped_label.mouse_filter == Control.MOUSE_FILTER_STOP, "装備見出しでhover入力を受け取る")
+	_expect(stored_label.mouse_filter == Control.MOUSE_FILTER_STOP, "所持見出しでhover入力を受け取る")
+	_expect(is_equal_approx(equipped_label.position.x, equipped_list.position.x), "装備見出しを装備枠へ左揃えする")
+	_expect(is_equal_approx(stored_label.position.x, stored_list.position.x), "所持見出しを所持枠へ左揃えする")
+	_expect(is_equal_approx(equipped_label.position.y, 46.0), "装備見出しを20px下げる")
+	_expect(is_equal_approx(equipped_list.position.y, 66.0), "装備枠を20px下げる")
+	_expect(is_equal_approx(stored_label.position.y, 20.0), "所持見出しを20px下げる")
+	_expect(is_equal_approx(stored_list.position.y, 40.0), "所持枠を20px下げる")
 	_expect(is_equal_approx(equipped_list.position.x + equipped_list.size.x * 0.5, panel.size.x * 0.5), "装備枠をパネル中央に揃える")
 	_expect(
-		is_equal_approx(
-			stored_list.global_position.y - (equipped_list.global_position.y + equipped_list.size.y),
-			20.0
-		),
-		"装備枠と所持枠の間に縦20pxの余白を設ける"
+		stored_list.global_position.y - (equipped_list.global_position.y + equipped_list.size.y)
+		>= 30.0,
+		"見出し用に装備枠と所持枠の間を30px以上空ける"
 	)
+	_expect(
+		stored_label.global_position.y - (equipped_list.global_position.y + equipped_list.size.y)
+		>= 10.0,
+		"装備枠から10px以上空けて所持見出しを表示する"
+	)
+	_expect(not panel.has_node("StoredArea/PageLabel"), "所持枠のページ数表記を表示しない")
+	var heading_tooltip := panel.get_node("HeadingTooltip") as SeedTooltip
+	equipped_label.mouse_entered.emit()
+	_expect(heading_tooltip.visible, "装備見出しへhoverするとツールチップを表示する")
+	_expect(
+		heading_tooltip.tooltip_label.text.replace("\n", "") == OwnedSeedPanel.EQUIPPED_TOOLTIP_TEXT,
+		"装備見出しの説明を表示する"
+	)
+	await _capture_viewport_from_environment("DREAM_SEED_HEADING_TOOLTIP_CAPTURE_PATH")
+	equipped_label.mouse_exited.emit()
+	_expect(not heading_tooltip.visible, "装備見出しから離れるとツールチップを隠す")
+	stored_label.mouse_entered.emit()
+	_expect(heading_tooltip.visible, "所持見出しへhoverするとツールチップを表示する")
+	_expect(
+		heading_tooltip.tooltip_label.text.replace("\n", "") == OwnedSeedPanel.STORED_TOOLTIP_TEXT,
+		"所持見出しの説明を表示する"
+	)
+	await _capture_viewport_from_environment("DREAM_SEED_STORED_HEADING_TOOLTIP_CAPTURE_PATH")
+	stored_label.mouse_exited.emit()
+	_expect(not heading_tooltip.visible, "所持見出しから離れるとツールチップを隠す")
 	_expect(is_equal_approx(stored_list.position.x, 21.0), "所持枠の左余白を約20pxにする")
 	_expect(
 		is_equal_approx(panel.size.x - (stored_list.position.x + stored_list.size.x), 21.0),
@@ -76,14 +112,13 @@ func _check_owned_seed_panel() -> void:
 	_expect(stored_list.get_theme_constant("h_separation") == 10, "所持枠の横間隔を10pxにする")
 	_expect(stored_list.get_theme_constant("v_separation") == 10, "所持枠の縦間隔を10pxにする")
 	_expect(equipped_list.get_child_count() == 6, "装備枠を横3列・縦2行の6枠表示する")
-	_expect(stored_list.get_child_count() == 12, "所持枠を横4列・縦3行の12枠表示する")
-	_expect(_count_populated_buttons(stored_list) == 12, "1ページ目に12個の所持種を表示する")
-	_expect((panel.get_node("StoredArea/NextPageButton") as Button).visible, "13個目があると右矢印を表示する")
+	_expect(stored_list.get_child_count() == 16, "所持枠を横4列・縦4行の16枠表示する")
+	_expect(_count_populated_buttons(stored_list) == 16, "1ページ目に16個の所持種を表示する")
+	_expect((panel.get_node("StoredArea/NextPageButton") as Button).visible, "17個目があると右矢印を表示する")
 	panel.call("_on_next_page_pressed")
 	await get_tree().process_frame
 	_expect(_count_populated_buttons(stored_list) == 1, "2ページ目に残りの所持種を表示する")
 	_expect((panel.get_node("StoredArea/PreviousPageButton") as Button).visible, "2ページ目で左矢印を表示する")
-	_expect((panel.get_node("StoredArea/PageLabel") as Label).text == "2 / 2", "現在ページを表示する")
 	var equip_request_received := [false]
 	panel.equip_requested.connect(func(_seed: SeedInfo) -> void: equip_request_received[0] = true)
 	var stored_button := stored_list.get_child(0) as SeedButton
@@ -107,6 +142,15 @@ func _check_owned_seed_panel() -> void:
 	_expect(
 		(stored_list.get_child(8) as SeedButton).position.is_equal_approx(Vector2(0.0, 80.0)),
 		"所持枠を縦3行で表示する"
+	)
+	_expect(
+		(stored_list.get_child(12) as SeedButton).position.is_equal_approx(Vector2(0.0, 120.0)),
+		"所持枠を縦4行で表示する"
+	)
+	var next_page_button := panel.get_node("StoredArea/NextPageButton") as Button
+	_expect(
+		next_page_button.global_position.y + next_page_button.size.y <= panel.size.y,
+		"4行表示でもページ矢印をパネル内に収める"
 	)
 	_expect(equipped_button.frame.visible, "パネル内の装備枠に四角い枠を表示する")
 	var slot_style := equipped_button.frame.get_theme_stylebox("panel") as StyleBoxFlat
@@ -219,7 +263,10 @@ func _check_game_inventory_integration() -> void:
 	)
 	game.call("_on_seed_drag_released", closed_button, closed_button.seed, Vector2.ZERO)
 	ui.call("_open_owned_seed_panel")
-	_expect((game.get_node("UI/OwnedSeedPanel") as OwnedSeedPanel).visible, "所有種パネルを開ける")
+	var owned_panel := game.get_node("UI/OwnedSeedPanel") as OwnedSeedPanel
+	var hp_text := game.get_node("UI/HpView/HpText") as HpTextView
+	_expect(owned_panel.visible, "所有種パネルを開ける")
+	_expect(owned_panel.z_index > hp_text.z_index, "HP数値より所有種パネルを手前に描画する")
 	_expect(not closed_list.visible, "所有種パネルを開くと通常時装備種を非表示にする")
 	await _capture_viewport_if_requested()
 	ui.call("_close_owned_seed_panel")
@@ -235,7 +282,6 @@ func _check_game_inventory_integration() -> void:
 	_expect((game.call("get_equipped_seeds") as Array).size() == 6, "パネル要求で所持種を装備する")
 
 	ui.call("_open_owned_seed_panel")
-	var owned_panel := game.get_node("UI/OwnedSeedPanel") as OwnedSeedPanel
 	var stored_list := owned_panel.get_node("StoredArea/StoredList") as SeedButtonList
 	var stored_button := stored_list.get_child(0) as SeedButton
 	game.call("_on_seed_drag_started", stored_button, stored_button.seed, stored_button.global_position)
