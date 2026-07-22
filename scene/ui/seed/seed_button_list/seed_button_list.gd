@@ -10,7 +10,6 @@ const BUTTON_SCENE := preload("res://scene/ui/seed/seed_button.tscn")
 
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
-var rotation_mode_enabled := false
 var _rotation_quarter_turns_by_source: Dictionary = {}
 
 
@@ -45,14 +44,6 @@ func set_sub_skill_drag_enabled(is_enabled: bool) -> void:
 			(child as SeedButton).set_sub_skill_drag_enabled(sub_skill_drag_enabled)
 
 
-# 回転モード設定
-func set_rotation_mode_enabled(is_enabled: bool) -> void:
-	rotation_mode_enabled = is_enabled
-	for child in get_children():
-		if child is SeedButton:
-			(child as SeedButton).set_rotation_mode_enabled(rotation_mode_enabled)
-
-
 # 種ブロック回転状態リセット
 func reset_rotations() -> void:
 	_rotation_quarter_turns_by_source.clear()
@@ -69,7 +60,6 @@ func _add_seed_button_list(source: Resource) -> void:
 	button.set_seed_source(source)
 	button.set_debug_numbers_visible(debug_numbers_visible)
 	button.set_sub_skill_drag_enabled(sub_skill_drag_enabled)
-	button.set_rotation_mode_enabled(rotation_mode_enabled)
 	button.set_rotation_quarter_turns(int(_rotation_quarter_turns_by_source.get(source, 0)))
 	button.seed_drag_started.connect(_on_seed_drag_started)
 	button.seed_drag_moved.connect(_on_seed_drag_moved)

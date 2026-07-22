@@ -44,7 +44,6 @@ func _run() -> void:
 	game.call("start_battle", context)
 	await process_frame
 
-	var rotate_button := game.get_node("UI/RotateModeButton") as CheckButton
 	var acid_button := game.get_node("UI/AcidButton") as AcidButton
 	var seed_button_list := game.get_node("UI/SeedButtonList") as SeedButtonList
 	var seed_button := seed_button_list.get_child(0) as SeedButton
@@ -86,21 +85,17 @@ func _run() -> void:
 	_expect(game.get("minutes") == minutes_before, "一時停止中は消化時間を進めない")
 	_expect((game.get("Acidion_timer") as Timer).is_stopped(), "一時停止中は自動消化Timerを止める")
 	var rotation_size_before := rotation_target.get_stomach_size()
-	rotate_button.set_pressed_no_signal(true)
-	rotate_button.toggled.emit(true)
-	input_controller.call("_handle_press", rotation_target.global_position)
+	_short_click_enemy(input_controller, rotation_target.global_position)
 	_expect(
 		rotation_target.get_stomach_size() != rotation_size_before,
 		"一時停止中は胃外の悪夢を回転できる"
 	)
-	rotate_button.set_pressed_no_signal(false)
-	rotate_button.toggled.emit(false)
-	input_controller.call("_handle_press", nightmare.global_position)
+	_start_enemy_drag_with_motion(input_controller, nightmare.global_position)
 	_expect(game.get("dragging_enemy") == nightmare, "一時停止中は胃内のモノをドラッグできる")
 	input_controller.call("_handle_release", nightmare.origin_position)
 	_expect(not nightmare.is_active_in_stomach(), "一時停止中に胃内のモノを外へ出せる")
 	_expect(game.get("auto_acid_paused_by_user"), "取り出し後も消化の一時停止を維持する")
-	seed_button.call("_try_use_sub_skill", seed_button.global_position)
+	_start_seed_drag_with_motion(seed_button, seed_button.global_position)
 	_expect(seed_controller.is_dragging(), "一時停止中は夢の種の設置操作を開始できる")
 	var seed_drop_position := stomach.get_global_position_for_cell(Vector2i.ZERO, Vector2i.ONE)
 	var release_event := InputEventMouseButton.new()
@@ -148,7 +143,6 @@ func _run() -> void:
 	seed_button = null
 	seed_button_list = null
 	acid_button = null
-	rotate_button = null
 	context = null
 	flowers.clear()
 	seed = null
@@ -169,6 +163,25 @@ func _press_acid_button(acid_button: AcidButton) -> void:
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = true
 	acid_button.gui_input.emit(event)
+
+
+func _short_click_enemy(input_controller: GameInputController, position: Vector2) -> void:
+	input_controller.call("_handle_press", position)
+	input_controller.call("_handle_release", position)
+
+
+func _start_enemy_drag_with_motion(input_controller: GameInputController, position: Vector2) -> void:
+	input_controller.call("_handle_press", position)
+	var motion := InputEventMouseMotion.new()
+	motion.position = position + Vector2.ONE
+	input_controller.call("_input", motion)
+
+
+func _start_seed_drag_with_motion(seed_button: SeedButton, position: Vector2) -> void:
+	seed_button.call("_handle_press", position)
+	var motion := InputEventMouseMotion.new()
+	motion.position = position + Vector2.ONE
+	seed_button.call("_input", motion)
 
 
 func _expect(condition: bool, message: String) -> void:

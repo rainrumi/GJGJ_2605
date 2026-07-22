@@ -153,7 +153,6 @@ func start_battle(context: BattleInfo = null) -> void:
 	stomach.hide_preview()
 	battle_active = true
 	input_controller.set_active(true)
-	input_controller.set_rotation_mode_enabled(false)
 	_refresh_ui()
 # HP取得
 func get_current_hp() -> int:
@@ -175,8 +174,6 @@ func cancel_battle() -> void:
 	_pending_depleted_seed_sources.clear()
 	battle_active = false
 	input_controller.set_active(false)
-	input_controller.set_rotation_mode_enabled(false)
-	ui.set_rotation_mode_enabled(false)
 	auto_acid_enabled = false
 	auto_acid_paused_for_drag = false
 	auto_acid_paused_by_user = false
@@ -204,7 +201,6 @@ func _connect_ui() -> void:
 	ui.nightmare_next_page_requested.connect(_on_nightmare_next_page_requested)
 	ui.time_over_retry_requested.connect(_on_time_over_retry_requested)
 	ui.time_over_abandon_requested.connect(_on_time_over_abandon_requested)
-	ui.rotation_mode_changed.connect(_on_rotation_mode_changed)
 	ui.acid_playback_requested.connect(_on_acid_playback_requested)
 	ui.debug_message_requested.connect(_on_debug_message_requested)
 	ui.debug_reroll_requested.connect(_on_debug_reroll_requested)
@@ -332,13 +328,6 @@ func _on_nightmare_next_page_requested() -> void:
 		_refresh_nightmare_page_navigation()
 
 
-# 回転モード変更
-func _on_rotation_mode_changed(is_enabled: bool) -> void:
-	input_controller.set_rotation_mode_enabled(is_enabled)
-	if battle_active:
-		_play_click_se()
-
-
 # 消化再生状態変更要求
 func _on_acid_playback_requested(should_play: bool) -> void:
 	if not battle_active:
@@ -377,7 +366,7 @@ func _on_enemy_rotation_requested(enemy: Enemy) -> void:
 
 # 種ボタン回転要求
 func _on_seed_rotation_requested(_button: SeedButton, _seed: SeedInfo) -> void:
-	if battle_active and input_controller.is_rotation_mode_enabled():
+	if battle_active:
 		_play_click_se()
 # イベント処理
 func _on_Acidion_timer_timeout() -> void:
@@ -751,8 +740,6 @@ func _begin_time_over_decision() -> void:
 		return
 	_awaiting_time_over_decision = true
 	_set_battle_flags(false)
-	input_controller.set_rotation_mode_enabled(false)
-	ui.set_rotation_mode_enabled(false)
 	_clear_scheduled_acid_events()
 	_update_auto_acid_timer()
 	_refresh_after_battle_event()

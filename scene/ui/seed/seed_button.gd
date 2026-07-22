@@ -10,6 +10,7 @@ const TOOLTIP_SCENE := preload("res://scene/ui/seed/tooltip/seed_tooltip.tscn")
 const LOW_SUB_SKILL_USES_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
 const NORMAL_ICON_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const SUB_SKILL_USE_COUNT := 1
+const LONG_PRESS_DURATION_MSEC := 500
 
 @onready var frame: TextureRect = $Frame
 @onready var icon_rect: TextureRect = $Icon
@@ -20,9 +21,11 @@ var seed: SeedInfo
 var tooltip_panel: SeedTooltip
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
-var rotation_mode_enabled := false
 # 現状はUI表示を兼ねた一時的な使用回数。永続状態が必要になったらRuntimeStateへ移す。
 var _display_remaining_sub_skill_uses := 0
+var _pressing := false
+var _press_started_msec := 0
+var _press_position := Vector2.ZERO
 var _dragging := false
 var _rotation_quarter_turns := 0
 
@@ -93,12 +96,6 @@ func set_sub_skill_drag_enabled(is_enabled: bool) -> void:
 	_update_drag_state()
 
 
-# 回転モード設定
-func set_rotation_mode_enabled(is_enabled: bool) -> void:
-	rotation_mode_enabled = is_enabled
-	_update_drag_state()
-
-
 # 種ブロック回転数設定
 func set_rotation_quarter_turns(quarter_turns: int) -> void:
 	_rotation_quarter_turns = posmod(quarter_turns, 4)
@@ -120,6 +117,8 @@ func consume_sub_skill_use() -> void:
 
 # 毎フレーム処理
 func _process(_delta: float) -> void:
+	if _pressing and not _dragging and _has_long_press_elapsed():
+		_start_drag(get_viewport().get_mouse_position())
 	if not _dragging or seed == null:
 		return
 	seed_drag_moved.emit(self, seed, get_viewport().get_mouse_position())
@@ -127,14 +126,17 @@ func _process(_delta: float) -> void:
 
 # 入力処理
 func _input(event: InputEvent) -> void:
-	if not _dragging:
+	if not _pressing and not _dragging:
 		return
-	if event is InputEventMouseButton:
+	if event is InputEventMouseMotion and _pressing and not _dragging:
+		var mouse_motion := event as InputEventMouseMotion
+		if not mouse_motion.position.is_equal_approx(_press_position):
+			_start_drag(mouse_motion.position)
+	elif event is InputEventMouseButton:
 		# マウスボタン
 		var mouse_button := event as InputEventMouseButton
 		if mouse_button.button_index == MOUSE_BUTTON_LEFT and not mouse_button.pressed:
-			_dragging = false
-			seed_drag_released.emit(self, seed, mouse_button.position)
+			_handle_release(mouse_button.position)
 
 
 # GUI入力処理
@@ -143,7 +145,7 @@ func _gui_input(event: InputEvent) -> void:
 		# マウスボタン
 		var mouse_button := event as InputEventMouseButton
 		if mouse_button.button_index == MOUSE_BUTTON_LEFT and mouse_button.pressed:
-			_try_use_sub_skill(mouse_button.position)
+			_handle_press(mouse_button.position)
 
 
 # ツール更新
@@ -206,18 +208,43 @@ func _is_rare_seed() -> bool:
 	return seed != null and seed.rarity == SeedInfo.Rarity.RARE
 
 
-# usesubスキル試行
-func _try_use_sub_skill(mouse_position: Vector2) -> void:
-	if rotation_mode_enabled:
-		if not _can_use_sub_skill():
-			return
-		set_rotation_quarter_turns(_rotation_quarter_turns + 1)
-		seed_rotation_requested.emit(self, seed)
+# 押下処理
+func _handle_press(mouse_position: Vector2) -> void:
+	if not _can_use_sub_skill():
+		return
+	_pressing = true
+	_press_started_msec = Time.get_ticks_msec()
+	_press_position = mouse_position
+
+
+# 解放処理
+func _handle_release(mouse_position: Vector2) -> void:
+	if _pressing and not _dragging and _has_long_press_elapsed():
+		_start_drag(mouse_position)
+	_pressing = false
+	_press_started_msec = 0
+	_press_position = Vector2.ZERO
+	if _dragging:
+		_dragging = false
+		seed_drag_released.emit(self, seed, mouse_position)
 		return
 	if not _can_use_sub_skill():
 		return
+	set_rotation_quarter_turns(_rotation_quarter_turns + 1)
+	seed_rotation_requested.emit(self, seed)
+
+
+# ドラッグ開始
+func _start_drag(mouse_position: Vector2) -> void:
+	if not _pressing or not _can_use_sub_skill():
+		return
 	_dragging = true
 	seed_drag_started.emit(self, seed, mouse_position)
+
+
+# 長押し経過判定
+func _has_long_press_elapsed() -> bool:
+	return Time.get_ticks_msec() - _press_started_msec >= LONG_PRESS_DURATION_MSEC
 
 
 # usesubスキル判定
