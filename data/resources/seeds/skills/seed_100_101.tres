@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://sqlt6j4xlv0b"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_l0k03"]
-[ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="2_gdfog"]
+[ext_resource type="Texture2D" uid="uid://b0sewup04462r" path="res://art/texture/seed/tex_seed_kinsenka.png" id="2_gdfog"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_8g8ja"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_kvh1i"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="4_block_texture"]

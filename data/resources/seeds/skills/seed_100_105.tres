@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_8l2xy"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_svnoj"]
 [ext_resource type="Script" uid="uid://bpdmul6xy2d0a" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_damage_rate.gd" id="3_tmpd1"]
-[ext_resource type="Texture2D" uid="uid://k5up0nc5juc4" path="res://art/dreamseed/tex_seed_1000_No_100.png" id="4_mgqf0"]
+[ext_resource type="Texture2D" uid="uid://d0mer18aof4e4" path="res://art/texture/seed/tex_seed_housenka.png" id="4_mgqf0"]
 [ext_resource type="Script" uid="uid://blm8lnep51asi" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_adjacent.gd" id="skill_adjacent_damage"]
 [ext_resource type="Script" uid="uid://bfacid5m8p100" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_flat_acid_rate.gd" id="skill_player_damage_flat"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]

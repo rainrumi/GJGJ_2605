@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_jeyfd"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_0js7g"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_cwst0"]
-[ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="4_tph2b"]
+[ext_resource type="Texture2D" uid="uid://7uodopboephc" path="res://art/texture/seed/tex_seed_tokon.png" id="4_tph2b"]
 [ext_resource type="Script" uid="uid://dcsgj8tsh41u1" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_return_adjacent.gd" id="skill_return_adjacent"]
 [ext_resource type="Script" uid="uid://1rw2oodn48k" path="res://scene/main/game/seed/skill/on_remove_from_stomach/seed_effect_on_remove_from_stomach_change_damage.gd" id="skill_return_damage"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]

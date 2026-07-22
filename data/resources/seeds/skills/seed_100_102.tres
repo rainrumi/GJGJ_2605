@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://art/dreamseed/block/tex_seed_block_1000.png" id="2_lildo"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_8ad0q"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_l5omq"]
-[ext_resource type="Texture2D" uid="uid://bohjr6l6tyw7q" path="res://art/dreamseed/tex_seed_1000_No_200.png" id="4_q6u56"]
+[ext_resource type="Texture2D" uid="uid://er0so1gor2te" path="res://art/texture/seed/tex_seed_camomile.png" id="4_q6u56"]
 [ext_resource type="Script" uid="uid://dnapp6l4hcsja" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_change_hp.gd" id="skill_clear_recovery"]
 [ext_resource type="Script" uid="uid://dpbgcseqafd0r" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_recover_hp.gd" id="skill_seed_hp"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]

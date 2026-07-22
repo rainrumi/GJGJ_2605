@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_fv4ra"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_q8lej"]
 [ext_resource type="Script" uid="uid://dnnbgc5igge1m" path="res://scene/main/game/seed/skill/on_fire_acid_enemy/seed_effect_on_fire_acid_enemy_change_acid_damage_buff_rate.gd" id="4_5d06b"]
-[ext_resource type="Texture2D" uid="uid://cej5kj5bylynw" path="res://art/dreamseed/tex_seed_1000_No_300.png" id="4_phtvx"]
+[ext_resource type="Texture2D" uid="uid://com78clsyxuym" path="res://art/texture/seed/tex_seed_huji.png" id="4_phtvx"]
 [ext_resource type="Script" uid="uid://crk0gr2g7eg4l" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_hp_rate.gd" id="7_83chu"]
 [ext_resource type="Script" uid="uid://c0ggg1oy1aq1c" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_acid_damage_rate.gd" id="skill_acid_rate"]
 [ext_resource type="Script" uid="uid://ddsprcahop4fq" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_acid_damage_rate.gd" id="skill_adjacent_acid_taken"]
