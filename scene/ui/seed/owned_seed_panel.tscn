@@ -49,15 +49,14 @@ offset_bottom = 116.0
 
 [node name="StoredArea" type="Panel" parent="." unique_id=1668545698]
 layout_mode = 0
-offset_top = 140.0
+offset_top = 131.0
 offset_right = 192.0
-offset_bottom = 360.0
+offset_bottom = 276.0
 theme_override_styles/panel = SubResource("StyleBox_stored")
 
 [node name="StoredLabel" type="Label" parent="StoredArea" unique_id=770425116]
 layout_mode = 0
 offset_left = 21.0
-offset_top = 0.0
 offset_right = 171.0
 offset_bottom = 16.0
 mouse_filter = 0
@@ -69,9 +68,9 @@ text = "所持している種"
 [node name="StoredList" parent="StoredArea" unique_id=662724723 instance=ExtResource("2_seed_list")]
 layout_mode = 0
 offset_left = 21.0
-offset_top = 20.0
+offset_top = 22.5
 offset_right = 171.0
-offset_bottom = 130.0
+offset_bottom = 132.5
 
 [node name="PreviousPageButton" parent="StoredArea" unique_id=1022325606 instance=ExtResource("3_button")]
 visible = false
