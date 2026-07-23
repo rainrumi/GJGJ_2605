@@ -71,3 +71,9 @@
 - [x] 親矩形外にあった閉じるボタンを `OwnedSeedPanel` 直下へ移し、同じ表示座標を保ったままGUIヒットテストを受けられる構造へ直す。
 - [x] `dream_seed_inventory_test.tscn` で12枠ページングと実座標クリックによる開閉を確認する。
 - [x] `game.tscn` のsmoke実行と開閉状態のキャプチャで、枠・閉じるボタンの重なりと入力を確認する。
+
+## 追加調整: HP・種パネル開閉ボタンの下方移動
+
+- [x] `game.tscn` の `HpView` と `OwnedSeedOpenButton` のY座標を10px下げ、相互の3px間隔を維持する。
+- [x] `owned_seed_panel.tscn` の `CloseButton` を10px下げ、開くボタンとの同一座標・同一サイズを維持する。
+- [x] `dream_seed_inventory_test.tscn` の実座標クリックと `game.tscn` のGUIキャプチャで配置・開閉を確認する。

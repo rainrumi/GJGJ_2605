@@ -57,7 +57,7 @@ func _check_owned_seed_panel() -> void:
 		"パネルの白い外枠を表示しない"
 	)
 	var close_button := panel.get_node("CloseButton") as TextureButton
-	_expect(close_button.position.is_equal_approx(Vector2(29.0, 269.0)), "閉じるボタンを開くボタンと同じ座標に置く")
+	_expect(close_button.position.is_equal_approx(Vector2(29.0, 279.0)), "閉じるボタンを10px下へ移動する")
 	_expect(close_button.size.is_equal_approx(Vector2(126.0, 24.0)), "閉じるボタンを開くボタンと同じサイズにする")
 	_expect(
 		close_button.texture_normal != null
@@ -228,6 +228,8 @@ func _check_game_inventory_integration() -> void:
 	var open_button := game.get_node("UI/OwnedSeedOpenButton") as TextureButton
 	var closed_list := game.get_node("UI/SeedButtonList") as SeedButtonList
 	var closed_button := closed_list.get_child(0) as SeedButton
+	_expect(is_equal_approx(hp_view.position.y, 263.0), "HPバーを10px下へ移動する")
+	_expect(is_equal_approx(open_button.position.y, 279.0), "所有種パネルを開くボタンを10px下へ移動する")
 	_expect(
 		is_equal_approx(
 			open_button.position.x + open_button.size.x * 0.5,

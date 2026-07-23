@@ -100,9 +100,9 @@ self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 z_index = 1
 layout_mode = 0
 offset_left = 29.0
-offset_top = 269.0
+offset_top = 279.0
 offset_right = 155.0
-offset_bottom = 293.0
+offset_bottom = 303.0
 focus_mode = 0
 texture_normal = ExtResource("6_close_texture")
 
