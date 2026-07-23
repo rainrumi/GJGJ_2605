@@ -30,7 +30,9 @@ func _run() -> void:
 	var acid_damage_delta := status_preview.get_node("AcidDamageRow/Delta") as Label
 	var acid_interval_view := status_preview.get_node("AcidIntervalRow/AcidIntervalView") as AcidIntervalView
 	var acid_interval_delta := status_preview.get_node("AcidIntervalRow/Delta") as Label
-	var hp_label := status_preview.get_node("HpRow/Hp") as Label
+	var hp_view := status_preview.get_node("HpRow/HpView") as TextureRect
+	var hp_icon := status_preview.get_node("HpRow/HpView/Icon") as TextureRect
+	var hp_value_label := status_preview.get_node("HpRow/HpView/Value") as Label
 	var hp_delta := status_preview.get_node("HpRow/Delta") as Label
 	_expect(
 		acid_damage_view.scene_file_path == "res://scene/ui/battle_ui/view/acid_damage_view.tscn",
@@ -42,35 +44,41 @@ func _run() -> void:
 	)
 	_expect(acid_damage_view.acid_damage_value_label.text == "50", "通常時の消化ダメージを表示する")
 	_expect(acid_interval_view.acid_interval_value_label.text == "30min", "通常時の消化間隔を表示する")
-	_expect(hp_label.text == "HP：70", "通常時のクリア回復後HPを表示する")
+	_expect(
+		hp_icon.texture.resource_path == "res://art/ui/icon/ui_icon_digestiveHP.png",
+		"HP文字の代わりにHPアイコンを表示する"
+	)
+	_expect(hp_value_label.text == "70", "HPアイコンの横にクリア回復後HPを表示する")
 	_expect(acid_damage_delta.text.is_empty(), "通常時は消化ダメージ差分を表示しない")
 	_expect(acid_interval_delta.text.is_empty(), "通常時は消化間隔差分を表示しない")
 	_expect(hp_delta.text.is_empty(), "通常時はHP差分を表示しない")
-	var hp_view := stage_clear.get_node("CharacterArea/HpView") as HpView
+	var character_hp_view := stage_clear.get_node("CharacterArea/HpView") as HpView
+	character_hp_view.mouse_entered.emit()
+	_expect(character_hp_view.hp_tooltip.visible, "HPバーのホバーでHPの説明を表示する")
+	character_hp_view.mouse_exited.emit()
+	_expect(hp_view.mouse_filter == Control.MOUSE_FILTER_STOP, "HP表示全体がマウスhoverを受け取る")
+	_expect(hp_icon.mouse_filter == Control.MOUSE_FILTER_IGNORE, "HPアイコンがHP表示のhoverを妨げない")
+	_expect(hp_value_label.mouse_filter == Control.MOUSE_FILTER_IGNORE, "HP数値がHP表示のhoverを妨げない")
 	hp_view.mouse_entered.emit()
-	_expect(hp_view.hp_tooltip.visible, "HPバーのホバーでHPの説明を表示する")
-	hp_view.mouse_exited.emit()
-	_expect(hp_label.mouse_filter == Control.MOUSE_FILTER_STOP, "HPラベルがマウスhoverを受け取る")
-	hp_label.mouse_entered.emit()
-	_expect(hp_view.hp_tooltip.visible, "HPラベルのホバーでHPバーの説明を表示する")
+	_expect(character_hp_view.hp_tooltip.visible, "HPアイコン表示のホバーでHPバーの説明を表示する")
 	_expect(
-		hp_view.hp_tooltip.tooltip_label.text.contains("HP: 20/100"),
+		character_hp_view.hp_tooltip.tooltip_label.text.contains("HP: 20/100"),
 		"HPバーと同じHP情報を表示する"
 	)
 	var expected_hp_tooltip_position := TooltipPositioner.get_tooltip_position(
-		hp_label.global_position,
-		hp_view.hp_tooltip.tooltip_panel.size,
+		hp_view.global_position,
+		character_hp_view.hp_tooltip.tooltip_panel.size,
 		get_viewport().get_visible_rect(),
 		LeftTooltip.TOOLTIP_OFFSET
 	)
 	_expect(
-		hp_view.hp_tooltip.tooltip_panel.global_position.is_equal_approx(
+		character_hp_view.hp_tooltip.tooltip_panel.global_position.is_equal_approx(
 			expected_hp_tooltip_position
 		),
-		"HPラベルを基準にほかの状態ツールと同じ位置関係で表示する"
+		"HPアイコン表示を基準にほかの状態ツールと同じ位置関係で表示する"
 	)
-	hp_label.mouse_exited.emit()
-	_expect(not hp_view.hp_tooltip.visible, "HPラベルのホバー終了でHPバーの説明を隠す")
+	hp_view.mouse_exited.emit()
+	_expect(not character_hp_view.hp_tooltip.visible, "HPアイコン表示のホバー終了でHPバーの説明を隠す")
 	acid_damage_view.mouse_entered.emit()
 	_expect(acid_damage_view.acid_damage_view_tooltip.visible, "消化ダメージの説明をホバー表示する")
 	_expect(
@@ -94,7 +102,7 @@ func _run() -> void:
 		"消化ダメージ増加を緑色で表示する"
 	)
 	stage_clear.ui.seed_choice_hovered.emit(1)
-	_expect(hp_label.text == "HP：70", "ホバー中も既存HPを維持する")
+	_expect(hp_value_label.text == "70", "ホバー中も既存HPを維持する")
 	_expect(hp_delta.text == "(+10)", "HP増加を差分表示する")
 	_expect(
 		hp_delta.get_theme_color("font_color") == StageClearUi.BENEFICIAL_DELTA_COLOR,
@@ -110,7 +118,7 @@ func _run() -> void:
 	stage_clear.ui.seed_choice_unhovered.emit()
 	_expect(acid_damage_view.acid_damage_value_label.text == "50", "ホバー終了時に消化ダメージを戻す")
 	_expect(acid_interval_view.acid_interval_value_label.text == "30min", "ホバー終了時に消化間隔を戻す")
-	_expect(hp_label.text == "HP：70", "ホバー終了時にHPを戻す")
+	_expect(hp_value_label.text == "70", "ホバー終了時にHPを戻す")
 	_expect(acid_damage_delta.text.is_empty(), "ホバー終了時に消化ダメージ差分を消す")
 	_expect(acid_interval_delta.text.is_empty(), "ホバー終了時に消化間隔差分を消す")
 	_expect(hp_delta.text.is_empty(), "ホバー終了時にHP差分を消す")
