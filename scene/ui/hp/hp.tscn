@@ -14,7 +14,7 @@
 
 [node name="HpView" type="NinePatchRect" unique_id=1335638981]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-offset_right = 126.0
+offset_right = 126.000084
 offset_bottom = 13.0
 texture = ExtResource("1_ufdaa")
 patch_margin_left = 5
@@ -28,7 +28,7 @@ self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 2.0
 offset_top = 2.0
-offset_right = 124.0
+offset_right = 123.999954
 offset_bottom = 11.0
 texture = ExtResource("3_12af1")
 patch_margin_left = 3
@@ -70,7 +70,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("8_hp_text_script")
 
-[node name="DigestiveHpIcon" type="TextureRect" parent="."]
+[node name="DigestiveHpIcon" type="TextureRect" parent="." unique_id=579396704]
+visible = false
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = -14.0
 offset_top = -10.5
@@ -79,13 +81,11 @@ offset_bottom = 23.5
 mouse_filter = 2
 texture = ExtResource("11_digestive_hp_icon")
 
-[node name="TooltipHitArea" type="Control" parent="."]
-layout_mode = 0
-offset_left = -14.0
+[node name="TooltipHitArea" type="Control" parent="." unique_id=917369924]
+anchors_preset = 0
 offset_top = -10.5
 offset_right = 126.0
 offset_bottom = 23.5
-mouse_filter = 0
 
 [node name="HpView_tooltip" parent="." unique_id=1953801730 instance=ExtResource("9_left_tooltip")]
 script = ExtResource("10_hp_tooltip")
