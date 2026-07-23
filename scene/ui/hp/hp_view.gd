@@ -12,6 +12,7 @@ signal tooltip_hide_requested(view: HpView)
 @onready var hp_gauge: HpGaugeView = $HpGauge
 @onready var hp_heal_plan: HpHealPlanView = $HpHealPlan
 @onready var hp_text: HpTextView = $HpText
+@onready var tooltip_hit_area: Control = $TooltipHitArea
 @onready var hp_tooltip: HpTooltip = $HpView_tooltip
 
 var _current_hp := 0
@@ -30,8 +31,8 @@ func _ready() -> void:
 	hp_gauge.capture_full_width()
 	_create_hp_damage_preview()
 	_update_hp_heal_plan()
-	mouse_entered.connect(_on_mouse_entered)
-	mouse_exited.connect(_on_mouse_exited)
+	tooltip_hit_area.mouse_entered.connect(_on_mouse_entered)
+	tooltip_hit_area.mouse_exited.connect(_on_mouse_exited)
 
 
 # HP設定
@@ -164,7 +165,8 @@ func _show_heal_value(amount: int) -> void:
 
 # マウス入力準備
 func _prepare_mouse_filter() -> void:
-	mouse_filter = Control.MOUSE_FILTER_STOP
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tooltip_hit_area.mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 # 描画順準備
