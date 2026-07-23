@@ -33,7 +33,7 @@ signal seed_unequip_requested(seed: SeedInfo)
 @onready var hp_view: HpView = $HpView
 @onready var seed_button_list: SeedButtonList = $SeedButtonList
 @onready var owned_seed_panel: OwnedSeedPanel = $OwnedSeedPanel
-@onready var owned_seed_open_button: Button = $OwnedSeedOpenButton
+@onready var owned_seed_open_button: TextureButton = $OwnedSeedOpenButton
 @onready var time_view: TimeView = $TimeView
 @onready var warning_message_label: Label = $WarningMessageLabel
 @onready var acid_button: AcidButton = $AcidButton

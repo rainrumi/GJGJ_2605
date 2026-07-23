@@ -10,7 +10,7 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 
 const EQUIPPED_SLOT_COUNT := 6
-const STORED_PAGE_SIZE := 16
+const STORED_PAGE_SIZE := 12
 const SLOT_ICON_COLOR := Color(0.015, 0.01, 0.02, 1.0)
 const SLOT_SIZE := Vector2(30.0, 30.0)
 const SLOT_SEPARATION := 10
@@ -21,7 +21,7 @@ const STORED_TOOLTIP_TEXT := "現在所持している夢の種です。何も�
 @onready var stored_list: SeedButtonList = $StoredArea/StoredList
 @onready var equipped_label: Label = $UpperArea/EquippedLabel
 @onready var stored_label: Label = $StoredArea/StoredLabel
-@onready var close_button: Button = $UpperArea/CloseButton
+@onready var close_button: TextureButton = $CloseButton
 @onready var previous_page_button: Button = $StoredArea/PreviousPageButton
 @onready var next_page_button: Button = $StoredArea/NextPageButton
 @onready var heading_tooltip: SeedTooltip = $HeadingTooltip

@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="3_button"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="4_font"]
 [ext_resource type="PackedScene" uid="uid://bsxyd8fke3wr2" path="res://scene/ui/seed/tooltip/seed_tooltip.tscn" id="5_seed_tooltip"]
+[ext_resource type="Texture2D" uid="uid://k4xtokaxlc1d" path="res://art/ui/button/ui_button_seed_directory_close.png" id="6_close_texture"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
 bg_color = Color(0.035, 0.02, 0.055, 0.7)
@@ -30,31 +31,21 @@ mouse_filter = 2
 [node name="EquippedLabel" type="Label" parent="UpperArea" unique_id=568629697]
 layout_mode = 0
 offset_left = 41.0
-offset_top = 46.0
+offset_top = 26.0
 offset_right = 151.0
-offset_bottom = 62.0
+offset_bottom = 42.0
+mouse_filter = 0
 theme_override_colors/font_color = Color(0.941176, 0.878431, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 9
 text = "装備"
-mouse_filter = 0
 
 [node name="EquippedList" parent="UpperArea" unique_id=301345124 instance=ExtResource("2_seed_list")]
 layout_mode = 0
 offset_left = 41.0
-offset_top = 66.0
+offset_top = 46.0
 offset_right = 151.0
-offset_bottom = 136.0
-
-[node name="CloseButton" parent="UpperArea" unique_id=1035241186 instance=ExtResource("3_button")]
-layout_mode = 0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 32.0
-offset_bottom = 32.0
-focus_mode = 0
-theme_override_font_sizes/font_size = 20
-text = "×"
+offset_bottom = 116.0
 
 [node name="StoredArea" type="Panel" parent="." unique_id=1668545698]
 layout_mode = 0
@@ -66,21 +57,21 @@ theme_override_styles/panel = SubResource("StyleBox_stored")
 [node name="StoredLabel" type="Label" parent="StoredArea" unique_id=770425116]
 layout_mode = 0
 offset_left = 21.0
-offset_top = 20.0
+offset_top = 0.0
 offset_right = 171.0
-offset_bottom = 36.0
+offset_bottom = 16.0
+mouse_filter = 0
 theme_override_colors/font_color = Color(0.941176, 0.878431, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 9
 text = "所持している種"
-mouse_filter = 0
 
 [node name="StoredList" parent="StoredArea" unique_id=662724723 instance=ExtResource("2_seed_list")]
 layout_mode = 0
 offset_left = 21.0
-offset_top = 40.0
+offset_top = 20.0
 offset_right = 171.0
-offset_bottom = 190.0
+offset_bottom = 130.0
 
 [node name="PreviousPageButton" parent="StoredArea" unique_id=1022325606 instance=ExtResource("3_button")]
 visible = false
@@ -104,4 +95,15 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 12
 text = "→"
 
-[node name="HeadingTooltip" parent="." instance=ExtResource("5_seed_tooltip")]
+[node name="CloseButton" type="TextureButton" parent="." unique_id=1035241186]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+z_index = 1
+layout_mode = 0
+offset_left = 29.0
+offset_top = 269.0
+offset_right = 155.0
+offset_bottom = 293.0
+focus_mode = 0
+texture_normal = ExtResource("6_close_texture")
+
+[node name="HeadingTooltip" parent="." unique_id=119193676 instance=ExtResource("5_seed_tooltip")]
