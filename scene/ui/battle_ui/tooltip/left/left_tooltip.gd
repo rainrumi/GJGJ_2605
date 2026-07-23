@@ -9,6 +9,7 @@ const TOOLTIP_OFFSET := Vector2(18.0, -8.0)
 
 @onready var tooltip_panel: Panel = $Panel
 @onready var tooltip_label: Label = $Panel/TooltipLabel
+@onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
 var _entries: Array = []
 var _note_text := ""
@@ -20,15 +21,23 @@ func _ready() -> void:
 	_note_text = note_text
 	_note_visible = note_visible
 	_apply_text()
+	if not _mouse_drag_state.dragging_started.is_connected(hide_tooltip):
+		_mouse_drag_state.dragging_started.connect(hide_tooltip)
 
 
 # ツール表示
 func show_tooltip() -> void:
+	if _mouse_drag_state.is_dragging():
+		hide_tooltip()
+		return
 	visible = true
 
 
 # ツールat表示
 func show_tooltip_at(anchor_global_position: Vector2) -> void:
+	if _mouse_drag_state.is_dragging():
+		hide_tooltip()
+		return
 	_apply_text()
 	tooltip_panel.global_position = TooltipPositioner.get_tooltip_position(
 		anchor_global_position,

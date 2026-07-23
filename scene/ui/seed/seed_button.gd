@@ -24,6 +24,7 @@ const DEFAULT_SLOT_SIZE := Vector2(16.0, 16.0)
 
 @onready var frame: Panel = $Frame
 @onready var icon_rect: TextureRect = $Icon
+@onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
 var source_data: Resource
 var icon_source_data: Resource
@@ -59,6 +60,12 @@ func _ready() -> void:
 	_create_tooltip_panel()
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
+
+
+# 終了処理
+func _exit_tree() -> void:
+	if _mouse_drag_state != null:
+		_mouse_drag_state.end_drag(self)
 
 
 # 種元データ設定
@@ -278,6 +285,7 @@ func _handle_release(mouse_position: Vector2) -> void:
 	_press_started_msec = 0
 	_press_position = Vector2.ZERO
 	if _dragging:
+		_mouse_drag_state.end_drag(self)
 		_dragging = false
 		seed_drag_released.emit(self, seed, mouse_position)
 		return
@@ -295,6 +303,7 @@ func _start_drag(mouse_position: Vector2) -> void:
 	if not _pressing or not _can_use_sub_skill():
 		return
 	_dragging = true
+	_mouse_drag_state.begin_drag(self)
 	seed_drag_started.emit(self, seed, mouse_position)
 
 

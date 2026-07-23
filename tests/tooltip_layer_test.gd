@@ -28,6 +28,14 @@ func _check_left_tooltip() -> void:
 	tooltip.set_title("Tooltip")
 	tooltip.show_tooltip_at(Vector2(32.0, 32.0))
 	_expect(tooltip.visible, "LeftTooltip can be shown")
+	var mouse_drag_state := root.get_node("MouseDragState") as MouseDragTracker
+	mouse_drag_state.begin_drag(self)
+	_expect(not tooltip.visible, "LeftTooltip closes when dragging starts")
+	tooltip.show_tooltip_at(Vector2(32.0, 32.0))
+	_expect(not tooltip.visible, "LeftTooltip stays hidden while dragging")
+	mouse_drag_state.end_drag(self)
+	tooltip.show_tooltip_at(Vector2(32.0, 32.0))
+	_expect(tooltip.visible, "LeftTooltip can be shown after dragging ends")
 	_dispose(tooltip)
 
 
@@ -43,6 +51,14 @@ func _check_seed_tooltip() -> void:
 	tooltip.set_text("Tooltip")
 	tooltip.show_tooltip_at(Vector2(32.0, 32.0))
 	_expect(tooltip.visible, "SeedTooltip can be shown")
+	var mouse_drag_state := root.get_node("MouseDragState") as MouseDragTracker
+	mouse_drag_state.begin_drag(self)
+	_expect(not tooltip.visible, "SeedTooltip closes when dragging starts")
+	tooltip.show_tooltip_at(Vector2(32.0, 32.0))
+	_expect(not tooltip.visible, "SeedTooltip stays hidden while dragging")
+	mouse_drag_state.end_drag(self)
+	tooltip.show_tooltip_at(Vector2(32.0, 32.0))
+	_expect(tooltip.visible, "SeedTooltip can be shown after dragging ends")
 	_dispose(tooltip)
 
 

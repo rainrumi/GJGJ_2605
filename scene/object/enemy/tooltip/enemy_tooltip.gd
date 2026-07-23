@@ -10,7 +10,7 @@ func show_enemy(enemy: Enemy, debug_number_text: String, debug_numbers_visible: 
 	set_title("" if enemy.is_seed_stomach_block() else enemy.get_display_name())
 	set_note("", false)
 	set_entries(_get_enemy_entries(enemy, debug_numbers_visible))
-	visible = true
+	show_tooltip()
 
 
 # 敵at表示

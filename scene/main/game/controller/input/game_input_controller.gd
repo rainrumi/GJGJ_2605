@@ -9,6 +9,8 @@ signal enemy_rotation_requested(enemy: Enemy)
 
 const LONG_PRESS_DURATION_MSEC := 500
 
+@onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
+
 var _active := false
 var _enemies: Array[Enemy] = []
 var _pressed_enemy: Enemy
@@ -25,6 +27,11 @@ func setup(enemies: Array[Enemy]) -> void:
 	_enemies = enemies
 
 
+# 終了処理
+func _exit_tree() -> void:
+	clear_drag()
+
+
 # active設定
 func set_active(value: bool) -> void:
 	_active = value
@@ -35,6 +42,8 @@ func set_active(value: bool) -> void:
 
 # ドラッグ消去
 func clear_drag() -> void:
+	if _dragging_enemy != null:
+		_mouse_drag_state.end_drag(self)
 	_pressed_enemy = null
 	_press_started_msec = 0
 	_press_position = Vector2.ZERO
@@ -118,6 +127,7 @@ func _start_drag(mouse_position: Vector2) -> void:
 		return
 	_dragging_enemy = _pressed_enemy
 	_pressed_enemy = null
+	_mouse_drag_state.begin_drag(self)
 	enemy_drag_started.emit(_dragging_enemy, mouse_position, _drag_offset, _drag_grab_cell)
 
 

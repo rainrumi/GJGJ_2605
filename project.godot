@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameSettings="*res://systems/settings/game_settings.gd"
 DebugState="*res://systems/debug/debug_state.gd"
+MouseDragState="*res://systems/input/mouse_drag_tracker.gd"
 
 [display]
 
