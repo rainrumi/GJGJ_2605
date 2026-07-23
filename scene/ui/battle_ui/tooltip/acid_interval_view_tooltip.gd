@@ -15,8 +15,8 @@ func set_interval_info(
 	base_minutes: float = 30.0,
 	seed_buff: int = 0,
 	seed_rate: float = 0.0,
-	nightmare_buff: int = 0,
-	nightmare_rate: float = 0.0
+	enemy_buff: int = 0,
+	enemy_rate: float = 0.0
 ) -> void:
 	set_entries([
 		{
@@ -34,8 +34,8 @@ func set_interval_info(
 		},
 		{
 			"explanation": "悪夢バフ",
-			"value": "%s（%s）" % [_format_buff_minutes(nightmare_buff), _format_buff_rate(nightmare_rate)],
-			"enabled": not is_zero_approx(nightmare_rate),
+			"value": "%s（%s）" % [_format_buff_minutes(enemy_buff), _format_buff_rate(enemy_rate)],
+			"enabled": not is_zero_approx(enemy_rate),
 		},
 	])
 

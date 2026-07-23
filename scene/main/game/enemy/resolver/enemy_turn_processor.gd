@@ -48,21 +48,21 @@ func get_step_minutes_breakdown(
 	consume_pending_bonus := false,
 	minutes := 0
 ) -> Dictionary:
-	var nightmare_minutes := ceili(float(_digestion_interval.resolve(_step_minutes * 60)) / 60.0) # 悪夢補正分
+	var enemy_minutes := ceili(float(_digestion_interval.resolve(_step_minutes * 60)) / 60.0) # 悪夢補正分
 	var seed_rate := -_seed_effects.get_time_reduction_rate(
 		consume_pending_bonus,
 		minutes,
 		_battle_start_minutes,
 		_step_minutes
 	) # 種補正率
-	var total_minutes := maxi(1, roundi(float(nightmare_minutes) * (1.0 + seed_rate))) # 最終進行分
+	var total_minutes := maxi(1, roundi(float(enemy_minutes) * (1.0 + seed_rate))) # 最終進行分
 	return {
 		"total": total_minutes,
 		"base": _step_minutes,
-		"seed_buff": total_minutes - nightmare_minutes,
+		"seed_buff": total_minutes - enemy_minutes,
 		"seed_rate": seed_rate,
-		"nightmare_buff": nightmare_minutes - _step_minutes,
-		"nightmare_rate": float(nightmare_minutes - _step_minutes) / float(_step_minutes),
+		"enemy_buff": enemy_minutes - _step_minutes,
+		"enemy_rate": float(enemy_minutes - _step_minutes) / float(_step_minutes),
 	}
 
 

@@ -5,12 +5,12 @@ extends Node2D
 const AcidED_TWEEN_DURATION := EnemySpriteView.ACIDED_TWEEN_DURATION
 const DEFAULT_STATUS_COLOR := EnemyView.DEFAULT_STATUS_COLOR
 const MAIN_EFFECT_STATUS_COLOR := EnemyView.MAIN_EFFECT_STATUS_COLOR
-const NIGHTMARE_CELL_TEXTURE := preload("res://art/enemy/tex_enemy_1_1_100.png")
-const DEFAULT_NIGHTMARE_MAX_HP := 1400
-const DEFAULT_NIGHTMARE_SIZE := 6
-const DEFAULT_NIGHTMARE_DAMAGE := 2
-const DEFAULT_NIGHTMARE_STOMACH_SIZE := Vector2i(2, 3)
-const DEFAULT_NIGHTMARE_STOMACH_SHAPE: Array[Vector2i] = [
+const ENEMY_CELL_TEXTURE := preload("res://art/enemy/tex_enemy_1_1_100.png")
+const DEFAULT_ENEMY_MAX_HP := 1400
+const DEFAULT_ENEMY_SIZE := 6
+const DEFAULT_ENEMY_DAMAGE := 2
+const DEFAULT_ENEMY_STOMACH_SIZE := Vector2i(2, 3)
+const DEFAULT_ENEMY_STOMACH_SHAPE: Array[Vector2i] = [
 	Vector2i(0, 0),
 	Vector2i(1, 0),
 	Vector2i(0, 1),
@@ -92,15 +92,15 @@ func get_presenter() -> EnemyPresenter:
 
 
 # setup処理
-func setup(nightmare_info: EnemyInfo, target_size: Vector2, has_effect := false, start_position_override := Vector2.INF, skill_enabled_override := true) -> void:
-	data.definition = nightmare_info
+func setup(enemy_info: EnemyInfo, target_size: Vector2, has_effect := false, start_position_override := Vector2.INF, skill_enabled_override := true) -> void:
+	data.definition = enemy_info
 	seed_info = null
 	data.skills_enabled = skill_enabled_override
 	data.main_skill_active = has_effect and data.skills_enabled
 	data.setup(
-		nightmare_info,
-		_get_nightmare_max_hp(),
-		_get_nightmare_damage(),
+		enemy_info,
+		_get_enemy_max_hp(),
+		_get_enemy_damage(),
 		data.main_skill_active,
 		data.skills_enabled
 	)
@@ -166,12 +166,12 @@ func get_seed() -> SeedInfo:
 
 
 # 悪夢スキル判定
-func has_nightmare_skill() -> bool:
+func has_enemy_info() -> bool:
 	return data.definition != null
 
 
 # 悪夢スキル取得
-func get_nightmare_skill() -> EnemyInfo:
+func get_enemy_info() -> EnemyInfo:
 	return data.definition
 
 
@@ -186,7 +186,7 @@ func get_enemy_effects() -> Array[EnemyEffect]:
 
 
 # 悪夢判定
-func is_nightmare() -> bool:
+func is_enemy() -> bool:
 	return not is_seed_stomach_block()
 
 
@@ -197,27 +197,27 @@ func is_stomach_piece() -> bool:
 
 # should数for戦闘clear処理
 func should_count_for_battle_clear() -> bool:
-	return is_nightmare()
+	return is_enemy()
 
 
 # shouldapply悪夢スキル処理
-func should_apply_nightmare_skill() -> bool:
-	return is_nightmare() and data.skills_enabled
+func should_apply_enemy_skill() -> bool:
+	return is_enemy() and data.skills_enabled
 
 
 # shoulddealplayerダメ処理
 func should_deal_player_damage() -> bool:
-	return is_nightmare()
+	return is_enemy()
 
 
 # should数for消化order処理
 func should_count_for_acid_order() -> bool:
-	return is_nightmare()
+	return is_enemy()
 
 
 # 悪夢reactions処理
-func should_trigger_nightmare_reactions() -> bool:
-	return is_nightmare()
+func should_trigger_enemy_reactions() -> bool:
+	return is_enemy()
 
 
 # ダメージ取得
@@ -244,14 +244,14 @@ func is_activation_deferred() -> bool: return activation_deferred
 func get_size() -> int:
 	if _size_override > 0:
 		return _size_override
-	return _get_nightmare_cell_count()
+	return _get_enemy_cell_count()
 
 
 # 胃袋サイズ取得
 func get_stomach_size() -> Vector2i:
 	if _stomach_size_override != Vector2i.ZERO:
 		return _stomach_size_override
-	return _get_nightmare_stomach_size()
+	return _get_enemy_stomach_size()
 
 
 # 胃袋形状取得
@@ -259,7 +259,7 @@ func get_stomach_shape() -> Array[Vector2i]:
 	if not _stomach_shape_override.is_empty():
 		return _stomach_shape_override.duplicate()
 	# 形状
-	return _get_nightmare_stomach_shape()
+	return _get_enemy_stomach_shape()
 
 
 # 90度右回転後の胃袋サイズ取得
@@ -492,47 +492,47 @@ func _get_texture() -> Texture2D:
 	if _texture_override != null:
 		return _texture_override
 	return EnemySpriteView.create_shape_texture(
-		NIGHTMARE_CELL_TEXTURE,
+		ENEMY_CELL_TEXTURE,
 		get_stomach_size(),
 		get_stomach_shape()
 	)
 
 
-# nightmareblock取得
-func _get_nightmare_block() -> AcidBlockInfo:
+# enemyblock取得
+func _get_enemy_block() -> AcidBlockInfo:
 	if data.definition == null:
 		return null
 	return data.definition.acid_block
 
 
-# nightmareHP取得
-func _get_nightmare_max_hp() -> int:
-	var block := _get_nightmare_block()
-	return block.get_max_hp() if block != null else DEFAULT_NIGHTMARE_MAX_HP
+# enemyHP取得
+func _get_enemy_max_hp() -> int:
+	var block := _get_enemy_block()
+	return block.get_max_hp() if block != null else DEFAULT_ENEMY_MAX_HP
 
 
-# nightmare攻撃取得
-func _get_nightmare_damage() -> int:
-	var block := _get_nightmare_block()
-	return block.get_damage() if block != null else DEFAULT_NIGHTMARE_DAMAGE
+# enemy攻撃取得
+func _get_enemy_damage() -> int:
+	var block := _get_enemy_block()
+	return block.get_damage() if block != null else DEFAULT_ENEMY_DAMAGE
 
 
-# nightmareセル数
-func _get_nightmare_cell_count() -> int:
-	var block := _get_nightmare_block()
-	return block.get_cell_count() if block != null else DEFAULT_NIGHTMARE_SIZE
+# enemyセル数
+func _get_enemy_cell_count() -> int:
+	var block := _get_enemy_block()
+	return block.get_cell_count() if block != null else DEFAULT_ENEMY_SIZE
 
 
-# nightmareサイズ
-func _get_nightmare_stomach_size() -> Vector2i:
-	var block := _get_nightmare_block()
-	return block.get_stomach_size() if block != null else DEFAULT_NIGHTMARE_STOMACH_SIZE
+# enemyサイズ
+func _get_enemy_stomach_size() -> Vector2i:
+	var block := _get_enemy_block()
+	return block.get_stomach_size() if block != null else DEFAULT_ENEMY_STOMACH_SIZE
 
 
-# nightmare形状
-func _get_nightmare_stomach_shape() -> Array[Vector2i]:
-	var block := _get_nightmare_block()
-	return block.get_stomach_shape() if block != null else DEFAULT_NIGHTMARE_STOMACH_SHAPE.duplicate()
+# enemy形状
+func _get_enemy_stomach_shape() -> Array[Vector2i]:
+	var block := _get_enemy_block()
+	return block.get_stomach_shape() if block != null else DEFAULT_ENEMY_STOMACH_SHAPE.duplicate()
 # categoryname取得
 func get_category_name() -> String:
 	return EnemyTooltipFormatter.get_category_name(data.main_skill_active, data.definition)

@@ -33,3 +33,4 @@
 script = ExtResource("1_script")
 normal_skills = Array[ExtResource("2_definition")]([ExtResource("3_normal_001"), ExtResource("4_normal_002"), ExtResource("5_normal_003"), ExtResource("6_normal_004")])
 rare_skills = Array[ExtResource("2_definition")]([ExtResource("7_0848i"), ExtResource("8_r134s"), ExtResource("9_tincs"), ExtResource("10_rwgee"), ExtResource("2107_rare"), ExtResource("2108_rare"), ExtResource("2110_rare"), ExtResource("2113_rare"), ExtResource("2114_rare"), ExtResource("2115_rare"), ExtResource("2118_rare"), ExtResource("2119_rare"), ExtResource("2121_rare"), ExtResource("2123_rare"), ExtResource("2124_rare"), ExtResource("2126_rare"), ExtResource("2129_rare"), ExtResource("2132_rare"), ExtResource("2134_rare"), ExtResource("2136_rare"), ExtResource("2137_rare"), ExtResource("2138_rare")])
+epic_skills = Array[ExtResource("2_definition")]([])

@@ -11,7 +11,7 @@ static func get_adjacent_objects(source: Enemy, enemies: Array[Enemy]) -> Array[
 static func get_adjacent_enemies(source: Enemy, enemies: Array[Enemy]) -> Array[Enemy]:
 	var values: Array[Enemy] = [] # 隣接悪夢
 	for enemy in get_adjacent_objects(source, enemies):
-		if enemy.is_nightmare():
+		if enemy.is_enemy():
 			values.append(enemy)
 	return values
 
@@ -50,7 +50,7 @@ static func get_active_objects(enemies: Array[Enemy]) -> Array[Enemy]:
 static func get_active_enemies(enemies: Array[Enemy]) -> Array[Enemy]:
 	var values: Array[Enemy] = [] # 有効悪夢
 	for enemy in get_active_objects(enemies):
-		if enemy.is_nightmare():
+		if enemy.is_enemy():
 			values.append(enemy)
 	return values
 

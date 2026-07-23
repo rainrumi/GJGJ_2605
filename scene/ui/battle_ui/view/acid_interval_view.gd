@@ -22,11 +22,11 @@ func set_interval_info(
 	base_minutes: float = 30.0,
 	seed_buff: int = 0,
 	seed_rate: float = 0.0,
-	nightmare_buff: int = 0,
-	nightmare_rate: float = 0.0
+	enemy_buff: int = 0,
+	enemy_rate: float = 0.0
 ) -> void:
 	set_interval_value(amount_minutes)
-	acid_interval_view_tooltip.set_interval_info(amount_minutes, base_minutes, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
+	acid_interval_view_tooltip.set_interval_info(amount_minutes, base_minutes, seed_buff, seed_rate, enemy_buff, enemy_rate)
 
 
 # interval値設定

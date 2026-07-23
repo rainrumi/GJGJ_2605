@@ -3,7 +3,7 @@ extends RefCounted
 
 var source_enemy: Enemy
 var enemy_info: EnemyInfo
-var skill: EnemySkill
+var main_skill: EnemySkill
 var spawn_area: EnemyEffect.SpawnArea = EnemyEffect.SpawnArea.SAME_CELLS
 var cell := Vector2i.ZERO
 var hp_rate := 0.5

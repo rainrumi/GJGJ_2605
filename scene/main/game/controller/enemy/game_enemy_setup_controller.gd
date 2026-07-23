@@ -9,7 +9,7 @@ const ENEMY_CENTER_X := 500.0
 const ENEMY_RIGHT_X := 575.0
 const ENEMIES_PER_PAGE := 6
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
-const DEFAULT_NIGHTMARE_STOMACH_SIZE := Vector2i(2, 3)
+const DEFAULT_ENEMY_STOMACH_SIZE := Vector2i(2, 3)
 
 var _owner: Node
 var _input_controller: GameInputController
@@ -90,9 +90,9 @@ func _setup_preset_enemies(enemies: Array[Enemy]) -> void:
 		if source_skill == null:
 			continue
 		# スキル有効
-		var skill_enabled := _is_stage_nightmare_skill_enabled(source_skill)
+		var skill_enabled := _is_stage_enemy_skill_enabled(source_skill)
 		# 胃袋サイズ
-		var stomach_size := _get_nightmare_stomach_size(source_skill)
+		var stomach_size := _get_enemy_stomach_size(source_skill)
 		# ページ内位置
 		var page_start := i - i % ENEMIES_PER_PAGE
 		var page_enemy_count := mini(ENEMIES_PER_PAGE, _enemy_preset.enemies.size() - page_start)
@@ -168,7 +168,7 @@ func _ensure_enemy_capacity(enemies: Array[Enemy], required_count: int) -> void:
 
 
 # 生成nuisance悪夢処理
-func spawn_nuisance_nightmare(
+func spawn_nuisance_enemy(
 	enemies: Array[Enemy],
 	source_enemy: Enemy,
 	spawn_cell: Vector2i,
@@ -186,7 +186,7 @@ func spawn_nuisance_nightmare(
 	# 元データ最大HP
 	var source_max_hp := source_enemy.max_hp
 	nuisance_enemy.setup(
-		source_enemy.get_nightmare_skill(),
+		source_enemy.get_enemy_info(),
 		Vector2.ONE * _stomach.get_span_size(1),
 		false,
 		source_origin_position,
@@ -220,14 +220,18 @@ func _get_available_nuisance_enemy(enemies: Array[Enemy], source_enemy: Enemy) -
 
 
 # stageスキル有効
-func _is_stage_nightmare_skill_enabled(source_skill: EnemyInfo) -> bool:
-	return source_skill != null and source_skill.main_skill != null
+func _is_stage_enemy_skill_enabled(source_skill: EnemyInfo) -> bool:
+	return (
+		source_skill != null
+		and source_skill.enemy_skill_enabled
+		and source_skill.main_skill != null
+	)
 
 
 # 悪夢胃袋サイズ取得
-func _get_nightmare_stomach_size(skill: EnemyInfo) -> Vector2i:
+func _get_enemy_stomach_size(skill: EnemyInfo) -> Vector2i:
 	var block := skill.acid_block if skill != null else null
-	return block.get_stomach_size() if block != null else DEFAULT_NIGHTMARE_STOMACH_SIZE
+	return block.get_stomach_size() if block != null else DEFAULT_ENEMY_STOMACH_SIZE
 
 
 # 敵positions取得
@@ -277,11 +281,11 @@ func apply_spawn_requests(
 	for request in spawn_requests:
 		if request == null:
 			continue
-		if request.enemy_info != null or request.skill != null or request.max_hp >= 0:
+		if request.enemy_info != null or request.main_skill != null or request.max_hp >= 0:
 			if not _spawn_effect_enemy(enemies, request):
 				break
 			continue
-		if not spawn_nuisance_nightmare(
+		if not spawn_nuisance_enemy(
 			enemies,
 			request.source_enemy,
 			request.cell,
@@ -301,12 +305,12 @@ func _spawn_effect_enemy(enemies: Array[Enemy], request: BattleSpawnEnemyData) -
 	var spawned := _get_available_nuisance_enemy(enemies, request.source_enemy) # 生成個体
 	if spawned == null:
 		return false
-	var source_info := request.enemy_info if request.enemy_info != null else request.source_enemy.get_nightmare_skill() # 元定義
+	var source_info := request.enemy_info if request.enemy_info != null else request.source_enemy.get_enemy_info() # 元定義
 	if source_info == null:
 		return false
 	var runtime_info := source_info.duplicate(true) as EnemyInfo # 個体定義
-	if request.skill != null:
-		runtime_info.skill = request.skill
+	if request.main_skill != null:
+		runtime_info.main_skill = request.main_skill
 	var block := runtime_info.acid_block.duplicate(true) as AcidBlockInfo if runtime_info.acid_block != null else AcidBlockInfo.new() # 個体ブロック
 	if request.max_hp >= 0:
 		block.max_hp = maxi(1, request.max_hp)

@@ -14,4 +14,4 @@
 script = ExtResource("1_script")
 common_skills = Array[ExtResource("2_definition")]([ExtResource("1001_skill"), ExtResource("1002_skill"), ExtResource("1003_skill"), ExtResource("1004_skill")])
 rare_skills = Array[ExtResource("2_definition")]([ExtResource("2005_skill"), ExtResource("2113_skill")])
-super_rare_skills = Array[ExtResource("2_definition")]([])
+epic_skills = Array[ExtResource("2_definition")]([])

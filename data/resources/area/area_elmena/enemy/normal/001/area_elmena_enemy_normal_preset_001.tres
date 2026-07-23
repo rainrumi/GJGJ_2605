@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="NightmarePresetInfo" format=3 uid="uid://c3asb66olydod"]
+[gd_resource type="Resource" script_class="EnemyPresetInfo" format=3 uid="uid://c3asb66olydod"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_h5l8n"]
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/enemy/enemy_preset_info.gd" id="1_script"]

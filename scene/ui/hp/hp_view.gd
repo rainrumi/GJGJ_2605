@@ -186,7 +186,7 @@ func _connect_child_signals() -> void:
 # HPダメージ予告作成
 func _create_hp_damage_preview() -> void:
 	_hp_damage_preview_label = Label.new()
-	_hp_damage_preview_label.name = "RemoveNightmareDamagePreview"
+	_hp_damage_preview_label.name = "RemoveEnemyDamagePreview"
 	_hp_damage_preview_label.visible = false
 	_hp_damage_preview_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hp_text.apply_damage_label_style(_hp_damage_preview_label, 14, Color.BLACK)

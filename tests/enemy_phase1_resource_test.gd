@@ -63,7 +63,7 @@ func _validate_enemy_resource(path: String) -> void:
 	var expected_name := "E%s" % path.get_file().get_basename().get_slice("_", 5).to_int()
 	_expect(enemy.display_name == expected_name, "DisplayNameがファイル内敵IDと一致: %s" % path)
 	_expect(enemy.acid_block != null, "AcidBlockが設定済み: %s" % path)
-	_expect(enemy.nightmare_skill_enabled, "NightmareSkillEnabledがtrue: %s" % path)
+	_expect(enemy.enemy_skill_enabled, "EnemySkillEnabledがtrue: %s" % path)
 	if enemy.acid_block != null:
 		_expect(enemy.acid_block.get_max_hp() >= 1, "MaxHpが有効: %s" % path)
 		_expect(enemy.acid_block.get_damage() >= 0, "Damageが有効: %s" % path)

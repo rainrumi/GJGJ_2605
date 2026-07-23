@@ -13,8 +13,8 @@ signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
-signal nightmare_previous_page_requested
-signal nightmare_next_page_requested
+signal enemy_previous_page_requested
+signal enemy_next_page_requested
 signal time_over_abandon_requested
 signal time_over_retry_requested
 signal acid_playback_requested(should_play: bool)
@@ -38,10 +38,10 @@ signal seed_unequip_requested(seed: SeedInfo)
 @onready var warning_message_label: Label = $WarningMessageLabel
 @onready var acid_button: AcidButton = $AcidButton
 @onready var debug_panel: DebugPanel = $DebugPanel
-@onready var nightmare_previous_page_button: Button = $NightmarePreviousPageButton
-@onready var nightmare_next_page_button: Button = $NightmareNextPageButton
-@onready var nightmare_return_hint: PanelContainer = $NightmareReturnHint
-@onready var nightmare_return_damage_value_label: Label = $NightmareReturnHint/CenterContainer/TextContainer/DamageRow/ValueLabel
+@onready var enemy_previous_page_button: Button = $EnemyPreviousPageButton
+@onready var enemy_next_page_button: Button = $EnemyNextPageButton
+@onready var enemy_return_hint: PanelContainer = $EnemyReturnHint
+@onready var enemy_return_damage_value_label: Label = $EnemyReturnHint/CenterContainer/TextContainer/DamageRow/ValueLabel
 @onready var time_over_decision: ColorRect = $TimeOverDecision
 @onready var time_over_retry_button: Button = $TimeOverDecision/CenterContainer/PanelContainer/MarginContainer/Content/Buttons/RetryButton
 @onready var time_over_abandon_button: Button = $TimeOverDecision/CenterContainer/PanelContainer/MarginContainer/Content/Buttons/AbandonButton
@@ -115,7 +115,7 @@ func reset_for_battle(
 	set_acidion_count(0)
 	set_acid_button_visible(true)
 	hide_hp_damage_preview()
-	hide_nightmare_return_hint()
+	hide_enemy_return_hint()
 	hide_time_over_decision()
 	hide_time_elapsed()
 	hide_warning_message()
@@ -270,10 +270,10 @@ func set_acid_damage_info(
 	base_damage: int,
 	seed_buff: int,
 	seed_rate: float,
-	nightmare_buff: int,
-	nightmare_rate: float
+	enemy_buff: int,
+	enemy_rate: float
 ) -> void:
-	acid_damage_view.set_damage_info(total_damage, base_damage, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
+	acid_damage_view.set_damage_info(total_damage, base_damage, seed_buff, seed_rate, enemy_buff, enemy_rate)
 
 
 # 消化interval分数設定
@@ -282,10 +282,10 @@ func set_acid_interval_minutes(
 	base_minutes: float = 30.0,
 	seed_buff: int = 0,
 	seed_rate: float = 0.0,
-	nightmare_buff: int = 0,
-	nightmare_rate: float = 0.0
+	enemy_buff: int = 0,
+	enemy_rate: float = 0.0
 ) -> void:
-	acid_interval_view.set_interval_info(amount_minutes, base_minutes, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
+	acid_interval_view.set_interval_info(amount_minutes, base_minutes, seed_buff, seed_rate, enemy_buff, enemy_rate)
 
 # -----------------------------------------------------------
 
@@ -306,20 +306,20 @@ func set_acid_button_visible(is_visible: bool) -> void:
 
 
 # 悪夢ページ移動ボタン表示設定
-func set_nightmare_page_navigation(has_previous: bool, has_next: bool) -> void:
-	nightmare_previous_page_button.visible = has_previous
-	nightmare_next_page_button.visible = has_next
+func set_enemy_page_navigation(has_previous: bool, has_next: bool) -> void:
+	enemy_previous_page_button.visible = has_previous
+	enemy_next_page_button.visible = has_next
 
 
 # 悪夢吐き戻し案内表示
-func show_nightmare_return_hint(damage: int) -> void:
-	nightmare_return_damage_value_label.text = "%d" % absi(damage)
-	nightmare_return_hint.visible = true
+func show_enemy_return_hint(damage: int) -> void:
+	enemy_return_damage_value_label.text = "%d" % absi(damage)
+	enemy_return_hint.visible = true
 
 
 # 悪夢吐き戻し案内非表示
-func hide_nightmare_return_hint() -> void:
-	nightmare_return_hint.visible = false
+func hide_enemy_return_hint() -> void:
+	enemy_return_hint.visible = false
 
 
 # 時間切れ選択表示
@@ -372,8 +372,8 @@ func show_hp_damage_values(damage_values: Array[int]) -> void:
 func _connect_child_signals() -> void:
 	
 	acid_button.playback_requested.connect(_on_acid_playback_requested)
-	nightmare_previous_page_button.pressed.connect(_on_nightmare_previous_page_requested)
-	nightmare_next_page_button.pressed.connect(_on_nightmare_next_page_requested)
+	enemy_previous_page_button.pressed.connect(_on_enemy_previous_page_requested)
+	enemy_next_page_button.pressed.connect(_on_enemy_next_page_requested)
 	time_over_retry_button.pressed.connect(_on_time_over_retry_requested)
 	time_over_abandon_button.pressed.connect(_on_time_over_abandon_requested)
 	
@@ -465,13 +465,13 @@ func _on_tooltip_hide_requested(view: Object) -> void:
 # -----------------------------------------------------------
 
 # 前の悪夢ページ要求
-func _on_nightmare_previous_page_requested() -> void:
-	nightmare_previous_page_requested.emit()
+func _on_enemy_previous_page_requested() -> void:
+	enemy_previous_page_requested.emit()
 
 
 # 次の悪夢ページ要求
-func _on_nightmare_next_page_requested() -> void:
-	nightmare_next_page_requested.emit()
+func _on_enemy_next_page_requested() -> void:
+	enemy_next_page_requested.emit()
 
 
 # 再挑戦要求

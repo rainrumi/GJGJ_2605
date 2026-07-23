@@ -109,16 +109,16 @@ func set_status_preview(
 		int(acid_damage_info["base"]),
 		int(acid_damage_info["seed_buff"]),
 		float(acid_damage_info["seed_rate"]),
-		int(acid_damage_info["nightmare_buff"]),
-		float(acid_damage_info["nightmare_rate"])
+		int(acid_damage_info["enemy_buff"]),
+		float(acid_damage_info["enemy_rate"])
 	)
 	acid_interval_view.set_interval_info(
 		float(acid_interval_minutes),
 		float(acid_interval_info["base"]),
 		int(acid_interval_info["seed_buff"]),
 		float(acid_interval_info["seed_rate"]),
-		int(acid_interval_info["nightmare_buff"]),
-		float(acid_interval_info["nightmare_rate"])
+		int(acid_interval_info["enemy_buff"]),
+		float(acid_interval_info["enemy_rate"])
 	)
 	hp_value_label.text = "%d" % hp
 	_set_delta_label(acid_damage_delta_label, preview_acid_damage - acid_damage, true)

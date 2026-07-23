@@ -32,7 +32,7 @@ func get_damage_breakdown(
 	var rows := stomach.rows if stomach != null else 0 # 胃袋行数
 	return _seed_effects.get_acid_damage_breakdown(
 		base_damage,
-		_get_nightmare_damage_rate(enemies) + _seed_block_resolver.get_acid_damage_rate(enemies, minutes),
+		_get_enemy_damage_rate(enemies) + _seed_block_resolver.get_acid_damage_rate(enemies, minutes),
 		minutes,
 		consume_pending_bonus,
 		columns,
@@ -187,7 +187,7 @@ func _get_active_stomach_count(enemies: Array[Enemy]) -> int:
 
 
 # 悪夢消化率取得
-func _get_nightmare_damage_rate(enemies: Array[Enemy]) -> float:
+func _get_enemy_damage_rate(enemies: Array[Enemy]) -> float:
 	var multiplier := 1.0 # 全体倍率
 	for enemy in enemies:
 		if enemy != null and enemy.is_active_in_stomach():

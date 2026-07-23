@@ -4,6 +4,7 @@ extends Resource
 enum Rarity {
 	NORMAL,
 	RARE,
+	EPIC,
 }
 
 enum SubSkillMode {

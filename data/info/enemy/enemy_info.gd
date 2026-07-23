@@ -10,7 +10,7 @@ extends Resource
 # 説明
 @export_multiline var description := ""
 # スキル有無
-@export var nightmare_skill_enabled := true
+@export var enemy_skill_enabled := true
 # メインスキル
 @export var main_skill: EnemySkill
 

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="NightmareInfo" format=3 uid="uid://457tw8l8jeft"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://457tw8l8jeft"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_l14fx"]
 

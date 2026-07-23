@@ -20,8 +20,8 @@ func _run() -> void:
 
 	var block := AcidBlockInfo.new()
 	block.max_hp = 1000
-	var nightmare_info := EnemyInfo.new()
-	nightmare_info.acid_block = block
+	var enemy_info := EnemyInfo.new()
+	enemy_info.acid_block = block
 	var rotation_block := AcidBlockInfo.new()
 	rotation_block.stomach_shape = [
 		PackedInt32Array([1, 1]),
@@ -31,8 +31,8 @@ func _run() -> void:
 	var rotation_info := EnemyInfo.new()
 	rotation_info.acid_block = rotation_block
 	var preset := EnemyPresetInfo.new()
-	var nightmare_infos: Array[EnemyInfo] = [nightmare_info, nightmare_info, rotation_info]
-	preset.enemies = nightmare_infos
+	var enemy_infos: Array[EnemyInfo] = [enemy_info, enemy_info, rotation_info]
+	preset.enemies = enemy_infos
 	var seed := SeedInfo.new()
 	seed.acid_block = AcidBlockInfo.new()
 	seed.acid_block.max_hp = 1000
@@ -51,13 +51,13 @@ func _run() -> void:
 	var input_controller := game.get_node("GameInputController") as GameInputController
 	var seed_controller := game.get("seed_controller") as GameSeedController
 	var enemies: Array[Enemy] = game.get("enemies")
-	var nightmare := enemies[0]
-	var second_nightmare := enemies[1]
+	var enemy := enemies[0]
+	var second_enemy := enemies[1]
 	var rotation_target := enemies[2]
-	nightmare.set_Aciding(true)
-	stomach.place_enemy(nightmare, Vector2i.ZERO)
-	second_nightmare.set_Aciding(true)
-	stomach.place_enemy(second_nightmare, Vector2i(1, 0))
+	enemy.set_Aciding(true)
+	stomach.place_enemy(enemy, Vector2i.ZERO)
+	second_enemy.set_Aciding(true)
+	stomach.place_enemy(second_enemy, Vector2i(1, 0))
 
 	_expect(not game.has_node("UI/AcidPlaybackButton"), "独立した再生・停止ボタンを表示しない")
 	_expect(acid_button != null and acid_button.visible, "消化開始ボタンを表示する")
@@ -90,10 +90,10 @@ func _run() -> void:
 		rotation_target.get_stomach_size() != rotation_size_before,
 		"一時停止中は胃外の悪夢を回転できる"
 	)
-	_start_enemy_drag_with_motion(input_controller, nightmare.global_position)
-	_expect(game.get("dragging_enemy") == nightmare, "一時停止中は胃内のモノをドラッグできる")
-	input_controller.call("_handle_release", nightmare.origin_position)
-	_expect(not nightmare.is_active_in_stomach(), "一時停止中に胃内のモノを外へ出せる")
+	_start_enemy_drag_with_motion(input_controller, enemy.global_position)
+	_expect(game.get("dragging_enemy") == enemy, "一時停止中は胃内のモノをドラッグできる")
+	input_controller.call("_handle_release", enemy.origin_position)
+	_expect(not enemy.is_active_in_stomach(), "一時停止中に胃内のモノを外へ出せる")
 	_expect(game.get("auto_acid_paused_by_user"), "取り出し後も消化の一時停止を維持する")
 	_start_seed_drag_with_motion(seed_button, seed_button.global_position)
 	_expect(seed_controller.is_dragging(), "一時停止中は夢の種の設置操作を開始できる")
@@ -134,8 +134,8 @@ func _run() -> void:
 	release_event = null
 	auto_acid_timer = null
 	rotation_target = null
-	second_nightmare = null
-	nightmare = null
+	second_enemy = null
+	enemy = null
 	enemies.clear()
 	stomach = null
 	input_controller = null
@@ -147,10 +147,10 @@ func _run() -> void:
 	flowers.clear()
 	seed = null
 	preset = null
-	nightmare_infos.clear()
+	enemy_infos.clear()
 	rotation_info = null
 	rotation_block = null
-	nightmare_info = null
+	enemy_info = null
 	block = null
 	game = null
 	packed = null

@@ -45,7 +45,7 @@ func refresh_enemy_effects(enemies: Array[Enemy], stomach: StomachBoard) -> void
 # ターン処理実行
 func process_turn(input: EnemyTurnInput) -> BattleTurnResultData:
 	turn_processor.begin_turn(input.enemies, input.stomach, input.minutes)
-	var digested := acid_nightmares(
+	var digested := acid_enemys(
 		input.enemies,
 		input.stomach,
 		input.minutes,
@@ -98,7 +98,7 @@ func apply_turn_start_effects(enemies: Array[Enemy], stomach: StomachBoard, minu
 
 
 # 消化処理解決
-func acid_nightmares(
+func acid_enemys(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
 	minutes: int,

@@ -91,12 +91,12 @@ func get_acid_damage_heal_rate(_state: DreamSeedSkillState, _context: Dictionary
 
 
 # 悪夢消化回復
-func get_acided_nightmare_heal_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
+func get_acided_enemy_heal_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
 	return 0.0
 
 
 # 悪夢消化最大HP
-func get_acided_nightmare_max_hp_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
+func get_acided_enemy_max_hp_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
 	return 0.0
 
 

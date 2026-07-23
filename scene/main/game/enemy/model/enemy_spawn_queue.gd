@@ -12,7 +12,7 @@ func request(
 	source: Enemy,
 	effect: EnemyEffect,
 	enemy_info: EnemyInfo,
-	spawn_skill: EnemySkill,
+	spawn_main_skill: EnemySkill,
 	spawn_count: int,
 	max_spawn_count: int,
 	spawn_area: EnemyEffect.SpawnArea,
@@ -31,7 +31,7 @@ func request(
 		var data := BattleSpawnEnemyData.new() # 生成データ
 		data.source_enemy = source
 		data.enemy_info = enemy_info
-		data.skill = source.get_enemy_skill() if inherit_skill else spawn_skill
+		data.main_skill = source.get_enemy_skill() if inherit_skill else spawn_main_skill
 		data.spawn_area = spawn_area
 		data.max_hp = hp_value
 		data.current_hp = hp_value

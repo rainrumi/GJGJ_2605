@@ -18,12 +18,12 @@ func _run() -> void:
 	await process_frame
 	(game.get_node("ClickSe") as AudioStreamPlayer).stream = null
 
-	var nightmare_block := _create_asymmetric_block()
-	var nightmare_info := EnemyInfo.new()
-	nightmare_info.acid_block = nightmare_block
+	var enemy_block := _create_asymmetric_block()
+	var enemy_info := EnemyInfo.new()
+	enemy_info.acid_block = enemy_block
 	var preset := EnemyPresetInfo.new()
-	var nightmare_infos: Array[EnemyInfo] = [nightmare_info]
-	preset.enemies = nightmare_infos
+	var enemy_infos: Array[EnemyInfo] = [enemy_info]
+	preset.enemies = enemy_infos
 
 	var seed := SeedInfo.new()
 	seed.acid_block = _create_asymmetric_block()
@@ -41,43 +41,43 @@ func _run() -> void:
 	var input_controller := game.get_node("GameInputController") as GameInputController
 	var stomach := game.get_node("Stomach") as StomachBoard
 	var enemies: Array[Enemy] = game.get("enemies")
-	var nightmare := enemies[0]
+	var enemy := enemies[0]
 
 	_expect(not game.has_node("UI/RotateModeButton"), "回転トグルを表示しない")
 	_expect(not warning_label.visible, "警告文言は戦闘開始時に非表示")
 
-	_short_click_enemy(input_controller, nightmare.global_position)
-	_expect(nightmare.get_stomach_size() == Vector2i(3, 2), "0.5秒未満の悪夢クリックで90度右回転する")
+	_short_click_enemy(input_controller, enemy.global_position)
+	_expect(enemy.get_stomach_size() == Vector2i(3, 2), "0.5秒未満の悪夢クリックで90度右回転する")
 	_expect(input_controller.get("_dragging_enemy") == null, "短いクリックではドラッグを開始しない")
 	_expect(
-		nightmare.get_stomach_shape().has(Vector2i(2, 1)),
+		enemy.get_stomach_shape().has(Vector2i(2, 1)),
 		"悪夢の占有セルも90度右回転する"
 	)
-	var size_before_pointer_drag := nightmare.get_stomach_size()
-	_start_enemy_drag_with_motion(input_controller, nightmare.global_position)
-	_expect(game.get("dragging_enemy") == nightmare, "0.5秒未満でも途中で動かすとドラッグを開始する")
-	_expect(nightmare.get_stomach_size() == size_before_pointer_drag, "ドラッグ操作では悪夢を回転しない")
-	input_controller.call("_handle_release", nightmare.origin_position)
+	var size_before_pointer_drag := enemy.get_stomach_size()
+	_start_enemy_drag_with_motion(input_controller, enemy.global_position)
+	_expect(game.get("dragging_enemy") == enemy, "0.5秒未満でも途中で動かすとドラッグを開始する")
+	_expect(enemy.get_stomach_size() == size_before_pointer_drag, "ドラッグ操作では悪夢を回転しない")
+	input_controller.call("_handle_release", enemy.origin_position)
 	_expect(game.get("dragging_enemy") == null, "途中移動から開始したドラッグを解放できる")
 
-	var size_before_long_press := nightmare.get_stomach_size()
-	input_controller.call("_handle_press", nightmare.global_position)
+	var size_before_long_press := enemy.get_stomach_size()
+	input_controller.call("_handle_press", enemy.global_position)
 	input_controller.set("_press_started_msec", Time.get_ticks_msec() - 500)
 	input_controller.call("_process", 0.0)
-	_expect(game.get("dragging_enemy") == nightmare, "0.5秒の長押しでドラッグを開始する")
-	_expect(nightmare.get_stomach_size() == size_before_long_press, "長押し操作では悪夢を回転しない")
-	input_controller.call("_handle_release", nightmare.origin_position)
+	_expect(game.get("dragging_enemy") == enemy, "0.5秒の長押しでドラッグを開始する")
+	_expect(enemy.get_stomach_size() == size_before_long_press, "長押し操作では悪夢を回転しない")
+	input_controller.call("_handle_release", enemy.origin_position)
 
-	nightmare.set_Aciding(true)
-	stomach.place_enemy(nightmare, Vector2i.ZERO)
-	var size_before_rejected_rotation := nightmare.get_stomach_size()
-	_short_click_enemy(input_controller, nightmare.global_position)
+	enemy.set_Aciding(true)
+	stomach.place_enemy(enemy, Vector2i.ZERO)
+	var size_before_rejected_rotation := enemy.get_stomach_size()
+	_short_click_enemy(input_controller, enemy.global_position)
 	await process_frame
 	_expect(
-		nightmare.get_stomach_size() == size_before_rejected_rotation,
+		enemy.get_stomach_size() == size_before_rejected_rotation,
 		"胃袋内悪夢の回転は適用しない"
 	)
-	_expect(nightmare.stomach_cell == Vector2i.ZERO, "回転拒否後も胃袋内悪夢の基準セルを維持する")
+	_expect(enemy.stomach_cell == Vector2i.ZERO, "回転拒否後も胃袋内悪夢の基準セルを維持する")
 	_expect(warning_label.visible, "胃袋内悪夢の回転時に警告文言を表示する")
 	_expect(warning_label.text == "胃袋内のモノは回転できません", "胃袋内回転の警告文言が正しい")
 	_expect(
@@ -107,14 +107,14 @@ func _run() -> void:
 		"夢の種ボタンで選んだ向きを生成ブロックへ反映する"
 	)
 
-	nightmare.set_Aciding(false)
-	nightmare.return_to_origin()
+	enemy.set_Aciding(false)
+	enemy.return_to_origin()
 	var seed_drop_position := stomach.get_global_position_for_cell(Vector2i.ZERO, Vector2i(3, 2))
 	seed_button.call("_handle_release", seed_drop_position)
 	var seed_block: Enemy
-	for enemy in enemies:
-		if enemy != null and enemy.has_seed() and enemy.is_active_in_stomach():
-			seed_block = enemy
+	for candidate in enemies:
+		if candidate != null and candidate.has_seed() and candidate.is_active_in_stomach():
+			seed_block = candidate
 			break
 	_expect(seed_block != null, "回転済みの夢の種ブロックを胃袋へ配置できる")
 	if seed_block != null:

@@ -22,11 +22,11 @@ func set_damage_info(
 	base_damage: int,
 	seed_buff: int,
 	seed_rate: float,
-	nightmare_buff: int,
-	nightmare_rate: float
+	enemy_buff: int,
+	enemy_rate: float
 ) -> void:
 	set_damage(total_damage)
-	acid_damage_view_tooltip.set_damage_info(total_damage, base_damage, seed_buff, seed_rate, nightmare_buff, nightmare_rate)
+	acid_damage_view_tooltip.set_damage_info(total_damage, base_damage, seed_buff, seed_rate, enemy_buff, enemy_rate)
 
 
 # ダメージ設定

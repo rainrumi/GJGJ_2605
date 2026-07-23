@@ -18,11 +18,11 @@ func _run() -> void:
 	await process_frame
 	(game.get_node("ClickSe") as AudioStreamPlayer).stream = null
 
-	var nightmare_info := EnemyInfo.new()
-	nightmare_info.acid_block = AcidBlockInfo.new()
+	var enemy_info := EnemyInfo.new()
+	enemy_info.acid_block = AcidBlockInfo.new()
 	var preset := EnemyPresetInfo.new()
-	var nightmare_infos: Array[EnemyInfo] = [nightmare_info]
-	preset.enemies = nightmare_infos
+	var enemy_infos: Array[EnemyInfo] = [enemy_info]
+	preset.enemies = enemy_infos
 	var context := BattleInfo.new()
 	context.starting_hp = 100
 	context.enemy_preset = preset

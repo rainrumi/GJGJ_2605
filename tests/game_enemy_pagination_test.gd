@@ -24,10 +24,10 @@ func _run() -> void:
 	var game := packed.instantiate()
 	root.add_child(game)
 	await process_frame
-	var previous_button := game.get_node("UI/NightmarePreviousPageButton") as Button
-	var next_button := game.get_node("UI/NightmareNextPageButton") as Button
-	var return_hint := game.get_node("UI/NightmareReturnHint") as PanelContainer
-	var return_damage_value_label := game.get_node("UI/NightmareReturnHint/CenterContainer/TextContainer/DamageRow/ValueLabel") as Label
+	var previous_button := game.get_node("UI/EnemyPreviousPageButton") as Button
+	var next_button := game.get_node("UI/EnemyNextPageButton") as Button
+	var return_hint := game.get_node("UI/EnemyReturnHint") as PanelContainer
+	var return_damage_value_label := game.get_node("UI/EnemyReturnHint/CenterContainer/TextContainer/DamageRow/ValueLabel") as Label
 	var click_se := game.get_node("ClickSe") as AudioStreamPlayer
 	click_se.stream = null
 	_expect(previous_button != null, "前ページボタンを構成する")

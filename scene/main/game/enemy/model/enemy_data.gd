@@ -11,7 +11,6 @@ var digestion_state: EnemyStomachStatus:
 	get: return stomach_status
 var defense_status := EnemyDefenseStatus.new() # 防御状態
 var main_skill: EnemySkill # メインスキル
-var sub_skill: EnemySkill # サブスキル
 var main_skill_active := false # メイン有効
 var skills_enabled := true # スキル有効
 
@@ -32,9 +31,9 @@ func setup(info: EnemyInfo, maximum_hp: int, attack_value: int, use_main_skill: 
 
 # 使用スキル取得
 func get_active_skill() -> EnemySkill:
-	if not skills_enabled:
+	if not skills_enabled or not main_skill_active:
 		return null
-	return main_skill if main_skill_active else sub_skill
+	return main_skill
 
 
 # 効果一覧取得
@@ -50,10 +49,7 @@ func get_effects() -> Array[EnemyEffect]:
 func unbind_skills() -> void:
 	if main_skill != null:
 		main_skill.unbind()
-	if sub_skill != null and sub_skill != main_skill:
-		sub_skill.unbind()
 	main_skill = null
-	sub_skill = null
 	skills_changed.emit()
 
 

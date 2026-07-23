@@ -3,6 +3,7 @@ extends Resource
 
 @export var normal_skills: Array[SeedInfo] = []
 @export var rare_skills: Array[SeedInfo] = []
+@export var epic_skills: Array[SeedInfo] = []
 
 
 # skillsbyrarity取得
@@ -24,4 +25,6 @@ func _get_skill_list_by_rarity(rarity: int) -> Array[SeedInfo]:
 			return normal_skills
 		SeedInfo.Rarity.RARE:
 			return rare_skills
+		SeedInfo.Rarity.EPIC:
+			return epic_skills
 	return []

@@ -12,12 +12,9 @@ func _initialize() -> void:
 func _run() -> void:
 	var template_effect := EnemyEffect.new() # 原本効果
 	var main_skill := EnemySkill.new() # 主スキル原本
-	var sub_skill := EnemySkill.new() # 副スキル原本
 	main_skill.effects = [template_effect]
-	sub_skill.effects = [template_effect]
 	var definition := EnemyInfo.new() # 敵定義
 	definition.main_skill = main_skill
-	definition.sub_skill = sub_skill
 	var first := EnemyData.new() # 一体目データ
 	var second := EnemyData.new() # 二体目データ
 	first.setup(definition, 20, 5, true, true)
@@ -28,9 +25,11 @@ func _run() -> void:
 	_expect(first.attack != second.attack, "攻撃状態を共有しない")
 	_expect(first.defense_status != second.defense_status, "防御状態を共有しない")
 	_expect(first.digestion_state != second.digestion_state, "消化状態を共有しない")
-	_expect(first.main_skill != first.sub_skill, "主副スキルを分離する")
 	_expect(first.main_skill != second.main_skill, "敵同士でスキルを共有しない")
-	_expect(first.main_skill.effects[0] != first.sub_skill.effects[0], "主副Effectを分離する")
+	_expect(first.main_skill.effects[0] != second.main_skill.effects[0], "敵同士でEffectを共有しない")
+	first.main_skill_active = false
+	_expect(first.get_active_skill() == null, "メインスキル無効時はスキルを返さない")
+	first.main_skill_active = true
 	first.hp.take_damage(3)
 	first.attack.add_value(2)
 	_expect(second.hp.current == 20, "HP変更を他個体へ漏らさない")

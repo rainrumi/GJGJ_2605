@@ -19,7 +19,7 @@ func setup(flowers: Array) -> void:
 # 消化ダメージbreakdown取得
 func get_acid_damage_breakdown(
 	base_damage: int,
-	nightmare_rate: float,
+	enemy_rate: float,
 	minutes: int,
 	consume_pending_bonus: bool = false,
 	stomach_columns: int = 0,
@@ -41,19 +41,19 @@ func get_acid_damage_breakdown(
 		_state.next_acid_damage_bonus_rate = 0.0
 	var buff_multiplier := _get_acid_damage_buff_multiplier(context) # buff倍率
 	seed_rate *= buff_multiplier
-	nightmare_rate *= buff_multiplier
+	enemy_rate *= buff_multiplier
 	var seed_buff := roundi(float(base_damage) * seed_rate) # 種加算
 	var damage_after_seed := base_damage + seed_buff + _state.next_acid_damage_flat_bonus # 種後ダメ
 	if consume_pending_bonus:
 		_state.next_acid_damage_flat_bonus = 0
-	var total_damage := maxi(1, roundi(float(damage_after_seed) * (1.0 + nightmare_rate))) # 総ダメ
+	var total_damage := maxi(1, roundi(float(damage_after_seed) * (1.0 + enemy_rate))) # 総ダメ
 	return {
 		"total": total_damage,
 		"base": base_damage,
 		"seed_buff": seed_buff,
 		"seed_rate": seed_rate,
-		"nightmare_buff": total_damage - damage_after_seed,
-		"nightmare_rate": nightmare_rate,
+		"enemy_buff": total_damage - damage_after_seed,
+		"enemy_rate": enemy_rate,
 	}
 
 # playerダメージ適用
@@ -174,13 +174,13 @@ func consume_acid_damage_heal_amount() -> int:
 
 
 # 消化済み悪夢回復率取得
-func get_Acided_nightmare_heal_rate() -> float:
-	return _sum_float("get_acided_nightmare_heal_rate", {})
+func get_Acided_enemy_heal_rate() -> float:
+	return _sum_float("get_acided_enemy_heal_rate", {})
 
 
 # 消化済み悪夢最大HP率取得
-func get_Acided_nightmare_max_hp_rate() -> float:
-	return _sum_float("get_acided_nightmare_max_hp_rate", {})
+func get_Acided_enemy_max_hp_rate() -> float:
+	return _sum_float("get_acided_enemy_max_hp_rate", {})
 
 
 # 最大HP補正率取得

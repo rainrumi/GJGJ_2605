@@ -16,7 +16,7 @@ stomach_shape = null
 
 [sub_resource type="Resource" id="Resource_main_effect_1"]
 script = ExtResource("skill_recover_hp")
-acided_nightmare_heal_rate = 0.2
+acided_enemy_heal_rate = 0.2
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")

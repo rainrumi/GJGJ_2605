@@ -9,7 +9,7 @@ func on_finish_acid_seed_block(context: Dictionary) -> void:
 	if seed_block == null:
 		return
 	for adjacent_enemy in EnemyPlacementQuery.get_adjacent_enemies(seed_block, enemies):
-		if adjacent_enemy == null or adjacent_enemy.is_Acided() or not adjacent_enemy.is_nightmare():
+		if adjacent_enemy == null or adjacent_enemy.is_Acided() or not adjacent_enemy.is_enemy():
 			continue
 		adjacent_enemy.set_Aciding(false)
 		adjacent_enemy.return_to_origin()

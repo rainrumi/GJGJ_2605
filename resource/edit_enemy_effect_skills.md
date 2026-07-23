@@ -66,7 +66,7 @@
     - 2*3のL字ならサイズは3。[0]はサイズ2で[0]=1,[1]=0,[1]はサイズ2で[0]=1,[1]=0,[2]はサイズ2で[0]=1,[1]=1
   ### Description
     - 説明を書きます。今は書かないでください
-  ### NightmareSkillEnabled
+  ### EnemySkillEnabled
     - Trueで固定
   ### MainSkill
     - E*の中にあるSKをもとにEnemySkillからスキルを実装できるクラスのEnemyEffectを組み合わせて実装

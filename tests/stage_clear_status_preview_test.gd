@@ -123,8 +123,8 @@ func _run() -> void:
 	_expect(acid_interval_delta.text.is_empty(), "ホバー終了時に消化間隔差分を消す")
 	_expect(hp_delta.text.is_empty(), "ホバー終了時にHP差分を消す")
 
-	var lower_damage_info := {"total": 50, "base": 50, "seed_buff": 0, "seed_rate": 0.0, "nightmare_buff": 0, "nightmare_rate": 0.0}
-	var longer_interval_info := {"total": 30, "base": 30, "seed_buff": 0, "seed_rate": 0.0, "nightmare_buff": 0, "nightmare_rate": 0.0}
+	var lower_damage_info := {"total": 50, "base": 50, "seed_buff": 0, "seed_rate": 0.0, "enemy_buff": 0, "enemy_rate": 0.0}
+	var longer_interval_info := {"total": 30, "base": 30, "seed_buff": 0, "seed_rate": 0.0, "enemy_buff": 0, "enemy_rate": 0.0}
 	stage_clear.ui.set_status_preview(lower_damage_info, longer_interval_info, 70, 45, 31, 60)
 	_expect(acid_damage_delta.text == "(-5)", "消化ダメージ減少を差分表示する")
 	_expect(acid_interval_delta.text == "(+1)", "消化間隔増加を差分表示する")

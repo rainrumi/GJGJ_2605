@@ -181,7 +181,7 @@ func cancel_battle() -> void:
 	acid_turn_in_progress = false
 	_clear_scheduled_acid_events()
 	_update_auto_acid_timer()
-	_refresh_nightmare_page_navigation()
+	_refresh_enemy_page_navigation()
 	ui.hide_time_over_decision()
 
 
@@ -207,8 +207,8 @@ func get_stored_seeds() -> Array[SeedInfo]:
 
 # UI接続
 func _connect_ui() -> void:
-	ui.nightmare_previous_page_requested.connect(_on_nightmare_previous_page_requested)
-	ui.nightmare_next_page_requested.connect(_on_nightmare_next_page_requested)
+	ui.enemy_previous_page_requested.connect(_on_enemy_previous_page_requested)
+	ui.enemy_next_page_requested.connect(_on_enemy_next_page_requested)
 	ui.time_over_retry_requested.connect(_on_time_over_retry_requested)
 	ui.time_over_abandon_requested.connect(_on_time_over_abandon_requested)
 	ui.acid_playback_requested.connect(_on_acid_playback_requested)
@@ -266,9 +266,9 @@ func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offs
 	auto_acid_paused_for_drag = auto_acid_enabled
 	_update_auto_acid_timer()
 	if dragged_enemy_was_Aciding and not seed_effects.is_remove_from_stomach_disabled():
-		ui.show_nightmare_return_hint(_get_remove_from_stomach_damage())
+		ui.show_enemy_return_hint(_get_remove_from_stomach_damage())
 	else:
-		ui.hide_nightmare_return_hint()
+		ui.hide_enemy_return_hint()
 	_play_click_se()
 # 移動処理
 func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i) -> void:
@@ -292,7 +292,7 @@ func _finish_enemy_drag_release(enemy: Enemy, mouse_position: Vector2) -> void:
 	_play_click_se()
 	stomach.hide_preview()
 	ui.hide_hp_damage_preview()
-	ui.hide_nightmare_return_hint()
+	ui.hide_enemy_return_hint()
 	if stomach.contains_global_position(mouse_position):
 		_try_start_Aciding(enemy, mouse_position)
 	else:
@@ -321,23 +321,23 @@ func _on_Acidion_requested() -> void:
 
 
 # 前の悪夢ページ要求
-func _on_nightmare_previous_page_requested() -> void:
+func _on_enemy_previous_page_requested() -> void:
 	if not battle_active or not enemy_setup.has_previous_enemy_page():
 		return
 	_set_hovered_enemy(null)
 	if enemy_setup.show_previous_enemy_page(enemies):
 		_play_click_se()
-		_refresh_nightmare_page_navigation()
+		_refresh_enemy_page_navigation()
 
 
 # 次の悪夢ページ要求
-func _on_nightmare_next_page_requested() -> void:
+func _on_enemy_next_page_requested() -> void:
 	if not battle_active or not enemy_setup.has_next_enemy_page():
 		return
 	_set_hovered_enemy(null)
 	if enemy_setup.show_next_enemy_page(enemies):
 		_play_click_se()
-		_refresh_nightmare_page_navigation()
+		_refresh_enemy_page_navigation()
 
 
 # 消化再生状態変更要求
@@ -367,7 +367,7 @@ func _on_enemy_rotation_requested(enemy: Enemy) -> void:
 	if not _can_use_battle_interaction() or enemy == null:
 		return
 	_set_hovered_enemy(null)
-	if enemy.is_nightmare() and enemy.is_active_in_stomach():
+	if enemy.is_enemy() and enemy.is_active_in_stomach():
 		ui.show_warning_message(STOMACH_ROTATION_BLOCKED_MESSAGE)
 		return
 	if not stomach.try_rotate_enemy_clockwise(enemy, enemies):
@@ -558,7 +558,7 @@ func _prepare_debug_battle_change() -> void:
 	_update_auto_acid_timer()
 	stomach.hide_preview()
 	ui.hide_hp_damage_preview()
-	ui.hide_nightmare_return_hint()
+	ui.hide_enemy_return_hint()
 	_set_hovered_enemy(null)
 
 
@@ -667,7 +667,7 @@ func _advance_acid_turn() -> void:
 	# 消化結果
 	var acid_result := _run_acid_core(minutes, elapsed_minutes)
 	_apply_acid_damage_seed_heal()
-	_apply_Acided_nightmare_seed_effects(acid_result.Acided_enemies)
+	_apply_Acided_enemy_seed_effects(acid_result.Acided_enemies)
 	_apply_Acided_seed_effects(acid_result.Acided_enemies)
 	_apply_player_damage_values()
 	var progress_digested := _apply_elapsed_time(elapsed_minutes + acid_result.extra_elapsed_minutes)
@@ -695,7 +695,7 @@ func _begin_acid_turn() -> bool:
 # run消化core処理
 func _run_acid_core(current_minutes: int, elapsed_minutes: int) -> BattleTurnResultData:
 	# 消化済み敵
-	var Acided_enemies: Array[Enemy] = acid_controller.acid_nightmares(enemies, stomach, current_minutes, elapsed_minutes)
+	var Acided_enemies: Array[Enemy] = acid_controller.acid_enemys(enemies, stomach, current_minutes, elapsed_minutes)
 	# 消化結果
 	var acid_result := acid_controller.build_turn_result(Acided_enemies)
 	_apply_acid_spawn_requests(acid_result.spawn_requests)
@@ -762,7 +762,7 @@ func _queue_depleted_seed_sources(Acided_enemies: Array[Enemy]) -> void:
 
 # check戦闘end処理
 func _check_battle_end() -> void:
-	if _all_nightmares_Acided():
+	if _all_enemys_Acided():
 		_finish_battle(true, "すべての悪夢を消化しました")
 		return
 	if minutes >= END_HOUR * 60:
@@ -891,13 +891,13 @@ func _refresh_ui(explicit_recovered_hp: int = -1) -> void:
 	enemy_presenter.refresh_attack_displays(enemies, stomach, minutes)
 	_refresh_acid_ui()
 	_refresh_status_ui(explicit_recovered_hp)
-	_refresh_nightmare_page_navigation()
+	_refresh_enemy_page_navigation()
 	_refresh_hover_tooltip()
 
 
 # 悪夢ページ移動表示更新
-func _refresh_nightmare_page_navigation() -> void:
-	ui.set_nightmare_page_navigation(
+func _refresh_enemy_page_navigation() -> void:
+	ui.set_enemy_page_navigation(
 		battle_active and enemy_setup.has_previous_enemy_page(),
 		battle_active and enemy_setup.has_next_enemy_page()
 	)
@@ -909,8 +909,8 @@ func _refresh_acid_ui() -> void:
 	var acid_damage := _get_acid_damage_info()
 	# 消化interval
 	var acid_interval := _get_acid_interval_info()
-	ui.set_acid_damage_info(int(acid_damage["total"]), int(acid_damage["base"]), int(acid_damage["seed_buff"]), float(acid_damage["seed_rate"]), int(acid_damage["nightmare_buff"]), float(acid_damage["nightmare_rate"]))
-	ui.set_acid_interval_minutes(float(acid_interval["total"]), float(acid_interval["base"]), int(acid_interval["seed_buff"]), float(acid_interval["seed_rate"]), int(acid_interval["nightmare_buff"]), float(acid_interval["nightmare_rate"]))
+	ui.set_acid_damage_info(int(acid_damage["total"]), int(acid_damage["base"]), int(acid_damage["seed_buff"]), float(acid_damage["seed_rate"]), int(acid_damage["enemy_buff"]), float(acid_damage["enemy_rate"]))
+	ui.set_acid_interval_minutes(float(acid_interval["total"]), float(acid_interval["base"]), int(acid_interval["seed_buff"]), float(acid_interval["seed_rate"]), int(acid_interval["enemy_buff"]), float(acid_interval["enemy_rate"]))
 	ui.set_rest_recovery_bonus_rate(seed_effects.get_rest_recovery_bonus_rate())
 
 
@@ -941,11 +941,11 @@ func _get_tooltip_debug_number_text(enemy: Enemy) -> String:
 func _get_enemy_skill_id_text(enemy: Enemy) -> String:
 	if enemy.has_seed():
 		return str(enemy.get_seed().skill_id)
-	if not enemy.has_nightmare_skill():
+	if not enemy.has_enemy_info():
 		return "-"
-	return str(enemy.get_nightmare_skill().skill_id)
+	return str(enemy.get_enemy_info().skill_id)
 # all悪夢消化済み処理
-func _all_nightmares_Acided() -> bool:
+func _all_enemys_Acided() -> bool:
 	for enemy in enemies:
 		if not enemy.should_count_for_battle_clear():
 			continue
@@ -1104,11 +1104,11 @@ func _apply_Acided_seed_hp_effects(Acided_enemies: Array[Enemy]) -> void:
 
 
 # 消化済み悪夢種effects適用
-func _apply_Acided_nightmare_seed_effects(Acided_enemies: Array[Enemy]) -> void:
+func _apply_Acided_enemy_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	# 回復率
-	var heal_rate := seed_effects.get_Acided_nightmare_heal_rate()
+	var heal_rate := seed_effects.get_Acided_enemy_heal_rate()
 	# 最大HP率
-	var max_hp_rate := seed_effects.get_Acided_nightmare_max_hp_rate()
+	var max_hp_rate := seed_effects.get_Acided_enemy_max_hp_rate()
 	if heal_rate <= 0.0 and max_hp_rate <= 0.0:
 		return
 	for enemy in Acided_enemies:

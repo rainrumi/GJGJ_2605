@@ -590,8 +590,8 @@ func _get_status_preview(flowers: Array[SeedInfo], recovery_rate: float) -> Dict
 		"base": EnemyController.STEP_MINUTES,
 		"seed_buff": acid_interval_minutes - EnemyController.STEP_MINUTES,
 		"seed_rate": -time_reduction_rate,
-		"nightmare_buff": 0,
-		"nightmare_rate": 0.0,
+		"enemy_buff": 0,
+		"enemy_rate": 0.0,
 	}
 	var preview_hp := current_hp
 	if not _clear_recovery_applied:

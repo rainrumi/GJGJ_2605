@@ -15,11 +15,11 @@ func set_damage_info(
 	base_damage: int,
 	seed_buff: int,
 	seed_rate: float,
-	nightmare_buff: int,
-	nightmare_rate: float
+	enemy_buff: int,
+	enemy_rate: float
 ) -> void:
 	# 合計buff率
-	var total_buff_rate := _get_total_buff_rate(seed_rate, nightmare_rate)
+	var total_buff_rate := _get_total_buff_rate(seed_rate, enemy_rate)
 	set_entries([
 		{
 			"explanation": "最終消化ダメージ",
@@ -36,8 +36,8 @@ func set_damage_info(
 		},
 		{
 			"explanation": "悪夢バフ",
-			"value": "%s（%s）" % [_format_buff_amount(nightmare_buff), _format_buff_rate(nightmare_rate)],
-			"enabled": not is_zero_approx(nightmare_rate),
+			"value": "%s（%s）" % [_format_buff_amount(enemy_buff), _format_buff_rate(enemy_rate)],
+			"enabled": not is_zero_approx(enemy_rate),
 		},
 	])
 
@@ -59,5 +59,5 @@ func _format_buff_rate(rate: float) -> String:
 
 
 # 合計buff率取得
-func _get_total_buff_rate(seed_rate: float, nightmare_rate: float) -> float:
-	return (1.0 + seed_rate) * (1.0 + nightmare_rate) - 1.0
+func _get_total_buff_rate(seed_rate: float, enemy_rate: float) -> float:
+	return (1.0 + seed_rate) * (1.0 + enemy_rate) - 1.0

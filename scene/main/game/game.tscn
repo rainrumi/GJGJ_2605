@@ -20,7 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://dqdytqcjhv1yw" path="res://scene/ui/seed/owned_seed_panel.tscn" id="44_owned_seed_panel"]
 [ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://art/ui/button/ui_button_seed_directory_open.png" id="45_owned_seed_open_texture"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nightmare_return_hint"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enemy_return_hint"]
 bg_color = Color(0.07, 0.06, 0.09, 0.78)
 border_width_left = 2
 border_width_top = 2
@@ -161,7 +161,7 @@ offset_top = 303.0
 offset_right = 628.5
 offset_bottom = 347.0
 
-[node name="NightmarePreviousPageButton" parent="UI" unique_id=1482538654 instance=ExtResource("42_battle_button_scene")]
+[node name="EnemyPreviousPageButton" parent="UI" unique_id=1482538654 instance=ExtResource("42_battle_button_scene")]
 visible = false
 offset_left = 350.0
 offset_top = 179.0
@@ -171,7 +171,7 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 20
 text = "←"
 
-[node name="NightmareNextPageButton" parent="UI" unique_id=1774073277 instance=ExtResource("42_battle_button_scene")]
+[node name="EnemyNextPageButton" parent="UI" unique_id=1774073277 instance=ExtResource("42_battle_button_scene")]
 visible = false
 offset_left = 606.0
 offset_top = 179.0
@@ -181,25 +181,25 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 20
 text = "→"
 
-[node name="NightmareReturnHint" type="PanelContainer" parent="UI" unique_id=491785488]
+[node name="EnemyReturnHint" type="PanelContainer" parent="UI" unique_id=491785488]
 visible = false
 offset_left = 350.0
 offset_top = 60.0
 offset_right = 638.0
 offset_bottom = 330.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_nightmare_return_hint")
+theme_override_styles/panel = SubResource("StyleBoxFlat_enemy_return_hint")
 
-[node name="CenterContainer" type="CenterContainer" parent="UI/NightmareReturnHint" unique_id=1248869168]
+[node name="CenterContainer" type="CenterContainer" parent="UI/EnemyReturnHint" unique_id=1248869168]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TextContainer" type="VBoxContainer" parent="UI/NightmareReturnHint/CenterContainer" unique_id=1978968719]
+[node name="TextContainer" type="VBoxContainer" parent="UI/EnemyReturnHint/CenterContainer" unique_id=1978968719]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 2
 
-[node name="InstructionLabel" type="Label" parent="UI/NightmareReturnHint/CenterContainer/TextContainer" unique_id=1486138433]
+[node name="InstructionLabel" type="Label" parent="UI/EnemyReturnHint/CenterContainer/TextContainer" unique_id=1486138433]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
@@ -208,13 +208,13 @@ theme_override_font_sizes/font_size = 14
 text = "ここにドラッグすると吐き戻せます"
 horizontal_alignment = 1
 
-[node name="DamageRow" type="HBoxContainer" parent="UI/NightmareReturnHint/CenterContainer/TextContainer" unique_id=402242490]
+[node name="DamageRow" type="HBoxContainer" parent="UI/EnemyReturnHint/CenterContainer/TextContainer" unique_id=402242490]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="PrefixLabel" type="Label" parent="UI/NightmareReturnHint/CenterContainer/TextContainer/DamageRow" unique_id=446300481]
+[node name="PrefixLabel" type="Label" parent="UI/EnemyReturnHint/CenterContainer/TextContainer/DamageRow" unique_id=446300481]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
@@ -222,7 +222,7 @@ theme_override_fonts/font = ExtResource("43_bestten_font")
 theme_override_font_sizes/font_size = 14
 text = "受けるダメージ："
 
-[node name="ValueLabel" type="Label" parent="UI/NightmareReturnHint/CenterContainer/TextContainer/DamageRow" unique_id=364433402]
+[node name="ValueLabel" type="Label" parent="UI/EnemyReturnHint/CenterContainer/TextContainer/DamageRow" unique_id=364433402]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.2, 0.2, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
