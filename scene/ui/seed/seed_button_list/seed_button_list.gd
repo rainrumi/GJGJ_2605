@@ -137,7 +137,7 @@ func _add_empty_slot() -> void:
 	button.set_seed_source(null)
 	button.set_slot_size(slot_size)
 	button.set_source_collection(source_collection)
-	button.set_display_style(true, icon_color, use_remaining_sub_skill_color)
+	button.set_display_style(frame_visible, icon_color, use_remaining_sub_skill_color)
 	button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 

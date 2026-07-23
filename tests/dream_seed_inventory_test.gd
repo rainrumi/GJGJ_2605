@@ -404,6 +404,38 @@ func _check_game_inventory_integration() -> void:
 	_expect(closed_list.visible, "所有種パネルを閉じると頭部の装備表示へ戻る")
 	await _capture_viewport_from_environment("DREAM_SEED_CLOSED_CAPTURE_PATH")
 
+	var sparse_controller := GameSeedController.new()
+	var sparse_equipped := _create_seeds(3, 500)
+	sparse_controller.set_seed_inventory(sparse_equipped, [])
+	_expect(
+		sparse_controller.move_seed_to_slot(
+			sparse_equipped[2],
+			SeedButton.SourceCollection.EQUIPPED,
+			2,
+			SeedButton.SourceCollection.EQUIPPED,
+			5
+		),
+		"装備枠[2]の種を空の装備枠[5]へ移動できる"
+	)
+	ui.set_seed_inventory(sparse_controller.get_flowers(), [])
+	var empty_closed_slots_have_hidden_frames := true
+	for slot_index in range(2, 5):
+		var empty_closed_button := closed_list.get_child(slot_index) as SeedButton
+		if empty_closed_button.frame.visible:
+			empty_closed_slots_have_hidden_frames = false
+			break
+	_expect(
+		empty_closed_slots_have_hidden_frames,
+		"パネルを閉じた通常表示では装備間の空き枠に枠線を表示しない"
+	)
+	var moved_closed_button := closed_list.get_child(5) as SeedButton
+	_expect(
+		moved_closed_button.seed == sparse_equipped[2] and not moved_closed_button.frame.visible,
+		"移動先[5]の装備種もパネルを閉じた通常表示では枠線なしで表示する"
+	)
+	await _capture_viewport_from_environment("DREAM_SEED_SPARSE_CLOSED_CAPTURE_PATH")
+	ui.set_seed_inventory(equipped, possession)
+
 	game.call("_on_seed_unequip_requested", equipped[0])
 	equipped = game.call("get_equipped_seeds")
 	possession = game.call("get_stored_seeds")
