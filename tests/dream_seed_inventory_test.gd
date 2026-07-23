@@ -31,6 +31,68 @@ func _check_controller_inventory_rules() -> void:
 	controller.remove_source(duplicate, SeedButton.SourceCollection.STORED)
 	_expect(controller.get_stored_seeds().size() == 1, "同一Resourceを複数所持しても一件だけ削除する")
 
+	var move_seeds := _create_seeds(4, 20)
+	controller.set_seed_inventory([move_seeds[0], move_seeds[1]], [move_seeds[2], move_seeds[3]])
+	_expect(
+		controller.move_seed_to_slot(
+			move_seeds[0],
+			SeedButton.SourceCollection.EQUIPPED,
+			0,
+			SeedButton.SourceCollection.STORED,
+			0
+		),
+		"装備枠から種がある所持枠へドラッグできる"
+	)
+	_expect(
+		controller.get_flowers()[0] == move_seeds[2]
+		and controller.get_stored_seeds()[0] == move_seeds[0],
+		"移動先に種があれば装備種と所持種を入れ替える"
+	)
+	_expect(
+		controller.move_seed_to_slot(
+			move_seeds[1],
+			SeedButton.SourceCollection.EQUIPPED,
+			1,
+			SeedButton.SourceCollection.STORED,
+			3
+		),
+		"装備枠から空の所持枠へドラッグできる"
+	)
+	_expect(
+		controller.get_flowers().size() == 1
+		and controller.get_stored_seeds().size() == 4
+		and controller.get_stored_seeds()[3] == move_seeds[1],
+		"移動先に種がなければ指定した空の所持枠へ移す"
+	)
+	_expect(
+		controller.move_seed_to_slot(
+			move_seeds[1],
+			SeedButton.SourceCollection.STORED,
+			3,
+			SeedButton.SourceCollection.EQUIPPED,
+			5
+		),
+		"所持枠から空の装備枠へドラッグできる"
+	)
+	_expect(
+		controller.get_flowers().size() == 6
+		and controller.get_flowers()[5] == move_seeds[1]
+		and controller.get_stored_seeds().size() == 2,
+		"所持種を指定した空の装備枠へ移す"
+	)
+	_expect(
+		controller.move_seed_to_slot(
+			move_seeds[1],
+			SeedButton.SourceCollection.EQUIPPED,
+			5,
+			SeedButton.SourceCollection.EQUIPPED,
+			0
+		)
+		and controller.get_flowers()[0] == move_seeds[1]
+		and controller.get_flowers()[5] == move_seeds[2],
+		"同じcollection内でも種の位置を入れ替える"
+	)
+
 
 func _check_owned_seed_panel() -> void:
 	var packed := load("res://scene/ui/seed/owned_seed_panel.tscn") as PackedScene
@@ -135,6 +197,44 @@ func _check_owned_seed_panel() -> void:
 	var equipped_button := equipped_list.get_child(0) as SeedButton
 	var empty_equipped_button := equipped_list.get_child(5) as SeedButton
 	var empty_stored_button := stored_list.get_child(5) as SeedButton
+	var drag_preview := panel.get_node("DragPreview") as TextureRect
+	var equipped_drag_position := equipped_button.global_position + equipped_button.size * 0.5
+	panel.call("_on_seed_drag_started", equipped_button, equipped_button.seed, equipped_drag_position)
+	_expect(
+		drag_preview.visible
+		and drag_preview.texture == equipped_button.seed.texture
+		and drag_preview.global_position.is_equal_approx(
+			equipped_drag_position - drag_preview.size * 0.5
+		),
+		"パネル内ドラッグ中は種テクスチャをマウス位置へ表示する"
+	)
+	_expect(
+		drag_preview.self_modulate.is_equal_approx(Color.WHITE),
+		"ドラッグ中は種テクスチャ本来の色を維持する"
+	)
+	_expect(
+		not (panel.get("drag_preview") as TextureRect).has_node("Frame"),
+		"ドラッグ表示へ種枠を含めない"
+	)
+	var moved_drag_position := Vector2(176.0, 110.0)
+	panel.call("_on_seed_drag_moved", equipped_button, equipped_button.seed, moved_drag_position)
+	_expect(
+		drag_preview.visible
+		and drag_preview.global_position.is_equal_approx(moved_drag_position - drag_preview.size * 0.5),
+		"パネル内では種テクスチャをドラッグ位置へ追従させる"
+	)
+	await _capture_viewport_from_environment("DREAM_SEED_DRAG_CAPTURE_PATH")
+	panel.call("_on_seed_drag_moved", equipped_button, equipped_button.seed, Vector2(300.0, 100.0))
+	_expect(not drag_preview.visible, "パネル外へ出たら種テクスチャのドラッグ表示を隠す")
+	panel.call("_on_seed_drag_released", equipped_button, equipped_button.seed, equipped_drag_position)
+	_expect(not drag_preview.visible, "ドラッグ終了時に種テクスチャの表示を隠す")
+	_expect(
+		panel.get_seed_slot_at_position(
+			empty_stored_button.global_position + empty_stored_button.size * 0.5
+		) == empty_stored_button,
+		"種がない所持枠もドロップ先として取得できる"
+	)
+	_expect(panel.get_inventory_slot_index(stored_button) == 12, "所持枠のページを含むslot番号を取得する")
 	_expect(equipped_button.size.is_equal_approx(Vector2(30.0, 30.0)), "装備枠を30px角にする")
 	_expect(stored_button.size.is_equal_approx(Vector2(30.0, 30.0)), "所持枠を装備枠と同じ30px角にする")
 	_expect(
@@ -315,6 +415,33 @@ func _check_game_inventory_integration() -> void:
 	ui.call("_open_owned_seed_panel")
 	var stored_list := owned_panel.get_node("StoredArea/StoredList") as SeedButtonList
 	var stored_button := stored_list.get_child(0) as SeedButton
+	var opened_equipped_list := owned_panel.get_node("UpperArea/EquippedList") as SeedButtonList
+	var opened_equipped_button := opened_equipped_list.get_child(0) as SeedButton
+	var equipped_before_swap := opened_equipped_button.seed
+	var stored_before_swap := stored_button.seed
+	game.call(
+		"_on_seed_drag_started",
+		opened_equipped_button,
+		equipped_before_swap,
+		opened_equipped_button.global_position
+	)
+	var inventory_drag_block := seed_controller.get("_dragging_seed_block") as Enemy
+	_expect(
+		inventory_drag_block != null and not inventory_drag_block.visible,
+		"種パネル内のドラッグでは胃袋用種ブロックを表示しない"
+	)
+	game.call(
+		"_on_seed_drag_released",
+		opened_equipped_button,
+		equipped_before_swap,
+		stored_button.global_position + stored_button.size * 0.5
+	)
+	_expect(
+		(game.call("get_equipped_seeds") as Array)[0] == stored_before_swap
+		and (game.call("get_stored_seeds") as Array)[0] == equipped_before_swap,
+		"game上の装備枠と所持枠をドラッグで入れ替える"
+	)
+	stored_button = stored_list.get_child(0) as SeedButton
 	game.call("_on_seed_drag_started", stored_button, stored_button.seed, stored_button.global_position)
 	_expect(seed_controller.is_dragging(), "所持枠の種から胃袋ドラッグを開始できる")
 	var stomach := game.get_node("Stomach") as StomachBoard

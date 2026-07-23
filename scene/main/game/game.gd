@@ -451,7 +451,8 @@ func _on_seed_drag_started(
 	if not _can_start_seed_drag():
 		return
 	# 結果
-	var result := seed_controller.start_drag(button, seed, mouse_position)
+	var show_seed_block := not ui.should_show_owned_seed_texture_drag(button, mouse_position)
+	var result := seed_controller.start_drag(button, seed, mouse_position, show_seed_block)
 	if not result.started:
 		return
 	drag_mode = DragMode.seed
@@ -462,28 +463,60 @@ func _on_seed_drag_started(
 
 # 移動処理
 func _on_seed_drag_moved(
-	_button: SeedButton,
+	button: SeedButton,
 	_seed: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
 	if not battle_active or drag_mode != DragMode.seed:
 		return
-	seed_controller.move_drag(mouse_position, enemies)
+	var show_seed_block := not ui.should_show_owned_seed_texture_drag(button, mouse_position)
+	seed_controller.move_drag(mouse_position, enemies, show_seed_block)
 	_set_hovered_enemy(null)
 
 
 # 離上処理
 func _on_seed_drag_released(
-	_button: SeedButton,
-	_seed: SeedInfo,
+	button: SeedButton,
+	seed: SeedInfo,
 	mouse_position: Vector2
 ) -> void:
 	if drag_mode != DragMode.seed:
+		return
+	if _try_move_seed_inventory_slot(button, seed, mouse_position):
+		seed_controller.cancel_drag()
+		_finish_drag_operation()
 		return
 	# 結果
 	var result := seed_controller.release_drag(mouse_position, enemies)
 	_handle_seed_drag_result(result)
 	_finish_drag_operation()
+
+
+# inventory枠間移動試行
+func _try_move_seed_inventory_slot(
+	source_button: SeedButton,
+	seed: SeedInfo,
+	mouse_position: Vector2
+) -> bool:
+	if not ui.owns_seed_inventory_button(source_button):
+		return false
+	var target_button := ui.get_owned_seed_drop_slot(mouse_position)
+	if target_button == null:
+		return false
+	var source_index := ui.get_owned_seed_slot_index(source_button)
+	var target_index := ui.get_owned_seed_slot_index(target_button)
+	var moved := seed_controller.move_seed_to_slot(
+		seed,
+		source_button.get_source_collection(),
+		source_index,
+		target_button.get_source_collection(),
+		target_index
+	)
+	if moved:
+		_sync_seed_sources()
+		_refresh_after_battle_event()
+	_play_click_se()
+	return true
 
 
 # handle種ドラッグ結果処理

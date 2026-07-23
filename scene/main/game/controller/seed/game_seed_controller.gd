@@ -40,16 +40,19 @@ func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
 	_stored_seeds.clear()
 	_pending_depleted_sources_by_block.clear()
 	rest_time_skip_count = 0
-	for source in equipped_seeds:
-		if not (source is SeedInfo):
-			continue
-		if _flowers.size() < MAX_EQUIPPED_SEEDS:
-			_flowers.append(source as SeedInfo)
-		else:
+	for index in range(equipped_seeds.size()):
+		var source: Variant = equipped_seeds[index]
+		if index < MAX_EQUIPPED_SEEDS:
+			_flowers.append(source as SeedInfo if source is SeedInfo else null)
+		elif source is SeedInfo:
 			_stored_seeds.append(source as SeedInfo)
 	for source in stored_seeds:
 		if source is SeedInfo:
 			_stored_seeds.append(source as SeedInfo)
+		else:
+			_stored_seeds.append(null)
+	_trim_trailing_empty_slots(_flowers)
+	_trim_trailing_empty_slots(_stored_seeds)
 
 
 # 花値取得
@@ -64,13 +67,13 @@ func get_stored_seeds() -> Array[SeedInfo]:
 
 # 種装備
 func equip_seed(seed: SeedInfo) -> bool:
-	if seed == null or _flowers.size() >= MAX_EQUIPPED_SEEDS:
+	if seed == null or _count_seeds(_flowers) >= MAX_EQUIPPED_SEEDS:
 		return false
 	var index := _stored_seeds.find(seed)
 	if index < 0:
 		return false
 	_stored_seeds.remove_at(index)
-	_flowers.append(seed)
+	_insert_into_first_empty_slot(_flowers, seed)
 	return true
 
 
@@ -83,6 +86,42 @@ func unequip_seed(seed: SeedInfo) -> bool:
 		return false
 	_flowers.remove_at(index)
 	_stored_seeds.append(seed)
+	return true
+
+
+# inventory枠間移動
+func move_seed_to_slot(
+	seed: SeedInfo,
+	source_collection: int,
+	source_index: int,
+	target_collection: int,
+	target_index: int
+) -> bool:
+	if (
+		seed == null
+		or not _is_valid_collection(source_collection)
+		or not _is_valid_collection(target_collection)
+		or source_index < 0
+		or target_index < 0
+		or (
+			target_collection == SeedButton.SourceCollection.EQUIPPED
+			and target_index >= MAX_EQUIPPED_SEEDS
+		)
+	):
+		return false
+	var source_slots := _get_collection_slots(source_collection)
+	var target_slots := _get_collection_slots(target_collection)
+	if source_index >= source_slots.size() or source_slots[source_index] != seed:
+		return false
+	if source_collection == target_collection and source_index == target_index:
+		return false
+	while target_slots.size() <= target_index:
+		target_slots.append(null)
+	var target_seed := target_slots[target_index]
+	source_slots[source_index] = target_seed
+	target_slots[target_index] = seed
+	_trim_trailing_empty_slots(_flowers)
+	_trim_trailing_empty_slots(_stored_seeds)
 	return true
 
 
@@ -128,7 +167,8 @@ func remove_source(source: Resource, collection := SeedButton.SourceCollection.E
 func start_drag(
 	button: SeedButton,
 	seed: SeedInfo,
-	mouse_position: Vector2
+	mouse_position: Vector2,
+	show_seed_block: bool = true
 ) -> SeedDragData:
 	# 結果
 	var result := SeedDragData.new()
@@ -146,16 +186,25 @@ func start_drag(
 	_apply_seed_block_rotation(_dragging_seed_block, button.get_rotation_quarter_turns())
 	_dragging_seed_block.global_position = mouse_position
 	_dragging_seed_block.modulate.a = SEED_BLOCK_DRAG_ALPHA
+	_dragging_seed_block.visible = show_seed_block
 	result.started = true
 	result.seed_block = seed_block
 	return result
 
 
 # moveドラッグ処理
-func move_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> void:
+func move_drag(
+	mouse_position: Vector2,
+	enemies: Array[Enemy],
+	show_seed_block: bool = true
+) -> void:
 	if _dragging_seed_block == null:
 		return
 	_dragging_seed_block.global_position = mouse_position
+	_dragging_seed_block.visible = show_seed_block
+	if not show_seed_block:
+		_stomach.hide_preview()
+		return
 	_stomach.show_preview(_dragging_seed_block, mouse_position, Vector2i.ZERO, enemies)
 
 
@@ -357,3 +406,42 @@ func add_random_debug_seed() -> bool:
 	else:
 		_stored_seeds.append(flower)
 	return true
+
+
+# collection枠取得
+func _get_collection_slots(collection: int) -> Array[SeedInfo]:
+	if collection == SeedButton.SourceCollection.EQUIPPED:
+		return _flowers
+	return _stored_seeds
+
+
+# collection値判定
+func _is_valid_collection(collection: int) -> bool:
+	return (
+		collection == SeedButton.SourceCollection.EQUIPPED
+		or collection == SeedButton.SourceCollection.STORED
+	)
+
+
+# 種数取得
+func _count_seeds(slots: Array[SeedInfo]) -> int:
+	var count := 0
+	for seed in slots:
+		if seed != null:
+			count += 1
+	return count
+
+
+# 最初の空slotへ挿入
+func _insert_into_first_empty_slot(slots: Array[SeedInfo], seed: SeedInfo) -> void:
+	var empty_index := slots.find(null)
+	if empty_index >= 0:
+		slots[empty_index] = seed
+	else:
+		slots.append(seed)
+
+
+# 末尾空slot削除
+func _trim_trailing_empty_slots(slots: Array[SeedInfo]) -> void:
+	while not slots.is_empty() and slots.back() == null:
+		slots.pop_back()

@@ -239,6 +239,26 @@ func set_seed_debug_numbers_visible(is_visible: bool) -> void:
 	seed_button_list.set_debug_numbers_visible(is_visible)
 	owned_seed_panel.set_debug_numbers_visible(is_visible)
 
+
+# 所有種パネル内textureドラッグ判定
+func should_show_owned_seed_texture_drag(button: SeedButton, mouse_position: Vector2) -> bool:
+	return owned_seed_panel.should_show_seed_texture_drag(button, mouse_position)
+
+
+# 所有種パネル内drop枠取得
+func get_owned_seed_drop_slot(mouse_position: Vector2) -> SeedButton:
+	return owned_seed_panel.get_seed_slot_at_position(mouse_position)
+
+
+# 所有種パネル内slot番号取得
+func get_owned_seed_slot_index(button: SeedButton) -> int:
+	return owned_seed_panel.get_inventory_slot_index(button)
+
+
+# 所有種パネル所有ボタン判定
+func owns_seed_inventory_button(button: SeedButton) -> bool:
+	return owned_seed_panel.owns_seed_button(button)
+
 # -----------------------------------------------------------
 
 # 悪夢ツール表示

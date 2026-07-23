@@ -31,12 +31,12 @@ func _ready() -> void:
 # 種sources設定
 func set_seed_sources(sources: Array) -> void:
 	_clear_buttons()
-	var added_count := 0
 	for source in sources:
 		if source is Resource and _has_seed(source as Resource):
 			_add_seed_button_list(source as Resource)
-			added_count += 1
-	for _slot_index in range(added_count, minimum_slot_count):
+		else:
+			_add_empty_slot()
+	for _slot_index in range(sources.size(), minimum_slot_count):
 		_add_empty_slot()
 
 
@@ -136,6 +136,7 @@ func _add_empty_slot() -> void:
 	add_child(button)
 	button.set_seed_source(null)
 	button.set_slot_size(slot_size)
+	button.set_source_collection(source_collection)
 	button.set_display_style(true, icon_color, use_remaining_sub_skill_color)
 	button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
