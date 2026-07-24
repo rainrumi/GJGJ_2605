@@ -1,6 +1,8 @@
 class_name HpTextView
 extends Label
 
+const HEAL_VALUE_COLOR := Color(0.35, 1.0, 0.45, 1.0)
+
 
 # 初期化
 func _ready() -> void:
@@ -62,7 +64,7 @@ func apply_damage_label_style(label: Label, font_size: int, outline_color: Color
 
 # 回復装飾
 func apply_heal_label_style(label: Label) -> void:
-	label.add_theme_color_override("font_color", Color.WHITE)
+	label.add_theme_color_override("font_color", HEAL_VALUE_COLOR)
 	label.add_theme_color_override("font_outline_color", Color.BLACK)
 	label.add_theme_constant_override("outline_size", 2)
 	# 使用フォント

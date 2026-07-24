@@ -47,6 +47,11 @@ func _run() -> void:
 	if damage_popup != null and recovery_popup != null:
 		_expect(recovery_popup.visible, "ダメージUIと復活時の回復UIを同時に表示する")
 		_expect(
+			recovery_popup.get_theme_color("font_color")
+			== StageClearUi.BENEFICIAL_DELTA_COLOR,
+			"復活時の回復UIをステージクリア状態予測の緑色で表示する"
+		)
+		_expect(
 			damage_popup.global_position.y + damage_popup.size.y
 			<= recovery_popup.global_position.y,
 			"ダメージUIの下に復活時の回復UIを並べる"
