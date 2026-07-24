@@ -21,6 +21,7 @@ var _planned_recovery_rate := 0.0
 var _hp_damage_preview_label: Label
 var _is_hp_recovering := false
 var _has_hp_value := false
+var _active_hp_value_popup_slots: Array[Control] = []
 
 
 # 初期化
@@ -134,8 +135,7 @@ func show_damage_values(damage_values: Array[int]) -> void:
 		return
 	# ラベル
 	var label := hp_text.create_damage_value_label(damage_texts)
-	add_child(label)
-	_play_damage_value_tween(label)
+	_show_hp_value_popup(label)
 
 
 # ツール表示
@@ -159,8 +159,7 @@ func _show_heal_value(amount: int) -> void:
 		return
 	# ラベル
 	var label := hp_text.create_heal_value_label(amount)
-	add_child(label)
-	_play_damage_value_tween(label)
+	_show_hp_value_popup(label)
 
 
 # マウス入力準備
@@ -193,8 +192,24 @@ func _create_hp_damage_preview() -> void:
 	add_child(_hp_damage_preview_label)
 
 
-# ダメージ値演出再生
-func _play_damage_value_tween(label: Label) -> void:
+# HP増減値表示
+func _show_hp_value_popup(label: Label) -> void:
+	for slot in _active_hp_value_popup_slots:
+		slot.position.y -= label.size.y
+	var slot := Control.new()
+	slot.name = "HpValuePopup"
+	slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	slot.position = label.position
+	slot.size = label.size
+	label.position = Vector2.ZERO
+	add_child(slot)
+	slot.add_child(label)
+	_active_hp_value_popup_slots.append(slot)
+	_play_hp_value_popup_tween(label, slot)
+
+
+# HP増減値演出再生
+func _play_hp_value_popup_tween(label: Label, slot: Control) -> void:
 	# 演出
 	var tween := create_tween()
 	tween.set_parallel(true)
@@ -204,7 +219,13 @@ func _play_damage_value_tween(label: Label) -> void:
 	tween.tween_property(label, "modulate:a", 1.0, HP_DAMAGE_TWEEN_DURATION)
 	tween.chain().tween_interval(HP_DAMAGE_HIDE_DELAY)
 	tween.chain().tween_property(label, "modulate:a", 0.0, HP_DAMAGE_TWEEN_DURATION)
-	tween.chain().tween_callback(label.queue_free)
+	tween.chain().tween_callback(_on_hp_value_popup_finished.bind(slot))
+
+
+# HP増減値演出完了
+func _on_hp_value_popup_finished(slot: Control) -> void:
+	_active_hp_value_popup_slots.erase(slot)
+	slot.queue_free()
 
 
 # HP回復予定更新
