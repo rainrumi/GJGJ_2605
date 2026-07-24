@@ -148,7 +148,7 @@ func _check_owned_seed_panel() -> void:
 	_expect(is_equal_approx(equipped_label.position.y, 26.0), "装備見出しを20px上へ移動する")
 	_expect(is_equal_approx(equipped_list.position.y, 46.0), "装備枠を20px上へ移動する")
 	_expect(is_equal_approx(stored_label.position.y, 0.0), "所持見出しを20px上へ移動する")
-	_expect(is_equal_approx(stored_list.position.y, 20.0), "所持枠を20px上へ移動する")
+	_expect(is_equal_approx(stored_list.position.y, 22.5), "所持枠を現在のY座標へ配置する")
 	_expect(is_equal_approx(equipped_list.position.x + equipped_list.size.x * 0.5, panel.size.x * 0.5), "装備枠をパネル中央に揃える")
 	_expect(
 		stored_list.global_position.y - (equipped_list.global_position.y + equipped_list.size.y)
