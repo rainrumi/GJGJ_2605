@@ -3,6 +3,7 @@ extends SceneTree
 const TARGET_RESOURCE_PATHS: Array[String] = [
 	"res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_004.tres",
 	"res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_005.tres",
+	"res://data/resources/area/area_iriyu/enemy/boss/001/area_iriyu_enemy_boss_001_001.tres",
 ]
 
 var _failures := 0 # 失敗数
@@ -13,7 +14,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 
-# IC-N-4 E4・E5隣接体力効果試験
+# 隣接最大HP・回復効果試験
 func _run() -> void:
 	for path in TARGET_RESOURCE_PATHS:
 		_test_adjacent_hp_effect(path)

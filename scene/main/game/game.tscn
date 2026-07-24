@@ -19,7 +19,7 @@
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="43_bestten_font"]
 [ext_resource type="PackedScene" uid="uid://dqdytqcjhv1yw" path="res://scene/ui/seed/owned_seed_panel.tscn" id="44_owned_seed_panel"]
 [ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://art/ui/button/ui_button_seed_directory_open.png" id="45_owned_seed_open_texture"]
-[ext_resource type="Script" uid="uid://c284ogkr07lmb" path="res://scene/ui/button/hover_scale_texture_button.gd" id="46_hover_scale"]
+[ext_resource type="Script" path="res://scene/ui/button/hover_scale_texture_button.gd" id="46_hover_scale"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enemy_return_hint"]
 bg_color = Color(0.07, 0.06, 0.09, 0.78)
