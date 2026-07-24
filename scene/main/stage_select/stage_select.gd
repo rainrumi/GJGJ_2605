@@ -10,7 +10,6 @@ signal stage_selected(stage: StageInfo)
 
 @onready var map_view: StageSelectMapView = $CharacterArea/Map
 @onready var stage_choice_list: StageSelectChoiceList = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices
-@onready var debug_seed_pool_panel: StageSelectDebugPanel = $UI/DebugSeedPoolPanel
 
 var _displayed_stage_definitions: Array[StageInfo] = []
 var _current_stage_definition: StageInfo
@@ -43,7 +42,6 @@ func setup_stage_choices(
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	map_view.hide_hover()
 	map_view.set_current_stage(_current_stage_definition)
-	debug_seed_pool_panel.set_stage(null)
 	stage_choice_list.setup_choices(
 		_displayed_stage_definitions,
 		_get_exploration_percents(_displayed_stage_definitions),
@@ -114,7 +112,6 @@ func _on_stage_choice_unhovered(choice_index: int) -> void:
 # ホバー表示
 func _show_stage_hover(stage_definition: StageInfo) -> void:
 	_hovered_stage_definition = stage_definition
-	debug_seed_pool_panel.set_stage(stage_definition)
 	if stage_definition == null:
 		map_view.hide_hover()
 		return

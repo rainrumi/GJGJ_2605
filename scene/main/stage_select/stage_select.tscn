@@ -39,27 +39,9 @@
 [ext_resource type="Texture2D" uid="uid://br16sseuu25m3" path="res://art/ui/icon/location/ui_icon_location_07.png" id="36_location_07"]
 [ext_resource type="Script" uid="uid://wm4hijfwmw0a" path="res://scene/main/stage_select/map/stage_select_map_view.gd" id="37_stage_select_map_view"]
 [ext_resource type="Script" uid="uid://d7ydvghfpo18" path="res://scene/main/stage_select/choice/stage_choice_list.gd" id="38_stage_choice_list"]
-[ext_resource type="Script" uid="uid://bkictreay8s85" path="res://scene/main/stage_select/debug/stage_select_debug_panel.gd" id="39_debug_seed_pool_panel"]
 [ext_resource type="Script" uid="uid://d0tgljokt842x" path="res://scene/main/stage_select/debug/stage_select_debug_button.gd" id="40_debug_button"]
 [ext_resource type="Script" uid="uid://bv0erjxernnad" path="res://scene/main/stage_select/map/marker/stage_select_location_marker.gd" id="42_location_marker"]
-[ext_resource type="Script" uid="uid://cw56t27dpnhv0" path="res://scene/main/stage_select/debug/stage_select_debug_items.gd" id="43_bxeow"]
-[ext_resource type="Script" uid="uid://ccm1s2fn83nry" path="res://scene/main/stage_select/debug/stage_select_debug_margin.gd" id="43_debug_seed_pool_margin"]
-[ext_resource type="Script" uid="uid://dug83pdl1h0si" path="res://scene/main/stage_select/debug/stage_select_debug_label.gd" id="45_debug_seed_pool_title_label"]
-[ext_resource type="Script" uid="uid://bqorv7jk0nlas" path="res://scene/main/stage_select/debug/stage_select_debug_scroll.gd" id="46_debug_seed_pool_scroll"]
-[ext_resource type="Script" uid="uid://db60itn8qj4ap" path="res://scene/main/stage_select/debug/stage_select_debug_text.gd" id="47_debug_seed_pool_text"]
 [ext_resource type="PackedScene" uid="uid://bk0m5bk7vnrh8" path="res://scene/ui/view/time_view.tscn" id="48_time_view_scene"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_debug_seed_pool"]
-bg_color = Color(0, 0, 0, 0.78)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.94, 0.88, 1, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
 
 [node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
@@ -176,63 +158,6 @@ layout_mode = 2
 
 [node name="StageChoice3" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=259931286 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
-
-[node name="DebugSeedPoolPanel" type="PanelContainer" parent="UI" unique_id=1235384540]
-visible = false
-layout_mode = 0
-offset_left = 4.0
-offset_top = 8.0
-offset_right = 452.0
-offset_bottom = 352.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_debug_seed_pool")
-script = ExtResource("39_debug_seed_pool_panel")
-
-[node name="Margin" type="MarginContainer" parent="UI/DebugSeedPoolPanel" unique_id=876047967]
-layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-script = ExtResource("43_debug_seed_pool_margin")
-
-[node name="Items" type="VBoxContainer" parent="UI/DebugSeedPoolPanel/Margin" unique_id=1355754087]
-layout_mode = 2
-theme_override_constants/separation = 2
-script = ExtResource("43_bxeow")
-
-[node name="TitleLabel" type="Label" parent="UI/DebugSeedPoolPanel/Margin/Items" unique_id=1600233487]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 10
-text = "Seed Pool"
-text_overrun_behavior = 3
-script = ExtResource("45_debug_seed_pool_title_label")
-
-[node name="DebugSeedScroll" type="ScrollContainer" parent="UI/DebugSeedPoolPanel/Margin/Items" unique_id=232839403]
-custom_minimum_size = Vector2(440, 318)
-layout_mode = 2
-horizontal_scroll_mode = 0
-vertical_scroll_mode = 2
-script = ExtResource("46_debug_seed_pool_scroll")
-
-[node name="SeedPoolText" type="RichTextLabel" parent="UI/DebugSeedPoolPanel/Margin/Items/DebugSeedScroll" unique_id=128661934]
-custom_minimum_size = Vector2(440, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/default_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_fonts/normal_font = ExtResource("2_font")
-theme_override_font_sizes/normal_font_size = 7
-bbcode_enabled = true
-fit_content = true
-scroll_active = false
-autowrap_mode = 1
-script = ExtResource("47_debug_seed_pool_text")
 
 [node name="DebugButton" type="Button" parent="UI" unique_id=673340750]
 layout_mode = 0

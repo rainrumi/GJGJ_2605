@@ -27,6 +27,10 @@ func _run() -> void:
 	var iriyu := load("res://data/resources/area/area_iriyu/area_iriyu.tres") as StageInfo
 	stage_select.call("setup_stage_choices", iriyu, 1)
 	_expect(_get_displayed_stages(stage_select).size() == 4, "通常時は既存の到達可能4エリアを表示する")
+	_expect(
+		stage_select.get_node_or_null("UI/DebugSeedPoolPanel") == null,
+		"ステージデータのdebugパネルを構成しない"
+	)
 
 	var debug_button := stage_select.get_node_or_null("UI/DebugButton") as Button
 	_expect(debug_button != null, "Debugボタンを構成する")
@@ -74,6 +78,8 @@ func _check_all_areas(stage_select: Node, context: String) -> void:
 		return
 	for child in choice_list.get_children():
 		if child is StageSelectChoice and child.visible and not child.disabled:
+			child.mouse_entered.emit()
+			child.mouse_exited.emit()
 			child.pressed.emit()
 	_expect(
 		_selected_stage_areas.size() == EXPECTED_DEBUG_AREA_COUNT,
