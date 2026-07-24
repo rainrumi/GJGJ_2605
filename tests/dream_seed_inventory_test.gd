@@ -128,6 +128,15 @@ func _check_owned_seed_panel() -> void:
 			== "res://art/ui/button/ui_button_seed_directory_close.png",
 		"閉じるボタンに専用画像を使用する"
 	)
+	var panel_lock_toggle := panel.get_node("PanelLockToggle") as CheckBox
+	_expect(panel_lock_toggle.text == "種パネルロック", "左下に種パネルロックトグルを表示する")
+	_expect(panel_lock_toggle.button_pressed, "種パネルロックをONで開始して従来の閉じ方を維持する")
+	_expect(
+		is_equal_approx(panel_lock_toggle.position.x, stored_list.position.x)
+		and panel_lock_toggle.position.y > close_button.position.y + close_button.size.y
+		and panel_lock_toggle.position.y + panel_lock_toggle.size.y <= panel.size.y,
+		"種パネルロックトグルをパネル左下へ左揃えで配置する"
+	)
 	var equipped_label := panel.get_node("UpperArea/EquippedLabel") as Label
 	var stored_label := panel.get_node("StoredArea/StoredLabel") as Label
 	_expect(equipped_label.text == "装備", "装備枠の上に見出しを表示する")
@@ -293,6 +302,40 @@ func _check_owned_seed_panel() -> void:
 	)
 	_expect(equipped_button.tooltip_panel != null, "装備枠の種に従来のツールチップを設定する")
 	_expect(stored_button.tooltip_panel != null, "所持枠の種に従来のツールチップを設定する")
+	var outside_position := Vector2(panel.size.x + 20.0, panel.size.y * 0.5)
+	var outside_button_event := InputEventMouseButton.new()
+	outside_button_event.button_index = MOUSE_BUTTON_LEFT
+	outside_button_event.pressed = true
+	outside_button_event.position = outside_position
+	outside_button_event.global_position = outside_position
+	panel.call("_input", outside_button_event)
+	_expect(panel.visible, "種パネルロックONではパネル外のマウス操作でも閉じない")
+
+	panel_lock_toggle.button_pressed = false
+	var inside_button_event := InputEventMouseButton.new()
+	inside_button_event.button_index = MOUSE_BUTTON_LEFT
+	inside_button_event.pressed = true
+	inside_button_event.position = panel.size * 0.5
+	inside_button_event.global_position = panel.size * 0.5
+	panel.call("_input", inside_button_event)
+	_expect(panel.visible, "種パネルロックOFFでもパネル内のマウス操作では閉じない")
+
+	var outside_motion_event := InputEventMouseMotion.new()
+	outside_motion_event.position = outside_position
+	outside_motion_event.global_position = outside_position
+	outside_motion_event.relative = Vector2.ONE
+	panel.call("_input", outside_motion_event)
+	_expect(panel.visible, "種パネルロックOFFでもパネル外のマウス移動だけでは閉じない")
+
+	var close_signal_count := [0]
+	panel.closed.connect(func() -> void: close_signal_count[0] += 1)
+	panel.call("_input", outside_button_event)
+	_expect(
+		not panel.visible and int(close_signal_count[0]) == 1,
+		"種パネルロックOFFでパネル外をマウス操作するとパネルを閉じる"
+	)
+	panel_lock_toggle.button_pressed = true
+	panel.open_panel()
 	await _capture_viewport_from_environment("DREAM_SEED_EMPTY_CAPTURE_PATH")
 	_dispose(panel)
 	await get_tree().process_frame
