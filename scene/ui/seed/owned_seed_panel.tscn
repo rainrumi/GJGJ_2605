@@ -6,6 +6,7 @@
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="4_font"]
 [ext_resource type="PackedScene" uid="uid://bsxyd8fke3wr2" path="res://scene/ui/seed/tooltip/seed_tooltip.tscn" id="5_seed_tooltip"]
 [ext_resource type="Texture2D" uid="uid://k4xtokaxlc1d" path="res://art/ui/button/ui_button_seed_directory_close.png" id="6_close_texture"]
+[ext_resource type="Script" uid="uid://c284ogkr07lmb" path="res://scene/ui/button/hover_scale_texture_button.gd" id="7_hover_scale"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
 bg_color = Color(0.035, 0.02, 0.055, 0.7)
@@ -103,6 +104,7 @@ offset_right = 155.0
 offset_bottom = 303.0
 focus_mode = 0
 texture_normal = ExtResource("6_close_texture")
+script = ExtResource("7_hover_scale")
 
 [node name="HeadingTooltip" parent="." unique_id=119193676 instance=ExtResource("5_seed_tooltip")]
 

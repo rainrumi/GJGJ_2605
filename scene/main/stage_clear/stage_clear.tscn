@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://yh8b6gdwnf38" path="res://art/ui/icon/ui_icon_digestiveHP.png" id="23_digestive_hp_icon"]
 [ext_resource type="PackedScene" uid="uid://dqdytqcjhv1yw" path="res://scene/ui/seed/owned_seed_panel.tscn" id="24_owned_seed_panel"]
 [ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://art/ui/button/ui_button_seed_directory_open.png" id="25_owned_seed_open_texture"]
+[ext_resource type="Script" uid="uid://c284ogkr07lmb" path="res://scene/ui/button/hover_scale_texture_button.gd" id="26_hover_scale"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
@@ -47,6 +48,7 @@ offset_right = 155.0
 offset_bottom = 303.0
 focus_mode = 0
 texture_normal = ExtResource("25_owned_seed_open_texture")
+script = ExtResource("26_hover_scale")
 
 [node name="FlowerSlots" type="Control" parent="CharacterArea" unique_id=816859833]
 layout_mode = 3

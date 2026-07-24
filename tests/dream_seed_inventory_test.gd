@@ -121,6 +121,7 @@ func _check_owned_seed_panel() -> void:
 	var close_button := panel.get_node("CloseButton") as TextureButton
 	_expect(close_button.position.is_equal_approx(Vector2(29.0, 279.0)), "閉じるボタンを10px下へ移動する")
 	_expect(close_button.size.is_equal_approx(Vector2(126.0, 24.0)), "閉じるボタンを開くボタンと同じサイズにする")
+	await _check_hover_scale_button(close_button, "所有種パネルの閉じるボタン")
 	_expect(
 		close_button.texture_normal != null
 		and close_button.texture_normal.resource_path
@@ -330,6 +331,7 @@ func _check_game_inventory_integration() -> void:
 	var closed_button := closed_list.get_child(0) as SeedButton
 	_expect(is_equal_approx(hp_view.position.y, 263.0), "HPバーを10px下へ移動する")
 	_expect(is_equal_approx(open_button.position.y, 279.0), "所有種パネルを開くボタンを10px下へ移動する")
+	await _check_hover_scale_button(open_button, "戦闘画面の所有種パネル表示ボタン")
 	_expect(
 		is_equal_approx(
 			open_button.position.x + open_button.size.x * 0.5,
@@ -514,6 +516,7 @@ func _check_stage_clear_storage_reward() -> void:
 	var hp_view := stage_clear.get_node("CharacterArea/HpView") as HpView
 	var open_button := stage_clear.get_node("CharacterArea/OwnedSeedOpenButton") as TextureButton
 	var owned_panel := stage_clear.get_node("CharacterArea/OwnedSeedPanel") as OwnedSeedPanel
+	await _check_hover_scale_button(open_button, "ステージクリア画面の所有種パネル表示ボタン")
 	_expect(
 		hp_view.position.is_equal_approx(Vector2(29.0, 263.0)),
 		"ステージクリア画面のHPバー位置をgame.tscnへ合わせる"
@@ -666,6 +669,24 @@ func _create_seeds(count: int, first_id: int = 0) -> Array[SeedInfo]:
 		seed.sub_description = "Test drag"
 		seeds.append(seed)
 	return seeds
+
+
+func _check_hover_scale_button(button: TextureButton, label: String) -> void:
+	_expect(button is HoverScaleTextureButton, "%sに共通hover拡縮を設定する" % label)
+	_expect(
+		button.pivot_offset.is_equal_approx(button.size * 0.5),
+		"%sを中心基準で拡縮する" % label
+	)
+	var base_scale := button.scale
+	button.mouse_entered.emit()
+	await get_tree().create_timer(HoverScaleTextureButton.TWEEN_DURATION + 0.05).timeout
+	_expect(
+		button.scale.is_equal_approx(base_scale * HoverScaleTextureButton.HOVER_SCALE),
+		"%sをhover時に1.1倍へ拡大する" % label
+	)
+	button.mouse_exited.emit()
+	await get_tree().create_timer(HoverScaleTextureButton.TWEEN_DURATION + 0.05).timeout
+	_expect(button.scale.is_equal_approx(base_scale), "%sをhover終了時に元の大きさへ戻す" % label)
 
 
 func _click_control(control: Control) -> void:
