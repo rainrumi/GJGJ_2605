@@ -9,7 +9,6 @@
 [ext_resource type="Resource" uid="uid://sqlt6j4xlv0b" path="res://data/resources/seeds/skills/seed_100_101.tres" id="12_seed_skill_1001"]
 [ext_resource type="Resource" uid="uid://c6y5aptnps475" path="res://data/resources/seeds/skills/seed_100_102.tres" id="13_seed_skill_1002"]
 [ext_resource type="Resource" uid="uid://d02kf3ks5jgm1" path="res://data/resources/seeds/skills/seed_100_103.tres" id="14_seed_skill_1003"]
-[ext_resource type="Script" uid="uid://240s4mmakytb" path="res://scene/ui/seed/seed_button_list/seed_button_list.gd" id="15_dream_seed_skill_button_list"]
 [ext_resource type="PackedScene" uid="uid://bfh6kan0q3y4s" path="res://scene/main/stage_clear/abandon/abandon_button.tscn" id="16_abandon_button"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="17_seed_skill_definition"]
 [ext_resource type="Script" uid="uid://d4m8xq2s7qaab" path="res://scene/main/stage_clear/stage_clear_character.gd" id="18_character_area_script"]
@@ -18,6 +17,8 @@
 [ext_resource type="PackedScene" uid="uid://cmy4qy4b7c2dg" path="res://scene/ui/battle_ui/view/acid_damage_view.tscn" id="21_acid_damage_view"]
 [ext_resource type="PackedScene" uid="uid://bd1mkyol6nw5h" path="res://scene/ui/battle_ui/view/acid_interval_view.tscn" id="22_acid_interval_view"]
 [ext_resource type="Texture2D" uid="uid://yh8b6gdwnf38" path="res://art/ui/icon/ui_icon_digestiveHP.png" id="23_digestive_hp_icon"]
+[ext_resource type="PackedScene" uid="uid://dqdytqcjhv1yw" path="res://scene/ui/seed/owned_seed_panel.tscn" id="24_owned_seed_panel"]
+[ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://art/ui/button/ui_button_seed_directory_open.png" id="25_owned_seed_open_texture"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
@@ -33,19 +34,19 @@ texture = ExtResource("3_character")
 
 [node name="HpView" parent="CharacterArea" unique_id=1355600101 instance=ExtResource("9_hp_scene")]
 offset_left = 29.0
-offset_top = 253.0
+offset_top = 263.0
 offset_right = 155.0
-offset_bottom = 266.0
+offset_bottom = 276.0
 
-[node name="SeedButtonList" type="HFlowContainer" parent="CharacterArea" unique_id=1933210198]
+[node name="OwnedSeedOpenButton" type="TextureButton" parent="CharacterArea"]
+visible = false
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 offset_left = 29.0
-offset_top = 270.0
+offset_top = 279.0
 offset_right = 155.0
-offset_bottom = 342.0
-mouse_filter = 2
-theme_override_constants/h_separation = 2
-theme_override_constants/v_separation = 2
-script = ExtResource("15_dream_seed_skill_button_list")
+offset_bottom = 303.0
+focus_mode = 0
+texture_normal = ExtResource("25_owned_seed_open_texture")
 
 [node name="FlowerSlots" type="Control" parent="CharacterArea" unique_id=816859833]
 layout_mode = 3
@@ -110,6 +111,9 @@ offset_bottom = 44.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
+
+[node name="OwnedSeedPanel" parent="CharacterArea" instance=ExtResource("24_owned_seed_panel")]
+visible = false
 
 [node name="UI" type="Control" parent="." unique_id=450061926]
 layout_mode = 3

@@ -505,14 +505,151 @@ func _check_stage_clear_storage_reward() -> void:
 	get_tree().root.add_child(stage_clear)
 	await get_tree().process_frame
 	var equipped := _create_seeds(6, 200)
+	var stored := _create_seeds(2, 300)
 	var reward := SeedInfo.new()
 	reward.skill_id = 999
 	reward.display_name = "Stored reward"
+	stage_clear.call("set_seed_inventory", equipped, stored)
+	await get_tree().process_frame
+	var hp_view := stage_clear.get_node("CharacterArea/HpView") as HpView
+	var open_button := stage_clear.get_node("CharacterArea/OwnedSeedOpenButton") as TextureButton
+	var owned_panel := stage_clear.get_node("CharacterArea/OwnedSeedPanel") as OwnedSeedPanel
+	_expect(
+		hp_view.position.is_equal_approx(Vector2(29.0, 263.0)),
+		"ステージクリア画面のHPバー位置をgame.tscnへ合わせる"
+	)
+	_expect(
+		is_equal_approx(open_button.position.y, hp_view.position.y + hp_view.size.y + 3.0),
+		"ステージクリア画面の所有種パネル表示ボタンをHPバーの3px下に置く"
+	)
+	_expect(not owned_panel.visible and open_button.visible, "ステージクリア画面では所有種パネルを閉じて開始する")
+	await _click_control(open_button)
+	_expect(owned_panel.visible and not open_button.visible, "ステージクリア画面で所有種パネルを開ける")
+	var equipped_list := owned_panel.get_node("UpperArea/EquippedList") as SeedButtonList
+	var stored_list := owned_panel.get_node("StoredArea/StoredList") as SeedButtonList
+	_expect(equipped_list.get_child_count() == 6, "ステージクリア画面のパネルに装備種を表示する")
+	_expect(stored_list.get_child_count() == 12, "ステージクリア画面のパネルに所持種枠を表示する")
+	_expect(
+		equipped_list.loadout_edit_enabled
+		and equipped_list.sub_skill_drag_enabled
+		and stored_list.loadout_edit_enabled
+		and stored_list.sub_skill_drag_enabled,
+		"ステージクリア画面の所有種パネルで種操作を有効にする"
+	)
+	var drag_start_points: Array[Vector2] = [
+		Vector2(2.0, 2.0),
+		Vector2(28.0, 2.0),
+		Vector2(15.0, 15.0),
+		Vector2(2.0, 28.0),
+		Vector2(28.0, 28.0),
+	]
+	for drag_start_point in drag_start_points:
+		stage_clear.call("set_seed_inventory", equipped, stored)
+		await get_tree().process_frame
+		var source_button := equipped_list.get_child(0) as SeedButton
+		var destination_button := stored_list.get_child(0) as SeedButton
+		_expect(
+			source_button.size.is_equal_approx(source_button.frame.size)
+			and source_button.size.is_equal_approx(Vector2(30.0, 30.0)),
+			"ステージクリア画面の種表示枠とドラッグ判定を30px角で揃える"
+		)
+		await _drag_control_from_point(source_button, drag_start_point, destination_button)
+		_expect(
+			(stage_clear.call("get_planted_flowers") as Array)[0] == stored[0]
+			and (stage_clear.call("get_stored_seeds") as Array)[0] == equipped[0],
+			"ステージクリア画面の種を枠内の%sからドラッグできる" % drag_start_point
+		)
+	var equipped_button := equipped_list.get_child(0) as SeedButton
+	var stored_button := stored_list.get_child(0) as SeedButton
+	var equipped_before_move := equipped_button.seed
+	var stored_before_move := stored_button.seed
+	owned_panel.call(
+		"_on_seed_drag_started",
+		equipped_button,
+		equipped_before_move,
+		equipped_button.global_position + equipped_button.size * 0.5
+	)
+	owned_panel.call(
+		"_on_seed_drag_released",
+		equipped_button,
+		equipped_before_move,
+		stored_button.global_position + stored_button.size * 0.5
+	)
+	_expect(
+		(stage_clear.call("get_planted_flowers") as Array)[0] == stored_before_move
+		and (stage_clear.call("get_stored_seeds") as Array)[0] == equipped_before_move,
+		"ステージクリア画面で装備枠と所持枠の種をドラッグ入替できる"
+	)
+	var sparse_equipped: Array[SeedInfo] = [equipped[0], equipped[1], equipped[2]]
+	stage_clear.call("set_seed_inventory", sparse_equipped, stored)
+	await get_tree().process_frame
+	equipped_button = equipped_list.get_child(0) as SeedButton
+	var empty_equipped_button := equipped_list.get_child(5) as SeedButton
+	var sparse_seed := equipped_button.seed
+	owned_panel.call(
+		"_on_seed_drag_started",
+		equipped_button,
+		sparse_seed,
+		equipped_button.global_position + equipped_button.size * 0.5
+	)
+	owned_panel.call(
+		"_on_seed_drag_released",
+		equipped_button,
+		sparse_seed,
+		empty_equipped_button.global_position + empty_equipped_button.size * 0.5
+	)
+	var equipped_slots := stage_clear.call("get_equipped_seed_slots") as Array
+	_expect(
+		equipped_slots.size() == 6
+		and equipped_slots[0] == null
+		and equipped_slots[5] == sparse_seed,
+		"ステージクリア画面で空の装備枠へ移動した位置を保持する"
+	)
+	equipped_button = equipped_list.get_child(5) as SeedButton
+	var equipped_after_move := (stage_clear.call("get_planted_flowers") as Array).duplicate()
+	var stored_after_move := (stage_clear.call("get_stored_seeds") as Array).duplicate()
+	var outside_position := Vector2(300.0, 100.0)
+	owned_panel.call(
+		"_on_seed_drag_started",
+		equipped_button,
+		equipped_button.seed,
+		equipped_button.global_position + equipped_button.size * 0.5
+	)
+	owned_panel.call("_on_seed_drag_moved", equipped_button, equipped_button.seed, outside_position)
+	owned_panel.call("_on_seed_drag_released", equipped_button, equipped_button.seed, outside_position)
+	var generated_enemy_found := false
+	for descendant in stage_clear.find_children("*", "", true, false):
+		if descendant is Enemy:
+			generated_enemy_found = true
+			break
+	_expect(
+		(stage_clear.call("get_planted_flowers") as Array) == equipped_after_move
+		and (stage_clear.call("get_stored_seeds") as Array) == stored_after_move,
+		"ステージクリア画面ではパネル外へ種を出してもinventoryを変更しない"
+	)
+	_expect(
+		not owned_panel.drag_preview.visible and not generated_enemy_found,
+		"ステージクリア画面ではパネル外ドラッグ時に種ブロックを生成しない"
+	)
+	var close_button := owned_panel.get_node("CloseButton") as TextureButton
+	await _capture_viewport_from_environment("STAGE_CLEAR_SEED_PANEL_CAPTURE_PATH")
+	await _click_control(close_button)
+	_expect(not owned_panel.visible and open_button.visible, "ステージクリア画面で所有種パネルを閉じられる")
 	stage_clear.call("set_seed_inventory", equipped, [])
+	open_button.pressed.emit()
+	stage_clear.call("setup_clear_result", 50, 22 * 60)
+	_expect(
+		not owned_panel.visible and open_button.visible,
+		"次のステージクリア結果設定時は所有種パネルを閉じる"
+	)
 	stage_clear.set("seed_options", [reward])
 	stage_clear.call("_on_seed_choice_pressed", 0)
 	_expect((stage_clear.call("get_planted_flowers") as Array).size() == 6, "報酬取得でも装備枠を6個に保つ")
 	_expect((stage_clear.call("get_stored_seeds") as Array).size() == 1, "満杯時の報酬種を所持枠へ加える")
+	_expect(
+		_count_populated_buttons(stored_list) == 1,
+		"ステージクリア画面の所有種パネルへ報酬種を同期する"
+	)
 	_dispose(stage_clear)
 	await get_tree().process_frame
 
@@ -546,6 +683,40 @@ func _click_control(control: Control) -> void:
 	release_event.pressed = false
 	release_event.position = click_position
 	release_event.global_position = click_position
+	get_viewport().push_input(release_event, true)
+	await get_tree().process_frame
+
+
+func _drag_control_from_point(
+	control: Control,
+	local_start_position: Vector2,
+	destination: Control
+) -> void:
+	var start_position := control.get_global_transform_with_canvas() * local_start_position
+	var destination_position := (
+		destination.get_global_transform_with_canvas() * (destination.size * 0.5)
+	)
+	var press_event := InputEventMouseButton.new()
+	press_event.button_index = MOUSE_BUTTON_LEFT
+	press_event.pressed = true
+	press_event.position = start_position
+	press_event.global_position = start_position
+	get_viewport().push_input(press_event, true)
+	await get_tree().process_frame
+
+	var motion_event := InputEventMouseMotion.new()
+	motion_event.button_mask = MOUSE_BUTTON_MASK_LEFT
+	motion_event.position = destination_position
+	motion_event.global_position = destination_position
+	motion_event.relative = destination_position - start_position
+	get_viewport().push_input(motion_event, true)
+	await get_tree().process_frame
+
+	var release_event := InputEventMouseButton.new()
+	release_event.button_index = MOUSE_BUTTON_LEFT
+	release_event.pressed = false
+	release_event.position = destination_position
+	release_event.global_position = destination_position
 	get_viewport().push_input(release_event, true)
 	await get_tree().process_frame
 

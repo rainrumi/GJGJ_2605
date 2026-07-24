@@ -45,6 +45,7 @@ var reward_service := StageClearReward.new()
 func _ready() -> void:
 	_cache_base_seed_options()
 	_initialize_planted_flowers()
+	_connect_character_signals()
 	_connect_ui_signals()
 	_connect_debug_state()
 	_set_debug_numbers_visible(DebugState.debug_enabled)
@@ -58,6 +59,7 @@ func setup_hp(value: int) -> void:
 	_current_clear_stage = null
 	_restore_base_seed_options()
 	if is_node_ready():
+		character_area.close_owned_seed_panel()
 		_set_hp(current_hp, false)
 		_show_select_mode()
 
@@ -77,6 +79,7 @@ func setup_clear_result(
 	_restore_base_seed_options()
 	_apply_stage_drop_options(cleared_stage)
 	if is_node_ready():
+		character_area.close_owned_seed_panel()
 		_set_hp(current_hp, false)
 		_show_select_mode()
 
@@ -88,6 +91,7 @@ func reset_player_state() -> void:
 	_restore_base_seed_options()
 	_initialize_planted_flowers()
 	if is_node_ready():
+		character_area.close_owned_seed_panel()
 		_set_hp(current_hp, false)
 		_show_select_mode()
 
@@ -115,20 +119,22 @@ func get_stored_seeds() -> Array[SeedInfo]:
 	return seeds
 
 
+# 装備種slot取得
+func get_equipped_seed_slots() -> Array[SeedInfo]:
+	return planted_flowers.duplicate()
+
+
+# 所持種slot取得
+func get_stored_seed_slots() -> Array[SeedInfo]:
+	return stored_seeds.duplicate()
+
+
 # 種inventory設定
 func set_seed_inventory(equipped_seeds: Array, possession_seeds: Array) -> void:
-	planted_flowers.clear()
-	stored_seeds.clear()
-	for source in equipped_seeds:
-		if not (source is SeedInfo):
-			continue
-		if planted_flowers.size() < MAX_EQUIPPED_SEEDS:
-			planted_flowers.append(source as SeedInfo)
-		else:
-			stored_seeds.append(source as SeedInfo)
-	for source in possession_seeds:
-		if source is SeedInfo:
-			stored_seeds.append(source as SeedInfo)
+	var inventory := GameSeedController.new()
+	inventory.set_seed_inventory(equipped_seeds, possession_seeds)
+	planted_flowers = inventory.get_flowers().duplicate()
+	stored_seeds = inventory.get_stored_seeds().duplicate()
 	if is_node_ready():
 		_refresh_after_reward_state_changed()
 
@@ -153,6 +159,13 @@ func remove_planted_flower(source: Resource) -> void:
 		_refresh_after_reward_state_changed()
 
 
+# キャラクター信号接続
+func _connect_character_signals() -> void:
+	character_area.seed_equip_requested.connect(_on_seed_equip_requested)
+	character_area.seed_unequip_requested.connect(_on_seed_unequip_requested)
+	character_area.seed_move_requested.connect(_on_seed_move_requested)
+
+
 # UI信号接続
 func _connect_ui_signals() -> void:
 	ui.seed_choice_pressed.connect(_on_seed_choice_pressed)
@@ -167,6 +180,56 @@ func _connect_ui_signals() -> void:
 	ui.hp_tooltip_hide_requested.connect(_on_hp_tooltip_hide_requested)
 
 
+# 種装備要求
+func _on_seed_equip_requested(seed: SeedInfo) -> void:
+	var inventory := _create_seed_inventory_controller()
+	if not inventory.equip_seed(seed):
+		return
+	_apply_seed_inventory_controller(inventory)
+
+
+# 種装備解除要求
+func _on_seed_unequip_requested(seed: SeedInfo) -> void:
+	var inventory := _create_seed_inventory_controller()
+	if not inventory.unequip_seed(seed):
+		return
+	_apply_seed_inventory_controller(inventory)
+
+
+# 種枠移動要求
+func _on_seed_move_requested(
+	seed: SeedInfo,
+	source_collection: int,
+	source_index: int,
+	target_collection: int,
+	target_index: int
+) -> void:
+	var inventory := _create_seed_inventory_controller()
+	if not inventory.move_seed_to_slot(
+		seed,
+		source_collection,
+		source_index,
+		target_collection,
+		target_index
+	):
+		return
+	_apply_seed_inventory_controller(inventory)
+
+
+# 種inventory controller作成
+func _create_seed_inventory_controller() -> GameSeedController:
+	var inventory := GameSeedController.new()
+	inventory.set_seed_inventory(planted_flowers, stored_seeds)
+	return inventory
+
+
+# 種inventory controller適用
+func _apply_seed_inventory_controller(inventory: GameSeedController) -> void:
+	planted_flowers = inventory.get_flowers().duplicate()
+	stored_seeds = inventory.get_stored_seeds().duplicate()
+	_refresh_after_reward_state_changed()
+
+
 # 花初期化
 func _initialize_planted_flowers() -> void:
 	planted_flowers.clear()
@@ -174,7 +237,7 @@ func _initialize_planted_flowers() -> void:
 	if initial_flower != null:
 		planted_flowers.append(initial_flower)
 	if is_node_ready():
-		character_area.set_planted_flowers(get_planted_flowers())
+		character_area.set_seed_inventory(planted_flowers, stored_seeds)
 
 
 # clear初期化
@@ -475,7 +538,7 @@ func _refresh_after_reward_state_changed() -> void:
 
 # 報酬UI更新
 func _refresh_reward_ui() -> void:
-	character_area.set_planted_flowers(get_planted_flowers())
+	character_area.set_seed_inventory(planted_flowers, stored_seeds)
 	ui.setup_seed_choices(seed_options, _get_seed_selectable_states())
 	_update_hp_tooltip_info()
 	_update_hp_heal_plan()

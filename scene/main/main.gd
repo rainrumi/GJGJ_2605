@@ -501,9 +501,13 @@ func _sync_player_stomach_size() -> void:
 func _sync_run_state_from_stage_clear() -> void:
 	if stage_clear.has_method("get_current_hp"):
 		run_state.current_hp = stage_clear.get_current_hp()
-	if stage_clear.has_method("get_planted_flowers"):
+	if stage_clear.has_method("get_equipped_seed_slots"):
+		run_state.planted_flowers = stage_clear.get_equipped_seed_slots()
+	elif stage_clear.has_method("get_planted_flowers"):
 		run_state.planted_flowers = stage_clear.get_planted_flowers()
-	if stage_clear.has_method("get_stored_seeds"):
+	if stage_clear.has_method("get_stored_seed_slots"):
+		run_state.stored_seeds = stage_clear.get_stored_seed_slots()
+	elif stage_clear.has_method("get_stored_seeds"):
 		run_state.stored_seeds = stage_clear.get_stored_seeds()
 	if stage_clear.has_method("get_permanent_acid_damage_bonus_rate"):
 		run_state.permanent_acid_damage_bonus_rate = stage_clear.get_permanent_acid_damage_bonus_rate()
