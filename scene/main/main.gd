@@ -27,6 +27,7 @@ enum NovelFlow {
 @onready var stage_clear: Node = $StageClear
 @onready var bgm: BeatConductor = $BGM
 @onready var se_click: AudioStreamPlayer = $SeClick
+@onready var se_select: AudioStreamPlayer = $SeSelect
 @onready var settings_screen: SettingsScreen = $SettingsScreen
 
 var run_state := RunState.new()
@@ -66,9 +67,12 @@ func _connect_ui_buttons(node: Node) -> void:
 
 
 func _connect_ui_button(button: BaseButton) -> void:
-	var callback := _on_ui_button_pressed.bind(button)
-	if not button.pressed.is_connected(callback):
-		button.pressed.connect(callback)
+	var pressed_callback := _on_ui_button_pressed.bind(button)
+	if not button.pressed.is_connected(pressed_callback):
+		button.pressed.connect(pressed_callback)
+	var mouse_entered_callback := _on_ui_button_mouse_entered.bind(button)
+	if not button.mouse_entered.is_connected(mouse_entered_callback):
+		button.mouse_entered.connect(mouse_entered_callback)
 
 
 func _on_node_added(node: Node) -> void:
@@ -82,11 +86,24 @@ func _on_ui_button_pressed(button: BaseButton) -> void:
 	_play_se_click()
 
 
+func _on_ui_button_mouse_entered(button: BaseButton) -> void:
+	if button.disabled:
+		return
+	_play_se_select()
+
+
 func _play_se_click() -> void:
 	if se_click.stream == null:
 		return
 	se_click.stop()
 	se_click.play()
+
+
+func _play_se_select() -> void:
+	if se_select.stream == null:
+		return
+	se_select.stop()
+	se_select.play()
 
 
 # 未処理入力

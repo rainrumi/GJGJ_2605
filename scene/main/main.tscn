@@ -13,6 +13,7 @@
 [ext_resource type="Resource" path="res://data/resources/novel/novel_ending_gameclear.tres" id="12_game_clear_text"]
 [ext_resource type="PackedScene" uid="uid://o8cavvep5sxl" path="res://scene/main/settings/settings_screen.tscn" id="13_settings"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://resource/sound/se/se_click.mp3" id="14_se_click"]
+[ext_resource type="AudioStream" path="res://resource/sound/se/se_select.mp3" id="15_se_select"]
 
 [node name="Main" type="Node" unique_id=1753159910]
 script = ExtResource("1_6vuhr")
@@ -39,6 +40,10 @@ bgm_stream = ExtResource("10_bgm")
 [node name="SeClick" type="AudioStreamPlayer" parent="."]
 process_mode = 3
 stream = ExtResource("14_se_click")
+
+[node name="SeSelect" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("15_se_select")
 
 [node name="Title" parent="." unique_id=1609153234 instance=ExtResource("2_a0c6e")]
 

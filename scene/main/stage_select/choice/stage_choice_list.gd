@@ -5,6 +5,8 @@ signal choice_pressed(choice_index: int)
 signal choice_hovered(choice_index: int)
 signal choice_unhovered(choice_index: int)
 
+@onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
+
 var _stage_choices: Array[StageSelectChoice] = []
 
 
@@ -71,6 +73,8 @@ func _get_exploration_percent(exploration_percents: Array[int], choice_index: in
 
 # 押下通知
 func _on_stage_choice_pressed(choice_index: int) -> void:
+	if _mouse_drag_state.is_dragging():
+		return
 	choice_pressed.emit(choice_index)
 
 

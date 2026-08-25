@@ -30,6 +30,11 @@ func _run() -> void:
 	context.enemy_preset = preset
 	game.call("start_battle", context)
 	await process_frame
+	var attack_se := game.get_node("AttackSe") as AudioStreamPlayer
+	game.call("_apply_player_damage", [1])
+	_expect(attack_se != null and attack_se.playing, "悪夢の被ダメージ時に攻撃SEを再生する")
+	attack_se.stop()
+	attack_se.stream = null
 	await create_timer(HP_VALUE_POPUP_WAIT_SECONDS).timeout
 	await process_frame
 

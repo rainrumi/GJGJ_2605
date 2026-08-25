@@ -21,6 +21,7 @@ const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転で
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
 @onready var click_se: AudioStreamPlayer = $ClickSe
+@onready var attack_se: AudioStreamPlayer = $AttackSe
 @onready var enemies: Array[Enemy] = [$EnemyLeft as Enemy, $EnemyCenter as Enemy, $EnemyRight as Enemy, $EnemyUpperRight as Enemy]
 var minutes := START_HOUR * 60
 var hp := MAX_HP
@@ -681,8 +682,7 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	# ダメージvalues
 	var damage_values: Array[int] = [damage]
 	if damage > 0:
-		ui.show_hp_damage_values(damage_values)
-		hp = maxi(0, hp - damage)
+		_apply_player_damage(damage_values)
 	_refresh_after_battle_event()
 # advance消化turn処理
 func _advance_acid_turn() -> void:
@@ -772,8 +772,7 @@ func _apply_progress_effect_result(result: BattleTurnResultData) -> void:
 		return
 	_apply_acid_spawn_requests(result.spawn_requests)
 	if not result.player_damage_values.is_empty():
-		ui.show_hp_damage_values(result.player_damage_values)
-		hp = maxi(0, hp - _sum_damage_values(result.player_damage_values))
+		_apply_player_damage(result.player_damage_values)
 	if result.extra_elapsed_minutes != 0:
 		minutes += result.extra_elapsed_minutes
 
@@ -1059,8 +1058,18 @@ func _apply_player_damage_values() -> void:
 	var player_damage_values := acid_controller.resolve_enemy_attacks(enemies, stomach, minutes)
 	if player_damage_values.is_empty():
 		return
-	ui.show_hp_damage_values(player_damage_values)
-	hp = maxi(0, hp - _sum_damage_values(player_damage_values))
+	_apply_player_damage(player_damage_values)
+
+
+func _apply_player_damage(damage_values: Array[int]) -> void:
+	var total_damage := _sum_damage_values(damage_values)
+	if total_damage <= 0:
+		return
+	ui.show_hp_damage_values(damage_values)
+	hp = maxi(0, hp - total_damage)
+	if attack_se.stream != null:
+		attack_se.stop()
+		attack_se.play()
 
 
 # effective最大HP更新
