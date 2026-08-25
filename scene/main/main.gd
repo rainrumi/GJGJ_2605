@@ -26,6 +26,7 @@ enum NovelFlow {
 @onready var game_ui: CanvasLayer = $Game/UI
 @onready var stage_clear: Node = $StageClear
 @onready var bgm: BeatConductor = $BGM
+@onready var se_click: AudioStreamPlayer = $SeClick
 @onready var settings_screen: SettingsScreen = $SettingsScreen
 
 var run_state := RunState.new()
@@ -38,6 +39,9 @@ var _screen_flow_id := 0
 
 # 初期化
 func _ready() -> void:
+	get_tree().node_added.connect(_on_node_added)
+	_connect_ui_buttons(self)
+	opening_novel.advanced.connect(_play_se_click)
 	settings_screen.closed.connect(_on_settings_screen_closed)
 	settings_screen.title_requested.connect(_on_settings_title_requested)
 	if game.has_method("set_beat_conductor"):
@@ -52,6 +56,37 @@ func _ready() -> void:
 		game.connect("seed_inventory_changed", Callable(self, "_on_game_seed_inventory_changed"))
 	_play_bgm()
 	show_title()
+
+
+func _connect_ui_buttons(node: Node) -> void:
+	if node is BaseButton:
+		_connect_ui_button(node as BaseButton)
+	for child in node.get_children():
+		_connect_ui_buttons(child)
+
+
+func _connect_ui_button(button: BaseButton) -> void:
+	var callback := _on_ui_button_pressed.bind(button)
+	if not button.pressed.is_connected(callback):
+		button.pressed.connect(callback)
+
+
+func _on_node_added(node: Node) -> void:
+	if node is BaseButton and is_ancestor_of(node):
+		_connect_ui_button(node as BaseButton)
+
+
+func _on_ui_button_pressed(button: BaseButton) -> void:
+	if game.is_ancestor_of(button) or settings_screen.is_ancestor_of(button):
+		return
+	_play_se_click()
+
+
+func _play_se_click() -> void:
+	if se_click.stream == null:
+		return
+	se_click.stop()
+	se_click.play()
 
 
 # 未処理入力

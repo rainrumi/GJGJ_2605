@@ -2,6 +2,7 @@ class_name OpeningNovel
 extends CanvasLayer
 
 signal finished
+signal advanced
 
 @export var novel_text: NovelTextInfo
 
@@ -112,3 +113,4 @@ func _on_screen_gui_input(event: InputEvent) -> void:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
 			_advance_page()
+			advanced.emit()
