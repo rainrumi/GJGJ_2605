@@ -40,11 +40,7 @@ const HARMFUL_DELTA_COLOR := Color(1.0, 0.35, 0.35, 1.0)
 # 消化間隔差分表示
 @onready var acid_interval_delta_label: Label = $StatusPreview/AcidIntervalRow/Delta
 # HP表示
-@onready var hp_view: TextureRect = $StatusPreview/HpRow/HpView
-# HPアイコン
-@onready var hp_icon: TextureRect = $StatusPreview/HpRow/HpView/Icon
-# HP数値表示
-@onready var hp_value_label: Label = $StatusPreview/HpRow/HpView/Value
+@onready var hp_view: StageClearHpView = $StatusPreview/HpRow/HpView
 # HP差分表示
 @onready var hp_delta_label: Label = $StatusPreview/HpRow/Delta
 
@@ -54,9 +50,6 @@ var _seed_choice_active := false
 
 # 初期化
 func _ready() -> void:
-	hp_view.mouse_filter = Control.MOUSE_FILTER_STOP
-	hp_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hp_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_connect_child_signals()
 	_apply_debug_button_state()
 	_update_reroll_button_state()
@@ -120,7 +113,7 @@ func set_status_preview(
 		int(acid_interval_info["enemy_buff"]),
 		float(acid_interval_info["enemy_rate"])
 	)
-	hp_value_label.text = "%d" % hp
+	hp_view.set_hp_value(hp)
 	_set_delta_label(acid_damage_delta_label, preview_acid_damage - acid_damage, true)
 	_set_delta_label(
 		acid_interval_delta_label,
@@ -172,8 +165,8 @@ func _connect_child_signals() -> void:
 	acid_damage_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
 	acid_interval_view.tooltip_requested.connect(_on_status_tooltip_requested)
 	acid_interval_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
-	hp_view.mouse_entered.connect(_on_hp_view_mouse_entered)
-	hp_view.mouse_exited.connect(_on_hp_view_mouse_exited)
+	hp_view.tooltip_requested.connect(_on_hp_view_tooltip_requested)
+	hp_view.tooltip_hide_requested.connect(_on_hp_view_tooltip_hide_requested)
 
 
 # debug外観更新
@@ -257,12 +250,12 @@ func _on_debug_button_pressed() -> void:
 
 
 # HP表示hover通知
-func _on_hp_view_mouse_entered() -> void:
-	hp_tooltip_requested.emit(hp_view.global_position)
+func _on_hp_view_tooltip_requested(view: StageClearHpView) -> void:
+	hp_tooltip_requested.emit(view.global_position)
 
 
 # HP表示hover解除通知
-func _on_hp_view_mouse_exited() -> void:
+func _on_hp_view_tooltip_hide_requested(_view: StageClearHpView) -> void:
 	hp_tooltip_hide_requested.emit()
 
 

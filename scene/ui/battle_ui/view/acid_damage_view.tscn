@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cmy4qy4b7c2dg"]
+[gd_scene format=3 uid="uid://cmy4qy4b7c2dg"]
 
 [ext_resource type="Texture2D" uid="uid://cgefols2qgnfi" path="res://art/ui/icon/ui_icon_digestiveDMG.png" id="1_digestive_dmg_icon"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
@@ -6,20 +6,20 @@
 [ext_resource type="Script" uid="uid://bguqd5rsu6rco" path="res://scene/ui/battle_ui/tooltip/acid_damage_view_tooltip.gd" id="4_acid_damage_tooltip"]
 [ext_resource type="Script" uid="uid://ckv6cr7uji2yt" path="res://scene/ui/battle_ui/view/acid_damage_view.gd" id="5_acid_damage_view_script"]
 
-[node name="AcidDamageView" type="TextureRect"]
+[node name="AcidDamageView" type="TextureRect" unique_id=596010147]
 offset_right = 80.0
 offset_bottom = 34.0
 expand_mode = 2
 script = ExtResource("5_acid_damage_view_script")
 
-[node name="AcidDamageView_icon" type="TextureRect" parent="."]
+[node name="AcidDamageView_icon" type="TextureRect" parent="." unique_id=154056226]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_right = 28.0
 offset_bottom = 34.0
 texture = ExtResource("1_digestive_dmg_icon")
 
-[node name="AcidDamageView_value" type="Label" parent="."]
+[node name="AcidDamageView_value" type="Label" parent="." unique_id=875250385]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 35.0
@@ -30,9 +30,9 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 20
 text = "300"
 vertical_alignment = 1
 
-[node name="AcidDamageView_tooltip" parent="." instance=ExtResource("3_left_tooltip")]
+[node name="AcidDamageView_tooltip" parent="." unique_id=398995370 instance=ExtResource("3_left_tooltip")]
 script = ExtResource("4_acid_damage_tooltip")

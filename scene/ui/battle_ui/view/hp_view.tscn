@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://bguischxty5ml"]
+
+[ext_resource type="Texture2D" uid="uid://yh8b6gdwnf38" path="res://art/ui/icon/ui_icon_digestiveHP.png" id="1_digestive_hp_icon"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+[ext_resource type="Script" path="res://scene/ui/battle_ui/view/hp_view.gd" id="3_hp_view_script"]
+
+[node name="HpView" type="TextureRect" unique_id=905653709]
+offset_right = 95.0
+offset_bottom = 34.0
+script = ExtResource("3_hp_view_script")
+
+[node name="Icon" type="TextureRect" parent="." unique_id=2015984910]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+layout_mode = 0
+offset_right = 28.0
+offset_bottom = 34.0
+texture = ExtResource("1_digestive_hp_icon")
+
+[node name="Value" type="Label" parent="." unique_id=195866497]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 3.0
+offset_right = 95.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "100"
+vertical_alignment = 1

@@ -30,7 +30,7 @@ func _run() -> void:
 	var acid_damage_delta := status_preview.get_node("AcidDamageRow/Delta") as Label
 	var acid_interval_view := status_preview.get_node("AcidIntervalRow/AcidIntervalView") as AcidIntervalView
 	var acid_interval_delta := status_preview.get_node("AcidIntervalRow/Delta") as Label
-	var hp_view := status_preview.get_node("HpRow/HpView") as TextureRect
+	var hp_view := status_preview.get_node("HpRow/HpView") as StageClearHpView
 	var hp_icon := status_preview.get_node("HpRow/HpView/Icon") as TextureRect
 	var hp_value_label := status_preview.get_node("HpRow/HpView/Value") as Label
 	var hp_delta := status_preview.get_node("HpRow/Delta") as Label
@@ -41,6 +41,10 @@ func _run() -> void:
 	_expect(
 		acid_interval_view.scene_file_path == "res://scene/ui/battle_ui/view/acid_interval_view.tscn",
 		"戦闘画面と同じ消化間隔表示を使用する"
+	)
+	_expect(
+		hp_view.scene_file_path == "res://scene/ui/battle_ui/view/hp_view.tscn",
+		"戦闘画面の表示部品と同じ配置規約でHP表示を使用する"
 	)
 	_expect(acid_damage_view.acid_damage_value_label.text == "50", "通常時の消化ダメージを表示する")
 	_expect(acid_interval_view.acid_interval_value_label.text == "30min", "通常時の消化間隔を表示する")

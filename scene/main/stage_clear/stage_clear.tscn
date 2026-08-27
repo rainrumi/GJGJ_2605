@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://b7n4rcq6t2v0h" path="res://scene/main/stage_clear/stage_clear_choice_seed.gd" id="20_seed_choice_list_script"]
 [ext_resource type="PackedScene" uid="uid://cmy4qy4b7c2dg" path="res://scene/ui/battle_ui/view/acid_damage_view.tscn" id="21_acid_damage_view"]
 [ext_resource type="PackedScene" uid="uid://bd1mkyol6nw5h" path="res://scene/ui/battle_ui/view/acid_interval_view.tscn" id="22_acid_interval_view"]
-[ext_resource type="Texture2D" uid="uid://yh8b6gdwnf38" path="res://art/ui/icon/ui_icon_digestiveHP.png" id="23_digestive_hp_icon"]
+[ext_resource type="PackedScene" uid="uid://bguischxty5ml" path="res://scene/ui/battle_ui/view/hp_view.tscn" id="23_hp_view"]
 [ext_resource type="PackedScene" uid="uid://dqdytqcjhv1yw" path="res://scene/ui/seed/owned_seed_panel.tscn" id="24_owned_seed_panel"]
 [ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://art/ui/button/ui_button_seed_directory_open.png" id="25_owned_seed_open_texture"]
 [ext_resource type="Script" uid="uid://c284ogkr07lmb" path="res://scene/ui/button/hover_scale_texture_button.gd" id="26_hover_scale"]
@@ -171,12 +171,12 @@ autowrap_mode = 3
 
 [node name="StatusPreview" type="VBoxContainer" parent="UI" unique_id=1981558383]
 layout_mode = 0
-offset_left = 164.0
-offset_top = 45.0
-offset_right = 298.9996
-offset_bottom = 219.0
+offset_left = 172.0
+offset_top = 123.0
+offset_right = 297.0
+offset_bottom = 243.0
 mouse_filter = 2
-theme_override_constants/separation = 26
+theme_override_constants/separation = 4
 
 [node name="AcidDamageRow" type="HBoxContainer" parent="UI/StatusPreview" unique_id=1227197432]
 layout_mode = 2
@@ -216,30 +216,9 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="HpView" type="TextureRect" parent="UI/StatusPreview/HpRow" unique_id=905640110]
+[node name="HpView" parent="UI/StatusPreview/HpRow" unique_id=905640110 instance=ExtResource("23_hp_view")]
 custom_minimum_size = Vector2(95, 34)
 layout_mode = 2
-
-[node name="Icon" type="TextureRect" parent="UI/StatusPreview/HpRow/HpView" unique_id=1205913726]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-layout_mode = 0
-offset_right = 28.0
-offset_bottom = 34.0
-texture = ExtResource("23_digestive_hp_icon")
-
-[node name="Value" type="Label" parent="UI/StatusPreview/HpRow/HpView" unique_id=949082000]
-layout_mode = 0
-offset_left = 35.0
-offset_top = 3.0
-offset_right = 95.0
-offset_bottom = 28.0
-theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 24
-text = "100"
-vertical_alignment = 1
 
 [node name="Delta" type="Label" parent="UI/StatusPreview/HpRow" unique_id=1384076805]
 layout_mode = 2
