@@ -31,16 +31,10 @@ const HARMFUL_DELTA_COLOR := Color(1.0, 0.35, 0.35, 1.0)
 @onready var abandon_button: StageClearAbandonButton = $AbandonButton
 # 消化ダメージ表示
 @onready var acid_damage_view: AcidDamageView = $StatusPreview/AcidDamageRow/AcidDamageView
-# 消化ダメージ差分表示
-@onready var acid_damage_delta_label: Label = $StatusPreview/AcidDamageRow/Delta
 # 消化間隔表示
 @onready var acid_interval_view: AcidIntervalView = $StatusPreview/AcidIntervalRow/AcidIntervalView
-# 消化間隔差分表示
-@onready var acid_interval_delta_label: Label = $StatusPreview/AcidIntervalRow/Delta
 # HP表示
 @onready var hp_view: StageClearHpView = $StatusPreview/HpRow/HpView
-# HP差分表示
-@onready var hp_delta_label: Label = $StatusPreview/HpRow/Delta
 
 var _debug_numbers_visible := false
 var _seed_choice_active := false
@@ -112,22 +106,39 @@ func set_status_preview(
 		float(acid_interval_info["enemy_rate"])
 	)
 	hp_view.set_hp_value(hp)
-	_set_delta_label(acid_damage_delta_label, preview_acid_damage - acid_damage, true)
-	_set_delta_label(
-		acid_interval_delta_label,
-		preview_acid_interval_minutes - acid_interval_minutes,
-		false
+	_set_preview_value(
+		acid_damage_view.acid_damage_value_label,
+		preview_acid_damage,
+		preview_acid_damage - acid_damage,
+		true
 	)
-	_set_delta_label(hp_delta_label, preview_hp - hp, true)
+	_set_preview_value(
+		acid_interval_view.acid_interval_value_label,
+		preview_acid_interval_minutes,
+		preview_acid_interval_minutes - acid_interval_minutes,
+		false,
+		"%dmin"
+	)
+	_set_preview_value(
+		hp_view.hp_value_label,
+		preview_hp,
+		preview_hp - hp,
+		true
+	)
 
 
-# 差分表示設定
-func _set_delta_label(label: Label, delta: int, increase_is_beneficial: bool) -> void:
+# 一時プレビュー値設定
+func _set_preview_value(
+	label: Label,
+	preview_value: int,
+	delta: int,
+	increase_is_beneficial: bool,
+	value_format: String = "%d"
+) -> void:
+	label.text = value_format % preview_value
 	if delta == 0:
-		label.text = ""
+		label.remove_theme_color_override("font_color")
 		return
-	var sign_text := "+" if delta > 0 else ""
-	label.text = "(%s%d)" % [sign_text, delta]
 	var is_beneficial := delta > 0 if increase_is_beneficial else delta < 0
 	label.add_theme_color_override(
 		"font_color",
