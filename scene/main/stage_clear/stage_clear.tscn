@@ -91,29 +91,20 @@ offset_bottom = 191.0
 mouse_filter = 2
 theme_override_constants/separation = 20
 
-[node name="AcidDamageRow" type="HBoxContainer" parent="UI/StatusPreview" unique_id=1227197432]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="AcidDamageView" parent="UI/StatusPreview/AcidDamageRow" unique_id=205531699 instance=ExtResource("21_acid_damage_view")]
+[node name="HpView" parent="UI/StatusPreview" unique_id=905640110 instance=ExtResource("23_hp_view")]
 custom_minimum_size = Vector2(95, 34)
 layout_mode = 2
+size_flags_horizontal = 4
 
-[node name="AcidIntervalRow" type="HBoxContainer" parent="UI/StatusPreview" unique_id=1556287705]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="AcidIntervalView" parent="UI/StatusPreview/AcidIntervalRow" unique_id=1586561440 instance=ExtResource("22_acid_interval_view")]
+[node name="AcidIntervalView" parent="UI/StatusPreview" unique_id=1586561440 instance=ExtResource("22_acid_interval_view")]
 custom_minimum_size = Vector2(95, 34)
 layout_mode = 2
+size_flags_horizontal = 4
 
-[node name="HpRow" type="HBoxContainer" parent="UI/StatusPreview" unique_id=141011107]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="HpView" parent="UI/StatusPreview/HpRow" unique_id=905640110 instance=ExtResource("23_hp_view")]
+[node name="AcidDamageView" parent="UI/StatusPreview" unique_id=205531699 instance=ExtResource("21_acid_damage_view")]
 custom_minimum_size = Vector2(95, 34)
 layout_mode = 2
+size_flags_horizontal = 4
 
 [node name="RerollButton" type="Button" parent="UI" unique_id=1477054913]
 visible = false
@@ -131,10 +122,10 @@ text = "Reroll"
 
 [node name="DebugButton" type="Button" parent="UI" unique_id=424038670]
 layout_mode = 0
-offset_left = 155.0
-offset_top = 305.0
-offset_right = 215.0
-offset_bottom = 327.0
+offset_left = 246.0
+offset_top = 333.0
+offset_right = 306.0
+offset_bottom = 355.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)

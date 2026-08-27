@@ -37,6 +37,17 @@ func _run() -> void:
 	var acid_damage_view := status_preview.get_node("AcidDamageRow/AcidDamageView") as AcidDamageView
 	var acid_interval_view := status_preview.get_node("AcidIntervalRow/AcidIntervalView") as AcidIntervalView
 	var hp_view := status_preview.get_node("HpRow/HpView") as StageClearHpView
+	for view: Control in [acid_damage_view, acid_interval_view, hp_view]:
+		var row := view.get_parent() as HBoxContainer
+		_expect(row.alignment == BoxContainer.ALIGNMENT_CENTER, "%s row is center aligned" % view.name)
+		_expect(
+			view.size_flags_horizontal == Control.SIZE_SHRINK_CENTER,
+			"%s uses horizontal center sizing" % view.name
+		)
+		_expect(
+			is_equal_approx(view.position.x + view.size.x * 0.5, row.size.x * 0.5),
+			"%s is horizontally centered in StatusPreview" % view.name
+		)
 	var hp_icon := status_preview.get_node("HpRow/HpView/Icon") as TextureRect
 	var hp_value_label := status_preview.get_node("HpRow/HpView/Value") as Label
 	_expect(status_preview.get_node_or_null("AcidDamageRow/Delta") == null, "AcidDamage Delta removed")
