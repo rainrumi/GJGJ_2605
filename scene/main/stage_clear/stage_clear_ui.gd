@@ -9,8 +9,6 @@ signal abandon_hovered
 signal abandon_unhovered
 signal reroll_pressed
 signal debug_pressed
-signal hp_tooltip_requested(anchor_global_position: Vector2)
-signal hp_tooltip_hide_requested
 
 const SELECT_GUIDE_TEXT := "夢の種をひとつ選んでください"
 const DEBUG_BUTTON_NORMAL_FONT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
@@ -165,8 +163,6 @@ func _connect_child_signals() -> void:
 	acid_damage_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
 	acid_interval_view.tooltip_requested.connect(_on_status_tooltip_requested)
 	acid_interval_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
-	hp_view.tooltip_requested.connect(_on_hp_view_tooltip_requested)
-	hp_view.tooltip_hide_requested.connect(_on_hp_view_tooltip_hide_requested)
 
 
 # debug外観更新
@@ -247,16 +243,6 @@ func _on_reroll_button_pressed() -> void:
 # debug通知
 func _on_debug_button_pressed() -> void:
 	debug_pressed.emit()
-
-
-# HP表示hover通知
-func _on_hp_view_tooltip_requested(view: StageClearHpView) -> void:
-	hp_tooltip_requested.emit(view.global_position)
-
-
-# HP表示hover解除通知
-func _on_hp_view_tooltip_hide_requested(_view: StageClearHpView) -> void:
-	hp_tooltip_hide_requested.emit()
 
 
 # 状態ツール表示

@@ -9,16 +9,12 @@ const CLEAR_RECOVERY_BASE_RATE := 0.5
 const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
 const MAX_HP := 100
 const BATTLE_START_MINUTES := 22 * 60
-const REST_MINUTES := 30
-const REST_HP_RATE := 0.1
 const MAX_EQUIPPED_SEEDS := 6
 
 @export var max_flowers := MAX_EQUIPPED_SEEDS
 @export var initial_flower: SeedInfo
 @export var seed_options: Array[SeedInfo] = []
 
-# 表示エリア
-@onready var character_area: StageClearCharacter = $CharacterArea
 # 操作UI
 @onready var ui: StageClearUi = $UI
 
@@ -45,7 +41,6 @@ var reward_service := StageClearReward.new()
 func _ready() -> void:
 	_cache_base_seed_options()
 	_initialize_planted_flowers()
-	_connect_character_signals()
 	_connect_ui_signals()
 	_connect_debug_state()
 	_set_debug_numbers_visible(DebugState.debug_enabled)
@@ -59,7 +54,6 @@ func setup_hp(value: int) -> void:
 	_current_clear_stage = null
 	_restore_base_seed_options()
 	if is_node_ready():
-		character_area.close_owned_seed_panel()
 		_set_hp(current_hp, false)
 		_show_select_mode()
 
@@ -79,7 +73,6 @@ func setup_clear_result(
 	_restore_base_seed_options()
 	_apply_stage_drop_options(cleared_stage)
 	if is_node_ready():
-		character_area.close_owned_seed_panel()
 		_set_hp(current_hp, false)
 		_show_select_mode()
 
@@ -91,7 +84,6 @@ func reset_player_state() -> void:
 	_restore_base_seed_options()
 	_initialize_planted_flowers()
 	if is_node_ready():
-		character_area.close_owned_seed_panel()
 		_set_hp(current_hp, false)
 		_show_select_mode()
 
@@ -159,13 +151,6 @@ func remove_planted_flower(source: Resource) -> void:
 		_refresh_after_reward_state_changed()
 
 
-# キャラクター信号接続
-func _connect_character_signals() -> void:
-	character_area.seed_equip_requested.connect(_on_seed_equip_requested)
-	character_area.seed_unequip_requested.connect(_on_seed_unequip_requested)
-	character_area.seed_move_requested.connect(_on_seed_move_requested)
-
-
 # UI信号接続
 func _connect_ui_signals() -> void:
 	ui.seed_choice_pressed.connect(_on_seed_choice_pressed)
@@ -176,58 +161,6 @@ func _connect_ui_signals() -> void:
 	ui.abandon_unhovered.connect(_on_abandon_button_mouse_exited)
 	ui.reroll_pressed.connect(_on_reroll_button_pressed)
 	ui.debug_pressed.connect(_on_debug_button_pressed)
-	ui.hp_tooltip_requested.connect(_on_hp_tooltip_requested)
-	ui.hp_tooltip_hide_requested.connect(_on_hp_tooltip_hide_requested)
-
-
-# 種装備要求
-func _on_seed_equip_requested(seed: SeedInfo) -> void:
-	var inventory := _create_seed_inventory_controller()
-	if not inventory.equip_seed(seed):
-		return
-	_apply_seed_inventory_controller(inventory)
-
-
-# 種装備解除要求
-func _on_seed_unequip_requested(seed: SeedInfo) -> void:
-	var inventory := _create_seed_inventory_controller()
-	if not inventory.unequip_seed(seed):
-		return
-	_apply_seed_inventory_controller(inventory)
-
-
-# 種枠移動要求
-func _on_seed_move_requested(
-	seed: SeedInfo,
-	source_collection: int,
-	source_index: int,
-	target_collection: int,
-	target_index: int
-) -> void:
-	var inventory := _create_seed_inventory_controller()
-	if not inventory.move_seed_to_slot(
-		seed,
-		source_collection,
-		source_index,
-		target_collection,
-		target_index
-	):
-		return
-	_apply_seed_inventory_controller(inventory)
-
-
-# 種inventory controller作成
-func _create_seed_inventory_controller() -> GameSeedController:
-	var inventory := GameSeedController.new()
-	inventory.set_seed_inventory(planted_flowers, stored_seeds)
-	return inventory
-
-
-# 種inventory controller適用
-func _apply_seed_inventory_controller(inventory: GameSeedController) -> void:
-	planted_flowers = inventory.get_flowers().duplicate()
-	stored_seeds = inventory.get_stored_seeds().duplicate()
-	_refresh_after_reward_state_changed()
 
 
 # 花初期化
@@ -236,8 +169,6 @@ func _initialize_planted_flowers() -> void:
 	stored_seeds.clear()
 	if initial_flower != null:
 		planted_flowers.append(initial_flower)
-	if is_node_ready():
-		character_area.set_seed_inventory(planted_flowers, stored_seeds)
 
 
 # clear初期化
@@ -301,16 +232,6 @@ func _on_debug_button_pressed() -> void:
 	DebugState.toggle_debug_enabled()
 
 
-# HPツール表示
-func _on_hp_tooltip_requested(anchor_global_position: Vector2) -> void:
-	character_area.show_hp_tooltip_at(anchor_global_position)
-
-
-# HPツール非表示
-func _on_hp_tooltip_hide_requested() -> void:
-	character_area.hide_hp_tooltip()
-
-
 # debug接続
 func _connect_debug_state() -> void:
 	if not DebugState.debug_enabled_changed.is_connected(_on_debug_enabled_changed):
@@ -327,7 +248,6 @@ func _set_debug_numbers_visible(is_visible: bool) -> void:
 	debug_numbers_visible = is_visible
 	if not is_node_ready():
 		return
-	character_area.set_debug_numbers_visible(debug_numbers_visible)
 	ui.set_debug_state(debug_numbers_visible, _seed_choice_active)
 
 
@@ -374,7 +294,6 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 		return
 	if not _can_receive_seed(seed):
 		return
-	character_area.set_planned_recovery_rate(_get_seed_choice_recovery_rate(seed_index))
 	if _can_plant_seed(seed):
 		planted_flowers.append(seed)
 		_refresh_after_reward_state_changed()
@@ -389,7 +308,6 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 
 # 放棄押下
 func _on_abandon_button_pressed() -> void:
-	character_area.set_planned_recovery_rate(_get_abandon_recovery_rate())
 	var recovery_rate := _apply_selection_recovery(_get_abandon_extra_recovery_rate())
 	selection_finished.emit(recovery_rate)
 	if recovery_rate > 0.0:
@@ -538,9 +456,7 @@ func _refresh_after_reward_state_changed() -> void:
 
 # 報酬UI更新
 func _refresh_reward_ui() -> void:
-	character_area.set_seed_inventory(planted_flowers, stored_seeds)
 	ui.setup_seed_choices(seed_options, _get_seed_selectable_states())
-	_update_hp_tooltip_info()
 	_update_hp_heal_plan()
 
 
@@ -553,35 +469,20 @@ func _get_seed_selectable_states() -> Array[bool]:
 
 
 # HP設定内部
-func _set_hp(value: int, animated: bool) -> void:
+func _set_hp(value: int, _animated: bool) -> void:
 	current_hp = clampi(value, 0, MAX_HP)
-	character_area.set_hp(current_hp, MAX_HP, animated)
-	_update_hp_tooltip_info()
 	_update_hp_heal_plan()
-
-
-# HPツール情報更新
-func _update_hp_tooltip_info() -> void:
-	var seed_effects := SeedEffectResolver.new()
-	seed_effects.setup(planted_flowers)
-	character_area.set_hp_tooltip_info(
-		REST_MINUTES,
-		REST_HP_RATE,
-		seed_effects.get_rest_recovery_bonus_rate()
-	)
 
 
 # 回復予定更新
 func _update_hp_heal_plan() -> void:
 	var recovery_rate := _get_planned_clear_recovery_rate()
-	character_area.set_planned_recovery_rate(recovery_rate)
 	_update_status_preview(planted_flowers, recovery_rate)
 
 
 # 種hover開始
 func _on_seed_choice_mouse_entered(seed_index: int) -> void:
 	var recovery_rate := _get_seed_choice_recovery_rate(seed_index)
-	character_area.set_planned_recovery_rate(recovery_rate)
 	var seed := _get_seed_option(seed_index)
 	_update_status_preview(_get_preview_flowers_for_seed(seed), recovery_rate)
 
@@ -594,7 +495,6 @@ func _on_seed_choice_mouse_exited() -> void:
 # 放棄hover開始
 func _on_abandon_button_mouse_entered() -> void:
 	var recovery_rate := _get_abandon_recovery_rate()
-	character_area.set_planned_recovery_rate(recovery_rate)
 	_update_status_preview(planted_flowers, recovery_rate)
 
 

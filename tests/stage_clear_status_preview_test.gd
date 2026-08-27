@@ -20,11 +20,19 @@ func _run() -> void:
 	await get_tree().process_frame
 	stage_clear.setup_clear_result(20, 22 * 60)
 
-	var status_preview := stage_clear.get_node("UI/StatusPreview") as VBoxContainer
-	_expect(status_preview != null, "左上の状態予測が縦並びで配置されている")
+	var status_preview := stage_clear.get_node("UI/StatusPreview") as HBoxContainer
+	_expect(status_preview != null, "画面上部の状態予測が横並びで配置されている")
 	if status_preview == null:
 		get_tree().quit(_failures)
 		return
+	_expect(
+		status_preview.position.is_equal_approx(Vector2(63.0, 34.0)),
+		"状態予測が画面上部に配置されている"
+	)
+	_expect(
+		status_preview.get_theme_constant("separation") == 10,
+		"横並びの状態予測が項目間隔を保っている"
+	)
 
 	var acid_damage_view := status_preview.get_node("AcidDamageRow/AcidDamageView") as AcidDamageView
 	var acid_damage_delta := status_preview.get_node("AcidDamageRow/Delta") as Label
@@ -56,33 +64,17 @@ func _run() -> void:
 	_expect(acid_damage_delta.text.is_empty(), "通常時は消化ダメージ差分を表示しない")
 	_expect(acid_interval_delta.text.is_empty(), "通常時は消化間隔差分を表示しない")
 	_expect(hp_delta.text.is_empty(), "通常時はHP差分を表示しない")
-	var character_hp_view := stage_clear.get_node("CharacterArea/HpView") as HpView
-	character_hp_view.mouse_entered.emit()
-	_expect(character_hp_view.hp_tooltip.visible, "HPバーのホバーでHPの説明を表示する")
-	character_hp_view.mouse_exited.emit()
 	_expect(hp_view.mouse_filter == Control.MOUSE_FILTER_STOP, "HP表示全体がマウスhoverを受け取る")
 	_expect(hp_icon.mouse_filter == Control.MOUSE_FILTER_IGNORE, "HPアイコンがHP表示のhoverを妨げない")
 	_expect(hp_value_label.mouse_filter == Control.MOUSE_FILTER_IGNORE, "HP数値がHP表示のhoverを妨げない")
-	hp_view.mouse_entered.emit()
-	_expect(character_hp_view.hp_tooltip.visible, "HPアイコン表示のホバーでHPバーの説明を表示する")
 	_expect(
-		character_hp_view.hp_tooltip.tooltip_label.text.contains("HP: 20/100"),
-		"HPバーと同じHP情報を表示する"
-	)
-	var expected_hp_tooltip_position := TooltipPositioner.get_tooltip_position(
-		hp_view.global_position,
-		character_hp_view.hp_tooltip.tooltip_panel.size,
-		get_viewport().get_visible_rect(),
-		LeftTooltip.TOOLTIP_OFFSET
+		stage_clear.get_node_or_null("CharacterArea/HpView") == null,
+		"ステージクリア画面ではStatusPreview以外のHPバーを表示しない"
 	)
 	_expect(
-		character_hp_view.hp_tooltip.tooltip_panel.global_position.is_equal_approx(
-			expected_hp_tooltip_position
-		),
-		"HPアイコン表示を基準にほかの状態ツールと同じ位置関係で表示する"
+		stage_clear.get_node_or_null("CharacterArea/OwnedSeedOpenButton") == null,
+		"ステージクリア画面では所持中の夢の種ボタンを表示しない"
 	)
-	hp_view.mouse_exited.emit()
-	_expect(not character_hp_view.hp_tooltip.visible, "HPアイコン表示のホバー終了でHPバーの説明を隠す")
 	acid_damage_view.mouse_entered.emit()
 	_expect(acid_damage_view.acid_damage_view_tooltip.visible, "消化ダメージの説明をホバー表示する")
 	_expect(
