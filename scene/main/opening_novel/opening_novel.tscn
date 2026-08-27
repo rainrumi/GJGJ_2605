@@ -4,6 +4,7 @@
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Resource" uid="uid://dpwdn5mwco1y8" path="res://data/resources/novel/novel_opening.tres" id="3_text"]
 [ext_resource type="Texture2D" uid="uid://cw37wjrw5yjos" path="res://art/texture/still/tex_still_1000.png" id="4_still"]
+[ext_resource type="AudioStream" uid="uid://bisemm55nx4fe" path="res://resource/sound/se/se_popopo.mp3" id="5_character_se"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text_box"]
 bg_color = Color(0.012145013, 0.009099999, 0.07, 0.7058824)
@@ -21,6 +22,10 @@ corner_radius_bottom_left = 4
 layer = 50
 script = ExtResource("1_script")
 novel_text = ExtResource("3_text")
+
+[node name="CharacterSe" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_character_se")
+bus = &"SE"
 
 [node name="Screen" type="Control" parent="." unique_id=1190891835]
 layout_mode = 3

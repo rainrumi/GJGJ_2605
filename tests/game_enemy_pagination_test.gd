@@ -43,8 +43,8 @@ func _run() -> void:
 	)
 	_expect(return_hint.get_node_or_null("CenterContainer/TextContainer") != null, "吐き戻し文言をページ中央へ配置する")
 	_expect(not return_hint.visible, "通常時は悪夢吐き戻し案内を隠す")
-	_check_six_enemy_page(game, previous_button, next_button)
-	_check_seven_enemy_pages(game, previous_button, next_button)
+	_check_four_enemy_page(game, previous_button, next_button)
+	_check_five_enemy_pages(game, previous_button, next_button)
 	_check_drag_compacts_enemy_page(game, previous_button, next_button, return_hint, return_damage_value_label)
 	await _check_stomach_damage_visuals(game)
 	await _check_time_effect_damage_visuals(game)
@@ -64,29 +64,29 @@ func _run() -> void:
 	quit(_failures)
 
 
-# 6体表示試験
-func _check_six_enemy_page(game: Node, previous_button: Button, next_button: Button) -> void:
-	_start_battle_with_enemy_count(game, 6)
+# 4体表示試験
+func _check_four_enemy_page(game: Node, previous_button: Button, next_button: Button) -> void:
+	_start_battle_with_enemy_count(game, 4)
 	var enemies: Array[Enemy] = game.get("enemies")
-	_expect_visible_range(enemies, 0, 6, 6, "6体編成の1ページ目")
-	_expect(not previous_button.visible, "6体編成では前ページボタンを隠す")
-	_expect(not next_button.visible, "6体編成では次ページボタンを隠す")
+	_expect_visible_range(enemies, 0, 4, 4, "4体編成の1ページ目")
+	_expect(not previous_button.visible, "4体編成では前ページボタンを隠す")
+	_expect(not next_button.visible, "4体編成では次ページボタンを隠す")
 
 
-# 7体表示試験
-func _check_seven_enemy_pages(game: Node, previous_button: Button, next_button: Button) -> void:
-	_start_battle_with_enemy_count(game, 7)
+# 5体表示試験
+func _check_five_enemy_pages(game: Node, previous_button: Button, next_button: Button) -> void:
+	_start_battle_with_enemy_count(game, 5)
 	var enemies: Array[Enemy] = game.get("enemies")
-	_expect_visible_range(enemies, 0, 6, 7, "7体編成の1ページ目")
+	_expect_visible_range(enemies, 0, 4, 5, "5体編成の1ページ目")
 	_expect(not previous_button.visible, "1ページ目では前ページボタンを隠す")
-	_expect(next_button.visible, "7体編成の1ページ目では次ページボタンを表示する")
+	_expect(next_button.visible, "5体編成の1ページ目では次ページボタンを表示する")
 	next_button.pressed.emit()
-	_expect_visible_range(enemies, 6, 7, 7, "7体編成の2ページ目")
-	_expect(enemies[6].position == Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y), "1体のページは従来の1体配置を使う")
+	_expect_visible_range(enemies, 4, 5, 5, "5体編成の2ページ目")
+	_expect(enemies[4].position == Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y), "1体のページは従来の1体配置を使う")
 	_expect(previous_button.visible, "2ページ目では前ページボタンを表示する")
 	_expect(not next_button.visible, "最終ページでは次ページボタンを隠す")
 	previous_button.pressed.emit()
-	_expect_visible_range(enemies, 0, 6, 7, "前ページへ戻った表示")
+	_expect_visible_range(enemies, 0, 4, 5, "前ページへ戻った表示")
 
 
 # 胃袋への移動後の前詰め・吐き戻し案内・ページ再表示試験
@@ -97,7 +97,7 @@ func _check_drag_compacts_enemy_page(
 	return_hint: PanelContainer,
 	return_damage_value_label: Label
 ) -> void:
-	_start_battle_with_enemy_count(game, 7)
+	_start_battle_with_enemy_count(game, 5)
 	var enemies: Array[Enemy] = game.get("enemies")
 	var stomach := game.get_node("Stomach") as StomachBoard
 	var moved_enemy := enemies[1]
@@ -106,18 +106,18 @@ func _check_drag_compacts_enemy_page(
 	game.set("drag_grab_cell", Vector2i.ZERO)
 	game.call("_try_start_Aciding", moved_enemy, drop_position)
 	_expect(moved_enemy.is_active_in_stomach(), "悪夢を胃袋へ移動できる")
-	_expect(enemies[2].position == Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y), "空いた2枠目へ後続の悪夢を前詰めする")
-	_expect(not previous_button.visible, "胃袋外が6体になったら前ページボタンを隠す")
-	_expect(not next_button.visible, "胃袋外が6体になったら次ページボタンを隠す")
+	_expect(enemies[2].position == Vector2(ENEMY_RIGHT_X, ENEMY_TOP_Y), "空いた2枠目へ後続の悪夢を前詰めする")
+	_expect(not previous_button.visible, "胃袋外が4体になったら前ページボタンを隠す")
+	_expect(not next_button.visible, "胃袋外が4体になったら次ページボタンを隠す")
 	game.call("_on_enemy_drag_started", moved_enemy, drop_position, Vector2.ZERO, Vector2i.ZERO)
 	_expect(return_hint.visible, "胃袋内の悪夢をドラッグ中は吐き戻し案内を表示する")
 	_expect(return_damage_value_label.text == "5", "吐き戻しダメージを正の値で表示する")
 	game.call("_on_enemy_drag_released", moved_enemy, moved_enemy.origin_position)
 	_expect(not return_hint.visible, "悪夢のドラッグ終了時は吐き戻し案内を隠す")
 	_expect(not moved_enemy.is_active_in_stomach(), "悪夢を胃袋から取り出せる")
-	_expect(enemies[1].position == Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y), "戻った悪夢をページ内へ詰め直す")
-	_expect(not previous_button.visible, "7体へ戻った1ページ目では前ページボタンを隠す")
-	_expect(next_button.visible, "胃袋外が7体へ戻ったら次ページボタンを再表示する")
+	_expect(enemies[1].position == Vector2(ENEMY_RIGHT_X, ENEMY_TOP_Y), "戻った悪夢をページ内へ詰め直す")
+	_expect(not previous_button.visible, "5体へ戻った1ページ目では前ページボタンを隠す")
+	_expect(next_button.visible, "胃袋外が5体へ戻ったら次ページボタンを再表示する")
 
 
 # 胃袋内の悪夢に対する被弾表示と死亡演出の維持試験
@@ -207,16 +207,15 @@ func _check_eleven_enemy_pages(game: Node, previous_button: Button, next_button:
 	_start_battle_with_enemy_count(game, 11)
 	var enemies: Array[Enemy] = game.get("enemies")
 	next_button.pressed.emit()
-	_expect_visible_range(enemies, 6, 11, 11, "11体編成の2ページ目")
+	_expect_visible_range(enemies, 4, 8, 11, "11体編成の2ページ目")
 	var expected_positions: Array[Vector2] = [
 		Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y),
-		Vector2(ENEMY_CENTER_X, ENEMY_TOP_Y),
+		Vector2(ENEMY_RIGHT_X, ENEMY_TOP_Y),
 		Vector2(ENEMY_RIGHT_X, ENEMY_BOTTOM_Y),
 		Vector2(ENEMY_LEFT_X, ENEMY_TOP_Y),
-		Vector2(ENEMY_RIGHT_X, ENEMY_TOP_Y),
 	]
 	for i in range(expected_positions.size()):
-		_expect(enemies[i + 6].position == expected_positions[i], "5体のページは従来の5体配置を使う: %d" % i)
+		_expect(enemies[i + 4].position == expected_positions[i], "4体のページは4体配置を使う: %d" % i)
 
 
 # 13体表示試験
@@ -227,10 +226,14 @@ func _check_thirteen_enemy_pages(game: Node, previous_button: Button, next_butto
 	_expect(previous_button.visible, "中間ページでは前ページボタンを表示する")
 	_expect(next_button.visible, "中間ページでは次ページボタンを表示する")
 	next_button.pressed.emit()
-	_expect_visible_range(enemies, 12, 13, 13, "13体編成の3ページ目")
-	_expect(enemies[12].position == Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y), "3ページ目にも従来の1体配置を使う")
+	_expect_visible_range(enemies, 8, 12, 13, "13体編成の3ページ目")
 	_expect(previous_button.visible, "3ページ目では前ページボタンを表示する")
-	_expect(not next_button.visible, "3ページ目では次ページボタンを隠す")
+	_expect(next_button.visible, "3ページ目では次ページボタンを表示する")
+	next_button.pressed.emit()
+	_expect_visible_range(enemies, 12, 13, 13, "13体編成の4ページ目")
+	_expect(enemies[12].position == Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y), "4ページ目にも従来の1体配置を使う")
+	_expect(previous_button.visible, "4ページ目では前ページボタンを表示する")
+	_expect(not next_button.visible, "4ページ目では次ページボタンを隠す")
 
 
 # 指定数の悪夢で戦闘開始

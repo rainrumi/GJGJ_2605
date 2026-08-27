@@ -4,12 +4,15 @@ extends CanvasLayer
 signal finished
 signal advanced
 
+const DEFAULT_TEXT_INTERVAL := 0.04
+
 @export var novel_text: NovelTextInfo
 
 @onready var screen: Control = $Screen
 @onready var opening_still: TextureRect = $Screen/OpeningStill
 @onready var text_label: Label = $Screen/TextBox/TextLabel
 @onready var next_label: Label = $Screen/TextBox/NextLabel
+@onready var character_se: AudioStreamPlayer = $CharacterSe
 
 var _pages: Array[String] = []
 var _page_index := 0
@@ -65,7 +68,7 @@ func _start_typing(page_text: String) -> void:
 	next_label.visible = false
 	_is_typing = true
 	# type間隔
-	var type_interval := GameSettings.get_text_interval()
+	var type_interval := _get_text_interval()
 	if type_interval <= 0.0:
 		_complete_typing()
 		return
@@ -73,6 +76,7 @@ func _start_typing(page_text: String) -> void:
 		if request_id != _typing_request_id:
 			return
 		text_label.text += page_text[i]
+		_play_character_se()
 		await get_tree().create_timer(type_interval).timeout
 	if request_id != _typing_request_id:
 		return
@@ -85,6 +89,21 @@ func _complete_typing() -> void:
 	text_label.text = _current_page_text
 	next_label.visible = true
 	_is_typing = false
+
+
+func _play_character_se() -> void:
+	if character_se.stream == null:
+		return
+	character_se.stop()
+	character_se.play()
+
+
+func _get_text_interval() -> float:
+	var game_settings := get_node_or_null("/root/GameSettings")
+	if game_settings != null and game_settings.has_method("get_text_interval"):
+		return float(game_settings.call("get_text_interval"))
+	push_error("OpeningNovel requires the GameSettings autoload to provide get_text_interval().")
+	return DEFAULT_TEXT_INTERVAL
 
 
 # advanceページ処理
