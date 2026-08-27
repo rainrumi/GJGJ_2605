@@ -75,6 +75,11 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		# マウスボタン
 		var mouse_button := event as InputEventMouseButton
+		if mouse_button.button_index == MOUSE_BUTTON_RIGHT:
+			if mouse_button.pressed and _dragging_enemy != null:
+				enemy_rotation_requested.emit(_dragging_enemy)
+				_drag_grab_cell = _dragging_enemy.get_grab_cell(mouse_button.position)
+			return
 		if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 			return
 		if mouse_button.pressed:

@@ -365,7 +365,10 @@ func _on_acid_playback_requested(should_play: bool) -> void:
 
 # 悪夢・胃袋内ブロック回転要求
 func _on_enemy_rotation_requested(enemy: Enemy) -> void:
-	if not _can_use_battle_interaction() or enemy == null:
+	if not battle_active or enemy == null:
+		return
+	var is_dragging_target := drag_mode == DragMode.ENEMY and dragging_enemy == enemy
+	if not is_dragging_target and not _can_use_battle_interaction():
 		return
 	_set_hovered_enemy(null)
 	if enemy.is_enemy() and enemy.is_active_in_stomach():

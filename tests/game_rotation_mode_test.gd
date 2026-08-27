@@ -57,6 +57,9 @@ func _run() -> void:
 	_start_enemy_drag_with_motion(input_controller, enemy.global_position)
 	_expect(game.get("dragging_enemy") == enemy, "0.5秒未満でも途中で動かすとドラッグを開始する")
 	_expect(enemy.get_stomach_size() == size_before_pointer_drag, "ドラッグ操作では悪夢を回転しない")
+	_right_click_enemy(input_controller, enemy.global_position)
+	_expect(enemy.get_stomach_size() == Vector2i(2, 3), "胃袋に入れる前の悪夢はドラッグ中の右クリックで90度右回転する")
+	_expect(game.get("dragging_enemy") == enemy, "右クリックで回転した後も悪夢のドラッグを継続する")
 	input_controller.call("_handle_release", enemy.origin_position)
 	_expect(game.get("dragging_enemy") == null, "途中移動から開始したドラッグを解放できる")
 
@@ -71,14 +74,15 @@ func _run() -> void:
 	enemy.set_Aciding(true)
 	stomach.place_enemy(enemy, Vector2i.ZERO)
 	var size_before_rejected_rotation := enemy.get_stomach_size()
-	_short_click_enemy(input_controller, enemy.global_position)
+	_start_enemy_drag_with_motion(input_controller, enemy.global_position)
+	_right_click_enemy(input_controller, enemy.global_position)
 	await process_frame
 	_expect(
 		enemy.get_stomach_size() == size_before_rejected_rotation,
-		"胃袋内悪夢の回転は適用しない"
+		"胃袋内悪夢をドラッグ中に右クリックしても回転は適用しない"
 	)
 	_expect(enemy.stomach_cell == Vector2i.ZERO, "回転拒否後も胃袋内悪夢の基準セルを維持する")
-	_expect(warning_label.visible, "胃袋内悪夢の回転時に警告文言を表示する")
+	_expect(warning_label.visible, "胃袋内悪夢をドラッグ中に右クリックすると警告文言を表示する")
 	_expect(warning_label.text == "胃袋内のモノは回転できません", "胃袋内回転の警告文言が正しい")
 	_expect(
 		warning_label.get_theme_color("font_color").is_equal_approx(Color(1, 0.2, 0.2, 1)),
@@ -90,6 +94,7 @@ func _run() -> void:
 	if warning_tween != null and warning_tween.is_valid():
 		await warning_tween.finished
 	_expect(not warning_label.visible, "胃袋内回転の警告文言は表示後に消える")
+	input_controller.call("_handle_release", enemy.global_position)
 
 	var seed_button_list := game.get_node("UI/SeedButtonList") as SeedButtonList
 	var seed_button := seed_button_list.get_child(0) as SeedButton
@@ -149,6 +154,14 @@ func _start_enemy_drag_with_motion(input_controller: GameInputController, positi
 	var motion := InputEventMouseMotion.new()
 	motion.position = position + Vector2.ONE
 	input_controller.call("_input", motion)
+
+
+func _right_click_enemy(input_controller: GameInputController, position: Vector2) -> void:
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_RIGHT
+	click.pressed = true
+	click.position = position
+	input_controller.call("_input", click)
 
 
 func _short_click_seed(seed_button: SeedButton, position: Vector2) -> void:
