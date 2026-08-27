@@ -6,8 +6,8 @@
 [ext_resource type="Resource" uid="uid://c6y5aptnps475" path="res://data/resources/seeds/skills/seed_100_102.tres" id="1002_skill"]
 [ext_resource type="Resource" uid="uid://d02kf3ks5jgm1" path="res://data/resources/seeds/skills/seed_100_103.tres" id="1003_skill"]
 [ext_resource type="Resource" uid="uid://0qcftv2ma4xf" path="res://data/resources/seeds/skills/seed_100_104.tres" id="1004_skill"]
-[ext_resource type="Resource" uid="uid://cw5psdb31ijoc" path="res://data/resources/seeds/skills/seed_100_105.tres" id="2002_skill"]
-[ext_resource type="Resource" uid="uid://dbldwdv6fkdvx" path="res://data/resources/seeds/skills/seed_100_122.tres" id="2132_skill"]
+[ext_resource type="Resource" uid="uid://lm1gn4nrjxss" path="res://data/resources/seeds/skills/seed_100_105.tres" id="2002_skill"]
+[ext_resource type="Resource" uid="uid://d0yexn7mc6qcf" path="res://data/resources/seeds/skills/seed_100_122.tres" id="2132_skill"]
 
 
 [resource]

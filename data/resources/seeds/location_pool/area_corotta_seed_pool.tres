@@ -6,8 +6,8 @@
 [ext_resource type="Resource" uid="uid://c6y5aptnps475" path="res://data/resources/seeds/skills/seed_100_102.tres" id="3_8o2j5"]
 [ext_resource type="Resource" uid="uid://d02kf3ks5jgm1" path="res://data/resources/seeds/skills/seed_100_103.tres" id="4_xwvxs"]
 [ext_resource type="Resource" uid="uid://0qcftv2ma4xf" path="res://data/resources/seeds/skills/seed_100_104.tres" id="5_kwmhr"]
-[ext_resource type="Resource" uid="uid://xy0783ffixh6" path="res://data/resources/seeds/skills/seed_100_106.tres" id="6_bodjt"]
-[ext_resource type="Resource" uid="uid://dtbimgg1admnh" path="res://data/resources/seeds/skills/seed_100_124.tres" id="7_35juv"]
+[ext_resource type="Resource" uid="uid://b8vh7fdtrlfq4" path="res://data/resources/seeds/skills/seed_100_106.tres" id="6_bodjt"]
+[ext_resource type="Resource" uid="uid://dl38ayy5yufoc" path="res://data/resources/seeds/skills/seed_100_124.tres" id="7_35juv"]
 
 [resource]
 script = ExtResource("1_script")

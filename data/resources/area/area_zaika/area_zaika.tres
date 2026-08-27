@@ -18,5 +18,5 @@ location = "ザイカ行政区"
 initial = "ZAD"
 map_position = Vector2(-100, -125)
 enemy_data = ExtResource("2_enemy_data")
-drop_seed_skill_pool = ExtResource("4_seed_pool")
+drop_seed_pool = ExtResource("4_seed_pool")
 stage_unlock_novel_texts = Array[ExtResource("4_b85j6")]([ExtResource("3_stage_novel_001"), ExtResource("3_stage_novel_002"), ExtResource("3_stage_novel_003")])
