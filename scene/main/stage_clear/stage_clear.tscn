@@ -176,7 +176,7 @@ offset_top = 45.0
 offset_right = 298.9996
 offset_bottom = 219.0
 mouse_filter = 2
-theme_override_constants/separation = 36
+theme_override_constants/separation = 26
 
 [node name="AcidDamageRow" type="HBoxContainer" parent="UI/StatusPreview" unique_id=1227197432]
 layout_mode = 2
