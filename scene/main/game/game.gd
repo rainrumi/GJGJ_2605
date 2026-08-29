@@ -196,6 +196,16 @@ func get_stomach_rows() -> int:
 	return stomach.rows
 
 
+# 基礎胃袋列取得
+func get_base_stomach_columns() -> int:
+	return stomach.columns - _get_seed_stomach_column_bonus()
+
+
+# 基礎胃袋行取得
+func get_base_stomach_rows() -> int:
+	return stomach.rows - _get_seed_stomach_row_bonus()
+
+
 # 装備種取得
 func get_equipped_seeds() -> Array[SeedInfo]:
 	return seed_controller.get_flowers().duplicate()
@@ -1199,6 +1209,24 @@ func _apply_seed_stomach_size_effects() -> void:
 	var next_rows := stomach.rows + (1 if has_row_bonus else 0)
 	if next_columns != stomach.columns or next_rows != stomach.rows:
 		stomach.set_grid_size(next_columns, next_rows)
+
+
+# 種胃袋列補正取得
+func _get_seed_stomach_column_bonus() -> int:
+	for flower in seed_controller.get_flowers():
+		if flower != null and flower.get_main_skill() != null:
+			if flower.get_main_skill().get_stomach_columns_delta() > 0:
+				return 1
+	return 0
+
+
+# 種胃袋行補正取得
+func _get_seed_stomach_row_bonus() -> int:
+	for flower in seed_controller.get_flowers():
+		if flower != null and flower.get_main_skill() != null:
+			if flower.get_main_skill().get_stomach_rows_delta() > 0:
+				return 1
+	return 0
 
 
 # 種消化行effects適用

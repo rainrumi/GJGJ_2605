@@ -543,10 +543,10 @@ func _create_battle_start_context(reset_player_state: bool) -> BattleInfo:
 
 # player胃袋サイズ同期
 func _sync_player_stomach_size() -> void:
-	if game.has_method("get_stomach_columns"):
-		run_state.stomach_columns = game.get_stomach_columns()
-	if game.has_method("get_stomach_rows"):
-		run_state.stomach_rows = game.get_stomach_rows()
+	if game.has_method("get_base_stomach_columns"):
+		run_state.stomach_columns = game.get_base_stomach_columns()
+	if game.has_method("get_base_stomach_rows"):
+		run_state.stomach_rows = game.get_base_stomach_rows()
 
 
 # ステージclear同期
