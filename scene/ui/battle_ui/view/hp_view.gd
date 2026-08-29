@@ -20,8 +20,8 @@ func _ready() -> void:
 
 
 # HP値設定
-func set_hp_value(hp: int) -> void:
-	hp_value_label.text = "%d" % hp
+func set_hp_value(current_hp: int, max_hp: int) -> void:
+	hp_value_label.text = "%d/%d" % [current_hp, max_hp]
 
 
 # HP情報設定
@@ -32,7 +32,7 @@ func set_hp_info(
 	rest_hp_rate: float,
 	rest_recovery_bonus_rate: float
 ) -> void:
-	set_hp_value(current_hp)
+	set_hp_value(current_hp, max_hp)
 	hp_tooltip.set_hp_info(
 		current_hp,
 		max_hp,

@@ -144,7 +144,9 @@ func set_status_preview(
 		hp_view.hp_value_label,
 		preview_hp,
 		preview_hp - hp,
-		true
+		true,
+		"%d",
+		"%d/%d" % [preview_hp, max_hp]
 	)
 
 
@@ -154,9 +156,10 @@ func _set_preview_value(
 	preview_value: int,
 	delta: int,
 	increase_is_beneficial: bool,
-	value_format: String = "%d"
+	value_format: String = "%d",
+	value_text: String = ""
 ) -> void:
-	label.text = value_format % preview_value
+	label.text = value_text if not value_text.is_empty() else value_format % preview_value
 	if delta == 0:
 		if label == hp_view.hp_value_label:
 			hp_view.restore_value_font_color()

@@ -70,7 +70,7 @@ func _run() -> void:
 		hp_icon.texture.resource_path == "res://resource/image/ui/icon/ui_icon_digestiveHP.png",
 		"HP文字の代わりにHPアイコンを表示する"
 	)
-	_expect(hp_value_label.text == "70", "HPアイコンの横にクリア回復後HPを表示する")
+	_expect(hp_value_label.text == "70/100", "HPアイコンの横に現在HP/最大HPを表示する")
 	_expect(hp_view.mouse_filter == Control.MOUSE_FILTER_STOP, "HP表示全体がマウスhoverを受け取る")
 	_expect(hp_icon.mouse_filter == Control.MOUSE_FILTER_IGNORE, "HPアイコンがHP表示のhoverを妨げない")
 	_expect(hp_value_label.mouse_filter == Control.MOUSE_FILTER_IGNORE, "HP数値がHP表示のhoverを妨げない")
@@ -124,7 +124,7 @@ func _run() -> void:
 		"消化ダメージ増加を緑色で表示する"
 	)
 	stage_clear.ui.seed_choice_hovered.emit(1)
-	_expect(hp_value_label.text == "80", "Preview HP replaces value")
+	_expect(hp_value_label.text == "80/100", "Preview HP replaces current value and keeps max value")
 	_expect(
 		hp_value_label.get_theme_color("font_color") == StageClearUi.BENEFICIAL_DELTA_COLOR,
 		"HP増加を緑色で表示する"
@@ -138,7 +138,7 @@ func _run() -> void:
 	stage_clear.ui.seed_choice_unhovered.emit()
 	_expect(acid_damage_view.acid_damage_value_label.text == "50", "ホバー終了時に消化ダメージを戻す")
 	_expect(acid_interval_view.acid_interval_value_label.text == "30min", "ホバー終了時に消化間隔を戻す")
-	_expect(hp_value_label.text == "70", "ホバー終了時にHPを戻す")
+	_expect(hp_value_label.text == "70/100", "ホバー終了時に現在HP/最大HPを戻す")
 	_expect(
 		hp_value_label.get_theme_color("font_color") == Color(0.94, 0.88, 1.0, 1.0),
 		"HPの通常文字色をHpViewシーンのエディター設定へ戻す"
@@ -175,7 +175,7 @@ func _run() -> void:
 		"hover preview excludes the clock-conditioned interval effect"
 	)
 	_expect(
-		hp_value_label.text == "70",
+		hp_value_label.text == "70/100",
 		"hover preview excludes the clock-conditioned HP effect"
 	)
 	stage_clear.ui.seed_choice_unhovered.emit()
@@ -204,7 +204,7 @@ func _run() -> void:
 	)
 	_expect(acid_damage_view.acid_damage_value_label.text == "45", "Lower preview damage replaces value")
 	_expect(acid_interval_view.acid_interval_value_label.text == "31min", "Longer preview interval replaces value")
-	_expect(hp_value_label.text == "60", "Lower preview HP replaces value")
+	_expect(hp_value_label.text == "60/100", "Lower preview HP replaces current value and keeps max value")
 	_expect(
 		acid_damage_view.acid_damage_value_label.get_theme_color("font_color") == StageClearUi.HARMFUL_DELTA_COLOR,
 		"消化ダメージ減少を赤色で表示する"
