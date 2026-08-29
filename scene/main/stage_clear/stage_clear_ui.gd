@@ -10,7 +10,6 @@ signal abandon_unhovered
 signal reroll_pressed
 signal debug_pressed
 
-const SELECT_GUIDE_TEXT := "夢の種をひとつ選んでください"
 const DEBUG_BUTTON_NORMAL_FONT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_COLOR := Color(1.0, 1.0, 1.0, 1.0)
@@ -21,6 +20,7 @@ const HARMFUL_DELTA_COLOR := Color(1.0, 0.35, 0.35, 1.0)
 
 # 案内文
 @onready var guide_text: Label = $GuideText
+@onready var _default_guide_text := guide_text.text
 # 再抽選ボタン
 @onready var reroll_button: Button = $RerollButton
 # debugボタン
@@ -49,7 +49,7 @@ func _ready() -> void:
 
 # 選択表示
 func show_select_mode(abandon_recovery_rate: float) -> void:
-	guide_text.text = SELECT_GUIDE_TEXT
+	guide_text.text = _default_guide_text
 	_seed_choice_active = true
 	abandon_button.disabled = false
 	abandon_button.reset_visual_state()
