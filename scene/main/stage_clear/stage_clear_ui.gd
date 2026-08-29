@@ -30,11 +30,11 @@ const HARMFUL_DELTA_COLOR := Color(1.0, 0.35, 0.35, 1.0)
 # 放棄ボタン
 @onready var abandon_button: StageClearAbandonButton = $AbandonButton
 # 消化ダメージ表示
-@onready var acid_damage_view: AcidDamageView = $StatusPreview/AcidDamageRow/AcidDamageView
+@onready var acid_damage_view: AcidDamageView = $StatusPreview/AcidDamageView
 # 消化間隔表示
-@onready var acid_interval_view: AcidIntervalView = $StatusPreview/AcidIntervalRow/AcidIntervalView
+@onready var acid_interval_view: AcidIntervalView = $StatusPreview/AcidIntervalView
 # HP表示
-@onready var hp_view: StageClearHpView = $StatusPreview/HpRow/HpView
+@onready var hp_view: StageClearHpView = $StatusPreview/HpView
 
 var _debug_numbers_visible := false
 var _seed_choice_active := false

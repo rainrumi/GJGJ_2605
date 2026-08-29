@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="5_646y7"]
 
 [sub_resource type="Resource" id="Resource_hae4b"]
-metadata/__load_path__ = "res://art/enemy/tex_stomach_block_1000.png"
+metadata/__load_path__ = "res://resource/image/texture/enemy/tex_enemy_frame_1_1_100.png"
 
 [sub_resource type="Resource" id="Resource_sbcmc"]
 script = ExtResource("1_dqvbw")

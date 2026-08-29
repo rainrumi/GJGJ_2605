@@ -1,7 +1,7 @@
 [gd_resource type="Theme" format=3 uid="uid://cm0lw7rl4nypb"]
 
-[ext_resource type="Texture2D" uid="uid://bgoytkbysbv7m" path="res://art/texture/slider/tex_slider_bar.png" id="1_bar"]
-[ext_resource type="Texture2D" uid="uid://c8togd4vmvlqx" path="res://art/texture/slider/tex_slider_knob.png" id="2_knob"]
+[ext_resource type="Texture2D" uid="uid://bgoytkbysbv7m" path="res://resource/image/texture/slider/tex_slider_bar.png" id="1_bar"]
+[ext_resource type="Texture2D" uid="uid://c8togd4vmvlqx" path="res://resource/image/texture/slider/tex_slider_knob.png" id="2_knob"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_slider_knob_inset"]
 atlas = ExtResource("2_knob")

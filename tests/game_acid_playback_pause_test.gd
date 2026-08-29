@@ -62,20 +62,20 @@ func _run() -> void:
 	_expect(not game.has_node("UI/AcidPlaybackButton"), "独立した再生・停止ボタンを表示しない")
 	_expect(acid_button != null and acid_button.visible, "消化開始ボタンを表示する")
 	_expect(
-		acid_button.texture.resource_path == "res://art/ui/button/ui_button_digestiveSTART.png",
+		acid_button.texture.resource_path == "res://resource/image/ui/button/ui_button_digestiveSTART.png",
 		"消化開始前は開始画像を表示する"
 	)
 
 	var minutes_before := int(game.get("minutes"))
 	_press_acid_button(acid_button)
 	_expect(
-		acid_button.texture.resource_path == "res://art/ui/button/ui_button_digestiveSTOP.png",
+		acid_button.texture.resource_path == "res://resource/image/ui/button/ui_button_digestiveSTOP.png",
 		"消化開始クリック後は停止画像へ切り替える"
 	)
 	_expect(game.get("auto_acid_enabled"), "消化開始クリックで自動消化を開始する")
 	_press_acid_button(acid_button)
 	_expect(
-		acid_button.texture.resource_path == "res://art/ui/button/ui_button_digestiveSTART.png",
+		acid_button.texture.resource_path == "res://resource/image/ui/button/ui_button_digestiveSTART.png",
 		"停止クリック後は開始画像へ切り替える"
 	)
 	_expect(game.get("auto_acid_paused_by_user"), "停止クリックで消化を停止状態にする")
@@ -113,7 +113,7 @@ func _run() -> void:
 	var auto_acid_timer := game.get("Acidion_timer") as Timer
 	_press_acid_button(acid_button)
 	_expect(
-		acid_button.texture.resource_path == "res://art/ui/button/ui_button_digestiveSTOP.png",
+		acid_button.texture.resource_path == "res://resource/image/ui/button/ui_button_digestiveSTOP.png",
 		"消化再開後は停止画像へ切り替える"
 	)
 	_expect(not game.get("auto_acid_paused_by_user"), "消化開始クリックで停止状態を解除する")

@@ -3,8 +3,7 @@
 [ext_resource type="Script" uid="uid://ccel0yj6xx277" path="res://scene/main/stage_clear/stage_clear.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="PackedScene" uid="uid://cdxfuey83p5f0" path="res://scene/main/stage_clear/seed_choice/seed_choice.tscn" id="5_seed_choice"]
-[ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://art/character/tex_character_portrate_1000.png" id="6_bmnuw"]
-[ext_resource type="Texture2D" uid="uid://8f5urjoauygx" path="res://art/stage_clear/tex_effect_1000_No_100.png" id="8_clear_effect"]
+[ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://resource/image/texture/character/tex_character_portrate_1000.png" id="6_bmnuw"]
 [ext_resource type="Resource" uid="uid://sqlt6j4xlv0b" path="res://data/resources/seeds/skills/seed_100_101.tres" id="12_seed_skill_1001"]
 [ext_resource type="Resource" uid="uid://c6y5aptnps475" path="res://data/resources/seeds/skills/seed_100_102.tres" id="13_seed_skill_1002"]
 [ext_resource type="Resource" uid="uid://d02kf3ks5jgm1" path="res://data/resources/seeds/skills/seed_100_103.tres" id="14_seed_skill_1003"]
@@ -15,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://cmy4qy4b7c2dg" path="res://scene/ui/battle_ui/view/acid_damage_view.tscn" id="21_acid_damage_view"]
 [ext_resource type="PackedScene" uid="uid://bd1mkyol6nw5h" path="res://scene/ui/battle_ui/view/acid_interval_view.tscn" id="22_acid_interval_view"]
 [ext_resource type="PackedScene" uid="uid://bguischxty5ml" path="res://scene/ui/battle_ui/view/hp_view.tscn" id="23_hp_view"]
-[ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://art/ui/button/ui_button_seed_directory_open.png" id="24_owned_seed_open_texture"]
+[ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://resource/image/ui/button/ui_button_seed_directory_open.png" id="24_owned_seed_open_texture"]
 [ext_resource type="Script" uid="uid://c284ogkr07lmb" path="res://scene/ui/button/hover_scale_texture_button.gd" id="25_hover_scale"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
@@ -47,7 +46,6 @@ offset_top = 15.5
 offset_right = 600.0
 offset_bottom = 111.5
 mouse_filter = 2
-texture = ExtResource("8_clear_effect")
 expand_mode = 1
 stretch_mode = 5
 
@@ -90,6 +88,7 @@ offset_right = 129.0
 offset_bottom = 191.0
 mouse_filter = 2
 theme_override_constants/separation = 20
+alignment = 1
 
 [node name="HpView" parent="UI/StatusPreview" unique_id=905640110 instance=ExtResource("23_hp_view")]
 custom_minimum_size = Vector2(95, 34)

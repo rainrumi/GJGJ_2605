@@ -1,6 +1,6 @@
 extends SceneTree
 
-const CELL_TEXTURE := preload("res://art/enemy/tex_enemy_1_1_100.png")
+const CELL_TEXTURE := preload("res://resource/image/texture/enemy/tex_enemy_frame_1_1_100.png")
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 
 var _failures := 0

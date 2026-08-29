@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b8plkl8xnuuao"]
 
-[ext_resource type="Texture2D" uid="uid://djqhgj0uikma7" path="res://art/ui/time/ui_time_frame_1000.png" id="1_bar"]
+[ext_resource type="Texture2D" uid="uid://djqhgj0uikma7" path="res://resource/image/ui/time/ui_time_frame_1000.png" id="1_bar"]
 
 [node name="TimeBar" type="Control" unique_id=1013623940]
 layout_mode = 3

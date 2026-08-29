@@ -5,7 +5,7 @@ extends Node2D
 const AcidED_TWEEN_DURATION := EnemySpriteView.ACIDED_TWEEN_DURATION
 const DEFAULT_STATUS_COLOR := EnemyView.DEFAULT_STATUS_COLOR
 const MAIN_EFFECT_STATUS_COLOR := EnemyView.MAIN_EFFECT_STATUS_COLOR
-const ENEMY_CELL_TEXTURE := preload("res://art/enemy/tex_enemy_1_1_100.png")
+const ENEMY_CELL_TEXTURE := preload("res://resource/image/texture/enemy/tex_enemy_frame_1_1_100.png")
 const DEFAULT_ENEMY_MAX_HP := 1400
 const DEFAULT_ENEMY_SIZE := 6
 const DEFAULT_ENEMY_DAMAGE := 2

@@ -26,30 +26,29 @@ func _run() -> void:
 		get_tree().quit(_failures)
 		return
 	_expect(
-		status_preview.position.is_equal_approx(Vector2(63.0, 122.0)),
-		"状態予測の上端がSeedChoice1の上端にそろっている"
+		status_preview.position.is_equal_approx(Vector2(34.0, 41.0)),
+		"状態予測が左上の所定位置に配置されている"
 	)
 	_expect(
-		is_equal_approx(status_preview.position.y + status_preview.size.y, 348.0),
-		"状態予測の下端がSeedChoice3の下端にそろっている"
+		is_equal_approx(status_preview.position.y + status_preview.size.y, 191.0),
+		"状態予測が所定の高さで表示されている"
 	)
 
-	var acid_damage_view := status_preview.get_node("AcidDamageRow/AcidDamageView") as AcidDamageView
-	var acid_interval_view := status_preview.get_node("AcidIntervalRow/AcidIntervalView") as AcidIntervalView
-	var hp_view := status_preview.get_node("HpRow/HpView") as StageClearHpView
+	var acid_damage_view := status_preview.get_node("AcidDamageView") as AcidDamageView
+	var acid_interval_view := status_preview.get_node("AcidIntervalView") as AcidIntervalView
+	var hp_view := status_preview.get_node("HpView") as StageClearHpView
 	for view: Control in [acid_damage_view, acid_interval_view, hp_view]:
-		var row := view.get_parent() as HBoxContainer
-		_expect(row.alignment == BoxContainer.ALIGNMENT_CENTER, "%s row is center aligned" % view.name)
+		_expect(view.get_parent() == status_preview, "%s is a direct child of StatusPreview" % view.name)
 		_expect(
 			view.size_flags_horizontal == Control.SIZE_SHRINK_CENTER,
 			"%s uses horizontal center sizing" % view.name
 		)
 		_expect(
-			is_equal_approx(view.position.x + view.size.x * 0.5, row.size.x * 0.5),
+			is_equal_approx(view.position.x + view.size.x * 0.5, status_preview.size.x * 0.5),
 			"%s is horizontally centered in StatusPreview" % view.name
 		)
-	var hp_icon := status_preview.get_node("HpRow/HpView/Icon") as TextureRect
-	var hp_value_label := status_preview.get_node("HpRow/HpView/Value") as Label
+	var hp_icon := status_preview.get_node("HpView/Icon") as TextureRect
+	var hp_value_label := status_preview.get_node("HpView/Value") as Label
 	_expect(status_preview.get_node_or_null("AcidDamageRow/Delta") == null, "AcidDamage Delta removed")
 	_expect(status_preview.get_node_or_null("AcidIntervalRow/Delta") == null, "AcidInterval Delta removed")
 	_expect(status_preview.get_node_or_null("HpRow/Delta") == null, "HP Delta removed")
@@ -68,7 +67,7 @@ func _run() -> void:
 	_expect(acid_damage_view.acid_damage_value_label.text == "50", "通常時の消化ダメージを表示する")
 	_expect(acid_interval_view.acid_interval_value_label.text == "30min", "通常時の消化間隔を表示する")
 	_expect(
-		hp_icon.texture.resource_path == "res://art/ui/icon/ui_icon_digestiveHP.png",
+		hp_icon.texture.resource_path == "res://resource/image/ui/icon/ui_icon_digestiveHP.png",
 		"HP文字の代わりにHPアイコンを表示する"
 	)
 	_expect(hp_value_label.text == "70", "HPアイコンの横にクリア回復後HPを表示する")
@@ -87,12 +86,12 @@ func _run() -> void:
 	var debug_button := stage_clear.get_node("UI/DebugButton") as Button
 	var abandon_button := stage_clear.get_node("UI/AbandonButton") as Button
 	_expect(
-		owned_seed_button.position.y + owned_seed_button.size.y < abandon_button.position.y,
-		"Owned seed button is above abandon button"
+		owned_seed_button.position.x + owned_seed_button.size.x < abandon_button.position.x,
+		"Owned seed button is left of abandon button"
 	)
 	_expect(
-		debug_button.position.y + debug_button.size.y < owned_seed_button.position.y,
-		"Debug button is above owned seed button"
+		owned_seed_button.position.y + owned_seed_button.size.y < debug_button.position.y,
+		"Debug button is below owned seed button"
 	)
 	acid_damage_view.mouse_entered.emit()
 	_expect(acid_damage_view.acid_damage_view_tooltip.visible, "消化ダメージの説明をホバー表示する")

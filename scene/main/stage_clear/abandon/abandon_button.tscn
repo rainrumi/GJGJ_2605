@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ce3s60lbqwdan" path="res://scene/main/stage_clear/abandon/abandon_button.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
-[ext_resource type="Texture2D" uid="uid://bvewbj2k87hga" path="res://art/stage_clear/ui_choise_cancel_frame_1000.png" id="3_cancel_frame"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/frame/tex_frame_100.png" id="3_cancel_frame"]
 
 [node name="AbandonButton" type="Button" unique_id=1178344794]
 offset_right = 120.0

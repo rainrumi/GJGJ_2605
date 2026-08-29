@@ -125,7 +125,7 @@ func _check_owned_seed_panel() -> void:
 	_expect(
 		close_button.texture_normal != null
 		and close_button.texture_normal.resource_path
-			== "res://art/ui/button/ui_button_seed_directory_close.png",
+			== "res://resource/image/ui/button/ui_button_seed_directory_close.png",
 		"閉じるボタンに専用画像を使用する"
 	)
 	var panel_lock_toggle := panel.get_node("PanelLockToggle") as CheckBox
@@ -390,7 +390,7 @@ func _check_game_inventory_integration() -> void:
 	_expect(
 		open_button.texture_normal != null
 		and open_button.texture_normal.resource_path
-			== "res://art/ui/button/ui_button_seed_directory_open.png",
+			== "res://resource/image/ui/button/ui_button_seed_directory_open.png",
 		"開くボタンに専用画像を使用する"
 	)
 	_expect(closed_list.position.is_equal_approx(Vector2(40.0, 54.0)), "通常時装備種をキャラクター頭頂部へ置く")
@@ -567,7 +567,7 @@ func _check_stage_clear_storage_reward() -> void:
 
 func _create_seeds(count: int, first_id: int = 0) -> Array[SeedInfo]:
 	var seeds: Array[SeedInfo] = []
-	var texture := load("res://art/dreamseed/tex_seed_1000_No_100.png") as Texture2D
+	var texture := load("res://resource/image/texture/seed/tex_seed_kinsenka.png") as Texture2D
 	for index in range(count):
 		var seed := SeedInfo.new()
 		seed.skill_id = first_id + index

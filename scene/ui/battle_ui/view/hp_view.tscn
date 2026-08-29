@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bguischxty5ml"]
 
-[ext_resource type="Texture2D" uid="uid://yh8b6gdwnf38" path="res://art/ui/icon/ui_icon_digestiveHP.png" id="1_digestive_hp_icon"]
+[ext_resource type="Texture2D" uid="uid://yh8b6gdwnf38" path="res://resource/image/ui/icon/ui_icon_digestiveHP.png" id="1_digestive_hp_icon"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Script" path="res://scene/ui/battle_ui/view/hp_view.gd" id="3_hp_view_script"]
 
