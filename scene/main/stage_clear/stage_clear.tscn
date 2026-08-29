@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://bguischxty5ml" path="res://scene/ui/battle_ui/view/hp_view.tscn" id="23_hp_view"]
 [ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://resource/image/ui/button/ui_button_seed_directory_open.png" id="24_owned_seed_open_texture"]
 [ext_resource type="Script" uid="uid://c284ogkr07lmb" path="res://scene/ui/button/hover_scale_texture_button.gd" id="25_hover_scale"]
+[ext_resource type="PackedScene" uid="uid://dqdytqcjhv1yw" path="res://scene/ui/seed/owned_seed_panel.tscn" id="26_owned_seed_panel"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
@@ -142,6 +143,9 @@ offset_bottom = 329.0
 focus_mode = 0
 texture_normal = ExtResource("24_owned_seed_open_texture")
 script = ExtResource("25_hover_scale")
+
+[node name="OwnedSeedPanel" parent="UI" instance=ExtResource("26_owned_seed_panel")]
+visible = false
 
 [node name="AbandonButton" parent="UI" unique_id=1850666034 instance=ExtResource("16_abandon_button")]
 layout_mode = 0

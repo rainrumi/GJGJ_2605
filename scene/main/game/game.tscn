@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bd1mkyol6nw5h" path="res://scene/ui/battle_ui/view/acid_interval_view.tscn" id="7_acid_interval_view_scene"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://resource/sound/se/se_click.mp3" id="21_click_se"]
-[ext_resource type="AudioStream" path="res://resource/sound/se/se_attack.mp3" id="22_attack_se"]
+[ext_resource type="AudioStream" uid="uid://sq1bd2eoi1fx" path="res://resource/sound/se/se_attack.mp3" id="22_attack_se"]
 [ext_resource type="Script" uid="uid://dqfh2rsac6b2h" path="res://scene/main/game/controller/input/game_input_controller.gd" id="27_game_input_controller"]
 [ext_resource type="PackedScene" uid="uid://cfjja3p43w2i0" path="res://scene/ui/hp/hp.tscn" id="31_hp_scene"]
 [ext_resource type="PackedScene" uid="uid://bk0m5bk7vnrh8" path="res://scene/ui/view/time_view.tscn" id="32_time_view_scene"]
@@ -20,7 +20,7 @@
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="43_bestten_font"]
 [ext_resource type="PackedScene" uid="uid://dqdytqcjhv1yw" path="res://scene/ui/seed/owned_seed_panel.tscn" id="44_owned_seed_panel"]
 [ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://resource/image/ui/button/ui_button_seed_directory_open.png" id="45_owned_seed_open_texture"]
-[ext_resource type="Script" path="res://scene/ui/button/hover_scale_texture_button.gd" id="46_hover_scale"]
+[ext_resource type="Script" uid="uid://c284ogkr07lmb" path="res://scene/ui/button/hover_scale_texture_button.gd" id="46_hover_scale"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enemy_return_hint"]
 bg_color = Color(0.07, 0.06, 0.09, 0.78)
@@ -71,7 +71,7 @@ position = Vector2(95, 210)
 [node name="ClickSe" type="AudioStreamPlayer" parent="." unique_id=163842910]
 stream = ExtResource("21_click_se")
 
-[node name="AttackSe" type="AudioStreamPlayer" parent="."]
+[node name="AttackSe" type="AudioStreamPlayer" parent="." unique_id=489052507]
 stream = ExtResource("22_attack_se")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]

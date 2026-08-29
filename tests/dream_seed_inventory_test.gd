@@ -554,13 +554,27 @@ func _check_stage_clear_storage_reward() -> void:
 		"ステージクリア画面からHPバーを削除している"
 	)
 	_expect(
-		stage_clear.get_node_or_null("CharacterArea/OwnedSeedOpenButton") == null,
-		"ステージクリア画面から所持中の夢の種ボタンを削除している"
+		stage_clear.get_node_or_null("UI/OwnedSeedOpenButton") != null,
+		"ステージクリア画面に夢の種ボタンを表示する"
 	)
 	_expect(
-		stage_clear.get_node_or_null("CharacterArea/OwnedSeedPanel") == null,
-		"ステージクリア画面から所持種パネルを削除している"
+		stage_clear.get_node_or_null("UI/OwnedSeedPanel") != null,
+		"ステージクリア画面に所持種パネルを表示できる"
 	)
+	var stage_clear_ui := stage_clear.get_node("UI") as StageClearUi
+	var open_button := stage_clear_ui.get_node("OwnedSeedOpenButton") as TextureButton
+	var owned_panel := stage_clear_ui.get_node("OwnedSeedPanel") as OwnedSeedPanel
+	stage_clear.call("set_seed_inventory", _create_seeds(2, 700), _create_seeds(3, 800))
+	stage_clear_ui.call("_open_owned_seed_panel")
+	_expect(owned_panel.visible and not open_button.visible, "夢の種ボタンから所持種パネルを開ける")
+	var equipped_list := owned_panel.get_node("UpperArea/EquippedList") as SeedButtonList
+	_expect(
+		(equipped_list.get_child(0) as SeedButton).seed != null
+		and (equipped_list.get_child(1) as SeedButton).seed != null,
+		"ステージクリア画面の所持種パネルに装備中の種を表示する"
+	)
+	owned_panel.closed.emit()
+	_expect(not owned_panel.visible and open_button.visible, "閉じる操作で夢の種ボタンへ戻る")
 	_dispose(stage_clear)
 	await get_tree().process_frame
 

@@ -163,6 +163,9 @@ func _connect_ui_signals() -> void:
 	ui.abandon_unhovered.connect(_on_abandon_button_mouse_exited)
 	ui.reroll_pressed.connect(_on_reroll_button_pressed)
 	ui.debug_pressed.connect(_on_debug_button_pressed)
+	ui.seed_equip_requested.connect(_on_seed_equip_requested)
+	ui.seed_unequip_requested.connect(_on_seed_unequip_requested)
+	ui.seed_move_requested.connect(_on_seed_move_requested)
 
 
 # 花初期化
@@ -458,8 +461,51 @@ func _refresh_after_reward_state_changed() -> void:
 
 # 報酬UI更新
 func _refresh_reward_ui() -> void:
+	ui.set_seed_inventory(planted_flowers, stored_seeds)
 	ui.setup_seed_choices(seed_options, _get_seed_selectable_states())
 	_update_hp_heal_plan()
+
+
+func _on_seed_equip_requested(seed: SeedInfo) -> void:
+	var inventory := _create_seed_inventory()
+	if inventory.equip_seed(seed):
+		_apply_seed_inventory(inventory)
+
+
+func _on_seed_unequip_requested(seed: SeedInfo) -> void:
+	var inventory := _create_seed_inventory()
+	if inventory.unequip_seed(seed):
+		_apply_seed_inventory(inventory)
+
+
+func _on_seed_move_requested(
+	seed: SeedInfo,
+	source_collection: int,
+	source_index: int,
+	target_collection: int,
+	target_index: int
+) -> void:
+	var inventory := _create_seed_inventory()
+	if inventory.move_seed_to_slot(
+		seed,
+		source_collection,
+		source_index,
+		target_collection,
+		target_index
+	):
+		_apply_seed_inventory(inventory)
+
+
+func _create_seed_inventory() -> GameSeedController:
+	var inventory := GameSeedController.new()
+	inventory.set_seed_inventory(planted_flowers, stored_seeds)
+	return inventory
+
+
+func _apply_seed_inventory(inventory: GameSeedController) -> void:
+	planted_flowers = inventory.get_flowers().duplicate()
+	stored_seeds = inventory.get_stored_seeds().duplicate()
+	_refresh_after_reward_state_changed()
 
 
 # 種選択可否一覧

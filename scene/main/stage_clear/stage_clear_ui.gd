@@ -9,6 +9,15 @@ signal abandon_hovered
 signal abandon_unhovered
 signal reroll_pressed
 signal debug_pressed
+signal seed_equip_requested(seed: SeedInfo)
+signal seed_unequip_requested(seed: SeedInfo)
+signal seed_move_requested(
+	seed: SeedInfo,
+	source_collection: int,
+	source_index: int,
+	target_collection: int,
+	target_index: int
+)
 
 const DEBUG_BUTTON_NORMAL_FONT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
@@ -35,6 +44,8 @@ const HARMFUL_DELTA_COLOR := Color(1.0, 0.35, 0.35, 1.0)
 @onready var acid_interval_view: AcidIntervalView = $StatusPreview/AcidIntervalView
 # HP表示
 @onready var hp_view: StageClearHpView = $StatusPreview/HpView
+@onready var owned_seed_open_button: TextureButton = $OwnedSeedOpenButton
+@onready var owned_seed_panel: OwnedSeedPanel = $OwnedSeedPanel
 
 var _debug_numbers_visible := false
 var _seed_choice_active := false
@@ -164,6 +175,7 @@ func set_debug_state(is_visible: bool, is_seed_choice_active: bool) -> void:
 	_debug_numbers_visible = is_visible
 	_seed_choice_active = is_seed_choice_active
 	seed_choice_list.set_debug_numbers_visible(_debug_numbers_visible)
+	owned_seed_panel.set_debug_numbers_visible(_debug_numbers_visible)
 	_apply_debug_button_state()
 	_update_reroll_button_state()
 
@@ -189,6 +201,53 @@ func _connect_child_signals() -> void:
 	acid_interval_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
 	hp_view.tooltip_requested.connect(_on_status_tooltip_requested)
 	hp_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
+	owned_seed_open_button.pressed.connect(_open_owned_seed_panel)
+	owned_seed_panel.closed.connect(_close_owned_seed_panel)
+	owned_seed_panel.equip_requested.connect(_on_seed_equip_requested)
+	owned_seed_panel.unequip_requested.connect(_on_seed_unequip_requested)
+	owned_seed_panel.seed_drag_released.connect(_on_seed_drag_released)
+	_close_owned_seed_panel()
+
+
+func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
+	owned_seed_panel.set_seed_inventory(equipped_seeds, stored_seeds)
+
+
+func _open_owned_seed_panel() -> void:
+	owned_seed_open_button.visible = false
+	owned_seed_panel.open_panel()
+
+
+func _close_owned_seed_panel() -> void:
+	owned_seed_panel.visible = false
+	owned_seed_open_button.visible = true
+
+
+func _on_seed_equip_requested(seed: SeedInfo) -> void:
+	seed_equip_requested.emit(seed)
+
+
+func _on_seed_unequip_requested(seed: SeedInfo) -> void:
+	seed_unequip_requested.emit(seed)
+
+
+func _on_seed_drag_released(
+	source_button: SeedButton,
+	seed: SeedInfo,
+	mouse_position: Vector2
+) -> void:
+	if not owned_seed_panel.owns_seed_button(source_button):
+		return
+	var target_button := owned_seed_panel.get_seed_slot_at_position(mouse_position)
+	if target_button == null:
+		return
+	seed_move_requested.emit(
+		seed,
+		source_button.get_source_collection(),
+		owned_seed_panel.get_inventory_slot_index(source_button),
+		target_button.get_source_collection(),
+		owned_seed_panel.get_inventory_slot_index(target_button)
+	)
 
 
 # debug外観更新
