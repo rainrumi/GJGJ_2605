@@ -4,6 +4,7 @@ extends RefCounted
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 const SEED_BLOCK_DRAG_ALPHA := 0.58
 const MAX_EQUIPPED_SEEDS := 6
+const DRAG_CENTER_TWEEN_DURATION := 0.3
 
 var rest_time_skip_count := 0
 var _flowers: Array[SeedInfo] = []
@@ -14,6 +15,8 @@ var _input_controller: GameInputController
 var _dragging_seed_block: Enemy
 var _dragging_seed_button_list: SeedButton
 var _dragging_seed: SeedInfo
+var _drag_offset := Vector2.ZERO
+var _drag_center_tween: Tween
 var _pending_depleted_sources_by_block: Dictionary = {}
 var debug_factory := SeedDebug.new()
 
@@ -184,7 +187,9 @@ func start_drag(
 	_dragging_seed = seed
 	_dragging_seed_block = seed_block
 	_apply_seed_block_rotation(_dragging_seed_block, button.get_rotation_quarter_turns())
-	_dragging_seed_block.global_position = mouse_position
+	_drag_offset = button.get_global_rect().get_center() - mouse_position
+	_dragging_seed_block.global_position = mouse_position + _drag_offset
+	_start_drag_center_tween()
 	_dragging_seed_block.modulate.a = SEED_BLOCK_DRAG_ALPHA
 	_dragging_seed_block.visible = show_seed_block
 	result.started = true
@@ -200,7 +205,7 @@ func move_drag(
 ) -> void:
 	if _dragging_seed_block == null:
 		return
-	_dragging_seed_block.global_position = mouse_position
+	_dragging_seed_block.global_position = mouse_position + _drag_offset
 	_dragging_seed_block.visible = show_seed_block
 	if not show_seed_block:
 		_stomach.hide_preview()
@@ -219,6 +224,7 @@ func release_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> SeedDragDat
 	result.source_button = _dragging_seed_button_list
 	result.seed = _dragging_seed
 	result.source = _dragging_seed_button_list.get_seed_source() if _dragging_seed_button_list != null else null
+	_stop_drag_center_tween()
 	_dragging_seed_block = null
 	_dragging_seed_button_list = null
 	_dragging_seed = null
@@ -233,6 +239,7 @@ func release_drag(mouse_position: Vector2, enemies: Array[Enemy]) -> SeedDragDat
 
 # ドラッグ取消
 func cancel_drag() -> void:
+	_stop_drag_center_tween()
 	if _dragging_seed_block != null:
 		cancel_seed_block(_dragging_seed_block)
 	_dragging_seed_block = null
@@ -245,6 +252,25 @@ func cancel_drag() -> void:
 # dragging判定
 func is_dragging() -> bool:
 	return _dragging_seed_block != null
+
+
+# ドラッグ対象をマウス中心へ移動
+func _start_drag_center_tween() -> void:
+	_stop_drag_center_tween()
+	if _owner == null:
+		_drag_offset = Vector2.ZERO
+		return
+	_drag_center_tween = _owner.create_tween()
+	_drag_center_tween.set_trans(Tween.TRANS_CUBIC)
+	_drag_center_tween.set_ease(Tween.EASE_OUT)
+	_drag_center_tween.tween_property(self, "_drag_offset", Vector2.ZERO, DRAG_CENTER_TWEEN_DURATION)
+
+
+# ドラッグ中心移動を停止
+func _stop_drag_center_tween() -> void:
+	if _drag_center_tween != null and _drag_center_tween.is_valid():
+		_drag_center_tween.kill()
+	_drag_center_tween = null
 
 
 # 種ブロック作成

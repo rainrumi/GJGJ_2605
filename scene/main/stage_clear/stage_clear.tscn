@@ -144,8 +144,9 @@ focus_mode = 0
 texture_normal = ExtResource("24_owned_seed_open_texture")
 script = ExtResource("25_hover_scale")
 
-[node name="OwnedSeedPanel" parent="UI" instance=ExtResource("26_owned_seed_panel")]
+[node name="OwnedSeedPanel" parent="UI" unique_id=123180005 instance=ExtResource("26_owned_seed_panel")]
 visible = false
+layout_mode = 0
 
 [node name="AbandonButton" parent="UI" unique_id=1850666034 instance=ExtResource("16_abandon_button")]
 layout_mode = 0

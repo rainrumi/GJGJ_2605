@@ -15,6 +15,7 @@ const REST_HP_RATE: float = 0.1
 const TIME_OVER_HP_RECOVERY_RATE: float = 0.7
 const acid_AUTO_INTERVAL: float = 0.05
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
+const DRAG_CENTER_TWEEN_DURATION := 0.3
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
 @onready var ui: BattleUI = $UI
@@ -60,6 +61,7 @@ var seed_controller := GameSeedController.new()
 var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
 var drag_offset := Vector2.ZERO
+var _drag_center_tween: Tween
 var drag_grab_cell := Vector2i.ZERO
 var dragged_enemy_was_Aciding := false
 var dragged_enemy_original_cell := Vector2i.ZERO
@@ -270,6 +272,7 @@ func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offs
 	drag_mode = DragMode.ENEMY
 	dragging_enemy = enemy
 	drag_offset = pointer_offset
+	_start_drag_center_tween()
 	drag_grab_cell = grab_cell
 	dragged_enemy_was_Aciding = enemy.is_Aciding()
 	dragged_enemy_original_cell = enemy.stomach_cell
@@ -282,10 +285,10 @@ func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offs
 		ui.hide_enemy_return_hint()
 	_play_click_se()
 # 移動処理
-func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i) -> void:
+func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, _pointer_offset: Vector2, grab_cell: Vector2i) -> void:
 	if not battle_active or drag_mode != DragMode.ENEMY or enemy != dragging_enemy:
 		return
-	dragging_enemy.global_position = mouse_position + pointer_offset
+	dragging_enemy.global_position = mouse_position + drag_offset
 	stomach.show_preview(dragging_enemy, mouse_position, grab_cell, enemies)
 	_update_hp_damage_preview(mouse_position)
 	_set_hovered_enemy(null)
@@ -299,6 +302,7 @@ func _on_enemy_drag_released(enemy: Enemy, mouse_position: Vector2) -> void:
 
 # 敵ドラッグrelease終了
 func _finish_enemy_drag_release(enemy: Enemy, mouse_position: Vector2) -> void:
+	_stop_drag_center_tween()
 	dragging_enemy = null
 	_play_click_se()
 	stomach.hide_preview()
@@ -312,6 +316,22 @@ func _finish_enemy_drag_release(enemy: Enemy, mouse_position: Vector2) -> void:
 			_refresh_after_battle_event()
 			return
 		_remove_enemy_from_stomach(enemy)
+
+
+# ドラッグ対象をマウス中心へ移動
+func _start_drag_center_tween() -> void:
+	_stop_drag_center_tween()
+	_drag_center_tween = create_tween()
+	_drag_center_tween.set_trans(Tween.TRANS_CUBIC)
+	_drag_center_tween.set_ease(Tween.EASE_OUT)
+	_drag_center_tween.tween_property(self, "drag_offset", Vector2.ZERO, DRAG_CENTER_TWEEN_DURATION)
+
+
+# ドラッグ中心移動を停止
+func _stop_drag_center_tween() -> void:
+	if _drag_center_tween != null and _drag_center_tween.is_valid():
+		_drag_center_tween.kill()
+	_drag_center_tween = null
 
 
 # 要求処理
