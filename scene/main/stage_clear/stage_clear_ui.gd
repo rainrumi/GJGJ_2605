@@ -85,7 +85,11 @@ func set_status_preview(
 	hp: int,
 	preview_acid_damage: int,
 	preview_acid_interval_minutes: int,
-	preview_hp: int
+	preview_hp: int,
+	max_hp: int,
+	rest_minutes: int,
+	rest_hp_rate: float,
+	rest_recovery_bonus_rate: float
 ) -> void:
 	var acid_damage := int(acid_damage_info["total"])
 	var acid_interval_minutes := int(acid_interval_info["total"])
@@ -105,7 +109,13 @@ func set_status_preview(
 		int(acid_interval_info["enemy_buff"]),
 		float(acid_interval_info["enemy_rate"])
 	)
-	hp_view.set_hp_value(hp)
+	hp_view.set_hp_info(
+		preview_hp,
+		max_hp,
+		rest_minutes,
+		rest_hp_rate,
+		rest_recovery_bonus_rate
+	)
 	_set_preview_value(
 		acid_damage_view.acid_damage_value_label,
 		preview_acid_damage,
@@ -137,7 +147,10 @@ func _set_preview_value(
 ) -> void:
 	label.text = value_format % preview_value
 	if delta == 0:
-		label.remove_theme_color_override("font_color")
+		if label == hp_view.hp_value_label:
+			hp_view.restore_value_font_color()
+		else:
+			label.remove_theme_color_override("font_color")
 		return
 	var is_beneficial := delta > 0 if increase_is_beneficial else delta < 0
 	label.add_theme_color_override(
@@ -174,6 +187,8 @@ func _connect_child_signals() -> void:
 	acid_damage_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
 	acid_interval_view.tooltip_requested.connect(_on_status_tooltip_requested)
 	acid_interval_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
+	hp_view.tooltip_requested.connect(_on_status_tooltip_requested)
+	hp_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
 
 
 # debug外観更新

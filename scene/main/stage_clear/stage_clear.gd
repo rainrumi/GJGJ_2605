@@ -8,6 +8,8 @@ const CLEAR_RECOVERY_END_HOUR := 27
 const CLEAR_RECOVERY_BASE_RATE := 0.5
 const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
 const MAX_HP := 100
+const REST_MINUTES := 30
+const REST_HP_RATE := 0.1
 const BATTLE_START_MINUTES := 22 * 60
 const MAX_EQUIPPED_SEEDS := 6
 
@@ -518,7 +520,11 @@ func _update_status_preview(flowers: Array[SeedInfo], recovery_rate: float) -> v
 		int(base_status["hp"]),
 		int((preview_status["acid_damage_info"] as Dictionary)["total"]),
 		int((preview_status["acid_interval_info"] as Dictionary)["total"]),
-		int(preview_status["hp"])
+		int(preview_status["hp"]),
+		MAX_HP,
+		REST_MINUTES,
+		REST_HP_RATE,
+		float(preview_status["rest_recovery_bonus_rate"])
 	)
 
 
@@ -563,6 +569,7 @@ func _get_status_preview(flowers: Array[SeedInfo], recovery_rate: float) -> Dict
 		"acid_damage_info": damage_info,
 		"acid_interval_info": acid_interval_info,
 		"hp": preview_hp,
+		"rest_recovery_bonus_rate": seed_effects.get_rest_recovery_bonus_rate(),
 	}
 
 

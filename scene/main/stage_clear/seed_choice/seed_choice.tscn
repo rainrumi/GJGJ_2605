@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dl173oyj7acni" path="res://scene/main/stage_clear/seed_choice/seed_choice.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://d1swr615sa4we" path="res://resource/image/ui/choice/ui_choise_seed_frame_1000_LV_200.png" id="3_6u1fo"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/frame/tex_frame_100.png" id="3_frame"]
+[ext_resource type="Texture2D" uid="uid://drk1rtl23138w" path="res://resource/image/texture/frame/tex_frame_100.png" id="3_frame"]
 [ext_resource type="Script" uid="uid://bcaqfqxx5br8x" path="res://scene/main/stage_clear/seed_choice/seed_choice_frame.gd" id="5_frame_script"]
 [ext_resource type="Script" uid="uid://dw6sg0ihf2qc1" path="res://scene/main/stage_clear/seed_choice/seed_choice_icon_rare.gd" id="6_rare_script"]
 [ext_resource type="Script" uid="uid://8n7rdibc6uyc" path="res://scene/main/stage_clear/seed_choice/seed_choice_texture.gd" id="7_texture_script"]
@@ -75,7 +75,7 @@ theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 8
 text = "効果テキスト"
 autowrap_mode = 3
 script = ExtResource("10_raa8t")

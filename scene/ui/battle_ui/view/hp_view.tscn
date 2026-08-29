@@ -2,7 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://yh8b6gdwnf38" path="res://resource/image/ui/icon/ui_icon_digestiveHP.png" id="1_digestive_hp_icon"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
-[ext_resource type="Script" path="res://scene/ui/battle_ui/view/hp_view.gd" id="3_hp_view_script"]
+[ext_resource type="Script" uid="uid://l8vjgddusybk" path="res://scene/ui/battle_ui/view/hp_view.gd" id="3_hp_view_script"]
+[ext_resource type="PackedScene" uid="uid://io6yfxcbl4dr" path="res://scene/ui/battle_ui/tooltip/left/left_tooltip.tscn" id="4_left_tooltip"]
+[ext_resource type="Script" uid="uid://e7h4ik0nntom" path="res://scene/ui/hp/hp_tooltip.gd" id="5_hp_tooltip"]
 
 [node name="HpView" type="TextureRect" unique_id=905653709]
 offset_right = 95.0
@@ -29,3 +31,6 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 text = "100"
 vertical_alignment = 1
+
+[node name="HpView_tooltip" parent="." unique_id=2027338652 instance=ExtResource("4_left_tooltip")]
+script = ExtResource("5_hp_tooltip")

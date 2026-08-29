@@ -107,6 +107,15 @@ func _run() -> void:
 		"消化間隔の説明文を表示する"
 	)
 	acid_interval_view.mouse_exited.emit()
+	hp_view.mouse_entered.emit()
+	_expect(hp_view.hp_tooltip.visible, "HPの説明をホバー表示する")
+	_expect(
+		hp_view.hp_tooltip.tooltip_label.text.contains("HP: 70/100"),
+		"ゲーム画面と同じ現在HPと最大HPを表示する"
+	)
+	_expect(hp_view.hp_tooltip.tooltip_label.text.contains("10%"), "ゲーム画面と同じ休憩回復率を表示する")
+	hp_view.mouse_exited.emit()
+	_expect(not hp_view.hp_tooltip.visible, "HPのホバー終了時に説明を隠す")
 
 	stage_clear.ui.seed_choice_hovered.emit(0)
 	_expect(acid_damage_view.acid_damage_value_label.text == "55", "Preview damage replaces value")
@@ -130,10 +139,25 @@ func _run() -> void:
 	_expect(acid_damage_view.acid_damage_value_label.text == "50", "ホバー終了時に消化ダメージを戻す")
 	_expect(acid_interval_view.acid_interval_value_label.text == "30min", "ホバー終了時に消化間隔を戻す")
 	_expect(hp_value_label.text == "70", "ホバー終了時にHPを戻す")
+	_expect(
+		hp_value_label.get_theme_color("font_color") == Color(0.94, 0.88, 1.0, 1.0),
+		"HPの通常文字色をHpViewシーンのエディター設定へ戻す"
+	)
 
 	var lower_damage_info := {"total": 50, "base": 50, "seed_buff": 0, "seed_rate": 0.0, "enemy_buff": 0, "enemy_rate": 0.0}
 	var longer_interval_info := {"total": 30, "base": 30, "seed_buff": 0, "seed_rate": 0.0, "enemy_buff": 0, "enemy_rate": 0.0}
-	stage_clear.ui.set_status_preview(lower_damage_info, longer_interval_info, 70, 45, 31, 60)
+	stage_clear.ui.set_status_preview(
+		lower_damage_info,
+		longer_interval_info,
+		70,
+		45,
+		31,
+		60,
+		100,
+		30,
+		0.1,
+		0.0
+	)
 	_expect(acid_damage_view.acid_damage_value_label.text == "45", "Lower preview damage replaces value")
 	_expect(acid_interval_view.acid_interval_value_label.text == "31min", "Longer preview interval replaces value")
 	_expect(hp_value_label.text == "60", "Lower preview HP replaces value")

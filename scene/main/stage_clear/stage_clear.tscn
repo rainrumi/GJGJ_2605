@@ -157,7 +157,7 @@ offset_top = 10.0
 offset_right = 627.0
 offset_bottom = 300.0
 mouse_filter = 2
-theme_override_constants/separation = 30
+theme_override_constants/separation = 28
 script = ExtResource("20_seed_choice_list_script")
 
 [node name="SeedChoice1" parent="UI/SeedChoices" unique_id=507694198 instance=ExtResource("5_seed_choice")]
