@@ -85,24 +85,21 @@ autowrap_mode = 3
 layout_mode = 0
 offset_left = 34.0
 offset_top = 41.0
-offset_right = 129.0
+offset_right = 169.0
 offset_bottom = 191.0
 mouse_filter = 2
 theme_override_constants/separation = 20
 alignment = 1
 
 [node name="HpView" parent="UI/StatusPreview" unique_id=905640110 instance=ExtResource("23_hp_view")]
-custom_minimum_size = Vector2(95, 34)
 layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="AcidIntervalView" parent="UI/StatusPreview" unique_id=1586561440 instance=ExtResource("22_acid_interval_view")]
-custom_minimum_size = Vector2(95, 34)
 layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="AcidDamageView" parent="UI/StatusPreview" unique_id=205531699 instance=ExtResource("21_acid_damage_view")]
-custom_minimum_size = Vector2(95, 34)
 layout_mode = 2
 size_flags_horizontal = 4
 

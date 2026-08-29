@@ -33,6 +33,10 @@ func _run() -> void:
 		is_equal_approx(status_preview.position.y + status_preview.size.y, 191.0),
 		"状態予測が所定の高さで表示されている"
 	)
+	_expect(
+		is_equal_approx(status_preview.size.x, 135.0),
+		"状態予測の幅が最も広い表示部品に合っている"
+	)
 
 	var acid_damage_view := status_preview.get_node("AcidDamageView") as AcidDamageView
 	var acid_interval_view := status_preview.get_node("AcidIntervalView") as AcidIntervalView
@@ -47,6 +51,11 @@ func _run() -> void:
 			is_equal_approx(view.position.x + view.size.x * 0.5, status_preview.size.x * 0.5),
 			"%s is horizontally centered in StatusPreview" % view.name
 		)
+	_expect(
+		acid_interval_view.size.x >= acid_interval_view.acid_interval_value_label.position.x
+		+ acid_interval_view.acid_interval_value_label.size.x,
+		"AcidIntervalView contains its visible value within its layout width"
+	)
 	var hp_icon := status_preview.get_node("HpView/Icon") as TextureRect
 	var hp_value_label := status_preview.get_node("HpView/Value") as Label
 	_expect(status_preview.get_node_or_null("AcidDamageRow/Delta") == null, "AcidDamage Delta removed")

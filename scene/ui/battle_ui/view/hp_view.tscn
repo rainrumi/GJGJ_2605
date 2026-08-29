@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://e7h4ik0nntom" path="res://scene/ui/hp/hp_tooltip.gd" id="5_hp_tooltip"]
 
 [node name="HpView" type="TextureRect" unique_id=905653709]
+custom_minimum_size = Vector2(95, 34)
 offset_right = 95.0
 offset_bottom = 34.0
 script = ExtResource("3_hp_view_script")

@@ -29,6 +29,7 @@ enum NovelFlow {
 @onready var se_click: AudioStreamPlayer = $SeClick
 @onready var se_select: AudioStreamPlayer = $SeSelect
 @onready var settings_screen: SettingsScreen = $SettingsScreen
+@onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
 var run_state := RunState.new()
 var should_reset_player_state := true
@@ -82,6 +83,8 @@ func _on_node_added(node: Node) -> void:
 
 func _on_ui_button_pressed(button: BaseButton) -> void:
 	if game.is_ancestor_of(button) or settings_screen.is_ancestor_of(button):
+		return
+	if _mouse_drag_state.is_dragging():
 		return
 	_play_se_click()
 

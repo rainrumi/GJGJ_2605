@@ -7,7 +7,8 @@
 [ext_resource type="Script" uid="uid://ckv6cr7uji2yt" path="res://scene/ui/battle_ui/view/acid_damage_view.gd" id="5_acid_damage_view_script"]
 
 [node name="AcidDamageView" type="TextureRect" unique_id=596010147]
-offset_right = 80.0
+custom_minimum_size = Vector2(79, 34)
+offset_right = 79.0
 offset_bottom = 34.0
 expand_mode = 2
 script = ExtResource("5_acid_damage_view_script")

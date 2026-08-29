@@ -7,7 +7,8 @@
 [ext_resource type="Script" uid="uid://bqt5lj7jk8i3k" path="res://scene/ui/battle_ui/view/acid_interval_view.gd" id="5_acid_interval_view_script"]
 
 [node name="AcidIntervalView" type="TextureRect" unique_id=1945896621]
-offset_right = 100.0
+custom_minimum_size = Vector2(135, 34)
+offset_right = 135.0
 offset_bottom = 34.0
 script = ExtResource("5_acid_interval_view_script")
 
