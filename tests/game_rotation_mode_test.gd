@@ -99,17 +99,17 @@ func _run() -> void:
 	var seed_button_list := game.get_node("UI/SeedButtonList") as SeedButtonList
 	var seed_button := seed_button_list.get_child(0) as SeedButton
 	_short_click_seed(seed_button, seed_button.global_position)
-	_expect(seed_button.get_rotation_quarter_turns() == 1, "0.5秒未満の夢の種クリックで次のブロックを90度回転する")
+	_expect(seed_button.get_rotation_quarter_turns() == 0, "ブロックになる前の装備中の夢の種は短押しで回転しない")
 
 	var seed_controller := game.get("seed_controller") as GameSeedController
 	seed_button.call("_handle_press", seed_button.global_position)
 	seed_button.set("_press_started_msec", Time.get_ticks_msec() - 500)
 	seed_button.call("_process", 0.0)
-	_expect(seed_controller.is_dragging(), "0.5秒の長押しで回転済みの夢の種ブロックを生成できる")
+	_expect(seed_controller.is_dragging(), "0.5秒の長押しで夢の種ブロックを生成できる")
 	var dragging_seed_block := seed_controller.get("_dragging_seed_block") as Enemy
 	_expect(
-		dragging_seed_block != null and dragging_seed_block.get_stomach_size() == Vector2i(3, 2),
-		"夢の種ボタンで選んだ向きを生成ブロックへ反映する"
+		dragging_seed_block != null and dragging_seed_block.get_stomach_size() == Vector2i(2, 3),
+		"夢の種から生成したブロックは初期方向を維持する"
 	)
 
 	enemy.set_Aciding(false)
@@ -125,7 +125,7 @@ func _run() -> void:
 	if seed_block != null:
 		stomach.place_enemy(seed_block, Vector2i.ZERO)
 		_short_click_enemy(input_controller, seed_block.global_position)
-		_expect(seed_block.get_stomach_size() == Vector2i(2, 3), "胃袋内の夢の種もクリックで回転する")
+		_expect(seed_block.get_stomach_size() == Vector2i(3, 2), "ブロックになった夢の種はクリックで回転する")
 
 	game.call("cancel_battle")
 	root.remove_child(game)

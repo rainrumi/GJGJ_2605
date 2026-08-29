@@ -292,10 +292,6 @@ func _handle_release(mouse_position: Vector2) -> void:
 	if loadout_edit_enabled:
 		loadout_edit_requested.emit(self, seed)
 		return
-	if not _can_use_sub_skill():
-		return
-	set_rotation_quarter_turns(_rotation_quarter_turns + 1)
-	seed_rotation_requested.emit(self, seed)
 
 
 # ドラッグ開始

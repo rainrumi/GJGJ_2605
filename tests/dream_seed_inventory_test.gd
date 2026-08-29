@@ -422,7 +422,7 @@ func _check_game_inventory_integration() -> void:
 	)
 	closed_button.call("_handle_press", closed_button.global_position)
 	closed_button.call("_handle_release", closed_button.global_position)
-	_expect(closed_button.get_rotation_quarter_turns() == 1, "閉じた装備表示の短押し回転を維持する")
+	_expect(closed_button.get_rotation_quarter_turns() == 0, "ブロックになる前の装備中の夢の種は短押しで回転しない")
 	game.call("_on_seed_drag_started", closed_button, closed_button.seed, closed_button.global_position)
 	var seed_controller := game.get("seed_controller") as GameSeedController
 	var equipped_seed_block := seed_controller.get("_dragging_seed_block") as Enemy
