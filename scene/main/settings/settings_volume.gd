@@ -1,8 +1,6 @@
 class_name SettingsVolume
 extends HBoxContainer
 
-signal feedback_requested
-
 @export_enum("master", "bgm", "se") var volume_type := "master"
 
 @onready var slider: HSlider = $Value
@@ -48,7 +46,6 @@ func _set_volume(value: float) -> void:
 			GameSettings.set_bgm_volume(value)
 		"se":
 			GameSettings.set_se_volume(value)
-			feedback_requested.emit()
 		_:
 			GameSettings.set_master_volume(value)
 

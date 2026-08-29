@@ -311,7 +311,6 @@ script = ExtResource("9_yi1nd")
 
 [connection signal="value_changed" from="Screen/Panel/Rows/MasterVolume/Value" to="Screen/Panel/Rows/MasterVolume" method="_on_value_changed"]
 [connection signal="value_changed" from="Screen/Panel/Rows/BgmVolume/Value" to="Screen/Panel/Rows/BgmVolume" method="_on_value_changed"]
-[connection signal="feedback_requested" from="Screen/Panel/Rows/SeVolume" to="." method="_on_setting_feedback_requested"]
 [connection signal="value_changed" from="Screen/Panel/Rows/SeVolume/Value" to="Screen/Panel/Rows/SeVolume" method="_on_value_changed"]
 [connection signal="feedback_requested" from="Screen/Panel/Rows/TextSpeed" to="." method="_on_setting_feedback_requested"]
 [connection signal="item_selected" from="Screen/Panel/Rows/TextSpeed/Value" to="Screen/Panel/Rows/TextSpeed" method="_on_item_selected"]

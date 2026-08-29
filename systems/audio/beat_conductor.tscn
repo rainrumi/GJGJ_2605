@@ -6,3 +6,4 @@
 script = ExtResource("1_script")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=2110352408]
+bus = &"BGM"
