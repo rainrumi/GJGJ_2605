@@ -1,8 +1,13 @@
 class_name SeedEffectOnBattleChangeStomachSize
 extends SeedEffect
 
+
 @export var columns_delta := 0 # 列差分
 @export var rows_delta := 0 # 行差分
+
+
+func is_unconditional_status_change() -> bool:
+	return true
 
 
 # 胃袋列補正

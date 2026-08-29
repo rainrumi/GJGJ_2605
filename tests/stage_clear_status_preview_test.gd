@@ -144,6 +144,50 @@ func _run() -> void:
 		"HPの通常文字色をHpViewシーンのエディター設定へ戻す"
 	)
 
+	var conditional_acid := SeedEffectOnAcidDamageChangeAcidDamageRateByStomachCount.new()
+	conditional_acid.rate = 0.5
+	conditional_acid.max_stomach_count = 99
+	var conditional_interval := SeedEffectOnTargetClockChangeTimeReductionRateAfterClock.new()
+	conditional_interval.rate = 0.5
+	conditional_interval.start_minutes = 0
+	var conditional_hp := SeedEffectOnSelectedRewerdChangeHpAfterClock.new()
+	conditional_hp.recovery_rate = 0.2
+	conditional_hp.start_minutes = 0
+	var unconditional_acid := SeedEffectOnBattleChangeAcidDamageRate.new()
+	unconditional_acid.rate = 0.1
+	var mixed_skill := SeedSkill.new()
+	mixed_skill.effects.assign([
+		conditional_acid,
+		conditional_interval,
+		conditional_hp,
+		unconditional_acid,
+	])
+	var mixed_seed := SeedInfo.new()
+	mixed_seed.main_skill = mixed_skill
+	stage_clear.seed_options.assign([mixed_seed])
+	stage_clear.ui.seed_choice_hovered.emit(0)
+	_expect(
+		acid_damage_view.acid_damage_value_label.text == "55",
+		"hover preview includes the unconditional damage effect"
+	)
+	_expect(
+		acid_interval_view.acid_interval_value_label.text == "30min",
+		"hover preview excludes the clock-conditioned interval effect"
+	)
+	_expect(
+		hp_value_label.text == "70",
+		"hover preview excludes the clock-conditioned HP effect"
+	)
+	stage_clear.ui.seed_choice_unhovered.emit()
+	stage_clear.seed_options.clear()
+	mixed_skill.effects.clear()
+	mixed_seed = null
+	mixed_skill = null
+	conditional_acid = null
+	conditional_interval = null
+	conditional_hp = null
+	unconditional_acid = null
+
 	var lower_damage_info := {"total": 50, "base": 50, "seed_buff": 0, "seed_rate": 0.0, "enemy_buff": 0, "enemy_rate": 0.0}
 	var longer_interval_info := {"total": 30, "base": 30, "seed_buff": 0, "seed_rate": 0.0, "enemy_buff": 0, "enemy_rate": 0.0}
 	stage_clear.ui.set_status_preview(

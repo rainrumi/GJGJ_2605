@@ -1,8 +1,14 @@
 class_name SeedEffect
 extends Resource
 
+
 @export var priority := 0 # 優先度
 @export var enabled := true # 有効状態
+
+
+# Whether a newly hovered seed changes StatusPreview without a runtime condition.
+func is_unconditional_status_change() -> bool:
+	return false
 
 
 # 報酬選択中

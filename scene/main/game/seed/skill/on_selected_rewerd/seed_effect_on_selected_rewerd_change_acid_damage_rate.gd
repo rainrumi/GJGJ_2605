@@ -1,7 +1,12 @@
 class_name SeedEffectOnSelectedRewerdChangeAcidDamageRate
 extends SeedEffect
 
+
 @export var rate := 0.0 # acid rate
+
+
+func is_unconditional_status_change() -> bool:
+	return true
 
 
 # selecting

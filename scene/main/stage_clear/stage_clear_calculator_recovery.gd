@@ -47,6 +47,34 @@ static func get_planned_recovery_rate(
 	return get_clear_time_recovery_rate(planted_flowers, clear_minutes, start_hour, end_hour, base_rate, hourly_loss_rate) + get_seed_bonus_rate(planted_flowers, clear_minutes)
 
 
+# hover候補のうち無条件の効果だけを加えた回復率取得
+static func get_planned_preview_recovery_rate(
+	base_flowers: Array[SeedInfo],
+	preview_flowers: Array[SeedInfo],
+	clear_minutes: int,
+	start_hour: int,
+	end_hour: int,
+	base_rate: float,
+	hourly_loss_rate: float
+) -> float:
+	var context := get_selecting_preview_rewerd_context(
+		base_flowers,
+		preview_flowers,
+		clear_minutes
+	)
+	if bool(context.get("clear_time_recovery_disabled", false)):
+		return float(context.get("hp_recovery_rate", 0.0))
+	var clear_time_rate := get_clear_time_recovery_rate(
+		base_flowers,
+		clear_minutes,
+		start_hour,
+		end_hour,
+		base_rate,
+		hourly_loss_rate
+	)
+	return clear_time_rate + float(context.get("hp_recovery_rate", 0.0))
+
+
 # clear時間回復率取得
 static func get_clear_time_recovery_rate(
 	planted_flowers: Array[SeedInfo],
@@ -105,6 +133,26 @@ static func get_selected_rewerd_context(planted_flowers: Array[SeedInfo], clear_
 	return context
 
 
+static func get_selecting_preview_rewerd_context(
+	base_flowers: Array[SeedInfo], preview_flowers: Array[SeedInfo], clear_minutes: int
+) -> Dictionary:
+	var context := _create_rewerd_context(clear_minutes)
+	var state := DreamSeedSkillState.new()
+	for effect in _get_preview_main_effects(base_flowers, preview_flowers):
+		effect.on_selecting_rewerd(state, context)
+	return context
+
+
+static func get_selected_preview_rewerd_context(
+	base_flowers: Array[SeedInfo], preview_flowers: Array[SeedInfo], clear_minutes: int
+) -> Dictionary:
+	var context := _create_rewerd_context(clear_minutes)
+	var state := DreamSeedSkillState.new()
+	for effect in _get_preview_main_effects(base_flowers, preview_flowers):
+		effect.on_selected_rewerd(state, context)
+	return context
+
+
 # 文脈作成
 static func _create_rewerd_context(clear_minutes: int) -> Dictionary:
 	return {
@@ -126,6 +174,21 @@ static func _get_main_effects(planted_flowers: Array[SeedInfo]) -> Array[SeedEff
 	effects.sort_custom(func(a: SeedEffect, b: SeedEffect) -> bool:
 		return a.priority < b.priority
 	)
+	return effects
+
+
+static func _get_preview_main_effects(
+	base_flowers: Array[SeedInfo], preview_flowers: Array[SeedInfo]
+) -> Array[SeedEffect]:
+	var remaining_base_effects := _get_main_effects(base_flowers)
+	var effects: Array[SeedEffect] = []
+	for effect in _get_main_effects(preview_flowers):
+		var base_index := remaining_base_effects.find(effect)
+		if base_index >= 0:
+			remaining_base_effects.remove_at(base_index)
+			effects.append(effect)
+		elif effect.is_unconditional_status_change():
+			effects.append(effect)
 	return effects
 
 

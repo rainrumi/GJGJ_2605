@@ -1,11 +1,16 @@
 class_name SeedEffectOnBattleChangeTimeReductionRate
 extends SeedEffect
 
+
 @export var rate := 0.0 # 短縮率
 @export var hp_loss_rate := 0.0 # 被弾率
 @export var elapsed_step_rate := 0.0 # 経過率
 @export var min_interval_rate := -999.0 # 最小間隔率
 @export var max_interval_rate := 999.0 # 最大間隔率
+
+
+func is_unconditional_status_change() -> bool:
+	return is_zero_approx(hp_loss_rate) and is_zero_approx(elapsed_step_rate)
 
 
 # 時間率取得

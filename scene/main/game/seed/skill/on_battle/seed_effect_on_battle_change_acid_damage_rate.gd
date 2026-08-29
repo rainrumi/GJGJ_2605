@@ -1,7 +1,12 @@
 class_name SeedEffectOnBattleChangeAcidDamageRate
 extends SeedEffect
 
+
 @export var rate := 0.0 # 酸倍率
+
+
+func is_unconditional_status_change() -> bool:
+	return true
 
 
 # 消化率取得

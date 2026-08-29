@@ -366,10 +366,10 @@ func _get_seed_choice_recovery_rate(seed_index: int) -> float:
 	var seed := _get_seed_option(seed_index)
 	if seed == null:
 		return _get_planned_clear_recovery_rate()
-	return StageClearCalculatorRecovery.get_planned_recovery_rate(
+	return StageClearCalculatorRecovery.get_planned_preview_recovery_rate(
+		planted_flowers,
 		_get_preview_flowers_for_seed(seed),
 		clear_minutes,
-		false,
 		CLEAR_RECOVERY_START_HOUR,
 		CLEAR_RECOVERY_END_HOUR,
 		CLEAR_RECOVERY_BASE_RATE,
@@ -531,7 +531,7 @@ func _update_status_preview(flowers: Array[SeedInfo], recovery_rate: float) -> v
 # 状態予測取得
 func _get_status_preview(flowers: Array[SeedInfo], recovery_rate: float) -> Dictionary:
 	var seed_effects := SeedEffectResolver.new()
-	seed_effects.setup(flowers)
+	seed_effects.setup_status_preview(planted_flowers, flowers)
 	seed_effects.add_acid_damage_bonus_rate(
 		_get_preview_permanent_acid_damage_bonus_rate(flowers)
 	)
@@ -578,7 +578,11 @@ func _get_preview_permanent_acid_damage_bonus_rate(flowers: Array[SeedInfo]) -> 
 	var rate := permanent_acid_damage_bonus_rate
 	if _selected_rewerd_effect_applied:
 		return rate
-	var context := StageClearCalculatorRecovery.get_selected_rewerd_context(flowers, clear_minutes)
+	var context := StageClearCalculatorRecovery.get_selected_preview_rewerd_context(
+		planted_flowers,
+		flowers,
+		clear_minutes
+	)
 	return rate + float(context.get("permanent_acid_rate", 0.0))
 
 

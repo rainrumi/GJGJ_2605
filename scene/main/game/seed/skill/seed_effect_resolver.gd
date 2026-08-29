@@ -1,16 +1,30 @@
 class_name SeedEffectResolver
 extends RefCounted
 
+var _status_preview_base_effects: Array[SeedEffect] = []
+var _status_preview_only := false
 var _state := DreamSeedSkillState.new() # 状態
 var _planted_flowers: Array[SeedInfo] = [] # 植付花
 
 
 # setup処理
 func setup(flowers: Array) -> void:
+	_status_preview_only = false
+	_status_preview_base_effects.clear()
 	_planted_flowers.clear()
 	for flower in flowers:
 		if flower is SeedInfo:
 			_planted_flowers.append(flower as SeedInfo)
+	_state.reset()
+	for effect in _get_main_effects():
+		effect.setup(_state)
+
+
+# 既存効果を保ち、新規候補の条件付き効果だけを除外してpreviewを初期化する
+func setup_status_preview(base_flowers: Array[SeedInfo], preview_flowers: Array[SeedInfo]) -> void:
+	setup(preview_flowers)
+	_status_preview_only = true
+	_status_preview_base_effects = _collect_main_effects(base_flowers)
 	_state.reset()
 	for effect in _get_main_effects():
 		effect.setup(_state)
@@ -278,8 +292,24 @@ func _get_heal_bonus_rate(context: Dictionary) -> float:
 
 # main効果取得
 func _get_main_effects() -> Array[SeedEffect]:
+	var effects := _collect_main_effects(_planted_flowers)
+	if not _status_preview_only:
+		return effects
+	var remaining_base_effects := _status_preview_base_effects.duplicate()
+	var preview_effects: Array[SeedEffect] = []
+	for effect in effects:
+		var base_index := remaining_base_effects.find(effect)
+		if base_index >= 0:
+			remaining_base_effects.remove_at(base_index)
+			preview_effects.append(effect)
+		elif effect.is_unconditional_status_change():
+			preview_effects.append(effect)
+	return preview_effects
+
+
+func _collect_main_effects(flowers: Array) -> Array[SeedEffect]:
 	var effects: Array[SeedEffect] = [] # 効果群
-	for flower in _planted_flowers:
+	for flower in flowers:
 		if flower == null:
 			continue
 		effects.append_array(_get_seed_effects(flower.get_main_skill()))

@@ -1,7 +1,12 @@
 class_name SeedEffectOnSelectedRewerdChangeHp
 extends SeedEffect
 
+
 @export var recovery_rate := 0.0 # hp rate
+
+
+func is_unconditional_status_change() -> bool:
+	return true
 
 
 # selecting
