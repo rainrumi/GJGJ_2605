@@ -1242,10 +1242,22 @@ func _refresh_seed_structural_effects() -> void:
 func _resolve_post_acid_visuals(Acided_enemies: Array[Enemy]) -> void:
 	if Acided_enemies.is_empty():
 		return
+	_play_attack_se_for_digested_enemies(Acided_enemies)
 	var visual_duration := maxf(Enemy.AcidED_TWEEN_DURATION, EnemyDamagePopup.TOTAL_DURATION)
 	await get_tree().create_timer(visual_duration).timeout
 	acid_controller.unlock_deferred_nuisance_gravity(enemies)
 	stomach.apply_gravity(enemies)
+
+
+# 悪夢消化SE再生
+func _play_attack_se_for_digested_enemies(Acided_enemies: Array[Enemy]) -> void:
+	for enemy in Acided_enemies:
+		if enemy == null or not enemy.is_enemy():
+			continue
+		if attack_se.stream != null:
+			attack_se.stop()
+			attack_se.play()
+		return
 
 
 # 消化ダメージ情報取得
