@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ccel0yj6xx277" path="res://scene/main/stage_clear/stage_clear.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="PackedScene" uid="uid://cdxfuey83p5f0" path="res://scene/main/stage_clear/seed_choice/seed_choice.tscn" id="5_seed_choice"]
-[ext_resource type="Texture2D" uid="uid://b0bw0x4qy4gcr" path="res://resource/image/texture/character/tex_character_portrate_1000.png" id="6_bmnuw"]
+[ext_resource type="Texture2D" uid="uid://hnjih6pm11ok" path="res://resource/image/texture/character/tex_character_200_portrate_1000.png" id="6_bmnuw"]
 [ext_resource type="Resource" uid="uid://sqlt6j4xlv0b" path="res://data/resources/seeds/skills/seed_100_101.tres" id="12_seed_skill_1001"]
 [ext_resource type="Resource" uid="uid://c6y5aptnps475" path="res://data/resources/seeds/skills/seed_100_102.tres" id="13_seed_skill_1002"]
 [ext_resource type="Resource" uid="uid://d02kf3ks5jgm1" path="res://data/resources/seeds/skills/seed_100_103.tres" id="14_seed_skill_1003"]
