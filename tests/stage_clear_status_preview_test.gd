@@ -102,13 +102,33 @@ func _run() -> void:
 	_expect(status_preview.get_node_or_null("AcidIntervalRow/Delta") == null, "AcidInterval Delta removed")
 	_expect(status_preview.get_node_or_null("HpRow/Delta") == null, "HP Delta removed")
 	_expect(
-		acid_damage_view.scene_file_path == "res://scene/ui/battle_ui/view/acid_damage_view.tscn",
-		"戦闘画面と同じ消化ダメージ表示を使用する"
+		acid_damage_view.scene_file_path == "res://scene/main/stage_clear/view/acid_damage_view.tscn",
+		"ステージクリア専用の消化ダメージ表示を使用する"
 	)
 	_expect(
-		acid_interval_view.scene_file_path == "res://scene/ui/battle_ui/view/acid_interval_view.tscn",
-		"戦闘画面と同じ消化間隔表示を使用する"
+		acid_interval_view.scene_file_path == "res://scene/main/stage_clear/view/acid_interval_view.tscn",
+		"ステージクリア専用の消化間隔表示を使用する"
 	)
+	var game_acid_damage_view := (
+		load("res://scene/ui/battle_ui/view/acid_damage_view.tscn") as PackedScene
+	).instantiate() as AcidDamageView
+	var game_acid_interval_view := (
+		load("res://scene/ui/battle_ui/view/acid_interval_view.tscn") as PackedScene
+	).instantiate() as AcidIntervalView
+	add_child(game_acid_damage_view)
+	add_child(game_acid_interval_view)
+	_expect(
+		game_acid_damage_view.acid_damage_value_label.horizontal_alignment
+		== HORIZONTAL_ALIGNMENT_LEFT,
+		"ゲーム用の消化ダメージ表示は値を左揃えにする"
+	)
+	_expect(
+		game_acid_interval_view.acid_interval_value_label.horizontal_alignment
+		== HORIZONTAL_ALIGNMENT_LEFT,
+		"ゲーム用の消化間隔表示は値を左揃えにする"
+	)
+	game_acid_damage_view.queue_free()
+	game_acid_interval_view.queue_free()
 	_expect(
 		hp_view.scene_file_path == "res://scene/ui/battle_ui/view/hp_view.tscn",
 		"戦闘画面の表示部品と同じ配置規約でHP表示を使用する"

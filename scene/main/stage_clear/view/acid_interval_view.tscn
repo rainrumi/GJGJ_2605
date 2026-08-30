@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bd1mkyol6nw5h"]
+[gd_scene format=3]
 
 [ext_resource type="Texture2D" uid="uid://cv2lt30r8m0jq" path="res://resource/image/ui/icon/ui_icon_digestiveINTERVAL.png" id="1_digestive_interval_icon"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
@@ -6,20 +6,20 @@
 [ext_resource type="Script" uid="uid://d36mcwrf0i80" path="res://scene/ui/battle_ui/tooltip/acid_interval_view_tooltip.gd" id="4_acid_interval_tooltip"]
 [ext_resource type="Script" uid="uid://bqt5lj7jk8i3k" path="res://scene/ui/battle_ui/view/acid_interval_view.gd" id="5_acid_interval_view_script"]
 
-[node name="AcidIntervalView" type="TextureRect" unique_id=1945896621]
+[node name="AcidIntervalView" type="TextureRect"]
 custom_minimum_size = Vector2(135, 34)
 offset_right = 135.0
 offset_bottom = 34.0
 script = ExtResource("5_acid_interval_view_script")
 
-[node name="AcidIntervalView_icon" type="TextureRect" parent="." unique_id=1187081540]
+[node name="AcidIntervalView_icon" type="TextureRect" parent="."]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_right = 28.0
 offset_bottom = 34.0
 texture = ExtResource("1_digestive_interval_icon")
 
-[node name="AcidIntervalView_value" type="Label" parent="." unique_id=132044423]
+[node name="AcidIntervalView_value" type="Label" parent="."]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 0
@@ -32,9 +32,9 @@ theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 text = "30min"
-horizontal_alignment = 0
+horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AcidIntervalView_tooltip" parent="." unique_id=433888117 instance=ExtResource("3_left_tooltip")]
+[node name="AcidIntervalView_tooltip" parent="." instance=ExtResource("3_left_tooltip")]
 script = ExtResource("4_acid_interval_tooltip")
 note_visible = true
