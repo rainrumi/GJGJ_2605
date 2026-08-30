@@ -25,6 +25,9 @@ func _run() -> void:
 	root.add_child(drag_owner)
 	click_se.stream = AudioStreamGenerator.new()
 	click_se.stop()
+	var opening_novel := main.get_node("OpeningNovel") as OpeningNovel
+	opening_novel.advanced.emit()
+	_expect(not click_se.playing, "ノベル送り操作はクリックSEを再生しない")
 
 	mouse_drag_state.begin_drag(drag_owner)
 	main.call("_on_ui_button_pressed", stage_choice)

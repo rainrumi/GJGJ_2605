@@ -43,7 +43,6 @@ var _screen_flow_id := 0
 func _ready() -> void:
 	get_tree().node_added.connect(_on_node_added)
 	_connect_ui_buttons(self)
-	opening_novel.advanced.connect(_play_se_click)
 	settings_screen.closed.connect(_on_settings_screen_closed)
 	settings_screen.title_requested.connect(_on_settings_title_requested)
 	if game.has_method("set_beat_conductor"):
@@ -82,7 +81,7 @@ func _on_node_added(node: Node) -> void:
 
 
 func _on_ui_button_pressed(button: BaseButton) -> void:
-	if game.is_ancestor_of(button) or settings_screen.is_ancestor_of(button):
+	if settings_screen.is_ancestor_of(button):
 		return
 	if _mouse_drag_state.is_dragging():
 		return

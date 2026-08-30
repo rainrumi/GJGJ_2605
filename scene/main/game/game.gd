@@ -21,7 +21,6 @@ const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転で
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
-@onready var click_se: AudioStreamPlayer = $ClickSe
 @onready var attack_se: AudioStreamPlayer = $AttackSe
 @onready var enemies: Array[Enemy] = [$EnemyLeft as Enemy, $EnemyCenter as Enemy, $EnemyRight as Enemy, $EnemyUpperRight as Enemy]
 var minutes := START_HOUR * 60
@@ -232,7 +231,6 @@ func _connect_ui() -> void:
 	ui.seed_drag_started.connect(_on_seed_drag_started)
 	ui.seed_drag_moved.connect(_on_seed_drag_moved)
 	ui.seed_drag_released.connect(_on_seed_drag_released)
-	ui.seed_rotation_requested.connect(_on_seed_rotation_requested)
 	ui.seed_equip_requested.connect(_on_seed_equip_requested)
 	ui.seed_unequip_requested.connect(_on_seed_unequip_requested)
 # 入力接続
@@ -283,7 +281,6 @@ func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offs
 		ui.show_enemy_return_hint(_get_remove_from_stomach_damage())
 	else:
 		ui.hide_enemy_return_hint()
-	_play_click_se()
 # 移動処理
 func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, _pointer_offset: Vector2, grab_cell: Vector2i) -> void:
 	if not battle_active or drag_mode != DragMode.ENEMY or enemy != dragging_enemy:
@@ -304,7 +301,6 @@ func _on_enemy_drag_released(enemy: Enemy, mouse_position: Vector2) -> void:
 func _finish_enemy_drag_release(enemy: Enemy, mouse_position: Vector2) -> void:
 	_stop_drag_center_tween()
 	dragging_enemy = null
-	_play_click_se()
 	stomach.hide_preview()
 	ui.hide_hp_damage_preview()
 	ui.hide_enemy_return_hint()
@@ -357,7 +353,6 @@ func _on_enemy_previous_page_requested() -> void:
 		return
 	_set_hovered_enemy(null)
 	if enemy_setup.show_previous_enemy_page(enemies):
-		_play_click_se()
 		_refresh_enemy_page_navigation()
 
 
@@ -367,7 +362,6 @@ func _on_enemy_next_page_requested() -> void:
 		return
 	_set_hovered_enemy(null)
 	if enemy_setup.show_next_enemy_page(enemies):
-		_play_click_se()
 		_refresh_enemy_page_navigation()
 
 
@@ -378,8 +372,6 @@ func _on_acid_playback_requested(should_play: bool) -> void:
 	if should_play:
 		if not auto_acid_enabled:
 			_on_Acidion_requested()
-			if auto_acid_enabled:
-				_play_click_se()
 			return
 		if not auto_acid_paused_by_user:
 			return
@@ -390,7 +382,6 @@ func _on_acid_playback_requested(should_play: bool) -> void:
 			return
 		auto_acid_paused_by_user = true
 	_update_auto_acid_timer()
-	_play_click_se()
 
 
 # 悪夢・胃袋内ブロック回転要求
@@ -406,14 +397,7 @@ func _on_enemy_rotation_requested(enemy: Enemy) -> void:
 		return
 	if not stomach.try_rotate_enemy_clockwise(enemy, enemies):
 		return
-	_play_click_se()
 	_refresh_after_battle_event()
-
-
-# 種ボタン回転要求
-func _on_seed_rotation_requested(_button: SeedButton, _seed: SeedInfo) -> void:
-	if battle_active:
-		_play_click_se()
 
 
 # 種装備要求
@@ -422,7 +406,6 @@ func _on_seed_equip_requested(seed: SeedInfo) -> void:
 		return
 	_sync_seed_sources()
 	_refresh_after_battle_event()
-	_play_click_se()
 
 
 # 種装備解除要求
@@ -431,7 +414,6 @@ func _on_seed_unequip_requested(seed: SeedInfo) -> void:
 		return
 	_sync_seed_sources()
 	_refresh_after_battle_event()
-	_play_click_se()
 # イベント処理
 func _on_Acidion_timer_timeout() -> void:
 	if not auto_acid_enabled or auto_acid_paused_for_drag:
@@ -492,7 +474,6 @@ func _on_seed_drag_started(
 	drag_mode = DragMode.seed
 	auto_acid_paused_for_drag = auto_acid_enabled
 	_update_auto_acid_timer()
-	_play_click_se()
 
 
 # 移動処理
@@ -549,14 +530,11 @@ func _try_move_seed_inventory_slot(
 	if moved:
 		_sync_seed_sources()
 		_refresh_after_battle_event()
-	_play_click_se()
 	return true
 
 
 # handle種ドラッグ結果処理
 func _handle_seed_drag_result(result: SeedDragData) -> void:
-	if result.started:
-		_play_click_se()
 	if result.placed:
 		_apply_placed_seed_drag_result(result)
 
@@ -1316,9 +1294,3 @@ func _get_acid_damage_info() -> Dictionary:
 # 消化interval情報取得
 func _get_acid_interval_info() -> Dictionary:
 	return acid_controller.get_step_minutes_breakdown(enemies, false, minutes)
-# clickSE再生
-func _play_click_se() -> void:
-	if click_se == null:
-		return
-	click_se.stop()
-	click_se.play()

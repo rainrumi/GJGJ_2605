@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
 [ext_resource type="PackedScene" uid="uid://bd1mkyol6nw5h" path="res://scene/ui/battle_ui/view/acid_interval_view.tscn" id="7_acid_interval_view_scene"]
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
-[ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://resource/sound/se/se_click.mp3" id="21_click_se"]
 [ext_resource type="AudioStream" uid="uid://sq1bd2eoi1fx" path="res://resource/sound/se/se_attack.mp3" id="22_attack_se"]
 [ext_resource type="Script" uid="uid://dqfh2rsac6b2h" path="res://scene/main/game/controller/input/game_input_controller.gd" id="27_game_input_controller"]
 [ext_resource type="PackedScene" uid="uid://cfjja3p43w2i0" path="res://scene/ui/hp/hp.tscn" id="31_hp_scene"]
@@ -69,7 +68,6 @@ position = Vector2(270, 192.97)
 position = Vector2(95, 210)
 
 [node name="ClickSe" type="AudioStreamPlayer" parent="." unique_id=163842910]
-stream = ExtResource("21_click_se")
 
 [node name="AttackSe" type="AudioStreamPlayer" parent="." unique_id=489052507]
 stream = ExtResource("22_attack_se")
