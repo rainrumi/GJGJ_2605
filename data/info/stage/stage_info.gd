@@ -34,9 +34,10 @@ enum StageArea {
 
 # 難度文言取得
 func get_difficulty_text() -> String:
+	var stars := "★".repeat(maxi(difficulty_level, 0))
 	if is_high_difficulty:
-		return "Lv.%d+α" % difficulty_level
-	return "Lv.%d" % difficulty_level
+		return "%s+α" % stars
+	return stars
 
 
 # high難度fallback作成

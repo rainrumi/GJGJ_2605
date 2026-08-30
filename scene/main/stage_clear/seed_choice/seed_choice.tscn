@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://d1swr615sa4we" path="res://resource/image/ui/choice/ui_choise_seed_frame_1000_LV_200.png" id="3_6u1fo"]
 [ext_resource type="Texture2D" uid="uid://drk1rtl23138w" path="res://resource/image/texture/frame/tex_frame_100.png" id="3_frame"]
 [ext_resource type="Script" uid="uid://bcaqfqxx5br8x" path="res://scene/main/stage_clear/seed_choice/seed_choice_frame.gd" id="5_frame_script"]
+[ext_resource type="Texture2D" uid="uid://b44kbucb1jhrq" path="res://resource/image/texture/seed/tex_seed_amaririsu.png" id="6_dn7uk"]
 [ext_resource type="Script" uid="uid://dw6sg0ihf2qc1" path="res://scene/main/stage_clear/seed_choice/seed_choice_icon_rare.gd" id="6_rare_script"]
 [ext_resource type="Script" uid="uid://8n7rdibc6uyc" path="res://scene/main/stage_clear/seed_choice/seed_choice_texture.gd" id="7_texture_script"]
 [ext_resource type="Script" uid="uid://bjkbu3ifo3dg0" path="res://scene/main/stage_clear/seed_choice/seed_choice_label_name.gd" id="8_name_script"]
@@ -44,10 +45,11 @@ script = ExtResource("6_rare_script")
 [node name="Texture" type="TextureRect" parent="." unique_id=388718737]
 self_modulate = Color(0, 0, 0, 1)
 layout_mode = 0
-offset_left = 310.0
-offset_top = 14.0
-offset_right = 374.0
-offset_bottom = 78.0
+offset_left = 288.0
+offset_top = 1.0
+offset_right = 376.0
+offset_bottom = 89.0
+texture = ExtResource("6_dn7uk")
 expand_mode = 1
 script = ExtResource("7_texture_script")
 
