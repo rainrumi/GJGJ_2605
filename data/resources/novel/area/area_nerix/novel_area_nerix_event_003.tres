@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "自己中心になる悪夢\n自分よりすごい人がいなくなれば自分が大学校に進学できる。ほかの生徒を支配して自分の配下に置けばいい。かわりに僕が君たちの代わりに動くから、全部私にゆだねてほしい。"
+script_path = "res://resource/novel/area/area_nerix/novel_area_nerix_event_003.txt"

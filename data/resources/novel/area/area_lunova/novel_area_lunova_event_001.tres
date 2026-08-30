@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "赤いクロワッサン"
+script_path = "res://resource/novel/area/area_lunova/novel_area_lunova_event_001.txt"

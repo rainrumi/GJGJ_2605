@@ -4,5 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "昨夜は悪夢をすべて食べきれなかった。
-今日の夜に備えてしっかり休もう…"
+script_path = "res://resource/novel/novel_ending_gameover.txt"

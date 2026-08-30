@@ -338,12 +338,14 @@ func _finish_end_gameover_novel() -> void:
 func _get_end_gameover_novel_text() -> NovelTextInfo:
 	# ノベル文言
 	var novel_text := NovelTextInfo.new()
-	novel_text.text = end_gameover_novel_text.text if end_gameover_novel_text != null else ""
+	novel_text.text = end_gameover_novel_text.get_script_text() if end_gameover_novel_text != null else ""
 	# 回復割合
 	var recovery_percent := 0
 	if game.has_method("get_last_time_over_recovery_percent"):
 		recovery_percent = game.get_last_time_over_recovery_percent()
-	novel_text.text += "\n（HPが%d%%回復した）" % recovery_percent
+	if not novel_text.text.is_empty() and not novel_text.text.ends_with("\n"):
+		novel_text.text += "\n"
+	novel_text.text += "（HPが%d%%回復した）\n@lcm" % recovery_percent
 	return novel_text
 
 
@@ -397,7 +399,7 @@ func _get_game_clear_novel_text() -> NovelTextInfo:
 		return game_clear_novel_text
 	# ノベル文言
 	var novel_text := NovelTextInfo.new()
-	novel_text.text = "ゲームクリア！7"
+	novel_text.text = "ゲームクリア！7\n@lcm"
 	return novel_text
 
 
@@ -474,7 +476,7 @@ func _get_recurring_stage_unlock_novel_text() -> NovelTextInfo:
 	var novel_text := NovelTextInfo.new()
 	# high難度数
 	var high_difficulty_count := int(run_state.current_day / HIGH_DIFFICULTY_DAY_INTERVAL)
-	novel_text.text = template.text % high_difficulty_count
+	novel_text.text = template.get_script_text() % high_difficulty_count
 	return novel_text
 
 

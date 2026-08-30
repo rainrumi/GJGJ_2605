@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "すぐにものを捨てられる悪夢\n良いものも悪いものもすぐに捨てられる。\nなんで、まだ使えるのに、どうして捨てるの。まだ見捨てないで、私はまだあなたと一緒にいたいのに。"
+script_path = "res://resource/novel/area/area_felis/novel_area_felis_event_002.txt"

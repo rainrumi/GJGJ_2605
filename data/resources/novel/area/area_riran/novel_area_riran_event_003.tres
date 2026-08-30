@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "妖精が殺される悪夢\n人間が絶対に裏切らないとは断言できない。\n行政区の人間は虎視眈々と妖精の自由を奪える日を狙っているかもしれない。知らぬ間に私たちに何かを加え、知らぬ間に自我を失っていった。"
+script_path = "res://resource/novel/area/area_riran/novel_area_riran_event_003.txt"

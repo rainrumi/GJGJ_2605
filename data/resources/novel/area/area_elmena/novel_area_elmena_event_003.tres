@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "最終締め切りに襲われる悪夢\nこれを落としたら落第レベルの研究論文の提出に追われる。どんな方法でもよいのでこれを解決しなければならない。"
+script_path = "res://resource/novel/area/area_elmena/novel_area_elmena_event_003.txt"

@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "人間に支配される悪夢\n人間が持つ技術が発展し、バクが完全に家畜となった悪夢。いずれありうる世界線。"
+script_path = "res://resource/novel/area/area_iriyu/novel_area_iriyu_event_003.txt"

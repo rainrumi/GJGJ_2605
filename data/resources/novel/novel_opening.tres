@@ -4,7 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "みなさん、ふわふわ学校へのご入学誠におめでとうございます。
-早速ですが、あなたたちはこれから１か月間悪夢を食べる練習をしていただきます。
-自身の体力と能力を考えて20日間悪夢を食べましょう。
-4日に1回能力試験を行いますのでぜひ奮ってご参加ください。"
+script_path = "res://resource/novel/novel_opening.txt"

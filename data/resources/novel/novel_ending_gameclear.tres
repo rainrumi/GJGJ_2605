@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "ゲームクリア！7"
+script_path = "res://resource/novel/novel_ending_gameclear.txt"

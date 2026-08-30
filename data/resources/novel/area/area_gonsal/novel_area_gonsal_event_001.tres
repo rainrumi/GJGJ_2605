@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "資産を奪う悪夢\n多くの資産を持っていたのに、ほかの競合他社に目をつけられて倒産まで追い込まれた。何度逃げようとしても詰め寄られ、資産（HP）を削られる。"
+script_path = "res://resource/novel/area/area_gonsal/novel_area_gonsal_event_001.txt"

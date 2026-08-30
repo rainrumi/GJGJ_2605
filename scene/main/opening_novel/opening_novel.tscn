@@ -64,6 +64,19 @@ grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_text_box")
 
+[node name="NameLabel" type="Label" parent="Screen/TextBox"]
+visible = false
+layout_mode = 0
+offset_left = 17.0
+offset_top = -24.0
+offset_right = 220.0
+offset_bottom = -2.0
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 15
+
 [node name="TextLabel" type="Label" parent="Screen/TextBox" unique_id=1311919522]
 layout_mode = 1
 anchors_preset = 15

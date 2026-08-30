@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-text = "恒常_ふわふわ学校_現在%d回目"
+script_path = "res://resource/novel/area/area_huwahuwa/novel_area_huwahuwa_event_001.txt"
