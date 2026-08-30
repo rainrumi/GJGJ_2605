@@ -43,7 +43,21 @@ func _run() -> void:
 		enemy.global_position.is_equal_approx(enemy_mouse_position),
 		"悪夢の中心を0.3秒でマウス中心へ移動する"
 	)
-	game._on_enemy_drag_released(enemy, enemy.origin_position)
+	var stomach := game.stomach as StomachBoard
+	var preview_mouse_position := stomach.get_global_position_for_cell(Vector2i(1, 0), enemy.get_stomach_size())
+	game._on_enemy_drag_moved(enemy, preview_mouse_position, Vector2.ZERO, Vector2i(1, 0))
+	var preview := stomach.get_node("EnemyPlacementPreview") as Sprite2D
+	_expect(preview.visible, "胃袋内で悪夢の設置予測が表示される")
+	_expect(
+		is_equal_approx(preview.global_position.x, enemy.global_position.x),
+		"つかんだセルに関係なく設置予測の中心が悪夢の表示中心と一致する"
+	)
+	var preview_position := preview.global_position
+	game._on_enemy_drag_released(enemy, preview_mouse_position)
+	_expect(
+		enemy.global_position.is_equal_approx(preview_position),
+		"確定後の悪夢の位置が設置予測と一致する"
+	)
 
 	var seed_button := game.get_node("UI/SeedButtonList").get_child(0) as SeedButton
 	var seed_controller := game.seed_controller as GameSeedController

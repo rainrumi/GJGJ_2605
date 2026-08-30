@@ -71,10 +71,9 @@ func contains_global_position(global_position: Vector2) -> bool:
 
 
 # dropセル取得
-func get_drop_cell(enemy: Enemy, mouse_position: Vector2, grab_cell: Vector2i, active_enemies: Array[Enemy]) -> Vector2i:
+func get_drop_cell(enemy: Enemy, display_position: Vector2, active_enemies: Array[Enemy]) -> Vector2i:
 	# 対象セル
-	var target_cell: Vector2i = _get_nearest_cell(mouse_position) - grab_cell
-	target_cell.y = 0
+	var target_cell := Vector2i(_get_nearest_top_left_column(enemy, display_position), 0)
 	if not can_place(enemy, target_cell, active_enemies):
 		return target_cell
 	# dropセル
@@ -197,14 +196,14 @@ func get_bottom_row_cell_count(enemy: Enemy) -> int:
 
 
 # preview表示
-func show_preview(enemy: Enemy, mouse_position: Vector2, grab_cell: Vector2i, active_enemies: Array[Enemy]) -> void:
+func show_preview(enemy: Enemy, display_position: Vector2, active_enemies: Array[Enemy]) -> void:
 	if _preview_sprite == null:
 		return
-	if not contains_global_position(mouse_position):
+	if not contains_global_position(display_position):
 		hide_preview()
 		return
 	# topleft
-	var top_left: Vector2i = get_drop_cell(enemy, mouse_position, grab_cell, active_enemies)
+	var top_left: Vector2i = get_drop_cell(enemy, display_position, active_enemies)
 	if not _is_within_bounds(enemy, top_left):
 		hide_preview()
 		return
@@ -376,16 +375,12 @@ func _create_preview() -> void:
 	add_child(_preview_sprite)
 
 
-# nearestセル取得
-func _get_nearest_cell(global_position: Vector2) -> Vector2i:
-	# local位置
-	var local_position: Vector2 = to_local(global_position)
-	# centered位置
-	var centered_position: Vector2 = local_position - _grid_origin - Vector2.ONE * _cell_size * 0.5
-	return Vector2i(
-		clampi(roundi(centered_position.x / _grid_step), 0, columns - 1),
-		clampi(roundi(centered_position.y / _grid_step), 0, rows - 1)
-	)
+# 表示中心に最も近い配置左端列取得
+func _get_nearest_top_left_column(enemy: Enemy, display_position: Vector2) -> int:
+	var local_position := to_local(display_position)
+	var enemy_width := get_span_size(enemy.get_stomach_size().x)
+	var centered_x := local_position.x - _grid_origin.x - enemy_width * 0.5
+	return clampi(roundi(centered_x / _grid_step), 0, columns - 1)
 
 
 # withinbounds判定

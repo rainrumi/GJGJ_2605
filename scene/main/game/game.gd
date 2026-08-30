@@ -61,7 +61,6 @@ var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
 var drag_offset := Vector2.ZERO
 var _drag_center_tween: Tween
-var drag_grab_cell := Vector2i.ZERO
 var dragged_enemy_was_Aciding := false
 var dragged_enemy_original_cell := Vector2i.ZERO
 var dragged_enemy_original_global_position := Vector2.ZERO
@@ -263,7 +262,7 @@ func _create_Acidion_timer() -> void:
 	Acidion_timer.timeout.connect(_on_Acidion_timer_timeout)
 	add_child(Acidion_timer)
 # 開始処理
-func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offset: Vector2, grab_cell: Vector2i) -> void:
+func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offset: Vector2, _grab_cell: Vector2i) -> void:
 	if not _can_start_enemy_drag():
 		input_controller.clear_drag()
 		return
@@ -271,7 +270,6 @@ func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offs
 	dragging_enemy = enemy
 	drag_offset = pointer_offset
 	_start_drag_center_tween()
-	drag_grab_cell = grab_cell
 	dragged_enemy_was_Aciding = enemy.is_Aciding()
 	dragged_enemy_original_cell = enemy.stomach_cell
 	dragged_enemy_original_global_position = enemy.global_position
@@ -282,11 +280,11 @@ func _on_enemy_drag_started(enemy: Enemy, _mouse_position: Vector2, pointer_offs
 	else:
 		ui.hide_enemy_return_hint()
 # 移動処理
-func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, _pointer_offset: Vector2, grab_cell: Vector2i) -> void:
+func _on_enemy_drag_moved(enemy: Enemy, mouse_position: Vector2, _pointer_offset: Vector2, _grab_cell: Vector2i) -> void:
 	if not battle_active or drag_mode != DragMode.ENEMY or enemy != dragging_enemy:
 		return
 	dragging_enemy.global_position = mouse_position + drag_offset
-	stomach.show_preview(dragging_enemy, mouse_position, grab_cell, enemies)
+	stomach.show_preview(dragging_enemy, dragging_enemy.global_position, enemies)
 	_update_hp_damage_preview(mouse_position)
 	_set_hovered_enemy(null)
 # 離上処理
@@ -654,7 +652,7 @@ func _setup_enemy_preset(enemy_preset: EnemyPresetInfo) -> void:
 
 
 # startAciding試行
-func _try_start_Aciding(enemy: Enemy, mouse_position: Vector2) -> void:
+func _try_start_Aciding(enemy: Enemy, _mouse_position: Vector2) -> void:
 	# fullness
 	var next_fullness := stomach.get_current_fullness(enemies)
 	if not dragged_enemy_was_Aciding:
@@ -664,7 +662,7 @@ func _try_start_Aciding(enemy: Enemy, mouse_position: Vector2) -> void:
 		_refresh_after_battle_event()
 		return
 	# topleft
-	var top_left := stomach.get_drop_cell(enemy, mouse_position, drag_grab_cell, enemies)
+	var top_left := stomach.get_drop_cell(enemy, enemy.global_position, enemies)
 	if not stomach.can_place(enemy, top_left, enemies):
 		_return_dragged_enemy(enemy)
 		_refresh_after_battle_event()

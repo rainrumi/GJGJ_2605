@@ -210,7 +210,7 @@ func move_drag(
 	if not show_seed_block:
 		_stomach.hide_preview()
 		return
-	_stomach.show_preview(_dragging_seed_block, mouse_position, Vector2i.ZERO, enemies)
+	_stomach.show_preview(_dragging_seed_block, _dragging_seed_block.global_position, enemies)
 
 
 # releaseドラッグ処理
@@ -296,13 +296,13 @@ func _create_seed_block(
 # place種ブロック試行
 func _try_place_seed_block(
 	seed_block: Enemy,
-	mouse_position: Vector2,
+	_mouse_position: Vector2,
 	enemies: Array[Enemy]
 ) -> bool:
 	if seed_block == null:
 		return false
 	# topleft
-	var top_left := _stomach.get_drop_cell(seed_block, mouse_position, Vector2i.ZERO, enemies)
+	var top_left := _stomach.get_drop_cell(seed_block, seed_block.global_position, enemies)
 	if not _stomach.can_place(seed_block, top_left, enemies):
 		return false
 	seed_block.modulate.a = 1.0
