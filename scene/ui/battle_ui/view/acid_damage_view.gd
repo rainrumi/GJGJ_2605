@@ -12,6 +12,8 @@ signal tooltip_hide_requested(view: AcidDamageView)
 # 初期化
 func _ready() -> void:
 	_prepare_mouse_filters()
+	acid_damage_value_label.minimum_size_changed.connect(_update_minimum_width)
+	_update_minimum_width()
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 
@@ -32,6 +34,7 @@ func set_damage_info(
 # ダメージ設定
 func set_damage(total_damage: int) -> void:
 	acid_damage_value_label.text = "%d" % total_damage
+	_update_minimum_width()
 
 
 # ツール表示
@@ -49,6 +52,15 @@ func _prepare_mouse_filters() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	acid_damage_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	acid_damage_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+func _update_minimum_width() -> void:
+	custom_minimum_size.x = (
+		acid_damage_value_label.position.x
+		+ acid_damage_value_label.get_combined_minimum_size().x
+	)
+	if get_parent() is Container:
+		(get_parent() as Container).queue_sort()
 
 
 # hover開始

@@ -34,28 +34,68 @@ func _run() -> void:
 		"状態予測が所定の高さで表示されている"
 	)
 	_expect(
-		is_equal_approx(status_preview.size.x, 135.0),
+		status_preview.size.x >= 135.0,
 		"状態予測の幅が最も広い表示部品に合っている"
 	)
 
 	var acid_damage_view := status_preview.get_node("AcidDamageView") as AcidDamageView
 	var acid_interval_view := status_preview.get_node("AcidIntervalView") as AcidIntervalView
 	var hp_view := status_preview.get_node("HpView") as StageClearHpView
+	for value_label: Label in [
+		acid_damage_view.acid_damage_value_label,
+		acid_interval_view.acid_interval_value_label,
+		hp_view.hp_value_label,
+	]:
+		_expect(
+			value_label.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER,
+			"%s centers its value text" % value_label.get_parent().name
+		)
+		_expect(
+			value_label.custom_minimum_size.x >= 100.0,
+			"%s reserves horizontal space around its value text" % value_label.get_parent().name
+		)
+		_expect(
+			value_label.size.x >= value_label.custom_minimum_size.x,
+			"%s applies the value label minimum width at runtime" % value_label.get_parent().name
+		)
 	for view: Control in [acid_damage_view, acid_interval_view, hp_view]:
 		_expect(view.get_parent() == status_preview, "%s is a direct child of StatusPreview" % view.name)
 		_expect(
-			view.size_flags_horizontal == Control.SIZE_SHRINK_CENTER,
-			"%s uses horizontal center sizing" % view.name
+			status_preview.size.x >= view.size.x,
+			"StatusPreview contains %s within its variable width" % view.name
 		)
 		_expect(
-			is_equal_approx(view.position.x + view.size.x * 0.5, status_preview.size.x * 0.5),
-			"%s is horizontally centered in StatusPreview" % view.name
+			view.size_flags_horizontal == Control.SIZE_SHRINK_BEGIN,
+			"%s grows rightward from the left edge" % view.name
+		)
+		_expect(
+			is_zero_approx(view.position.x),
+			"%s is aligned to the left edge of StatusPreview" % view.name
 		)
 	_expect(
 		acid_interval_view.size.x >= acid_interval_view.acid_interval_value_label.position.x
 		+ acid_interval_view.acid_interval_value_label.size.x,
 		"AcidIntervalView contains its visible value within its layout width"
 	)
+	var initial_damage_width := acid_damage_view.size.x
+	acid_damage_view.set_damage(123456789)
+	await get_tree().process_frame
+	_expect(
+		acid_damage_view.size.x > initial_damage_width,
+		"AcidDamageView expands when its value text becomes wider"
+	)
+	_expect(
+		acid_damage_view.size.x >= acid_damage_view.acid_damage_value_label.position.x
+		+ acid_damage_view.acid_damage_value_label.size.x,
+		"AcidDamageView contains a wide value within its layout width"
+	)
+	for view: Control in [acid_damage_view, acid_interval_view, hp_view]:
+		_expect(
+			is_zero_approx(view.position.x),
+			"%s remains left-aligned after a value width change" % view.name
+		)
+	acid_damage_view.set_damage(50)
+	await get_tree().process_frame
 	var hp_icon := status_preview.get_node("HpView/Icon") as TextureRect
 	var hp_value_label := status_preview.get_node("HpView/Value") as Label
 	_expect(status_preview.get_node_or_null("AcidDamageRow/Delta") == null, "AcidDamage Delta removed")

@@ -21,16 +21,18 @@ texture = ExtResource("1_digestive_interval_icon")
 
 [node name="AcidIntervalView_value" type="Label" parent="." unique_id=132044423]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 0
-offset_left = 35.0
+offset_left = 40.0
 offset_top = 3.0
-offset_right = 135.0
+offset_right = 140.0
 offset_bottom = 28.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 text = "30min"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="AcidIntervalView_tooltip" parent="." unique_id=433888117 instance=ExtResource("3_left_tooltip")]

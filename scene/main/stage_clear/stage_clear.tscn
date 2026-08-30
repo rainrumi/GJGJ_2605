@@ -93,15 +93,15 @@ alignment = 1
 
 [node name="HpView" parent="UI/StatusPreview" unique_id=905640110 instance=ExtResource("23_hp_view")]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 0
 
 [node name="AcidIntervalView" parent="UI/StatusPreview" unique_id=1586561440 instance=ExtResource("22_acid_interval_view")]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 0
 
 [node name="AcidDamageView" parent="UI/StatusPreview" unique_id=205531699 instance=ExtResource("21_acid_damage_view")]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 0
 
 [node name="RerollButton" type="Button" parent="UI" unique_id=1477054913]
 visible = false

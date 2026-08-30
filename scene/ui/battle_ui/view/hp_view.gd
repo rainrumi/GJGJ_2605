@@ -15,6 +15,8 @@ var _editor_hp_value_font_color := Color.WHITE
 func _ready() -> void:
 	_editor_hp_value_font_color = hp_value_label.get_theme_color("font_color")
 	_prepare_mouse_filters()
+	hp_value_label.minimum_size_changed.connect(_update_minimum_width)
+	_update_minimum_width()
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 
@@ -22,6 +24,7 @@ func _ready() -> void:
 # HP値設定
 func set_hp_value(current_hp: int, max_hp: int) -> void:
 	hp_value_label.text = "%d/%d" % [current_hp, max_hp]
+	_update_minimum_width()
 
 
 # HP情報設定
@@ -62,6 +65,12 @@ func _prepare_mouse_filters() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	hp_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hp_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+func _update_minimum_width() -> void:
+	custom_minimum_size.x = hp_value_label.position.x + hp_value_label.get_combined_minimum_size().x
+	if get_parent() is Container:
+		(get_parent() as Container).queue_sort()
 
 
 # hover開始
