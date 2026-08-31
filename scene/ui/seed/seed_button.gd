@@ -24,6 +24,7 @@ const DEFAULT_SLOT_SIZE := Vector2(16.0, 16.0)
 
 @onready var frame: Panel = $Frame
 @onready var icon_rect: TextureRect = $Icon
+@onready var performance_mark: Label = $PerformanceMark
 @onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
 var source_data: Resource
@@ -60,6 +61,11 @@ func _ready() -> void:
 	_create_tooltip_panel()
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
+	if not DebugState.seed_performance_mark_changed.is_connected(_on_seed_performance_mark_changed):
+		DebugState.seed_performance_mark_changed.connect(_on_seed_performance_mark_changed)
+	if not DebugState.debug_enabled_changed.is_connected(_on_debug_enabled_changed):
+		DebugState.debug_enabled_changed.connect(_on_debug_enabled_changed)
+	_refresh_performance_mark()
 
 
 # 終了処理
@@ -80,6 +86,7 @@ func set_seed_source(source: Resource) -> void:
 	disabled = seed == null
 	_update_drag_state()
 	_refresh_tooltip()
+	_refresh_performance_mark()
 
 
 # 種アイコン元データ設定
@@ -113,6 +120,7 @@ func get_remaining_sub_skill_uses() -> int:
 func set_debug_numbers_visible(is_visible: bool) -> void:
 	debug_numbers_visible = is_visible
 	_refresh_tooltip()
+	_refresh_performance_mark()
 
 
 # subスキルドラッグenabled設定
@@ -204,8 +212,34 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		# マウスボタン
 		var mouse_button := event as InputEventMouseButton
+		if mouse_button.button_index == MOUSE_BUTTON_RIGHT and mouse_button.pressed:
+			if DebugState.toggle_seed_performance_mark(seed):
+				accept_event()
+			return
 		if mouse_button.button_index == MOUSE_BUTTON_LEFT and mouse_button.pressed:
 			_handle_press(mouse_button.position)
+
+
+# 性能チェック表示更新
+func _refresh_performance_mark() -> void:
+	if performance_mark == null:
+		return
+	performance_mark.visible = (
+		debug_numbers_visible
+		and seed != null
+		and DebugState.is_seed_performance_marked(seed.skill_id)
+	)
+
+
+# 性能チェック変更処理
+func _on_seed_performance_mark_changed(seed_id: int, _is_marked: bool) -> void:
+	if seed != null and seed.skill_id == seed_id:
+		_refresh_performance_mark()
+
+
+# デバッグ状態変更処理
+func _on_debug_enabled_changed(_is_enabled: bool) -> void:
+	_refresh_performance_mark()
 
 
 # ツール更新
