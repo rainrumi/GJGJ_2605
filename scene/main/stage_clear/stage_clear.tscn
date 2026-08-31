@@ -119,9 +119,9 @@ text = "Reroll"
 
 [node name="DebugButton" type="Button" parent="UI" unique_id=424038670]
 layout_mode = 0
-offset_left = 246.0
+offset_left = 248.0
 offset_top = 333.0
-offset_right = 306.0
+offset_right = 308.0
 offset_bottom = 355.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
@@ -133,9 +133,9 @@ text = "Debug"
 [node name="OwnedSeedOpenButton" type="TextureButton" parent="UI" unique_id=990684587]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = 245.0
+offset_left = 247.0
 offset_top = 305.0
-offset_right = 371.0
+offset_right = 373.0
 offset_bottom = 329.0
 focus_mode = 0
 texture_normal = ExtResource("24_owned_seed_open_texture")
@@ -155,11 +155,11 @@ offset_bottom = 331.0
 [node name="SeedChoices" type="VBoxContainer" parent="UI" unique_id=42702980]
 layout_mode = 0
 offset_left = 247.0
-offset_top = 10.0
+offset_top = 4.0
 offset_right = 627.0
-offset_bottom = 300.0
+offset_bottom = 294.0
 mouse_filter = 2
-theme_override_constants/separation = 28
+theme_override_constants/separation = 30
 script = ExtResource("20_seed_choice_list_script")
 
 [node name="SeedChoice1" parent="UI/SeedChoices" unique_id=507694198 instance=ExtResource("5_seed_choice")]
