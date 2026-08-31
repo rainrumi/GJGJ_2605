@@ -72,6 +72,7 @@ func refresh(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	_refresh_processor.request_refresh()
 	_effect_stack.execute()
 	_refresh_processor.apply_max_hp_modifiers(enemies)
+	_register_depleted_enemies(enemies)
 
 
 
@@ -107,6 +108,17 @@ func execute() -> void:
 # 敵一覧登録
 func _register_enemies(enemies: Array[Enemy]) -> void:
 	_refresh_processor.register(enemies)
+
+
+# HP枯渇悪夢登録
+func _register_depleted_enemies(enemies: Array[Enemy]) -> void:
+	for enemy in enemies:
+		if enemy == null or not enemy.is_enemy() or enemy.is_Acided():
+			continue
+		if enemy.get_current_hp() > 0:
+			continue
+		enemy.set_Acided(true)
+		_digestion_state.register(enemy)
 
 
 # 全体補正初期化
