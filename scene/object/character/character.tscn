@@ -2,9 +2,12 @@
 
 [ext_resource type="Texture2D" uid="uid://hnjih6pm11ok" path="res://resource/image/texture/character/tex_character_200_portrate_1000.png" id="1_oatpn"]
 [ext_resource type="Script" uid="uid://dxe0nvmp1lk2v" path="res://scene/object/character/character.gd" id="2_character_script"]
+[ext_resource type="Texture2D" uid="uid://cbgstu1mhcmju" path="res://resource/image/texture/character/tex_character_200_portrate_2000.png" id="3_damage"]
 
 [node name="Character" type="Node2D" unique_id=1173042167]
 script = ExtResource("2_character_script")
+normal_texture = ExtResource("1_oatpn")
+damage_texture = ExtResource("3_damage")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1226085197]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)

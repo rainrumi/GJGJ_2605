@@ -1067,6 +1067,7 @@ func _apply_player_damage_values() -> void:
 	# playerダメージvalues
 	var player_damage_values := acid_controller.resolve_enemy_attacks(enemies, stomach, minutes)
 	if player_damage_values.is_empty():
+		character.show_normal_texture()
 		return
 	_apply_player_damage(player_damage_values)
 

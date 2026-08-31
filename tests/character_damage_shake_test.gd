@@ -27,10 +27,17 @@ func _run() -> void:
 	var minimum_x := base_x
 	var maximum_x := base_x
 	var damage_values: Array[int] = [1]
+	var normal_texture := load(
+		"res://resource/image/texture/character/tex_character_200_portrate_1000.png"
+	) as Texture2D
+	var damage_texture := load(
+		"res://resource/image/texture/character/tex_character_200_portrate_2000.png"
+	) as Texture2D
 
 	_expect(Character.SHAKE_DURATION == 0.2, "シェイク時間が0.2秒である")
-	_expect(Character.SHAKE_DISTANCE == 3.0, "シェイク幅が従来の50%である")
+	_expect(Character.SHAKE_DISTANCE == 1.0, "シェイク幅が1.0である")
 	game.call("_apply_player_damage", damage_values)
+	_expect(sprite.texture == damage_texture, "被ダメージ振動中はダメージ画像を表示する")
 	var shake_tween := character.get("_shake_tween") as Tween
 	for _sample in range(SAMPLE_COUNT):
 		shake_tween.custom_step(SAMPLE_INTERVAL)
@@ -41,6 +48,12 @@ func _run() -> void:
 	_expect(maximum_x > base_x + POSITION_MARGIN, "被ダメージ時に右へ動く")
 	shake_tween.custom_step(SAMPLE_INTERVAL * 2.0)
 	_expect(is_equal_approx(sprite.position.x, base_x), "0.2秒後に基準位置へ戻る")
+	_expect(sprite.texture == damage_texture, "振動終了後もダメージ画像を維持する")
+
+	game.call("_apply_player_damage", damage_values)
+	_expect(sprite.texture == damage_texture, "連続被ダメージ時はダメージ画像を上書きする")
+	game.call("_apply_player_damage_values")
+	_expect(sprite.texture == normal_texture, "ダメージを受けない状態で通常画像へ戻す")
 
 	root.remove_child(game)
 	game.free()
