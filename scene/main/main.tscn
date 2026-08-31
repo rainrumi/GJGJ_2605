@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://o8cavvep5sxl" path="res://scene/main/settings/settings_screen.tscn" id="13_settings"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://resource/sound/se/se_click.mp3" id="14_se_click"]
 [ext_resource type="AudioStream" uid="uid://lhn1aubvc0wx" path="res://resource/sound/se/se_select.mp3" id="15_se_select"]
+[ext_resource type="AudioStream" uid="uid://bgcvfu1pj20yg" path="res://resource/sound/se/se_stage_clear.mp3" id="16_se_stage_clear"]
 
 [node name="Main" type="Node" unique_id=1753159910]
 script = ExtResource("1_6vuhr")
@@ -44,6 +45,11 @@ stream = ExtResource("14_se_click")
 [node name="SeSelect" type="AudioStreamPlayer" parent="." unique_id=14639934]
 process_mode = 3
 stream = ExtResource("15_se_select")
+
+[node name="SeStageClear" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("16_se_stage_clear")
+bus = &"SE"
 
 [node name="Title" parent="." unique_id=1609153234 instance=ExtResource("2_a0c6e")]
 

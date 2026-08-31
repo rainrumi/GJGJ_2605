@@ -28,6 +28,7 @@ enum NovelFlow {
 @onready var bgm: BeatConductor = $BGM
 @onready var se_click: AudioStreamPlayer = $SeClick
 @onready var se_select: AudioStreamPlayer = $SeSelect
+@onready var se_stage_clear: AudioStreamPlayer = $SeStageClear
 @onready var settings_screen: SettingsScreen = $SettingsScreen
 @onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
@@ -178,6 +179,7 @@ func show_stage_clear() -> void:
 		)
 	elif stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
 		stage_clear.setup_hp(game.get_current_hp())
+	se_stage_clear.play()
 	stage_clear.visible = true
 
 

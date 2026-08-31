@@ -22,6 +22,7 @@ const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転で
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
 @onready var attack_se: AudioStreamPlayer = $AttackSe
+@onready var character: Character = $Character
 @onready var enemies: Array[Enemy] = [$EnemyLeft as Enemy, $EnemyCenter as Enemy, $EnemyRight as Enemy, $EnemyUpperRight as Enemy]
 var minutes := START_HOUR * 60
 var hp := MAX_HP
@@ -1075,6 +1076,7 @@ func _apply_player_damage(damage_values: Array[int]) -> void:
 	if total_damage <= 0:
 		return
 	ui.show_hp_damage_values(damage_values)
+	character.shake()
 	hp = maxi(0, hp - total_damage)
 	if attack_se.stream != null:
 		attack_se.stop()
