@@ -146,6 +146,8 @@ func _execute_command(command_line: String, request_id: int) -> void:
 			_command_img_remove(argument)
 		"l":
 			await _command_l(request_id)
+		"r":
+			_command_r()
 		"cm":
 			_command_cm()
 		"lcm":
@@ -328,6 +330,12 @@ func _command_l(request_id: int) -> void:
 		return
 	_is_waiting_for_click = false
 	next_label.visible = false
+
+
+# rコマンド
+func _command_r() -> void:
+	_current_text_target = text_label.text + "\n"
+	text_label.text = _current_text_target
 
 
 # cmコマンド

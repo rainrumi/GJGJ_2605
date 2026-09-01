@@ -41,10 +41,11 @@ func setup_stage_choices(
 	_hovered_stage_definition = null
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	map_view.hide_hover()
-	map_view.set_current_stage(_current_stage_definition)
+	map_view.set_lara_location(_run_state.lara_current_location if _run_state != null else null)
 	stage_choice_list.setup_choices(
 		_displayed_stage_definitions,
 		_get_exploration_percents(_displayed_stage_definitions),
+		_get_current_location_flags(_displayed_stage_definitions),
 		stage_choice_scene
 	)
 
@@ -115,7 +116,7 @@ func _show_stage_hover(stage_definition: StageInfo) -> void:
 	if stage_definition == null:
 		map_view.hide_hover()
 		return
-	map_view.show_stage_hover(stage_definition, _is_current_location(stage_definition))
+	map_view.show_stage_hover(stage_definition)
 
 
 # ステージ定義取得
@@ -177,6 +178,14 @@ func _get_exploration_percents(stage_definitions: Array[StageInfo]) -> Array[int
 	for stage_definition in stage_definitions:
 		percents.append(_get_exploration_percent(stage_definition))
 	return percents
+
+
+# 現在地判定一覧取得
+func _get_current_location_flags(stage_definitions: Array[StageInfo]) -> Array[bool]:
+	var flags: Array[bool] = []
+	for stage_definition in stage_definitions:
+		flags.append(_is_current_location(stage_definition))
+	return flags
 
 
 # 探索率取得

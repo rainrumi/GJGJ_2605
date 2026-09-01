@@ -26,6 +26,8 @@ var strengthened_enemy_preset_indices := {}
 var normal_enemy_defeat_counts := {}
 var strengthened_enemy_defeat_counts := {}
 var played_stage_novel_indices := {}
+var is_lara_unlocked := false
+var lara_current_location: StageInfo
 
 
 # 対象初期化
@@ -46,6 +48,30 @@ func reset() -> void:
 	normal_enemy_defeat_counts.clear()
 	strengthened_enemy_defeat_counts.clear()
 	played_stage_novel_indices.clear()
+	is_lara_unlocked = false
+	lara_current_location = null
+
+
+# ラーラ解放
+func unlock_lara() -> void:
+	is_lara_unlocked = true
+
+
+# ラーラ現在地更新
+func update_lara_location(candidates: Array[StageInfo]) -> void:
+	if not is_lara_unlocked:
+		lara_current_location = null
+		return
+	var valid_candidates: Array[StageInfo] = []
+	for candidate in candidates:
+		if candidate == null or candidate.stage_area == StageInfo.StageArea.LUNOVA_OLD_CITY:
+			continue
+		valid_candidates.append(candidate)
+	if valid_candidates.is_empty():
+		lara_current_location = null
+		push_error("RunState: ラーラの現在地候補がありません")
+		return
+	lara_current_location = valid_candidates.pick_random()
 
 
 # 戦闘ステージ選択

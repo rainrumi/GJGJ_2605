@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="StageCatalog" format=3]
+
+[ext_resource type="Script" uid="uid://da3llhh44qyrx" path="res://data/info/stage/stage_catalog_info.gd" id="1_catalog_script"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/info/stage/stage_info.gd" id="2_stage_script"]
+[ext_resource type="Resource" uid="uid://dywec106nntv" path="res://data/resources/area/area_eramia/area_eramia.tres" id="3_eramia"]
+[ext_resource type="Resource" uid="uid://b6tbcorsqf4gt" path="res://data/resources/area/area_elmena/area_elmena.tres" id="4_elmena"]
+[ext_resource type="Resource" uid="uid://djow7j6lgdm7j" path="res://data/resources/area/area_gonsal/area_gonsal.tres" id="5_gonsal"]
+[ext_resource type="Resource" uid="uid://co88keexjcsl8" path="res://data/resources/area/area_riran/area_riran.tres" id="6_riran"]
+[ext_resource type="Resource" uid="uid://dowauut6ow0bc" path="res://data/resources/area/area_felis/area_felis.tres" id="7_felis"]
+[ext_resource type="Resource" uid="uid://d4k64x6xx4wbi" path="res://data/resources/area/area_nerix/area_nerix.tres" id="8_nerix"]
+[ext_resource type="Resource" uid="uid://dbix0t0o43tuy" path="res://data/resources/area/area_zaika/area_zaika.tres" id="9_zaika"]
+[ext_resource type="Resource" uid="uid://bk8l73pakx1da" path="res://data/resources/area/area_mirune/area_mirune.tres" id="10_mirune"]
+[ext_resource type="Resource" uid="uid://o81s64xkk4hu" path="res://data/resources/area/area_corotta/area_corotta.tres" id="11_corotta"]
+[ext_resource type="Resource" uid="uid://b7f2dqt8cxtw1" path="res://data/resources/area/area_iriyu/area_iriyu.tres" id="12_iriyu"]
+
+[resource]
+script = ExtResource("1_catalog_script")
+stages = Array[ExtResource("2_stage_script")]([ExtResource("3_eramia"), ExtResource("4_elmena"), ExtResource("5_gonsal"), ExtResource("6_riran"), ExtResource("7_felis"), ExtResource("8_nerix"), ExtResource("9_zaika"), ExtResource("10_mirune"), ExtResource("11_corotta"), ExtResource("12_iriyu")])

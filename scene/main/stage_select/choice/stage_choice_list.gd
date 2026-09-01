@@ -20,6 +20,7 @@ func _ready() -> void:
 func setup_choices(
 	stage_definitions: Array[StageInfo],
 	exploration_percents: Array[int],
+	current_location_flags: Array[bool],
 	stage_choice_scene: PackedScene
 ) -> void:
 	if _stage_choices.is_empty():
@@ -29,7 +30,11 @@ func setup_choices(
 		if i >= stage_definitions.size():
 			_stage_choices[i].setup_choice(null)
 			continue
-		_stage_choices[i].setup_choice(stage_definitions[i], _get_exploration_percent(exploration_percents, i))
+		_stage_choices[i].setup_choice(
+			stage_definitions[i],
+			_get_exploration_percent(exploration_percents, i),
+			_is_current_location(current_location_flags, i)
+		)
 
 
 # 既存選択肢収集
@@ -69,6 +74,13 @@ func _get_exploration_percent(exploration_percents: Array[int], choice_index: in
 	if choice_index >= exploration_percents.size():
 		return 0
 	return exploration_percents[choice_index]
+
+
+# 現在地判定取得
+func _is_current_location(current_location_flags: Array[bool], choice_index: int) -> bool:
+	if choice_index >= current_location_flags.size():
+		return false
+	return current_location_flags[choice_index]
 
 
 # 押下通知

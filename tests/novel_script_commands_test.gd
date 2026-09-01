@@ -49,6 +49,8 @@ func _run() -> void:
 		+ "@img 0, 50, 60, \"%s\"\n" % BACKGROUND_PATH
 		+ "@img_remove 1\n"
 		+ "一行目\n"
+		+ "@r\n"
+		+ "改行後\n"
 		+ "@lcm\n"
 		+ "二行目\n"
 		+ "@l\n"
@@ -67,7 +69,7 @@ func _run() -> void:
 	var image := image_layer.get_node_or_null("Image0") as TextureRect
 	_expect(image != null and image.texture != null, "@img creates a textured node for its index")
 	_expect(image != null and image.position == Vector2(50, 60), "Repeated @img updates the existing index")
-	_expect(text_label.text == "一行目", "First text line is shown")
+	_expect(text_label.text == "一行目\n改行後", "@r inserts a line break before the following text")
 	_expect(next_label.visible, "@l inside @lcm waits for a click")
 
 	opening_novel.call("_on_screen_gui_input", _create_click())

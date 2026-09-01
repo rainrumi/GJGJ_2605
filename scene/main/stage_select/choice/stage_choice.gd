@@ -31,7 +31,11 @@ func _ready() -> void:
 
 
 # setup選択肢処理
-func setup_choice(stage_definition: StageInfo, exploration_percent: int = 0) -> void:
+func setup_choice(
+	stage_definition: StageInfo,
+	exploration_percent: int = 0,
+	is_current_location: bool = false
+) -> void:
 	if stage_definition == null:
 		visible = false
 		disabled = true
@@ -47,7 +51,7 @@ func setup_choice(stage_definition: StageInfo, exploration_percent: int = 0) -> 
 	difficulty_label.text = stage_definition.get_difficulty_text()
 	name_label.text = ""
 	name_label.visible = false
-	location_label.text = "%s" % stage_definition.location
+	location_label.text = "%s%s" % [stage_definition.location, "（現在地）" if is_current_location else ""]
 	exploration_label.text = "探索率 %d%%" % exploration_percent
 	reward_icon.texture = stage_definition.reward_icon
 	_apply_stage_text_color(stage_definition)

@@ -20,6 +20,7 @@ enum NovelFlow {
 @export var end_gameover_novel_text: NovelTextInfo
 @export var game_clear_novel_text: NovelTextInfo
 @export var first_nightmare_event_novel_text: NovelTextInfo
+@export var lara_location_catalog: StageCatalogInfo
 
 @onready var title: Node = $Title
 @onready var opening_novel: OpeningNovel = $OpeningNovel
@@ -261,6 +262,7 @@ func _on_opening_novel_finished() -> void:
 				show_stage_select()
 		NovelFlow.FIRST_NIGHTMARE_EVENT:
 			active_novel_flow = NovelFlow.NONE
+			run_state.unlock_lara()
 			_advance_to_next_day()
 		_:
 			active_novel_flow = NovelFlow.NONE
@@ -378,10 +380,19 @@ func _finish_current_day() -> void:
 
 func _advance_to_next_day() -> void:
 	run_state.current_day += 1
+	if run_state.is_lara_unlocked:
+		run_state.update_lara_location(_get_lara_location_candidates())
 	if run_state.current_day > STORY_CLEAR_DAY:
 		show_game_clear_novel()
 		return
 	show_day_intro()
+
+
+func _get_lara_location_candidates() -> Array[StageInfo]:
+	if lara_location_catalog == null:
+		var candidates: Array[StageInfo] = []
+		return candidates
+	return lara_location_catalog.stages
 
 
 func show_first_nightmare_event_novel() -> void:

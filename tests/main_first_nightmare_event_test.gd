@@ -34,6 +34,19 @@ func _run() -> void:
 
 	main.call("_on_opening_novel_finished")
 	_expect(main.run_state.current_day == 5, "ノベル終了後に5日目へ進む")
+	_expect(main.run_state.is_lara_unlocked, "ノベル終了時にラーラを解放する")
+	_expect(main.run_state.lara_current_location != null, "5日目のラーラの現在地を抽選する")
+	if main.run_state.lara_current_location != null:
+		_expect(
+			main.run_state.lara_current_location.stage_area != StageInfo.StageArea.LUNOVA_OLD_CITY,
+			"ラーラの現在地に旧市街を選ばない"
+		)
+	main.call("_advance_to_next_day")
+	_expect(main.run_state.current_day == 6, "次の日付更新で6日目へ進む")
+	_expect(
+		main.run_state.lara_current_location in main.lara_location_catalog.stages,
+		"日付更新ごとにラーラの現在地を10箇所から再抽選する"
+	)
 
 	var bgm := main.get_node("BGM") as BeatConductor
 	bgm.stop()

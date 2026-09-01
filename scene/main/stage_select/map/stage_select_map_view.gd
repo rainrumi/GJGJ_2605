@@ -19,8 +19,8 @@ func setup_view() -> void:
 	location_marker.setup_marker(background_color)
 
 
-# 現在地設定
-func set_current_stage(stage_definition: StageInfo) -> void:
+# ラーラ現在地設定
+func set_lara_location(stage_definition: StageInfo) -> void:
 	if stage_definition == null:
 		location_marker.clear_stage()
 		return
@@ -28,21 +28,16 @@ func set_current_stage(stage_definition: StageInfo) -> void:
 
 
 # ホバー表示
-func show_stage_hover(stage_definition: StageInfo, is_current_location: bool) -> void:
+func show_stage_hover(stage_definition: StageInfo) -> void:
 	if stage_definition == null:
 		hide_hover()
 		return
-	if is_current_location:
-		hide_hover()
-		return
-	location_marker.pause_marker()
 	beacon.show_at(stage_definition.map_position)
 
 
 # ホバー解除
 func hide_hover() -> void:
 	beacon.hide_marker()
-	location_marker.play_marker()
 
 
 # 背景色取得
