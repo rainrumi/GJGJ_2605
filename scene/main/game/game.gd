@@ -769,8 +769,7 @@ func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
 	var effect_result: BattleTurnResultData
 	if hp <= 0:
 		seed_effects.add_revive_event()
-		_refresh_effective_max_hp(true)
-		hp = seed_effects.get_rest_hp(effective_max_hp, REST_HP_RATE)
+		hp = seed_effects.get_revive_hp(effective_max_hp, REST_HP_RATE)
 		var revived_hp := hp
 		if not seed_controller.consume_rest_time_skip():
 			minutes += REST_MINUTES

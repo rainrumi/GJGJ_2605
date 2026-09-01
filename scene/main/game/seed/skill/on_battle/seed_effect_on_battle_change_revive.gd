@@ -1,11 +1,9 @@
 class_name SeedEffectOnBattleChangeRevive
 extends SeedEffect
 
-@export var max_hp_bonus_rate := 0.0 # 最大HP率
+@export var recovery_bonus_rate := 0.0 # 蘇生回復率
 
 
-# 戦闘中
-func on_battle(state: DreamSeedSkillState, context: Dictionary) -> void:
-	if context.get("event", "") != "revive":
-		return
-	state.max_hp_bonus_rate += max_hp_bonus_rate
+# 蘇生回復補正率
+func get_revive_recovery_bonus_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
+	return recovery_bonus_rate

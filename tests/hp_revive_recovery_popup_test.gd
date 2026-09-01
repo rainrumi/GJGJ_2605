@@ -72,6 +72,22 @@ func _run() -> void:
 	_expect(not is_instance_valid(recovery_popup), "既存テンポで復活時の回復UIを解放する")
 
 	game.call("cancel_battle")
+	var anemone := load("res://data/resources/seeds/skills/seed_100_104.tres") as SeedInfo
+	_expect(anemone != null, "アネモネを読み込める")
+	if anemone != null:
+		context.flowers = [anemone]
+		game.call("start_battle", context)
+		await process_frame
+		game.set("hp", 0)
+		game.call("_apply_elapsed_time", 30)
+		_expect(game.call("get_max_hp") == 100, "アネモネは蘇生時にHP上限を増やさない")
+		_expect(game.call("get_current_hp") == 60, "アネモネは蘇生回復量にHP上限の50%を加算する")
+		game.set("hp", 0)
+		game.call("_apply_elapsed_time", 30)
+		_expect(game.call("get_max_hp") == 100, "アネモネは複数回蘇生してもHP上限を増やさない")
+		_expect(game.call("get_current_hp") == 60, "アネモネの蘇生回復量は蘇生回数で累積しない")
+
+	game.call("cancel_battle")
 	root.remove_child(game)
 	game.free()
 	await process_frame

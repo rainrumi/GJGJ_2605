@@ -139,6 +139,13 @@ func get_rest_hp(max_hp: int, base_recovery_rate: float) -> int:
 	return ceili(float(max_hp) * recovery_rate)
 
 
+# 蘇生HP取得
+func get_revive_hp(max_hp: int, base_recovery_rate: float) -> int:
+	var recovery_rate := base_recovery_rate + get_rest_recovery_bonus_rate() # 通常回復率
+	recovery_rate += _sum_float("get_revive_recovery_bonus_rate", {})
+	return ceili(float(max_hp) * recovery_rate)
+
+
 # 休憩回復補正率取得
 func get_rest_recovery_bonus_rate() -> float:
 	return _sum_float("get_rest_recovery_bonus_rate", {})
