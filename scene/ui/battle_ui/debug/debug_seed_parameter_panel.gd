@@ -66,6 +66,12 @@ func _rebuild_editor() -> void:
 	apply_button.disabled = _edited_seed == null
 	if _edited_seed == null:
 		return
+	_add_parameter_row(
+		_edited_seed,
+		&"main_description",
+		_edited_seed.main_description,
+		"SeedInfo\nmain_description"
+	)
 	var visited: Dictionary = {}
 	_append_resource_parameters(_edited_seed.main_skill, "Main", visited)
 	_append_resource_parameters(_edited_seed.sub_skill, "Sub", visited)
@@ -94,20 +100,37 @@ func _append_resource_parameters(resource: Resource, path: String, visited: Dict
 				if value[index] is Resource:
 					_append_resource_parameters(value[index] as Resource, "%s/%s[%d]" % [path, property_name, index], visited)
 		elif property.type in [TYPE_BOOL, TYPE_INT, TYPE_FLOAT]:
-			_add_parameter_row(resource, property_name, value, "%s %s.%s" % [path, resource_name, property_name])
+			_add_parameter_row(
+				resource,
+				property_name,
+				value,
+				"%s\n%s\n%s" % [path, resource_name, property_name]
+			)
 
 
 func _add_parameter_row(resource: Resource, property_name: StringName, value: Variant, label_text: String) -> void:
-	var row := HBoxContainer.new()
+	var is_multiline := value is String
+	var row: Container = VBoxContainer.new() if is_multiline else HBoxContainer.new()
+	row.add_theme_constant_override("separation", 4)
 	var label := Label.new()
 	label.text = label_text
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", 10)
+	if not is_multiline:
+		label.custom_minimum_size.x = 168.0
 	row.add_child(label)
 	var editor: Control
 	if value is bool:
 		var check_box := CheckBox.new()
 		check_box.button_pressed = value
 		editor = check_box
+	elif value is String:
+		var text_edit := TextEdit.new()
+		text_edit.text = value
+		text_edit.custom_minimum_size.y = 72.0
+		text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
+		editor = text_edit
 	else:
 		var spin_box := SpinBox.new()
 		spin_box.min_value = -9999.0
@@ -117,7 +140,10 @@ func _add_parameter_row(resource: Resource, property_name: StringName, value: Va
 		spin_box.custom_arrow_step = 1.0 if value is int else 0.01
 		spin_box.set_meta("integer_value", value is int)
 		editor = spin_box
-	editor.custom_minimum_size.x = 100.0
+	editor.custom_minimum_size.x = 96.0
+	editor.add_theme_font_size_override("font_size", 11)
+	if not is_multiline:
+		editor.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(editor)
 	parameter_list.add_child(row)
 	_bindings.append({"resource": resource, "property": property_name, "editor": editor})
@@ -137,6 +163,8 @@ func _on_apply_pressed() -> void:
 		var value: Variant
 		if editor is CheckBox:
 			value = (editor as CheckBox).button_pressed
+		elif editor is TextEdit:
+			value = (editor as TextEdit).text
 		else:
 			var spin_box := editor as SpinBox
 			value = int(spin_box.value) if spin_box.get_meta("integer_value") else spin_box.value
