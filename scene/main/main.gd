@@ -147,7 +147,14 @@ func show_stage_select() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	if stage_select.has_method("setup_stage_choices"):
-		stage_select.call("setup_stage_choices", run_state.current_area_stage, run_state.current_day, _get_unlocked_high_difficulty_stage_ids(), run_state)
+		stage_select.call(
+			"setup_stage_choices",
+			run_state.current_area_stage,
+			run_state.current_day,
+			_get_unlocked_high_difficulty_stage_ids(),
+			run_state,
+			run_state.current_minutes
+		)
 
 
 # ゲーム表示
@@ -173,6 +180,8 @@ func show_stage_clear() -> void:
 	game_ui.visible = false
 	_sync_seed_inventory_from_game()
 	_sync_stage_clear_seed_inventory()
+	if stage_clear.has_method("set_continuous_play_enabled"):
+		stage_clear.set_continuous_play_enabled(run_state.is_continuous_play_unlocked)
 	if stage_clear.has_method("setup_clear_result") and game.has_method("get_current_hp") and game.has_method("get_clear_minutes"):
 		stage_clear.setup_clear_result(
 			game.get_current_hp(),
@@ -263,6 +272,7 @@ func _on_opening_novel_finished() -> void:
 		NovelFlow.FIRST_NIGHTMARE_EVENT:
 			active_novel_flow = NovelFlow.NONE
 			run_state.unlock_lara()
+			run_state.unlock_continuous_play()
 			_advance_to_next_day()
 		_:
 			active_novel_flow = NovelFlow.NONE
@@ -292,6 +302,7 @@ func _on_stage_select_stage_selected(stage: StageInfo) -> void:
 	if stage == null:
 		return
 	run_state.select_stage(stage)
+	run_state.mark_area_challenged_today()
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
 
@@ -370,6 +381,20 @@ func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
 	_finish_current_day()
 
 
+func _on_stage_clear_continuation_requested() -> void:
+	_sync_run_state_from_stage_clear()
+	show_stage_select()
+
+
+func _on_stage_select_today_rest_requested() -> void:
+	if not run_state.is_continuous_play_unlocked:
+		return
+	if stage_clear.has_method("apply_time_recovery"):
+		stage_clear.apply_time_recovery()
+	_sync_run_state_from_stage_clear()
+	_finish_current_day()
+
+
 # 日数終了
 func _finish_current_day() -> void:
 	if run_state.current_day == FIRST_NIGHTMARE_EVENT_DAY:
@@ -380,6 +405,8 @@ func _finish_current_day() -> void:
 
 func _advance_to_next_day() -> void:
 	run_state.current_day += 1
+	run_state.current_minutes = RunState.BATTLE_START_MINUTES
+	run_state.reset_daily_challenge_state()
 	if run_state.is_lara_unlocked:
 		run_state.update_lara_location(_get_lara_location_candidates())
 	if run_state.current_day > STORY_CLEAR_DAY:
@@ -571,6 +598,7 @@ func _create_battle_start_context(reset_player_state: bool) -> BattleInfo:
 	# 文脈
 	var context := BattleInfo.new()
 	context.starting_hp = _get_starting_hp(reset_player_state)
+	context.starting_minutes = run_state.current_minutes
 	context.day = run_state.current_day
 	context.stage_id = run_state.selected_stage_id
 	context.stage = run_state.selected_stage
@@ -595,6 +623,8 @@ func _sync_player_stomach_size() -> void:
 func _sync_run_state_from_stage_clear() -> void:
 	if stage_clear.has_method("get_current_hp"):
 		run_state.current_hp = stage_clear.get_current_hp()
+	if stage_clear.has_method("get_clear_minutes"):
+		run_state.current_minutes = stage_clear.get_clear_minutes()
 	if stage_clear.has_method("get_equipped_seed_slots"):
 		run_state.planted_flowers = stage_clear.get_equipped_seed_slots()
 	elif stage_clear.has_method("get_planted_flowers"):

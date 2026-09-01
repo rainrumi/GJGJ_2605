@@ -107,7 +107,7 @@ func start_battle(context: BattleInfo = null) -> void:
 	_battle_start_context = _copy_battle_context(battle_context)
 	_awaiting_time_over_decision = false
 	_pending_depleted_seed_sources.clear()
-	minutes = START_HOUR * 60
+	minutes = maxi(0, battle_context.starting_minutes)
 	effective_max_hp = MAX_HP
 	hp = clampi(battle_context.starting_hp, 0, effective_max_hp)
 	current_day = battle_context.day
@@ -122,7 +122,7 @@ func start_battle(context: BattleInfo = null) -> void:
 	_clear_scheduled_acid_events()
 	seed_controller.set_seed_inventory(battle_context.flowers, battle_context.stored_seeds)
 	_refresh_seed_structural_effects()
-	acid_controller.set_battle_start_minutes(START_HOUR * 60)
+	acid_controller.set_battle_start_minutes(minutes)
 	seed_effects.setup(seed_controller.get_flowers())
 	enemy_effects.reset()
 	seed_effects.set_day(current_day)
@@ -854,6 +854,7 @@ func _on_time_over_abandon_requested() -> void:
 func _copy_battle_context(source: BattleInfo) -> BattleInfo:
 	var copy := BattleInfo.new()
 	copy.starting_hp = source.starting_hp
+	copy.starting_minutes = source.starting_minutes
 	copy.day = source.day
 	copy.stage_id = source.stage_id
 	copy.stage = source.stage

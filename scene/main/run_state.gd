@@ -8,9 +8,11 @@ const HUWAHUWA_SCHOOL_UNLOCK_DAY_INTERVAL := 4
 const MAX_HUWAHUWA_SCHOOL_STRENGTHENED_ENEMY_INDEX := 5
 const STAGE_NOVEL_UNLOCK_DEFEAT_INTERVAL := 3
 const MAX_STAGE_NOVEL_INDEX := 3
+const BATTLE_START_MINUTES := 22 * 60
 
 var current_day := 1
 var current_hp := 100
+var current_minutes := BATTLE_START_MINUTES
 var max_hp := 100
 var stomach_columns := DEFAULT_STOMACH_COLUMNS
 var stomach_rows := DEFAULT_STOMACH_ROWS
@@ -27,6 +29,8 @@ var normal_enemy_defeat_counts := {}
 var strengthened_enemy_defeat_counts := {}
 var played_stage_novel_indices := {}
 var is_lara_unlocked := false
+var is_continuous_play_unlocked := false
+var has_challenged_area_today := false
 var lara_current_location: StageInfo
 
 
@@ -34,6 +38,7 @@ var lara_current_location: StageInfo
 func reset() -> void:
 	current_day = 1
 	current_hp = max_hp
+	current_minutes = BATTLE_START_MINUTES
 	stomach_columns = DEFAULT_STOMACH_COLUMNS
 	stomach_rows = DEFAULT_STOMACH_ROWS
 	selected_stage_id = 0
@@ -49,12 +54,26 @@ func reset() -> void:
 	strengthened_enemy_defeat_counts.clear()
 	played_stage_novel_indices.clear()
 	is_lara_unlocked = false
+	is_continuous_play_unlocked = false
+	has_challenged_area_today = false
 	lara_current_location = null
 
 
 # ラーラ解放
 func unlock_lara() -> void:
 	is_lara_unlocked = true
+
+
+func unlock_continuous_play() -> void:
+	is_continuous_play_unlocked = true
+
+
+func mark_area_challenged_today() -> void:
+	has_challenged_area_today = true
+
+
+func reset_daily_challenge_state() -> void:
+	has_challenged_area_today = false
 
 
 # ラーラ現在地更新

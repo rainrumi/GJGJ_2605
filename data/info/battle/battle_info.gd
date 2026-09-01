@@ -2,6 +2,7 @@ class_name BattleInfo
 extends RefCounted
 
 var starting_hp := 100
+var starting_minutes := 22 * 60
 var day := 1
 var stage_id := 0
 var stage: StageInfo

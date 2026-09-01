@@ -3,6 +3,7 @@ extends Node2D
 const DEBUG_STAGE_CATALOG_PATH := "res://data/resources/area/debug_stage_catalog.tres"
 
 signal stage_selected(stage: StageInfo)
+signal today_rest_requested
 
 @export var stage_catalog: StageCatalogInfo
 @export var stage_definitions: Array[StageInfo] = []
@@ -10,10 +11,15 @@ signal stage_selected(stage: StageInfo)
 
 @onready var map_view: StageSelectMapView = $CharacterArea/Map
 @onready var stage_choice_list: StageSelectChoiceList = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices
+@onready var stage_choices_scroll: ScrollContainer = $UI/StageChoicesScroll
+@onready var time_view: TimeView = $UI/TimeView
+@onready var today_rest_button: TodayRestButton = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices/TodayRestButton
+@onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
 var _displayed_stage_definitions: Array[StageInfo] = []
 var _current_stage_definition: StageInfo
 var _current_day := 1
+var _current_minutes := RunState.BATTLE_START_MINUTES
 var _unlocked_high_difficulty_stage_ids: Array[int] = []
 var _run_state: RunState
 var _hovered_stage_definition: StageInfo
@@ -23,6 +29,7 @@ var stage_selection_service := StageSelectionService.new()
 # 初期化
 func _ready() -> void:
 	_connect_stage_choice_list()
+	today_rest_button.pressed.connect(_on_today_rest_button_pressed)
 	_connect_debug_state()
 	setup_stage_choices()
 
@@ -32,15 +39,23 @@ func setup_stage_choices(
 	current_stage_definition: StageInfo = null,
 	current_day: int = 1,
 	unlocked_high_difficulty_stage_ids: Array[int] = [],
-	run_state: RunState = null
+	run_state: RunState = null,
+	current_minutes: int = RunState.BATTLE_START_MINUTES
 ) -> void:
 	_current_stage_definition = current_stage_definition
 	_current_day = current_day
+	_current_minutes = current_minutes
 	_unlocked_high_difficulty_stage_ids = unlocked_high_difficulty_stage_ids.duplicate()
 	_run_state = run_state
+	today_rest_button.visible = (
+		_run_state != null
+		and _run_state.is_continuous_play_unlocked
+		and _run_state.has_challenged_area_today
+	)
 	_hovered_stage_definition = null
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	map_view.hide_hover()
+	time_view.set_time(_current_minutes)
 	map_view.set_lara_location(_run_state.lara_current_location if _run_state != null else null)
 	stage_choice_list.setup_choices(
 		_displayed_stage_definitions,
@@ -48,6 +63,7 @@ func setup_stage_choices(
 		_get_current_location_flags(_displayed_stage_definitions),
 		stage_choice_scene
 	)
+	stage_choices_scroll.call("reset_to_top")
 
 
 # ステージ定義byID取得
@@ -79,7 +95,8 @@ func _on_debug_enabled_changed(_is_enabled: bool) -> void:
 		_current_stage_definition,
 		_current_day,
 		_unlocked_high_difficulty_stage_ids,
-		_run_state
+		_run_state,
+		_current_minutes
 	)
 
 
@@ -91,6 +108,14 @@ func _on_stage_choice_pressed(choice_index: int) -> void:
 	if stage_definition == null:
 		return
 	stage_selected.emit(stage_definition)
+
+
+func _on_today_rest_button_pressed() -> void:
+	if _run_state == null or not _run_state.is_continuous_play_unlocked:
+		return
+	if _mouse_drag_state.is_dragging():
+		return
+	today_rest_requested.emit()
 
 
 # ホバー処理

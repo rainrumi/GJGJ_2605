@@ -24,6 +24,10 @@ func _run() -> void:
 	choice_list.choice_pressed.connect(_on_choice_pressed)
 	choice_list.custom_minimum_size.y = 600.0
 	await process_frame
+	scroll.scroll_vertical = 40
+	scroll.call("reset_to_top")
+	await process_frame
+	_expect(scroll.scroll_vertical == 0, "一覧表示時はスクロール位置を最上部へ戻す")
 
 	scroll.scroll_vertical = 20
 	scroll.call("_begin_press", start_position)

@@ -17,6 +17,16 @@ func _ready() -> void:
 	var scroll_bar := get_v_scroll_bar()
 	scroll_bar.set_script(SCROLL_BAR_SCRIPT)
 	scroll_bar.call("match_main_background_color")
+	reset_to_top()
+
+
+func reset_to_top() -> void:
+	scroll_vertical = 0
+	call_deferred("_apply_top_scroll")
+
+
+func _apply_top_scroll() -> void:
+	scroll_vertical = 0
 
 
 # 入力処理

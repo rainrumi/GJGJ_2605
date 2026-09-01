@@ -1,6 +1,7 @@
 extends Node2D
 
 signal selection_finished(recovered_hp_rate: float)
+signal continuation_requested
 
 const ABANDON_HP_RECOVERY_RATE := 0.1
 const CLEAR_RECOVERY_START_HOUR := 22
@@ -26,6 +27,7 @@ var current_hp := MAX_HP
 var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
 var permanent_acid_damage_bonus_rate := 0.0
 var debug_numbers_visible := false
+var continuous_play_enabled := false
 
 var _clear_recovery_applied := false
 var _selected_rewerd_effect_applied := false
@@ -93,6 +95,29 @@ func reset_player_state() -> void:
 # HP取得
 func get_current_hp() -> int:
 	return current_hp
+
+
+func get_clear_minutes() -> int:
+	return clear_minutes
+
+
+func set_continuous_play_enabled(is_enabled: bool) -> void:
+	continuous_play_enabled = is_enabled
+
+
+func apply_time_recovery() -> float:
+	var recovery_rate := StageClearCalculatorRecovery.get_clear_time_recovery_rate(
+		planted_flowers,
+		clear_minutes,
+		CLEAR_RECOVERY_START_HOUR,
+		CLEAR_RECOVERY_END_HOUR,
+		CLEAR_RECOVERY_BASE_RATE,
+		CLEAR_RECOVERY_HOURLY_LOSS_RATE
+	)
+	if recovery_rate <= 0.0:
+		return 0.0
+	_set_hp(current_hp + ceili(float(MAX_HP) * recovery_rate), true)
+	return recovery_rate
 
 
 # 花取得
@@ -314,11 +339,11 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 # 放棄押下
 func _on_abandon_button_pressed() -> void:
 	var recovery_rate := _apply_selection_recovery(_get_abandon_extra_recovery_rate())
-	selection_finished.emit(recovery_rate)
 	if recovery_rate > 0.0:
 		_show_finished_mode("種を放棄してHPを回復しました")
 	else:
 		_show_finished_mode("種を放棄しました")
+	_finish_reward_selection(recovery_rate)
 
 
 # 完了表示
@@ -345,8 +370,15 @@ func _finish_seed_choice(recovered_rate: float, message: String) -> void:
 		_remaining_extra_seed_choices -= 1
 		_show_select_mode()
 		return
-	selection_finished.emit(recovered_rate)
 	_show_finished_mode(message)
+	_finish_reward_selection(recovered_rate)
+
+
+func _finish_reward_selection(recovered_rate: float) -> void:
+	if continuous_play_enabled:
+		continuation_requested.emit()
+		return
+	selection_finished.emit(recovered_rate)
 
 
 # clear回復率
@@ -419,7 +451,10 @@ func _apply_selection_recovery(extra_recovery_rate: float) -> float:
 	var rewerd_context := _apply_selected_rewerd_effects() # 報酬効果
 	var recovery_rate := 0.0 # 回復率
 	if not _clear_recovery_applied:
-		recovery_rate = _get_selected_rewerd_recovery_rate(rewerd_context) + extra_recovery_rate
+		if continuous_play_enabled:
+			recovery_rate = float(rewerd_context.get("hp_recovery_rate", 0.0)) + extra_recovery_rate
+		else:
+			recovery_rate = _get_selected_rewerd_recovery_rate(rewerd_context) + extra_recovery_rate
 		var recovered_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * recovery_rate)) # 回復HP
 		_clear_recovery_applied = true
 		_set_hp(recovered_hp, true)
