@@ -42,6 +42,21 @@ func _run() -> void:
 			stage_select_time_view.size.is_equal_approx(game_time_view.size),
 			"ゲームSceneと同じサイズで表示する"
 		)
+		stage_select_time_view.mouse_entered.emit()
+		_expect(
+			stage_select_time_view.time_tooltip.visible,
+			"ステージ選択Sceneの時刻へホバーするとツールチップを表示する"
+		)
+		_expect(
+			stage_select_time_view.time_tooltip.tooltip_label.text
+			== game_time_view.time_tooltip.tooltip_label.text,
+			"ゲームSceneと同じ時刻ツールチップを表示する"
+		)
+		stage_select_time_view.mouse_exited.emit()
+		_expect(
+			not stage_select_time_view.time_tooltip.visible,
+			"ステージ選択Sceneの時刻から離れるとツールチップを隠す"
+		)
 
 	root.remove_child(stage_select)
 	stage_select.free()

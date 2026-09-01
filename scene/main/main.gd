@@ -380,9 +380,12 @@ func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
 		return
 	_finish_current_day()
 
-
 func _on_stage_clear_continuation_requested() -> void:
+	var flow_id := _screen_flow_id
 	_sync_run_state_from_stage_clear()
+	await get_tree().create_timer(STAGE_CLEAR_RETURN_DELAY).timeout
+	if flow_id != _screen_flow_id:
+		return
 	show_stage_select()
 
 

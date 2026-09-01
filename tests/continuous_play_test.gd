@@ -9,6 +9,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	await _check_stage_clear_returns_to_map()
+	await _check_stage_clear_return_delay_after_unlock()
 	await _check_today_rest_button()
 	await _check_unlock_and_time_carryover()
 	quit(_failures)
@@ -34,6 +35,29 @@ func _check_stage_clear_returns_to_map() -> void:
 	_expect(stage_clear.get_current_hp() > hp_before_rest, "今日は休む選択時にHPを回復する")
 	root.remove_child(stage_clear)
 	stage_clear.free()
+
+
+func _check_stage_clear_return_delay_after_unlock() -> void:
+	var packed := load("res://scene/main/main.tscn") as PackedScene
+	_expect(packed != null, "Main Sceneを読み込める")
+	if packed == null:
+		return
+	var main := packed.instantiate()
+	root.add_child(main)
+	await process_frame
+	main.run_state.unlock_continuous_play()
+	main.show_stage_clear()
+	main.call("_on_stage_clear_continuation_requested")
+	_expect(main.stage_clear.visible, "種選択直後はステージクリア画面を維持する")
+	_expect(not main.stage_select.visible, "待機時間が終わるまでステージ選択画面へ遷移しない")
+	await create_timer(main.STAGE_CLEAR_RETURN_DELAY + 0.1).timeout
+	_expect(main.stage_select.visible, "待機時間後にステージ選択画面へ遷移する")
+	var bgm := main.get_node("BGM") as BeatConductor
+	bgm.stop()
+	bgm.audio_player.stream = null
+	bgm.bgm_stream = null
+	root.remove_child(main)
+	main.free()
 
 
 func _check_today_rest_button() -> void:

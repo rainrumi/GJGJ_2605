@@ -29,9 +29,19 @@ var stage_selection_service := StageSelectionService.new()
 # 初期化
 func _ready() -> void:
 	_connect_stage_choice_list()
+	time_view.tooltip_requested.connect(_on_time_tooltip_requested)
+	time_view.tooltip_hide_requested.connect(_on_time_tooltip_hide_requested)
 	today_rest_button.pressed.connect(_on_today_rest_button_pressed)
 	_connect_debug_state()
 	setup_stage_choices()
+
+
+func _on_time_tooltip_requested(view: TimeView) -> void:
+	view.show_tooltip()
+
+
+func _on_time_tooltip_hide_requested(view: TimeView) -> void:
+	view.hide_tooltip()
 
 
 # ステージ選択肢設定
