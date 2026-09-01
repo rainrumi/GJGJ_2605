@@ -257,6 +257,29 @@ func _run() -> void:
 	conditional_hp = null
 	unconditional_acid = null
 
+	var stomach_grid_acid := SeedEffectOnBattleChangeAcidDamageRateOfStomachGrid.new()
+	var stomach_grid_skill := SeedSkill.new()
+	stomach_grid_skill.effects.assign([stomach_grid_acid])
+	var stomach_grid_seed := SeedInfo.new()
+	stomach_grid_seed.main_skill = stomach_grid_skill
+	_expect(
+		not stomach_grid_acid.is_unconditional_status_change(),
+		"stomach-grid damage remains a conditional effect"
+	)
+	stage_clear.setup_clear_result(20, 22 * 60, null, 3, 2)
+	stage_clear.seed_options.assign([stomach_grid_seed])
+	stage_clear.ui.seed_choice_hovered.emit(0)
+	_expect(
+		acid_damage_view.acid_damage_value_label.text == "110",
+		"hover preview calculates stomach-grid damage from the current 3x2 stomach"
+	)
+	stage_clear.ui.seed_choice_unhovered.emit()
+	stage_clear.seed_options.clear()
+	stomach_grid_skill.effects.clear()
+	stomach_grid_seed = null
+	stomach_grid_skill = null
+	stomach_grid_acid = null
+
 	var lower_damage_info := {"total": 50, "base": 50, "seed_buff": 0, "seed_rate": 0.0, "enemy_buff": 0, "enemy_rate": 0.0}
 	var longer_interval_info := {"total": 30, "base": 30, "seed_buff": 0, "seed_rate": 0.0, "enemy_buff": 0, "enemy_rate": 0.0}
 	stage_clear.ui.set_status_preview(

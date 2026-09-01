@@ -4,6 +4,11 @@ extends SeedEffect
 @export var amount := 10.0 # 乗算値
 
 
+# StatusPreview supplies the current prospective stomach dimensions.
+func is_status_preview_change() -> bool:
+	return true
+
+
 # 酸倍率取得
 func get_acid_damage_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
 	var base_damage := int(_context.get("base_damage", 0)) # 基礎酸ダメ

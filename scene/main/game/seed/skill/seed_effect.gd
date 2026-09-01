@@ -11,6 +11,11 @@ func is_unconditional_status_change() -> bool:
 	return false
 
 
+# Whether a newly hovered seed can be evaluated from the StatusPreview context.
+func is_status_preview_change() -> bool:
+	return is_unconditional_status_change()
+
+
 # 報酬選択中
 func on_selecting_rewerd(_state: DreamSeedSkillState, _context: Dictionary) -> void:
 	pass

@@ -302,7 +302,7 @@ func _get_main_effects() -> Array[SeedEffect]:
 		if base_index >= 0:
 			remaining_base_effects.remove_at(base_index)
 			preview_effects.append(effect)
-		elif effect.is_unconditional_status_change():
+		elif effect.is_status_preview_change():
 			preview_effects.append(effect)
 	return preview_effects
 
