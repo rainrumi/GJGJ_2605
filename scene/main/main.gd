@@ -4,6 +4,7 @@ const STAGE_CLEAR_RETURN_DELAY := 1.0
 const STORY_CLEAR_DAY := 20
 const INITIAL_STAGE_ID := 11
 const HIGH_DIFFICULTY_DAY_INTERVAL := 4
+const FIRST_NIGHTMARE_EVENT_DAY := 4
 const RECURRING_STAGE_NOVEL_STAGE_ID := 0
 const RECURRING_STAGE_NOVEL_SCENARIO_INDEX := 1
 
@@ -13,10 +14,12 @@ enum NovelFlow {
 	END_GAMEOVER,
 	GAME_CLEAR,
 	STAGE_UNLOCK,
+	FIRST_NIGHTMARE_EVENT,
 }
 
 @export var end_gameover_novel_text: NovelTextInfo
 @export var game_clear_novel_text: NovelTextInfo
+@export var first_nightmare_event_novel_text: NovelTextInfo
 
 @onready var title: Node = $Title
 @onready var opening_novel: OpeningNovel = $OpeningNovel
@@ -256,6 +259,9 @@ func _on_opening_novel_finished() -> void:
 		NovelFlow.STAGE_UNLOCK:
 			if not _play_next_stage_unlock_novel():
 				show_stage_select()
+		NovelFlow.FIRST_NIGHTMARE_EVENT:
+			active_novel_flow = NovelFlow.NONE
+			_advance_to_next_day()
 		_:
 			active_novel_flow = NovelFlow.NONE
 			show_day_intro()
@@ -364,11 +370,30 @@ func _on_stage_clear_selection_finished(_recovered_hp_rate: float) -> void:
 
 # 日数終了
 func _finish_current_day() -> void:
+	if run_state.current_day == FIRST_NIGHTMARE_EVENT_DAY:
+		show_first_nightmare_event_novel()
+		return
+	_advance_to_next_day()
+
+
+func _advance_to_next_day() -> void:
 	run_state.current_day += 1
 	if run_state.current_day > STORY_CLEAR_DAY:
 		show_game_clear_novel()
 		return
 	show_day_intro()
+
+
+func show_first_nightmare_event_novel() -> void:
+	title.visible = false
+	opening_novel.visible = false
+	day_intro.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+	active_novel_flow = NovelFlow.FIRST_NIGHTMARE_EVENT
+	opening_novel.start_with_text(first_nightmare_event_novel_text)
 
 
 # setupinitialステージ位置処理
