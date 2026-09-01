@@ -52,6 +52,12 @@ func setup_stage_choices(
 		and _run_state.is_continuous_play_unlocked
 		and _run_state.has_challenged_area_today
 	)
+	if _run_state != null:
+		today_rest_button.set_recovery_info(
+			_current_minutes,
+			_run_state.max_hp,
+			_run_state.planted_flowers
+		)
 	_hovered_stage_definition = null
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	map_view.hide_hover()

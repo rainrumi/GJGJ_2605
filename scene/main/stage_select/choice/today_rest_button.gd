@@ -4,8 +4,13 @@ extends Button
 const HOVER_SCALE := 1.05
 const PRESSED_SCALE := 0.95
 const TWEEN_DURATION := 0.1
+const RECOVERY_START_HOUR := 22
+const RECOVERY_END_HOUR := 27
+const RECOVERY_BASE_RATE := 0.5
+const RECOVERY_HOURLY_LOSS_RATE := 0.1
 
 @onready var frame: NinePatchRect = $Frame
+@onready var recovery_label: Label = $RecoveryLabel
 
 var _base_scale := Vector2.ONE
 var _hovered := false
@@ -20,6 +25,20 @@ func _ready() -> void:
 	button_up.connect(_on_button_up)
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
+
+
+# 現在時刻に応じた休息時のHP回復量を表示
+func set_recovery_info(current_minutes: int, max_hp: int, planted_flowers: Array[SeedInfo]) -> void:
+	var recovery_rate := StageClearCalculatorRecovery.get_clear_time_recovery_rate(
+		planted_flowers,
+		current_minutes,
+		RECOVERY_START_HOUR,
+		RECOVERY_END_HOUR,
+		RECOVERY_BASE_RATE,
+		RECOVERY_HOURLY_LOSS_RATE
+	)
+	var recovery_amount := ceili(float(max_hp) * recovery_rate)
+	recovery_label.text = "（HP%d回復）" % recovery_amount
 
 
 func _on_button_down() -> void:
@@ -56,4 +75,3 @@ func _update_scale() -> void:
 	_scale_tween.set_trans(Tween.TRANS_QUAD)
 	_scale_tween.set_ease(Tween.EASE_OUT)
 	_scale_tween.tween_property(frame, "scale", target_scale, TWEEN_DURATION)
-

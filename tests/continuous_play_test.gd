@@ -59,10 +59,14 @@ func _check_today_rest_button() -> void:
 	_expect(rest_button.visible, "連続プレイ解放後かつ当日挑戦済みなら今日は休むボタンを表示する")
 	_expect(scroll.scroll_vertical == 0, "一覧更新時に今日は休むボタンを最上部へ表示する")
 	_expect(choices.get_child(0) == rest_button, "今日は休むボタンをエリア選択の最上位に置く")
-	_expect(rest_button.get_child_count() == 2, "専用ボタンはFrameとLocationLabelだけを保持する")
+	_expect(rest_button.get_child_count() == 3, "専用ボタンはFrameと2つのLabelを保持する")
 	var label := rest_button.get_node("LocationLabel") as Label
 	_expect(label.text == "今日は休む", "LocationLabel設定で今日は休むと表示する")
 	_expect(label.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER, "今日は休むを中央揃えにする")
+	var recovery_label := rest_button.get_node("RecoveryLabel") as Label
+	_expect(recovery_label.text == "（HP40回復）", "23時の回復量を表示する")
+	_expect(recovery_label.position.y > label.position.y, "回復量をLocationLabelの下に表示する")
+	_expect(label.position.y < 9.0, "LocationLabelを上へ移動する")
 	run_state.reset_daily_challenge_state()
 	stage_select.setup_stage_choices(null, 6, unlocked_stage_ids, run_state, 22 * 60)
 	_expect(not rest_button.visible, "翌日は再挑戦するまで今日は休むボタンを非表示にする")
