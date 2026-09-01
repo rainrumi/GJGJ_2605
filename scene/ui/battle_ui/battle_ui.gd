@@ -13,6 +13,7 @@ signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
+signal debug_seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo)
 signal enemy_previous_page_requested
 signal enemy_next_page_requested
 signal time_over_abandon_requested
@@ -232,6 +233,7 @@ func set_seed_sources(sources: Array) -> void:
 func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
 	seed_button_list.set_seed_sources(equipped_seeds)
 	owned_seed_panel.set_seed_inventory(equipped_seeds, stored_seeds)
+	debug_panel.set_seed_inventory(equipped_seeds, stored_seeds)
 
 
 # 夢種デバッグ番号visible設定
@@ -427,6 +429,7 @@ func _connect_child_signals() -> void:
 	owned_seed_panel.seed_drag_moved.connect(_on_seed_drag_moved)
 	owned_seed_panel.seed_drag_released.connect(_on_seed_drag_released)
 	owned_seed_panel.seed_rotation_requested.connect(_on_seed_rotation_requested)
+	debug_panel.seed_parameter_applied.connect(_on_debug_seed_parameter_applied)
 
 # -----------------------------------------------------------
 
@@ -562,6 +565,10 @@ func _on_seed_drag_released(
 # 種ブロック回転要求
 func _on_seed_rotation_requested(button: SeedButton, seed: SeedInfo) -> void:
 	seed_rotation_requested.emit(button, seed)
+
+
+func _on_debug_seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo) -> void:
+	debug_seed_parameter_applied.emit(original_seed, edited_seed)
 
 
 # 所有種panel表示

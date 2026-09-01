@@ -5,6 +5,7 @@ signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
+signal seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo)
 
 const DEBUG_BUTTON_NORMAL_FONT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
@@ -20,6 +21,8 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @onready var debug_reroll_button: Button = $DebugRerollButton
 @onready var debug_seed_button_list: Button = $DebugSeedButton
 @onready var debug_message_button: Button = $DebugMessageButton
+@onready var debug_seed_parameter_button: Button = $DebugSeedParameterButton
+@onready var seed_parameter_panel: DebugSeedParameterPanel = $DebugSeedParameterPanel
 
 var debug_message := ""
 var debug_button_active := false
@@ -36,6 +39,8 @@ func _ready() -> void:
 	debug_reroll_button.pressed.connect(_on_debug_reroll_button_pressed)
 	debug_seed_button_list.pressed.connect(_on_debug_seed_button_list_pressed)
 	debug_message_button.pressed.connect(_on_debug_message_button_pressed)
+	debug_seed_parameter_button.pressed.connect(seed_parameter_panel.open_panel)
+	seed_parameter_panel.seed_parameter_applied.connect(_on_seed_parameter_applied)
 	_connect_debug_state()
 	set_debug_button_active(DebugState.debug_enabled)
 
@@ -48,6 +53,10 @@ func set_message(message: String) -> void:
 # デバッグ文言
 func set_debug_message(message: String) -> void:
 	debug_message = message
+
+
+func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
+	seed_parameter_panel.set_seed_inventory(equipped_seeds, stored_seeds)
 
 
 # ボタン状態
@@ -73,6 +82,8 @@ func _connect_debug_state() -> void:
 # 変更処理
 func _on_debug_enabled_changed(is_enabled: bool) -> void:
 	set_debug_button_active(is_enabled)
+	if not is_enabled:
+		seed_parameter_panel.close()
 	debug_message_requested.emit(is_enabled)
 
 
@@ -94,6 +105,7 @@ func _prepare_mouse_filters() -> void:
 	debug_reroll_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_seed_button_list.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_message_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	debug_seed_parameter_button.mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 # 有効表示
@@ -141,6 +153,7 @@ func _set_debug_controls_visible(is_visible: bool) -> void:
 	debug_stomach_y_minus_button.visible = is_visible
 	debug_reroll_button.visible = is_visible
 	debug_seed_button_list.visible = is_visible
+	debug_seed_parameter_button.visible = is_visible
 
 
 # Debug押下
@@ -178,3 +191,9 @@ func _on_debug_stomach_y_plus_button_pressed() -> void:
 # 押下処理
 func _on_debug_stomach_y_minus_button_pressed() -> void:
 	debug_stomach_size_requested.emit(0, -1)
+
+
+func _on_seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo) -> void:
+	if not debug_button_active:
+		return
+	seed_parameter_applied.emit(original_seed, edited_seed)

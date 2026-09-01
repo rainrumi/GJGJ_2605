@@ -46,10 +46,9 @@ stream = ExtResource("14_se_click")
 process_mode = 3
 stream = ExtResource("15_se_select")
 
-[node name="SeStageClear" type="AudioStreamPlayer" parent="."]
+[node name="SeStageClear" type="AudioStreamPlayer" parent="." unique_id=1544663155]
 process_mode = 3
 stream = ExtResource("16_se_stage_clear")
-bus = &"SE"
 
 [node name="Title" parent="." unique_id=1609153234 instance=ExtResource("2_a0c6e")]
 

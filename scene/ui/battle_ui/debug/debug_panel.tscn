@@ -1,7 +1,8 @@
-[gd_scene format=3 uid="uid://b6fh1poo6sv5f"]
+[gd_scene load_steps=4 format=3 uid="uid://b6fh1poo6sv5f"]
 
 [ext_resource type="Script" uid="uid://wiaj3pchfaj2" path="res://scene/ui/battle_ui/debug/debug_panel.gd" id="1_status_panel_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+[ext_resource type="PackedScene" path="res://scene/ui/battle_ui/debug/debug_seed_parameter_panel.tscn" id="3_parameter_panel"]
 
 [node name="DebugPanel" type="Control" unique_id=1605446388]
 layout_mode = 3
@@ -96,3 +97,15 @@ offset_bottom = 357.0
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
 text = "Debug"
+
+[node name="DebugSeedParameterButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 91.0
+offset_top = 339.0
+offset_right = 164.0
+offset_bottom = 357.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+text = "種パラメータ"
+
+[node name="DebugSeedParameterPanel" parent="." instance=ExtResource("3_parameter_panel")]

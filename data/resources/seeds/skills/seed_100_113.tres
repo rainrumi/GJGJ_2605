@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dl75liseycel3"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://cg7d3mgt0sxmk"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_7ne22"]
 [ext_resource type="Texture2D" uid="uid://b44kbucb1jhrq" path="res://resource/image/texture/seed/tex_seed_amaririsu.png" id="2_texture"]
@@ -9,25 +9,26 @@
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 [ext_resource type="Script" uid="uid://7vu4k007mb2t" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_acid_damage_rate_of_stomach_grid.gd" id="skill_stomach_grid_rate"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_q1ii8"]
 script = ExtResource("1_7ne22")
 texture = ExtResource("4_block_texture")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_wcst2"]
 script = ExtResource("skill_stomach_grid_rate")
+amount = 2.0
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_1tlwo"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_q1ii8")]([SubResource("Resource_main_effect_1")])
+effects = Array[ExtResource("3_q1ii8")]([SubResource("Resource_wcst2")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_hifjf"]
 script = ExtResource("skill_line_damage")
 damage = 1000
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_vcci7"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_q1ii8")]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_q1ii8")]([SubResource("Resource_hifjf")])
 
 [resource]
 script = ExtResource("3_557bf")
@@ -35,8 +36,8 @@ skill_id = 100113
 rarity = 1
 display_name = "アマリリス"
 texture = ExtResource("2_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
-main_description = "消化ダメージを胃袋マスX×Y×10の値増やす"
+main_skill = SubResource("Resource_1tlwo")
+sub_skill = SubResource("Resource_vcci7")
+acid_block = SubResource("Resource_q1ii8")
+main_description = "消化ダメージを胃袋マスX×Y×2の値増やす"
 sub_description = "この花を消化すると消化ライン内の敵に1000消化ダメージを与える。"

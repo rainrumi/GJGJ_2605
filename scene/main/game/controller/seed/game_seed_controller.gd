@@ -68,6 +68,18 @@ func get_stored_seeds() -> Array[SeedInfo]:
 	return _stored_seeds
 
 
+func replace_seed(original_seed: SeedInfo, replacement_seed: SeedInfo) -> bool:
+	if original_seed == null or replacement_seed == null:
+		return false
+	var replaced := false
+	for slots in [_flowers, _stored_seeds]:
+		for index in range(slots.size()):
+			if slots[index] == original_seed:
+				slots[index] = replacement_seed
+				replaced = true
+	return replaced
+
+
 # 種装備
 func equip_seed(seed: SeedInfo) -> bool:
 	if seed == null or _count_seeds(_flowers) >= MAX_EQUIPPED_SEEDS:
