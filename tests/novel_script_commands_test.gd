@@ -68,6 +68,7 @@ func _run() -> void:
 	_expect(image_layer.get_child_count() == 1, "@img_remove removes only the requested index")
 	var image := image_layer.get_node_or_null("Image0") as TextureRect
 	_expect(image != null and image.texture != null, "@img creates a textured node for its index")
+	_expect(image != null and image.self_modulate == Color("#f0e0ff"), "@img applies the novel texture tint")
 	_expect(image != null and image.position == Vector2(50, 60), "Repeated @img updates the existing index")
 	_expect(text_label.text == "一行目\n改行後", "@r inserts a line break before the following text")
 	_expect(next_label.visible, "@l inside @lcm waits for a click")

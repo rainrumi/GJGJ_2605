@@ -13,6 +13,7 @@
 [ext_resource type="Resource" path="res://data/resources/novel/novel_ending_gameclear.tres" id="12_game_clear_text"]
 [ext_resource type="PackedScene" uid="uid://o8cavvep5sxl" path="res://scene/main/settings/settings_screen.tscn" id="13_settings"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://resource/sound/se/se_click.mp3" id="14_se_click"]
+[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/info/stage/stage_info.gd" id="15_q2oic"]
 [ext_resource type="AudioStream" uid="uid://lhn1aubvc0wx" path="res://resource/sound/se/se_select.mp3" id="15_se_select"]
 [ext_resource type="AudioStream" uid="uid://bgcvfu1pj20yg" path="res://resource/sound/se/se_stage_clear.mp3" id="16_se_stage_clear"]
 [ext_resource type="Resource" path="res://data/resources/novel/novel_event_100.tres" id="17_event_100_text"]
@@ -64,6 +65,7 @@ visible = false
 
 [node name="StageSelect" parent="." unique_id=578703049 instance=ExtResource("7_stage_select")]
 visible = false
+stage_definitions = Array[ExtResource("15_q2oic")]([])
 
 [node name="Game" parent="." unique_id=335814330 instance=ExtResource("3_qtsyf")]
 visible = false
@@ -79,5 +81,5 @@ visible = false
 [connection signal="finished" from="OpeningNovel" to="." method="_on_opening_novel_finished"]
 [connection signal="stage_selected" from="StageSelect" to="." method="_on_stage_select_stage_selected"]
 [connection signal="today_rest_requested" from="StageSelect" to="." method="_on_stage_select_today_rest_requested"]
-[connection signal="selection_finished" from="StageClear" to="." method="_on_stage_clear_selection_finished"]
 [connection signal="continuation_requested" from="StageClear" to="." method="_on_stage_clear_continuation_requested"]
+[connection signal="selection_finished" from="StageClear" to="." method="_on_stage_clear_selection_finished"]

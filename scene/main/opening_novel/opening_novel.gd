@@ -210,6 +210,7 @@ func _command_img(argument: String) -> void:
 	if image == null:
 		image = TextureRect.new()
 		image.name = "Image%d" % image_index
+		image.self_modulate = Color("#f0e0ff")
 		image.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		image.stretch_mode = TextureRect.STRETCH_KEEP
