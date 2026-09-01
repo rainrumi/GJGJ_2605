@@ -44,6 +44,10 @@ func _run() -> void:
 	novel_text.text = (
 		"@name \"主人公\"\n"
 		+ "@bg \"%s\"\n" % BACKGROUND_PATH
+		+ "@img 0, 10, 20, \"%s\"\n" % BACKGROUND_PATH
+		+ "@img 1, 30, 40, \"%s\"\n" % BACKGROUND_PATH
+		+ "@img 0, 50, 60, \"%s\"\n" % BACKGROUND_PATH
+		+ "@img_remove 1\n"
 		+ "一行目\n"
 		+ "@lcm\n"
 		+ "二行目\n"
@@ -56,8 +60,13 @@ func _run() -> void:
 	var text_label := opening_novel.get_node("Screen/TextBox/TextLabel") as Label
 	var next_label := opening_novel.get_node("Screen/TextBox/NextLabel") as Label
 	var background := opening_novel.get_node("Screen/OpeningStill") as TextureRect
+	var image_layer := opening_novel.get_node("Screen/ImageLayer") as Control
 	_expect(name_label.text == "主人公" and name_label.visible, "@name updates the name label")
 	_expect(background.visible and background.texture != null, "@bg updates and shows the background")
+	_expect(image_layer.get_child_count() == 1, "@img_remove removes only the requested index")
+	var image := image_layer.get_node_or_null("Image0") as TextureRect
+	_expect(image != null and image.texture != null, "@img creates a textured node for its index")
+	_expect(image != null and image.position == Vector2(50, 60), "Repeated @img updates the existing index")
 	_expect(text_label.text == "一行目", "First text line is shown")
 	_expect(next_label.visible, "@l inside @lcm waits for a click")
 
@@ -68,6 +77,7 @@ func _run() -> void:
 	opening_novel.call("_on_screen_gui_input", _create_click())
 	_expect(text_label.text.is_empty(), "@cm clears the message text")
 	_expect(not opening_novel.visible, "Scenario finishes after all commands")
+	_expect(image_layer.get_child_count() == 0, "Finishing a scenario clears its images")
 
 	if game_settings != null:
 		game_settings.set("text_speed", original_text_speed)

@@ -11,6 +11,7 @@ const DEFAULT_TEXT_INTERVAL := 0.04
 
 @onready var screen: Control = $Screen
 @onready var opening_still: TextureRect = $Screen/OpeningStill
+@onready var image_layer: Control = $Screen/ImageLayer
 @onready var name_label: Label = $Screen/TextBox/NameLabel
 @onready var text_label: Label = $Screen/TextBox/TextLabel
 @onready var next_label: Label = $Screen/TextBox/NextLabel
@@ -25,6 +26,7 @@ var _current_text_target := ""
 var _typing_request_id := 0
 var _script_request_id := 0
 var _default_background: Texture2D
+var _images: Dictionary[int, TextureRect] = {}
 
 
 # 初期化
@@ -62,6 +64,7 @@ func _start_script(next_novel_text: NovelTextInfo, show_default_background: bool
 	visible = true
 	opening_still.texture = _default_background
 	opening_still.visible = show_default_background
+	_clear_images()
 	name_label.text = ""
 	name_label.visible = false
 	text_label.text = ""
@@ -129,6 +132,10 @@ func _execute_command(command_line: String, request_id: int) -> void:
 			_command_name(argument)
 		"bg":
 			_command_bg(argument)
+		"img":
+			_command_img(argument)
+		"img_remove":
+			_command_img_remove(argument)
 		"l":
 			await _command_l(request_id)
 		"cm":
@@ -163,6 +170,79 @@ func _command_bg(background_path: String) -> void:
 		return
 	opening_still.texture = background
 	opening_still.visible = true
+
+
+# imgコマンド
+func _command_img(argument: String) -> void:
+	var arguments := _parse_comma_separated_arguments(argument)
+	if arguments.size() != 4:
+		push_error(
+			"OpeningNovel @img requires index, position_x, position_y, and path on scenario line %d."
+			% _line_index
+		)
+		return
+	if not arguments[0].is_valid_int() or not arguments[1].is_valid_float() or not arguments[2].is_valid_float():
+		push_error("OpeningNovel @img received invalid index or position on scenario line %d." % _line_index)
+		return
+	var image_index := arguments[0].to_int()
+	if image_index < 0:
+		push_error("OpeningNovel @img requires a non-negative index on scenario line %d." % _line_index)
+		return
+	var image_path := arguments[3]
+	if image_path.is_empty() or not ResourceLoader.exists(image_path, "Texture2D"):
+		push_error("OpeningNovel @img could not find a Texture2D: %s" % image_path)
+		return
+	var texture := load(image_path) as Texture2D
+	if texture == null:
+		push_error("OpeningNovel @img could not load a Texture2D: %s" % image_path)
+		return
+	var image := _images.get(image_index) as TextureRect
+	if image == null:
+		image = TextureRect.new()
+		image.name = "Image%d" % image_index
+		image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		image.stretch_mode = TextureRect.STRETCH_KEEP
+		image_layer.add_child(image)
+		_images[image_index] = image
+	image.texture = texture
+	image.position = Vector2(arguments[1].to_float(), arguments[2].to_float())
+	image.size = texture.get_size()
+
+
+# img_removeコマンド
+func _command_img_remove(argument: String) -> void:
+	var image_index_text := argument.strip_edges()
+	if not image_index_text.is_valid_int():
+		push_error("OpeningNovel @img_remove requires an index on scenario line %d." % _line_index)
+		return
+	var image_index := image_index_text.to_int()
+	if image_index < 0:
+		push_error("OpeningNovel @img_remove requires a non-negative index on scenario line %d." % _line_index)
+		return
+	var image := _images.get(image_index) as TextureRect
+	if image == null:
+		return
+	_images.erase(image_index)
+	image_layer.remove_child(image)
+	image.queue_free()
+
+
+func _parse_comma_separated_arguments(argument: String) -> Array[String]:
+	var arguments: Array[String] = []
+	for value in argument.split(",", true):
+		var parsed_value := value.strip_edges()
+		if parsed_value.length() >= 2 and parsed_value.begins_with("\"") and parsed_value.ends_with("\""):
+			parsed_value = parsed_value.substr(1, parsed_value.length() - 2)
+		arguments.append(parsed_value)
+	return arguments
+
+
+func _clear_images() -> void:
+	for image: TextureRect in _images.values():
+		image_layer.remove_child(image)
+		image.queue_free()
+	_images.clear()
 
 
 # lコマンド
@@ -237,6 +317,7 @@ func _finish() -> void:
 	next_label.visible = false
 	visible = false
 	opening_still.visible = false
+	_clear_images()
 	finished.emit()
 
 

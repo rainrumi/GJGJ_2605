@@ -10,6 +10,8 @@
 |---|---|
 | `@name "主人公"` | 名前ラベルへ `主人公` を表示する。空文字列なら名前ラベルを隠す。 |
 | `@bg "res://resource/image/...png"` | 指定した `Texture2D` を背景へ表示する。空文字列なら背景を隠す。 |
+| `@img 0, 100, 200, "res://resource/image/...png"` | index `0` 専用の画像を座標 `(100, 200)` に表示する。同じindexを再指定すると画像と座標を上書きする。 |
+| `@img_remove 0` | `@img` で作成したindex `0` の画像を削除する。存在しないindexなら何もしない。 |
 | `@l` | 左クリックを待つ。タイプ表示中のクリックは全文表示だけを行い、次のクリックが待機を解除する。 |
 | `@cm` | メッセージウィンドウ内の本文を消去する。 |
 | `@lcm` | `@l`、`@cm` の順に実行する。 |
@@ -19,8 +21,10 @@
 ```text
 @name "主人公"
 @bg "res://resource/image/texture/still/tex_still_1000.png"
+@img 0, 100, 80, "res://resource/image/texture/still/tex_still_1000.png"
 最初のメッセージです。
 @lcm
+@img_remove 0
 次のメッセージです。
 @lcm
 ```
