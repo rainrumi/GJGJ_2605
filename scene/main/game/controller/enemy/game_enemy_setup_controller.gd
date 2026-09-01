@@ -344,7 +344,14 @@ func _spawn_effect_enemy(enemies: Array[Enemy], request: BattleSpawnEnemyData) -
 func _find_spawn_cell(enemy: Enemy, request: BattleSpawnEnemyData, enemies: Array[Enemy]) -> Vector2i:
 	var candidates: Array[Vector2i] = [] # 候補セル
 	if request.spawn_area == EnemyEffect.SpawnArea.SAME_CELLS:
-		candidates.append_array(request.source_enemy.get_occupied_cells(request.source_enemy.stomach_cell))
+		var source_cells := request.source_cells
+		if source_cells.is_empty():
+			source_cells = request.source_enemy.get_occupied_cells(request.source_enemy.stomach_cell)
+		candidates = _get_nearby_spawn_cells(
+			source_cells,
+			_stomach.columns,
+			_stomach.rows
+		)
 	elif request.spawn_area == EnemyEffect.SpawnArea.EMPTY_ADJACENT:
 		for cell in request.source_enemy.get_occupied_cells(request.source_enemy.stomach_cell):
 			for direction in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
@@ -356,3 +363,50 @@ func _find_spawn_cell(enemy: Enemy, request: BattleSpawnEnemyData, enemies: Arra
 		if _stomach.can_place(enemy, cell, enemies):
 			return cell
 	return Vector2i(-1, -1)
+
+
+# 元の占有マスを優先し、空いていなければ各軸を交互に近傍から探索する。
+static func _get_nearby_spawn_cells(
+	original_cells: Array[Vector2i],
+	columns: int,
+	rows: int
+) -> Array[Vector2i]:
+	var candidates: Array[Vector2i] = []
+	for cell in original_cells:
+		_append_spawn_candidate(candidates, cell, columns, rows)
+	var max_distance := maxi(columns, rows)
+	for distance in range(1, max_distance):
+		for cell in original_cells:
+			_append_spawn_candidate(candidates, cell + Vector2i(-distance, 0), columns, rows)
+			_append_spawn_candidate(candidates, cell + Vector2i(0, -distance), columns, rows)
+			_append_spawn_candidate(candidates, cell + Vector2i(distance, 0), columns, rows)
+			_append_spawn_candidate(candidates, cell + Vector2i(0, distance), columns, rows)
+	# 軸上に空きがない場合も、元の位置に近い順で残りのマスを試す。
+	var remaining: Array[Vector2i] = []
+	for row in range(rows):
+		for column in range(columns):
+			var cell := Vector2i(column, row)
+			if not candidates.has(cell):
+				remaining.append(cell)
+	remaining.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		return _distance_from_original(a, original_cells) < _distance_from_original(b, original_cells)
+	)
+	candidates.append_array(remaining)
+	return candidates
+
+
+static func _append_spawn_candidate(
+	candidates: Array[Vector2i],
+	cell: Vector2i,
+	columns: int,
+	rows: int
+) -> void:
+	if cell.x >= 0 and cell.x < columns and cell.y >= 0 and cell.y < rows and not candidates.has(cell):
+		candidates.append(cell)
+
+
+static func _distance_from_original(cell: Vector2i, original_cells: Array[Vector2i]) -> int:
+	var nearest := 2147483647
+	for original in original_cells:
+		nearest = mini(nearest, absi(cell.x - original.x) + absi(cell.y - original.y))
+	return nearest

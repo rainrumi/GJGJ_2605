@@ -5,6 +5,7 @@ var source_enemy: Enemy
 var enemy_info: EnemyInfo
 var main_skill: EnemySkill
 var spawn_area: EnemyEffect.SpawnArea = EnemyEffect.SpawnArea.SAME_CELLS
+var source_cells: Array[Vector2i] = []
 var cell := Vector2i.ZERO
 var hp_rate := 0.5
 var max_hp := -1

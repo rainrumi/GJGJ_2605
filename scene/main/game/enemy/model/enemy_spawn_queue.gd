@@ -33,6 +33,7 @@ func request(
 		data.enemy_info = enemy_info
 		data.main_skill = source.get_enemy_skill() if inherit_skill else spawn_main_skill
 		data.spawn_area = spawn_area
+		data.source_cells = source.get_occupied_cells(source.stomach_cell).duplicate()
 		data.max_hp = hp_value
 		data.current_hp = hp_value
 		data.damage = attack_value
