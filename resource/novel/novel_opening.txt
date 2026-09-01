@@ -7,7 +7,7 @@
 4日に1回能力試験を行いますのでぜひ奮ってご参加ください。
 @lcm
 @bg ""
-@img 1, 100, 200, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 @name "ラーラ"
 今日から試験だけど、アンタ大丈夫なの？
 @lcm

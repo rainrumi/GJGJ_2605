@@ -1,0 +1,110 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scene/main/opening_novel/novel_debug_panel.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
+
+[node name="NovelDebugPanel" type="Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -194.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 174.0
+grow_horizontal = 0
+mouse_filter = 1
+script = ExtResource("1_script")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 186.0
+offset_bottom = 166.0
+mouse_filter = 2
+
+[node name="DebugButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -82.0
+offset_right = 0.0
+offset_bottom = 28.0
+grow_horizontal = 0
+mouse_filter = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "Debug"
+
+[node name="Controls" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_top = 34.0
+offset_right = 186.0
+offset_bottom = 166.0
+theme_override_constants/separation = 5
+
+[node name="ImageSelector" type="OptionButton" parent="Controls"]
+layout_mode = 2
+mouse_filter = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+
+[node name="PositionRow" type="HBoxContainer" parent="Controls"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="XLabel" type="Label" parent="Controls/PositionRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "x"
+
+[node name="XPosition" type="SpinBox" parent="Controls/PositionRow"]
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+min_value = -10000.0
+max_value = 10000.0
+allow_lesser = true
+allow_greater = true
+
+[node name="YLabel" type="Label" parent="Controls/PositionRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "y"
+
+[node name="YPosition" type="SpinBox" parent="Controls/PositionRow"]
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+min_value = -10000.0
+max_value = 10000.0
+allow_lesser = true
+allow_greater = true
+
+[node name="DragModeButton" type="Button" parent="Controls"]
+layout_mode = 2
+mouse_filter = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+toggle_mode = true
+text = "ドラッグ指定モード"
+
+[node name="DragModeLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -248.0
+offset_top = -8.0
+offset_right = -4.0
+offset_bottom = 20.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+text = "ドラッグ指定モード有効化中"
+horizontal_alignment = 1

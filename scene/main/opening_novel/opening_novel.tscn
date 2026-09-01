@@ -1,10 +1,11 @@
-[gd_scene format=3 uid="uid://cw5upfry3m3nf"]
+[gd_scene load_steps=8 format=3 uid="uid://cw5upfry3m3nf"]
 
 [ext_resource type="Script" uid="uid://b5om836obl82m" path="res://scene/main/opening_novel/opening_novel.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Resource" uid="uid://dpwdn5mwco1y8" path="res://data/resources/novel/novel_opening.tres" id="3_text"]
 [ext_resource type="Texture2D" uid="uid://cw37wjrw5yjos" path="res://resource/image/texture/still/tex_still_1000.png" id="4_still"]
 [ext_resource type="AudioStream" uid="uid://bisemm55nx4fe" path="res://resource/sound/se/se_popopo.mp3" id="5_character_se"]
+[ext_resource type="PackedScene" path="res://scene/main/opening_novel/novel_debug_panel.tscn" id="6_debug_panel"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text_box"]
 bg_color = Color(0.012145013, 0.009099999, 0.07, 0.7058824)
@@ -125,3 +126,5 @@ theme_override_font_sizes/font_size = 12
 text = "▼"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="DebugPanel" parent="Screen" instance=ExtResource("6_debug_panel")]

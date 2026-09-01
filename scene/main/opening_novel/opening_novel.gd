@@ -16,6 +16,7 @@ const DEFAULT_TEXT_INTERVAL := 0.04
 @onready var text_label: Label = $Screen/TextBox/TextLabel
 @onready var next_label: Label = $Screen/TextBox/NextLabel
 @onready var character_se: AudioStreamPlayer = $CharacterSe
+@onready var debug_panel: NovelDebugPanel = $Screen/DebugPanel
 
 var _script_lines: Array[String] = []
 var _line_index := 0
@@ -27,6 +28,9 @@ var _typing_request_id := 0
 var _script_request_id := 0
 var _default_background: Texture2D
 var _images: Dictionary[int, TextureRect] = {}
+var _image_source_lines: Dictionary[int, int] = {}
+var _active_novel_text: NovelTextInfo
+var _is_debug_dragging := false
 
 
 # 初期化
@@ -34,6 +38,9 @@ func _ready() -> void:
 	_default_background = opening_still.texture
 	visible = false
 	screen.gui_input.connect(_on_screen_gui_input)
+	debug_panel.image_position_changed.connect(_on_debug_image_position_changed)
+	debug_panel.drag_mode_changed.connect(_on_debug_drag_mode_changed)
+	_refresh_debug_images()
 
 
 # 対象開始
@@ -49,6 +56,7 @@ func start_with_text(next_novel_text: NovelTextInfo) -> void:
 # ノベルスクリプト開始
 func _start_script(next_novel_text: NovelTextInfo, show_default_background: bool) -> void:
 	_script_request_id += 1
+	_active_novel_text = next_novel_text
 	# requestID
 	var request_id := _script_request_id
 	_script_lines.clear()
@@ -208,6 +216,8 @@ func _command_img(argument: String) -> void:
 	image.texture = texture
 	image.position = Vector2(arguments[1].to_float(), arguments[2].to_float())
 	image.size = texture.get_size()
+	_image_source_lines[image_index] = _line_index - 1
+	_refresh_debug_images()
 
 
 # img_removeコマンド
@@ -224,8 +234,10 @@ func _command_img_remove(argument: String) -> void:
 	if image == null:
 		return
 	_images.erase(image_index)
+	_image_source_lines.erase(image_index)
 	image_layer.remove_child(image)
 	image.queue_free()
+	_refresh_debug_images()
 
 
 func _parse_comma_separated_arguments(argument: String) -> Array[String]:
@@ -243,6 +255,66 @@ func _clear_images() -> void:
 		image_layer.remove_child(image)
 		image.queue_free()
 	_images.clear()
+	_image_source_lines.clear()
+	_refresh_debug_images()
+
+
+func _refresh_debug_images() -> void:
+	if not is_node_ready():
+		return
+	debug_panel.set_images(_images)
+
+
+func _on_debug_image_position_changed(image_index: int, position: Vector2) -> void:
+	var image := _images.get(image_index) as TextureRect
+	if image == null:
+		_refresh_debug_images()
+		return
+	image.position = position
+	debug_panel.set_selected_position(position)
+	_save_image_position(image_index)
+
+
+func _on_debug_drag_mode_changed(is_enabled: bool) -> void:
+	if not is_enabled:
+		if _is_debug_dragging:
+			_save_image_position(debug_panel.get_selected_image_index())
+		_is_debug_dragging = false
+
+
+func _save_image_position(image_index: int) -> void:
+	var image := _images.get(image_index) as TextureRect
+	var source_line_index := int(_image_source_lines.get(image_index, -1))
+	if image == null or source_line_index < 0 or source_line_index >= _script_lines.size():
+		return
+	if _active_novel_text == null or _active_novel_text.script_path.is_empty():
+		return
+	var command := _parse_command(_script_lines[source_line_index].strip_edges())
+	var arguments := _parse_comma_separated_arguments(String(command["argument"]))
+	if String(command["name"]) != "img" or arguments.size() != 4:
+		push_error(
+			"OpeningNovel could not update @img coordinates on scenario line %d."
+			% (source_line_index + 1)
+		)
+		return
+	_script_lines[source_line_index] = (
+		"@img %d, %s, %s, \"%s\""
+		% [image_index, _format_coordinate(image.position.x), _format_coordinate(image.position.y), arguments[3]]
+	)
+	var file := FileAccess.open(_active_novel_text.script_path, FileAccess.WRITE)
+	if file == null:
+		push_error(
+			"OpeningNovel could not write debug coordinates to scenario text: %s (error %d)"
+			% [_active_novel_text.script_path, FileAccess.get_open_error()]
+		)
+		return
+	file.store_string("\n".join(_script_lines))
+
+
+func _format_coordinate(value: float) -> String:
+	if is_equal_approx(value, roundf(value)):
+		return str(int(roundf(value)))
+	return str(value)
 
 
 # lコマンド
@@ -323,6 +395,9 @@ func _finish() -> void:
 
 # イベント処理
 func _on_screen_gui_input(event: InputEvent) -> void:
+	if bool(get_node("/root/DebugState").get("debug_enabled")) and debug_panel.is_drag_mode_enabled():
+		_handle_debug_drag_input(event)
+		return
 	if event is InputEventMouseButton:
 		# マウスイベント
 		var mouse_event := event as InputEventMouseButton
@@ -332,3 +407,21 @@ func _on_screen_gui_input(event: InputEvent) -> void:
 			elif _is_waiting_for_click:
 				click_wait_completed.emit()
 			advanced.emit()
+
+
+func _handle_debug_drag_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			if not mouse_event.pressed and _is_debug_dragging:
+				_save_image_position(debug_panel.get_selected_image_index())
+			_is_debug_dragging = mouse_event.pressed
+			screen.accept_event()
+		return
+	if event is InputEventMouseMotion and _is_debug_dragging:
+		var image_index := debug_panel.get_selected_image_index()
+		var image := _images.get(image_index) as TextureRect
+		if image != null:
+			image.position += (event as InputEventMouseMotion).relative
+			debug_panel.set_selected_position(image.position)
+		screen.accept_event()
