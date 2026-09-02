@@ -88,6 +88,16 @@ func can_place(enemy: Enemy, top_left: Vector2i, active_enemies: Array[Enemy]) -
 	return _can_place_shape(enemy, top_left, enemy.get_stomach_shape(), active_enemies)
 
 
+# 指定形状の配置判定
+func can_place_shape(
+	enemy: Enemy,
+	top_left: Vector2i,
+	shape: Array[Vector2i],
+	active_enemies: Array[Enemy]
+) -> bool:
+	return _can_place_shape(enemy, top_left, shape, active_enemies)
+
+
 # 90度右回転試行
 func try_rotate_enemy_clockwise(enemy: Enemy, active_enemies: Array[Enemy]) -> bool:
 	if enemy == null:

@@ -34,6 +34,7 @@ func _run() -> void:
 		"res://resource/image/texture/character/tex_character_200_portrate_2000.png"
 	) as Texture2D
 
+	_expect(sprite.texture == normal_texture, "ゲーム開始時は通常表情で上書きする")
 	_expect(Character.SHAKE_DURATION == 0.2, "シェイク時間が0.2秒である")
 	_expect(Character.SHAKE_DISTANCE == 1.0, "シェイク幅が1.0である")
 	game.call("_apply_player_damage", damage_values)

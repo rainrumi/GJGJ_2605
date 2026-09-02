@@ -24,7 +24,7 @@ func clear_dependencies() -> void:
 # 生成上限
 @export_range(0, 64, 1) var max_spawn_count := 0
 # 生成範囲
-@export var spawn_area: EnemyEffect.SpawnArea = EnemyEffect.SpawnArea.EMPTY_STOMACH
+@export var spawn_area: EnemyEffect.SpawnArea = EnemyEffect.SpawnArea.SAME_CELLS
 # HP参照元
 @export var hp_source: EnemyEffect.ValueSource = EnemyEffect.ValueSource.FIXED
 # HP倍率

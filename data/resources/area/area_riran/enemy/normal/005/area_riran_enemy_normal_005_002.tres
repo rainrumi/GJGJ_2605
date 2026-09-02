@@ -15,7 +15,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 [sub_resource type="Resource" id="Effect_1"]
 script = ExtResource("effect_5")
 max_spawn_count = 4
-spawn_area = 1
+spawn_area = 0
 hp_base = 30
 attack_source = 3
 attack_delta = 8

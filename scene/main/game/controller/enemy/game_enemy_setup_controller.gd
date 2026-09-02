@@ -302,9 +302,6 @@ func apply_spawn_requests(
 func _spawn_effect_enemy(enemies: Array[Enemy], request: BattleSpawnEnemyData) -> bool:
 	if request.source_enemy == null:
 		return false
-	var spawned := _get_available_nuisance_enemy(enemies, request.source_enemy) # 生成個体
-	if spawned == null:
-		return false
 	var source_info := request.enemy_info if request.enemy_info != null else request.source_enemy.get_enemy_info() # 元定義
 	if source_info == null:
 		return false
@@ -317,6 +314,19 @@ func _spawn_effect_enemy(enemies: Array[Enemy], request: BattleSpawnEnemyData) -
 	if request.damage >= 0:
 		block.damage = maxi(0, request.damage)
 	runtime_info.acid_block = block
+	var spawn_cell := Vector2i(-1, -1)
+	if request.spawn_area != EnemyEffect.SpawnArea.OUTSIDE_STOMACH:
+		spawn_cell = _find_spawn_cell(
+			request.source_enemy,
+			request,
+			enemies,
+			block.get_stomach_shape()
+		)
+		if spawn_cell.x < 0:
+			return false
+	var spawned := _get_available_nuisance_enemy(enemies, request.source_enemy) # 生成個体
+	if spawned == null:
+		return false
 	spawned.setup(
 		runtime_info,
 		Vector2(_stomach.get_span_size(block.get_stomach_size().x), _stomach.get_span_size(block.get_stomach_size().y)),
@@ -330,18 +340,18 @@ func _spawn_effect_enemy(enemies: Array[Enemy], request: BattleSpawnEnemyData) -
 		spawned.set_Aciding(false)
 		spawned.return_to_origin()
 		return true
-	var spawn_cell := _find_spawn_cell(spawned, request, enemies) # 生成セル
-	if spawn_cell.x < 0:
-		spawned.set_Acided(true)
-		spawned.set_presented(false)
-		return false
 	spawned.set_Aciding(true)
 	_stomach.place_enemy(spawned, spawn_cell)
 	return true
 
 
 # 生成セル検索
-func _find_spawn_cell(enemy: Enemy, request: BattleSpawnEnemyData, enemies: Array[Enemy]) -> Vector2i:
+func _find_spawn_cell(
+	enemy: Enemy,
+	request: BattleSpawnEnemyData,
+	enemies: Array[Enemy],
+	spawn_shape: Array[Vector2i]
+) -> Vector2i:
 	var candidates: Array[Vector2i] = [] # 候補セル
 	if request.spawn_area == EnemyEffect.SpawnArea.SAME_CELLS:
 		var source_cells := request.source_cells
@@ -360,7 +370,7 @@ func _find_spawn_cell(enemy: Enemy, request: BattleSpawnEnemyData, enemies: Arra
 		for row in range(_stomach.rows):
 			for column in range(_stomach.columns): candidates.append(Vector2i(column, row))
 	for cell in candidates:
-		if _stomach.can_place(enemy, cell, enemies):
+		if _stomach.can_place_shape(enemy, cell, spawn_shape, enemies):
 			return cell
 	return Vector2i(-1, -1)
 

@@ -74,6 +74,7 @@ var _pending_depleted_seed_sources: Array[Resource] = []
 # 初期化
 func _ready() -> void:
 	randomize()
+	character.show_normal_texture()
 	enemy_effects.setup(
 		player_health,
 		enemy_spawn_queue,
