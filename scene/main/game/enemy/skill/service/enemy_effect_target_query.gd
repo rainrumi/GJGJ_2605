@@ -79,7 +79,13 @@ static func get_stomach_edge_contact_count(enemy: Enemy, stomach: StomachBoard) 
 		return 0
 	var count := 0 # 接触数
 	for cell in enemy.get_occupied_cells(enemy.stomach_cell):
-		if cell.x == 0 or cell.x == stomach.columns - 1 or cell.y == 0 or cell.y == stomach.rows - 1:
+		if cell.x == 0:
+			count += 1
+		if cell.x == stomach.columns - 1:
+			count += 1
+		if cell.y == 0:
+			count += 1
+		if cell.y == stomach.rows - 1:
 			count += 1
 	return count
 
