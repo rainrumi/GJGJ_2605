@@ -18,19 +18,12 @@ func _run() -> void:
 	root.add_child(main)
 	await process_frame
 
-	var stage_clear_se := main.get_node("SeStageClear") as AudioStreamPlayer
 	_expect(
-		stage_clear_se.stream.resource_path == "res://resource/sound/se/se_stage_clear.mp3",
-		"SeStageClearにse_stage_clearを設定する"
+		main.get_node_or_null("SeStageClear") == null,
+		"ステージクリア専用SEプレイヤーを持たない"
 	)
-	stage_clear_se.stop()
 	main.call("show_stage_clear")
-
-	_expect(stage_clear_se.playing, "ステージクリア画面への遷移時にクリアSEを再生する")
-	_expect(stage_clear_se.bus == &"SE", "クリアSEはSE音量設定の対象である")
-
-	stage_clear_se.stop()
-	stage_clear_se.stream = null
+	_expect(main.stage_clear.visible, "クリアSEなしでステージクリア画面を表示する")
 	var bgm := main.get_node("BGM") as BeatConductor
 	bgm.stop()
 	bgm.audio_player.stream = null

@@ -15,7 +15,6 @@
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://resource/sound/se/se_click.mp3" id="14_se_click"]
 [ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/info/stage/stage_info.gd" id="15_q2oic"]
 [ext_resource type="AudioStream" uid="uid://lhn1aubvc0wx" path="res://resource/sound/se/se_select.mp3" id="15_se_select"]
-[ext_resource type="AudioStream" uid="uid://bgcvfu1pj20yg" path="res://resource/sound/se/se_stage_clear.mp3" id="16_se_stage_clear"]
 [ext_resource type="Resource" path="res://data/resources/novel/novel_event_100.tres" id="17_event_100_text"]
 [ext_resource type="Resource" path="res://data/resources/area/lara_location_catalog.tres" id="18_lara_location_catalog"]
 
@@ -50,10 +49,6 @@ stream = ExtResource("14_se_click")
 [node name="SeSelect" type="AudioStreamPlayer" parent="." unique_id=14639934]
 process_mode = 3
 stream = ExtResource("15_se_select")
-
-[node name="SeStageClear" type="AudioStreamPlayer" parent="." unique_id=1544663155]
-process_mode = 3
-stream = ExtResource("16_se_stage_clear")
 
 [node name="Title" parent="." unique_id=1609153234 instance=ExtResource("2_a0c6e")]
 
