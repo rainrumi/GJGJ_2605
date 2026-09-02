@@ -754,7 +754,6 @@ func _advance_acid_turn() -> void:
 	_apply_acid_damage_seed_heal()
 	_apply_Acided_enemy_seed_effects(acid_result.Acided_enemies)
 	_apply_Acided_seed_effects(acid_result.Acided_enemies)
-	_apply_player_damage_values()
 	var progress_digested := _apply_elapsed_time(elapsed_minutes + acid_result.extra_elapsed_minutes)
 	for enemy in progress_digested:
 		if not acid_result.Acided_enemies.has(enemy):
@@ -762,6 +761,7 @@ func _advance_acid_turn() -> void:
 	if acid_result.time_override_minutes >= 0:
 		minutes = acid_result.time_override_minutes
 		_refresh_after_battle_event()
+	_apply_player_damage_values()
 	await _resolve_post_acid_visuals(acid_result.Acided_enemies)
 	_finish_acid_turn()
 
