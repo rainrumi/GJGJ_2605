@@ -7,7 +7,7 @@ var _debug_number_text := ""
 # 敵値表示
 func show_enemy(enemy: Enemy, debug_number_text: String, debug_numbers_visible: bool) -> void:
 	_debug_number_text = debug_number_text
-	set_title("" if enemy.is_seed_stomach_block() else enemy.get_display_name())
+	set_title(enemy.get_display_name())
 	set_note("", false)
 	set_entries(_get_enemy_entries(enemy, debug_numbers_visible))
 	show_tooltip()
@@ -81,10 +81,6 @@ func _get_seed_block_entries(enemy: Enemy, debug_numbers_visible: bool) -> Array
 			"value": _debug_number_text,
 		})
 	entries.append_array([
-		{
-			"explanation": "名称",
-			"value": enemy.get_display_name(),
-		},
 		{
 			"explanation": "HP",
 			"value": "%d/%d" % [enemy.current_hp, enemy.max_hp],

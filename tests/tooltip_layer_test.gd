@@ -71,6 +71,15 @@ func _check_enemy_tooltip() -> void:
 	root.add_child(tooltip)
 	await process_frame
 	_expect(tooltip.layer == TOOLTIP_LAYER, "EnemyTooltip inherits the foreground canvas layer")
+	var enemy := Enemy.new()
+	var seed := SeedInfo.new()
+	seed.display_name = "テストの種"
+	enemy.seed_info = seed
+	tooltip.show_enemy(enemy, "", false)
+	var tooltip_text := tooltip.call("_get_tooltip_text") as String
+	_expect(tooltip_text.begins_with("テストの種\n"), "夢の種ブロックは名称をタイトルとして表示する")
+	_expect(not tooltip_text.contains("名称:"), "夢の種ブロックの名称に項目名を付けない")
+	enemy.free()
 	_dispose(tooltip)
 
 

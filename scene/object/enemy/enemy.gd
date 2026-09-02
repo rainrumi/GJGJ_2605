@@ -351,6 +351,18 @@ func setup_as_seed_stomach_block(seed: SeedInfo, target_size: Vector2) -> void:
 		setup_as_one_cell_stomach_block(target_size)
 		activation_deferred = false
 	seed_info = seed
+	if block_definition != null:
+		var cell_texture := block_definition.texture
+		if cell_texture == null:
+			cell_texture = ENEMY_CELL_TEXTURE
+		set_texture_override(
+			EnemySpriteView.create_shape_texture(
+				cell_texture,
+				block_definition.get_stomach_size(),
+				block_definition.get_stomach_shape()
+			),
+			target_size
+		)
 	max_hp = block_definition.get_max_hp() if block_definition != null else 1
 	current_hp = max_hp
 	damage = block_definition.get_damage() if block_definition != null else 0

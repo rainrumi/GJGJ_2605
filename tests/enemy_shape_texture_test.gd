@@ -50,6 +50,7 @@ func _run() -> void:
 		_expect(shape_image.get_pixelv(Vector2i(21, 39)).a > 0.0, "同じ敵の上下セルを接続する")
 		_expect(shape_image.get_pixelv(Vector2i(39, 59)).a > 0.0, "同じ敵の左右セルを接続する")
 	_test_single_cell_margin()
+	_test_seed_block_uses_its_cell_texture()
 
 	root.remove_child(enemy)
 	enemy.free()
@@ -83,6 +84,26 @@ func _test_single_cell_margin() -> void:
 		single_image.get_pixelv(Vector2i(20, 39)).a == 0.0,
 		"1セルの敵も下端に余白を空ける"
 	)
+
+
+func _test_seed_block_uses_its_cell_texture() -> void:
+	var block := AcidBlockInfo.new()
+	block.texture = CELL_TEXTURE
+	block.stomach_shape = [PackedInt32Array([1])]
+	var seed := SeedInfo.new()
+	seed.acid_block = block
+	var seed_block := ENEMY_SCENE.instantiate() as Enemy
+	root.add_child(seed_block)
+	seed_block.setup_seed(seed, Vector2(40.0, 40.0))
+	var seed_texture := seed_block.get_preview_texture()
+	_expect(seed_texture != null, "夢の種ブロック画像を生成する")
+	if seed_texture != null:
+		_expect(
+			seed_texture.get_size() == Vector2(40.0, 40.0),
+			"1x1の夢の種ブロックにはセルテクスチャを1個だけ表示する"
+		)
+	root.remove_child(seed_block)
+	seed_block.free()
 
 
 func _create_custom_texture() -> Texture2D:
