@@ -1201,42 +1201,23 @@ func _heal_player_by_rate(rate: float) -> void:
 
 # 種胃袋サイズeffects適用
 func _apply_seed_stomach_size_effects() -> void:
-	# has列補正
-	var has_column_bonus := false
-	# has行補正
-	var has_row_bonus := false
-	for flower in seed_controller.get_flowers():
-		if flower == null:
-			continue
-		var skill := flower.get_main_skill()
-		if skill == null:
-			continue
-		has_column_bonus = has_column_bonus or skill.get_stomach_columns_delta() > 0
-		has_row_bonus = has_row_bonus or skill.get_stomach_rows_delta() > 0
+	var size_bonus := SeedEffectResolver.get_stomach_size_bonus(seed_controller.get_flowers())
 	# 列値
-	var next_columns := stomach.columns + (1 if has_column_bonus else 0)
+	var next_columns := stomach.columns + size_bonus.x
 	# 行値
-	var next_rows := stomach.rows + (1 if has_row_bonus else 0)
+	var next_rows := stomach.rows + size_bonus.y
 	if next_columns != stomach.columns or next_rows != stomach.rows:
 		stomach.set_grid_size(next_columns, next_rows)
 
 
 # 種胃袋列補正取得
 func _get_seed_stomach_column_bonus() -> int:
-	for flower in seed_controller.get_flowers():
-		if flower != null and flower.get_main_skill() != null:
-			if flower.get_main_skill().get_stomach_columns_delta() > 0:
-				return 1
-	return 0
+	return SeedEffectResolver.get_stomach_size_bonus(seed_controller.get_flowers()).x
 
 
 # 種胃袋行補正取得
 func _get_seed_stomach_row_bonus() -> int:
-	for flower in seed_controller.get_flowers():
-		if flower != null and flower.get_main_skill() != null:
-			if flower.get_main_skill().get_stomach_rows_delta() > 0:
-				return 1
-	return 0
+	return SeedEffectResolver.get_stomach_size_bonus(seed_controller.get_flowers()).y
 
 
 # 種消化行effects適用
@@ -1257,18 +1238,16 @@ func _apply_seed_acid_line_effects() -> void:
 func _refresh_seed_structural_effects() -> void:
 	if _battle_start_context == null:
 		return
-	var has_column_bonus := false
-	var has_row_bonus := false
+	var flowers := seed_controller.get_flowers()
+	var size_bonus := SeedEffectResolver.get_stomach_size_bonus(flowers)
 	var acid_line_rows := 1
-	for flower in seed_controller.get_flowers():
+	for flower in flowers:
 		if flower == null or flower.get_main_skill() == null:
 			continue
 		var skill := flower.get_main_skill()
-		has_column_bonus = has_column_bonus or skill.get_stomach_columns_delta() > 0
-		has_row_bonus = has_row_bonus or skill.get_stomach_rows_delta() > 0
 		acid_line_rows += skill.get_acid_line_rows_delta()
-	var target_columns := _battle_start_context.stomach_columns + (1 if has_column_bonus else 0)
-	var target_rows := _battle_start_context.stomach_rows + (1 if has_row_bonus else 0)
+	var target_columns := _battle_start_context.stomach_columns + size_bonus.x
+	var target_rows := _battle_start_context.stomach_rows + size_bonus.y
 	if stomach.columns != target_columns or stomach.rows != target_rows:
 		stomach.set_grid_size(target_columns, target_rows)
 		if not enemies.is_empty():

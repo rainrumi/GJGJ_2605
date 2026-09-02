@@ -669,15 +669,8 @@ func _get_preview_permanent_acid_damage_bonus_rate(flowers: Array[SeedInfo]) -> 
 
 # 予測胃袋サイズ取得
 func _get_preview_stomach_size(flowers: Array[SeedInfo]) -> Vector2i:
-	var has_column_bonus := false
-	var has_row_bonus := false
-	for flower in flowers:
-		if flower == null or flower.get_main_skill() == null:
-			continue
-		var skill := flower.get_main_skill()
-		has_column_bonus = has_column_bonus or skill.get_stomach_columns_delta() > 0
-		has_row_bonus = has_row_bonus or skill.get_stomach_rows_delta() > 0
+	var size_bonus := SeedEffectResolver.get_stomach_size_bonus(flowers)
 	return Vector2i(
-		_stomach_columns + (1 if has_column_bonus else 0),
-		_stomach_rows + (1 if has_row_bonus else 0)
+		_stomach_columns + size_bonus.x,
+		_stomach_rows + size_bonus.y
 	)

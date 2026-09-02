@@ -25,18 +25,20 @@ func has_effects() -> bool:
 
 
 # 胃袋列補正
-func get_stomach_columns_delta() -> int:
+func get_stomach_columns_delta(same_seed_count := 1) -> int:
 	var delta := 0 # 列差分
 	for effect in get_effects():
-		delta += effect.get_stomach_columns_delta()
+		if effect.is_stomach_size_active(same_seed_count):
+			delta += effect.get_stomach_columns_delta()
 	return delta
 
 
 # 胃袋行補正
-func get_stomach_rows_delta() -> int:
+func get_stomach_rows_delta(same_seed_count := 1) -> int:
 	var delta := 0 # 行差分
 	for effect in get_effects():
-		delta += effect.get_stomach_rows_delta()
+		if effect.is_stomach_size_active(same_seed_count):
+			delta += effect.get_stomach_rows_delta()
 	return delta
 
 

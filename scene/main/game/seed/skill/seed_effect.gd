@@ -176,6 +176,11 @@ func get_stomach_rows_delta() -> int:
 	return 0
 
 
+# 同じ種の装備数に応じた胃袋サイズ効果の発動可否
+func is_stomach_size_active(_same_seed_count: int) -> bool:
+	return true
+
+
 # 消化行補正
 func get_acid_line_rows_delta() -> int:
 	return 0

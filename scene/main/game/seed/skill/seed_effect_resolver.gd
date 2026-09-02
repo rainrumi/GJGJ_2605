@@ -7,6 +7,24 @@ var _state := DreamSeedSkillState.new() # 状態
 var _planted_flowers: Array[SeedInfo] = [] # 植付花
 
 
+# 装備中の同種数条件を反映した胃袋サイズ補正
+static func get_stomach_size_bonus(flowers: Array[SeedInfo]) -> Vector2i:
+	var seed_counts: Dictionary = {}
+	for flower in flowers:
+		if flower != null:
+			seed_counts[flower.skill_id] = int(seed_counts.get(flower.skill_id, 0)) + 1
+	var column_bonus := 0
+	var row_bonus := 0
+	for flower in flowers:
+		if flower == null or flower.get_main_skill() == null:
+			continue
+		var same_seed_count := int(seed_counts.get(flower.skill_id, 0))
+		var skill := flower.get_main_skill()
+		column_bonus = maxi(column_bonus, skill.get_stomach_columns_delta(same_seed_count))
+		row_bonus = maxi(row_bonus, skill.get_stomach_rows_delta(same_seed_count))
+	return Vector2i(column_bonus, row_bonus)
+
+
 # setup処理
 func setup(flowers: Array) -> void:
 	_status_preview_only = false

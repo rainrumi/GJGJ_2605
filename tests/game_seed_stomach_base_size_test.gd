@@ -24,9 +24,19 @@ func _run() -> void:
 	game.call("start_battle", context)
 	await process_frame
 
-	_expect(game.call("get_stomach_rows") == 6, "ID 100116 は戦闘中の胃袋を縦に1マス増やす")
+	_expect(game.call("get_stomach_rows") == 8, "ID 100116 は戦闘中の胃袋を縦に3マス増やす")
 	_expect(game.call("get_base_stomach_rows") == 5, "ID 100116 の補正を基礎胃袋縦サイズへ含めない")
 	_expect(game.call("get_base_stomach_columns") == 4, "縦補正は基礎胃袋横サイズへ影響しない")
+
+	var lupinus := load("res://data/resources/seeds/skills/seed_100_116.tres") as SeedInfo
+	_expect(
+		StageClearCalculatorRecovery.can_receive_seed(lupinus, [lupinus]),
+		"ID 100116 は同じ夢の種を植えていても追加取得できる"
+	)
+	context.flowers = [lupinus, lupinus]
+	game.call("start_battle", context)
+	await process_frame
+	_expect(game.call("get_stomach_rows") == 5, "ID 100116 を複数植えると全ての縦補正が発動しない")
 
 	context.flowers = [load("res://data/resources/seeds/skills/seed_100_115.tres") as SeedInfo]
 	game.call("start_battle", context)
