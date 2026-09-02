@@ -9,9 +9,9 @@ anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 38.0
+offset_top = 8.0
 offset_right = -8.0
-offset_bottom = -38.0
+offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
@@ -53,12 +53,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="StatusLabel" type="Label" parent="Margin/Content"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.75, 1, 0.75, 1)
-autowrap_mode = 2
-
 [node name="Buttons" type="HBoxContainer" parent="Margin/Content"]
 layout_mode = 2
 alignment = 2
@@ -72,3 +66,14 @@ text = "保存して適用"
 unique_name_in_owner = true
 layout_mode = 2
 text = "閉じる"
+
+[node name="StatusLabel" type="Label" parent="Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 1, 0.75, 1)
+theme_override_font_sizes/font_size = 6
+text_overrun_behavior = 3
+autowrap_mode = 2
+max_lines_visible = 2
+horizontal_alignment = 2

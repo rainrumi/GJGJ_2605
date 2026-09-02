@@ -69,6 +69,7 @@ func _rebuild_editor() -> void:
 	apply_button.disabled = _edited_enemy == null
 	if _edited_enemy == null:
 		return
+	_add_parameter_row(_edited_enemy, &"description", _edited_enemy.description, "description")
 	if _edited_enemy.acid_block != null:
 		_add_parameter_row(_edited_enemy.acid_block, &"max_hp", _edited_enemy.acid_block.max_hp, "max_hp")
 		_add_parameter_row(_edited_enemy.acid_block, &"damage", _edited_enemy.acid_block.damage, "damage")
@@ -118,6 +119,12 @@ func _add_parameter_row(resource: Resource, property_name: StringName, value: Va
 		var check_box := CheckBox.new()
 		check_box.button_pressed = value
 		editor = check_box
+	elif value is String:
+		var text_edit := TextEdit.new()
+		text_edit.text = value
+		text_edit.custom_minimum_size.y = 36.0
+		text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
+		editor = text_edit
 	else:
 		var spin_box := SpinBox.new()
 		spin_box.min_value = -999999.0
@@ -129,7 +136,8 @@ func _add_parameter_row(resource: Resource, property_name: StringName, value: Va
 		editor = spin_box
 	editor.custom_minimum_size.x = 96.0
 	editor.add_theme_font_size_override("font_size", 10)
-	editor.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	if not editor is TextEdit:
+		editor.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(editor)
 	parameter_list.add_child(row)
 	_bindings.append({"resource": resource, "property": property_name, "editor": editor})
@@ -149,6 +157,8 @@ func _on_apply_pressed() -> void:
 		var value: Variant
 		if editor is CheckBox:
 			value = (editor as CheckBox).button_pressed
+		elif editor is TextEdit:
+			value = (editor as TextEdit).text
 		else:
 			var spin_box := editor as SpinBox
 			value = int(spin_box.value) if spin_box.get_meta("integer_value") else spin_box.value
@@ -162,10 +172,13 @@ func _on_apply_pressed() -> void:
 		status_label.text = "保存に失敗しました: %s" % error_string(save_error)
 		push_error("DebugEnemyParameterPanel: 悪夢を保存できません: %s (error: %s)" % [save_path, save_error])
 		return
-	_edited_enemy.take_over_path(save_path)
+	var replaced_enemy := _original_enemy
+	var saved_enemy := _edited_enemy
+	saved_enemy.take_over_path(save_path)
 	for index in range(_enemies.size()):
-		if _enemies[index] == _original_enemy:
-			_enemies[index] = _edited_enemy
-	enemy_parameter_applied.emit(_original_enemy, _edited_enemy)
-	_original_enemy = _edited_enemy
+		if _enemies[index] == replaced_enemy:
+			_enemies[index] = saved_enemy
+	_original_enemy = saved_enemy
+	_rebuild_editor()
+	enemy_parameter_applied.emit(replaced_enemy, saved_enemy)
 	status_label.text = "保存しました: %s" % save_path
