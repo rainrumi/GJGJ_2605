@@ -1249,10 +1249,20 @@ func _refresh_seed_structural_effects() -> void:
 	var target_columns := _battle_start_context.stomach_columns + size_bonus.x
 	var target_rows := _battle_start_context.stomach_rows + size_bonus.y
 	if stomach.columns != target_columns or stomach.rows != target_rows:
+		_shift_stomach_object_rows(target_rows - stomach.rows)
 		stomach.set_grid_size(target_columns, target_rows)
 		if not enemies.is_empty():
 			_refresh_enemy_stomach_display_sizes()
 	stomach.set_acid_line_rows(maxi(1, acid_line_rows))
+
+
+# 胃袋の下端を基準に、サイズ変更後も配置済みオブジェクトの位置を保つ
+func _shift_stomach_object_rows(row_delta: int) -> void:
+	if row_delta == 0:
+		return
+	for enemy in enemies:
+		if enemy.is_active_in_stomach():
+			enemy.set_stomach_cell(enemy.stomach_cell + Vector2i(0, row_delta))
 
 
 # resolvepost消化visua処理
