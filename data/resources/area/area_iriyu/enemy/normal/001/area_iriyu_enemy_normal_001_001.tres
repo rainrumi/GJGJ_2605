@@ -1,29 +1,29 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://oqkv8fdr3pm"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" uid="uid://63gxgkmrcowd" path="res://scene/main/game/enemy/skill/special/enemy_effect_on_touch_acid_line_progress_time_take_acid_damage.gd" id="effect_5"]
+[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/special/enemy_effect_on_touch_acid_line_progress_time_take_acid_damage.gd" id="effect_5"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_h1sal"]
 script = ExtResource("2_acid_block")
-max_hp = 280
+max_hp = 300
 damage = 6
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1), PackedInt32Array(1, 1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_6dpov"]
 script = ExtResource("effect_5")
-damage_per_contact = 10
+damage_per_contact = 100
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_0xubm"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_6dpov")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 16010001001
 display_name = "E1"
-acid_block = SubResource("AcidBlock")
-description = "消化ラインに接触している時、時間が経過するたびに10×接触数の消化ダメージを受ける。"
-main_skill = SubResource("MainSkill")
+acid_block = SubResource("Resource_h1sal")
+description = "消化ラインに接触している時、時間が経過するたびに100×接触数の消化ダメージを受ける。"
+main_skill = SubResource("Resource_0xubm")

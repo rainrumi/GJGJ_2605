@@ -71,6 +71,7 @@ var effective_max_hp := MAX_HP
 var _battle_start_context: BattleInfo
 var _awaiting_time_over_decision := false
 var _pending_depleted_seed_sources: Array[Resource] = []
+var _attack_se_requested_this_timing := false
 # 初期化
 func _ready() -> void:
 	randomize()
@@ -94,6 +95,9 @@ func _ready() -> void:
 	acid_controller.setup(digestion_resolver, attack_resolver, turn_processor, enemy_effects, digestion_processor)
 	enemy_setup.setup(self, input_controller, stomach)
 	seed_controller.setup(self, stomach, input_controller)
+	child_entered_tree.connect(_on_child_entered_tree_for_attack_se)
+	for enemy in enemies:
+		_connect_enemy_damage_attack_se(enemy)
 	_connect_ui()
 	_connect_input()
 	_create_Acidion_timer()
@@ -1117,9 +1121,7 @@ func _apply_player_damage(damage_values: Array[int]) -> void:
 	ui.show_hp_damage_values(damage_values)
 	character.shake()
 	hp = maxi(0, hp - total_damage)
-	if attack_se.stream != null:
-		attack_se.stop()
-		attack_se.play()
+	_request_attack_se()
 
 
 # effective最大HP更新
@@ -1296,22 +1298,41 @@ func _shift_stomach_object_rows(row_delta: int) -> void:
 func _resolve_post_acid_visuals(Acided_enemies: Array[Enemy]) -> void:
 	if Acided_enemies.is_empty():
 		return
-	_play_attack_se_for_digested_enemies(Acided_enemies)
 	var visual_duration := maxf(Enemy.AcidED_TWEEN_DURATION, EnemyDamagePopup.TOTAL_DURATION)
 	await get_tree().create_timer(visual_duration).timeout
 	acid_controller.unlock_deferred_nuisance_gravity(enemies)
 	stomach.apply_gravity(enemies)
 
 
-# 悪夢消化SE再生
-func _play_attack_se_for_digested_enemies(Acided_enemies: Array[Enemy]) -> void:
-	for enemy in Acided_enemies:
-		if enemy == null or not enemy.is_enemy():
-			continue
-		if attack_se.stream != null:
-			attack_se.stop()
-			attack_se.play()
+# ダメージSE要求。同一フレーム内の連鎖ダメージは一度の再生にまとめる。
+func _request_attack_se() -> void:
+	if _attack_se_requested_this_timing:
 		return
+	_attack_se_requested_this_timing = true
+	call_deferred("_reset_attack_se_timing")
+	if attack_se.stream != null:
+		attack_se.stop()
+		attack_se.play()
+
+
+func _reset_attack_se_timing() -> void:
+	_attack_se_requested_this_timing = false
+
+
+func _on_child_entered_tree_for_attack_se(node: Node) -> void:
+	if node is Enemy:
+		_connect_enemy_damage_attack_se(node as Enemy)
+
+
+func _connect_enemy_damage_attack_se(enemy: Enemy) -> void:
+	if enemy == null or enemy.data == null or enemy.data.hp == null:
+		return
+	if not enemy.data.hp.damaged.is_connected(_on_enemy_damaged_for_attack_se):
+		enemy.data.hp.damaged.connect(_on_enemy_damaged_for_attack_se)
+
+
+func _on_enemy_damaged_for_attack_se(_amount: int) -> void:
+	_request_attack_se()
 
 
 # 消化ダメージ情報取得
