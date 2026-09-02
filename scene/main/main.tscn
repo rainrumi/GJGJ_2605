@@ -77,4 +77,5 @@ visible = false
 [connection signal="stage_selected" from="StageSelect" to="." method="_on_stage_select_stage_selected"]
 [connection signal="today_rest_requested" from="StageSelect" to="." method="_on_stage_select_today_rest_requested"]
 [connection signal="continuation_requested" from="StageClear" to="." method="_on_stage_clear_continuation_requested"]
+[connection signal="debug_retry_requested" from="StageClear" to="." method="_on_stage_clear_debug_retry_requested"]
 [connection signal="selection_finished" from="StageClear" to="." method="_on_stage_clear_selection_finished"]

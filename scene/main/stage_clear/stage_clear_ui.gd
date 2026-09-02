@@ -9,6 +9,7 @@ signal abandon_hovered
 signal abandon_unhovered
 signal reroll_pressed
 signal debug_pressed
+signal debug_retry_pressed
 signal seed_equip_requested(seed: SeedInfo)
 signal seed_unequip_requested(seed: SeedInfo)
 signal seed_move_requested(
@@ -34,6 +35,7 @@ const HARMFUL_DELTA_COLOR := Color(1.0, 0.35, 0.35, 1.0)
 @onready var reroll_button: Button = $RerollButton
 # debugボタン
 @onready var debug_button: Button = $DebugButton
+@onready var debug_retry_button: Button = $DebugRetryButton
 # 種選択一覧
 @onready var seed_choice_list: StageClearChoiceSeed = $SeedChoices
 # 放棄ボタン
@@ -198,6 +200,7 @@ func _connect_child_signals() -> void:
 	abandon_button.mouse_exited.connect(_on_abandon_button_mouse_exited)
 	reroll_button.pressed.connect(_on_reroll_button_pressed)
 	debug_button.pressed.connect(_on_debug_button_pressed)
+	debug_retry_button.pressed.connect(_on_debug_retry_button_pressed)
 	acid_damage_view.tooltip_requested.connect(_on_status_tooltip_requested)
 	acid_damage_view.tooltip_hide_requested.connect(_on_status_tooltip_hide_requested)
 	acid_interval_view.tooltip_requested.connect(_on_status_tooltip_requested)
@@ -255,6 +258,7 @@ func _on_seed_drag_released(
 
 # debug外観更新
 func _apply_debug_button_state() -> void:
+	debug_retry_button.visible = _debug_numbers_visible
 	if _debug_numbers_visible:
 		debug_button.add_theme_color_override("font_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
 		debug_button.add_theme_color_override("font_hover_color", DEBUG_BUTTON_ACTIVE_FONT_COLOR)
@@ -331,6 +335,11 @@ func _on_reroll_button_pressed() -> void:
 # debug通知
 func _on_debug_button_pressed() -> void:
 	debug_pressed.emit()
+
+
+func _on_debug_retry_button_pressed() -> void:
+	if _debug_numbers_visible:
+		debug_retry_pressed.emit()
 
 
 # 状態ツール表示

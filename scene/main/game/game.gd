@@ -230,6 +230,7 @@ func _connect_ui() -> void:
 	ui.debug_reroll_requested.connect(_on_debug_reroll_requested)
 	ui.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
 	ui.debug_seed_requested.connect(_on_debug_seed_requested)
+	ui.debug_retry_requested.connect(_on_debug_retry_requested)
 	ui.seed_drag_started.connect(_on_seed_drag_started)
 	ui.seed_drag_moved.connect(_on_seed_drag_moved)
 	ui.seed_drag_released.connect(_on_seed_drag_released)
@@ -459,6 +460,17 @@ func _on_debug_seed_requested() -> void:
 		return
 	_sync_seed_sources()
 	_refresh_ui()
+
+
+func _on_debug_retry_requested() -> void:
+	retry_last_battle()
+
+
+func retry_last_battle() -> bool:
+	if not DebugState.debug_enabled or _battle_start_context == null:
+		return false
+	start_battle(_battle_start_context)
+	return true
 
 
 func _on_debug_seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo) -> void:

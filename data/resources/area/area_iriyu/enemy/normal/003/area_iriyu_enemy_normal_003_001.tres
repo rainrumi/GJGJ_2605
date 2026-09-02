@@ -14,7 +14,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1, 1), PackedInt32A
 
 [sub_resource type="Resource" id="Resource_x2m6c"]
 script = ExtResource("effect_5")
-interval_delta_rate = 0.09999999997671694
+interval_delta_rate = 0.30000000004656613
 
 [sub_resource type="Resource" id="Resource_xnnex"]
 script = ExtResource("4_enemy_skill")
@@ -25,5 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16010003001
 display_name = "E1"
 acid_block = SubResource("Resource_1wgtj")
-description = "胃袋に隣接している時、消化間隔を10×接触数の割合増やす。"
+description = "胃袋に隣接している時、消化間隔を30×接触数の割合増やす。"
 main_skill = SubResource("Resource_xnnex")

@@ -130,6 +130,20 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 10
 text = "Debug"
 
+[node name="DebugRetryButton" type="Button" parent="UI"]
+visible = false
+layout_mode = 0
+offset_left = 312.0
+offset_top = 333.0
+offset_right = 372.0
+offset_bottom = 355.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 10
+text = "リトライ"
+
 [node name="OwnedSeedOpenButton" type="TextureButton" parent="UI" unique_id=990684587]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0

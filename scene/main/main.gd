@@ -41,6 +41,7 @@ var active_novel_flow := NovelFlow.NONE
 var pending_stage_novel_texts: Array[NovelTextInfo] = []
 var _settings_paused_tree := false
 var _screen_flow_id := 0
+var _last_battle_progress_snapshot: Dictionary = {}
 
 
 # 初期化
@@ -309,10 +310,38 @@ func _on_stage_select_stage_selected(stage: StageInfo) -> void:
 func _on_game_battle_finished(won: bool) -> void:
 	_sync_player_stomach_size()
 	if won:
+		_last_battle_progress_snapshot = {
+			"normal_enemy_preset_indices": run_state.normal_enemy_preset_indices.duplicate(),
+			"strengthened_enemy_preset_indices": run_state.strengthened_enemy_preset_indices.duplicate(),
+			"normal_enemy_defeat_counts": run_state.normal_enemy_defeat_counts.duplicate(),
+			"strengthened_enemy_defeat_counts": run_state.strengthened_enemy_defeat_counts.duplicate(),
+		}
 		run_state.record_stage_clear(run_state.selected_stage)
 		show_stage_clear()
 	else:
 		show_end_gameover_novel()
+
+
+func _on_stage_clear_debug_retry_requested() -> void:
+	if not DebugState.debug_enabled or not stage_clear.visible:
+		return
+	_restore_last_battle_progress()
+	stage_clear.visible = false
+	game.visible = true
+	game_ui.visible = true
+	if not bool(game.call("retry_last_battle")):
+		game.visible = false
+		game_ui.visible = false
+		stage_clear.visible = true
+
+
+func _restore_last_battle_progress() -> void:
+	if _last_battle_progress_snapshot.is_empty():
+		return
+	run_state.normal_enemy_preset_indices = _last_battle_progress_snapshot["normal_enemy_preset_indices"].duplicate()
+	run_state.strengthened_enemy_preset_indices = _last_battle_progress_snapshot["strengthened_enemy_preset_indices"].duplicate()
+	run_state.normal_enemy_defeat_counts = _last_battle_progress_snapshot["normal_enemy_defeat_counts"].duplicate()
+	run_state.strengthened_enemy_defeat_counts = _last_battle_progress_snapshot["strengthened_enemy_defeat_counts"].duplicate()
 
 
 # 枯渇処理

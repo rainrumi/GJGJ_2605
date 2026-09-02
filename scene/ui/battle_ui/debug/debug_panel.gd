@@ -5,6 +5,7 @@ signal debug_message_requested(is_active: bool)
 signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
+signal debug_retry_requested
 signal seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo)
 signal enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInfo)
 
@@ -25,6 +26,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @onready var debug_seed_parameter_button: Button = $DebugSeedParameterButton
 @onready var seed_parameter_panel: DebugSeedParameterPanel = $DebugSeedParameterPanel
 @onready var debug_enemy_parameter_button: Button = $DebugEnemyParameterButton
+@onready var debug_retry_button: Button = $DebugRetryButton
 @onready var enemy_parameter_panel: DebugEnemyParameterPanel = $DebugEnemyParameterPanel
 
 var debug_message := ""
@@ -45,6 +47,7 @@ func _ready() -> void:
 	debug_seed_parameter_button.pressed.connect(seed_parameter_panel.open_panel)
 	seed_parameter_panel.seed_parameter_applied.connect(_on_seed_parameter_applied)
 	debug_enemy_parameter_button.pressed.connect(enemy_parameter_panel.open_panel)
+	debug_retry_button.pressed.connect(_on_debug_retry_button_pressed)
 	enemy_parameter_panel.enemy_parameter_applied.connect(_on_enemy_parameter_applied)
 	_connect_debug_state()
 	set_debug_button_active(DebugState.debug_enabled)
@@ -117,6 +120,7 @@ func _prepare_mouse_filters() -> void:
 	debug_message_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_seed_parameter_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_enemy_parameter_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	debug_retry_button.mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 # 有効表示
@@ -166,6 +170,7 @@ func _set_debug_controls_visible(is_visible: bool) -> void:
 	debug_seed_button_list.visible = is_visible
 	debug_seed_parameter_button.visible = is_visible
 	debug_enemy_parameter_button.visible = is_visible
+	debug_retry_button.visible = is_visible
 
 
 # Debug押下
@@ -176,6 +181,12 @@ func _on_debug_message_button_pressed() -> void:
 # Reroll押下
 func _on_debug_reroll_button_pressed() -> void:
 	request_debug_reroll()
+
+
+func _on_debug_retry_button_pressed() -> void:
+	if not debug_button_active:
+		return
+	debug_retry_requested.emit()
 
 
 # 押下処理

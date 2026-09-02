@@ -25,13 +25,15 @@ func _run() -> void:
 	var seed_parameter_panel := game.get_node_or_null("UI/DebugPanel/DebugSeedParameterPanel") as Control
 	var enemy_parameter_button := game.get_node_or_null("UI/DebugPanel/DebugEnemyParameterButton") as Button
 	var enemy_parameter_panel := game.get_node_or_null("UI/DebugPanel/DebugEnemyParameterPanel") as Control
+	var retry_button := game.get_node_or_null("UI/DebugPanel/DebugRetryButton") as Button
 	_expect(debug_panel != null, "デバッグパネルを構成する")
 	_expect(debug_button != null, "デバッグボタンを構成する")
 	_expect(seed_parameter_button != null, "種パラメーターボタンを構成する")
 	_expect(seed_parameter_panel != null, "種パラメーター画面を構成する")
 	_expect(enemy_parameter_button != null, "悪夢パラメーターボタンを構成する")
 	_expect(enemy_parameter_panel != null, "悪夢パラメーター画面を構成する")
-	if debug_panel != null and debug_button != null:
+	_expect(retry_button != null, "デバッグリトライボタンを構成する")
+	if debug_panel != null and debug_button != null and retry_button != null:
 		_expect(debug_panel.visible, "戦闘中にデバッグパネルを表示する")
 		_expect(debug_button.visible, "戦闘中にデバッグボタンを表示する")
 		_expect(
@@ -40,6 +42,8 @@ func _run() -> void:
 		)
 		debug_button.pressed.emit()
 		_expect(bool(debug_panel.get("debug_button_active")), "デバッグボタンで機能を有効化できる")
+		_expect(retry_button.visible, "Debug 有効時だけリトライボタンを表示する")
+		_expect(retry_button.position.y < debug_button.position.y, "リトライボタンを既存ボタン段の上に配置する")
 		_expect(seed_parameter_button.visible, "Debug 有効時だけ種パラメーターボタンを表示する")
 		_expect(enemy_parameter_button.visible, "Debug 有効時だけ悪夢パラメーターボタンを表示する")
 		seed_parameter_button.pressed.emit()
@@ -48,6 +52,7 @@ func _run() -> void:
 		_expect(enemy_parameter_panel.visible, "悪夢パラメーターボタンで調整画面を開ける")
 		debug_button.pressed.emit()
 		_expect(not bool(debug_panel.get("debug_button_active")), "デバッグボタンで機能を無効化できる")
+		_expect(not retry_button.visible, "Debug 無効時はリトライボタンを隠す")
 		_expect(not seed_parameter_button.visible, "Debug 無効時は種パラメーターボタンを隠す")
 		_expect(not seed_parameter_panel.visible, "Debug 無効化時は調整画面を閉じる")
 		_expect(not enemy_parameter_button.visible, "Debug 無効時は悪夢パラメーターボタンを隠す")

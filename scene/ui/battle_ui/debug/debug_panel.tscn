@@ -119,6 +119,16 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 8
 text = "悪夢パラメータ"
 
+[node name="DebugRetryButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 434.0
+offset_top = 317.0
+offset_right = 487.5
+offset_bottom = 335.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 9
+text = "リトライ"
+
 [node name="DebugSeedParameterPanel" parent="." instance=ExtResource("3_parameter_panel")]
 
 [node name="DebugEnemyParameterPanel" parent="." instance=ExtResource("4_enemy_parameter_panel")]

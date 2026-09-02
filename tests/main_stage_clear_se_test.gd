@@ -24,6 +24,16 @@ func _run() -> void:
 	)
 	main.call("show_stage_clear")
 	_expect(main.stage_clear.visible, "クリアSEなしでステージクリア画面を表示する")
+	var original_debug_enabled := DebugState.debug_enabled
+	DebugState.set_debug_enabled(true)
+	main.call("show_game")
+	main.call("_on_game_battle_finished", true)
+	var debug_retry_button := main.stage_clear.get_node("UI/DebugRetryButton") as Button
+	debug_retry_button.pressed.emit()
+	_expect(main.game.visible, "ステージクリアから直近のゲーム画面へリトライできる")
+	_expect(main.game_ui.visible, "リトライ時にゲームUIを表示する")
+	_expect(not main.stage_clear.visible, "リトライ時にステージクリア画面を隠す")
+	DebugState.set_debug_enabled(original_debug_enabled)
 	var bgm := main.get_node("BGM") as BeatConductor
 	bgm.stop()
 	bgm.audio_player.stream = null

@@ -2,6 +2,7 @@ extends Node2D
 
 signal selection_finished(recovered_hp_rate: float)
 signal continuation_requested
+signal debug_retry_requested
 
 const ABANDON_HP_RECOVERY_RATE := 0.1
 const CLEAR_RECOVERY_START_HOUR := 22
@@ -188,6 +189,7 @@ func _connect_ui_signals() -> void:
 	ui.abandon_unhovered.connect(_on_abandon_button_mouse_exited)
 	ui.reroll_pressed.connect(_on_reroll_button_pressed)
 	ui.debug_pressed.connect(_on_debug_button_pressed)
+	ui.debug_retry_pressed.connect(_on_debug_retry_pressed)
 	ui.seed_equip_requested.connect(_on_seed_equip_requested)
 	ui.seed_unequip_requested.connect(_on_seed_unequip_requested)
 	ui.seed_move_requested.connect(_on_seed_move_requested)
@@ -260,6 +262,11 @@ func _get_seed_display_name(seed: SeedInfo) -> String:
 # debug押下
 func _on_debug_button_pressed() -> void:
 	DebugState.toggle_debug_enabled()
+
+
+func _on_debug_retry_pressed() -> void:
+	if DebugState.debug_enabled:
+		debug_retry_requested.emit()
 
 
 # debug接続
