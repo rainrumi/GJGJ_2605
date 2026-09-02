@@ -41,6 +41,17 @@ func setup_enemies(enemies: Array[Enemy]) -> void:
 		return
 
 
+func replace_enemy_info(original_enemy: EnemyInfo, edited_enemy: EnemyInfo) -> bool:
+	if _enemy_preset == null or original_enemy == null or edited_enemy == null:
+		return false
+	var replaced := false
+	for index in range(_enemy_preset.enemies.size()):
+		if _enemy_preset.enemies[index] == original_enemy:
+			_enemy_preset.enemies[index] = edited_enemy
+			replaced = true
+	return replaced
+
+
 # 前の悪夢ページ表示
 func show_previous_enemy_page(enemies: Array[Enemy]) -> bool:
 	if not has_previous_enemy_page():

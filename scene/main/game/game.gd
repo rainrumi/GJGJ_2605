@@ -152,6 +152,7 @@ func start_battle(context: BattleInfo = null) -> void:
 	)
 	ui.set_stage_info(_get_current_area_name(), _get_current_stage_name())
 	ui.set_seed_inventory(seed_controller.get_flowers(), seed_controller.get_stored_seeds())
+	ui.set_enemy_preset(current_enemy_preset)
 	ui.set_seed_debug_numbers_visible(debug_numbers_visible)
 	stomach.hide_preview()
 	battle_active = true
@@ -235,6 +236,7 @@ func _connect_ui() -> void:
 	ui.seed_equip_requested.connect(_on_seed_equip_requested)
 	ui.seed_unequip_requested.connect(_on_seed_unequip_requested)
 	ui.debug_seed_parameter_applied.connect(_on_debug_seed_parameter_applied)
+	ui.debug_enemy_parameter_applied.connect(_on_debug_enemy_parameter_applied)
 # 入力接続
 func _connect_input() -> void:
 	input_controller.setup(enemies)
@@ -465,6 +467,19 @@ func _on_debug_seed_parameter_applied(original_seed: SeedInfo, edited_seed: Seed
 	if not seed_controller.replace_seed(original_seed, edited_seed):
 		return
 	_sync_seed_sources()
+	_refresh_ui()
+
+
+func _on_debug_enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInfo) -> void:
+	if not _can_use_debug_action():
+		return
+	if not enemy_setup.replace_enemy_info(original_enemy, edited_enemy):
+		return
+	enemy_effects.reset()
+	enemy_setup.setup_enemies(enemies)
+	acid_controller.refresh_enemy_effects(enemies, stomach)
+	input_controller.setup(enemies)
+	ui.set_enemy_preset(current_enemy_preset)
 	_refresh_ui()
 
 

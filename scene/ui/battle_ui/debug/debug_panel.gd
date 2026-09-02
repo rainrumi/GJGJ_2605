@@ -6,6 +6,7 @@ signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
 signal seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo)
+signal enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInfo)
 
 const DEBUG_BUTTON_NORMAL_FONT_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const DEBUG_BUTTON_ACTIVE_FONT_COLOR := Color(0.0, 0.0, 0.0, 1.0)
@@ -23,6 +24,8 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @onready var debug_message_button: Button = $DebugMessageButton
 @onready var debug_seed_parameter_button: Button = $DebugSeedParameterButton
 @onready var seed_parameter_panel: DebugSeedParameterPanel = $DebugSeedParameterPanel
+@onready var debug_enemy_parameter_button: Button = $DebugEnemyParameterButton
+@onready var enemy_parameter_panel: DebugEnemyParameterPanel = $DebugEnemyParameterPanel
 
 var debug_message := ""
 var debug_button_active := false
@@ -41,6 +44,8 @@ func _ready() -> void:
 	debug_message_button.pressed.connect(_on_debug_message_button_pressed)
 	debug_seed_parameter_button.pressed.connect(seed_parameter_panel.open_panel)
 	seed_parameter_panel.seed_parameter_applied.connect(_on_seed_parameter_applied)
+	debug_enemy_parameter_button.pressed.connect(enemy_parameter_panel.open_panel)
+	enemy_parameter_panel.enemy_parameter_applied.connect(_on_enemy_parameter_applied)
 	_connect_debug_state()
 	set_debug_button_active(DebugState.debug_enabled)
 
@@ -57,6 +62,10 @@ func set_debug_message(message: String) -> void:
 
 func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
 	seed_parameter_panel.set_seed_inventory(equipped_seeds, stored_seeds)
+
+
+func set_enemy_preset(enemy_preset: EnemyPresetInfo) -> void:
+	enemy_parameter_panel.set_enemy_preset(enemy_preset)
 
 
 # ボタン状態
@@ -84,6 +93,7 @@ func _on_debug_enabled_changed(is_enabled: bool) -> void:
 	set_debug_button_active(is_enabled)
 	if not is_enabled:
 		seed_parameter_panel.close()
+		enemy_parameter_panel.close()
 	debug_message_requested.emit(is_enabled)
 
 
@@ -106,6 +116,7 @@ func _prepare_mouse_filters() -> void:
 	debug_seed_button_list.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_message_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_seed_parameter_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	debug_enemy_parameter_button.mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 # 有効表示
@@ -154,6 +165,7 @@ func _set_debug_controls_visible(is_visible: bool) -> void:
 	debug_reroll_button.visible = is_visible
 	debug_seed_button_list.visible = is_visible
 	debug_seed_parameter_button.visible = is_visible
+	debug_enemy_parameter_button.visible = is_visible
 
 
 # Debug押下
@@ -197,3 +209,9 @@ func _on_seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo) 
 	if not debug_button_active:
 		return
 	seed_parameter_applied.emit(original_seed, edited_seed)
+
+
+func _on_enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInfo) -> void:
+	if not debug_button_active:
+		return
+	enemy_parameter_applied.emit(original_enemy, edited_enemy)

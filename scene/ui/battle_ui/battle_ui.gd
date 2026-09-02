@@ -14,6 +14,7 @@ signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
 signal debug_seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo)
+signal debug_enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInfo)
 signal enemy_previous_page_requested
 signal enemy_next_page_requested
 signal time_over_abandon_requested
@@ -236,6 +237,10 @@ func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
 	debug_panel.set_seed_inventory(equipped_seeds, stored_seeds)
 
 
+func set_enemy_preset(enemy_preset: EnemyPresetInfo) -> void:
+	debug_panel.set_enemy_preset(enemy_preset)
+
+
 # 夢種デバッグ番号visible設定
 func set_seed_debug_numbers_visible(is_visible: bool) -> void:
 	seed_button_list.set_debug_numbers_visible(is_visible)
@@ -430,6 +435,7 @@ func _connect_child_signals() -> void:
 	owned_seed_panel.seed_drag_released.connect(_on_seed_drag_released)
 	owned_seed_panel.seed_rotation_requested.connect(_on_seed_rotation_requested)
 	debug_panel.seed_parameter_applied.connect(_on_debug_seed_parameter_applied)
+	debug_panel.enemy_parameter_applied.connect(_on_debug_enemy_parameter_applied)
 
 # -----------------------------------------------------------
 
@@ -569,6 +575,10 @@ func _on_seed_rotation_requested(button: SeedButton, seed: SeedInfo) -> void:
 
 func _on_debug_seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo) -> void:
 	debug_seed_parameter_applied.emit(original_seed, edited_seed)
+
+
+func _on_debug_enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInfo) -> void:
+	debug_enemy_parameter_applied.emit(original_enemy, edited_enemy)
 
 
 # 所有種panel表示
