@@ -82,12 +82,19 @@ func _run() -> void:
 	)
 	var persisted := ResourceLoader.load(save_path, "", ResourceLoader.CACHE_MODE_IGNORE) as EnemyInfo
 	_expect(persisted != null and persisted.acid_block.max_hp == 777, "変更値を Resource へ永続化する")
+	_expect(_applied_edited.resource_path == save_path, "保存後の悪夢 Resource が保存先を引き継ぐ")
+	_expect(panel.get("_enemies")[0] == _applied_edited, "選択肢の悪夢参照を保存後の Resource へ置換する")
 
 	var controller := GameEnemySetupController.new()
 	controller.setup(self, GameInputController.new(), StomachBoard.new(), preset)
 	_expect(controller.replace_enemy_info(original, _applied_edited), "編成中の悪夢を置換できる")
 	_expect(preset.enemies[0] == _applied_edited, "最初の同一参照を置換する")
 	_expect(preset.enemies[1] == _applied_edited, "重複する同一参照も置換する")
+
+	hp_editor.value = 888
+	(panel.get_node("Margin/Content/Buttons/ApplyButton") as Button).pressed.emit()
+	persisted = ResourceLoader.load(save_path, "", ResourceLoader.CACHE_MODE_IGNORE) as EnemyInfo
+	_expect(persisted != null and persisted.acid_block.max_hp == 888, "同じ悪夢を2回続けて保存できる")
 
 	DebugState.set_debug_enabled(false)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))

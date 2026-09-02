@@ -162,6 +162,10 @@ func _on_apply_pressed() -> void:
 		status_label.text = "保存に失敗しました: %s" % error_string(save_error)
 		push_error("DebugEnemyParameterPanel: 悪夢を保存できません: %s (error: %s)" % [save_path, save_error])
 		return
+	_edited_enemy.take_over_path(save_path)
+	for index in range(_enemies.size()):
+		if _enemies[index] == _original_enemy:
+			_enemies[index] = _edited_enemy
 	enemy_parameter_applied.emit(_original_enemy, _edited_enemy)
 	_original_enemy = _edited_enemy
 	status_label.text = "保存しました: %s" % save_path
