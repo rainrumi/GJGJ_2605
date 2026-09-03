@@ -207,4 +207,4 @@ func _get_display_flower_textures() -> Array[Texture2D]:
 func _get_display_flower_texture(flower: SeedInfo) -> Texture2D:
 	if flower == null:
 		return null
-	return flower.texture
+	return flower.get_small_texture()

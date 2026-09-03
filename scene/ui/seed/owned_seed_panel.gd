@@ -293,7 +293,7 @@ func _update_drag_preview(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 	heading_tooltip.hide_tooltip()
 	if button.tooltip_panel != null:
 		button.tooltip_panel.hide_tooltip()
-	drag_preview.texture = seed.texture
+	drag_preview.texture = seed.get_small_texture()
 	drag_preview.self_modulate = Color.WHITE
 	drag_preview.rotation = button.icon_rect.rotation
 	drag_preview.global_position = mouse_position - drag_preview.size * 0.5

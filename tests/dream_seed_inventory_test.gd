@@ -8,11 +8,36 @@ func _ready() -> void:
 
 
 func _run() -> void:
+	_check_special_seed_small_textures()
 	_check_controller_inventory_rules()
 	await _check_owned_seed_panel()
 	await _check_stage_clear_storage_reward()
 	await _check_game_inventory_integration()
 	get_tree().quit(_failures)
+
+
+func _check_special_seed_small_textures() -> void:
+	var expected_texture_paths := {
+		"res://data/resources/seeds/skills/seed_100_104.tres":
+			"res://resource/image/texture/seed/tex_seed_anemone_small.png",
+		"res://data/resources/seeds/skills/seed_100_113.tres":
+			"res://resource/image/texture/seed/tex_seed_amaririsu_small.png",
+	}
+	for resource_path: String in expected_texture_paths:
+		var seed := load(resource_path) as SeedInfo
+		_expect(seed != null, "対象の夢の種を読み込める: %s" % resource_path)
+		if seed == null:
+			continue
+		_expect(
+			seed.get_small_texture() != null
+			and seed.get_small_texture().resource_path == expected_texture_paths[resource_path],
+			"取得後表示ではsmall画像を使用する: %s" % resource_path
+		)
+		_expect(
+			seed.texture != null
+			and seed.texture.resource_path != expected_texture_paths[resource_path],
+			"種選択用の通常画像は維持する: %s" % resource_path
+		)
 
 
 func _check_controller_inventory_rules() -> void:
@@ -212,7 +237,7 @@ func _check_owned_seed_panel() -> void:
 	panel.call("_on_seed_drag_started", equipped_button, equipped_button.seed, equipped_drag_position)
 	_expect(
 		drag_preview.visible
-		and drag_preview.texture == equipped_button.seed.texture
+		and drag_preview.texture == equipped_button.seed.get_small_texture()
 		and drag_preview.global_position.is_equal_approx(
 			equipped_drag_position - drag_preview.size * 0.5
 		),

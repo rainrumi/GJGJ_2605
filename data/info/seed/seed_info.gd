@@ -20,6 +20,8 @@ enum SubSkillMode {
 @export var display_name := ""
 # 花の画像
 @export var texture: Texture2D
+# 取得後の小サイズ表示用画像。未設定の場合は通常画像を使用する。
+@export var small_texture: Texture2D
 # サブスキルの仕様
 @export var sub_skill_mode: SubSkillMode = SubSkillMode.Drag
 # メインスキル
@@ -42,3 +44,8 @@ func get_main_skill() -> SeedSkill:
 # subスキル取得
 func get_sub_skill() -> SeedSkill:
 	return sub_skill
+
+
+# 取得後の種パネル・キャラクター上表示用画像取得
+func get_small_texture() -> Texture2D:
+	return small_texture if small_texture != null else texture

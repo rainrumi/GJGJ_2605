@@ -92,9 +92,7 @@ func set_seed_source(source: Resource) -> void:
 func set_seed_icon_source(source: Resource) -> void:
 	icon_source_data = source
 	if source is SeedInfo:
-		set_seed_icon_texture((source as SeedInfo).texture)
-	elif source is SeedInfo:
-		set_seed_icon_texture((source as SeedInfo).texture)
+		set_seed_icon_texture((source as SeedInfo).get_small_texture())
 	else:
 		set_seed_icon_texture(null)
 
