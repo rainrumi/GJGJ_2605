@@ -6,7 +6,6 @@ const WARNING_MESSAGE_FADE_IN_DURATION := 0.2
 const WARNING_MESSAGE_HOLD_DURATION := 0.65
 const WARNING_MESSAGE_FADE_OUT_DURATION := 0.25
 const EQUIPPED_SEED_ICON_COLOR := Color("f0e0ff")
-const EQUIPPED_SEED_SLOT_SIZE := Vector2(30.0, 30.0)
 const EQUIPPED_SEED_SLOT_SEPARATION := 10
 
 signal debug_message_requested(is_active: bool)
@@ -16,6 +15,7 @@ signal debug_seed_requested
 signal debug_retry_requested
 signal debug_seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo)
 signal debug_enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInfo)
+signal debug_seed_acquisition_requested(seed: SeedInfo)
 signal enemy_previous_page_requested
 signal enemy_next_page_requested
 signal time_over_abandon_requested
@@ -27,6 +27,7 @@ signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 signal seed_equip_requested(seed: SeedInfo)
 signal seed_unequip_requested(seed: SeedInfo)
+signal debug_seed_removal_requested(collection: int, slot_index: int)
 
 @onready var acid_damage_view: AcidDamageView = $AcidDamageView
 @onready var acid_interval_view: AcidIntervalView = $AcidIntervalView
@@ -61,7 +62,7 @@ var _warning_message_tween: Tween
 
 # 初期化
 func _ready() -> void:
-	seed_button_list.set_slot_layout(EQUIPPED_SEED_SLOT_SIZE, EQUIPPED_SEED_SLOT_SEPARATION)
+	seed_button_list.set_slot_separation(EQUIPPED_SEED_SLOT_SEPARATION)
 	seed_button_list.set_sub_skill_drag_enabled(true)
 	seed_button_list.set_source_collection(SeedButton.SourceCollection.EQUIPPED)
 	seed_button_list.set_display_style(false, EQUIPPED_SEED_ICON_COLOR)
@@ -436,8 +437,10 @@ func _connect_child_signals() -> void:
 	owned_seed_panel.seed_drag_moved.connect(_on_seed_drag_moved)
 	owned_seed_panel.seed_drag_released.connect(_on_seed_drag_released)
 	owned_seed_panel.seed_rotation_requested.connect(_on_seed_rotation_requested)
+	owned_seed_panel.debug_seed_removal_requested.connect(_on_debug_seed_removal_requested)
 	debug_panel.seed_parameter_applied.connect(_on_debug_seed_parameter_applied)
 	debug_panel.enemy_parameter_applied.connect(_on_debug_enemy_parameter_applied)
+	debug_panel.debug_seed_acquisition_requested.connect(_on_debug_seed_acquisition_requested)
 
 # -----------------------------------------------------------
 
@@ -585,6 +588,14 @@ func _on_debug_seed_parameter_applied(original_seed: SeedInfo, edited_seed: Seed
 
 func _on_debug_enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInfo) -> void:
 	debug_enemy_parameter_applied.emit(original_enemy, edited_enemy)
+
+
+func _on_debug_seed_acquisition_requested(seed: SeedInfo) -> void:
+	debug_seed_acquisition_requested.emit(seed)
+
+
+func _on_debug_seed_removal_requested(collection: int, slot_index: int) -> void:
+	debug_seed_removal_requested.emit(collection, slot_index)
 
 
 # 所有種panel表示

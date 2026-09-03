@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://b6fh1poo6sv5f"]
+[gd_scene load_steps=6 format=3 uid="uid://b6fh1poo6sv5f"]
 
 [ext_resource type="Script" uid="uid://wiaj3pchfaj2" path="res://scene/ui/battle_ui/debug/debug_panel.gd" id="1_status_panel_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="PackedScene" path="res://scene/ui/battle_ui/debug/debug_seed_parameter_panel.tscn" id="3_parameter_panel"]
 [ext_resource type="PackedScene" path="res://scene/ui/battle_ui/debug/debug_enemy_parameter_panel.tscn" id="4_enemy_parameter_panel"]
+[ext_resource type="PackedScene" path="res://scene/ui/battle_ui/debug/debug_all_seed_panel.tscn" id="5_all_seed_panel"]
 
 [node name="DebugPanel" type="Control" unique_id=1605446388]
 layout_mode = 3
@@ -129,6 +130,18 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
 text = "リトライ"
 
+[node name="DebugAllSeedButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 377.0
+offset_top = 317.0
+offset_right = 430.5
+offset_bottom = 335.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 9
+text = "種一覧"
+
 [node name="DebugSeedParameterPanel" parent="." instance=ExtResource("3_parameter_panel")]
 
 [node name="DebugEnemyParameterPanel" parent="." instance=ExtResource("4_enemy_parameter_panel")]
+
+[node name="DebugAllSeedPanel" parent="." instance=ExtResource("5_all_seed_panel")]

@@ -242,6 +242,8 @@ func _connect_ui() -> void:
 	ui.seed_unequip_requested.connect(_on_seed_unequip_requested)
 	ui.debug_seed_parameter_applied.connect(_on_debug_seed_parameter_applied)
 	ui.debug_enemy_parameter_applied.connect(_on_debug_enemy_parameter_applied)
+	ui.debug_seed_acquisition_requested.connect(_on_debug_seed_acquisition_requested)
+	ui.debug_seed_removal_requested.connect(_on_debug_seed_removal_requested)
 # 入力接続
 func _connect_input() -> void:
 	input_controller.setup(enemies)
@@ -461,6 +463,22 @@ func _on_debug_seed_requested() -> void:
 	if not _can_use_debug_action():
 		return
 	if not seed_controller.add_random_debug_seed():
+		return
+	_sync_seed_sources()
+	_refresh_ui()
+
+
+func _on_debug_seed_acquisition_requested(seed: SeedInfo) -> void:
+	if not _can_use_debug_action() or not seed_controller.add_debug_seed(seed):
+		return
+	_sync_seed_sources()
+	_refresh_ui()
+
+
+func _on_debug_seed_removal_requested(collection: int, slot_index: int) -> void:
+	if not _can_use_debug_action():
+		return
+	if not seed_controller.remove_debug_seed_at_slot(collection, slot_index):
 		return
 	_sync_seed_sources()
 	_refresh_ui()

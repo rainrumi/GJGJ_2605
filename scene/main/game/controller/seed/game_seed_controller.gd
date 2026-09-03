@@ -178,6 +178,29 @@ func remove_source(source: Resource, collection := SeedButton.SourceCollection.E
 		seeds.remove_at(index)
 
 
+# デバッグ種追加
+func add_debug_seed(seed: SeedInfo) -> bool:
+	if seed == null:
+		return false
+	if _count_seeds(_flowers) < MAX_EQUIPPED_SEEDS:
+		_insert_into_first_empty_slot(_flowers, seed)
+	else:
+		_insert_into_first_empty_slot(_stored_seeds, seed)
+	return true
+
+
+# inventory枠のデバッグ削除
+func remove_debug_seed_at_slot(collection: int, slot_index: int) -> bool:
+	if not _is_valid_collection(collection) or slot_index < 0:
+		return false
+	var slots := _get_collection_slots(collection)
+	if slot_index >= slots.size() or slots[slot_index] == null:
+		return false
+	slots.remove_at(slot_index)
+	_trim_trailing_empty_slots(slots)
+	return true
+
+
 # ドラッグ開始
 func start_drag(
 	button: SeedButton,

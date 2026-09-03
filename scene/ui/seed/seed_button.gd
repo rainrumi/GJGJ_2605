@@ -6,6 +6,7 @@ signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vecto
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 signal loadout_edit_requested(button: SeedButton, seed: SeedInfo)
+signal debug_removal_requested(button: SeedButton, seed: SeedInfo)
 
 enum SourceCollection {
 	EQUIPPED,
@@ -17,7 +18,6 @@ const LOW_SUB_SKILL_USES_COLOR := Color(1.0, 0.02745098, 0.21176471, 1.0)
 const NORMAL_ICON_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 const SUB_SKILL_USE_COUNT := 1
 const LONG_PRESS_DURATION_MSEC := 500
-const DEFAULT_SLOT_SIZE := Vector2(16.0, 16.0)
 
 @export var populated_slot_style: StyleBox
 @export var empty_slot_style: StyleBox
@@ -34,11 +34,11 @@ var tooltip_panel: SeedTooltip
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
 var loadout_edit_enabled := false
+var debug_removal_enabled := false
 var source_collection := SourceCollection.EQUIPPED
 var frame_visible := true
 var icon_color := NORMAL_ICON_COLOR
 var use_remaining_sub_skill_color := true
-var slot_size := DEFAULT_SLOT_SIZE
 # 現状はUI表示を兼ねた一時的な使用回数。永続状態が必要になったらRuntimeStateへ移す。
 var _display_remaining_sub_skill_uses := 0
 var _pressing := false
@@ -50,7 +50,6 @@ var _rotation_quarter_turns := 0
 
 # 初期化
 func _ready() -> void:
-	_apply_slot_size()
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_NONE
 	flat = true
@@ -134,6 +133,11 @@ func set_loadout_edit_enabled(is_enabled: bool) -> void:
 	loadout_edit_enabled = is_enabled
 
 
+# デバッグ削除設定
+func set_debug_removal_enabled(is_enabled: bool) -> void:
+	debug_removal_enabled = is_enabled
+
+
 # 元collection設定
 func set_source_collection(collection: int) -> void:
 	source_collection = collection
@@ -155,13 +159,6 @@ func set_display_style(
 	use_remaining_sub_skill_color = show_remaining_sub_skill_color
 	_apply_frame_style()
 	_update_drag_state()
-
-
-# 表示枠サイズ設定
-func set_slot_size(value: Vector2) -> void:
-	slot_size = Vector2(maxf(1.0, value.x), maxf(1.0, value.y))
-	if is_node_ready():
-		_apply_slot_size()
 
 
 # 種ブロック回転数設定
@@ -213,6 +210,10 @@ func _gui_input(event: InputEvent) -> void:
 		# マウスボタン
 		var mouse_button := event as InputEventMouseButton
 		if mouse_button.button_index == MOUSE_BUTTON_RIGHT and mouse_button.pressed:
+			if debug_removal_enabled and DebugState.debug_enabled and seed != null:
+				debug_removal_requested.emit(self, seed)
+				accept_event()
+				return
 			if DebugState.toggle_seed_performance_mark(seed):
 				accept_event()
 			return
@@ -372,15 +373,3 @@ func _apply_frame_style() -> void:
 	var slot_style := empty_slot_style if seed == null else populated_slot_style
 	if slot_style != null:
 		frame.add_theme_stylebox_override("panel", slot_style)
-
-
-# 表示枠サイズ適用
-func _apply_slot_size() -> void:
-	custom_minimum_size = slot_size
-	size = slot_size
-	frame.position = Vector2.ZERO
-	frame.size = slot_size
-	var icon_margin := floorf(minf(slot_size.x, slot_size.y) * 0.1)
-	icon_rect.position = Vector2(icon_margin, icon_margin)
-	icon_rect.size = slot_size - Vector2(icon_margin, icon_margin) * 2.0
-	icon_rect.pivot_offset = icon_rect.size * 0.5

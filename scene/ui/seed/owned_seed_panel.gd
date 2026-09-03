@@ -8,11 +8,11 @@ signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vec
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
+signal debug_seed_removal_requested(collection: int, slot_index: int)
 
 const EQUIPPED_SLOT_COUNT := 6
 const STORED_PAGE_SIZE := 12
 const SLOT_ICON_COLOR := Color(0.015, 0.01, 0.02, 1.0)
-const SLOT_SIZE := Vector2(30.0, 30.0)
 const SLOT_SEPARATION := 10
 const EQUIPPED_TOOLTIP_TEXT := "ここに入れている夢の種はメインスキルの効果を発揮します。ドラッグして食べるとサブスキルの効果を発揮します。"
 const STORED_TOOLTIP_TEXT := "現在所持している夢の種です。何も効果を発揮しませんが、ドラッグして食べるとサブスキルの効果を発揮します"
@@ -122,16 +122,18 @@ func get_inventory_slot_index(button: SeedButton) -> int:
 
 # 種list設定
 func _configure_seed_lists() -> void:
-	equipped_list.set_slot_layout(SLOT_SIZE, SLOT_SEPARATION)
+	equipped_list.set_slot_separation(SLOT_SEPARATION)
 	equipped_list.set_minimum_slot_count(EQUIPPED_SLOT_COUNT)
 	equipped_list.set_source_collection(SeedButton.SourceCollection.EQUIPPED)
 	equipped_list.set_loadout_edit_enabled(true)
+	equipped_list.set_debug_removal_enabled(true)
 	equipped_list.set_sub_skill_drag_enabled(true)
 	equipped_list.set_display_style(true, SLOT_ICON_COLOR)
-	stored_list.set_slot_layout(SLOT_SIZE, SLOT_SEPARATION)
+	stored_list.set_slot_separation(SLOT_SEPARATION)
 	stored_list.set_minimum_slot_count(STORED_PAGE_SIZE)
 	stored_list.set_source_collection(SeedButton.SourceCollection.STORED)
 	stored_list.set_loadout_edit_enabled(true)
+	stored_list.set_debug_removal_enabled(true)
 	stored_list.set_sub_skill_drag_enabled(true)
 	stored_list.set_display_style(true, SLOT_ICON_COLOR)
 
@@ -158,6 +160,7 @@ func _connect_seed_list_signals(seed_list: SeedButtonList) -> void:
 	seed_list.seed_drag_moved.connect(_on_seed_drag_moved)
 	seed_list.seed_drag_released.connect(_on_seed_drag_released)
 	seed_list.seed_rotation_requested.connect(_on_seed_rotation_requested)
+	seed_list.debug_removal_requested.connect(_on_debug_seed_removal_requested)
 
 
 # 表示更新
@@ -272,6 +275,14 @@ func _on_seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: 
 # 種回転要求
 func _on_seed_rotation_requested(button: SeedButton, seed: SeedInfo) -> void:
 	seed_rotation_requested.emit(button, seed)
+
+
+# デバッグ種削除要求
+func _on_debug_seed_removal_requested(button: SeedButton, _seed: SeedInfo) -> void:
+	var slot_index := get_inventory_slot_index(button)
+	if slot_index < 0:
+		return
+	debug_seed_removal_requested.emit(button.get_source_collection(), slot_index)
 
 
 # ドラッグ中種texture更新

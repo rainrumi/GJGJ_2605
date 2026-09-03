@@ -6,18 +6,19 @@ signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vecto
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_rotation_requested(button: SeedButton, seed: SeedInfo)
 signal loadout_edit_requested(button: SeedButton, seed: SeedInfo)
+signal debug_removal_requested(button: SeedButton, seed: SeedInfo)
 
 const BUTTON_SCENE := preload("res://scene/ui/seed/seed_button.tscn")
 
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
 var loadout_edit_enabled := false
+var debug_removal_enabled := false
 var source_collection := SeedButton.SourceCollection.EQUIPPED
 var minimum_slot_count := 0
 var frame_visible := true
 var icon_color := Color.WHITE
 var use_remaining_sub_skill_color := true
-var slot_size := Vector2(16.0, 16.0)
 var slot_separation := 2
 var _rotation_quarter_turns_by_source: Dictionary = {}
 
@@ -64,6 +65,14 @@ func set_loadout_edit_enabled(is_enabled: bool) -> void:
 			(child as SeedButton).set_loadout_edit_enabled(loadout_edit_enabled)
 
 
+# デバッグ削除設定
+func set_debug_removal_enabled(is_enabled: bool) -> void:
+	debug_removal_enabled = is_enabled
+	for child in get_children():
+		if child is SeedButton:
+			(child as SeedButton).set_debug_removal_enabled(debug_removal_enabled)
+
+
 # 元collection設定
 func set_source_collection(collection: int) -> void:
 	source_collection = collection
@@ -77,15 +86,11 @@ func set_minimum_slot_count(count: int) -> void:
 	minimum_slot_count = maxi(0, count)
 
 
-# 枠layout設定
-func set_slot_layout(size_value: Vector2, separation: int) -> void:
-	slot_size = Vector2(maxf(1.0, size_value.x), maxf(1.0, size_value.y))
+# 枠間隔設定
+func set_slot_separation(separation: int) -> void:
 	slot_separation = maxi(0, separation)
 	if is_node_ready():
 		_apply_slot_separation()
-	for child in get_children():
-		if child is SeedButton:
-			(child as SeedButton).set_slot_size(slot_size)
 
 
 # 表示style設定
@@ -116,10 +121,10 @@ func _add_seed_button_list(source: Resource) -> void:
 	var button := BUTTON_SCENE.instantiate() as SeedButton
 	add_child(button)
 	button.set_seed_source(source)
-	button.set_slot_size(slot_size)
 	button.set_debug_numbers_visible(debug_numbers_visible)
 	button.set_sub_skill_drag_enabled(sub_skill_drag_enabled)
 	button.set_loadout_edit_enabled(loadout_edit_enabled)
+	button.set_debug_removal_enabled(debug_removal_enabled)
 	button.set_source_collection(source_collection)
 	button.set_display_style(frame_visible, icon_color, use_remaining_sub_skill_color)
 	button.set_rotation_quarter_turns(int(_rotation_quarter_turns_by_source.get(source, 0)))
@@ -128,6 +133,7 @@ func _add_seed_button_list(source: Resource) -> void:
 	button.seed_drag_released.connect(_on_seed_drag_released)
 	button.seed_rotation_requested.connect(_on_seed_rotation_requested)
 	button.loadout_edit_requested.connect(_on_loadout_edit_requested)
+	button.debug_removal_requested.connect(_on_debug_removal_requested)
 
 
 # 空slot追加
@@ -135,7 +141,6 @@ func _add_empty_slot() -> void:
 	var button := BUTTON_SCENE.instantiate() as SeedButton
 	add_child(button)
 	button.set_seed_source(null)
-	button.set_slot_size(slot_size)
 	button.set_source_collection(source_collection)
 	button.set_display_style(frame_visible, icon_color, use_remaining_sub_skill_color)
 	button.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -199,3 +204,8 @@ func _on_seed_rotation_requested(button: SeedButton, seed: SeedInfo) -> void:
 # 編成短押し要求
 func _on_loadout_edit_requested(button: SeedButton, seed: SeedInfo) -> void:
 	loadout_edit_requested.emit(button, seed)
+
+
+# デバッグ削除要求
+func _on_debug_removal_requested(button: SeedButton, seed: SeedInfo) -> void:
+	debug_removal_requested.emit(button, seed)

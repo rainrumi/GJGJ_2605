@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scene/ui/battle_ui/debug/debug_all_seed_panel.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scene/ui/seed/seed_button_list/seed_button_list.tscn" id="2"]
+[ext_resource type="Resource" path="res://data/resources/seeds/seed_catalog.tres" id="3_catalog"]
+
+[node name="DebugAllSeedPanel" type="PanelContainer"]
+visible = false
+anchors_preset = 15
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 24.0
+offset_right = -8.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+theme_override_font_sizes/font_size = 11
+script = ExtResource("1")
+seed_catalog = ExtResource("3_catalog")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="Margin/Content"]
+layout_mode = 2
+text = "種一覧（クリックで取得）"
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Center" type="CenterContainer" parent="Margin/Content/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SeedList" parent="Margin/Content/Scroll/Center" instance=ExtResource("2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Margin/Content"]
+layout_mode = 2
+alignment = 2
+
+[node name="CloseButton" type="Button" parent="Margin/Content/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "閉じる"
