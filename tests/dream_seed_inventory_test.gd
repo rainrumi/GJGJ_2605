@@ -417,6 +417,7 @@ func _check_game_inventory_integration() -> void:
 	_expect(closed_list.get_theme_constant("h_separation") == 10, "通常時装備種の横間隔を10pxにする")
 	_expect(closed_list.get_theme_constant("v_separation") == 10, "通常時装備種の縦間隔を10pxにする")
 	_expect(closed_list.get_child_count() == 6, "通常時に装備中の6種を表示する")
+	_expect(closed_list.alignment == FlowContainer.ALIGNMENT_CENTER, "通常時装備種を各段の中央へ揃える")
 	_expect(closed_button.size.is_equal_approx(Vector2(30.0, 30.0)), "通常時装備種の透明当たり判定を30px角にする")
 	_expect(closed_button.mouse_filter == Control.MOUSE_FILTER_STOP, "通常時装備種の透明四角で入力を受ける")
 	_expect(closed_button.flat, "通常時装備種の当たり判定背景を無色にする")
@@ -482,21 +483,45 @@ func _check_game_inventory_integration() -> void:
 		"装備枠[2]の種を空の装備枠[5]へ移動できる"
 	)
 	ui.set_seed_inventory(sparse_controller.get_flowers(), [])
-	var empty_closed_slots_have_hidden_frames := true
-	for slot_index in range(2, 5):
-		var empty_closed_button := closed_list.get_child(slot_index) as SeedButton
-		if empty_closed_button.frame.visible:
-			empty_closed_slots_have_hidden_frames = false
-			break
+	await get_tree().process_frame
 	_expect(
-		empty_closed_slots_have_hidden_frames,
-		"パネルを閉じた通常表示では装備間の空き枠に枠線を表示しない"
+		closed_list.get_child_count() == 3,
+		"パネルを閉じた通常表示では装備間の空き枠を省略する"
 	)
-	var moved_closed_button := closed_list.get_child(5) as SeedButton
+	var moved_closed_button := closed_list.get_child(2) as SeedButton
 	_expect(
 		moved_closed_button.seed == sparse_equipped[2] and not moved_closed_button.frame.visible,
-		"移動先[5]の装備種もパネルを閉じた通常表示では枠線なしで表示する"
+		"末尾スロットの装備種も詰めて枠線なしで表示する"
 	)
+	_expect(
+		(closed_list.get_child(0) as SeedButton).position.is_equal_approx(Vector2.ZERO)
+		and moved_closed_button.position.is_equal_approx(Vector2(80.0, 0.0)),
+		"3個の夢の種を上段の3か所へ配置する"
+	)
+	for seed_count in range(1, 7):
+		ui.set_seed_inventory(_create_seeds(seed_count, 600 + seed_count * 10), [])
+		await get_tree().process_frame
+		var expected_positions: Array[Vector2] = []
+		match seed_count:
+			1:
+				expected_positions = [Vector2(40.0, 0.0)]
+			2:
+				expected_positions = [Vector2(20.0, 0.0), Vector2(60.0, 0.0)]
+			3:
+				expected_positions = [Vector2(0.0, 0.0), Vector2(40.0, 0.0), Vector2(80.0, 0.0)]
+			4:
+				expected_positions = [Vector2(0.0, 0.0), Vector2(40.0, 0.0), Vector2(80.0, 0.0), Vector2(40.0, 40.0)]
+			5:
+				expected_positions = [Vector2(0.0, 0.0), Vector2(40.0, 0.0), Vector2(80.0, 0.0), Vector2(20.0, 40.0), Vector2(60.0, 40.0)]
+			6:
+				expected_positions = [Vector2(0.0, 0.0), Vector2(40.0, 0.0), Vector2(80.0, 0.0), Vector2(0.0, 40.0), Vector2(40.0, 40.0), Vector2(80.0, 40.0)]
+		for index in range(expected_positions.size()):
+			_expect(
+				(closed_list.get_child(index) as SeedButton).position.is_equal_approx(expected_positions[index]),
+				"%d個の夢の種を指定位置へ配置する: %d" % [seed_count, index]
+			)
+	ui.set_seed_inventory(sparse_controller.get_flowers(), [])
+	await get_tree().process_frame
 	await _capture_viewport_from_environment("DREAM_SEED_SPARSE_CLOSED_CAPTURE_PATH")
 	ui.set_seed_inventory(equipped, possession)
 

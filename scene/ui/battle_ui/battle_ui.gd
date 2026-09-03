@@ -63,6 +63,7 @@ var _warning_message_tween: Tween
 # 初期化
 func _ready() -> void:
 	seed_button_list.set_slot_separation(EQUIPPED_SEED_SLOT_SEPARATION)
+	seed_button_list.set_compact_centered_layout(true)
 	seed_button_list.set_sub_skill_drag_enabled(true)
 	seed_button_list.set_source_collection(SeedButton.SourceCollection.EQUIPPED)
 	seed_button_list.set_display_style(false, EQUIPPED_SEED_ICON_COLOR)

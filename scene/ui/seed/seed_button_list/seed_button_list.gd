@@ -20,6 +20,7 @@ var frame_visible := true
 var icon_color := Color.WHITE
 var use_remaining_sub_skill_color := true
 var slot_separation := 2
+var compact_empty_slots := false
 var _rotation_quarter_turns_by_source: Dictionary = {}
 
 
@@ -35,10 +36,17 @@ func set_seed_sources(sources: Array) -> void:
 	for source in sources:
 		if source is Resource and _has_seed(source as Resource):
 			_add_seed_button_list(source as Resource)
-		else:
+		elif not compact_empty_slots:
 			_add_empty_slot()
-	for _slot_index in range(sources.size(), minimum_slot_count):
+	var displayed_slot_count := get_child_count()
+	for _slot_index in range(displayed_slot_count, minimum_slot_count):
 		_add_empty_slot()
+
+
+# 空き枠を省略し、残った種を各段の中央へ寄せる
+func set_compact_centered_layout(is_enabled: bool) -> void:
+	compact_empty_slots = is_enabled
+	alignment = FlowContainer.ALIGNMENT_CENTER if is_enabled else FlowContainer.ALIGNMENT_BEGIN
 
 
 # デバッグ番号visible設定
