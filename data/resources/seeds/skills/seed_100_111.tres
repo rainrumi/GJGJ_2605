@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_64q2q"]
 [ext_resource type="Texture2D" uid="uid://bxwxtr77xsac2" path="res://resource/image/texture/seed/tex_seed_matuyoigusa.png" id="2_texture"]
+[ext_resource type="Texture2D" uid="uid://byky3cr21bo8s" path="res://resource/image/texture/seed/tex_seed_matuyoigusa_small.png" id="2_small_texture"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_2uhbw"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_rrnf1"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
@@ -35,6 +36,7 @@ skill_id = 100111
 rarity = 1
 display_name = "マツヨイグサ"
 texture = ExtResource("2_texture")
+small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")

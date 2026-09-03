@@ -12,7 +12,7 @@ signal debug_seed_removal_requested(collection: int, slot_index: int)
 
 const EQUIPPED_SLOT_COUNT := 6
 const STORED_PAGE_SIZE := 12
-const SLOT_ICON_COLOR := Color(0.015, 0.01, 0.02, 1.0)
+const SLOT_ICON_COLOR := Color("f0e0ff")
 const SLOT_SEPARATION := 10
 const EQUIPPED_TOOLTIP_TEXT := "ここに入れている夢の種はメインスキルの効果を発揮します。ドラッグして食べるとサブスキルの効果を発揮します。"
 const STORED_TOOLTIP_TEXT := "現在所持している夢の種です。何も効果を発揮しませんが、ドラッグして食べるとサブスキルの効果を発揮します"
@@ -294,7 +294,7 @@ func _update_drag_preview(button: SeedButton, seed: SeedInfo, mouse_position: Ve
 	if button.tooltip_panel != null:
 		button.tooltip_panel.hide_tooltip()
 	drag_preview.texture = seed.get_small_texture()
-	drag_preview.self_modulate = Color.WHITE
+	drag_preview.self_modulate = SLOT_ICON_COLOR
 	drag_preview.rotation = button.icon_rect.rotation
 	drag_preview.global_position = mouse_position - drag_preview.size * 0.5
 	drag_preview.visible = drag_preview.texture != null

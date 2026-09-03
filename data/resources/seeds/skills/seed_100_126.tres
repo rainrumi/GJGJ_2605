@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_1trdx"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_dr4of"]
 [ext_resource type="Texture2D" uid="uid://d244n5mk305jc" path="res://resource/image/texture/seed/tex_seed_dokudami.png" id="4_jtoxl"]
+[ext_resource type="Texture2D" uid="uid://td2wdsldibmk" path="res://resource/image/texture/seed/tex_seed_dokudami_small.png" id="2_small_texture"]
 [ext_resource type="Script" uid="uid://723kakfbp6lv" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate.gd" id="skill_pending_acid"]
 [ext_resource type="Script" uid="uid://1rw2oodn48k" path="res://scene/main/game/seed/skill/on_remove_from_stomach/seed_effect_on_remove_from_stomach_change_damage.gd" id="skill_return_damage"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
@@ -42,6 +43,7 @@ skill_id = 100126
 rarity = 1
 display_name = "ドクダミ"
 texture = ExtResource("4_jtoxl")
+small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")

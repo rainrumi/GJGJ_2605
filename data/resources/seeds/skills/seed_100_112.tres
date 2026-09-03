@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_t0ep0"]
 [ext_resource type="Texture2D" uid="uid://bfqrwfm5r27lr" path="res://resource/image/texture/seed/tex_seed_hasu.png" id="2_texture"]
+[ext_resource type="Texture2D" uid="uid://bsme582w444dq" path="res://resource/image/texture/seed/tex_seed_hasu_small.png" id="2_small_texture"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_iopi5"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_wjbm7"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
@@ -40,6 +41,7 @@ skill_id = 100112
 rarity = 1
 display_name = "ハス"
 texture = ExtResource("2_texture")
+small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")

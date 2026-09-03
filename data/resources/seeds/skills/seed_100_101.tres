@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_l0k03"]
 [ext_resource type="Texture2D" uid="uid://b0sewup04462r" path="res://resource/image/texture/seed/tex_seed_kinsenka.png" id="2_gdfog"]
+[ext_resource type="Texture2D" uid="uid://dsl4y1qpeqvh5" path="res://resource/image/texture/seed/tex_seed_kinsenka_small.png" id="2_small_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_8g8ja"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_kvh1i"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
@@ -35,6 +36,7 @@ script = ExtResource("3_8g8ja")
 skill_id = 100101
 display_name = "キンセンカ"
 texture = ExtResource("2_gdfog")
+small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")

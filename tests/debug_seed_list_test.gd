@@ -37,8 +37,13 @@ func _check_seed_list_panel() -> void:
 		var sixth := seed_list.get_child(5) as SeedButton
 		_expect(first.size.is_equal_approx(Vector2(30.0, 30.0)), "種バッグと同じ30px角で表示する")
 		_expect(
-			first.icon_rect.self_modulate.is_equal_approx(Color("202020")),
-			"デバッグ種のテクスチャカラーを#202020にする"
+			first.icon_rect.self_modulate.is_equal_approx(Color("f0e0ff")),
+			"デバッグ種のテクスチャカラーを#F0E0FFにする"
+		)
+		var slot_style := first.frame.get_theme_stylebox("panel") as StyleBoxFlat
+		_expect(
+			slot_style != null and is_zero_approx(slot_style.bg_color.a),
+			"デバッグ種アイコンの背景を透明にする"
 		)
 		_expect(
 			fifth.position.is_equal_approx(Vector2(160.0, 0.0)),

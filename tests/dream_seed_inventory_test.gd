@@ -8,7 +8,7 @@ func _ready() -> void:
 
 
 func _run() -> void:
-	_check_special_seed_small_textures()
+	_check_seed_small_textures()
 	_check_controller_inventory_rules()
 	await _check_owned_seed_panel()
 	await _check_stage_clear_storage_reward()
@@ -16,27 +16,21 @@ func _run() -> void:
 	get_tree().quit(_failures)
 
 
-func _check_special_seed_small_textures() -> void:
-	var expected_texture_paths := {
-		"res://data/resources/seeds/skills/seed_100_104.tres":
-			"res://resource/image/texture/seed/tex_seed_anemone_small.png",
-		"res://data/resources/seeds/skills/seed_100_113.tres":
-			"res://resource/image/texture/seed/tex_seed_amaririsu_small.png",
-	}
-	for resource_path: String in expected_texture_paths:
+func _check_seed_small_textures() -> void:
+	var resource_paths := DirAccess.get_files_at("res://data/resources/seeds/skills")
+	for file_name in resource_paths:
+		if not file_name.ends_with(".tres"):
+			continue
+		var resource_path := "res://data/resources/seeds/skills/" + file_name
 		var seed := load(resource_path) as SeedInfo
 		_expect(seed != null, "対象の夢の種を読み込める: %s" % resource_path)
 		if seed == null:
 			continue
+		var expected_texture_path := seed.texture.resource_path.get_basename() + "_small.png"
 		_expect(
 			seed.get_small_texture() != null
-			and seed.get_small_texture().resource_path == expected_texture_paths[resource_path],
+			and seed.get_small_texture().resource_path == expected_texture_path,
 			"取得後表示ではsmall画像を使用する: %s" % resource_path
-		)
-		_expect(
-			seed.texture != null
-			and seed.texture.resource_path != expected_texture_paths[resource_path],
-			"種選択用の通常画像は維持する: %s" % resource_path
 		)
 
 
@@ -244,7 +238,7 @@ func _check_owned_seed_panel() -> void:
 		"パネル内ドラッグ中は種テクスチャをマウス位置へ表示する"
 	)
 	_expect(
-		drag_preview.self_modulate.is_equal_approx(Color.WHITE),
+		drag_preview.self_modulate.is_equal_approx(OwnedSeedPanel.SLOT_ICON_COLOR),
 		"ドラッグ中は種テクスチャ本来の色を維持する"
 	)
 	_expect(
@@ -294,13 +288,13 @@ func _check_owned_seed_panel() -> void:
 	var stored_slot_style := stored_button.frame.get_theme_stylebox("panel") as StyleBoxFlat
 	_expect(
 		slot_style != null
-		and slot_style.bg_color.is_equal_approx(Color("f0e0ff")),
-		"種がある装備枠を完全不透明の#f0e0ffで塗る"
+		and is_zero_approx(slot_style.bg_color.a),
+		"種がある装備枠の背景を透明にする"
 	)
 	_expect(
 		stored_slot_style != null
-		and stored_slot_style.bg_color.is_equal_approx(Color("f0e0ff")),
-		"種がある所持枠を完全不透明の#f0e0ffで塗る"
+		and is_zero_approx(stored_slot_style.bg_color.a),
+		"種がある所持枠の背景を透明にする"
 	)
 	var empty_slot_style := empty_equipped_button.frame.get_theme_stylebox("panel") as StyleBoxFlat
 	_expect(

@@ -4,7 +4,7 @@ extends PanelContainer
 signal seed_acquisition_requested(seed: SeedInfo)
 
 const SLOT_SEPARATION := 10
-const SEED_TEXTURE_COLOR := Color("202020")
+const SEED_TEXTURE_COLOR := Color("f0e0ff")
 
 @export var seed_catalog: SeedCatalogInfo
 

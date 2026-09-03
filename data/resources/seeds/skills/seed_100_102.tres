@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_8ad0q"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_l5omq"]
 [ext_resource type="Texture2D" uid="uid://er0so1gor2te" path="res://resource/image/texture/seed/tex_seed_camomile.png" id="4_q6u56"]
+[ext_resource type="Texture2D" uid="uid://bvkqy01vhwjsa" path="res://resource/image/texture/seed/tex_seed_camomile_small.png" id="2_small_texture"]
 [ext_resource type="Script" uid="uid://dnapp6l4hcsja" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_change_hp.gd" id="skill_clear_recovery"]
 [ext_resource type="Script" uid="uid://dpbgcseqafd0r" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_recover_hp.gd" id="skill_seed_hp"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
@@ -35,6 +36,7 @@ script = ExtResource("3_l5omq")
 skill_id = 100102
 display_name = "カモミール"
 texture = ExtResource("4_q6u56")
+small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")

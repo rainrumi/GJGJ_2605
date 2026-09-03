@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_svnoj"]
 [ext_resource type="Script" uid="uid://bpdmul6xy2d0a" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_damage_rate.gd" id="3_tmpd1"]
 [ext_resource type="Texture2D" uid="uid://d0mer18aof4e4" path="res://resource/image/texture/seed/tex_seed_housenka.png" id="4_mgqf0"]
+[ext_resource type="Texture2D" uid="uid://j8r4s3ocnjyw" path="res://resource/image/texture/seed/tex_seed_housenka_small.png" id="2_small_texture"]
 [ext_resource type="Script" uid="uid://blm8lnep51asi" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_adjacent.gd" id="skill_adjacent_damage"]
 [ext_resource type="Script" uid="uid://bfacid5m8p100" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_flat_acid_rate.gd" id="skill_player_damage_flat"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
@@ -41,6 +42,7 @@ skill_id = 100105
 rarity = 1
 display_name = "ホウセンカ"
 texture = ExtResource("4_mgqf0")
+small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")

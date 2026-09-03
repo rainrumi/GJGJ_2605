@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_i03xb"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_net8h"]
 [ext_resource type="Texture2D" uid="uid://m08iltx6qljl" path="res://resource/image/texture/seed/tex_seed_yorugao.png" id="4_aq1du"]
+[ext_resource type="Texture2D" uid="uid://bxmhaj8uh21e7" path="res://resource/image/texture/seed/tex_seed_yorugao_small.png" id="2_small_texture"]
 [ext_resource type="Script" uid="uid://4dull42pg76m" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_disable_clear_recovery.gd" id="skill_clear_recovery"]
 [ext_resource type="Script" uid="uid://bqdcytghynb40" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_add_extra_choice_after_clock.gd" id="skill_extra_choice"]
 [ext_resource type="Script" uid="uid://cq36h2j85k72s" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate_after_clock.gd" id="skill_pending_acid"]
@@ -42,6 +43,7 @@ skill_id = 100107
 rarity = 1
 display_name = "ヨルガオ"
 texture = ExtResource("4_aq1du")
+small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")

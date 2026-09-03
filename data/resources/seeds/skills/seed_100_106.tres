@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_ikiiu"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_ohkbt"]
 [ext_resource type="Texture2D" uid="uid://d3hbi37nl1lfb" path="res://resource/image/texture/seed/tex_seed_gekabijin.png" id="4_mmdek"]
+[ext_resource type="Texture2D" uid="uid://xk4mxhn1rowc" path="res://resource/image/texture/seed/tex_seed_gekabijin_small.png" id="2_small_texture"]
 [ext_resource type="Script" uid="uid://dowh00603eyqh" path="res://scene/main/game/seed/skill/seed_effect_bring_limit.gd" id="skill_bring_limit"]
 [ext_resource type="Script" uid="uid://cajt8mj0fdrth" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_change_acid_damage_rate_before_clock.gd" id="skill_clear_recovery"]
 [ext_resource type="Script" uid="uid://cp3yui4xe4hu1" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate.gd" id="skill_pending_time"]
@@ -42,6 +43,7 @@ skill_id = 100106
 rarity = 1
 display_name = "ゲッカビジン"
 texture = ExtResource("4_mmdek")
+small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")

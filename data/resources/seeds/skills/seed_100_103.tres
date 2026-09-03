@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_8s68j"]
 [ext_resource type="Texture2D" uid="uid://dcce75acrcybj" path="res://resource/image/texture/seed/tex_seed_tokeisou.png" id="2_yn8ot"]
+[ext_resource type="Texture2D" uid="uid://laq0ilquhvab" path="res://resource/image/texture/seed/tex_seed_tokeisou_small.png" id="2_small_texture"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_jxxml"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_wfiqv"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
@@ -42,6 +43,7 @@ script = ExtResource("3_wfiqv")
 skill_id = 100103
 display_name = "トケイソウ"
 texture = ExtResource("2_yn8ot")
+small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
