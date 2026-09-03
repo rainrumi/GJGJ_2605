@@ -3,6 +3,8 @@ extends PanelContainer
 
 signal seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo)
 
+const EXCLUDED_EFFECT_PROPERTIES: Array[StringName] = [&"priority", &"enabled"]
+
 @onready var seed_option: OptionButton = %SeedOption
 @onready var parameter_list: VBoxContainer = %ParameterList
 @onready var empty_label: Label = %EmptyLabel
@@ -70,42 +72,51 @@ func _rebuild_editor() -> void:
 		_edited_seed,
 		&"main_description",
 		_edited_seed.main_description,
-		"SeedInfo\nmain_description"
+		"main_description"
 	)
-	var visited: Dictionary = {}
-	_append_resource_parameters(_edited_seed.main_skill, "Main", visited)
-	_append_resource_parameters(_edited_seed.sub_skill, "Sub", visited)
-	_append_resource_parameters(_edited_seed.acid_block, "Block", visited)
+	_add_parameter_row(
+		_edited_seed,
+		&"sub_description",
+		_edited_seed.sub_description,
+		"sub_description"
+	)
+	if _edited_seed.acid_block != null:
+		_add_parameter_row(_edited_seed.acid_block, &"max_hp", _edited_seed.acid_block.max_hp, "max_hp")
+		_add_parameter_row(_edited_seed.acid_block, &"damage", _edited_seed.acid_block.damage, "damage")
+	_append_skill_parameters(_edited_seed.main_skill, "Main")
+	_append_skill_parameters(_edited_seed.sub_skill, "Sub")
 	empty_label.visible = _bindings.is_empty()
 	apply_button.disabled = _bindings.is_empty()
 
 
-func _append_resource_parameters(resource: Resource, path: String, visited: Dictionary) -> void:
-	if resource == null or visited.has(resource):
+func _append_skill_parameters(skill: SeedSkill, heading_prefix: String) -> void:
+	if skill == null:
 		return
-	visited[resource] = true
-	var resource_name: String = resource.get_script().get_global_name() if resource.get_script() != null else resource.get_class()
-	for property in resource.get_property_list():
+	for index in range(skill.effects.size()):
+		_append_effect_parameters(skill.effects[index], heading_prefix, index)
+
+
+func _append_effect_parameters(effect: SeedEffect, heading_prefix: String, index: int) -> void:
+	if effect == null:
+		return
+	var effect_name: String = effect.get_script().get_global_name() if effect.get_script() != null else effect.get_class()
+	var heading := Label.new()
+	heading.text = "%s E%d: %s" % [heading_prefix, index + 1, effect_name]
+	heading.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	heading.tooltip_text = effect_name
+	heading.add_theme_font_size_override("font_size", 9)
+	parameter_list.add_child(heading)
+	for property in effect.get_property_list():
 		if (
 			not (int(property.usage) & PROPERTY_USAGE_EDITOR)
 			or not (int(property.usage) & PROPERTY_USAGE_SCRIPT_VARIABLE)
 		):
 			continue
 		var property_name := StringName(property.name)
-		var value: Variant = resource.get(property_name)
-		if value is Resource:
-			_append_resource_parameters(value as Resource, "%s/%s" % [path, property_name], visited)
-		elif value is Array:
-			for index in range(value.size()):
-				if value[index] is Resource:
-					_append_resource_parameters(value[index] as Resource, "%s/%s[%d]" % [path, property_name, index], visited)
-		elif property.type in [TYPE_BOOL, TYPE_INT, TYPE_FLOAT]:
-			_add_parameter_row(
-				resource,
-				property_name,
-				value,
-				"%s\n%s\n%s" % [path, resource_name, property_name]
-			)
+		if property_name in EXCLUDED_EFFECT_PROPERTIES:
+			continue
+		if property.type in [TYPE_BOOL, TYPE_INT, TYPE_FLOAT]:
+			_add_parameter_row(effect, property_name, effect.get(property_name), String(property_name))
 
 
 func _add_parameter_row(resource: Resource, property_name: StringName, value: Variant, label_text: String) -> void:

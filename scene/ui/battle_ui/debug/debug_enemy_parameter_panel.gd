@@ -6,6 +6,7 @@ signal enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInf
 const EXCLUDED_EFFECT_PROPERTIES: Array[StringName] = [&"priority", &"enabled"]
 const DEFAULT_EDITOR_WIDTH := 96.0
 const DESCRIPTION_EDITOR_WIDTH := DEFAULT_EDITOR_WIDTH * 2.0
+const DESCRIPTION_EDITOR_HEIGHT := 52.0
 const DEFAULT_LABEL_WIDTH := 168.0
 const DESCRIPTION_LABEL_WIDTH := 72.0
 const BOOL_ACTIVE_BACKGROUND := Color("699ce8")
@@ -129,7 +130,7 @@ func _add_parameter_row(resource: Resource, property_name: StringName, value: Va
 	elif value is String:
 		var text_edit := TextEdit.new()
 		text_edit.text = value
-		text_edit.custom_minimum_size.y = 36.0
+		text_edit.custom_minimum_size.y = DESCRIPTION_EDITOR_HEIGHT
 		text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 		editor = text_edit
 	else:

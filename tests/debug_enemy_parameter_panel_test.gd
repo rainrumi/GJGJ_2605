@@ -92,6 +92,11 @@ func _run() -> void:
 		"description入力欄を通常入力欄の2倍幅にする"
 	)
 	_expect(
+		description_editor != null
+		and description_editor.custom_minimum_size.y == DebugEnemyParameterPanel.DESCRIPTION_EDITOR_HEIGHT,
+		"description入力欄の縦幅を約1行分広げる"
+	)
+	_expect(
 		outside_stomach_editor != null
 		and outside_stomach_editor.has_theme_icon_override("unchecked"),
 		"falseのboolへチェック背景色を持つ未チェックアイコンを設定する"

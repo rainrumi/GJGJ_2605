@@ -23,6 +23,8 @@
 - [x] `BattleUI` で所持種を調整画面へ渡し、置換要求を `Game` へ中継する。
 - [x] `GameSeedController` に同一所持 Resource を複製済み Resource へ置換する API を追加する。
 - [x] Debug 制限、Resource 保存、所持枠置換を自動テストする。
+- [x] `debug_seed_parameter_panel.gd` の列挙対象を説明文、酸化ブロック、主・副スキルの各 Effect に限定し、`priority` / `enabled` を非表示にする。
+- [x] `sub_description` と副スキル Effect の編集・保存、および不要プロパティ非表示を `debug_seed_parameter_panel_test.gd` で検証する。
 
 ## 検証 TODO
 
@@ -31,6 +33,7 @@
 - [x] 関連テストで Debug 無効時の非表示、編集適用、Resource の永続化を確認。
 - [x] `res://scene/main/game/game.tscn` の headless smoke とログ確認。
 - [ ] 画面レイアウトと SpinBox / CheckBox 操作は実表示で確認する（利用可能な場合）。
+- [x] 種パネル変更後に関連テスト、対象 Scene の headless smoke、ログ全文確認を再実行する。
 
 ## リスク
 
