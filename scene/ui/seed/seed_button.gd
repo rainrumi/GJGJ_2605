@@ -103,6 +103,11 @@ func set_seed_icon_texture(texture: Texture2D) -> void:
 	icon_rect.visible = texture != null
 
 
+# 種アイコンの基準位置から横方向へランダムにずらす
+func randomize_icon_horizontal_offset(max_offset: int) -> void:
+	icon_rect.position.x = float(randi_range(-maxi(0, max_offset), maxi(0, max_offset)))
+
+
 # 種元データ取得
 func get_seed_source() -> Resource:
 	return source_data

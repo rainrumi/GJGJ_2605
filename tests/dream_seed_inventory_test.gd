@@ -418,6 +418,10 @@ func _check_game_inventory_integration() -> void:
 	_expect(closed_list.get_theme_constant("v_separation") == 10, "通常時装備種の縦間隔を10pxにする")
 	_expect(closed_list.get_child_count() == 6, "通常時に装備中の6種を表示する")
 	_expect(closed_list.alignment == FlowContainer.ALIGNMENT_CENTER, "通常時装備種を各段の中央へ揃える")
+	_expect(
+		closed_list.icon_horizontal_jitter == 2,
+		"通常時装備種のアイコンを配置更新ごとに左右2px以内でずらす"
+	)
 	_expect(closed_button.size.is_equal_approx(Vector2(30.0, 30.0)), "通常時装備種の透明当たり判定を30px角にする")
 	_expect(closed_button.mouse_filter == Control.MOUSE_FILTER_STOP, "通常時装備種の透明四角で入力を受ける")
 	_expect(closed_button.flat, "通常時装備種の当たり判定背景を無色にする")
@@ -516,9 +520,16 @@ func _check_game_inventory_integration() -> void:
 			6:
 				expected_positions = [Vector2(0.0, 0.0), Vector2(40.0, 0.0), Vector2(80.0, 0.0), Vector2(0.0, 40.0), Vector2(40.0, 40.0), Vector2(80.0, 40.0)]
 		for index in range(expected_positions.size()):
+			var positioned_button := closed_list.get_child(index) as SeedButton
 			_expect(
-				(closed_list.get_child(index) as SeedButton).position.is_equal_approx(expected_positions[index]),
+				positioned_button.position.is_equal_approx(expected_positions[index]),
 				"%d個の夢の種を指定位置へ配置する: %d" % [seed_count, index]
+			)
+			_expect(
+				positioned_button.icon_rect.position.x >= -2.0
+				and positioned_button.icon_rect.position.x <= 2.0
+				and is_equal_approx(positioned_button.icon_rect.position.y, 0.0),
+				"%d個表示時のアイコンX位置を正位置から左右2px以内でずらす: %d" % [seed_count, index]
 			)
 	ui.set_seed_inventory(sparse_controller.get_flowers(), [])
 	await get_tree().process_frame
