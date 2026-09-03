@@ -4,17 +4,17 @@
 [ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
 [ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
 [ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_not_adjacent_acid_line_change_acid_damage.gd" id="effect_5"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/time/enemy_effect_on_digestion_not_touch_acid_line_take_acid_damage.gd" id="effect_5"]
 
 [sub_resource type="Resource" id="Resource_jnyvg"]
 script = ExtResource("2_acid_block")
-max_hp = 120
+max_hp = 100
 damage = 10
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_dg80s"]
 script = ExtResource("effect_5")
-acid_damage_delta = 30
+damage = 100
 
 [sub_resource type="Resource" id="Resource_7qukn"]
 script = ExtResource("4_enemy_skill")
@@ -25,5 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 16010003002
 display_name = "E2"
 acid_block = SubResource("Resource_jnyvg")
-description = "消化ラインに接触していない時、自身の消化ダメージを30増やす。"
+description = "胃袋内で消化ラインに接触していない時、消化ダメージを100受ける。"
 main_skill = SubResource("Resource_7qukn")

@@ -25,6 +25,9 @@ func process(input: EnemyDigestionInput) -> EnemyDigestionBatchResult:
 	var batch := _resolver.create_results(input) # 計算結果
 	_enemy_effects.prepare(input.enemies, input.stomach)
 	_presenter.sync(input.enemies)
+	if not batch.results.is_empty():
+		_digestion_state.start_acid_line_damage()
+		_enemy_effects.execute()
 	for result in batch.results:
 		var request := _resolver.request_damage(result) # 消化要求
 		_enemy_effects.execute()

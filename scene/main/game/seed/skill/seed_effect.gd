@@ -46,6 +46,11 @@ func on_finish_acid_seed(_state: DreamSeedSkillState, _context: Dictionary) -> b
 	return false
 
 
+# 種消化後も戦闘中に効果計算へ参加するか
+func persists_after_seed_digested() -> bool:
+	return false
+
+
 # 種ブロック完了
 func on_finish_acid_seed_block(_context: Dictionary) -> void:
 	pass

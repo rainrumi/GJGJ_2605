@@ -602,10 +602,8 @@ func _finish_drag_operation() -> void:
 func _sync_seed_sources() -> void:
 	# 花値
 	var flowers := seed_controller.get_flowers()
-	seed_effects.setup(flowers)
+	seed_effects.refresh_flowers(flowers)
 	seed_effects.set_day(current_day)
-	if _battle_start_context != null:
-		seed_effects.add_acid_damage_bonus_rate(_battle_start_context.permanent_acid_damage_bonus_rate)
 	_refresh_seed_structural_effects()
 	ui.set_seed_inventory(flowers, seed_controller.get_stored_seeds())
 	seed_inventory_changed.emit(flowers.duplicate(), seed_controller.get_stored_seeds().duplicate())

@@ -5,7 +5,7 @@ extends LeftTooltip
 # 初期化
 func _ready() -> void:
 	super()
-	set_title("HP(プレイヤー)")
+	set_title("HP(ティーナ)")
 
 
 # HP情報設定
@@ -32,6 +32,6 @@ func set_hp_info(
 		},
 	])
 	set_note(
-		"HPが0になるとペナルティとして%d分経過し、HPを%d%%回復します。" % [rest_minutes, total_rest_recovery_percent],
+		"ティーナのHPが0になるとペナルティとして%d分経過し、HPを%d%%回復します。" % [rest_minutes, total_rest_recovery_percent],
 		true
 	)

@@ -2,6 +2,7 @@ class_name EnemyDigestionState
 extends RefCounted
 
 signal digested_registered(enemy: Enemy)
+signal acid_line_damage_started
 signal batch_completed(
 	elapsed_seconds: int,
 	current_seconds: int,
@@ -10,6 +11,11 @@ signal batch_completed(
 
 var last_acid_damage := 0 # 直近消化値
 var _pending: Array[Enemy] = [] # 消化済み一覧
+
+
+# 消化ラインダメージ開始
+func start_acid_line_damage() -> void:
+	acid_line_damage_started.emit()
 
 
 # 消化状態初期化

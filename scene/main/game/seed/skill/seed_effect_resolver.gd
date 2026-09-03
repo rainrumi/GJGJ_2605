@@ -5,6 +5,7 @@ var _status_preview_base_effects: Array[SeedEffect] = []
 var _status_preview_only := false
 var _state := DreamSeedSkillState.new() # 状態
 var _planted_flowers: Array[SeedInfo] = [] # 植付花
+var _persistent_sub_effects: Array[SeedEffect] = [] # 消化後持続副効果
 
 
 # 装備中の同種数条件を反映した胃袋サイズ補正
@@ -29,13 +30,16 @@ static func get_stomach_size_bonus(flowers: Array[SeedInfo]) -> Vector2i:
 func setup(flowers: Array) -> void:
 	_status_preview_only = false
 	_status_preview_base_effects.clear()
-	_planted_flowers.clear()
-	for flower in flowers:
-		if flower is SeedInfo:
-			_planted_flowers.append(flower as SeedInfo)
+	_refresh_flowers(flowers)
+	_persistent_sub_effects.clear()
 	_state.reset()
 	for effect in _get_main_effects():
 		effect.setup(_state)
+
+
+# 戦闘状態を保ったまま装備中の種だけを更新する
+func refresh_flowers(flowers: Array) -> void:
+	_refresh_flowers(flowers)
 
 
 # 既存効果を保ち、新規候補の条件付き効果だけを除外してpreviewを初期化する
@@ -148,6 +152,11 @@ func add_Acided_seed_effect(seed: SeedInfo, minutes := 0, stomach: StomachBoard 
 	for effect in _get_seed_effects(seed.get_sub_skill()):
 		if effect.on_finish_acid_seed(_state, context):
 			handled = true
+			if effect.persists_after_seed_digested():
+				_persistent_sub_effects.append(effect)
+	_persistent_sub_effects.sort_custom(func(a: SeedEffect, b: SeedEffect) -> bool:
+		return a.priority < b.priority
+	)
 	return handled
 
 
@@ -319,6 +328,10 @@ func _get_heal_bonus_rate(context: Dictionary) -> float:
 func _get_main_effects() -> Array[SeedEffect]:
 	var effects := _collect_main_effects(_planted_flowers)
 	if not _status_preview_only:
+		effects.append_array(_persistent_sub_effects)
+		effects.sort_custom(func(a: SeedEffect, b: SeedEffect) -> bool:
+			return a.priority < b.priority
+		)
 		return effects
 	var remaining_base_effects := _status_preview_base_effects.duplicate()
 	var preview_effects: Array[SeedEffect] = []
@@ -330,6 +343,13 @@ func _get_main_effects() -> Array[SeedEffect]:
 		elif effect.is_status_preview_change():
 			preview_effects.append(effect)
 	return preview_effects
+
+
+func _refresh_flowers(flowers: Array) -> void:
+	_planted_flowers.clear()
+	for flower in flowers:
+		if flower is SeedInfo:
+			_planted_flowers.append(flower as SeedInfo)
 
 
 func _collect_main_effects(flowers: Array) -> Array[SeedEffect]:
