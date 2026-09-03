@@ -80,6 +80,7 @@ func _run() -> void:
 	skill.effects = [effect, before_damage, after_damage, digested]
 	enemy.data.main_skill = skill
 	enemy.data.main_skill_active = true
+	enemy.set_Aciding(true)
 	var enemies: Array[Enemy] = [enemy] # 戦闘参加敵
 	var player_health := PlayerHealth.new() # プレイヤーHP
 	var spawn_queue := EnemySpawnQueue.new() # 敵生成要求

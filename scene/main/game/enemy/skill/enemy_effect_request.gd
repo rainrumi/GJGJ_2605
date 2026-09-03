@@ -22,7 +22,7 @@ func setup(
 
 # 要求実行
 func execute() -> void:
-	if effect == null or not effect.enabled:
+	if effect == null or not effect.can_request(activation_data):
 		return
 	effect.begin_activation(activation_data)
 	effect.apply()

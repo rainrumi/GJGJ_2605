@@ -46,6 +46,10 @@ enum ValueSource {
 @export var priority :int = 0
 # 有効状態
 @export var enabled :bool = true
+@export_group("発動場所")
+@export var activates_in_stomach := true
+@export var activates_outside_stomach := false
+@export_group("")
 var state := EnemyEffectState.new() # 個体効果状態
 var _activation_data: EnemyEffectActivationData # 発動時値
 var owner: EnemyData # 効果所有データ
@@ -94,7 +98,13 @@ func can_request(data: EnemyEffectActivationData) -> bool:
 		return false
 	if not owner.skills_enabled:
 		return false
-	var lifecycle_allowed := not owner.stomach_status.is_digested or can_activate_when_owner_digested()
+	var lifecycle_allowed := false
+	if owner.stomach_status.is_digested:
+		lifecycle_allowed = can_activate_when_owner_digested()
+	elif owner.stomach_status.is_digesting:
+		lifecycle_allowed = activates_in_stomach
+	else:
+		lifecycle_allowed = activates_outside_stomach
 	return lifecycle_allowed and accepts_activation(data)
 
 

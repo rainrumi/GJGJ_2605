@@ -60,13 +60,15 @@ func _run() -> void:
 	_expect(panel.get_global_rect().position.x >= viewport_rect.size.x * 0.5, "調整画面を画面右半分へ配置する")
 	_expect(panel.get_global_rect().end.x <= viewport_rect.end.x, "調整画面を画面右端からはみ出さない")
 	_expect(panel.get("_enemies").size() == 1, "同じ悪夢 Resource は選択肢へ重複表示しない")
-	_expect(panel.get("_bindings").size() == 4, "説明文、HP、攻撃、関与する効果プロパティだけを列挙する")
+	_expect(panel.get("_bindings").size() == 6, "説明文、HP、攻撃、発動場所、関与する効果プロパティだけを列挙する")
 	var scroll := panel.get_node("Margin/Content/Scroll") as ScrollContainer
 	_expect(not scroll.get_v_scroll_bar().visible, "E2相当の情報量はマウスホイールなしで一画面に収める")
 	panel.enemy_parameter_applied.connect(_on_enemy_parameter_applied)
 	var hp_editor: SpinBox
 	var attack_delta_editor: SpinBox
 	var description_editor: TextEdit
+	var in_stomach_editor: CheckBox
+	var outside_stomach_editor: CheckBox
 	for binding in panel.get("_bindings"):
 		if binding.resource is EnemyInfo and binding.property == &"description":
 			description_editor = binding.editor as TextEdit
@@ -74,9 +76,15 @@ func _run() -> void:
 			hp_editor = binding.editor as SpinBox
 		if binding.resource is EnemyEffectOnAdjacentStomachChangeAttack and binding.property == &"attack_delta":
 			attack_delta_editor = binding.editor as SpinBox
+		if binding.resource is EnemyEffectOnAdjacentStomachChangeAttack and binding.property == &"activates_in_stomach":
+			in_stomach_editor = binding.editor as CheckBox
+		if binding.resource is EnemyEffectOnAdjacentStomachChangeAttack and binding.property == &"activates_outside_stomach":
+			outside_stomach_editor = binding.editor as CheckBox
 		_expect(binding.property not in [&"priority", &"enabled"], "汎用の priority と enabled は表示しない")
 	_expect(hp_editor != null, "悪夢 max_hp の入力欄を作る")
 	_expect(attack_delta_editor != null, "関与する効果 attack_delta の入力欄を作る")
+	_expect(in_stomach_editor != null and in_stomach_editor.button_pressed, "胃袋内発動をデフォルトtrueで表示する")
+	_expect(outside_stomach_editor != null and not outside_stomach_editor.button_pressed, "胃袋外発動をデフォルトfalseで表示する")
 	_expect(description_editor != null, "悪夢スキル説明文の複数行入力欄を作る")
 	if description_editor != null:
 		description_editor.text = "Edited skill description"
@@ -84,6 +92,10 @@ func _run() -> void:
 		hp_editor.value = 777
 	if attack_delta_editor != null:
 		attack_delta_editor.value = -20
+	if in_stomach_editor != null:
+		in_stomach_editor.button_pressed = false
+	if outside_stomach_editor != null:
+		outside_stomach_editor.button_pressed = true
 	(panel.get_node("Margin/Content/Buttons/ApplyButton") as Button).pressed.emit()
 	_expect(_applied_original == original, "置換元の悪夢を通知する")
 	_expect(_applied_edited != null and _applied_edited != original, "複製した悪夢を通知する")
@@ -92,14 +104,19 @@ func _run() -> void:
 	_expect(_applied_edited != null and _applied_edited.description == "Edited skill description", "説明文の変更を複製側へ適用する")
 	var edited_effect := _applied_edited.main_skill.effects[0] as EnemyEffectOnAdjacentStomachChangeAttack if _applied_edited != null else null
 	_expect(
-		edited_effect != null and edited_effect.attack_delta == -20,
+		edited_effect != null
+		and edited_effect.attack_delta == -20
+		and not edited_effect.activates_in_stomach
+		and edited_effect.activates_outside_stomach,
 		"効果固有プロパティの変更を適用する"
 	)
 	var persisted := ResourceLoader.load(save_path, "", ResourceLoader.CACHE_MODE_IGNORE) as EnemyInfo
 	_expect(
 		persisted != null
 		and persisted.acid_block.max_hp == 777
-		and persisted.description == "Edited skill description",
+		and persisted.description == "Edited skill description"
+		and not persisted.main_skill.effects[0].activates_in_stomach
+		and persisted.main_skill.effects[0].activates_outside_stomach,
 		"数値と説明文を Resource へ永続化する"
 	)
 	_expect(_applied_edited.resource_path == save_path, "保存後の悪夢 Resource が保存先を引き継ぐ")

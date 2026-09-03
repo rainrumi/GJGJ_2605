@@ -64,6 +64,8 @@ func _run() -> void:
 	var fast := TestEffect.new() # 先順位効果
 	var slow_owner := Enemy.new() # 後順位所有者
 	var fast_owner := Enemy.new() # 先順位所有者
+	slow_owner.set_Aciding(true)
+	fast_owner.set_Aciding(true)
 	slow.bind_owner(slow_owner.data, stack)
 	fast.bind_owner(fast_owner.data, stack)
 	slow.priority = 10
@@ -90,6 +92,7 @@ func _test_chain_limit() -> void:
 	var stack := EnemyEffectStack.new() # 対象スタック
 	var effect := LoopEffect.new() # 連鎖効果
 	var owner := Enemy.new() # 効果所有者
+	owner.set_Aciding(true)
 	effect.bind_owner(owner.data, stack)
 	effect.stack = stack
 	stack.request(effect, TestActivationData.new(0))
