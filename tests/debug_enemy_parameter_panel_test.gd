@@ -86,6 +86,16 @@ func _run() -> void:
 	_expect(in_stomach_editor != null and in_stomach_editor.button_pressed, "胃袋内発動をデフォルトtrueで表示する")
 	_expect(outside_stomach_editor != null and not outside_stomach_editor.button_pressed, "胃袋外発動をデフォルトfalseで表示する")
 	_expect(description_editor != null, "悪夢スキル説明文の複数行入力欄を作る")
+	_expect(
+		description_editor != null
+		and description_editor.custom_minimum_size.x == DebugEnemyParameterPanel.DESCRIPTION_EDITOR_WIDTH,
+		"description入力欄を通常入力欄の2倍幅にする"
+	)
+	_expect(
+		outside_stomach_editor != null
+		and outside_stomach_editor.has_theme_icon_override("unchecked"),
+		"falseのboolへチェック背景色を持つ未チェックアイコンを設定する"
+	)
 	if description_editor != null:
 		description_editor.text = "Edited skill description"
 	if hp_editor != null:

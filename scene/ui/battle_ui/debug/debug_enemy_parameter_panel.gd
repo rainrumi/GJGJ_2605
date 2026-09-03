@@ -4,6 +4,11 @@ extends PanelContainer
 signal enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInfo)
 
 const EXCLUDED_EFFECT_PROPERTIES: Array[StringName] = [&"priority", &"enabled"]
+const DEFAULT_EDITOR_WIDTH := 96.0
+const DESCRIPTION_EDITOR_WIDTH := DEFAULT_EDITOR_WIDTH * 2.0
+const DEFAULT_LABEL_WIDTH := 168.0
+const DESCRIPTION_LABEL_WIDTH := 72.0
+const BOOL_ACTIVE_BACKGROUND := Color("699ce8")
 
 @onready var enemy_option: OptionButton = %EnemyOption
 @onready var parameter_list: VBoxContainer = %ParameterList
@@ -112,7 +117,9 @@ func _add_parameter_row(resource: Resource, property_name: StringName, value: Va
 	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	label.tooltip_text = label_text
 	label.add_theme_font_size_override("font_size", 9)
-	label.custom_minimum_size.x = 168.0
+	label.custom_minimum_size.x = (
+		DESCRIPTION_LABEL_WIDTH if property_name == &"description" else DEFAULT_LABEL_WIDTH
+	)
 	row.add_child(label)
 	var editor: Control
 	if value is bool:
@@ -134,13 +141,58 @@ func _add_parameter_row(resource: Resource, property_name: StringName, value: Va
 		spin_box.custom_arrow_step = spin_box.step
 		spin_box.set_meta("integer_value", value is int)
 		editor = spin_box
-	editor.custom_minimum_size.x = 96.0
+	editor.custom_minimum_size.x = (
+		DESCRIPTION_EDITOR_WIDTH if property_name == &"description" else DEFAULT_EDITOR_WIDTH
+	)
 	editor.add_theme_font_size_override("font_size", 10)
 	if not editor is TextEdit:
 		editor.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(editor)
 	parameter_list.add_child(row)
+	if editor is CheckBox:
+		var unchecked_icon := _create_colored_unchecked_icon(editor as CheckBox)
+		if unchecked_icon != null:
+			(editor as CheckBox).add_theme_icon_override("unchecked", unchecked_icon)
 	_bindings.append({"resource": resource, "property": property_name, "editor": editor})
+
+
+func _create_colored_unchecked_icon(check_box: CheckBox) -> ImageTexture:
+	var checked_icon := check_box.get_theme_icon("checked")
+	if checked_icon == null:
+		return _create_fallback_unchecked_icon()
+	var image := checked_icon.get_image()
+	if image == null or image.is_empty():
+		return _create_fallback_unchecked_icon()
+	var color_counts: Dictionary[Color, int] = {}
+	for y in image.get_height():
+		for x in image.get_width():
+			var pixel := image.get_pixel(x, y)
+			if pixel.a < 0.5 or pixel.s < 0.25:
+				continue
+			color_counts[pixel] = color_counts.get(pixel, 0) + 1
+	if color_counts.is_empty():
+		return _create_fallback_unchecked_icon()
+	var background_color := color_counts.keys()[0] as Color
+	for color: Color in color_counts:
+		if color_counts[color] > color_counts[background_color]:
+			background_color = color
+	for y in image.get_height():
+		for x in image.get_width():
+			var pixel := image.get_pixel(x, y)
+			if pixel.a >= 0.5 and pixel.s < 0.25:
+				image.set_pixel(x, y, Color(background_color, pixel.a))
+	return ImageTexture.create_from_image(image)
+
+
+func _create_fallback_unchecked_icon() -> ImageTexture:
+	var image := Image.create(16, 16, false, Image.FORMAT_RGBA8)
+	image.fill(Color.TRANSPARENT)
+	image.fill_rect(Rect2i(2, 2, 12, 12), BOOL_ACTIVE_BACKGROUND)
+	image.set_pixel(2, 2, Color.TRANSPARENT)
+	image.set_pixel(13, 2, Color.TRANSPARENT)
+	image.set_pixel(2, 13, Color.TRANSPARENT)
+	image.set_pixel(13, 13, Color.TRANSPARENT)
+	return ImageTexture.create_from_image(image)
 
 
 func _on_enemy_selected(index: int) -> void:
