@@ -46,6 +46,11 @@ func _run() -> void:
 	_expect(Character.SHAKE_DISTANCE == 1.0, "シェイク幅が1.0である")
 	game.call("_apply_player_damage", damage_values)
 	_expect(sprite.texture == damage_texture, "被ダメージ振動中はダメージ画像を表示する")
+	var hp_view := game.get_node("UI/HpView") as HpView
+	var hp_text := game.get_node("UI/HpView/HpText") as Label
+	_expect(game.call("get_current_hp") == 99, "被ダメージ時にHPを即時反映する")
+	_expect(hp_view.get("_current_hp") == 99, "ダメージ表示と同時にHPバー更新を開始する")
+	_expect(hp_text.text == "99/100", "ダメージ表示と同時にHP表記を更新する")
 	var shake_tween := character.get("_shake_tween") as Tween
 	var seed_shake_tween := seed_button_list.get("_shake_tween") as Tween
 	for _sample in range(SAMPLE_COUNT):
