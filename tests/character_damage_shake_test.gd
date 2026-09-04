@@ -33,6 +33,9 @@ func _run() -> void:
 	var damage_texture := load(
 		"res://resource/image/texture/character/tex_character_200_portrate_2000.png"
 	) as Texture2D
+	var battle_clear_texture := load(
+		"res://resource/image/texture/character/tex_character_200_portrate_3000.png"
+	) as Texture2D
 
 	_expect(sprite.texture == normal_texture, "ゲーム開始時は通常表情で上書きする")
 	_expect(Character.SHAKE_DURATION == 0.2, "シェイク時間が0.2秒である")
@@ -55,6 +58,10 @@ func _run() -> void:
 	_expect(sprite.texture == damage_texture, "連続被ダメージ時はダメージ画像を上書きする")
 	game.call("_apply_player_damage_values")
 	_expect(sprite.texture == normal_texture, "ダメージを受けない状態で通常画像へ戻す")
+	game.call("_finish_battle", true, "")
+	_expect(sprite.texture == battle_clear_texture, "戦闘勝利後はクリア画像を表示する")
+	game.call("start_battle")
+	_expect(sprite.texture == normal_texture, "次の戦闘開始時は通常画像へ戻す")
 
 	root.remove_child(game)
 	game.free()

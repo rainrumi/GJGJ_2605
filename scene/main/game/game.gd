@@ -109,6 +109,7 @@ func set_beat_conductor(conductor: BeatConductor) -> void:
 func start_battle(context: BattleInfo = null) -> void:
 	# 戦闘文脈
 	var battle_context := context if context != null else BattleInfo.new()
+	character.show_normal_texture()
 	_battle_start_context = _copy_battle_context(battle_context)
 	_awaiting_time_over_decision = false
 	_pending_depleted_seed_sources.clear()
@@ -778,6 +779,8 @@ func _advance_acid_turn() -> void:
 		minutes = acid_result.time_override_minutes
 		_refresh_after_battle_event()
 	_apply_player_damage_values()
+	if _all_enemys_Acided():
+		character.show_battle_clear_texture()
 	await _resolve_post_acid_visuals(acid_result.Acided_enemies)
 	_finish_acid_turn()
 
@@ -924,6 +927,8 @@ func _commit_depleted_seed_sources() -> void:
 func _finish_battle(won: bool, _message: String) -> void:
 	_awaiting_time_over_decision = false
 	battle_active = false
+	if won:
+		character.show_battle_clear_texture()
 	input_controller.set_active(false)
 	auto_acid_enabled = false
 	auto_acid_paused_by_user = false

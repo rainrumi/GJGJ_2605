@@ -9,6 +9,7 @@ const SHAKE_STEP_COUNT := 3
 
 @export var normal_texture: Texture2D
 @export var damage_texture: Texture2D
+@export var battle_clear_texture: Texture2D
 
 var _shake_tween: Tween
 var _sprite_base_position := Vector2.ZERO
@@ -40,3 +41,7 @@ func shake() -> void:
 
 func show_normal_texture() -> void:
 	sprite.texture = normal_texture
+
+
+func show_battle_clear_texture() -> void:
+	sprite.texture = battle_clear_texture
