@@ -9,10 +9,13 @@ enum DragMode {
 }
 const START_HOUR: int = 22
 const END_HOUR: int = 30
+const RECOVERY_END_HOUR: int = 27
 const REST_MINUTES: int = 30
 const MAX_HP: int = 100
 const REST_HP_RATE: float = 0.1
-const TIME_OVER_HP_RECOVERY_RATE: float = 0.7
+const RECOVERY_BASE_RATE: float = 1.0
+const RECOVERY_HOURLY_LOSS_RATE: float = 0.1
+const RECOVERY_MINIMUM_RATE: float = 0.5
 const acid_AUTO_INTERVAL: float = 0.05
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const DRAG_CENTER_TWEEN_DURATION := 0.3
@@ -943,7 +946,16 @@ func _finish_battle(won: bool, _message: String) -> void:
 func _apply_time_over_recovery() -> void:
 	# HP
 	var previous_hp := hp
-	hp = mini(effective_max_hp, hp + ceili(float(effective_max_hp) * TIME_OVER_HP_RECOVERY_RATE))
+	var recovery_rate := StageClearCalculatorRecovery.get_clear_time_recovery_rate(
+		seed_controller.get_flowers(),
+		minutes,
+		START_HOUR,
+		RECOVERY_END_HOUR,
+		RECOVERY_BASE_RATE,
+		RECOVERY_HOURLY_LOSS_RATE,
+		RECOVERY_MINIMUM_RATE
+	)
+	hp = mini(effective_max_hp, hp + ceili(float(effective_max_hp) * recovery_rate))
 	last_time_over_recovery_percent = roundi(float(hp - previous_hp) / float(effective_max_hp) * 100.0)
 # auto消化timer更新
 func _update_auto_acid_timer() -> void:

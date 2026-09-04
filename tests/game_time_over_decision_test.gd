@@ -71,9 +71,15 @@ func _run() -> void:
 	await process_frame
 	_expect(not decision.visible, "諦める選択後にパネルを閉じる")
 	_expect(battle_results == [false], "諦める選択で従来の失敗フローを確定する")
-	_expect(game.get("hp") == 82, "諦める選択で時間切れ回復を適用する")
-	_expect(game.call("get_last_time_over_recovery_percent") == 70, "時間切れ回復割合を記録する")
+	_expect(game.get("hp") == 62, "30時の時間別回復量50を失敗時にも適用する")
+	_expect(game.call("get_last_time_over_recovery_percent") == 50, "失敗時の表示用回復割合を実回復量に合わせる")
 	_expect(depleted_sources == [seed], "諦めた挑戦の種枯渇を確定する")
+
+	game.set("hp", 12)
+	game.set("minutes", 23 * 60)
+	game.call("_apply_time_over_recovery")
+	_expect(game.get("hp") == 100, "23時の時間別回復量90を失敗時回復に使用する")
+	_expect(game.call("get_last_time_over_recovery_percent") == 88, "表示用回復割合を最大HPまでの実回復量に合わせる")
 
 	game.call("cancel_battle")
 	root.remove_child(game)

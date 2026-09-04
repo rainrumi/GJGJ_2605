@@ -81,11 +81,22 @@ func _check_today_rest_button() -> void:
 	root.add_child(stage_select)
 	await process_frame
 	var run_state := RunState.new()
-	run_state.unlock_continuous_play()
+	run_state.current_hp = 99
 	var unlocked_stage_ids: Array[int] = []
-	stage_select.setup_stage_choices(null, 5, unlocked_stage_ids, run_state, 23 * 60)
+	stage_select.setup_stage_choices(null, 1, unlocked_stage_ids, run_state, 22 * 60)
 	var choices := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/StageChoices")
 	var rest_button := choices.get_node("TodayRestButton") as Button
+	_expect(rest_button.visible, "初日はHPが100未満なら今日は休むボタンを表示する")
+	var initial_rest_requested := [false]
+	stage_select.today_rest_requested.connect(func() -> void: initial_rest_requested[0] = true)
+	rest_button.pressed.emit()
+	_expect(bool(initial_rest_requested[0]), "初日に表示した今日は休むボタンから休息を要求できる")
+	run_state.current_hp = 100
+	stage_select.setup_stage_choices(null, 1, unlocked_stage_ids, run_state, 22 * 60)
+	_expect(not rest_button.visible, "初日はHPが100以上なら今日は休むボタンを表示しない")
+
+	run_state.unlock_continuous_play()
+	stage_select.setup_stage_choices(null, 5, unlocked_stage_ids, run_state, 23 * 60)
 	_expect(rest_button != null and not rest_button.visible, "当日未挑戦なら今日は休むボタンを表示しない")
 	run_state.mark_area_challenged_today()
 	var scroll := stage_select.get_node("UI/StageChoicesScroll") as ScrollContainer
@@ -100,7 +111,18 @@ func _check_today_rest_button() -> void:
 	_expect(label.text == "今日は休む", "LocationLabel設定で今日は休むと表示する")
 	_expect(label.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER, "今日は休むを中央揃えにする")
 	var recovery_label := rest_button.get_node("RecoveryLabel") as Label
-	_expect(recovery_label.text == "（HP40回復）", "23時の回復量を表示する")
+	_expect(recovery_label.text == "（HP90回復）", "23時の回復量を表示する")
+	var no_flowers: Array[SeedInfo] = []
+	(rest_button as TodayRestButton).set_recovery_info(22 * 60, 100, no_flowers)
+	_expect(recovery_label.text == "（HP100回復）", "22時の回復量を表示する")
+	(rest_button as TodayRestButton).set_recovery_info(24 * 60, 100, no_flowers)
+	_expect(recovery_label.text == "（HP80回復）", "0時の回復量を表示する")
+	(rest_button as TodayRestButton).set_recovery_info(25 * 60, 100, no_flowers)
+	_expect(recovery_label.text == "（HP70回復）", "1時の回復量を表示する")
+	(rest_button as TodayRestButton).set_recovery_info(26 * 60, 100, no_flowers)
+	_expect(recovery_label.text == "（HP60回復）", "2時の回復量を表示する")
+	(rest_button as TodayRestButton).set_recovery_info(27 * 60, 100, no_flowers)
+	_expect(recovery_label.text == "（HP50回復）", "3時以降の回復量を表示する")
 	_expect(recovery_label.position.y > label.position.y, "回復量をLocationLabelの下に表示する")
 	_expect(label.position.y < 9.0, "LocationLabelを上へ移動する")
 	run_state.reset_daily_challenge_state()

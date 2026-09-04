@@ -6,8 +6,9 @@ const PRESSED_SCALE := 0.95
 const TWEEN_DURATION := 0.1
 const RECOVERY_START_HOUR := 22
 const RECOVERY_END_HOUR := 27
-const RECOVERY_BASE_RATE := 0.5
+const RECOVERY_BASE_RATE := 1.0
 const RECOVERY_HOURLY_LOSS_RATE := 0.1
+const RECOVERY_MINIMUM_RATE := 0.5
 
 @onready var frame: NinePatchRect = $Frame
 @onready var recovery_label: Label = $RecoveryLabel
@@ -35,7 +36,8 @@ func set_recovery_info(current_minutes: int, max_hp: int, planted_flowers: Array
 		RECOVERY_START_HOUR,
 		RECOVERY_END_HOUR,
 		RECOVERY_BASE_RATE,
-		RECOVERY_HOURLY_LOSS_RATE
+		RECOVERY_HOURLY_LOSS_RATE,
+		RECOVERY_MINIMUM_RATE
 	)
 	var recovery_amount := ceili(float(max_hp) * recovery_rate)
 	recovery_label.text = "（HP%d回復）" % recovery_amount

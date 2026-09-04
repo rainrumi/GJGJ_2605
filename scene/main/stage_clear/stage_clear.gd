@@ -7,8 +7,9 @@ signal debug_retry_requested
 const ABANDON_HP_RECOVERY_RATE := 0.1
 const CLEAR_RECOVERY_START_HOUR := 22
 const CLEAR_RECOVERY_END_HOUR := 27
-const CLEAR_RECOVERY_BASE_RATE := 0.5
+const CLEAR_RECOVERY_BASE_RATE := 1.0
 const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
+const CLEAR_RECOVERY_MINIMUM_RATE := 0.5
 const MAX_HP := 100
 const REST_MINUTES := 30
 const REST_HP_RATE := 0.1
@@ -113,7 +114,8 @@ func apply_time_recovery() -> float:
 		CLEAR_RECOVERY_START_HOUR,
 		CLEAR_RECOVERY_END_HOUR,
 		CLEAR_RECOVERY_BASE_RATE,
-		CLEAR_RECOVERY_HOURLY_LOSS_RATE
+		CLEAR_RECOVERY_HOURLY_LOSS_RATE,
+		CLEAR_RECOVERY_MINIMUM_RATE
 	)
 	if recovery_rate <= 0.0:
 		return 0.0
@@ -397,7 +399,8 @@ func _get_planned_clear_recovery_rate() -> float:
 		CLEAR_RECOVERY_START_HOUR,
 		CLEAR_RECOVERY_END_HOUR,
 		CLEAR_RECOVERY_BASE_RATE,
-		CLEAR_RECOVERY_HOURLY_LOSS_RATE
+		CLEAR_RECOVERY_HOURLY_LOSS_RATE,
+		CLEAR_RECOVERY_MINIMUM_RATE
 	)
 
 
@@ -415,7 +418,8 @@ func _get_seed_choice_recovery_rate(seed_index: int) -> float:
 		CLEAR_RECOVERY_START_HOUR,
 		CLEAR_RECOVERY_END_HOUR,
 		CLEAR_RECOVERY_BASE_RATE,
-		CLEAR_RECOVERY_HOURLY_LOSS_RATE
+		CLEAR_RECOVERY_HOURLY_LOSS_RATE,
+		CLEAR_RECOVERY_MINIMUM_RATE
 	)
 
 
@@ -490,7 +494,8 @@ func _get_selected_rewerd_recovery_rate(rewerd_context: Dictionary) -> float:
 		CLEAR_RECOVERY_START_HOUR,
 		CLEAR_RECOVERY_END_HOUR,
 		CLEAR_RECOVERY_BASE_RATE,
-		CLEAR_RECOVERY_HOURLY_LOSS_RATE
+		CLEAR_RECOVERY_HOURLY_LOSS_RATE,
+		CLEAR_RECOVERY_MINIMUM_RATE
 	)
 	recovery_rate += float(rewerd_context.get("hp_recovery_rate", 0.0))
 	return recovery_rate

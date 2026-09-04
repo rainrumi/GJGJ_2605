@@ -417,7 +417,8 @@ func _on_stage_clear_continuation_requested() -> void:
 
 
 func _on_stage_select_today_rest_requested() -> void:
-	if not run_state.is_continuous_play_unlocked:
+	var can_rest_on_first_day := run_state.current_day == 1 and run_state.current_hp < 100
+	if not run_state.is_continuous_play_unlocked and not can_rest_on_first_day:
 		return
 	if stage_clear.has_method("apply_time_recovery"):
 		stage_clear.apply_time_recovery()

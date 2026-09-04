@@ -40,11 +40,21 @@ static func get_planned_recovery_rate(
 	start_hour: int,
 	end_hour: int,
 	base_rate: float,
-	hourly_loss_rate: float
+	hourly_loss_rate: float,
+	minimum_rate: float = 0.0
 ) -> float:
 	if recovery_applied:
 		return 0.0
-	return get_clear_time_recovery_rate(planted_flowers, clear_minutes, start_hour, end_hour, base_rate, hourly_loss_rate) + get_seed_bonus_rate(planted_flowers, clear_minutes)
+	var clear_time_rate := get_clear_time_recovery_rate(
+		planted_flowers,
+		clear_minutes,
+		start_hour,
+		end_hour,
+		base_rate,
+		hourly_loss_rate,
+		minimum_rate
+	)
+	return clear_time_rate + get_seed_bonus_rate(planted_flowers, clear_minutes)
 
 
 # hover候補のうち無条件の効果だけを加えた回復率取得
@@ -55,7 +65,8 @@ static func get_planned_preview_recovery_rate(
 	start_hour: int,
 	end_hour: int,
 	base_rate: float,
-	hourly_loss_rate: float
+	hourly_loss_rate: float,
+	minimum_rate: float = 0.0
 ) -> float:
 	var context := get_selecting_preview_rewerd_context(
 		base_flowers,
@@ -70,7 +81,8 @@ static func get_planned_preview_recovery_rate(
 		start_hour,
 		end_hour,
 		base_rate,
-		hourly_loss_rate
+		hourly_loss_rate,
+		minimum_rate
 	)
 	return clear_time_rate + float(context.get("hp_recovery_rate", 0.0))
 
@@ -82,7 +94,8 @@ static func get_clear_time_recovery_rate(
 	start_hour: int,
 	end_hour: int,
 	base_rate: float,
-	hourly_loss_rate: float
+	hourly_loss_rate: float,
+	minimum_rate: float = 0.0
 ) -> float:
 	if is_clear_time_recovery_disabled(planted_flowers, clear_minutes):
 		return 0.0
@@ -91,8 +104,8 @@ static func get_clear_time_recovery_rate(
 	if clear_hour < start_hour:
 		return base_rate
 	if clear_hour >= end_hour:
-		return 0.0
-	return maxf(0.0, base_rate - float(clear_hour - start_hour) * hourly_loss_rate)
+		return minimum_rate
+	return maxf(minimum_rate, base_rate - float(clear_hour - start_hour) * hourly_loss_rate)
 
 
 # 種補正率取得

@@ -72,8 +72,10 @@ func setup_stage_choices(
 	_run_state = run_state
 	today_rest_button.visible = (
 		_run_state != null
-		and _run_state.is_continuous_play_unlocked
-		and _run_state.has_challenged_area_today
+		and (
+			(_run_state.is_continuous_play_unlocked and _run_state.has_challenged_area_today)
+			or (_current_day == 1 and _run_state.current_hp < 100)
+		)
 	)
 	if _run_state != null:
 		today_rest_button.set_recovery_info(
@@ -159,7 +161,10 @@ func _on_stage_choice_pressed(choice_index: int) -> void:
 
 
 func _on_today_rest_button_pressed() -> void:
-	if _run_state == null or not _run_state.is_continuous_play_unlocked:
+	if _run_state == null:
+		return
+	var can_rest_on_first_day := _current_day == 1 and _run_state.current_hp < 100
+	if not _run_state.is_continuous_play_unlocked and not can_rest_on_first_day:
 		return
 	if _mouse_drag_state.is_dragging():
 		return
