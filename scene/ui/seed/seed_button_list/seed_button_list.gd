@@ -9,6 +9,9 @@ signal loadout_edit_requested(button: SeedButton, seed: SeedInfo)
 signal debug_removal_requested(button: SeedButton, seed: SeedInfo)
 
 const BUTTON_SCENE := preload("res://scene/ui/seed/seed_button.tscn")
+const SHAKE_DURATION := 0.2
+const SHAKE_DISTANCE := 1.0
+const SHAKE_STEP_COUNT := 3
 
 var debug_numbers_visible := false
 var sub_skill_drag_enabled := false
@@ -23,12 +26,33 @@ var slot_separation := 2
 var compact_empty_slots := false
 var icon_horizontal_jitter := 0
 var _rotation_quarter_turns_by_source: Dictionary = {}
+var _shake_tween: Tween
+var _shake_base_position := Vector2.ZERO
 
 
 # 初期化
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_apply_slot_separation()
+	_shake_base_position = position
+
+
+# 一覧全体を揺らし、頭上に装備した夢の種をcharacterの揺れへ追従させる
+func shake() -> void:
+	if _shake_tween != null and _shake_tween.is_valid():
+		_shake_tween.kill()
+	position = _shake_base_position
+	_shake_tween = create_tween()
+	var step_duration := SHAKE_DURATION / float(SHAKE_STEP_COUNT)
+	for step in range(SHAKE_STEP_COUNT - 1):
+		var direction := 1.0 if step % 2 == 0 else -1.0
+		_shake_tween.tween_property(
+			self,
+			"position:x",
+			_shake_base_position.x + SHAKE_DISTANCE * direction,
+			step_duration
+		)
+	_shake_tween.tween_property(self, "position:x", _shake_base_position.x, step_duration)
 
 
 # 種sources設定

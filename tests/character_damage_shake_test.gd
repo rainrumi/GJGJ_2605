@@ -23,9 +23,13 @@ func _run() -> void:
 	(game.get_node("AttackSe") as AudioStreamPlayer).stream = null
 	var character := game.get_node("Character") as Character
 	var sprite := game.get_node("Character/Sprite2D") as Sprite2D
+	var seed_button_list := game.get_node("UI/SeedButtonList") as SeedButtonList
 	var base_x := sprite.position.x
+	var seed_list_base_x := seed_button_list.position.x
 	var minimum_x := base_x
 	var maximum_x := base_x
+	var seed_list_minimum_x := seed_list_base_x
+	var seed_list_maximum_x := seed_list_base_x
 	var damage_values: Array[int] = [1]
 	var normal_texture := load(
 		"res://resource/image/texture/character/tex_character_200_portrate_1000.png"
@@ -43,15 +47,23 @@ func _run() -> void:
 	game.call("_apply_player_damage", damage_values)
 	_expect(sprite.texture == damage_texture, "被ダメージ振動中はダメージ画像を表示する")
 	var shake_tween := character.get("_shake_tween") as Tween
+	var seed_shake_tween := seed_button_list.get("_shake_tween") as Tween
 	for _sample in range(SAMPLE_COUNT):
 		shake_tween.custom_step(SAMPLE_INTERVAL)
+		seed_shake_tween.custom_step(SAMPLE_INTERVAL)
 		minimum_x = minf(minimum_x, sprite.position.x)
 		maximum_x = maxf(maximum_x, sprite.position.x)
+		seed_list_minimum_x = minf(seed_list_minimum_x, seed_button_list.position.x)
+		seed_list_maximum_x = maxf(seed_list_maximum_x, seed_button_list.position.x)
 
 	_expect(minimum_x < base_x - POSITION_MARGIN, "被ダメージ時に左へ動く")
 	_expect(maximum_x > base_x + POSITION_MARGIN, "被ダメージ時に右へ動く")
+	_expect(seed_list_minimum_x < seed_list_base_x - POSITION_MARGIN, "頭上の夢の種一覧が左へ動く")
+	_expect(seed_list_maximum_x > seed_list_base_x + POSITION_MARGIN, "頭上の夢の種一覧が右へ動く")
 	shake_tween.custom_step(SAMPLE_INTERVAL * 2.0)
+	seed_shake_tween.custom_step(SAMPLE_INTERVAL * 2.0)
 	_expect(is_equal_approx(sprite.position.x, base_x), "0.2秒後に基準位置へ戻る")
+	_expect(is_equal_approx(seed_button_list.position.x, seed_list_base_x), "夢の種一覧が0.2秒後に基準位置へ戻る")
 	_expect(sprite.texture == damage_texture, "振動終了後もダメージ画像を維持する")
 
 	game.call("_apply_player_damage", damage_values)

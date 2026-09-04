@@ -1153,6 +1153,7 @@ func _apply_player_damage(damage_values: Array[int]) -> void:
 		return
 	ui.show_hp_damage_values(damage_values)
 	character.shake()
+	ui.shake_equipped_seeds()
 	hp = maxi(0, hp - total_damage)
 	_request_attack_se()
 

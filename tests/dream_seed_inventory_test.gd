@@ -499,8 +499,8 @@ func _check_game_inventory_integration() -> void:
 		"末尾スロットの装備種も詰めて枠線なしで表示する"
 	)
 	_expect(
-		(closed_list.get_child(0) as SeedButton).position.is_equal_approx(Vector2.ZERO)
-		and moved_closed_button.position.is_equal_approx(Vector2(80.0, 0.0)),
+		(closed_list.get_child(0) as SeedButton).position.is_equal_approx(Vector2(1.0, 0.0))
+		and moved_closed_button.position.is_equal_approx(Vector2(81.0, 0.0)),
 		"3個の夢の種を上段の3か所へ配置する"
 	)
 	for seed_count in range(1, 7):
@@ -509,17 +509,17 @@ func _check_game_inventory_integration() -> void:
 		var expected_positions: Array[Vector2] = []
 		match seed_count:
 			1:
-				expected_positions = [Vector2(40.0, 0.0)]
+				expected_positions = [Vector2(41.0, 0.0)]
 			2:
-				expected_positions = [Vector2(20.0, 0.0), Vector2(60.0, 0.0)]
+				expected_positions = [Vector2(21.0, 0.0), Vector2(61.0, 0.0)]
 			3:
-				expected_positions = [Vector2(0.0, 0.0), Vector2(40.0, 0.0), Vector2(80.0, 0.0)]
+				expected_positions = [Vector2(1.0, 0.0), Vector2(41.0, 0.0), Vector2(81.0, 0.0)]
 			4:
-				expected_positions = [Vector2(0.0, 0.0), Vector2(40.0, 0.0), Vector2(80.0, 0.0), Vector2(40.0, 40.0)]
+				expected_positions = [Vector2(1.0, 0.0), Vector2(41.0, 0.0), Vector2(81.0, 0.0), Vector2(41.0, 40.0)]
 			5:
-				expected_positions = [Vector2(0.0, 0.0), Vector2(40.0, 0.0), Vector2(80.0, 0.0), Vector2(20.0, 40.0), Vector2(60.0, 40.0)]
+				expected_positions = [Vector2(1.0, 0.0), Vector2(41.0, 0.0), Vector2(81.0, 0.0), Vector2(21.0, 40.0), Vector2(61.0, 40.0)]
 			6:
-				expected_positions = [Vector2(0.0, 0.0), Vector2(40.0, 0.0), Vector2(80.0, 0.0), Vector2(0.0, 40.0), Vector2(40.0, 40.0), Vector2(80.0, 40.0)]
+				expected_positions = [Vector2(1.0, 0.0), Vector2(41.0, 0.0), Vector2(81.0, 0.0), Vector2(1.0, 40.0), Vector2(41.0, 40.0), Vector2(81.0, 40.0)]
 		for index in range(expected_positions.size()):
 			var positioned_button := closed_list.get_child(index) as SeedButton
 			_expect(

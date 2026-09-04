@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://cg7d3mgt0sxmk"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_7ne22"]
-[ext_resource type="Texture2D" uid="uid://b44kbucb1jhrq" path="res://resource/image/texture/seed/tex_seed_amaririsu.png" id="2_texture"]
 [ext_resource type="Texture2D" uid="uid://sq80lp52mejv" path="res://resource/image/texture/seed/tex_seed_amaririsu_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" uid="uid://b44kbucb1jhrq" path="res://resource/image/texture/seed/tex_seed_amaririsu.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_557bf"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_q1ii8"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]

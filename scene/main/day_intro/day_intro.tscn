@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://deupqxttm1xa8"]
+[gd_scene format=3 uid="uid://deupqxttm1xa8"]
 
 [ext_resource type="Script" uid="uid://bbxwd5nb6r1ww" path="res://scene/main/day_intro/day_intro.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
@@ -14,8 +14,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 640
-offset_bottom = 360
+offset_right = 640.0
+offset_bottom = 360.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -28,10 +28,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -480
-offset_top = -255
-offset_right = -180
-offset_bottom = -195
+offset_left = -481.0
+offset_top = -286.0
+offset_right = -181.0
+offset_bottom = -226.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
@@ -44,14 +44,13 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Character" type="Sprite2D" parent="Screen" unique_id=189661423]
-modulate = Color(1, 1, 1, 1)
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-position = Vector2(320, 280)
+position = Vector2(311, 280)
 texture = ExtResource("3_character")
 
-[node name="HeadSeedList" parent="Screen" instance=ExtResource("4_seed_list")]
+[node name="HeadSeedList" parent="Screen" unique_id=410774276 instance=ExtResource("4_seed_list")]
 layout_mode = 0
-offset_left = 265.0
+offset_left = 256.0
 offset_top = 124.0
-offset_right = 375.0
+offset_right = 366.0
 offset_bottom = 194.0

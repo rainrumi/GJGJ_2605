@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dg6q7uionqb11"]
 
-[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_s658i"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_torikabuto_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_torikabuto.png" id="2_texture"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_85vbj"]
-[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_hh77o"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_attack_rate.gd" id="6_md7tm"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_s658i"]
+[ext_resource type="Texture2D" uid="uid://cqmahjh3dgflv" path="res://resource/image/texture/seed/tex_seed_torikabuto_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" uid="uid://d4batgq057qed" path="res://resource/image/texture/seed/tex_seed_torikabuto.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_85vbj"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_hh77o"]
+[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" uid="uid://b71nqou5fhy5x" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_attack_rate.gd" id="6_md7tm"]
+[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" uid="uid://bc7tnfw70v1m2" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
 
 [sub_resource type="Resource" id="Resource_l2nik"]
 script = ExtResource("1_s658i")
@@ -17,7 +17,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_5dso2"]
 script = ExtResource("skill_time_rate")
-hp_loss_rate = 0.010000000000218279
+hp_loss_rate = 0.01000000000021827
 min_interval_rate = 0.0
 max_interval_rate = 2.0
 
