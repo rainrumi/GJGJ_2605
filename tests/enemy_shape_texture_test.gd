@@ -50,7 +50,7 @@ func _run() -> void:
 		_expect(shape_image.get_pixelv(Vector2i(21, 39)).a > 0.0, "同じ敵の上下セルを接続する")
 		_expect(shape_image.get_pixelv(Vector2i(39, 59)).a > 0.0, "同じ敵の左右セルを接続する")
 	_test_single_cell_margin()
-	_test_seed_block_uses_its_cell_texture()
+	_test_seed_block_uses_small_texture_without_scaling()
 
 	root.remove_child(enemy)
 	enemy.free()
@@ -86,28 +86,30 @@ func _test_single_cell_margin() -> void:
 	)
 
 
-func _test_seed_block_uses_its_cell_texture() -> void:
+func _test_seed_block_uses_small_texture_without_scaling() -> void:
 	var block := AcidBlockInfo.new()
 	block.texture = CELL_TEXTURE
 	block.stomach_shape = [PackedInt32Array([1])]
 	var seed := SeedInfo.new()
 	seed.acid_block = block
+	seed.small_texture = _create_custom_texture(Vector2i(30, 30))
 	var seed_block := ENEMY_SCENE.instantiate() as Enemy
 	root.add_child(seed_block)
 	seed_block.setup_seed(seed, Vector2(40.0, 40.0))
 	var seed_texture := seed_block.get_preview_texture()
-	_expect(seed_texture != null, "夢の種ブロック画像を生成する")
+	_expect(seed_texture == seed.small_texture, "夢の種ブロックにsmall_textureを直接設定する")
 	if seed_texture != null:
 		_expect(
-			seed_texture.get_size() == Vector2(40.0, 40.0),
-			"1x1の夢の種ブロックにはセルテクスチャを1個だけ表示する"
+			seed_texture.get_size() == Vector2(30.0, 30.0),
+			"夢の種ブロックには30x30のアイコンを表示する"
 		)
+		_expect(seed_block.get_preview_scale() == Vector2.ONE, "夢の種アイコンを拡縮せずに表示する")
 	root.remove_child(seed_block)
 	seed_block.free()
 
 
-func _create_custom_texture() -> Texture2D:
-	var image := Image.create(1, 1, false, Image.FORMAT_RGBA8)
+func _create_custom_texture(size := Vector2i.ONE) -> Texture2D:
+	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	image.fill(Color.RED)
 	return ImageTexture.create_from_image(image)
 

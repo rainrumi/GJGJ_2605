@@ -284,7 +284,10 @@ func rotate_stomach_footprint_clockwise(target_size: Vector2) -> void:
 		get_clockwise_rotated_stomach_shape(),
 		get_size()
 	)
-	_presenter.setup_texture(_get_texture(), target_size)
+	if is_seed_stomach_block():
+		_presenter.setup_texture(_get_texture(), _get_texture().get_size())
+	else:
+		_presenter.setup_texture(_get_texture(), target_size)
 	_reset_visuals()
 
 
@@ -352,17 +355,8 @@ func setup_as_seed_stomach_block(seed: SeedInfo, target_size: Vector2) -> void:
 		activation_deferred = false
 	seed_info = seed
 	if block_definition != null:
-		var cell_texture := block_definition.texture
-		if cell_texture == null:
-			cell_texture = ENEMY_CELL_TEXTURE
-		set_texture_override(
-			EnemySpriteView.create_shape_texture(
-				cell_texture,
-				block_definition.get_stomach_size(),
-				block_definition.get_stomach_shape()
-			),
-			target_size
-		)
+		var seed_texture := seed.get_small_texture()
+		set_texture_override(seed_texture, seed_texture.get_size())
 	max_hp = block_definition.get_max_hp() if block_definition != null else 1
 	current_hp = max_hp
 	damage = block_definition.get_damage() if block_definition != null else 0
@@ -374,6 +368,8 @@ func setup_as_seed_stomach_block(seed: SeedInfo, target_size: Vector2) -> void:
 
 # 胃袋displayサイズ更新
 func update_stomach_display_size(target_size: Vector2) -> void:
+	if is_seed_stomach_block():
+		return
 	_presenter.update_display_size(target_size)
 # applygravity判定
 func can_apply_gravity() -> bool:
