@@ -80,6 +80,12 @@ func _rebuild_editor() -> void:
 		_edited_seed.sub_description,
 		"sub_description"
 	)
+	_add_parameter_row(
+		_edited_seed,
+		&"game_clear_drag_enabled",
+		_edited_seed.game_clear_drag_enabled,
+		"game_clear_drag_enabled"
+	)
 	if _edited_seed.acid_block != null:
 		_add_parameter_row(_edited_seed.acid_block, &"max_hp", _edited_seed.acid_block.max_hp, "max_hp")
 		_add_parameter_row(_edited_seed.acid_block, &"damage", _edited_seed.acid_block.damage, "damage")

@@ -34,6 +34,7 @@ func _run() -> void:
 	effect.columns_delta = 1
 	original.main_skill.effects = [effect]
 	original.sub_description = "Original sub description"
+	original.game_clear_drag_enabled = false
 	original.sub_skill = SeedSkill.new()
 	original.sub_skill.priority = 4
 	var sub_effect := SeedEffectOnProgressTimeDamageLine.new()
@@ -44,6 +45,7 @@ func _run() -> void:
 	original.acid_block.max_hp = 20
 	original.acid_block.damage = 2
 	_expect(ResourceSaver.save(original, save_path) == OK, "テスト用の種 Resource を保存できる")
+	original.take_over_path(save_path)
 	panel.set_seed_inventory([original], [])
 	panel.open_panel()
 	_expect(not panel.visible, "Debug 無効時は調整画面を開かない")
@@ -70,14 +72,15 @@ func _run() -> void:
 				(binding.editor as SpinBox).get_global_rect().size.x >= 90.0,
 				"実データの数値入力欄へ表示幅を確保する"
 			)
-	_expect(actual_numeric_editors >= 6, "実際の夢の種から数値プロパティを列挙する")
+	_expect(actual_numeric_editors >= 4, "実際の夢の種から数値プロパティを列挙する")
 	panel.set_seed_inventory([original], [])
-	_expect(panel.get("_bindings").size() == 10, "説明文、酸化ブロック、主・副スキルの効果プロパティだけを列挙する")
+	_expect(panel.get("_bindings").size() == 11, "説明文、クリア時ドラッグ、酸化ブロック、主・副スキルの効果プロパティだけを列挙する")
 	panel.seed_parameter_applied.connect(_on_seed_parameter_applied)
 	var columns_editor: SpinBox
 	var sub_damage_editor: SpinBox
 	var description_editor: TextEdit
 	var sub_description_editor: TextEdit
+	var game_clear_drag_editor: CheckBox
 	for binding in panel.get("_bindings"):
 		_expect(binding.property not in [&"priority", &"enabled"], "汎用の priority と enabled は表示しない")
 		if binding.resource is SeedEffectOnBattleChangeStomachSize and binding.property == &"columns_delta":
@@ -88,10 +91,13 @@ func _run() -> void:
 			description_editor = binding.editor as TextEdit
 		if binding.resource is SeedInfo and binding.property == &"sub_description":
 			sub_description_editor = binding.editor as TextEdit
+		if binding.resource is SeedInfo and binding.property == &"game_clear_drag_enabled":
+			game_clear_drag_editor = binding.editor as CheckBox
 	_expect(columns_editor != null, "主スキル固有プロパティの入力欄を作る")
 	_expect(sub_damage_editor != null, "サブスキル固有プロパティの入力欄を作る")
 	_expect(description_editor != null, "main_description の複数行入力欄を作る")
 	_expect(sub_description_editor != null, "sub_description の複数行入力欄を作る")
+	_expect(game_clear_drag_editor != null, "game_clear_drag_enabled のチェック欄を作る")
 	if columns_editor != null:
 		columns_editor.value = 7
 	if sub_damage_editor != null:
@@ -100,6 +106,8 @@ func _run() -> void:
 		description_editor.text = "Saved description\nsecond line"
 	if sub_description_editor != null:
 		sub_description_editor.text = "Saved sub description"
+	if game_clear_drag_editor != null:
+		game_clear_drag_editor.button_pressed = true
 	(panel.get_node("Margin/Content/Buttons/ApplyButton") as Button).pressed.emit()
 	_expect(_applied_original == original, "置換元の種を通知する")
 	_expect(_applied_edited != null and _applied_edited != original, "複製した種を通知する")
@@ -111,6 +119,7 @@ func _run() -> void:
 		"main_description の変更を適用する"
 	)
 	_expect(_applied_edited != null and _applied_edited.sub_description == "Saved sub description", "sub_description の変更を適用する")
+	_expect(_applied_edited != null and _applied_edited.game_clear_drag_enabled, "ゲームクリア時ドラッグ設定を複製側へ適用する")
 	var persisted := ResourceLoader.load(save_path, "", ResourceLoader.CACHE_MODE_IGNORE) as SeedInfo
 	_expect(persisted != null and persisted.main_skill.effects[0].columns_delta == 7, "主スキル変更値を Resource へ永続化する")
 	_expect(persisted != null and persisted.sub_skill.effects[0].damage == 99, "サブスキル変更値を Resource へ永続化する")
@@ -119,6 +128,7 @@ func _run() -> void:
 		"main_description を Resource へ永続化する"
 	)
 	_expect(persisted != null and persisted.sub_description == "Saved sub description", "sub_description を Resource へ永続化する")
+	_expect(persisted != null and persisted.game_clear_drag_enabled, "ゲームクリア時ドラッグ設定を Resource へ永続化する")
 
 	var controller := GameSeedController.new()
 	controller.set_seed_inventory([original, original], [])

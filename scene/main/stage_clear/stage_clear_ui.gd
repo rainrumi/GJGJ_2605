@@ -27,6 +27,8 @@ const DEBUG_BUTTON_ACTIVE_HOVER_COLOR := Color(0.88, 0.88, 0.88, 1.0)
 const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 const BENEFICIAL_DELTA_COLOR := Color(0.35, 1.0, 0.45, 1.0)
 const HARMFUL_DELTA_COLOR := Color(1.0, 0.35, 0.35, 1.0)
+# ゲーム画面の Character.position (95, 210) と SeedButtonList.position (40, 54) の差分
+const HEAD_SEED_OFFSET_FROM_CHARACTER := Vector2(-55.0, -156.0)
 
 # 案内文
 @onready var guide_text: Label = $GuideText
@@ -48,13 +50,26 @@ const HARMFUL_DELTA_COLOR := Color(1.0, 0.35, 0.35, 1.0)
 @onready var hp_view: StageClearHpView = $StatusPreview/HpView
 @onready var owned_seed_open_button: TextureButton = $OwnedSeedOpenButton
 @onready var owned_seed_panel: OwnedSeedPanel = $OwnedSeedPanel
+@onready var character: Sprite2D = $"../CharacterArea/Character"
+@onready var head_seed_list: SeedButtonList = $HeadSeedList
+@onready var head_seed_drag_preview: TextureRect = $HeadSeedDragPreview
 
 var _debug_numbers_visible := false
 var _seed_choice_active := false
+var _head_drag_source: SeedButton
 
 
 # 初期化
 func _ready() -> void:
+	head_seed_list.set_compact_centered_layout(true)
+	head_seed_list.set_slot_separation(10)
+	head_seed_list.set_display_style(false, Color("#f0e0ff"))
+	head_seed_list.position = character.position + HEAD_SEED_OFFSET_FROM_CHARACTER * character.scale
+	head_seed_list.scale = character.scale
+	head_seed_list.seed_drag_started.connect(_on_head_seed_drag_started)
+	head_seed_list.seed_drag_moved.connect(_on_head_seed_drag_moved)
+	head_seed_list.seed_drag_released.connect(_on_head_seed_drag_released)
+	head_seed_drag_preview.visible = false
 	_connect_child_signals()
 	_apply_debug_button_state()
 	_update_reroll_button_state()
@@ -216,7 +231,56 @@ func _connect_child_signals() -> void:
 
 
 func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
+	head_seed_list.set_seed_sources(equipped_seeds)
+	_configure_head_seed_drag()
 	owned_seed_panel.set_seed_inventory(equipped_seeds, stored_seeds)
+
+
+func _configure_head_seed_drag() -> void:
+	for child in head_seed_list.get_children():
+		if child is SeedButton:
+			var button := child as SeedButton
+			var drag_enabled := button.seed != null and button.seed.game_clear_drag_enabled
+			button.set_interaction_feedback_enabled(drag_enabled)
+			button.set_sub_skill_drag_enabled(
+				drag_enabled
+			)
+
+
+func _on_head_seed_drag_started(
+	button: SeedButton,
+	seed: SeedInfo,
+	mouse_position: Vector2
+) -> void:
+	_head_drag_source = button
+	_update_head_seed_drag_preview(seed, mouse_position)
+
+
+func _on_head_seed_drag_moved(
+	_button: SeedButton,
+	seed: SeedInfo,
+	mouse_position: Vector2
+) -> void:
+	_update_head_seed_drag_preview(seed, mouse_position)
+
+
+func _on_head_seed_drag_released(
+	_button: SeedButton,
+	_seed: SeedInfo,
+	_mouse_position: Vector2
+) -> void:
+	head_seed_drag_preview.visible = false
+	_head_drag_source = null
+
+
+func _update_head_seed_drag_preview(seed: SeedInfo, mouse_position: Vector2) -> void:
+	if seed == null or _head_drag_source == null:
+		head_seed_drag_preview.visible = false
+		return
+	head_seed_drag_preview.texture = seed.get_small_texture()
+	head_seed_drag_preview.rotation = _head_drag_source.icon_rect.rotation
+	head_seed_drag_preview.global_position = mouse_position - head_seed_drag_preview.size * 0.5
+	head_seed_drag_preview.visible = head_seed_drag_preview.texture != null
 
 
 func _open_owned_seed_panel() -> void:

@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cnvmrlnictk8h"]
+[gd_scene load_steps=28 format=3 uid="uid://cnvmrlnictk8h"]
 
 [ext_resource type="Script" uid="uid://ccel0yj6xx277" path="res://scene/main/stage_clear/stage_clear.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://resource/image/ui/button/ui_button_seed_directory_open.png" id="24_owned_seed_open_texture"]
 [ext_resource type="Script" uid="uid://c284ogkr07lmb" path="res://scene/ui/button/hover_scale_texture_button.gd" id="25_hover_scale"]
 [ext_resource type="PackedScene" uid="uid://dqdytqcjhv1yw" path="res://scene/ui/seed/owned_seed_panel.tscn" id="26_owned_seed_panel"]
+[ext_resource type="PackedScene" uid="uid://dnxj6x3i60rbc" path="res://scene/ui/seed/seed_button_list/seed_button_list.tscn" id="27_seed_list"]
 
 [node name="StageClear" type="Node2D" unique_id=1363730693]
 script = ExtResource("1_script")
@@ -46,6 +47,25 @@ offset_left = 300.0
 offset_top = 15.5
 offset_right = 600.0
 offset_bottom = 111.5
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HeadSeedList" parent="UI" instance=ExtResource("27_seed_list")]
+layout_mode = 0
+offset_left = 42.5
+offset_top = 215.0
+offset_right = 152.5
+offset_bottom = 285.0
+scale = Vector2(1.5, 1.5)
+
+[node name="HeadSeedDragPreview" type="TextureRect" parent="UI"]
+visible = false
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+z_index = 10
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5

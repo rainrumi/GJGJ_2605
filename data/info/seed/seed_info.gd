@@ -22,6 +22,8 @@ enum SubSkillMode {
 @export var texture: Texture2D
 # 取得後の小サイズ表示用画像。未設定の場合は通常画像を使用する。
 @export var small_texture: Texture2D
+# ゲームクリア画面の頭上表示からドラッグできるか
+@export var game_clear_drag_enabled := false
 # サブスキルの仕様
 @export var sub_skill_mode: SubSkillMode = SubSkillMode.Drag
 # メインスキル

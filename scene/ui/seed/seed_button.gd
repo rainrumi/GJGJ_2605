@@ -39,6 +39,7 @@ var source_collection := SourceCollection.EQUIPPED
 var frame_visible := true
 var icon_color := NORMAL_ICON_COLOR
 var use_remaining_sub_skill_color := true
+var interaction_feedback_enabled := true
 # 現状はUI表示を兼ねた一時的な使用回数。永続状態が必要になったらRuntimeStateへ移す。
 var _display_remaining_sub_skill_uses := 0
 var _pressing := false
@@ -131,6 +132,21 @@ func set_sub_skill_drag_enabled(is_enabled: bool) -> void:
 	_update_drag_state()
 
 
+# 入力、ツールチップ、クリックに伴うフィードバックの有効状態
+func set_interaction_feedback_enabled(is_enabled: bool) -> void:
+	interaction_feedback_enabled = is_enabled
+	if not interaction_feedback_enabled:
+		_pressing = false
+		if _dragging and _mouse_drag_state != null:
+			_mouse_drag_state.end_drag(self)
+		_dragging = false
+		if tooltip_panel != null:
+			tooltip_panel.hide_tooltip()
+	mouse_filter = Control.MOUSE_FILTER_STOP if interaction_feedback_enabled else Control.MOUSE_FILTER_IGNORE
+	_refresh_tooltip()
+	_update_drag_state()
+
+
 # 編成短押し設定
 func set_loadout_edit_enabled(is_enabled: bool) -> void:
 	loadout_edit_enabled = is_enabled
@@ -209,6 +225,8 @@ func _input(event: InputEvent) -> void:
 
 # GUI入力処理
 func _gui_input(event: InputEvent) -> void:
+	if not interaction_feedback_enabled:
+		return
 	if event is InputEventMouseButton:
 		# マウスボタン
 		var mouse_button := event as InputEventMouseButton
@@ -248,7 +266,7 @@ func _on_debug_enabled_changed(_is_enabled: bool) -> void:
 
 # ツール更新
 func _refresh_tooltip() -> void:
-	if seed == null:
+	if seed == null or not interaction_feedback_enabled:
 		tooltip_text = ""
 		if tooltip_panel != null:
 			tooltip_panel.set_text("")
@@ -283,7 +301,7 @@ func _create_tooltip_panel() -> void:
 
 # ホバー開始
 func _on_mouse_entered() -> void:
-	if seed == null or tooltip_panel == null:
+	if not interaction_feedback_enabled or seed == null or tooltip_panel == null:
 		return
 	tooltip_panel.show_tooltip_at(global_position)
 
@@ -353,7 +371,7 @@ func _can_use_sub_skill() -> bool:
 
 # 操作可能判定
 func _can_interact() -> bool:
-	return (loadout_edit_enabled and seed != null) or _can_use_sub_skill()
+	return interaction_feedback_enabled and ((loadout_edit_enabled and seed != null) or _can_use_sub_skill())
 
 
 # subスキル判定

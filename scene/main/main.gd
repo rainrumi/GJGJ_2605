@@ -288,7 +288,7 @@ func show_day_intro() -> void:
 	game.visible = false
 	game_ui.visible = false
 	stage_clear.visible = false
-	await day_intro.show_day(run_state.current_day)
+	await day_intro.show_day(run_state.current_day, run_state.planted_flowers)
 	if flow_id != _screen_flow_id:
 		return
 	if _try_show_stage_unlock_novels():

@@ -11,6 +11,7 @@ func _run() -> void:
 	_check_seed_small_textures()
 	_check_controller_inventory_rules()
 	await _check_owned_seed_panel()
+	await _check_day_intro_head_seed_display()
 	await _check_stage_clear_storage_reward()
 	await _check_game_inventory_integration()
 	get_tree().quit(_failures)
@@ -619,7 +620,37 @@ func _check_stage_clear_storage_reward() -> void:
 	var stage_clear_ui := stage_clear.get_node("UI") as StageClearUi
 	var open_button := stage_clear_ui.get_node("OwnedSeedOpenButton") as TextureButton
 	var owned_panel := stage_clear_ui.get_node("OwnedSeedPanel") as OwnedSeedPanel
-	stage_clear.call("set_seed_inventory", _create_seeds(2, 700), _create_seeds(3, 800))
+	var equipped_seeds := _create_seeds(2, 700)
+	equipped_seeds[1].game_clear_drag_enabled = true
+	stage_clear.call("set_seed_inventory", equipped_seeds, _create_seeds(3, 800))
+	var head_seed_list := stage_clear_ui.get_node("HeadSeedList") as SeedButtonList
+	_expect(head_seed_list.get_child_count() == 2, "クリア画面のキャラクター頭上に装備中の種を表示する")
+	_expect(
+		not (head_seed_list.get_child(0) as SeedButton).sub_skill_drag_enabled,
+		"許可フラグが false の花はクリア画面でドラッグできない"
+	)
+	_expect(
+		not (head_seed_list.get_child(0) as SeedButton).interaction_feedback_enabled
+		and (head_seed_list.get_child(0) as SeedButton).mouse_filter == Control.MOUSE_FILTER_IGNORE,
+		"許可フラグが false の花はツールチップやクリック効果を持たない"
+	)
+	_expect(
+		(head_seed_list.get_child(1) as SeedButton).sub_skill_drag_enabled
+		and (head_seed_list.get_child(1) as SeedButton).interaction_feedback_enabled,
+		"許可フラグが true の花はクリア画面でドラッグできる"
+	)
+	var clear_character := stage_clear.get_node("CharacterArea/Character") as Sprite2D
+	_expect(
+		head_seed_list.position.is_equal_approx(
+			clear_character.position + Vector2(-55.0, -156.0) * clear_character.scale
+		),
+		"クリア画面の種をゲーム画面と同じ頭上相対位置へ配置する"
+	)
+	_expect(
+		head_seed_list.scale.is_equal_approx(clear_character.scale),
+		"クリア画面の種を character と同じ倍率で表示する"
+	)
+	await _capture_viewport_from_environment("STAGE_CLEAR_HEAD_SEED_CAPTURE_PATH")
 	stage_clear_ui.call("_open_owned_seed_panel")
 	_expect(owned_panel.visible and not open_button.visible, "夢の種ボタンから所持種パネルを開ける")
 	var equipped_list := owned_panel.get_node("UpperArea/EquippedList") as SeedButtonList
@@ -631,6 +662,36 @@ func _check_stage_clear_storage_reward() -> void:
 	owned_panel.closed.emit()
 	_expect(not owned_panel.visible and open_button.visible, "閉じる操作で夢の種ボタンへ戻る")
 	_dispose(stage_clear)
+	await get_tree().process_frame
+
+
+func _check_day_intro_head_seed_display() -> void:
+	var packed := load("res://scene/main/day_intro/day_intro.tscn") as PackedScene
+	_expect(packed != null, "日数表示 Scene を読み込める")
+	if packed == null:
+		return
+	var day_intro := packed.instantiate() as DayIntro
+	get_tree().root.add_child(day_intro)
+	await get_tree().process_frame
+	day_intro.set_equipped_seeds(_create_seeds(2, 600))
+	day_intro.visible = true
+	var head_seed_list := day_intro.get_node("Screen/HeadSeedList") as PassiveSeedTextureList
+	var character := day_intro.get_node("Screen/Character") as Sprite2D
+	var day_label := day_intro.get_node("Screen/DayLabel") as Label
+	_expect(head_seed_list.get_child_count() == 2, "日数表示のキャラクター頭上に装備中の種を表示する")
+	_expect(
+		head_seed_list.position.is_equal_approx(character.position + Vector2(-55.0, -156.0)),
+		"日数表示の種をゲーム画面と同じ頭上相対位置へ配置する"
+	)
+	_expect(day_label.z_index > head_seed_list.z_index, "n日目テキストを夢の種より前面に表示する")
+	for child in head_seed_list.get_children():
+		_expect(
+			child is TextureRect
+			and (child as TextureRect).mouse_filter == Control.MOUSE_FILTER_IGNORE,
+			"日数表示の花は入力を持たないテクスチャだけで構成する"
+		)
+	await _capture_viewport_from_environment("DAY_INTRO_HEAD_SEED_CAPTURE_PATH")
+	_dispose(day_intro)
 	await get_tree().process_frame
 
 
