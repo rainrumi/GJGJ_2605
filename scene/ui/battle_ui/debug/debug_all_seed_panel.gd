@@ -34,6 +34,20 @@ func close_panel() -> void:
 	visible = false
 
 
+func replace_seed(original_seed: SeedInfo, edited_seed: SeedInfo) -> bool:
+	if seed_catalog == null or original_seed == null or edited_seed == null:
+		return false
+	var replaced := false
+	for seeds in [seed_catalog.normal_skills, seed_catalog.rare_skills, seed_catalog.epic_skills]:
+		for index in range(seeds.size()):
+			if seeds[index] == original_seed:
+				seeds[index] = edited_seed
+				replaced = true
+	if replaced:
+		seed_list.set_seed_sources(_get_all_seeds())
+	return replaced
+
+
 # 全種取得
 func _get_all_seeds() -> Array[SeedInfo]:
 	var seeds: Array[SeedInfo] = []

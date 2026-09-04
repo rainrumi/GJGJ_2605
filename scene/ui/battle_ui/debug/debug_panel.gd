@@ -227,6 +227,7 @@ func _on_debug_stomach_y_minus_button_pressed() -> void:
 func _on_seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo) -> void:
 	if not debug_button_active:
 		return
+	all_seed_panel.replace_seed(original_seed, edited_seed)
 	seed_parameter_applied.emit(original_seed, edited_seed)
 
 

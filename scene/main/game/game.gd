@@ -504,6 +504,7 @@ func _on_debug_seed_parameter_applied(original_seed: SeedInfo, edited_seed: Seed
 		return
 	if not seed_controller.replace_seed(original_seed, edited_seed):
 		return
+	_replace_seed_in_battle_start_context(original_seed, edited_seed)
 	_sync_seed_sources()
 	_refresh_ui()
 
@@ -513,12 +514,30 @@ func _on_debug_enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: 
 		return
 	if not enemy_setup.replace_enemy_info(original_enemy, edited_enemy):
 		return
+	_replace_enemy_in_battle_start_context(original_enemy, edited_enemy)
 	enemy_effects.reset()
 	enemy_setup.setup_enemies(enemies)
 	acid_controller.refresh_enemy_effects(enemies, stomach)
 	input_controller.setup(enemies)
 	ui.set_enemy_preset(current_enemy_preset)
 	_refresh_ui()
+
+
+func _replace_seed_in_battle_start_context(original_seed: SeedInfo, edited_seed: SeedInfo) -> void:
+	if _battle_start_context == null:
+		return
+	for slots in [_battle_start_context.flowers, _battle_start_context.stored_seeds]:
+		for index in range(slots.size()):
+			if slots[index] == original_seed:
+				slots[index] = edited_seed
+
+
+func _replace_enemy_in_battle_start_context(original_enemy: EnemyInfo, edited_enemy: EnemyInfo) -> void:
+	if _battle_start_context == null or _battle_start_context.enemy_preset == null:
+		return
+	for index in range(_battle_start_context.enemy_preset.enemies.size()):
+		if _battle_start_context.enemy_preset.enemies[index] == original_enemy:
+			_battle_start_context.enemy_preset.enemies[index] = edited_enemy
 
 
 # 開始処理

@@ -129,6 +129,23 @@ func _run() -> void:
 	)
 	_expect(persisted != null and persisted.sub_description == "Saved sub description", "sub_description を Resource へ永続化する")
 	_expect(persisted != null and persisted.game_clear_drag_enabled, "ゲームクリア時ドラッグ設定を Resource へ永続化する")
+	_expect(_applied_edited.resource_path == save_path, "保存後の種 Resource が保存先を引き継ぐ")
+	_expect(panel.get("_seeds")[0] == _applied_edited, "選択肢の種参照を保存後の Resource へ置換する")
+	_expect(panel.get("_original_seed") == _applied_edited, "パネルの保存元参照を保存後の Resource へ更新する")
+
+	var first_saved_seed := _applied_edited
+	description_editor = null
+	for binding in panel.get("_bindings"):
+		if binding.resource is SeedInfo and binding.property == &"main_description":
+			description_editor = binding.editor as TextEdit
+	_expect(description_editor != null, "保存後に更新された種参照から入力欄を作り直す")
+	if description_editor != null:
+		description_editor.text = "Saved again"
+	(panel.get_node("Margin/Content/Buttons/ApplyButton") as Button).pressed.emit()
+	persisted = ResourceLoader.load(save_path, "", ResourceLoader.CACHE_MODE_IGNORE) as SeedInfo
+	_expect(persisted != null and persisted.main_description == "Saved again", "同じ種を2回続けて保存できる")
+	_expect(_applied_original == first_saved_seed, "2回目は1回目に保存した種参照を置換元として通知する")
+	_expect(_applied_edited != first_saved_seed, "2回目も編集用の複製を保存する")
 
 	var controller := GameSeedController.new()
 	controller.set_seed_inventory([original, original], [])

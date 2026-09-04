@@ -195,6 +195,13 @@ func _on_apply_pressed() -> void:
 		status_label.text = "保存に失敗しました: %s" % error_string(save_error)
 		push_error("DebugSeedParameterPanel: 夢の種を保存できません: %s (error: %s)" % [save_path, save_error])
 		return
-	seed_parameter_applied.emit(_original_seed, _edited_seed)
-	_original_seed = _edited_seed
+	var replaced_seed := _original_seed
+	var saved_seed := _edited_seed
+	saved_seed.take_over_path(save_path)
+	for index in range(_seeds.size()):
+		if _seeds[index] == replaced_seed:
+			_seeds[index] = saved_seed
+	_original_seed = saved_seed
+	_rebuild_editor()
+	seed_parameter_applied.emit(replaced_seed, saved_seed)
 	status_label.text = "保存しました: %s" % save_path

@@ -32,6 +32,15 @@ func _run() -> void:
 	context.flowers = flowers
 	game.call("start_battle", context)
 	await process_frame
+	var edited_seed := SeedInfo.new()
+	edited_seed.main_description = "Edited seed description"
+	var edited_enemy := EnemyInfo.new()
+	edited_enemy.description = "Edited nightmare description"
+	edited_enemy.acid_block = AcidBlockInfo.new()
+	edited_enemy.acid_block.max_hp = 321
+	DebugState.set_debug_enabled(true)
+	game.call("_on_debug_seed_parameter_applied", seed, edited_seed)
+	game.call("_on_debug_enemy_parameter_applied", enemy_info, edited_enemy)
 
 	var decision := game.get_node("UI/TimeOverDecision") as ColorRect
 	var retry_button := game.get_node("UI/TimeOverDecision/CenterContainer/PanelContainer/MarginContainer/Content/Buttons/RetryButton") as Button
@@ -54,6 +63,11 @@ func _run() -> void:
 
 	retry_button.pressed.emit()
 	await process_frame
+	_expect(game.call("get_flowers")[0] == edited_seed, "デバッグ保存した種を再挑戦後も使用する")
+	_expect(
+		(game.get("current_enemy_preset") as EnemyPresetInfo).enemies[0] == edited_enemy,
+		"デバッグ保存した悪夢を再挑戦後も使用する"
+	)
 	_expect(not decision.visible, "再挑戦時に選択パネルを閉じる")
 	_expect(game.get("battle_active"), "再挑戦時に戦闘を再開する")
 	_expect(game.get("minutes") == 22 * 60, "再挑戦時に開始時刻へ戻す")
@@ -82,6 +96,7 @@ func _run() -> void:
 	_expect(game.call("get_last_time_over_recovery_percent") == 88, "表示用回復割合を最大HPまでの実回復量に合わせる")
 
 	game.call("cancel_battle")
+	DebugState.set_debug_enabled(false)
 	root.remove_child(game)
 	game.free()
 	await process_frame

@@ -1,42 +1,42 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://d02kf3ks5jgm1"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_8s68j"]
-[ext_resource type="Texture2D" uid="uid://laq0ilquhvab" path="res://resource/image/texture/seed/tex_seed_tokeisou_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" uid="uid://dcce75acrcybj" path="res://resource/image/texture/seed/tex_seed_tokeisou.png" id="2_yn8ot"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_jxxml"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_wfiqv"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" uid="uid://dowh00603eyqh" path="res://scene/main/game/seed/skill/seed_effect_bring_limit.gd" id="skill_bring_limit"]
-[ext_resource type="Script" uid="uid://cp3yui4xe4hu1" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate.gd" id="skill_pending_time"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" uid="uid://bc7tnfw70v1m2" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_8s68j"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_tokeisou_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_tokeisou.png" id="2_yn8ot"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_jxxml"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_wfiqv"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect_bring_limit.gd" id="skill_bring_limit"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate.gd" id="skill_pending_time"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_aixl4"]
 script = ExtResource("1_8s68j")
 texture = ExtResource("4_block_texture")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_56nkk"]
 script = ExtResource("skill_time_rate")
-rate = 0.05
+rate = 0.049999999999272404
 min_interval_rate = 0.0
-max_interval_rate = 0.05
+max_interval_rate = 0.049999999999272404
 
-[sub_resource type="Resource" id="Resource_bring_limit"]
+[sub_resource type="Resource" id="Resource_l45uf"]
 script = ExtResource("skill_bring_limit")
 POSSESSION_LIMIT_KEY = "seed_100103"
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_spkn5"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_jxxml")]([SubResource("Resource_main_effect_1"), SubResource("Resource_bring_limit")])
+effects = Array[ExtResource("3_jxxml")]([SubResource("Resource_56nkk"), SubResource("Resource_l45uf")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_eeivd"]
 script = ExtResource("skill_pending_time")
-rate = 0.15
+rate = 0.1499999999996362
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_a1np4"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_jxxml")]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_jxxml")]([SubResource("Resource_eeivd")])
 
 [resource]
 script = ExtResource("3_wfiqv")
@@ -44,8 +44,8 @@ skill_id = 100103
 display_name = "トケイソウ"
 texture = ExtResource("2_yn8ot")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
+main_skill = SubResource("Resource_spkn5")
+sub_skill = SubResource("Resource_a1np4")
+acid_block = SubResource("Resource_aixl4")
 main_description = "消化間隔-5%。この花は重複不可"
 sub_description = "この花を消化すると消化間隔-15%"

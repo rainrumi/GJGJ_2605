@@ -1,40 +1,40 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://lm1gn4nrjxss"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_qrrqf"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_kof6u"]
-[ext_resource type="Texture2D" uid="uid://j8r4s3ocnjyw" path="res://resource/image/texture/seed/tex_seed_housenka_small.png" id="2_small_texture"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_8l2xy"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_svnoj"]
-[ext_resource type="Script" uid="uid://bpdmul6xy2d0a" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_damage_rate.gd" id="3_tmpd1"]
-[ext_resource type="Texture2D" uid="uid://d0mer18aof4e4" path="res://resource/image/texture/seed/tex_seed_housenka.png" id="4_mgqf0"]
-[ext_resource type="Script" uid="uid://blm8lnep51asi" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_adjacent.gd" id="skill_adjacent_damage"]
-[ext_resource type="Script" uid="uid://bfacid5m8p100" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_flat_acid_rate.gd" id="skill_player_damage_flat"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_qrrqf"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_kof6u"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_housenka_small.png" id="2_small_texture"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_8l2xy"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_svnoj"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_damage_rate.gd" id="3_tmpd1"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_housenka.png" id="4_mgqf0"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_adjacent.gd" id="skill_adjacent_damage"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_player_damage/seed_effect_on_player_damage_change_flat_acid_rate.gd" id="skill_player_damage_flat"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_nijqu"]
 script = ExtResource("1_qrrqf")
 texture = ExtResource("2_kof6u")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_cv3l6"]
 script = ExtResource("3_tmpd1")
-damage_rate = 0.3
+damage_rate = 0.2999999999992724
 
-[sub_resource type="Resource" id="Resource_main_effect_2"]
+[sub_resource type="Resource" id="Resource_lblxp"]
 script = ExtResource("skill_player_damage_flat")
-flat_acid_rate = 0.3
+flat_acid_rate = 0.2999999999992724
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_k8b83"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_svnoj")]([SubResource("Resource_main_effect_1"), SubResource("Resource_main_effect_2")])
+effects = Array[ExtResource("3_svnoj")]([SubResource("Resource_cv3l6"), SubResource("Resource_lblxp")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_4swm0"]
 script = ExtResource("skill_adjacent_damage")
 received_damage_rate = 1.0
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_e40uw"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_svnoj")]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_svnoj")]([SubResource("Resource_4swm0")])
 
 [resource]
 script = ExtResource("3_8l2xy")
@@ -43,8 +43,8 @@ rarity = 1
 display_name = "ホウセンカ"
 texture = ExtResource("4_mgqf0")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
+main_skill = SubResource("Resource_k8b83")
+sub_skill = SubResource("Resource_e40uw")
+acid_block = SubResource("Resource_nijqu")
 main_description = "受けるダメージ+30%。受けたダメージ30%分を次の消化ダメージに加算。"
 sub_description = "この花を消化すると消化時に受けた総合消化ダメージ100%を隣接するモノに分配して与える。"
