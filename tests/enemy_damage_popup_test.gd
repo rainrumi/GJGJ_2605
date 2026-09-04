@@ -23,6 +23,11 @@ func _run() -> void:
 	_expect(first_popup != null, "最初の被弾ダメージUIを生成する")
 	_expect(second_popup != null, "同時刻の被弾ダメージUIを生成する")
 	if first_popup != null and second_popup != null:
+		_expect(not first_popup.z_as_relative, "被弾ダメージUIは絶対Zインデックスを使う")
+		_expect(
+			first_popup.z_index == EnemyDamagePopup.POPUP_Z_INDEX,
+			"被弾ダメージUIをすべての悪夢より前面に描画する"
+		)
 		_expect(first_popup.text == "-10", "最初の被弾ダメージ値を表示する")
 		_expect(second_popup.text == "-20", "次の被弾ダメージ値を表示する")
 		_expect(

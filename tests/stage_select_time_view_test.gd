@@ -26,8 +26,10 @@ func _run() -> void:
 
 	var game_time_view := game.get_node("UI/TimeView") as TimeView
 	var stage_select_time_view := stage_select.get_node("UI/TimeView") as TimeView
+	var stage_select_hp_view := stage_select.get_node("UI/HpView") as StageClearHpView
 	_expect(game_time_view != null, "ゲームSceneに時刻表示がある")
 	_expect(stage_select_time_view != null, "ステージ選択Sceneに時刻表示がある")
+	_expect(stage_select_hp_view != null, "ステージ選択SceneにHP表示がある")
 	if game_time_view != null and stage_select_time_view != null:
 		_expect(
 			stage_select_time_view.scene_file_path == TIME_VIEW_SCENE_PATH
@@ -57,12 +59,38 @@ func _run() -> void:
 			not stage_select_time_view.time_tooltip.visible,
 			"ステージ選択Sceneの時刻から離れるとツールチップを隠す"
 		)
+	if stage_select_hp_view != null:
+		var run_state := RunState.new()
+		var unlocked_stage_ids: Array[int] = []
+		run_state.current_hp = 42
+		run_state.max_hp = 120
+		stage_select.setup_stage_choices(null, 1, unlocked_stage_ids, run_state)
+		_expect(
+			stage_select_hp_view.scene_file_path
+			== "res://scene/ui/battle_ui/view/hp_view.tscn",
+			"他Sceneと同じHP表示Sceneを参照する"
+		)
+		_expect(
+			stage_select_hp_view.position.is_equal_approx(Vector2(20.0, 20.0)),
+			"HP表示をマップ左上の余白に配置する"
+		)
+		_expect(stage_select_hp_view.hp_value_label.text == "42/120", "現在HPと最大HPを表示する")
+		stage_select_hp_view.mouse_entered.emit()
+		_expect(stage_select_hp_view.hp_tooltip.visible, "HPへホバーするとツールチップを表示する")
+		_expect(
+			stage_select_hp_view.hp_tooltip.tooltip_label.text.contains("HP: 42/120"),
+			"HPツールチップへ現在HPと最大HPを反映する"
+		)
+		stage_select_hp_view.mouse_exited.emit()
+		_expect(not stage_select_hp_view.hp_tooltip.visible, "HPから離れるとツールチップを隠す")
+		run_state = null
 
 	root.remove_child(stage_select)
 	stage_select.free()
 	root.remove_child(game)
 	game.free()
 	stage_select_time_view = null
+	stage_select_hp_view = null
 	game_time_view = null
 	stage_select = null
 	game = null

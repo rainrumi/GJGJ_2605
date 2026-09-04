@@ -5,6 +5,7 @@ const FLOAT_DISTANCE := 8.0
 const DURATION := 0.35
 const HIDE_DELAY := 0.15
 const TOTAL_DURATION := DURATION * 2.0 + HIDE_DELAY
+const POPUP_Z_INDEX := 100
 const POPUP_META := &"enemy_damage_popup"
 const POPUP_FRAME_META := &"enemy_damage_popup_frame"
 
@@ -31,6 +32,8 @@ static func show_damage_values(owner: Node, hp_label: Label, damage_values: Arra
 	var label := Label.new()
 	label.text = "\n".join(damage_texts)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.z_as_relative = false
+	label.z_index = POPUP_Z_INDEX
 	label.size = Vector2(hp_label.size.x, maxf(hp_label.size.y, float(damage_texts.size()) * hp_label.size.y))
 	label.position = _get_popup_position(owner, hp_label, label.size)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

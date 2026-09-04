@@ -1,6 +1,8 @@
 extends Node2D
 
 const DEBUG_STAGE_CATALOG_PATH := "res://data/resources/area/debug_stage_catalog.tres"
+const REST_MINUTES := 30
+const REST_HP_RATE := 0.1
 
 signal stage_selected(stage: StageInfo)
 signal today_rest_requested
@@ -13,6 +15,7 @@ signal today_rest_requested
 @onready var stage_choice_list: StageSelectChoiceList = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices
 @onready var stage_choices_scroll: ScrollContainer = $UI/StageChoicesScroll
 @onready var time_view: TimeView = $UI/TimeView
+@onready var hp_view: StageClearHpView = $UI/HpView
 @onready var today_rest_button: TodayRestButton = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices/TodayRestButton
 @onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
@@ -31,6 +34,8 @@ func _ready() -> void:
 	_connect_stage_choice_list()
 	time_view.tooltip_requested.connect(_on_time_tooltip_requested)
 	time_view.tooltip_hide_requested.connect(_on_time_tooltip_hide_requested)
+	hp_view.tooltip_requested.connect(_on_hp_tooltip_requested)
+	hp_view.tooltip_hide_requested.connect(_on_hp_tooltip_hide_requested)
 	today_rest_button.pressed.connect(_on_today_rest_button_pressed)
 	_connect_debug_state()
 	setup_stage_choices()
@@ -41,6 +46,14 @@ func _on_time_tooltip_requested(view: TimeView) -> void:
 
 
 func _on_time_tooltip_hide_requested(view: TimeView) -> void:
+	view.hide_tooltip()
+
+
+func _on_hp_tooltip_requested(view: StageClearHpView) -> void:
+	view.show_tooltip()
+
+
+func _on_hp_tooltip_hide_requested(view: StageClearHpView) -> void:
 	view.hide_tooltip()
 
 
@@ -72,6 +85,7 @@ func setup_stage_choices(
 	_displayed_stage_definitions = _get_random_stage_definitions()
 	map_view.hide_hover()
 	time_view.set_time(_current_minutes)
+	_setup_hp_view()
 	map_view.set_lara_location(_run_state.lara_current_location if _run_state != null else null)
 	stage_choice_list.setup_choices(
 		_displayed_stage_definitions,
@@ -80,6 +94,24 @@ func setup_stage_choices(
 		stage_choice_scene
 	)
 	stage_choices_scroll.call("reset_to_top")
+
+
+# HP表示設定
+func _setup_hp_view() -> void:
+	var current_hp := _run_state.current_hp if _run_state != null else 100
+	var max_hp := _run_state.max_hp if _run_state != null else 100
+	var rest_recovery_bonus_rate := 0.0
+	if _run_state != null:
+		var seed_effects := SeedEffectResolver.new()
+		seed_effects.setup(_run_state.planted_flowers)
+		rest_recovery_bonus_rate = seed_effects.get_rest_recovery_bonus_rate()
+	hp_view.set_hp_info(
+		current_hp,
+		max_hp,
+		REST_MINUTES,
+		REST_HP_RATE,
+		rest_recovery_bonus_rate
+	)
 
 
 # ステージ定義byID取得

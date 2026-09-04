@@ -42,6 +42,7 @@
 [ext_resource type="Script" uid="uid://bv0erjxernnad" path="res://scene/main/stage_select/map/marker/stage_select_location_marker.gd" id="42_location_marker"]
 [ext_resource type="PackedScene" uid="uid://bk0m5bk7vnrh8" path="res://scene/ui/view/time_view.tscn" id="48_time_view_scene"]
 [ext_resource type="PackedScene" path="res://scene/main/stage_select/choice/today_rest_button.tscn" id="49_today_rest_button"]
+[ext_resource type="PackedScene" uid="uid://bguischxty5ml" path="res://scene/ui/battle_ui/view/hp_view.tscn" id="50_hp_view_scene"]
 
 [node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
@@ -124,6 +125,13 @@ offset_left = 515.0
 offset_top = 14.0
 offset_right = 623.0
 offset_bottom = 48.0
+
+[node name="HpView" parent="UI" instance=ExtResource("50_hp_view_scene")]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 115.0
+offset_bottom = 54.0
 
 [node name="StageChoicesScroll" type="ScrollContainer" parent="UI" unique_id=104671176]
 layout_mode = 0
