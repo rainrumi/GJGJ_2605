@@ -18,8 +18,6 @@ static func get_sub_description(skill: SeedInfo) -> String:
 		return EMPTY_TEXT
 	# 説明
 	var description := _format_block_status_placeholders(skill.sub_description, skill)
-	if _should_append_block_status(skill, description):
-		description = "%s（%s）" % [description, get_block_status_text(skill)]
 	return _get_or_empty(description)
 
 
@@ -65,15 +63,6 @@ static func _format_block_status_placeholders(
 	# 最大HP
 	var max_hp := block_definition.get_max_hp() if block_definition != null else 1
 	return description.replace(BLOCK_HP_PLACEHOLDER, str(max_hp))
-
-
-# shouldappendブロック状態処理
-static func _should_append_block_status(skill: SeedInfo, description: String) -> bool:
-	return (
-		is_block_generation_skill(skill)
-		and not description.is_empty()
-		and (not description.contains("HP") or not description.contains("消化ダメージ"))
-	)
 
 
 # ブロック定義取得
