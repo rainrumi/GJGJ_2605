@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hp5r5nl1kvck"
-path="res://.godot/imported/acidmare_character2_desin.png-830b257b0eb87a068ad2c4c358b27daa.ctex"
+uid="uid://cug38r2oqxn8g"
+path="res://.godot/imported/tex_still_area_iriyu_100.png-94c3ef1caa341c2bed98dc51eb901cbc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resource/acidmare_character2_desin.png"
-dest_files=["res://.godot/imported/acidmare_character2_desin.png-830b257b0eb87a068ad2c4c358b27daa.ctex"]
+source_file="res://resource/image/texture/still/tex_still_area_iriyu_100.png"
+dest_files=["res://.godot/imported/tex_still_area_iriyu_100.png-94c3ef1caa341c2bed98dc51eb901cbc.ctex"]
 
 [params]
 

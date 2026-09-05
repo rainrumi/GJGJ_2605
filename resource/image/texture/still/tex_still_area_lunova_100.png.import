@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnr4u1innvkq1"
-path="res://.godot/imported/acidmare_chara.png-bdddc350dfd6e168ed7bd6d1953c5d17.ctex"
+uid="uid://dedc6kb5f7tg2"
+path="res://.godot/imported/tex_still_area_lunova_100.png-9194f8ba6efcbcfd303bbb78126de9f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resource/acidmare_chara.png"
-dest_files=["res://.godot/imported/acidmare_chara.png-bdddc350dfd6e168ed7bd6d1953c5d17.ctex"]
+source_file="res://resource/image/texture/still/tex_still_area_lunova_100.png"
+dest_files=["res://.godot/imported/tex_still_area_lunova_100.png-9194f8ba6efcbcfd303bbb78126de9f7.ctex"]
 
 [params]
 

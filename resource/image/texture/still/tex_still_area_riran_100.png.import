@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://br8cwk2wd125t"
-path="res://.godot/imported/acidmare _character2_raf.png-67f562ce1a584cb497bb7161b89d997e.ctex"
+uid="uid://blfc4r6edy6ls"
+path="res://.godot/imported/tex_still_area_riran_100.png-addfed76b3be58866f05455e7d6b8e5e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resource/acidmare _character2_raf.png"
-dest_files=["res://.godot/imported/acidmare _character2_raf.png-67f562ce1a584cb497bb7161b89d997e.ctex"]
+source_file="res://resource/image/texture/still/tex_still_area_riran_100.png"
+dest_files=["res://.godot/imported/tex_still_area_riran_100.png-addfed76b3be58866f05455e7d6b8e5e.ctex"]
 
 [params]
 
