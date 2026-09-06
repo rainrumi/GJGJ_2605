@@ -1,5 +1,28 @@
-@bg "res://resource/image/texture/still/tex_still_area_elmena_100.png"
-最高の大学生活をしようといろんな人にアプローチをするが誰にも目を向けられない悪夢。
+@bg "res://resource/image/texture/still/tex_still_area_huwa_100.png"
+@name "試験官"
+最近はエルメナ大学で実習をしているみたいですね。
 @lcm
-何度も倒れてもあきらめずに立ち直る姿は勇敢だが、苦痛にもなる。
+現在の成績を鑑み、エルメナ大学での試験が許可します。
+@lcm
+試験に出る悪夢は現地で確認してください。
+@lcm
+@bg "res://resource/image/texture/still/tex_still_area_elmena_100.png"
+@name "大学生"
+うーん、うーん。
+@lcm
+待ってよ～。
+@lcm
+今年で大学生活も終わりだってのに～。
+@lcm
+@name ""
+案内図の場所には活かした髪を整えた大学生の姿があった。
+@lcm
+@name "案内図のメモ"
+今回の試験は、『最高の大学生活をしようと色んな人にアプローチをするが誰にも目を向けられない悪夢』です。
+@lcm
+何度も倒れてもあきらめずに立ち直る姿は勇敢ですが、辛いですよね。
+@lcm
+私もイケメンを追っていたのでよく分かります。
+@lcm
+では、試験を始めてくださいね。
 @lcm
