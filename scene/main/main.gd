@@ -269,7 +269,8 @@ func _on_opening_novel_finished() -> void:
 			show_title()
 		NovelFlow.STAGE_UNLOCK:
 			if not _play_next_stage_unlock_novel():
-				show_stage_select()
+				show_game(should_reset_player_state)
+				should_reset_player_state = false
 		NovelFlow.FIRST_NIGHTMARE_EVENT:
 			active_novel_flow = NovelFlow.NONE
 			run_state.unlock_lara()
@@ -293,8 +294,6 @@ func show_day_intro() -> void:
 	await day_intro.show_day(run_state.current_day, run_state.planted_flowers)
 	if flow_id != _screen_flow_id:
 		return
-	if _try_show_stage_unlock_novels():
-		return
 	show_stage_select()
 
 
@@ -304,6 +303,8 @@ func _on_stage_select_stage_selected(stage: StageInfo) -> void:
 		return
 	run_state.select_stage(stage)
 	run_state.mark_area_challenged_today()
+	if _try_show_selected_stage_unlock_novels(stage):
+		return
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
 
@@ -501,11 +502,11 @@ func _get_game_clear_novel_text() -> NovelTextInfo:
 	return novel_text
 
 
-# showステージ解放novels試行
-func _try_show_stage_unlock_novels() -> bool:
-	if not _is_high_difficulty_day(run_state.current_day):
+# 選択ステージ解放novels表示試行
+func _try_show_selected_stage_unlock_novels(stage: StageInfo) -> bool:
+	if stage == null or not stage.is_high_difficulty:
 		return false
-	pending_stage_novel_texts = _collect_unplayed_stage_unlock_novels()
+	pending_stage_novel_texts = _collect_unplayed_selected_stage_unlock_novels(stage)
 	if pending_stage_novel_texts.is_empty():
 		return false
 	title.visible = false
@@ -530,38 +531,37 @@ func _play_next_stage_unlock_novel() -> bool:
 	return true
 
 
-# 解放novels処理
-func _collect_unplayed_stage_unlock_novels() -> Array[NovelTextInfo]:
+# 選択ステージの未再生解放novels取得
+func _collect_unplayed_selected_stage_unlock_novels(stage: StageInfo) -> Array[NovelTextInfo]:
 	# ノベルtexts
 	var novel_texts: Array[NovelTextInfo] = []
-	# unlockedステージノベルtexts
-	var unlocked_stage_novel_texts := _collect_unplayed_non_recurring_stage_unlock_novels()
-	if not unlocked_stage_novel_texts.is_empty():
-		return unlocked_stage_novel_texts
-	# recurringノベル文言
-	var recurring_novel_text := _get_recurring_stage_unlock_novel_text()
-	if recurring_novel_text != null:
-		novel_texts.append(recurring_novel_text)
+	if stage == null:
+		return novel_texts
+	if stage.stage_id == RECURRING_STAGE_NOVEL_STAGE_ID:
+		var recurring_novel_text := _get_recurring_stage_unlock_novel_text()
+		if recurring_novel_text != null:
+			novel_texts.append(recurring_novel_text)
+		return novel_texts
+	# 通常難度の進行状態とノベル定義を参照する
+	var source_stage := _get_normal_stage_definition_by_id(stage.stage_id)
+	if source_stage == null:
+		return novel_texts
+	for scenario_index in run_state.get_unplayed_unlocked_stage_novel_indices(source_stage):
+		# ノベル文言
+		var novel_text := _load_stage_unlock_novel_text(source_stage.stage_id, scenario_index)
+		if novel_text == null:
+			continue
+		novel_texts.append(novel_text)
+		run_state.mark_stage_novel_played(source_stage, scenario_index)
 	return novel_texts
 
 
-# 解放novels処理
-func _collect_unplayed_non_recurring_stage_unlock_novels() -> Array[NovelTextInfo]:
-	# ノベルtexts
-	var novel_texts: Array[NovelTextInfo] = []
+# 通常難度ステージ定義取得
+func _get_normal_stage_definition_by_id(stage_id: int) -> StageInfo:
 	for stage in _get_stage_definitions_for_progress():
-		if stage == null or stage.is_high_difficulty:
-			continue
-		if stage.stage_id == RECURRING_STAGE_NOVEL_STAGE_ID:
-			continue
-		for scenario_index in run_state.get_unplayed_unlocked_stage_novel_indices(stage):
-			# ノベル文言
-			var novel_text := _load_stage_unlock_novel_text(stage.stage_id, scenario_index)
-			if novel_text == null:
-				continue
-			novel_texts.append(novel_text)
-			run_state.mark_stage_novel_played(stage, scenario_index)
-	return novel_texts
+		if stage != null and not stage.is_high_difficulty and stage.stage_id == stage_id:
+			return stage
+	return null
 
 
 # recurringステージ解放ノベル取得
