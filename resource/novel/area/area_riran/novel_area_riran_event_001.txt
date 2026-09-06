@@ -1,3 +1,4 @@
+@bg "res://resource/image/texture/still/tex_still_area_riran_100.png"
 妖精が生まれない悪夢
 @lcm
 かつての大厄災、バクが減ったことで妖精の繁殖も激減してしまった時期があった。

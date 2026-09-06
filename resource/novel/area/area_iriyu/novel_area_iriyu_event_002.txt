@@ -1,3 +1,4 @@
+@bg "res://resource/image/texture/still/tex_still_area_iriyu_100.png"
 バクを失う悪夢
 @lcm
 バク同士にも友好関係や恋愛感情が存在する。

@@ -1,3 +1,4 @@
+@bg "res://resource/image/texture/still/tex_still_area_elmena_100.png"
 最高の大学生活をしようといろんな人にアプローチをするが誰にも目を向けられない悪夢。
 @lcm
 何度も倒れてもあきらめずに立ち直る姿は勇敢だが、苦痛にもなる。

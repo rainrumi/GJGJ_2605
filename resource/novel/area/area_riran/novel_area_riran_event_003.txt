@@ -1,3 +1,4 @@
+@bg "res://resource/image/texture/still/tex_still_area_riran_100.png"
 妖精が殺される悪夢
 @lcm
 人間が絶対に裏切らないとは断言できない。

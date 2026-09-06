@@ -1,3 +1,4 @@
+@bg "res://resource/image/texture/still/tex_still_area_riran_100.png"
 悪夢が倒せない悪夢
 @lcm
 悪夢が悪夢を呼び、無限に膨れ上がる。

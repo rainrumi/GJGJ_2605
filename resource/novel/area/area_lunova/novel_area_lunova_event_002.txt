@@ -1,2 +1,3 @@
+@bg "res://resource/image/texture/still/tex_still_area_lunova_100.png"
 熱されたかき氷
 @lcm

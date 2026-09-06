@@ -1,3 +1,4 @@
+@bg "res://resource/image/texture/still/tex_still_area_iriyu_100.png"
 人間化できない悪夢
 @lcm
 ほかのバクが成長できているのに自分だけ成長できない悪夢。

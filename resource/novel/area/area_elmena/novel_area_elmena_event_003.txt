@@ -1,3 +1,4 @@
+@bg "res://resource/image/texture/still/tex_still_area_elmena_100.png"
 最終締め切りに襲われる悪夢
 @lcm
 これを落としたら落第レベルの研究論文の提出に追われる。どんな方法でもよいのでこれを解決しなければならない。
