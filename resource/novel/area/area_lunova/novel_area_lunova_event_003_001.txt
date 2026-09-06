@@ -1,0 +1,8 @@
+@bg "res://resource/image/texture/still/tex_still_area_huwa_100.png"
+@name "試験官"
+お疲れさまでした。
+@lcm
+これで『ルノヴァ旧市街』の試験は全て終わりました。
+@lcm
+ルノヴァ旧市街の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm

@@ -7,6 +7,7 @@ const HIGH_DIFFICULTY_DAY_INTERVAL := 4
 const FIRST_NIGHTMARE_EVENT_DAY := 4
 const RECURRING_STAGE_NOVEL_STAGE_ID := 0
 const RECURRING_STAGE_NOVEL_SCENARIO_INDEX := 1
+const AREA_COMPLETION_BOSS_DEFEAT_COUNT := 3
 
 enum NovelFlow {
 	NONE,
@@ -14,6 +15,7 @@ enum NovelFlow {
 	END_GAMEOVER,
 	GAME_CLEAR,
 	STAGE_UNLOCK,
+	AREA_COMPLETION,
 	FIRST_NIGHTMARE_EVENT,
 }
 
@@ -39,6 +41,7 @@ var run_state := RunState.new()
 var should_reset_player_state := true
 var active_novel_flow := NovelFlow.NONE
 var pending_stage_novel_texts: Array[NovelTextInfo] = []
+var pending_area_completion_novel_text: NovelTextInfo
 var _settings_paused_tree := false
 var _screen_flow_id := 0
 var _last_battle_progress_snapshot: Dictionary = {}
@@ -271,6 +274,10 @@ func _on_opening_novel_finished() -> void:
 			if not _play_next_stage_unlock_novel():
 				show_game(should_reset_player_state)
 				should_reset_player_state = false
+		NovelFlow.AREA_COMPLETION:
+			active_novel_flow = NovelFlow.NONE
+			pending_area_completion_novel_text = null
+			_finish_current_day()
 		NovelFlow.FIRST_NIGHTMARE_EVENT:
 			active_novel_flow = NovelFlow.NONE
 			run_state.unlock_lara()
@@ -313,6 +320,7 @@ func _on_stage_select_stage_selected(stage: StageInfo) -> void:
 func _on_game_battle_finished(won: bool) -> void:
 	_sync_player_stomach_size()
 	if won:
+		_queue_area_completion_novel_if_needed(run_state.selected_stage)
 		_last_battle_progress_snapshot = {
 			"normal_enemy_preset_indices": run_state.normal_enemy_preset_indices.duplicate(),
 			"strengthened_enemy_preset_indices": run_state.strengthened_enemy_preset_indices.duplicate(),
@@ -431,6 +439,9 @@ func _on_stage_select_today_rest_requested() -> void:
 
 # 日数終了
 func _finish_current_day() -> void:
+	if pending_area_completion_novel_text != null:
+		show_area_completion_novel()
+		return
 	if run_state.current_day == FIRST_NIGHTMARE_EVENT_DAY:
 		show_first_nightmare_event_novel()
 		return
@@ -447,6 +458,27 @@ func _advance_to_next_day() -> void:
 		show_game_clear_novel()
 		return
 	show_day_intro()
+
+
+func _queue_area_completion_novel_if_needed(stage: StageInfo) -> void:
+	if stage == null or not stage.is_high_difficulty or stage.completion_novel_text == null:
+		return
+	var progress_key := "%d:%d" % [stage.stage_id, stage.stage_area]
+	var defeated_boss_count := int(run_state.strengthened_enemy_defeat_counts.get(progress_key, 0))
+	if defeated_boss_count + 1 == AREA_COMPLETION_BOSS_DEFEAT_COUNT:
+		pending_area_completion_novel_text = stage.completion_novel_text
+
+
+func show_area_completion_novel() -> void:
+	title.visible = false
+	opening_novel.visible = false
+	day_intro.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+	active_novel_flow = NovelFlow.AREA_COMPLETION
+	opening_novel.start_with_text(pending_area_completion_novel_text)
 
 
 func _get_lara_location_candidates() -> Array[StageInfo]:

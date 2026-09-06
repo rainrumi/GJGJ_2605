@@ -27,6 +27,7 @@ enum StageArea {
 @export var enemy_data: StageEnemyInfo
 @export var drop_seed_pool: SeedPoolInfo
 @export var stage_unlock_novel_texts: Array[NovelTextInfo] = []
+@export var completion_novel_text: NovelTextInfo
 @export var high_difficulty_stages: Array[StageInfo] = []
 @export var is_high_difficulty := false
 @export var has_normal_stage := true

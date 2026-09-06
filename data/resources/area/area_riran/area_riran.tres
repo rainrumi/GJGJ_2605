@@ -5,6 +5,7 @@
 [ext_resource type="Resource" path="res://data/resources/novel/area/area_riran/novel_area_riran_event_001.tres" id="3_stage_novel_001"]
 [ext_resource type="Resource" path="res://data/resources/novel/area/area_riran/novel_area_riran_event_002.tres" id="3_stage_novel_002"]
 [ext_resource type="Resource" path="res://data/resources/novel/area/area_riran/novel_area_riran_event_003.tres" id="3_stage_novel_003"]
+[ext_resource type="Resource" path="res://data/resources/novel/area/area_riran/novel_area_riran_event_003_001.tres" id="3_completion_novel"]
 [ext_resource type="Script" uid="uid://cqo4s66ui3yf6" path="res://data/info/novel/novel_text_info.gd" id="4_7ncov"]
 [ext_resource type="Resource" path="res://data/resources/seeds/location_pool/area_riran_seed_pool.tres" id="4_seed_pool"]
 
@@ -20,3 +21,4 @@ map_position = Vector2(100, -45)
 enemy_data = ExtResource("2_enemy_data")
 drop_seed_pool = ExtResource("4_seed_pool")
 stage_unlock_novel_texts = Array[ExtResource("4_7ncov")]([ExtResource("3_stage_novel_001"), ExtResource("3_stage_novel_002"), ExtResource("3_stage_novel_003")])
+completion_novel_text = ExtResource("3_completion_novel")
