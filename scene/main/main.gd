@@ -181,7 +181,9 @@ func show_stage_clear() -> void:
 	_sync_seed_inventory_from_game()
 	_sync_stage_clear_seed_inventory()
 	if stage_clear.has_method("set_continuous_play_enabled"):
-		stage_clear.set_continuous_play_enabled(run_state.is_continuous_play_unlocked)
+		stage_clear.set_continuous_play_enabled(
+			run_state.is_continuous_play_unlocked and not _is_high_difficulty_day(run_state.current_day)
+		)
 	if stage_clear.has_method("setup_clear_result") and game.has_method("get_current_hp") and game.has_method("get_clear_minutes"):
 		stage_clear.setup_clear_result(
 			game.get_current_hp(),

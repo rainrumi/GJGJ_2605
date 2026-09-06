@@ -10,6 +10,7 @@ func _initialize() -> void:
 func _run() -> void:
 	await _check_stage_clear_returns_to_map()
 	await _check_stage_clear_return_delay_after_unlock()
+	await _check_high_difficulty_day_ends_after_one_battle()
 	await _check_today_rest_button()
 	await _check_unlock_and_time_carryover()
 	quit(_failures)
@@ -64,6 +65,37 @@ func _check_stage_clear_return_delay_after_unlock() -> void:
 	_expect(not main.stage_select.visible, "待機時間が終わるまでステージ選択画面へ遷移しない")
 	await create_timer(main.STAGE_CLEAR_RETURN_DELAY + 0.1).timeout
 	_expect(main.stage_select.visible, "待機時間後にステージ選択画面へ遷移する")
+	var bgm := main.get_node("BGM") as BeatConductor
+	bgm.stop()
+	bgm.audio_player.stream = null
+	bgm.bgm_stream = null
+	root.remove_child(main)
+	main.free()
+
+
+func _check_high_difficulty_day_ends_after_one_battle() -> void:
+	var packed := load("res://scene/main/main.tscn") as PackedScene
+	_expect(packed != null, "Main Sceneを読み込める")
+	if packed == null:
+		return
+	var main := packed.instantiate()
+	root.add_child(main)
+	await process_frame
+	main.run_state.unlock_continuous_play()
+	main.run_state.current_day = 8
+	main.show_stage_clear()
+	_expect(
+		not bool(main.stage_clear.get("continuous_play_enabled")),
+		"4日ごとの強化ステージ出現日は連続戦闘を無効にする"
+	)
+	main.stage_clear.call("_finish_reward_selection", 0.0)
+	await create_timer(main.STAGE_CLEAR_RETURN_DELAY + 0.1).timeout
+	_expect(main.run_state.current_day == 9, "強化ステージ出現日は1回の戦闘後に翌日へ進む")
+	main.show_stage_clear()
+	_expect(
+		bool(main.stage_clear.get("continuous_play_enabled")),
+		"強化ステージ出現日以外は連続戦闘を有効にする"
+	)
 	var bgm := main.get_node("BGM") as BeatConductor
 	bgm.stop()
 	bgm.audio_player.stream = null
