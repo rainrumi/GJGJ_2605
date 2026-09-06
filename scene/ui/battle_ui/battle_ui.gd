@@ -14,6 +14,7 @@ signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
 signal debug_retry_requested
+signal debug_instant_clear_requested
 signal debug_seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo)
 signal debug_enemy_parameter_applied(original_enemy: EnemyInfo, edited_enemy: EnemyInfo)
 signal debug_seed_acquisition_requested(seed: SeedInfo)
@@ -419,6 +420,7 @@ func _connect_child_signals() -> void:
 	debug_panel.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
 	debug_panel.debug_seed_requested.connect(_on_debug_seed_requested)
 	debug_panel.debug_retry_requested.connect(_on_debug_retry_requested)
+	debug_panel.debug_instant_clear_requested.connect(_on_debug_instant_clear_requested)
 	
 	seed_button_list.seed_drag_started.connect(_on_seed_drag_started)
 	seed_button_list.seed_drag_moved.connect(_on_seed_drag_moved)
@@ -554,6 +556,10 @@ func _on_debug_seed_requested() -> void:
 
 func _on_debug_retry_requested() -> void:
 	debug_retry_requested.emit()
+
+
+func _on_debug_instant_clear_requested() -> void:
+	debug_instant_clear_requested.emit()
 
 # -----------------------------------------------------------
 

@@ -239,6 +239,7 @@ func _connect_ui() -> void:
 	ui.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
 	ui.debug_seed_requested.connect(_on_debug_seed_requested)
 	ui.debug_retry_requested.connect(_on_debug_retry_requested)
+	ui.debug_instant_clear_requested.connect(_on_debug_instant_clear_requested)
 	ui.seed_drag_started.connect(_on_seed_drag_started)
 	ui.seed_drag_moved.connect(_on_seed_drag_moved)
 	ui.seed_drag_released.connect(_on_seed_drag_released)
@@ -490,6 +491,17 @@ func _on_debug_seed_removal_requested(collection: int, slot_index: int) -> void:
 
 func _on_debug_retry_requested() -> void:
 	retry_last_battle()
+
+
+func _on_debug_instant_clear_requested() -> void:
+	if not _can_use_debug_action():
+		return
+	_prepare_debug_battle_change()
+	for enemy in enemies:
+		if enemy == null or not enemy.is_enemy() or enemy.is_Acided():
+			continue
+		enemy.take_acid_damage(99999)
+	_check_battle_end()
 
 
 func retry_last_battle() -> bool:

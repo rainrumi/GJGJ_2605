@@ -1,6 +1,7 @@
 extends Node
 
 var _failures := 0
+var _instant_clear_requests := 0
 
 
 # 試験開始
@@ -19,13 +20,14 @@ func _run() -> void:
 	get_tree().root.add_child(game)
 	await get_tree().process_frame
 
-	var debug_panel := game.get_node_or_null("UI/DebugPanel") as Control
+	var debug_panel := game.get_node_or_null("UI/DebugPanel") as DebugPanel
 	var debug_button := game.get_node_or_null("UI/DebugPanel/DebugMessageButton") as Button
 	var seed_parameter_button := game.get_node_or_null("UI/DebugPanel/DebugSeedParameterButton") as Button
 	var seed_parameter_panel := game.get_node_or_null("UI/DebugPanel/DebugSeedParameterPanel") as Control
 	var enemy_parameter_button := game.get_node_or_null("UI/DebugPanel/DebugEnemyParameterButton") as Button
 	var enemy_parameter_panel := game.get_node_or_null("UI/DebugPanel/DebugEnemyParameterPanel") as Control
 	var retry_button := game.get_node_or_null("UI/DebugPanel/DebugRetryButton") as Button
+	var instant_clear_button := game.get_node_or_null("UI/DebugPanel/DebugInstantClearButton") as Button
 	var all_seed_button := game.get_node_or_null("UI/DebugPanel/DebugAllSeedButton") as Button
 	var all_seed_panel := game.get_node_or_null("UI/DebugPanel/DebugAllSeedPanel") as Control
 	_expect(debug_panel != null, "デバッグパネルを構成する")
@@ -35,6 +37,7 @@ func _run() -> void:
 	_expect(enemy_parameter_button != null, "悪夢パラメーターボタンを構成する")
 	_expect(enemy_parameter_panel != null, "悪夢パラメーター画面を構成する")
 	_expect(retry_button != null, "デバッグリトライボタンを構成する")
+	_expect(instant_clear_button != null, "即クリアボタンを構成する")
 	_expect(all_seed_button != null, "種一覧ボタンを構成する")
 	_expect(all_seed_panel != null, "種一覧パネルを構成する")
 	if debug_panel != null and debug_button != null and retry_button != null:
@@ -47,6 +50,11 @@ func _run() -> void:
 		debug_button.pressed.emit()
 		_expect(bool(debug_panel.get("debug_button_active")), "デバッグボタンで機能を有効化できる")
 		_expect(retry_button.visible, "Debug 有効時だけリトライボタンを表示する")
+		_expect(instant_clear_button.visible, "Debug 有効時だけ即クリアボタンを表示する")
+		_expect(instant_clear_button.text == "即クリア", "即クリアボタンの文言を設定する")
+		debug_panel.debug_instant_clear_requested.connect(_on_debug_instant_clear_requested)
+		instant_clear_button.pressed.emit()
+		_expect(_instant_clear_requests == 1, "Debug 有効時は即クリアを要求する")
 		_expect(retry_button.position.y < debug_button.position.y, "リトライボタンを既存ボタン段の上に配置する")
 		_expect(seed_parameter_button.visible, "Debug 有効時だけ種パラメーターボタンを表示する")
 		_expect(enemy_parameter_button.visible, "Debug 有効時だけ悪夢パラメーターボタンを表示する")
@@ -60,6 +68,9 @@ func _run() -> void:
 		debug_button.pressed.emit()
 		_expect(not bool(debug_panel.get("debug_button_active")), "デバッグボタンで機能を無効化できる")
 		_expect(not retry_button.visible, "Debug 無効時はリトライボタンを隠す")
+		_expect(not instant_clear_button.visible, "Debug 無効時は即クリアボタンを隠す")
+		instant_clear_button.pressed.emit()
+		_expect(_instant_clear_requests == 1, "Debug 無効時は即クリアを要求しない")
 		_expect(not seed_parameter_button.visible, "Debug 無効時は種パラメーターボタンを隠す")
 		_expect(not seed_parameter_panel.visible, "Debug 無効化時は調整画面を閉じる")
 		_expect(not enemy_parameter_button.visible, "Debug 無効時は悪夢パラメーターボタンを隠す")
@@ -73,6 +84,10 @@ func _run() -> void:
 	packed = null
 	await get_tree().process_frame
 	get_tree().quit(_failures)
+
+
+func _on_debug_instant_clear_requested() -> void:
+	_instant_clear_requests += 1
 
 
 # 期待値確認
