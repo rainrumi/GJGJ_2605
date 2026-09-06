@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://cw5upfry3m3nf"]
+[gd_scene format=3 uid="uid://cw5upfry3m3nf"]
 
 [ext_resource type="Script" uid="uid://b5om836obl82m" path="res://scene/main/opening_novel/opening_novel.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Resource" uid="uid://dpwdn5mwco1y8" path="res://data/resources/novel/novel_opening.tres" id="3_text"]
-[ext_resource type="Texture2D" uid="uid://cw37wjrw5yjos" path="res://resource/image/texture/still/tex_still_1000.png" id="4_still"]
 [ext_resource type="AudioStream" uid="uid://bisemm55nx4fe" path="res://resource/sound/se/se_popopo.mp3" id="5_character_se"]
 [ext_resource type="PackedScene" path="res://scene/main/opening_novel/novel_debug_panel.tscn" id="6_debug_panel"]
 
@@ -24,9 +23,8 @@ layer = 50
 script = ExtResource("1_script")
 novel_text = ExtResource("3_text")
 
-[node name="CharacterSe" type="AudioStreamPlayer" parent="."]
+[node name="CharacterSe" type="AudioStreamPlayer" parent="." unique_id=1344018540]
 stream = ExtResource("5_character_se")
-bus = &"SE"
 
 [node name="Screen" type="Control" parent="." unique_id=1190891835]
 layout_mode = 3
@@ -37,7 +35,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="OpeningStill" type="TextureRect" parent="Screen" unique_id=1624291706]
-visible = false
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 1
 anchors_preset = 15
@@ -46,11 +43,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("4_still")
 expand_mode = 1
-stretch_mode = 6
+stretch_mode = 5
 
-[node name="ImageLayer" type="Control" parent="Screen"]
+[node name="ImageLayer" type="Control" parent="Screen" unique_id=1985904275]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -65,16 +61,16 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 36
-offset_top = -111
-offset_right = -36
-offset_bottom = -22
+offset_left = 36.0
+offset_top = -111.0
+offset_right = -36.0
+offset_bottom = -22.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_text_box")
 
-[node name="NameLabel" type="Label" parent="Screen/TextBox"]
+[node name="NameLabel" type="Label" parent="Screen/TextBox" unique_id=754539284]
 visible = false
 layout_mode = 0
 offset_left = 17.0
@@ -92,10 +88,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 17
-offset_top = 12
-offset_right = -17
-offset_bottom = -21
+offset_left = 17.0
+offset_top = 12.0
+offset_right = -17.0
+offset_bottom = -21.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
@@ -112,10 +108,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -39
-offset_top = -21
-offset_right = -15
-offset_bottom = -6
+offset_left = -39.0
+offset_top = -21.0
+offset_right = -15.0
+offset_bottom = -6.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
@@ -127,4 +123,4 @@ text = "▼"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DebugPanel" parent="Screen" instance=ExtResource("6_debug_panel")]
+[node name="DebugPanel" parent="Screen" unique_id=1782653974 instance=ExtResource("6_debug_panel")]

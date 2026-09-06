@@ -1,6 +1,6 @@
 extends SceneTree
 
-const BACKGROUND_PATH := "res://resource/image/texture/still/tex_still_1000.png"
+const BACKGROUND_PATH := "res://resource/image/texture/still/tex_still_area_huwa_100.png"
 
 var _failures := 0
 
@@ -22,6 +22,10 @@ func _run() -> void:
 		)
 		var source := opening_resource.get_script_text()
 		_expect(source.contains("みなさん、"), "Opening scenario text is read from txt")
+		_expect(
+			source.begins_with("@bg \"%s\"" % BACKGROUND_PATH),
+			"Opening scenario displays its still with @bg"
+		)
 		_expect(source.contains("@lcm"), "Migrated opening scenario contains @lcm")
 
 	var packed := load("res://scene/main/opening_novel/opening_novel.tscn") as PackedScene
@@ -33,6 +37,8 @@ func _run() -> void:
 	var opening_novel := packed.instantiate() as OpeningNovel
 	root.add_child(opening_novel)
 	await process_frame
+	var initial_background := opening_novel.get_node("Screen/OpeningStill") as TextureRect
+	_expect(initial_background.texture == null, "Opening scene does not embed the opening still")
 
 	var game_settings := root.get_node_or_null("/root/GameSettings")
 	var original_text_speed := 1

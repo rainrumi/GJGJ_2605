@@ -1,3 +1,4 @@
+@bg "res://resource/image/texture/still/tex_still_area_huwa_100.png"
 みなさん、ふわふわ学校へのご入学誠におめでとうございます。
 @lcm
 早速ですが、あなたたちはこれから１か月間悪夢を食べる練習をしていただきます。

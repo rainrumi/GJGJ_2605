@@ -1,15 +1,15 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://cyxosr30hvu3g"]
 
-[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_8s68j"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_tokeisou_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_tokeisou.png" id="2_yn8ot"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_jxxml"]
-[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_wfiqv"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect_bring_limit.gd" id="skill_bring_limit"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate.gd" id="skill_pending_time"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_8s68j"]
+[ext_resource type="Texture2D" uid="uid://laq0ilquhvab" path="res://resource/image/texture/seed/tex_seed_tokeisou_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" uid="uid://dcce75acrcybj" path="res://resource/image/texture/seed/tex_seed_tokeisou.png" id="2_yn8ot"]
+[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_jxxml"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_wfiqv"]
+[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" uid="uid://dowh00603eyqh" path="res://scene/main/game/seed/skill/seed_effect_bring_limit.gd" id="skill_bring_limit"]
+[ext_resource type="Script" uid="uid://cp3yui4xe4hu1" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate.gd" id="skill_pending_time"]
+[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" uid="uid://bc7tnfw70v1m2" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
 
 [sub_resource type="Resource" id="Resource_aixl4"]
 script = ExtResource("1_8s68j")
@@ -18,9 +18,9 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_56nkk"]
 script = ExtResource("skill_time_rate")
-rate = 0.049999999999272404
+rate = 0.0499999999992724
 min_interval_rate = 0.0
-max_interval_rate = 0.049999999999272404
+max_interval_rate = 0.0499999999992724
 
 [sub_resource type="Resource" id="Resource_l45uf"]
 script = ExtResource("skill_bring_limit")
