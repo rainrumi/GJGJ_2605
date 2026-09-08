@@ -1,6 +1,6 @@
 @bg "res://resource/image/texture/still/tex_still_area_lunova_100.png"
 @name ""
-大分この場所を探索して、ある事に気づいた。
+だいぶこの場所を探索して、ある事に気づいた。
 @lcm
 この場所には人間の悪夢しかおらず、バクや妖精の悪夢が全くいない。
 @lcm

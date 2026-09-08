@@ -578,13 +578,17 @@ func _collect_unplayed_selected_stage_unlock_novels(stage: StageInfo) -> Array[N
 	var source_stage := _get_normal_stage_definition_by_id(stage.stage_id)
 	if source_stage == null:
 		return novel_texts
-	for scenario_index in run_state.get_unplayed_unlocked_stage_novel_indices(source_stage):
-		# ノベル文言
-		var novel_text := _load_stage_unlock_novel_text(source_stage.stage_id, scenario_index)
-		if novel_text == null:
-			continue
-		novel_texts.append(novel_text)
-		run_state.mark_stage_novel_played(source_stage, scenario_index)
+	# 次に挑むボスと同じ番号のノベルだけを再生する
+	var progress_key := "%d:%d" % [source_stage.stage_id, source_stage.stage_area]
+	var scenario_index := int(run_state.strengthened_enemy_defeat_counts.get(progress_key, 0)) + 1
+	if scenario_index not in run_state.get_unplayed_unlocked_stage_novel_indices(source_stage):
+		return novel_texts
+	# ノベル文言
+	var novel_text := _load_stage_unlock_novel_text(source_stage.stage_id, scenario_index)
+	if novel_text == null:
+		return novel_texts
+	novel_texts.append(novel_text)
+	run_state.mark_stage_novel_played(source_stage, scenario_index)
 	return novel_texts
 
 
