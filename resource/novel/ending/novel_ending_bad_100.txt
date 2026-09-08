@@ -1,0 +1,34 @@
+@bg "res://resource/image/texture/still/tex_still_area_huwa_100.png"
+@name ""
+ティーナさん、お疲れ様でした。
+@lcm
+試験の結果ですが、不合格です。
+@lcm
+@bg "res://resource/image/texture/still/tex_still_0000.png"
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
+@name "ラーラ"
+どうだった？
+@lcm
+……。
+@lcm
+……え、不合格……？
+@lcm
+……そっか。
+@lcm
+……まあ、来年もまた受ければ良いじゃない。
+@lcm
+私たち違う学年になっちゃうけど。
+@lcm
+@img_remove 1
+@name ""
+あなたは試験に受からなかった。
+@lcm
+だが、これもまた人生、いやバク生だろう。
+@lcm
+今はまだ自分の体の成長が追い付いていなかっただけだ。
+@lcm
+幼馴染ラーラとの甘い学生生活が無くなってもすべてを失ったわけではない。
+@lcm
+これはきっと新たな世界線を開拓した証なのだ。
+@lcm
+バッドエンディング - 乱れる飽和

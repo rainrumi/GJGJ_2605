@@ -1,0 +1,23 @@
+@bg "res://resource/image/texture/still/tex_still_area_huwa_100.png"
+@name ""
+ティーナさん、お疲れ様でした。
+@lcm
+試験の結果ですが、合格です。おめでとうございます！
+@lcm
+@bg "res://resource/image/texture/still/tex_still_0000.png"
+@lcm
+……。
+@lcm
+@name "？？？"
+ちょっと待ちなさい。
+@lcm
+@name ""
+え、あなたは、理事長！？
+@lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
+@name "ラーラ"
+どうだった？
+@lcm
+……。
+@lcm
+え！ 合格！？

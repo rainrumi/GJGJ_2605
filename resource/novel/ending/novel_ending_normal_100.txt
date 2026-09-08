@@ -1,0 +1,40 @@
+@bg "res://resource/image/texture/still/tex_still_area_huwa_100.png"
+@name ""
+ティーナさん、お疲れ様でした。
+@lcm
+試験の結果ですが、合格です。おめでとうございます！
+@lcm
+@bg "res://resource/image/texture/still/tex_still_0000.png"
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
+@name "ラーラ"
+どうだった？
+@lcm
+……。
+@lcm
+え！ 合格！？
+@lcm
+やったわね！ よくやったわティーナ！
+@lcm
+これで私たちもバクとして少しだけ成長できたのよ！
+@lcm
+6年間、これからもよろしくね。ティーナ。
+@lcm
+これからの学校生活が楽しみね！
+@lcm
+@name ""
+あなたは無事に試験に合格することができた。
+@lcm
+これは幾つもの難関を自らの腹で消化することができたあなた自身の功績だ。
+@lcm
+おめでとう。
+@lcm
+あなたはこれからもバクとして悪夢を消化する生活をすることができる。
+@lcm
+ひとりのバクとして。幼馴染のラーラと一緒に。
+@lcm
+これからどんな楽しいことが待っているんだろう！
+@lcm
+私は胸に期待を膨らませながらラーラと笑顔で笑いあった。
+@lcm
+ノーマルエンド - 好奇心の芽生え
+@lcm
