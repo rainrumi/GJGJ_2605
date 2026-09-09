@@ -53,7 +53,13 @@ func show_battle_clear_texture() -> void:
 	sprite.texture = battle_clear_texture
 
 
+func set_face_button_enabled(is_enabled: bool) -> void:
+	face_button.disabled = not is_enabled
+
+
 func _on_face_button_pressed() -> void:
+	if face_button.disabled:
+		return
 	var target_texture := (
 		special_face_clicked_texture
 		if _face_change_count >= SPECIAL_FACE_CHANGE_COUNT

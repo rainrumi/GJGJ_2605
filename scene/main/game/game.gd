@@ -19,6 +19,7 @@ const RECOVERY_MINIMUM_RATE: float = 0.5
 const acid_AUTO_INTERVAL: float = 0.05
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const DRAG_CENTER_TWEEN_DURATION := 0.3
+const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
 @onready var ui: BattleUI = $UI
@@ -160,6 +161,7 @@ func start_battle(context: BattleInfo = null) -> void:
 	)
 	ui.set_stage_info(_get_current_area_name(), _get_current_stage_name())
 	ui.set_seed_inventory(seed_controller.get_flowers(), seed_controller.get_stored_seeds())
+	_update_character_face_button(seed_controller.get_flowers())
 	ui.set_enemy_preset(current_enemy_preset)
 	ui.set_seed_debug_numbers_visible(debug_numbers_visible)
 	stomach.hide_preview()
@@ -659,7 +661,19 @@ func _sync_seed_sources() -> void:
 	seed_effects.set_day(current_day)
 	_refresh_seed_structural_effects()
 	ui.set_seed_inventory(flowers, seed_controller.get_stored_seeds())
+	_update_character_face_button(flowers)
 	seed_inventory_changed.emit(flowers.duplicate(), seed_controller.get_stored_seeds().duplicate())
+
+
+func _update_character_face_button(flowers: Array[SeedInfo]) -> void:
+	var displayed_flower_count := 0
+	for flower in flowers:
+		if flower != null:
+			displayed_flower_count += 1
+			if displayed_flower_count >= FACE_BUTTON_BLOCKING_FLOWER_COUNT:
+				character.set_face_button_enabled(false)
+				return
+	character.set_face_button_enabled(true)
 
 
 # start敵ドラッグ判定
