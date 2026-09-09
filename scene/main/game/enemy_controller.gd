@@ -102,11 +102,13 @@ func acid_enemys(
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
 	minutes: int,
-	elapsed_minutes: int = STEP_MINUTES
+	elapsed_minutes: int = STEP_MINUTES,
+	player_hp: int = 0
 ) -> Array[Enemy]:
 	var per_cell := int(get_acid_damage_breakdown(enemies, minutes, true, stomach)["total"]) # セル消化値
 	var input := EnemyDigestionInput.new() # 消化入力
 	input.setup(enemies, stomach, minutes, elapsed_minutes, per_cell)
+	input.player_hp = player_hp
 	if digestion_processor == null:
 		return digestion_resolver.resolve(input).digested_enemies
 	return digestion_processor.process(input).digested_enemies

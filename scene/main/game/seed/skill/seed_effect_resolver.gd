@@ -71,6 +71,7 @@ func get_acid_damage_breakdown(
 	}
 	var seed_rate := _sum_float("get_acid_damage_rate", context) # 種倍率
 	seed_rate += _state.progress_acid_damage_bonus_rate
+	seed_rate += _state.persistent_acid_damage_bonus_rate
 	if _state.next_acid_damage_bonus_rate != 0.0:
 		seed_rate += _state.next_acid_damage_bonus_rate
 	if consume_pending_bonus:
@@ -115,6 +116,9 @@ func apply_player_damage(amount: int, base_damage: int) -> int:
 # 時間経過適用
 func apply_progress_time(previous_minutes: int, minutes: int) -> void:
 	var elapsed_minutes := maxi(0, minutes - previous_minutes) # 経過分
+	if elapsed_minutes == 0:
+		return
+	_state.progress_time_count += 1
 	var context := { # 文脈
 		"previous_minutes": previous_minutes,
 		"minutes": minutes,
@@ -138,6 +142,7 @@ func get_time_reduction_rate(
 	}
 	var rate := _sum_float("get_time_reduction_rate", context) # 短縮率
 	rate += _state.next_time_reduction_bonus_rate
+	rate += _state.persistent_time_reduction_bonus_rate
 	if consume_pending_bonus:
 		_state.next_time_reduction_bonus_rate = 0.0
 	return clampf(rate, -2.0, 0.9)
@@ -150,10 +155,11 @@ func add_Acided_seed_effect(seed: SeedInfo, minutes := 0, stomach: StomachBoard 
 	var handled := false # 処理済み
 	var context := {"seed": seed, "minutes": minutes, "stomach": stomach} # 文脈
 	for effect in _get_seed_effects(seed.get_sub_skill()):
-		if effect.on_finish_acid_seed(_state, context):
+		var active_effect := effect.duplicate(true) as SeedEffect if effect.persists_after_seed_digested() else effect
+		if active_effect.on_finish_acid_seed(_state, context):
 			handled = true
-			if effect.persists_after_seed_digested():
-				_persistent_sub_effects.append(effect)
+			if active_effect.persists_after_seed_digested():
+				_persistent_sub_effects.append(active_effect)
 	_persistent_sub_effects.sort_custom(func(a: SeedEffect, b: SeedEffect) -> bool:
 		return a.priority < b.priority
 	)
@@ -275,13 +281,19 @@ func get_acid_target_multiplier() -> float:
 # removefrom胃袋ダメージ率取得
 func get_remove_from_stomach_damage_rate(default_rate: float) -> float:
 	var rate := default_rate # 基準率
+	var damage_disabled := false
 	for effect in _get_main_effects():
 		var effect_rate := effect.get_remove_from_stomach_damage_rate(_state, {}) # 効果率
 		if effect_rate >= 0.0:
 			rate = effect_rate
-	if _state.remove_from_stomach_disabled:
-		return rate
-	return rate
+		if effect_rate == 0.0:
+			damage_disabled = true
+	return 0.0 if damage_disabled else rate
+
+
+func notify_hp_lost(amount: int) -> void:
+	if amount > 0:
+		_state.hp_loss_count += 1
 
 
 # removefrom胃袋消化ダメージ取得

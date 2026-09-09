@@ -418,7 +418,6 @@ func collect_Acided_seeds(Acided_enemies: Array[Enemy]) -> Array[SeedInfo]:
 func consume_rest_time_skip() -> bool:
 	if rest_time_skip_count <= 0:
 		return false
-	rest_time_skip_count -= 1
 	return true
 
 

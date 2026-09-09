@@ -23,7 +23,7 @@ rate = 0.1
 
 [sub_resource type="Resource" id="Resource_main_effect_2"]
 script = ExtResource("4_5d06b")
-rate = 2.0
+rate = 3.0
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
@@ -31,9 +31,13 @@ effects = Array[ExtResource("3_fv4ra")]([SubResource("Resource_main_effect_1"), 
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("7_83chu")
+rate = 2.0
+seeds_only = true
 
 [sub_resource type="Resource" id="Resource_sub_effect_2"]
 script = ExtResource("skill_adjacent_acid_taken")
+rate = 2.0
+seeds_only = true
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")

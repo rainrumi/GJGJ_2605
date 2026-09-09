@@ -13,7 +13,8 @@ func _initialize() -> void:
 	var effects := SeedEffectResolver.new()
 	effects.setup([seed])
 	var before := effects.get_acid_damage_breakdown(100, 0.0, 0, false, 0, 0, 3)
-	_expect(before.seed_buff == 20, "消化前はメイン効果だけを消化ダメージへ反映する")
+	_expect(before.seed_buff == 0, "メイン効果は全体バフではなく悪夢への被消化倍率に反映する")
+	_expect(is_equal_approx(effects.get_acid_target_multiplier(), 1.25), "悪夢が受ける消化ダメージ+25%")
 
 	effects.refresh_flowers([])
 	_expect(effects.add_Acided_seed_effect(seed), "消化時に100109の副効果を発動する")

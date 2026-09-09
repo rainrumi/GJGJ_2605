@@ -25,7 +25,8 @@ effects = Array[ExtResource("3_8ifaw")]([SubResource("Resource_main_effect_1")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_adjacent_damage")
-damage = 300
+player_hp_rate = 3.0
+enemies_only = true
 split = false
 
 [sub_resource type="Resource" id="Resource_sub_skill"]

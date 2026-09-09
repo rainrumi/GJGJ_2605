@@ -15,19 +15,21 @@ func is_unconditional_status_change() -> bool:
 
 # 時間率取得
 func get_time_reduction_rate(state: DreamSeedSkillState, context: Dictionary) -> float:
-	var minutes := int(context.get("minutes", 0)) # 経過分
-	var start_minutes := int(context.get("battle_start_minutes", 0)) # 開始分
-	var step_minutes := int(context.get("base_step_minutes", 1)) # 間隔分
 	var value := rate # 適用値
-	value += -float(state.last_hp_loss) * hp_loss_rate
-	value += -elapsed_step_rate * _get_elapsed_step_count(minutes, start_minutes, step_minutes)
+	value -= float(state.hp_loss_count) * hp_loss_rate
+	var start_count := int(state.effect_start_progress_counts.get(self, 0))
+	value += elapsed_step_rate * float(state.progress_time_count - start_count)
 	return _clamp_interval_rate(value)
 
 
 # elapsed数
-func _get_elapsed_step_count(minutes: int, start_minutes: int, step_minutes: int) -> float:
-	var safe_step_minutes := maxi(1, step_minutes) # 安全間隔
-	return maxf(0.0, float(minutes - start_minutes) / float(safe_step_minutes))
+func on_finish_acid_seed(state: DreamSeedSkillState, _context: Dictionary) -> bool:
+	state.effect_start_progress_counts[self] = state.progress_time_count
+	return true
+
+
+func persists_after_seed_digested() -> bool:
+	return true
 
 
 # 間隔率制限

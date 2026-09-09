@@ -5,5 +5,5 @@ extends SeedEffect
 
 
 # 酸倍率取得
-func get_acid_damage_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
-	return rate
+func get_acid_target_multiplier(_state: DreamSeedSkillState, _context: Dictionary) -> float:
+	return 1.0 + rate

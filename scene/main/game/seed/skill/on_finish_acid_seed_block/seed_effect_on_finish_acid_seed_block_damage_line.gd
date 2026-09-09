@@ -14,7 +14,7 @@ func on_finish_acid_seed_block(context: Dictionary) -> void:
 		return
 	var targets: Array[Enemy] = [] # 対象敵
 	for enemy in enemies:
-		if enemy == null or enemy.is_Acided() or not enemy.is_active_in_stomach() or enemy.has_seed():
+		if enemy == null or enemy.is_Acided() or not enemy.is_active_in_stomach():
 			continue
 		if stomach.get_bottom_row_cell_count(enemy) > 0:
 			targets.append(enemy)

@@ -18,8 +18,8 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 [sub_resource type="Resource" id="Resource_5dso2"]
 script = ExtResource("skill_time_rate")
 hp_loss_rate = 0.01000000000021827
-min_interval_rate = 0.0
-max_interval_rate = 2.0
+min_interval_rate = -2.0
+max_interval_rate = 0.0
 
 [sub_resource type="Resource" id="Resource_vva2t"]
 script = ExtResource("skill_seed_skill")

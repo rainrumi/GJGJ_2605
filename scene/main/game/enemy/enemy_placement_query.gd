@@ -3,10 +3,12 @@ extends RefCounted
 
 
 # 隣接敵取得
-static func get_adjacent_enemies(enemy: Enemy, enemies: Array[Enemy]) -> Array[Enemy]:
+static func get_adjacent_enemies(
+	enemy: Enemy, enemies: Array[Enemy], include_digested_source := false
+) -> Array[Enemy]:
 	# 隣接敵
 	var adjacent_enemies: Array[Enemy] = []
-	if not enemy.is_active_in_stomach():
+	if not enemy.is_active_in_stomach() and not (include_digested_source and enemy.is_Acided()):
 		return adjacent_enemies
 	for other in enemies:
 		if other == enemy or not other.is_active_in_stomach():

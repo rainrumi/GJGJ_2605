@@ -847,7 +847,7 @@ func _begin_acid_turn() -> bool:
 # run消化core処理
 func _run_acid_core(current_minutes: int, elapsed_minutes: int) -> BattleTurnResultData:
 	# 消化済み敵
-	var Acided_enemies: Array[Enemy] = acid_controller.acid_enemys(enemies, stomach, current_minutes, elapsed_minutes)
+	var Acided_enemies: Array[Enemy] = acid_controller.acid_enemys(enemies, stomach, current_minutes, elapsed_minutes, hp)
 	# 消化結果
 	var acid_result := acid_controller.build_turn_result(Acided_enemies)
 	_apply_acid_spawn_requests(acid_result.spawn_requests)
@@ -1178,6 +1178,7 @@ func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp - previous_hp))
 	for seed in seed_controller.collect_Acided_seeds(Acided_enemies):
 		seed_effects.add_Acided_seed_effect(seed, minutes, stomach)
+	_refresh_effective_max_hp(false)
 	_apply_Acided_seed_hp_effects(Acided_enemies)
 	_queue_depleted_seed_sources(Acided_enemies)
 
@@ -1196,7 +1197,9 @@ func _apply_player_damage(damage_values: Array[int]) -> void:
 	var total_damage := _sum_damage_values(damage_values)
 	if total_damage <= 0:
 		return
+	var previous_hp := hp
 	hp = maxi(0, hp - total_damage)
+	seed_effects.notify_hp_lost(previous_hp - hp)
 	ui.set_hp(hp, effective_max_hp)
 	ui.show_hp_damage_values(damage_values)
 	character.shake()

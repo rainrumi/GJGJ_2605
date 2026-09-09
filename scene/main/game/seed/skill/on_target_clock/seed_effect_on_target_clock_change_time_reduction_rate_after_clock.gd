@@ -10,4 +10,4 @@ func get_time_reduction_rate(_state: DreamSeedSkillState, context: Dictionary) -
 	var minutes := int(context.get("minutes", 0)) # 経過分
 	if start_minutes >= 0 and minutes < start_minutes:
 		return 0.0
-	return maxf(rate, 0)
+	return rate

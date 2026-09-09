@@ -17,6 +17,7 @@ stomach_shape = null
 
 [sub_resource type="Resource" id="Resource_main_effect_1"]
 script = ExtResource("skill_return_damage")
+priority = 100
 damage_rate = 0.0
 
 [sub_resource type="Resource" id="Resource_main_skill"]
@@ -40,5 +41,5 @@ small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
-main_description = "吐き戻しを行うときダメージを受け無くなる。"
+main_description = "吐き戻し時のダメージを、ほかの夢の種の効果を適用した後に必ず0にする。"
 sub_description = "消化ダメージを受けたときHPが0になり、隣接した悪夢をすべて吐き戻す。"

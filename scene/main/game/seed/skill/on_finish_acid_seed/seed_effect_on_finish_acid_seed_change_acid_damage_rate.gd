@@ -6,5 +6,5 @@ extends SeedEffect
 
 # 種消化完了
 func on_finish_acid_seed(state: DreamSeedSkillState, _context: Dictionary) -> bool:
-	state.next_acid_damage_bonus_rate += rate
+	state.persistent_acid_damage_bonus_rate += rate
 	return true

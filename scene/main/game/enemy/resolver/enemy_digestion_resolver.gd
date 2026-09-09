@@ -132,7 +132,8 @@ func apply_seed_block_effects(
 		batch.received_damage,
 		digested_enemies,
 		input.acid_damage_per_cell,
-		input.elapsed_minutes
+		input.elapsed_minutes,
+		input.player_hp
 	)
 
 
@@ -164,7 +165,8 @@ func _sort_digested_enemies(
 # 最終消化値取得
 func _get_final_damage(enemy: Enemy, enemies: Array[Enemy], raw_damage: int) -> int:
 	var damage_rate := enemy.acid_damage_taken_multiplier # 対象倍率
-	damage_rate *= _seed_effects.get_acid_target_multiplier()
+	if enemy.is_enemy():
+		damage_rate *= _seed_effects.get_acid_target_multiplier()
 	damage_rate *= _seed_block_resolver.get_target_acid_damage_multiplier(enemy, enemies)
 	return roundi(float(raw_damage) * damage_rate)
 

@@ -10,7 +10,7 @@ func on_finish_acid_seed_block(context: Dictionary) -> void:
 	var enemies: Array = context.get("enemies", []) # 敵一覧
 	if seed_block == null or rate < 0.0:
 		return
-	for target in EnemyPlacementQuery.get_adjacent_enemies(seed_block, enemies):
+	for target in EnemyPlacementQuery.get_adjacent_enemies(seed_block, enemies, true):
 		if target == seed_block or target == null or target.is_Acided():
 			continue
 		target.set_attack_multiplier(target.attack_multiplier * rate)

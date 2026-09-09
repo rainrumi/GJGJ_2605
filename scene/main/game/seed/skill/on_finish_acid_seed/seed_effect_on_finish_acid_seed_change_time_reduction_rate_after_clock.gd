@@ -10,5 +10,5 @@ func on_finish_acid_seed(state: DreamSeedSkillState, context: Dictionary) -> boo
 	var minutes := int(context.get("minutes", 0)) # 経過分
 	if start_minutes >= 0 and minutes < start_minutes:
 		return false
-	state.next_time_reduction_bonus_rate += rate
+	state.persistent_time_reduction_bonus_rate += rate
 	return true
