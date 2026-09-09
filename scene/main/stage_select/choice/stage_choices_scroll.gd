@@ -4,6 +4,7 @@ const SCROLL_BAR_SCRIPT := preload("res://scene/main/stage_select/choice/stage_c
 const DRAG_DEADZONE := 8.0
 
 @onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
+@onready var _scroll_bar: VScrollBar = get_v_scroll_bar()
 
 var _press_position := Vector2.ZERO
 var _scroll_at_press := 0
@@ -14,9 +15,9 @@ var _dragging := false
 # 初期化
 func _ready() -> void:
 	# scrollbar
-	var scroll_bar := get_v_scroll_bar()
-	scroll_bar.set_script(SCROLL_BAR_SCRIPT)
-	scroll_bar.call("match_main_background_color")
+	_scroll_bar.set_script(SCROLL_BAR_SCRIPT)
+	_scroll_bar.mouse_filter = Control.MOUSE_FILTER_STOP
+	_scroll_bar.call("match_main_background_color")
 	reset_to_top()
 
 
@@ -53,6 +54,8 @@ func _exit_tree() -> void:
 # 押下開始
 func _begin_press(mouse_position: Vector2) -> void:
 	if not get_global_rect().has_point(mouse_position):
+		return
+	if _scroll_bar.is_visible_in_tree() and _scroll_bar.get_global_rect().has_point(mouse_position):
 		return
 	_press_position = mouse_position
 	_scroll_at_press = scroll_vertical

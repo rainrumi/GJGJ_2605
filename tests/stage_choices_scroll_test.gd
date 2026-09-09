@@ -24,6 +24,8 @@ func _run() -> void:
 	var choice_list := choices_padding.get_node("StageChoices") as StageSelectChoiceList
 	var scroll_bar := scroll.get_v_scroll_bar()
 	var mouse_drag_state := root.get_node("MouseDragState") as MouseDragTracker
+	var scroll_bar_gui_input_count := [0]
+	scroll_bar.gui_input.connect(func(_event: InputEvent) -> void: scroll_bar_gui_input_count[0] += 1)
 	choice_list.choice_pressed.connect(_on_choice_pressed)
 	_expect(select_container.is_ancestor_of(title_label), "Title remains in the stage selection hierarchy")
 	_expect(not scroll_bar.visible, "Scrollbar stays hidden while every stage choice fits")
@@ -49,11 +51,31 @@ func _run() -> void:
 	await process_frame
 	_expect(scroll_bar.visible, "Scrollbar appears when stage choices do not fit")
 	_expect(is_equal_approx(scroll_bar.size.y, scroll.size.y), "Scrollbar height matches the StageChoices viewport")
+	_expect(scroll_bar.size.x >= 16.0, "Scrollbar keeps a draggable hit area")
+	_expect(scroll_bar.mouse_filter == Control.MOUSE_FILTER_STOP, "Scrollbar receives pointer input")
+	var grabber_style := scroll_bar.get_theme_stylebox("grabber") as StyleBoxTexture
+	_expect(
+		grabber_style != null
+		and is_equal_approx(grabber_style.expand_margin_left, 2.0)
+		and is_equal_approx(grabber_style.expand_margin_right, 2.0),
+		"Scrollbar grabber expands two pixels on both horizontal sides"
+	)
 	_expect(
 		first_choice != null
 		and scroll_bar.global_position.x - first_choice.get_global_rect().end.x >= 10.0,
 		"Scrollbar keeps at least 10 pixels from stage choice buttons"
 	)
+	var bar_press_position := scroll_bar.global_position + Vector2(scroll_bar.size.x * 0.5, 10.0)
+	scroll.scroll_vertical = 0
+	_send_mouse_button(bar_press_position, true)
+	await process_frame
+	_expect(not bool(scroll.get("_pressing")), "Scrollbar press is not handled as a content drag")
+	_send_mouse_motion(bar_press_position + Vector2(0.0, 40.0), Vector2(0.0, 40.0))
+	await process_frame
+	_send_mouse_button(bar_press_position + Vector2(0.0, 40.0), false)
+	await process_frame
+	_expect(int(scroll_bar_gui_input_count[0]) >= 3, "Scrollbar receives press, motion, and release events")
+	_expect(scroll.scroll_vertical > 0, "Scrollbar grabber can be dragged downward")
 	scroll.scroll_vertical = 40
 	scroll.call("reset_to_top")
 	await process_frame
@@ -123,3 +145,22 @@ func _get_last_visible_control(parent: Control) -> Control:
 
 func _on_choice_pressed(_choice_index: int) -> void:
 	_choice_pressed_count += 1
+
+
+func _send_mouse_button(position: Vector2, pressed: bool) -> void:
+	var event := InputEventMouseButton.new()
+	event.position = position
+	event.global_position = position
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
+	event.pressed = pressed
+	root.push_input(event, true)
+
+
+func _send_mouse_motion(position: Vector2, relative: Vector2) -> void:
+	var event := InputEventMouseMotion.new()
+	event.position = position
+	event.global_position = position
+	event.relative = relative
+	event.button_mask = MOUSE_BUTTON_MASK_LEFT
+	root.push_input(event, true)

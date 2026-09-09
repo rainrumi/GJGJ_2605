@@ -113,9 +113,10 @@ layout_mode = 0
 offset_left = 164.0
 offset_top = 18.0
 offset_right = 298.0
-offset_bottom = 52.0
+offset_bottom = 46.0
 mouse_filter = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 2
+alignment = 1
 
 [node name="PlayerCount" type="Label" parent="UI/DigestionCounts" unique_id=1637343269]
 layout_mode = 2
