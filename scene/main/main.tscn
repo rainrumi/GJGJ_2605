@@ -10,7 +10,10 @@
 [ext_resource type="Resource" path="res://data/resources/novel/novel_ending_gameover.tres" id="9_end_gameover_text"]
 [ext_resource type="AudioStream" uid="uid://dc8vyar0jf1e4" path="res://resource/sound/bgm/Night_Dance.mp3" id="10_bgm"]
 [ext_resource type="PackedScene" uid="uid://dpm4cf8ncpl8m" path="res://systems/audio/beat_conductor.tscn" id="11_beat_conductor"]
-[ext_resource type="Resource" path="res://data/resources/novel/novel_ending_gameclear.tres" id="12_game_clear_text"]
+[ext_resource type="Resource" path="res://data/resources/novel/novel_ending_true.tres" id="12_true_ending"]
+[ext_resource type="Resource" path="res://data/resources/novel/novel_ending_normal.tres" id="12_normal_ending"]
+[ext_resource type="Resource" path="res://data/resources/novel/novel_ending_bad.tres" id="12_bad_ending"]
+[ext_resource type="Resource" path="res://data/resources/rara/lara_schedule.tres" id="19_lara_schedule"]
 [ext_resource type="PackedScene" uid="uid://o8cavvep5sxl" path="res://scene/main/settings/settings_screen.tscn" id="13_settings"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://resource/sound/se/se_click.mp3" id="14_se_click"]
 [ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/info/stage/stage_info.gd" id="15_q2oic"]
@@ -21,9 +24,12 @@
 [node name="Main" type="Node" unique_id=1753159910]
 script = ExtResource("1_6vuhr")
 end_gameover_novel_text = ExtResource("9_end_gameover_text")
-game_clear_novel_text = ExtResource("12_game_clear_text")
+true_ending_novel_text = ExtResource("12_true_ending")
+normal_ending_novel_text = ExtResource("12_normal_ending")
+bad_ending_novel_text = ExtResource("12_bad_ending")
 first_nightmare_event_novel_text = ExtResource("17_event_100_text")
 lara_location_catalog = ExtResource("18_lara_location_catalog")
+lara_schedule = ExtResource("19_lara_schedule")
 
 [node name="BackgroundColor" type="ColorRect" parent="." unique_id=1477797917]
 z_index = -50

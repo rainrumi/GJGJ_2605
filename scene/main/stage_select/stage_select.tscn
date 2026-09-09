@@ -133,6 +133,31 @@ offset_top = 20.0
 offset_right = 115.0
 offset_bottom = 54.0
 
+[node name="DigestionCounts" type="VBoxContainer" parent="UI"]
+layout_mode = 0
+offset_left = 164.0
+offset_top = 20.0
+offset_right = 298.0
+offset_bottom = 54.0
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="LaraCount" type="Label" parent="UI/DigestionCounts"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "ラーラの消化数:0"
+
+[node name="PlayerCount" type="Label" parent="UI/DigestionCounts"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "ティーナの消化数:0"
+
 [node name="StageChoicesScroll" type="ScrollContainer" parent="UI" unique_id=104671176]
 layout_mode = 0
 offset_left = 284.0

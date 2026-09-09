@@ -1,0 +1,418 @@
+[gd_resource type="Resource" script_class="LaraScheduleInfo" format=3]
+
+[ext_resource type="Script" path="res://data/info/rara/lara_schedule_info.gd" id="1_schedule"]
+[ext_resource type="Script" path="res://data/info/rara/lara_day_info.gd" id="2_day"]
+[ext_resource type="Script" path="res://data/info/rara/lara_digestion_info.gd" id="3_digestion"]
+
+[sub_resource type="Resource" id="Digestion_1_1"]
+script = ExtResource("3_digestion")
+end_hour = 0
+end_minute = 30
+area = 2
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_1_2"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 0
+area = 3
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_1"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_1_1"), SubResource("Digestion_1_2")])
+fallback_area = 4
+
+[sub_resource type="Resource" id="Digestion_2_1"]
+script = ExtResource("3_digestion")
+end_hour = 0
+end_minute = 45
+area = 5
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_2_2"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 25
+area = 6
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_2"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_2_1"), SubResource("Digestion_2_2")])
+fallback_area = 7
+
+[sub_resource type="Resource" id="Digestion_3_1"]
+script = ExtResource("3_digestion")
+end_hour = 23
+end_minute = 55
+area = 8
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_3_2"]
+script = ExtResource("3_digestion")
+end_hour = 1
+end_minute = 55
+area = 9
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_3_3"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 50
+area = 10
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_3"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_3_1"), SubResource("Digestion_3_2"), SubResource("Digestion_3_3")])
+fallback_area = 11
+
+[sub_resource type="Resource" id="Digestion_4_1"]
+script = ExtResource("3_digestion")
+end_hour = 4
+end_minute = 15
+area = 11
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_4"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_4_1")])
+fallback_area = 2
+
+[sub_resource type="Resource" id="Digestion_5_1"]
+script = ExtResource("3_digestion")
+end_hour = 1
+end_minute = 20
+area = 4
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_5_2"]
+script = ExtResource("3_digestion")
+end_hour = 4
+end_minute = 40
+area = 5
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_5"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_5_1"), SubResource("Digestion_5_2")])
+fallback_area = 6
+
+[sub_resource type="Resource" id="Digestion_6_1"]
+script = ExtResource("3_digestion")
+end_hour = 0
+end_minute = 20
+area = 7
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_6_2"]
+script = ExtResource("3_digestion")
+end_hour = 2
+end_minute = 45
+area = 8
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_6_3"]
+script = ExtResource("3_digestion")
+end_hour = 5
+end_minute = 5
+area = 9
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_6"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_6_1"), SubResource("Digestion_6_2"), SubResource("Digestion_6_3")])
+fallback_area = 10
+
+[sub_resource type="Resource" id="Digestion_7_1"]
+script = ExtResource("3_digestion")
+end_hour = 23
+end_minute = 15
+area = 10
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_7_2"]
+script = ExtResource("3_digestion")
+end_hour = 0
+end_minute = 30
+area = 11
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_7_3"]
+script = ExtResource("3_digestion")
+end_hour = 1
+end_minute = 45
+area = 2
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_7_4"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 0
+area = 3
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_7"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_7_1"), SubResource("Digestion_7_2"), SubResource("Digestion_7_3"), SubResource("Digestion_7_4")])
+fallback_area = 4
+
+[sub_resource type="Resource" id="Digestion_8_1"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 25
+area = 3
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_8"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_8_1")])
+fallback_area = 4
+
+[sub_resource type="Resource" id="Digestion_9_1"]
+script = ExtResource("3_digestion")
+end_hour = 0
+end_minute = 55
+area = 6
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_9_2"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 50
+area = 7
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_9"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_9_1"), SubResource("Digestion_9_2")])
+fallback_area = 8
+
+[sub_resource type="Resource" id="Digestion_10_1"]
+script = ExtResource("3_digestion")
+end_hour = 23
+end_minute = 35
+area = 9
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_10_2"]
+script = ExtResource("3_digestion")
+end_hour = 1
+end_minute = 10
+area = 10
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_10_3"]
+script = ExtResource("3_digestion")
+end_hour = 2
+end_minute = 40
+area = 11
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_10_4"]
+script = ExtResource("3_digestion")
+end_hour = 4
+end_minute = 15
+area = 2
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_10"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_10_1"), SubResource("Digestion_10_2"), SubResource("Digestion_10_3"), SubResource("Digestion_10_4")])
+fallback_area = 3
+
+[sub_resource type="Resource" id="Digestion_11_1"]
+script = ExtResource("3_digestion")
+end_hour = 0
+end_minute = 15
+area = 2
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_11_2"]
+script = ExtResource("3_digestion")
+end_hour = 2
+end_minute = 25
+area = 3
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_11_3"]
+script = ExtResource("3_digestion")
+end_hour = 4
+end_minute = 40
+area = 4
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_11"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_11_1"), SubResource("Digestion_11_2"), SubResource("Digestion_11_3")])
+fallback_area = 5
+
+[sub_resource type="Resource" id="Digestion_12_1"]
+script = ExtResource("3_digestion")
+end_hour = 5
+end_minute = 5
+area = 5
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_12"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_12_1")])
+fallback_area = 6
+
+[sub_resource type="Resource" id="Digestion_13_1"]
+script = ExtResource("3_digestion")
+end_hour = 23
+end_minute = 40
+area = 8
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_13_2"]
+script = ExtResource("3_digestion")
+end_hour = 1
+end_minute = 20
+area = 9
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_13_3"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 0
+area = 10
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_13"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_13_1"), SubResource("Digestion_13_2"), SubResource("Digestion_13_3")])
+fallback_area = 11
+
+[sub_resource type="Resource" id="Digestion_14_1"]
+script = ExtResource("3_digestion")
+end_hour = 0
+end_minute = 45
+area = 11
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_14_2"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 25
+area = 2
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_14"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_14_1"), SubResource("Digestion_14_2")])
+fallback_area = 3
+
+[sub_resource type="Resource" id="Digestion_15_1"]
+script = ExtResource("3_digestion")
+end_hour = 0
+end_minute = 55
+area = 4
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_15_2"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 50
+area = 5
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_15"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_15_1"), SubResource("Digestion_15_2")])
+fallback_area = 6
+
+[sub_resource type="Resource" id="Digestion_16_1"]
+script = ExtResource("3_digestion")
+end_hour = 4
+end_minute = 15
+area = 7
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_16"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_16_1")])
+fallback_area = 8
+
+[sub_resource type="Resource" id="Digestion_17_1"]
+script = ExtResource("3_digestion")
+end_hour = 1
+end_minute = 20
+area = 10
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_17_2"]
+script = ExtResource("3_digestion")
+end_hour = 4
+end_minute = 40
+area = 11
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_17"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_17_1"), SubResource("Digestion_17_2")])
+fallback_area = 2
+
+[sub_resource type="Resource" id="Digestion_18_1"]
+script = ExtResource("3_digestion")
+end_hour = 0
+end_minute = 20
+area = 3
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_18_2"]
+script = ExtResource("3_digestion")
+end_hour = 2
+end_minute = 45
+area = 4
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_18_3"]
+script = ExtResource("3_digestion")
+end_hour = 5
+end_minute = 5
+area = 5
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_18"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_18_1"), SubResource("Digestion_18_2"), SubResource("Digestion_18_3")])
+fallback_area = 6
+
+[sub_resource type="Resource" id="Digestion_19_1"]
+script = ExtResource("3_digestion")
+end_hour = 0
+end_minute = 30
+area = 6
+digestion_count = 1
+
+[sub_resource type="Resource" id="Digestion_19_2"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 0
+area = 7
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_19"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_19_1"), SubResource("Digestion_19_2")])
+fallback_area = 8
+
+[sub_resource type="Resource" id="Digestion_20_1"]
+script = ExtResource("3_digestion")
+end_hour = 3
+end_minute = 25
+area = 9
+digestion_count = 1
+
+[sub_resource type="Resource" id="Day_20"]
+script = ExtResource("2_day")
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_20_1")])
+fallback_area = 10
+
+[resource]
+script = ExtResource("1_schedule")
+days = Array[ExtResource("2_day")]([SubResource("Day_1"), SubResource("Day_2"), SubResource("Day_3"), SubResource("Day_4"), SubResource("Day_5"), SubResource("Day_6"), SubResource("Day_7"), SubResource("Day_8"), SubResource("Day_9"), SubResource("Day_10"), SubResource("Day_11"), SubResource("Day_12"), SubResource("Day_13"), SubResource("Day_14"), SubResource("Day_15"), SubResource("Day_16"), SubResource("Day_17"), SubResource("Day_18"), SubResource("Day_19"), SubResource("Day_20")])
+

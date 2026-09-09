@@ -17,12 +17,13 @@ func _run() -> void:
 
 
 func _check_stage_clear_returns_to_map() -> void:
-	var original_debug_enabled := DebugState.debug_enabled
-	DebugState.set_debug_enabled(false)
+	var debug_state := root.get_node("DebugState")
+	var original_debug_enabled: bool = debug_state.debug_enabled
+	debug_state.set_debug_enabled(false)
 	var packed := load("res://scene/main/stage_clear/stage_clear.tscn") as PackedScene
 	_expect(packed != null, "ステージクリアSceneを読み込める")
 	if packed == null:
-		DebugState.set_debug_enabled(original_debug_enabled)
+		debug_state.set_debug_enabled(original_debug_enabled)
 		return
 	var stage_clear := packed.instantiate()
 	root.add_child(stage_clear)
@@ -31,7 +32,7 @@ func _check_stage_clear_returns_to_map() -> void:
 	_expect(not debug_retry_button.visible, "Debug 無効時はステージクリアのリトライを隠す")
 	var debug_retry_requested := [false]
 	stage_clear.debug_retry_requested.connect(func() -> void: debug_retry_requested[0] = true)
-	DebugState.set_debug_enabled(true)
+	debug_state.set_debug_enabled(true)
 	_expect(debug_retry_button.visible, "Debug 有効時はステージクリアのリトライを表示する")
 	debug_retry_button.pressed.emit()
 	_expect(bool(debug_retry_requested[0]), "ステージクリアのリトライ要求を通知する")
@@ -47,7 +48,7 @@ func _check_stage_clear_returns_to_map() -> void:
 	_expect(stage_clear.get_current_hp() > hp_before_rest, "今日は休む選択時にHPを回復する")
 	root.remove_child(stage_clear)
 	stage_clear.free()
-	DebugState.set_debug_enabled(original_debug_enabled)
+	debug_state.set_debug_enabled(original_debug_enabled)
 
 
 func _check_stage_clear_return_delay_after_unlock() -> void:

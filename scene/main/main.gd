@@ -17,12 +17,20 @@ enum NovelFlow {
 	STAGE_UNLOCK,
 	AREA_COMPLETION,
 	FIRST_NIGHTMARE_EVENT,
+	LARA_INTERACTION,
+	LARA_INTERACTION_REWARD,
+	LARA_JUDGE_SETUP,
+	LARA_JUDGE_RESULT,
+	LARA_JUDGE_REWARD,
 }
 
 @export var end_gameover_novel_text: NovelTextInfo
-@export var game_clear_novel_text: NovelTextInfo
+@export var true_ending_novel_text: NovelTextInfo
+@export var normal_ending_novel_text: NovelTextInfo
+@export var bad_ending_novel_text: NovelTextInfo
 @export var first_nightmare_event_novel_text: NovelTextInfo
 @export var lara_location_catalog: StageCatalogInfo
+@export var lara_schedule: LaraScheduleInfo
 
 @onready var title: Node = $Title
 @onready var opening_novel: OpeningNovel = $OpeningNovel
@@ -45,10 +53,16 @@ var pending_area_completion_novel_text: NovelTextInfo
 var _settings_paused_tree := false
 var _screen_flow_id := 0
 var _last_battle_progress_snapshot: Dictionary = {}
+var _lara_first_interaction := false
+var _lara_judge_pending := false
+var _lara_judge_result := 0
 
 
 # 初期化
 func _ready() -> void:
+	assert(lara_schedule != null, "Main: lara_scheduleを設定してください")
+	assert(lara_schedule.days.size() >= STORY_CLEAR_DAY, "Main: ラーラの予定は20日分必要です")
+	assert(lara_schedule.validate().is_empty(), "Main: lara_scheduleの時刻・エリア・消化数が不正です")
 	get_tree().node_added.connect(_on_node_added)
 	_connect_ui_buttons(self)
 	settings_screen.closed.connect(_on_settings_screen_closed)
@@ -142,6 +156,7 @@ func show_title() -> void:
 
 # ステージselect表示
 func show_stage_select() -> void:
+	_sync_lara_progress()
 	title.visible = false
 	opening_novel.visible = false
 	day_intro.visible = false
@@ -204,6 +219,8 @@ func show_stage_clear() -> void:
 func _on_title_start_game() -> void:
 	_screen_flow_id += 1
 	run_state.reset()
+	_lara_judge_pending = false
+	pending_area_completion_novel_text = null
 	_setup_initial_stage_position()
 	should_reset_player_state = true
 	if stage_clear.has_method("reset_player_state"):
@@ -272,8 +289,27 @@ func _on_opening_novel_finished() -> void:
 			show_title()
 		NovelFlow.STAGE_UNLOCK:
 			if not _play_next_stage_unlock_novel():
-				show_game(should_reset_player_state)
-				should_reset_player_state = false
+				_start_selected_stage_with_lara()
+		NovelFlow.LARA_INTERACTION:
+			if _lara_first_interaction:
+				active_novel_flow = NovelFlow.LARA_INTERACTION_REWARD
+				var reward_text := NovelTextInfo.new()
+				reward_text.text = _grant_lara_interaction_reward() + "\n@lcm"
+				opening_novel.start_with_text(reward_text)
+			else:
+				_start_selected_battle()
+		NovelFlow.LARA_INTERACTION_REWARD:
+			_start_selected_battle()
+		NovelFlow.LARA_JUDGE_SETUP:
+			_show_lara_judge_result()
+		NovelFlow.LARA_JUDGE_RESULT:
+			var reward_text := NovelTextInfo.new()
+			reward_text.text = _grant_lara_judge_reward() + "\n@lcm"
+			active_novel_flow = NovelFlow.LARA_JUDGE_REWARD
+			opening_novel.start_with_text(reward_text)
+		NovelFlow.LARA_JUDGE_REWARD:
+			active_novel_flow = NovelFlow.NONE
+			_finish_current_day()
 		NovelFlow.AREA_COMPLETION:
 			active_novel_flow = NovelFlow.NONE
 			pending_area_completion_novel_text = null
@@ -282,7 +318,7 @@ func _on_opening_novel_finished() -> void:
 			active_novel_flow = NovelFlow.NONE
 			run_state.unlock_lara()
 			run_state.unlock_continuous_play()
-			_advance_to_next_day()
+			_finish_current_day()
 		_:
 			active_novel_flow = NovelFlow.NONE
 			show_day_intro()
@@ -312,13 +348,79 @@ func _on_stage_select_stage_selected(stage: StageInfo) -> void:
 	run_state.mark_area_challenged_today()
 	if _try_show_selected_stage_unlock_novels(stage):
 		return
+	_start_selected_stage_with_lara()
+
+
+func _start_selected_battle() -> void:
+	active_novel_flow = NovelFlow.NONE
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
+
+
+func _start_selected_stage_with_lara() -> void:
+	var location := run_state.lara_current_location
+	if not run_state.is_lara_unlocked or location == null \
+		or run_state.selected_stage.stage_area != location.stage_area:
+		_start_selected_battle()
+		return
+	_lara_first_interaction = run_state.lara_interaction_day != run_state.current_day
+	var scenario := "false/novel_event_rara_false_001"
+	if _lara_first_interaction:
+		run_state.lara_interaction_day = run_state.current_day
+		scenario = "common/novel_event_rara_common_%03d" % randi_range(1, 8)
+		var area_names := {
+			StageInfo.StageArea.COROTTA_STREET: "corotta",
+			StageInfo.StageArea.ERAMIA_DISTRICT: "eramia",
+			StageInfo.StageArea.FELIS_GARDEN_DISTRICT: "felis",
+			StageInfo.StageArea.GONSAL_DISTRICT: "gonsal",
+			StageInfo.StageArea.MIRUNE_STREET: "mirune",
+			StageInfo.StageArea.NERIX_MAGIC_SCHOOL: "nerix",
+			StageInfo.StageArea.ZAIKA_ADMIN_DISTRICT: "zaika",
+		}
+		var previous := run_state.previous_area_stage
+		if previous != null and area_names.has(previous.stage_area) \
+			and not run_state.played_lara_area_novels.has(previous.stage_area):
+			scenario = "area/novel_event_rara_%s_001" % area_names[previous.stage_area]
+			run_state.played_lara_area_novels[previous.stage_area] = true
+	title.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+	active_novel_flow = NovelFlow.LARA_INTERACTION
+	var novel_text := NovelTextInfo.new()
+	novel_text.script_path = "res://resource/novel/event/" + scenario
+	opening_novel.start_with_text(novel_text)
+
+
+func _get_lara_reward_candidates(rarity: int = -1) -> Array[SeedInfo]:
+	var owned := run_state.planted_flowers.duplicate()
+	owned.append_array(run_state.stored_seeds)
+	return LaraReward.get_seed_candidates(_get_stage_definitions_for_progress(), owned, rarity)
+
+
+func _grant_lara_interaction_reward() -> String:
+	var message: String
+	if randi_range(1, 100) <= 33:
+		var percent: int = [50, 80, 100].pick_random()
+		LaraReward.recover_hp(run_state, percent)
+		message = "HPが%d%%回復した。" % percent
+	else:
+		var candidates := _get_lara_reward_candidates()
+		if candidates.is_empty():
+			push_error("Main: ラーラの交流報酬候補がありません。StageInfo.drop_seed_poolを確認してください")
+			return "獲得できる夢の種がありません。"
+		message = LaraReward.grant_seed(run_state, candidates.pick_random())
+	_sync_stage_clear_seed_inventory()
+	stage_clear.setup_hp(run_state.current_hp)
+	return message
 
 
 # 完了処理
 func _on_game_battle_finished(won: bool) -> void:
 	_sync_player_stomach_size()
+	run_state.current_minutes = game.get_clear_minutes()
+	_sync_lara_progress()
 	if won:
 		_queue_area_completion_novel_if_needed(run_state.selected_stage)
 		_last_battle_progress_snapshot = {
@@ -328,6 +430,11 @@ func _on_game_battle_finished(won: bool) -> void:
 			"strengthened_enemy_defeat_counts": run_state.strengthened_enemy_defeat_counts.duplicate(),
 		}
 		run_state.record_stage_clear(run_state.selected_stage)
+		_lara_judge_pending = (
+			run_state.selected_stage.is_high_difficulty
+			and _is_high_difficulty_day(run_state.current_day)
+			and run_state.current_day >= FIRST_NIGHTMARE_EVENT_DAY
+		)
 		show_stage_clear()
 	else:
 		show_end_gameover_novel()
@@ -353,6 +460,8 @@ func _restore_last_battle_progress() -> void:
 	run_state.strengthened_enemy_preset_indices = _last_battle_progress_snapshot["strengthened_enemy_preset_indices"].duplicate()
 	run_state.normal_enemy_defeat_counts = _last_battle_progress_snapshot["normal_enemy_defeat_counts"].duplicate()
 	run_state.strengthened_enemy_defeat_counts = _last_battle_progress_snapshot["strengthened_enemy_defeat_counts"].duplicate()
+	_lara_judge_pending = false
+	pending_area_completion_novel_text = null
 
 
 # 枯渇処理
@@ -390,6 +499,8 @@ func _finish_end_gameover_novel() -> void:
 	if stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
 		stage_clear.setup_hp(game.get_current_hp())
 	_sync_run_state_from_stage_clear()
+	run_state.current_minutes = game.get_clear_minutes()
+	_sync_lara_progress()
 	_finish_current_day()
 
 
@@ -442,22 +553,76 @@ func _finish_current_day() -> void:
 	if pending_area_completion_novel_text != null:
 		show_area_completion_novel()
 		return
-	if run_state.current_day == FIRST_NIGHTMARE_EVENT_DAY:
+	if run_state.current_day == FIRST_NIGHTMARE_EVENT_DAY and not run_state.is_lara_unlocked:
 		show_first_nightmare_event_novel()
+		return
+	if _lara_judge_pending and run_state.last_lara_judge_day != run_state.current_day:
+		_show_lara_judge_setup()
 		return
 	_advance_to_next_day()
 
 
 func _advance_to_next_day() -> void:
+	_lara_judge_pending = false
 	run_state.current_day += 1
 	run_state.current_minutes = RunState.BATTLE_START_MINUTES
 	run_state.reset_daily_challenge_state()
-	if run_state.is_lara_unlocked:
-		run_state.update_lara_location(_get_lara_location_candidates())
 	if run_state.current_day > STORY_CLEAR_DAY:
+		run_state.lara_digestion_count = lara_schedule.get_total_digestion_count(STORY_CLEAR_DAY, 30 * 60)
 		show_game_clear_novel()
 		return
+	_sync_lara_progress()
 	show_day_intro()
+
+
+func _sync_lara_progress() -> void:
+	run_state.update_lara_progress(lara_schedule, _get_lara_location_candidates())
+
+
+func _show_lara_judge_setup() -> void:
+	_sync_lara_progress()
+	_lara_judge_pending = false
+	run_state.last_lara_judge_day = run_state.current_day
+	_lara_judge_result = signi(run_state.get_player_digestion_count() - run_state.lara_digestion_count)
+	title.visible = false
+	day_intro.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+	active_novel_flow = NovelFlow.LARA_JUDGE_SETUP
+	var text := NovelTextInfo.new()
+	text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_setup_001"
+	opening_novel.start_with_text(text)
+
+
+func _show_lara_judge_result() -> void:
+	var result_name := "draw"
+	if _lara_judge_result > 0:
+		result_name = "win"
+	elif _lara_judge_result < 0:
+		result_name = "lose"
+	var text := NovelTextInfo.new()
+	text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_%s_%03d" % [result_name, randi_range(1, 3)]
+	active_novel_flow = NovelFlow.LARA_JUDGE_RESULT
+	opening_novel.start_with_text(text)
+
+
+func _grant_lara_judge_reward() -> String:
+	var rarity := -1
+	if _lara_judge_result > 0:
+		rarity = SeedInfo.Rarity.RARE
+	elif _lara_judge_result < 0:
+		rarity = SeedInfo.Rarity.NORMAL
+	var candidates := _get_lara_reward_candidates(rarity)
+	assert(not candidates.is_empty(), "Main: ラーラ勝負の報酬候補がありません。出現プールを確認してください")
+	var message := LaraReward.grant_seed(run_state, candidates.pick_random())
+	if run_state.current_hp < run_state.max_hp:
+		LaraReward.recover_hp(run_state, 100)
+		message += "更にHPが全回復した。"
+	_sync_stage_clear_seed_inventory()
+	stage_clear.setup_hp(run_state.current_hp)
+	return message
 
 
 func _queue_area_completion_novel_if_needed(stage: StageInfo) -> void:
@@ -526,12 +691,11 @@ func show_game_clear_novel() -> void:
 
 # ゲームclearノベル文言取得
 func _get_game_clear_novel_text() -> NovelTextInfo:
-	if game_clear_novel_text != null:
-		return game_clear_novel_text
-	# ノベル文言
-	var novel_text := NovelTextInfo.new()
-	novel_text.text = "ゲームクリア！7\n@lcm"
-	return novel_text
+	if run_state.get_lunova_boss_defeat_count() >= 3:
+		return true_ending_novel_text
+	if run_state.get_player_digestion_count() >= 25:
+		return normal_ending_novel_text
+	return bad_ending_novel_text
 
 
 # 選択ステージ解放novels表示試行
@@ -704,6 +868,7 @@ func _sync_run_state_from_stage_clear() -> void:
 		run_state.stored_seeds = stage_clear.get_stored_seeds()
 	if stage_clear.has_method("get_permanent_acid_damage_bonus_rate"):
 		run_state.permanent_acid_damage_bonus_rate = stage_clear.get_permanent_acid_damage_bonus_rate()
+	_sync_lara_progress()
 
 
 # startingHP取得

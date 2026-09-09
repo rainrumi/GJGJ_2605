@@ -22,10 +22,11 @@ func _run() -> void:
 			_expect(stage.stage_area != StageInfo.StageArea.LUNOVA_OLD_CITY, "現在地候補に旧市街を含めない")
 
 	var run_state := RunState.new()
-	run_state.update_lara_location(catalog.stages)
+	var schedule := load("res://data/resources/rara/lara_schedule.tres") as LaraScheduleInfo
+	run_state.update_lara_progress(schedule, catalog.stages)
 	_expect(run_state.lara_current_location == null, "解放前は現在地を持たない")
 	run_state.unlock_lara()
-	run_state.update_lara_location(catalog.stages)
+	run_state.update_lara_progress(schedule, catalog.stages)
 	_expect(run_state.lara_current_location in catalog.stages, "解放後は10箇所から現在地を保持する")
 	run_state.reset()
 	_expect(not run_state.is_lara_unlocked, "リセット時にラーラを未解放へ戻す")

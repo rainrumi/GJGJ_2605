@@ -32,6 +32,11 @@ var is_lara_unlocked := false
 var is_continuous_play_unlocked := false
 var has_challenged_area_today := false
 var lara_current_location: StageInfo
+var previous_area_stage: StageInfo
+var lara_interaction_day := 0
+var played_lara_area_novels: Dictionary[int, bool] = {}
+var lara_digestion_count := 0
+var last_lara_judge_day := 0
 
 
 # 対象初期化
@@ -57,6 +62,11 @@ func reset() -> void:
 	is_continuous_play_unlocked = false
 	has_challenged_area_today = false
 	lara_current_location = null
+	previous_area_stage = null
+	lara_interaction_day = 0
+	played_lara_area_novels.clear()
+	lara_digestion_count = 0
+	last_lara_judge_day = 0
 
 
 # ラーラ解放
@@ -76,21 +86,35 @@ func reset_daily_challenge_state() -> void:
 	has_challenged_area_today = false
 
 
-# ラーラ現在地更新
-func update_lara_location(candidates: Array[StageInfo]) -> void:
+# 進行時刻から再計算し、再表示や日またぎで二重加算しない。
+func update_lara_progress(schedule: LaraScheduleInfo, candidates: Array[StageInfo]) -> void:
+	lara_digestion_count = schedule.get_total_digestion_count(current_day, current_minutes)
 	if not is_lara_unlocked:
 		lara_current_location = null
 		return
-	var valid_candidates: Array[StageInfo] = []
+	var area := schedule.get_area(current_day, current_minutes)
 	for candidate in candidates:
-		if candidate == null or candidate.stage_area == StageInfo.StageArea.LUNOVA_OLD_CITY:
-			continue
-		valid_candidates.append(candidate)
-	if valid_candidates.is_empty():
-		lara_current_location = null
-		push_error("RunState: ラーラの現在地候補がありません")
-		return
-	lara_current_location = valid_candidates.pick_random()
+		if candidate != null and candidate.stage_area == area:
+			lara_current_location = candidate
+			return
+	push_error("RunState: ラーラ予定のエリア%dがlara_location_catalogにありません" % area)
+	lara_current_location = null
+
+
+func get_player_digestion_count() -> int:
+	var count := 0
+	for defeats in [normal_enemy_defeat_counts, strengthened_enemy_defeat_counts]:
+		for value: int in defeats.values():
+			count += value
+	return count
+
+
+func get_lunova_boss_defeat_count() -> int:
+	var count := 0
+	for key: String in strengthened_enemy_defeat_counts:
+		if key.get_slice(":", 1).to_int() == StageInfo.StageArea.LUNOVA_OLD_CITY:
+			count += int(strengthened_enemy_defeat_counts[key])
+	return count
 
 
 # 戦闘ステージ選択
@@ -100,6 +124,7 @@ func select_stage(stage: StageInfo) -> void:
 	selected_stage_id = stage.stage_id
 	selected_stage = stage
 	if stage.stage_area != StageInfo.StageArea.huwahuwaSchool:
+		previous_area_stage = current_area_stage
 		current_area_stage = stage
 
 

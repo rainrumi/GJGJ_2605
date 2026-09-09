@@ -16,6 +16,9 @@ signal today_rest_requested
 @onready var stage_choices_scroll: ScrollContainer = $UI/StageChoicesScroll
 @onready var time_view: TimeView = $UI/TimeView
 @onready var hp_view: StageClearHpView = $UI/HpView
+@onready var digestion_counts: VBoxContainer = $UI/DigestionCounts
+@onready var lara_count_label: Label = $UI/DigestionCounts/LaraCount
+@onready var player_count_label: Label = $UI/DigestionCounts/PlayerCount
 @onready var today_rest_button: TodayRestButton = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices/TodayRestButton
 @onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
@@ -88,6 +91,10 @@ func setup_stage_choices(
 	map_view.hide_hover()
 	time_view.set_time(_current_minutes)
 	_setup_hp_view()
+	digestion_counts.visible = _run_state != null
+	if _run_state != null:
+		lara_count_label.text = "ラーラの消化数:%d" % _run_state.lara_digestion_count
+		player_count_label.text = "ティーナの消化数:%d" % _run_state.get_player_digestion_count()
 	map_view.set_lara_location(_run_state.lara_current_location if _run_state != null else null)
 	stage_choice_list.setup_choices(
 		_displayed_stage_definitions,
