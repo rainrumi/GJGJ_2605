@@ -12,14 +12,14 @@ signal today_rest_requested
 @export var stage_choice_scene: PackedScene
 
 @onready var map_view: StageSelectMapView = $CharacterArea/Map
-@onready var stage_choice_list: StageSelectChoiceList = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices
+@onready var stage_choice_list: StageSelectChoiceList = $UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices
 @onready var stage_choices_scroll: ScrollContainer = $UI/StageChoicesScroll
 @onready var time_view: TimeView = $UI/TimeView
 @onready var hp_view: StageClearHpView = $UI/HpView
 @onready var digestion_counts: VBoxContainer = $UI/DigestionCounts
 @onready var lara_count_label: Label = $UI/DigestionCounts/LaraCount
 @onready var player_count_label: Label = $UI/DigestionCounts/PlayerCount
-@onready var today_rest_button: TodayRestButton = $UI/StageChoicesScroll/StageChoicesMargin/StageChoices/TodayRestButton
+@onready var today_rest_button: TodayRestButton = $UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices/TodayRestButton
 @onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
 var _displayed_stage_definitions: Array[StageInfo] = []

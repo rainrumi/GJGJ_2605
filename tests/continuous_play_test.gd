@@ -117,7 +117,7 @@ func _check_today_rest_button() -> void:
 	run_state.current_hp = 99
 	var unlocked_stage_ids: Array[int] = []
 	stage_select.setup_stage_choices(null, 1, unlocked_stage_ids, run_state, 22 * 60)
-	var choices := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/StageChoices")
+	var choices := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices")
 	var rest_button := choices.get_node("TodayRestButton") as Button
 	_expect(rest_button.visible, "初日はHPが100未満なら今日は休むボタンを表示する")
 	var initial_rest_requested := [false]

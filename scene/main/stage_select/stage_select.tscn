@@ -53,7 +53,7 @@ stage_choice_scene = ExtResource("5_stage_choice")
 
 [node name="Map" type="Sprite2D" parent="CharacterArea" unique_id=1350771073]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-position = Vector2(149, 206)
+position = Vector2(149, 203)
 texture = ExtResource("3_map")
 script = ExtResource("37_stage_select_map_view")
 
@@ -92,20 +92,6 @@ offset_right = 638.0
 offset_bottom = 358.0
 mouse_filter = 2
 
-[node name="TitleLabel" type="Label" parent="UI" unique_id=733318273]
-layout_mode = 0
-offset_left = 300.0
-offset_top = 17.0
-offset_right = 570.0
-offset_bottom = 42.0
-theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 24
-text = "夢の主を選択"
-vertical_alignment = 1
-
 [node name="TimeView" parent="UI" unique_id=2103301401 instance=ExtResource("48_time_view_scene")]
 layout_mode = 0
 offset_left = 515.0
@@ -114,21 +100,21 @@ offset_right = 623.0
 offset_bottom = 48.0
 
 [node name="HpView" parent="UI" unique_id=39894871 instance=ExtResource("50_hp_view_scene")]
+custom_minimum_size = Vector2(135, 34)
 layout_mode = 0
 offset_left = 20.0
-offset_top = 20.0
-offset_right = 115.0
-offset_bottom = 54.0
+offset_top = 14.0
+offset_right = 155.0
+offset_bottom = 48.0
 
 [node name="DigestionCounts" type="VBoxContainer" parent="UI" unique_id=472413601]
 layout_mode = 0
 offset_left = 164.0
-offset_top = 20.0
+offset_top = 18.0
 offset_right = 298.0
-offset_bottom = 54.0
+offset_bottom = 52.0
 mouse_filter = 2
 theme_override_constants/separation = 0
-alignment = 1
 
 [node name="PlayerCount" type="Label" parent="UI/DigestionCounts" unique_id=1637343269]
 layout_mode = 2
@@ -146,10 +132,10 @@ text = "ラーラの消化数:0"
 
 [node name="StageChoicesScroll" type="ScrollContainer" parent="UI" unique_id=104671176]
 layout_mode = 0
-offset_left = 299.0
-offset_top = 55.0
-offset_right = 614.0
-offset_bottom = 365.0
+offset_left = 302.0
+offset_top = 34.0
+offset_right = 622.0
+offset_bottom = 354.0
 theme = ExtResource("7_scroll_theme")
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
@@ -157,27 +143,44 @@ script = ExtResource("8_stage_choices_scroll")
 
 [node name="StageChoicesMargin" type="MarginContainer" parent="UI/StageChoicesScroll" unique_id=731860370]
 layout_mode = 2
-
-[node name="StageChoices" type="VBoxContainer" parent="UI/StageChoicesScroll/StageChoicesMargin" unique_id=1363958576]
-layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 1
-alignment = 1
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+
+[node name="SelectContainer" type="VBoxContainer" parent="UI/StageChoicesScroll/StageChoicesMargin" unique_id=883108006]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/separation = 5
 script = ExtResource("38_stage_choice_list")
 
-[node name="TodayRestButton" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=1185461589 instance=ExtResource("49_today_rest_button")]
+[node name="TitleLabel" type="Label" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer" unique_id=688764170]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "夢の主を選択"
+vertical_alignment = 1
+
+[node name="StageChoices" type="VBoxContainer" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer" unique_id=1363958576]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/separation = 5
+script = ExtResource("38_stage_choice_list")
+
+[node name="TodayRestButton" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices" unique_id=1185461589 instance=ExtResource("49_today_rest_button")]
 layout_mode = 2
 
-[node name="StageChoice1" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=786245821 instance=ExtResource("5_stage_choice")]
+[node name="StageChoice1" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices" unique_id=786245821 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
 
-[node name="StageChoice2" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=576244151 instance=ExtResource("5_stage_choice")]
+[node name="StageChoice2" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices" unique_id=576244151 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
 
-[node name="StageChoice3" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=259931286 instance=ExtResource("5_stage_choice")]
-layout_mode = 2
-
-[node name="StageDhoice4" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=188156610 instance=ExtResource("5_stage_choice")]
+[node name="StageChoice3" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices" unique_id=259931286 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
 
 [node name="DebugButton" type="Button" parent="UI" unique_id=673340750]
