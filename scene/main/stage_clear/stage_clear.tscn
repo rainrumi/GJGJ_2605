@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ccel0yj6xx277" path="res://scene/main/stage_clear/stage_clear.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="PackedScene" uid="uid://cdxfuey83p5f0" path="res://scene/main/stage_clear/seed_choice/seed_choice.tscn" id="5_seed_choice"]
-[ext_resource type="Texture2D" uid="uid://hnjih6pm11ok" path="res://resource/image/texture/character/tex_character_200_portrate_1000.png" id="6_bmnuw"]
+[ext_resource type="PackedScene" uid="uid://wsdjjcostaq8" path="res://scene/object/character/character.tscn" id="6_character"]
 [ext_resource type="Resource" uid="uid://sqlt6j4xlv0b" path="res://data/resources/seeds/skills/seed_100_101.tres" id="12_seed_skill_1001"]
 [ext_resource type="Resource" uid="uid://c6y5aptnps475" path="res://data/resources/seeds/skills/seed_100_102.tres" id="13_seed_skill_1002"]
 [ext_resource type="Resource" uid="uid://d02kf3ks5jgm1" path="res://data/resources/seeds/skills/seed_100_103.tres" id="14_seed_skill_1003"]
@@ -25,11 +25,9 @@ seed_options = Array[ExtResource("17_seed_skill_definition")]([ExtResource("12_s
 
 [node name="CharacterArea" type="Node2D" parent="." unique_id=1051992702]
 
-[node name="Character" type="Sprite2D" parent="CharacterArea" unique_id=837318386]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+[node name="Character" parent="CharacterArea" unique_id=837318386 instance=ExtResource("6_character")]
 position = Vector2(125, 449)
 scale = Vector2(1.5, 1.5)
-texture = ExtResource("6_bmnuw")
 
 [node name="UI" type="Control" parent="." unique_id=450061926]
 layout_mode = 3

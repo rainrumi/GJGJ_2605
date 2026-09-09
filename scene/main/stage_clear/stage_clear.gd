@@ -15,6 +15,7 @@ const REST_MINUTES := 30
 const REST_HP_RATE := 0.1
 const BATTLE_START_MINUTES := 22 * 60
 const MAX_EQUIPPED_SEEDS := 6
+const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
 
 @export var max_flowers := MAX_EQUIPPED_SEEDS
 @export var initial_flower: SeedInfo
@@ -22,6 +23,7 @@ const MAX_EQUIPPED_SEEDS := 6
 
 # 操作UI
 @onready var ui: StageClearUi = $UI
+@onready var character: Character = $CharacterArea/Character
 
 var planted_flowers: Array[SeedInfo] = []
 var stored_seeds: Array[SeedInfo] = []
@@ -79,6 +81,7 @@ func setup_clear_result(
 	_restore_base_seed_options()
 	_apply_stage_drop_options(cleared_stage)
 	if is_node_ready():
+		character.show_normal_texture()
 		_set_hp(current_hp, false)
 		_show_select_mode()
 
@@ -510,7 +513,19 @@ func _refresh_after_reward_state_changed() -> void:
 func _refresh_reward_ui() -> void:
 	ui.set_seed_inventory(planted_flowers, stored_seeds)
 	ui.setup_seed_choices(seed_options, _get_seed_selectable_states())
+	_update_character_face_button()
 	_update_hp_heal_plan()
+
+
+func _update_character_face_button() -> void:
+	var equipped_flower_count := 0
+	for flower in planted_flowers:
+		if flower != null:
+			equipped_flower_count += 1
+			if equipped_flower_count >= FACE_BUTTON_BLOCKING_FLOWER_COUNT:
+				character.set_face_button_enabled(false)
+				return
+	character.set_face_button_enabled(true)
 
 
 func _on_seed_equip_requested(seed: SeedInfo) -> void:

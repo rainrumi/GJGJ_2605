@@ -50,7 +50,7 @@ const HEAD_SEED_OFFSET_FROM_CHARACTER := Vector2(-55.0, -156.0)
 @onready var hp_view: StageClearHpView = $StatusPreview/HpView
 @onready var owned_seed_open_button: TextureButton = $OwnedSeedOpenButton
 @onready var owned_seed_panel: OwnedSeedPanel = $OwnedSeedPanel
-@onready var character: Sprite2D = $"../CharacterArea/Character"
+@onready var character: Character = $"../CharacterArea/Character"
 @onready var head_seed_list: SeedButtonList = $HeadSeedList
 @onready var head_seed_drag_preview: TextureRect = $HeadSeedDragPreview
 
