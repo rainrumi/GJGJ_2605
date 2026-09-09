@@ -18,7 +18,7 @@ func _run() -> void:
 	root.add_child(stage_select)
 	await process_frame
 	var select_container := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer") as VBoxContainer
-	var title_label := stage_select.get_node("%TitleLabel") as Label
+	var title_label := select_container.get_node("StageChoicesPadding/TitleLabel") as Label
 	var scroll := select_container.get_node("StageChoicesListScroll") as ScrollContainer
 	var choices_padding := scroll.get_node("StageChoicesPadding") as MarginContainer
 	var choice_list := choices_padding.get_node("StageChoices") as StageSelectChoiceList

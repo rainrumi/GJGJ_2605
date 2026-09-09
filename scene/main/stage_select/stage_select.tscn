@@ -138,7 +138,7 @@ offset_top = 34.0
 offset_right = 622.0
 offset_bottom = 354.0
 horizontal_scroll_mode = 0
-vertical_scroll_mode = 0
+vertical_scroll_mode = 3
 
 [node name="StageChoicesMargin" type="MarginContainer" parent="UI/StageChoicesScroll" unique_id=731860370]
 layout_mode = 2

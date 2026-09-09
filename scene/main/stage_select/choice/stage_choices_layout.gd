@@ -1,14 +1,14 @@
 extends VBoxContainer
 
-@onready var _title_label: Label = $StageChoicesPadding/TitleLabel
+@onready var _title_padding: MarginContainer = $StageChoicesPadding
 @onready var _stage_choices_scroll: ScrollContainer = $StageChoicesListScroll
 @onready var _stage_choices_padding: MarginContainer = $StageChoicesListScroll/StageChoicesPadding
 @onready var _stage_choices: StageSelectChoiceList = $StageChoicesListScroll/StageChoicesPadding/StageChoices
+@onready var _viewport: Control = get_parent().get_parent()
 
 
 func _ready() -> void:
-	var parent_control := get_parent() as Control
-	parent_control.resized.connect(_queue_scroll_height_update)
+	_viewport.resized.connect(_queue_scroll_height_update)
 	_stage_choices.minimum_size_changed.connect(_queue_scroll_height_update)
 	_queue_scroll_height_update()
 
@@ -18,9 +18,8 @@ func _queue_scroll_height_update() -> void:
 
 
 func _update_scroll_height() -> void:
-	var parent_control := get_parent() as Control
-	var available_height := parent_control.size.y
-	var title_height := _title_label.get_combined_minimum_size().y
+	var available_height := _viewport.size.y
+	var title_height := _title_padding.get_combined_minimum_size().y
 	var separation := get_theme_constant("separation")
 	var maximum_scroll_height := maxf(available_height - title_height - separation, 0.0)
 	var content_height := _stage_choices_padding.get_combined_minimum_size().y
