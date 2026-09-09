@@ -1,17 +1,18 @@
-[gd_resource type="Resource" script_class="DreamSeedSkillPoolDefinition" format=3]
+[gd_resource type="Resource" script_class="SeedPoolInfo" format=3 uid="uid://dhk1vlykx6s6t"]
 
 [ext_resource type="Script" uid="uid://dxuaadwlh5qe4" path="res://data/info/seed/seed_pool_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="2_definition"]
 [ext_resource type="Resource" uid="uid://sqlt6j4xlv0b" path="res://data/resources/seeds/skills/seed_100_101.tres" id="1001_skill"]
 [ext_resource type="Resource" uid="uid://c6y5aptnps475" path="res://data/resources/seeds/skills/seed_100_102.tres" id="1002_skill"]
-[ext_resource type="Resource" uid="uid://d02kf3ks5jgm1" path="res://data/resources/seeds/skills/seed_100_103.tres" id="1003_skill"]
-[ext_resource type="Resource" uid="uid://0qcftv2ma4xf" path="res://data/resources/seeds/skills/seed_100_104.tres" id="1004_skill"]
+[ext_resource type="Resource" uid="uid://cyxosr30hvu3g" path="res://data/resources/seeds/skills/seed_100_103.tres" id="1003_skill"]
+[ext_resource type="Resource" uid="uid://cdjgp7641yh08" path="res://data/resources/seeds/skills/seed_100_104.tres" id="1004_skill"]
 [ext_resource type="Resource" uid="uid://dj7ng1n1ct5e1" path="res://data/resources/seeds/skills/seed_100_108.tres" id="2005_skill"]
 [ext_resource type="Resource" uid="uid://d31asowimm0wu" path="res://data/resources/seeds/skills/seed_100_112.tres" id="2113_skill"]
-
+[ext_resource type="Resource" uid="uid://cbxeqcqi5adco" path="res://data/resources/seeds/skills/seed_100_115.tres" id="rare_115"]
+[ext_resource type="Resource" uid="uid://dg6q7uionqb11" path="res://data/resources/seeds/skills/seed_100_122.tres" id="rare_122"]
+[ext_resource type="Resource" uid="uid://csews35toqoil" path="res://data/resources/seeds/skills/seed_100_126.tres" id="rare_126"]
 
 [resource]
 script = ExtResource("1_script")
 common_skills = Array[ExtResource("2_definition")]([ExtResource("1001_skill"), ExtResource("1002_skill"), ExtResource("1003_skill"), ExtResource("1004_skill")])
-rare_skills = Array[ExtResource("2_definition")]([ExtResource("2005_skill"), ExtResource("2113_skill")])
-epic_skills = Array[ExtResource("2_definition")]([])
+rare_skills = Array[ExtResource("2_definition")]([ExtResource("2005_skill"), ExtResource("2113_skill"), ExtResource("rare_115"), ExtResource("rare_126"), ExtResource("rare_122")])
