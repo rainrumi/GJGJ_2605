@@ -93,6 +93,11 @@ func setup_stage_choices(
 	_setup_hp_view()
 	digestion_counts.visible = _run_state != null
 	if _run_state != null:
+		lara_count_label.visible = _run_state.is_lara_unlocked
+		digestion_counts.move_child(
+			lara_count_label if _run_state.is_lara_unlocked else player_count_label,
+			0
+		)
 		lara_count_label.text = "ラーラの消化数:%d" % _run_state.lara_digestion_count
 		player_count_label.text = "ティーナの消化数:%d" % _run_state.get_player_digestion_count()
 	map_view.set_lara_location(_run_state.lara_current_location if _run_state != null else null)

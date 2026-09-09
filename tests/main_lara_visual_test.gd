@@ -19,6 +19,19 @@ func _run() -> void:
 	main.run_state.normal_enemy_defeat_counts["3:3"] = 25
 	main.run_state.current_hp = 100
 	main._setup_initial_stage_position()
+	main.run_state.is_lara_unlocked = false
+	main.show_stage_select()
+	await process_frame
+	await process_frame
+	await RenderingServer.frame_post_draw
+	_expect(main.stage_select.digestion_counts.visible, "解放前も消化数欄を表示する")
+	_expect(not main.stage_select.lara_count_label.visible, "解放前はラーラの消化数を表示しない")
+	_expect(main.stage_select.player_count_label.visible, "解放前もティーナの消化数を表示する")
+	_expect(main.stage_select.player_count_label.position.y \
+		< main.stage_select.digestion_counts.size.y * 0.5,
+		"ラーラ非表示時はティーナの上に空行を残さない")
+	root.get_texture().get_image().save_png("res://.godot/tina-count-only.png")
+	main.run_state.unlock_lara()
 	for size: Vector2i in [Vector2i(640, 360), Vector2i(1280, 720)]:
 		root.size = size
 		main.show_stage_select()
@@ -28,6 +41,7 @@ func _run() -> void:
 		var counts := main.stage_select.get_node("UI/DigestionCounts") as VBoxContainer
 		var lara := main.stage_select.lara_count_label as Label
 		var player := main.stage_select.player_count_label as Label
+		_expect(lara.visible, "解放後はラーラの消化数を表示する")
 		_expect(lara.text == "ラーラの消化数:44" and player.text == "ティーナの消化数:25", "累積消化数を2つのラベルへ反映")
 		_expect(counts.global_position.x >= main.stage_select.hp_view.get_node("Value").get_global_rect().end.x
 			and counts.get_rect().end.y <= 54, "HP右側の高さ34px以内に収まる")

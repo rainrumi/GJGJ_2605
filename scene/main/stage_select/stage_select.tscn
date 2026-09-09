@@ -41,13 +41,12 @@
 [ext_resource type="Script" uid="uid://d0tgljokt842x" path="res://scene/main/stage_select/debug/stage_select_debug_button.gd" id="40_debug_button"]
 [ext_resource type="Script" uid="uid://bv0erjxernnad" path="res://scene/main/stage_select/map/marker/stage_select_location_marker.gd" id="42_location_marker"]
 [ext_resource type="PackedScene" uid="uid://bk0m5bk7vnrh8" path="res://scene/ui/view/time_view.tscn" id="48_time_view_scene"]
-[ext_resource type="PackedScene" path="res://scene/main/stage_select/choice/today_rest_button.tscn" id="49_today_rest_button"]
+[ext_resource type="PackedScene" uid="uid://chfkagidr4ot5" path="res://scene/main/stage_select/choice/today_rest_button.tscn" id="49_today_rest_button"]
 [ext_resource type="PackedScene" uid="uid://bguischxty5ml" path="res://scene/ui/battle_ui/view/hp_view.tscn" id="50_hp_view_scene"]
 
 [node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
 stage_catalog = ExtResource("6_stage_catalog")
-stage_definitions = null
 stage_choice_scene = ExtResource("5_stage_choice")
 
 [node name="CharacterArea" type="Node2D" parent="." unique_id=691295669]
@@ -126,14 +125,14 @@ offset_top = 14.0
 offset_right = 623.0
 offset_bottom = 48.0
 
-[node name="HpView" parent="UI" instance=ExtResource("50_hp_view_scene")]
+[node name="HpView" parent="UI" unique_id=39894871 instance=ExtResource("50_hp_view_scene")]
 layout_mode = 0
 offset_left = 20.0
 offset_top = 20.0
 offset_right = 115.0
 offset_bottom = 54.0
 
-[node name="DigestionCounts" type="VBoxContainer" parent="UI"]
+[node name="DigestionCounts" type="VBoxContainer" parent="UI" unique_id=472413601]
 layout_mode = 0
 offset_left = 164.0
 offset_top = 20.0
@@ -141,22 +140,21 @@ offset_right = 298.0
 offset_bottom = 54.0
 mouse_filter = 2
 theme_override_constants/separation = 0
+alignment = 1
 
-[node name="LaraCount" type="Label" parent="UI/DigestionCounts"]
+[node name="PlayerCount" type="Label" parent="UI/DigestionCounts" unique_id=1637343269]
 layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
-text = "ラーラの消化数:0"
-
-[node name="PlayerCount" type="Label" parent="UI/DigestionCounts"]
-layout_mode = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 text = "ティーナの消化数:0"
+
+[node name="LaraCount" type="Label" parent="UI/DigestionCounts" unique_id=1183148874]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "ラーラの消化数:0"
 
 [node name="StageChoicesScroll" type="ScrollContainer" parent="UI" unique_id=104671176]
 layout_mode = 0
@@ -182,7 +180,7 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 8
 script = ExtResource("38_stage_choice_list")
 
-[node name="TodayRestButton" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" instance=ExtResource("49_today_rest_button")]
+[node name="TodayRestButton" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=1185461589 instance=ExtResource("49_today_rest_button")]
 layout_mode = 2
 
 [node name="StageChoice1" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=786245821 instance=ExtResource("5_stage_choice")]
