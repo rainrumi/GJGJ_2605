@@ -3,11 +3,12 @@
 [ext_resource type="Script" uid="uid://biaejtngivtgk" path="res://scene/main/stage_select/choice/stage_choice.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://drk1rtl23138w" path="res://resource/image/texture/frame/tex_frame_100.png" id="3_frame"]
+[ext_resource type="Texture2D" uid="uid://sq80lp52mejv" path="res://resource/image/texture/seed/tex_seed_amaririsu_small.png" id="4_dj5lj"]
 
 [node name="StageChoice" type="Button" unique_id=188156610]
-custom_minimum_size = Vector2(270, 70)
+custom_minimum_size = Vector2(270, 60)
 offset_right = 270.0
-offset_bottom = 70.0
+offset_bottom = 60.0
 flat = true
 script = ExtResource("1_script")
 
@@ -15,7 +16,7 @@ script = ExtResource("1_script")
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_right = 270.0
-offset_bottom = 70.0
+offset_bottom = 60.0
 texture = ExtResource("3_frame")
 patch_margin_left = 8
 patch_margin_top = 8
@@ -40,7 +41,7 @@ layout_mode = 0
 offset_left = 5.0
 offset_top = 9.0
 offset_right = 255.0
-offset_bottom = 23.0
+offset_bottom = 19.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
@@ -51,12 +52,12 @@ vertical_alignment = 1
 [node name="ExplorationLabel" type="Label" parent="." unique_id=2041957300]
 layout_mode = 0
 offset_left = 155.0
-offset_top = 24.0
+offset_top = 19.0
 offset_right = 255.0
-offset_bottom = 39.0
+offset_bottom = 34.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 12
 text = "探索率 0%"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -67,7 +68,7 @@ layout_mode = 0
 offset_left = 8.0
 offset_top = 9.0
 offset_right = 258.0
-offset_bottom = 23.0
+offset_bottom = 22.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
@@ -76,11 +77,12 @@ vertical_alignment = 1
 text_overrun_behavior = 3
 
 [node name="RewardLabel" type="Label" parent="." unique_id=1722941389]
+visible = false
 layout_mode = 0
 offset_left = 8.0
 offset_top = 22.0
 offset_right = 108.0
-offset_bottom = 38.0
+offset_bottom = 32.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
@@ -91,9 +93,10 @@ vertical_alignment = 1
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 8.0
-offset_top = 36.0
-offset_right = 239.0
-offset_bottom = 69.0
+offset_top = 25.0
+offset_right = 38.0
+offset_bottom = 55.0
 mouse_filter = 2
+texture = ExtResource("4_dj5lj")
 expand_mode = 1
 stretch_mode = 5

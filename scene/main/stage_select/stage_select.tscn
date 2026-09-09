@@ -92,30 +92,18 @@ offset_right = 638.0
 offset_bottom = 358.0
 mouse_filter = 2
 
-[node name="TitleEffect" type="TextureRect" parent="UI" unique_id=506160278]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-layout_mode = 0
-offset_left = 300.0
-offset_top = 15.5
-offset_right = 576.0
-offset_bottom = 111.5
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
 [node name="TitleLabel" type="Label" parent="UI" unique_id=733318273]
 layout_mode = 0
 offset_left = 300.0
-offset_top = 50.0
+offset_top = 17.0
 offset_right = 570.0
-offset_bottom = 88.5
+offset_bottom = 42.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 24
 text = "夢の主を選択"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="TimeView" parent="UI" unique_id=2103301401 instance=ExtResource("48_time_view_scene")]
@@ -158,10 +146,10 @@ text = "ラーラの消化数:0"
 
 [node name="StageChoicesScroll" type="ScrollContainer" parent="UI" unique_id=104671176]
 layout_mode = 0
-offset_left = 284.0
-offset_top = 114.0
-offset_right = 604.0
-offset_bottom = 356.0
+offset_left = 299.0
+offset_top = 55.0
+offset_right = 614.0
+offset_bottom = 365.0
 theme = ExtResource("7_scroll_theme")
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
@@ -169,15 +157,12 @@ script = ExtResource("8_stage_choices_scroll")
 
 [node name="StageChoicesMargin" type="MarginContainer" parent="UI/StageChoicesScroll" unique_id=731860370]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 8
 
 [node name="StageChoices" type="VBoxContainer" parent="UI/StageChoicesScroll/StageChoicesMargin" unique_id=1363958576]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 1
+alignment = 1
 script = ExtResource("38_stage_choice_list")
 
 [node name="TodayRestButton" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=1185461589 instance=ExtResource("49_today_rest_button")]
@@ -190,6 +175,9 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="StageChoice3" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=259931286 instance=ExtResource("5_stage_choice")]
+layout_mode = 2
+
+[node name="StageDhoice4" parent="UI/StageChoicesScroll/StageChoicesMargin/StageChoices" unique_id=188156610 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
 
 [node name="DebugButton" type="Button" parent="UI" unique_id=673340750]
