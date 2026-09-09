@@ -18,20 +18,21 @@ func _run() -> void:
 	root.add_child(stage_select)
 	await process_frame
 	var select_container := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer") as VBoxContainer
-	var title_label := select_container.get_node("TitleLabel") as Label
+	var title_label := stage_select.get_node("%TitleLabel") as Label
 	var scroll := select_container.get_node("StageChoicesListScroll") as ScrollContainer
-	var choice_list := scroll.get_node("StageChoices") as StageSelectChoiceList
+	var choices_padding := scroll.get_node("StageChoicesPadding") as MarginContainer
+	var choice_list := choices_padding.get_node("StageChoices") as StageSelectChoiceList
 	var scroll_bar := scroll.get_v_scroll_bar()
 	var mouse_drag_state := root.get_node("MouseDragState") as MouseDragTracker
-	var start_position := scroll.global_position + scroll.size * 0.5
 	choice_list.choice_pressed.connect(_on_choice_pressed)
-	_expect(title_label.get_parent() == select_container, "Title remains in the stage selection hierarchy")
-	_expect(is_equal_approx(scroll_bar.size.y, scroll.size.y), "Scrollbar height matches the StageChoices viewport")
+	_expect(select_container.is_ancestor_of(title_label), "Title remains in the stage selection hierarchy")
+	_expect(not scroll_bar.visible, "Scrollbar stays hidden while every stage choice fits")
 	var first_choice := _get_first_visible_control(choice_list)
 	_expect(
 		first_choice != null
-		and scroll_bar.global_position.x - first_choice.get_global_rect().end.x >= 12.0,
-		"Scrollbar keeps space from the stage choice buttons"
+		and first_choice.get_global_rect().position.x - scroll.get_global_rect().position.x >= 10.0
+		and scroll.get_global_rect().end.x - first_choice.get_global_rect().end.x >= 10.0,
+		"Stage choices keep at least 10 pixels of horizontal padding"
 	)
 	_expect_choices_centered(scroll, choice_list)
 	var initial_scroll_height := scroll.size.y
@@ -45,11 +46,20 @@ func _run() -> void:
 	_expect_choices_centered(scroll, choice_list)
 	choice_list.custom_minimum_size.y = 600.0
 	await process_frame
+	await process_frame
+	_expect(scroll_bar.visible, "Scrollbar appears when stage choices do not fit")
+	_expect(is_equal_approx(scroll_bar.size.y, scroll.size.y), "Scrollbar height matches the StageChoices viewport")
+	_expect(
+		first_choice != null
+		and scroll_bar.global_position.x - first_choice.get_global_rect().end.x >= 10.0,
+		"Scrollbar keeps at least 10 pixels from stage choice buttons"
+	)
 	scroll.scroll_vertical = 40
 	scroll.call("reset_to_top")
 	await process_frame
 	_expect(scroll.scroll_vertical == 0, "一覧表示時はスクロール位置を最上部へ戻す")
 
+	var start_position := scroll.global_position + scroll.size * 0.5
 	scroll.scroll_vertical = 20
 	scroll.call("_begin_press", start_position)
 	scroll.call("_update_drag", start_position + Vector2(0.0, 4.0))

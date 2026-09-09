@@ -72,7 +72,7 @@ func _check_all_areas(stage_select: Node, context: String) -> void:
 		_expect(found_stage_areas.has(stage_area), "%sにエリア%dを含む" % [context, stage_area])
 
 	_selected_stage_areas.clear()
-	var choice_list := stage_select.get_node_or_null("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoices")
+	var choice_list := stage_select.get_node_or_null("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoicesPadding/StageChoices")
 	_expect(choice_list != null, "%sのステージ選択肢一覧を構成する" % context)
 	if choice_list == null:
 		return

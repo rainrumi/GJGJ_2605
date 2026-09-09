@@ -18,7 +18,7 @@ func _run() -> void:
 	await process_frame
 	var click_se := main.get_node("SeClick") as AudioStreamPlayer
 	var stage_choice := main.get_node(
-		"StageSelect/UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoices/StageChoice1"
+		"StageSelect/UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoicesPadding/StageChoices/StageChoice1"
 	) as BaseButton
 	var drag_owner := Node.new()
 	var mouse_drag_state := root.get_node("MouseDragState") as MouseDragTracker

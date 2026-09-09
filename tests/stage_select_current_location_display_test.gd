@@ -28,7 +28,7 @@ func _run() -> void:
 	stage_select.call("setup_stage_choices", current_stage, 5, unlocked_stage_ids, run_state)
 	await process_frame
 
-	var choice_list := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoices")
+	var choice_list := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoicesPadding/StageChoices")
 	var map_view := stage_select.get_node("CharacterArea/Map") as StageSelectMapView
 	var beacon := map_view.get_node("Beacon") as StageSelectBeacon
 	var location_marker := map_view.get_node("LocationMarker") as StageSelectLocationMarker
