@@ -117,7 +117,7 @@ func _check_today_rest_button() -> void:
 	run_state.current_hp = 99
 	var unlocked_stage_ids: Array[int] = []
 	stage_select.setup_stage_choices(null, 1, unlocked_stage_ids, run_state, 22 * 60)
-	var choices := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices")
+	var choices := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoices")
 	var rest_button := choices.get_node("TodayRestButton") as Button
 	_expect(rest_button.visible, "初日はHPが100未満なら今日は休むボタンを表示する")
 	var initial_rest_requested := [false]
@@ -132,7 +132,7 @@ func _check_today_rest_button() -> void:
 	stage_select.setup_stage_choices(null, 5, unlocked_stage_ids, run_state, 23 * 60)
 	_expect(rest_button != null and not rest_button.visible, "当日未挑戦なら今日は休むボタンを表示しない")
 	run_state.mark_area_challenged_today()
-	var scroll := stage_select.get_node("UI/StageChoicesScroll") as ScrollContainer
+	var scroll := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll") as ScrollContainer
 	scroll.scroll_vertical = 50
 	stage_select.setup_stage_choices(null, 5, unlocked_stage_ids, run_state, 23 * 60)
 	await process_frame

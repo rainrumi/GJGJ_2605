@@ -28,7 +28,7 @@ texture_margin_bottom = 4.0
 modulate_color = Color(0.9411765, 0.8784314, 1, 1)
 
 [resource]
-VScrollBar/constants/scroll_width = 10
+VScrollBar/constants/scroll_width = 5
 VScrollBar/icons/decrement = SubResource("ImageTexture_mt6bq")
 VScrollBar/icons/decrement_highlight = SubResource("ImageTexture_mt6bq")
 VScrollBar/icons/decrement_pressed = SubResource("ImageTexture_mt6bq")

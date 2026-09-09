@@ -17,15 +17,31 @@ func _run() -> void:
 	var stage_select := packed.instantiate()
 	root.add_child(stage_select)
 	await process_frame
-	var scroll := stage_select.get_node("UI/StageChoicesScroll") as ScrollContainer
-	var choice_list := scroll.get_node("StageChoicesMargin/SelectContainer/StageChoices") as StageSelectChoiceList
+	var select_container := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer") as VBoxContainer
+	var title_label := select_container.get_node("TitleLabel") as Label
+	var scroll := select_container.get_node("StageChoicesListScroll") as ScrollContainer
+	var choice_list := scroll.get_node("StageChoices") as StageSelectChoiceList
+	var scroll_bar := scroll.get_v_scroll_bar()
 	var mouse_drag_state := root.get_node("MouseDragState") as MouseDragTracker
 	var start_position := scroll.global_position + scroll.size * 0.5
 	choice_list.choice_pressed.connect(_on_choice_pressed)
+	_expect(title_label.get_parent() == select_container, "Title remains in the stage selection hierarchy")
+	_expect(is_equal_approx(scroll_bar.size.y, scroll.size.y), "Scrollbar height matches the StageChoices viewport")
+	var first_choice := _get_first_visible_control(choice_list)
+	_expect(
+		first_choice != null
+		and scroll_bar.global_position.x - first_choice.get_global_rect().end.x >= 12.0,
+		"Scrollbar keeps space from the stage choice buttons"
+	)
 	_expect_choices_centered(scroll, choice_list)
-	var last_choice := choice_list.get_child(choice_list.get_child_count() - 1) as Control
+	var initial_scroll_height := scroll.size.y
+	var initial_title_y := title_label.global_position.y
+	var last_choice := _get_last_visible_control(choice_list)
 	last_choice.hide()
 	await process_frame
+	await process_frame
+	_expect(scroll.size.y < initial_scroll_height, "StageChoices viewport shrinks with its visible content")
+	_expect(title_label.global_position.y > initial_title_y, "Title follows the centered StageChoices group")
 	_expect_choices_centered(scroll, choice_list)
 	choice_list.custom_minimum_size.y = 600.0
 	await process_frame
@@ -78,6 +94,21 @@ func _expect_choices_centered(scroll: ScrollContainer, choice_list: Control) -> 
 		),
 		"Stage choice list is vertically centered"
 	)
+
+
+func _get_first_visible_control(parent: Control) -> Control:
+	for child in parent.get_children():
+		if child is Control and (child as Control).visible:
+			return child as Control
+	return null
+
+
+func _get_last_visible_control(parent: Control) -> Control:
+	for child_index in range(parent.get_child_count() - 1, -1, -1):
+		var child := parent.get_child(child_index)
+		if child is Control and (child as Control).visible:
+			return child as Control
+	return null
 
 
 func _on_choice_pressed(_choice_index: int) -> void:

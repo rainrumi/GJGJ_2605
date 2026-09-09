@@ -43,6 +43,7 @@
 [ext_resource type="PackedScene" uid="uid://bk0m5bk7vnrh8" path="res://scene/ui/view/time_view.tscn" id="48_time_view_scene"]
 [ext_resource type="PackedScene" uid="uid://chfkagidr4ot5" path="res://scene/main/stage_select/choice/today_rest_button.tscn" id="49_today_rest_button"]
 [ext_resource type="PackedScene" uid="uid://bguischxty5ml" path="res://scene/ui/battle_ui/view/hp_view.tscn" id="50_hp_view_scene"]
+[ext_resource type="Script" uid="uid://djfbjrbuipwks" path="res://scene/main/stage_select/choice/stage_choices_layout.gd" id="51_stage_choices_layout"]
 
 [node name="StageSelect" type="Node2D" unique_id=359708814]
 script = ExtResource("1_script")
@@ -136,23 +137,19 @@ offset_left = 302.0
 offset_top = 34.0
 offset_right = 622.0
 offset_bottom = 354.0
-theme = ExtResource("7_scroll_theme")
 horizontal_scroll_mode = 0
-vertical_scroll_mode = 2
-script = ExtResource("8_stage_choices_scroll")
+vertical_scroll_mode = 0
 
 [node name="StageChoicesMargin" type="MarginContainer" parent="UI/StageChoicesScroll" unique_id=731860370]
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_left = 10
 
 [node name="SelectContainer" type="VBoxContainer" parent="UI/StageChoicesScroll/StageChoicesMargin" unique_id=883108006]
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 4
 theme_override_constants/separation = 5
-script = ExtResource("38_stage_choice_list")
+script = ExtResource("51_stage_choices_layout")
 
 [node name="TitleLabel" type="Label" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer" unique_id=688764170]
 layout_mode = 2
@@ -164,23 +161,34 @@ theme_override_font_sizes/font_size = 18
 text = "夢の主を選択"
 vertical_alignment = 1
 
-[node name="StageChoices" type="VBoxContainer" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer" unique_id=1363958576]
+[node name="StageChoicesListScroll" type="ScrollContainer" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer" unique_id=790574155]
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_vertical = 1
+theme = ExtResource("7_scroll_theme")
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+script = ExtResource("8_stage_choices_scroll")
+
+[node name="StageChoices" type="VBoxContainer" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll" unique_id=1363958576]
+layout_mode = 2
+size_flags_horizontal = 1
 size_flags_vertical = 4
 theme_override_constants/separation = 5
 script = ExtResource("38_stage_choice_list")
 
-[node name="TodayRestButton" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices" unique_id=1185461589 instance=ExtResource("49_today_rest_button")]
+[node name="TodayRestButton" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoices" unique_id=1185461589 instance=ExtResource("49_today_rest_button")]
 layout_mode = 2
 
-[node name="StageChoice1" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices" unique_id=786245821 instance=ExtResource("5_stage_choice")]
+[node name="StageChoice1" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoices" unique_id=786245821 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
 
-[node name="StageChoice2" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices" unique_id=576244151 instance=ExtResource("5_stage_choice")]
+[node name="StageChoice2" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoices" unique_id=576244151 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
 
-[node name="StageChoice3" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoices" unique_id=259931286 instance=ExtResource("5_stage_choice")]
+[node name="StageChoice4" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoices" unique_id=188156610 instance=ExtResource("5_stage_choice")]
+layout_mode = 2
+
+[node name="StageChoice3" parent="UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoices" unique_id=259931286 instance=ExtResource("5_stage_choice")]
 layout_mode = 2
 
 [node name="DebugButton" type="Button" parent="UI" unique_id=673340750]
