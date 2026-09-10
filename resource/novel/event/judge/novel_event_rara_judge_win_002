@@ -1,8 +1,10 @@
-@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_3000.png"
 @name "ラーラ"
 私の負け！？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 アンタ、なかなかやるじゃない。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 はい。約束の品よ。
 @lcm

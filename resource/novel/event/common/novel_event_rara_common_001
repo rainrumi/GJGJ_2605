@@ -2,7 +2,9 @@
 @name "ラーラ"
 あら。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 がんばってるかしら。はいこれ。
 @lcm
-試験がんばりなさい！
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1200.png"
+試験、がんばりなさい！
 @lcm

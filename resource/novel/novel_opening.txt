@@ -18,7 +18,9 @@
 @lcm
 ……。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 な、何かあったら私を頼りなさいよ！
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 アンタのこと一番知ってるのは私なんだから……。
 @lcm

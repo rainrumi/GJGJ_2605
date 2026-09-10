@@ -2,16 +2,21 @@
 @name "ラーラ"
 ティーナ、調子はどうかしら？ 私は上々よ。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 最近ね、ミルネ街に行ったの。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 ミルネ街はコロッタ街の西にある妖精の街よ。
 @lcm
 因みにコロッタ街は人間主体の街で、ミルネ街は妖精主体の街なの。知ってたかしら？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 ミルネ街って、建物が全部植物とか土で出来てるのよ。すごいわよね。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1200.png"
 私たちの家は悪夢から貰ったエネルギーで出来てるから全く作り方が違いそうでワクワクするわね。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 人間のパートナーがいない妖精は大体がミルネ街で生まれるのよ。
 @lcm
 遠隔連絡とか、空間移動とか、魔法で効率化できる技術に取り組んでる会社が多かったわね。
@@ -20,9 +25,12 @@
 @lcm
 ……人間って、ほんと悪夢を生むことしかできないのかしら。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 大人になったら一回話してみたいわ。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 じゃあ、これあげる。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1200.png"
 ミルネ街で手に入れたの。じゃあね。
 @lcm

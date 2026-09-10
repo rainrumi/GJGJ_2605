@@ -9,10 +9,12 @@
 @name "ラーラ"
 どうだった？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 ……。
 @lcm
 ……え、不合格……？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 ……そっか。
 @lcm
 ……まあ、来年もまた受ければ良いじゃない。

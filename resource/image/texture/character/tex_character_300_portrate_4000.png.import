@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://onmwqtnb46k8"
-path="res://.godot/imported/tex_character_300_portrate_6000.png-d9469d5dcd8ec7d58bdd196cfd53d395.ctex"
+uid="uid://sbo8ym2dvr3j"
+path="res://.godot/imported/tex_character_300_portrate_4000.png-c1bf9a7262d266eb92c5c8b7d07c846c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resource/image/texture/character/tex_character_300_portrate_6000.png"
-dest_files=["res://.godot/imported/tex_character_300_portrate_6000.png-d9469d5dcd8ec7d58bdd196cfd53d395.ctex"]
+source_file="res://resource/image/texture/character/tex_character_300_portrate_4000.png"
+dest_files=["res://.godot/imported/tex_character_300_portrate_4000.png-c1bf9a7262d266eb92c5c8b7d07c846c.ctex"]
 
 [params]
 

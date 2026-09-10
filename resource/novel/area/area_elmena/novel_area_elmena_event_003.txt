@@ -9,10 +9,11 @@
 エルメナ大学の最後の悪夢は『卒論の悪夢』です。
 @lcm
 @bg "res://resource/image/texture/still/tex_still_area_elmena_100.png"
-@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 @name "ラーラ"
 『卒論の悪夢』？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 ここの学生たちも大変ね。
 @lcm
 えーっと、なんて書かれてるの？……
@@ -26,6 +27,7 @@
 @lcm
 みなさんはしっかりバックアップを取りましょうね。（1敗）
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_6000.png"
 @name "ラーラ"
 ……なんか大変そうね。
 @lcm

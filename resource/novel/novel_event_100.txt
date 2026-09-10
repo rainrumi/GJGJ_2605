@@ -5,28 +5,38 @@
 @lcm
 ……。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_3000.png"
 えっ、毎日1箇所しか回ってないの！？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 私、毎日2箇所は回ってるわよ。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 アンタ、このままだとまずいわよ。
 @lcm
 体調も大事だけど、このままだと試験に合格できないかもしれないじゃない。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_2000.png"
 …そうだ。アンタ、私と勝負しなさい。
 @lcm
 悪夢を食べるのに成功した回数を定期試験の日ごとに比べるの。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 その時アナタが私に勝ってたら、ちょっとイイものをあげるわ。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 …私が勝ってたら何をするかって？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 そ、そんなこと気にしなくていいのよ！
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_5000.png"
 私は…アンタが無事に試験に合格してくれたらそれで良いのよ。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 …分かった？ はいじゃあ明日から頑張りなさい！
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 次は8日目が終わったときよ！
 @lcm
 @name ""

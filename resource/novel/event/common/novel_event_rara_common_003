@@ -1,10 +1,13 @@
-@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_4000.png"
 @name "ラーラ"
 ふわーあ。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_3000.png"
 ……！
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_5000.png"
 ……な、なによ。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 はい、イイモノあげるわ。
 @lcm

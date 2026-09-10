@@ -2,5 +2,6 @@
 @name "ラーラ"
 私の勝ちね。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 頑張ってほしいけど、無理しない範囲で消化しなさいよ！
 @lcm

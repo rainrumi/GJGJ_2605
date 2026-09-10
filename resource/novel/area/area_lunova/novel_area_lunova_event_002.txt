@@ -1,14 +1,17 @@
 @bg "res://resource/image/texture/still/tex_still_area_huwa_100.png"
-@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 @name "ラーラ"
 ルノヴァ旧市街？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 あそこは昔、人間たちが住んでた場所らしいわよ。
 @lcm
 でも何かあって住めなくなったとか……。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 なんでって？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 今は悪夢に汚染されちゃってるし、何かあったんじゃない？
 @lcm
 てかアンタ、あの場所は入ったらダメなのよ。まさか行ってないでしょうね？
@@ -17,6 +20,7 @@
 @lcm
 そうよね。行くわけないわよね。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 危ないから行っちゃダメよ！
 @lcm
 @img_remove 1
@@ -24,7 +28,7 @@
 @name ""
 ルノヴァ旧市街にくると、確かに人間の建物らしい残骸が散見された。
 @lcm
-ラーラはあんな言ってたけど、不思議と大丈夫な気がした。
+ラーラはあんな言ってたけど、大丈夫だよね。
 @lcm
 ルノヴァ旧市街には焼け焦げた跡と、不思議な模様がたくさんある。
 @lcm

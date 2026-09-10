@@ -2,7 +2,9 @@
 @name "ラーラ"
 私の負けじゃないの……。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_2000.png"
 えらいわね、アンタ。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 これあげるわ。頑張った証よ。
 @lcm

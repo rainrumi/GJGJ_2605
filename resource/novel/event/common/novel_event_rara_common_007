@@ -2,5 +2,6 @@
 @name "ラーラ"
 ティーナ、きちんと寝てる？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 これあげるから、しっかり悪夢を消化しなさい！
 @lcm

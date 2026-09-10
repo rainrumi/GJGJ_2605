@@ -1,6 +1,7 @@
-@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 @name "ラーラ"
 調子はどう？ ティーナ。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
 お腹壊さないように気をつけなさいよ！
 @lcm

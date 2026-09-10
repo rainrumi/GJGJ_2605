@@ -9,16 +9,22 @@
 @name "ラーラ"
 どうだった？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 ……。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_3000.png"
 え！ 合格！？
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_2000.png"
 やったわね！ よくやったわティーナ！
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1200.png"
 これで私たちもバクとして少しだけ成長できたのよ！
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
 6年間、これからもよろしくね。ティーナ。
 @lcm
+@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_2000.png"
 これからの学校生活が楽しみね！
 @lcm
 @name ""
