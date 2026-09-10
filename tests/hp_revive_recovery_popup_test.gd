@@ -31,7 +31,8 @@ func _run() -> void:
 	game.call("start_battle", context)
 	await process_frame
 	var attack_se := game.get_node("AttackSe") as AudioStreamPlayer
-	game.call("_apply_player_damage", [1])
+	var initial_damage: Array[int] = [1]
+	game.call("_apply_player_damage", initial_damage)
 	_expect(attack_se != null and attack_se.playing, "悪夢の被ダメージ時に攻撃SEを再生する")
 	attack_se.stop()
 	attack_se.stream = null
@@ -53,7 +54,7 @@ func _run() -> void:
 		_expect(recovery_popup.visible, "ダメージUIと復活時の回復UIを同時に表示する")
 		_expect(
 			recovery_popup.get_theme_color("font_color")
-			== StageClearUi.BENEFICIAL_DELTA_COLOR,
+			== (load("res://scene/main/stage_clear/stage_clear_ui.gd") as Script).BENEFICIAL_DELTA_COLOR,
 			"復活時の回復UIをステージクリア状態予測の緑色で表示する"
 		)
 		_expect(
@@ -81,16 +82,17 @@ func _run() -> void:
 		game.set("hp", 0)
 		game.call("_apply_elapsed_time", 30)
 		_expect(game.call("get_max_hp") == 100, "アネモネは蘇生時にHP上限を増やさない")
-		_expect(game.call("get_current_hp") == 60, "アネモネは蘇生回復量にHP上限の50%を加算する")
+		_expect(game.call("get_current_hp") == 30, "アネモネは蘇生回復量にHP上限の20%を加算する")
 		game.set("hp", 0)
 		game.call("_apply_elapsed_time", 30)
 		_expect(game.call("get_max_hp") == 100, "アネモネは複数回蘇生してもHP上限を増やさない")
-		_expect(game.call("get_current_hp") == 60, "アネモネの蘇生回復量は蘇生回数で累積しない")
+		_expect(game.call("get_current_hp") == 30, "アネモネの蘇生回復量は蘇生回数で累積しない")
 
 	game.call("cancel_battle")
 	root.remove_child(game)
 	game.free()
 	await process_frame
+	print("HpReviveRecoveryPopupTest: %d failures" % _failures)
 	quit(_failures)
 
 

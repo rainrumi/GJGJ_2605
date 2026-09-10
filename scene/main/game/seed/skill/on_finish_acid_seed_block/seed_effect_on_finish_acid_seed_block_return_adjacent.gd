@@ -2,6 +2,10 @@ class_name SeedEffectOnFinishAcidSeedBlockReturnAdjacent
 extends SeedEffect
 
 
+func is_lethal_on_acid_damage() -> bool:
+	return true
+
+
 # 種ブロック完了
 func on_finish_acid_seed_block(context: Dictionary) -> void:
 	var seed_block := context.get("seed_block") as Enemy # 種ブロック

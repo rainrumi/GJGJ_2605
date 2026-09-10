@@ -2,6 +2,14 @@ class_name SeedEffect
 extends Resource
 
 
+func is_lethal_on_acid_damage() -> bool:
+	return false
+
+
+func get_adjacent_digestion_heal_rate() -> float:
+	return 0.0
+
+
 @export var priority := 0 # 優先度
 @export var enabled := true # 有効状態
 

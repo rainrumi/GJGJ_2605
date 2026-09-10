@@ -83,13 +83,16 @@ func progress_time(
 	enemies: Array[Enemy],
 	stomach: StomachBoard
 ) -> BattleTurnResultData:
-	_seed_effects.apply_progress_time(previous_minutes, minutes)
+	_seed_effects.apply_progress_time(previous_minutes, minutes, enemies, stomach)
 	var elapsed_seconds := maxi(0, minutes - previous_minutes) * 60 # 経過秒数
 	var current_seconds := minutes * 60 # 現在秒数
 	_enemy_effects.prepare(enemies, stomach)
 	_battle_clock.set_time(elapsed_seconds, current_seconds)
 	_enemy_effects.execute()
 	var digested_enemies := _digestion_state.consume() # 時間消化一覧
+	for enemy in _seed_effects.consume_digested_enemies():
+		if not digested_enemies.has(enemy):
+			digested_enemies.append(enemy)
 	var digested_data := _to_enemy_data(digested_enemies) # 消化データ一覧
 	for enemy in digested_enemies:
 		enemy.data.stomach_status.publish_digestion(0, 0, elapsed_seconds, current_seconds, digested_data)

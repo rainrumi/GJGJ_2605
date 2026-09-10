@@ -390,6 +390,8 @@ func apply_direct_Acided_seed_effects(
 			if effect is SeedEffectOnFinishAcidSeedRecoverHp:
 				# 回復効果
 				var recover_effect := effect as SeedEffectOnFinishAcidSeedRecoverHp
+				if recover_effect.adjacent_digestion_only:
+					continue
 				next_hp = mini(max_hp, next_hp + _get_seed_recovery_amount(recover_effect, enemy, max_hp))
 				continue
 			if effect is SeedEffectOnFinishAcidSeedSkipRestTime:

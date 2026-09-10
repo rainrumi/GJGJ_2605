@@ -6,6 +6,7 @@ var _status_preview_only := false
 var _state := DreamSeedSkillState.new() # 状態
 var _planted_flowers: Array[SeedInfo] = [] # 植付花
 var _persistent_sub_effects: Array[SeedEffect] = [] # 消化後持続副効果
+var _pending_digested: Array[Enemy] = []
 
 
 # 装備中の同種数条件を反映した胃袋サイズ補正
@@ -32,6 +33,7 @@ func setup(flowers: Array) -> void:
 	_status_preview_base_effects.clear()
 	_refresh_flowers(flowers)
 	_persistent_sub_effects.clear()
+	_pending_digested.clear()
 	_state.reset()
 	for effect in _get_main_effects():
 		effect.setup(_state)
@@ -114,7 +116,10 @@ func apply_player_damage(amount: int, base_damage: int) -> int:
 
 
 # 時間経過適用
-func apply_progress_time(previous_minutes: int, minutes: int) -> void:
+func apply_progress_time(
+	previous_minutes: int, minutes: int, enemies: Array[Enemy] = [],
+	stomach: StomachBoard = null
+) -> void:
 	var elapsed_minutes := maxi(0, minutes - previous_minutes) # 経過分
 	if elapsed_minutes == 0:
 		return
@@ -123,6 +128,9 @@ func apply_progress_time(previous_minutes: int, minutes: int) -> void:
 		"previous_minutes": previous_minutes,
 		"minutes": minutes,
 		"elapsed_minutes": elapsed_minutes,
+		"enemies": enemies,
+		"stomach": stomach,
+		"acided_enemies": _pending_digested,
 	}
 	for effect in _get_main_effects():
 		effect.on_progress_time(_state, context)
@@ -176,7 +184,8 @@ func get_rest_hp(max_hp: int, base_recovery_rate: float) -> int:
 func get_revive_hp(max_hp: int, base_recovery_rate: float) -> int:
 	var recovery_rate := base_recovery_rate + get_rest_recovery_bonus_rate() # 通常回復率
 	recovery_rate += _sum_float("get_revive_recovery_bonus_rate", {})
-	return ceili(float(max_hp) * recovery_rate)
+	# Resource保存時の浮動小数点誤差で、整数の回復量を余分に切り上げない。
+	return ceili(float(max_hp) * recovery_rate - 0.000000001)
 
 
 # 休憩回復補正率取得
@@ -197,15 +206,24 @@ func get_seed_id_text() -> String:
 
 
 # 回復イベント追加
-func add_heal_event(amount: int) -> int:
+func add_heal_event(amount: int, enemies: Array[Enemy] = [], stomach: StomachBoard = null) -> int:
 	if amount <= 0:
 		return 0
-	var context := {"amount": amount} # 文脈
+	var context := {
+		"amount": amount, "enemies": enemies, "stomach": stomach,
+		"acided_enemies": _pending_digested,
+	}
 	var bonus := ceili(float(amount) * _get_heal_bonus_rate(context)) # 回復加算
 	_state.recovery_accumulated_for_max_hp += amount
 	for effect in _get_main_effects():
 		effect.on_battle(_state, context)
 	return bonus
+
+
+func consume_digested_enemies() -> Array[Enemy]:
+	var result := _pending_digested.duplicate()
+	_pending_digested.clear()
+	return result
 
 
 # reviveイベント追加

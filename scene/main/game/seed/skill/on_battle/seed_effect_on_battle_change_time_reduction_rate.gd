@@ -14,17 +14,17 @@ func is_unconditional_status_change() -> bool:
 
 
 # 時間率取得
-func get_time_reduction_rate(state: DreamSeedSkillState, context: Dictionary) -> float:
+func get_time_reduction_rate(state: DreamSeedSkillState, _context: Dictionary) -> float:
 	var value := rate # 適用値
 	value -= float(state.hp_loss_count) * hp_loss_rate
-	var start_count := int(state.effect_start_progress_counts.get(self, 0))
+	var start_count := int(state.effect_start_progress_counts.get(get_instance_id(), 0))
 	value += elapsed_step_rate * float(state.progress_time_count - start_count)
 	return _clamp_interval_rate(value)
 
 
 # elapsed数
 func on_finish_acid_seed(state: DreamSeedSkillState, _context: Dictionary) -> bool:
-	state.effect_start_progress_counts[self] = state.progress_time_count
+	state.effect_start_progress_counts[get_instance_id()] = state.progress_time_count
 	return true
 
 

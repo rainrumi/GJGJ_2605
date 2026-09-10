@@ -424,6 +424,11 @@ func pulse_damage() -> void:
 	_presenter.present_damage_pulse()
 # take消化ダメージ処理
 func take_acid_damage(amount: int, show_popup := true) -> bool:
+	if amount > 0 and has_seed() and seed_info.get_sub_skill() != null:
+		for effect in seed_info.get_sub_skill().get_effects():
+			if effect.is_lethal_on_acid_damage():
+				amount = maxi(amount, current_hp)
+				break
 	if show_popup:
 		_presenter.present_damage_popup(amount)
 	if data.hp.take_damage(amount):

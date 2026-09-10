@@ -12,7 +12,11 @@ func _run() -> void:
 	_test_enemy_only_damage()
 	_test_digested_adjacency()
 	_test_line_targets()
+	_test_persistence_and_counts()
+	_test_fuji_and_tokon()
+	_test_immediate_line_damage()
 	await _test_sunflower_max_hp()
+	await _test_player_heal_chain()
 	print("DreamSeedDescriptionContractTest: %d failures" % _failures)
 	quit(_failures)
 
@@ -128,3 +132,143 @@ func _expect(condition: bool, message: String) -> void:
 	if not condition:
 		_failures += 1
 		push_error("DreamSeedDescriptionContractTest: %s" % message)
+
+
+func _test_persistence_and_counts() -> void:
+	for number in [101, 103, 106, 107, 115, 116, 123, 126]:
+		var effects := SeedEffectResolver.new()
+		effects.setup([])
+		effects.add_Acided_seed_effect(_seed(number), 1680)
+		var damage: int = effects.get_acid_damage_breakdown(100, 0.0, 1680, true).total
+		var interval := effects.get_time_reduction_rate(true, 1680)
+		_expect(effects.get_acid_damage_breakdown(100, 0.0, 1680, true).total == damage, "%d消化強化が複数回持続" % number)
+		_expect(is_equal_approx(effects.get_time_reduction_rate(true, 1680), interval), "%d間隔強化が複数回持続" % number)
+		effects.setup([])
+		_expect(effects.get_acid_damage_breakdown(100, 0.0, 1680).total == 100, "次の試合で消化強化リセット")
+		_expect(effects.get_time_reduction_rate() == 0.0, "次の試合で間隔強化リセット")
+	var effects := SeedEffectResolver.new()
+	effects.setup([_seed(124)])
+	effects.apply_progress_time(100, 101)
+	_expect(is_equal_approx(effects.get_time_reduction_rate(), 0.04), "クレマチス1分経過1回で4%")
+	effects.apply_progress_time(101, 201)
+	_expect(is_equal_approx(effects.get_time_reduction_rate(), 0.06), "100分経過も1回として6%")
+	for index in range(30):
+		effects.apply_progress_time(index, index + 1)
+	_expect(is_equal_approx(effects.get_time_reduction_rate(), 0.4), "メイン上限40%")
+	effects.refresh_flowers([])
+	effects.add_Acided_seed_effect(_seed(124))
+	_expect(is_equal_approx(effects.get_time_reduction_rate(), 0.04), "消化後の副効果は4%から開始")
+	for index in range(30):
+		effects.apply_progress_time(index, index + 1)
+	_expect(is_equal_approx(effects.get_time_reduction_rate(), 0.8), "副効果上限80%")
+	effects.setup([_seed(122)])
+	effects.notify_hp_lost(80)
+	_expect(is_equal_approx(effects.get_time_reduction_rate(), -0.01), "被ダメ80でも発生1回で間隔+1%")
+	effects.notify_hp_lost(1)
+	_expect(is_equal_approx(effects.get_time_reduction_rate(), -0.02), "2回目で+2%")
+	for index in range(250):
+		effects.notify_hp_lost(1)
+	_expect(is_equal_approx(effects.get_time_reduction_rate(), -2.0), "トリカブト上限+200%")
+	var controller: RefCounted = load("res://scene/main/game/controller/seed/game_seed_controller.gd").new()
+	var flower := _enemy(Vector2i.ZERO, _seed(104))
+	var flowers: Array[Enemy] = [flower]
+	controller.apply_direct_Acided_seed_effects(flowers, 50, 100)
+	_expect(controller.consume_rest_time_skip() and controller.consume_rest_time_skip(), "アネモネは複数回の蘇生で時間経過を無効化")
+	controller.set_seed_inventory([], [])
+	_expect(not controller.consume_rest_time_skip(), "アネモネ無効化は試合開始でリセット")
+	flower.free()
+
+
+func _test_fuji_and_tokon() -> void:
+	var effects := SeedEffectResolver.new()
+	effects.setup([_seed(108), _seed(101)])
+	_expect(effects.get_acid_damage_breakdown(100, 0.0, 0).total == 160, "フジは合計+20%を3倍")
+	for flowers in [[_seed(125), _seed(126)], [_seed(126), _seed(125)]]:
+		effects.setup(flowers)
+		_expect(effects.get_remove_from_stomach_damage_rate(0.05) == 0.0, "装備順によらずトコンで最終ダメージ0")
+		_expect(is_equal_approx(effects.get_remove_from_stomach_acid_damage_rate(), 0.33), "ドクダミの悪夢への消化ダメージは維持")
+	var source := _enemy(Vector2i.ZERO, _seed(108))
+	var flower := _enemy(Vector2i.RIGHT, _seed(101))
+	var enemy := _enemy(Vector2i.DOWN)
+	var enemies: Array[Enemy] = [source, flower, enemy]
+	source.set_Acided(true)
+	var digested: Array[Enemy] = [source]
+	var resolver := DreamSeedBlockAcidResolver.new()
+	resolver.append_Acided_by_seed_block_effects(source, enemies, null, 0, {}, digested)
+	_expect(flower.current_hp == 20000 and flower.acid_damage_taken_multiplier == 2.0, "フジは隣接する花のHP・被消化を2倍")
+	_expect(enemy.current_hp == 10000 and enemy.acid_damage_taken_multiplier == 1.0, "フジのサブは悪夢を変更しない")
+	source.seed_info = _seed(125)
+	source.set_Acided(false)
+	source.set_Aciding(true)
+	source.current_hp = 10000
+	_expect(not source.take_acid_damage(0, false), "トコンは0ダメージでは消化されない")
+	_expect(source.take_acid_damage(1, false), "トコンは1ダメージでもHP0")
+	resolver.append_Acided_by_seed_block_effects(source, enemies, null, 0, {}, digested)
+	_expect(not enemy.is_active_in_stomach() and not enemy.is_Acided(), "トコンは隣接悪夢を吐き戻す")
+	_expect(flower.is_active_in_stomach(), "トコンは花を吐き戻さない")
+	source.free()
+	flower.free()
+	enemy.free()
+
+
+func _test_immediate_line_damage() -> void:
+	var board := StomachBoard.new()
+	board.columns = 4
+	board.rows = 4
+	board._acid_line_rows = 2
+	var edge := _enemy(Vector2i(0, 2))
+	var center := _enemy(Vector2i(1, 2))
+	var off_line := _enemy(Vector2i(0, 1))
+	var flower := _enemy(Vector2i(3, 2), _seed(101))
+	var enemies: Array[Enemy] = [edge, center, off_line, flower]
+	var effects := SeedEffectResolver.new()
+	effects.setup([_seed(114)])
+	effects.apply_progress_time(0, 30, enemies, board)
+	_expect(edge.current_hp == 9500 and flower.current_hp == 9500, "ノイバラは端のライン上のモノに500")
+	_expect(center.current_hp == 10000 and off_line.current_hp == 10000, "ノイバラは内側・ライン外に当たらない")
+	effects.setup([_seed(121)])
+	effects.add_heal_event(100, enemies, board)
+	_expect(edge.current_hp == 9467 and center.current_hp == 9967, "オトギリソウは回復時に即座に33ダメージ")
+	_expect(flower.current_hp == 9500 and off_line.current_hp == 10000, "回復攻撃はライン内の悪夢だけ")
+	_expect(effects.get_acid_damage_breakdown(100, 0.0, 0).total == 100, "回復攻撃を次回通常ダメージへ加算しない")
+	var source := _enemy(Vector2i(1, 1), _seed(121))
+	source.set_Acided(true)
+	enemies.append(source)
+	var digested: Array[Enemy] = [source]
+	DreamSeedBlockAcidResolver.new().append_Acided_by_seed_block_effects(source, enemies, board, 0, {}, digested, 100, 30, 70)
+	_expect(center.current_hp == 9757 and off_line.current_hp == 9790, "オトギリソウ副効果は現在HP70の3倍210")
+	for enemy in enemies:
+		enemy.free()
+	board.free()
+
+
+func _test_player_heal_chain() -> void:
+	var game := (load("res://scene/main/game/game.tscn") as PackedScene).instantiate()
+	root.add_child(game)
+	await process_frame
+	var source := _enemy(Vector2i(0, 1), _seed(119))
+	var target := _enemy(Vector2i(0, 2))
+	var second := _enemy(Vector2i(1, 2))
+	var enemies: Array[Enemy] = [source, target, second]
+	game.enemies = enemies
+	game.stomach.rows = 3
+	game.hp = 10
+	game.seed_effects.setup([_seed(121)])
+	target.set_Acided(true)
+	second.current_hp = 5
+	var digested: Array[Enemy] = [target]
+	game._apply_adjacent_seed_heal(digested)
+	_expect(game.hp == 30, "ラフレシアの隣接消化でプレイヤーHP20%回復")
+	_expect(second.is_Acided(), "その回復でオトギリソウの即時攻撃が発動")
+	var extra: Array[Enemy] = game._resolve_extra_seed_digestions()
+	_expect(extra.has(second) and extra.size() == 1, "即時攻撃の消化を重複せず回収")
+	game.hp = 10
+	source.set_Acided(true)
+	var sources: Array[Enemy] = [source]
+	game._apply_Acided_seed_effects(sources)
+	_expect(game.hp == 10, "ラフレシア自身の消化では20%回復しない")
+	game.enemies = [] as Array[Enemy]
+	for enemy in enemies:
+		enemy.free()
+	game.free()
+	await process_frame

@@ -8,4 +8,6 @@ extends SeedEffect
 
 # 時間経過
 func on_progress_time(_state: DreamSeedSkillState, _context: Dictionary) -> void:
-	pass
+	SeedEffectOnFinishAcidSeedBlockFixedDamageLine.apply_line_damage(
+		_context, damage, split, edge_only, false
+	)

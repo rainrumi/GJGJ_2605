@@ -18,7 +18,7 @@ var persistent_acid_damage_bonus_rate := 0.0
 var persistent_time_reduction_bonus_rate := 0.0
 var progress_time_count := 0
 var hp_loss_count := 0
-var effect_start_progress_counts: Dictionary[SeedEffect, int] = {}
+var effect_start_progress_counts: Dictionary[int, int] = {}
 
 
 # 初期化

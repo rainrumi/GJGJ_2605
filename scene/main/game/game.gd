@@ -806,12 +806,16 @@ func _advance_acid_turn() -> void:
 	if not _begin_acid_turn():
 		return
 	_apply_time_seed_hp_recovery()
+	var early_digested := _resolve_extra_seed_digestions()
 	acid_controller.apply_turn_start_effects(enemies, stomach, minutes)
 	# elapsed分数
 	var elapsed_minutes := acid_controller.get_step_minutes(enemies, minutes)
 	await _wait_for_next_acid_beat()
 	await _wait_while_acid_paused()
 	if not battle_active or _active_acid_count() == 0:
+		if battle_active:
+			await _resolve_post_acid_visuals(early_digested)
+			_check_battle_end()
 		acid_turn_in_progress = false
 		return
 	# 消化結果
@@ -819,6 +823,10 @@ func _advance_acid_turn() -> void:
 	_apply_acid_damage_seed_heal()
 	_apply_Acided_enemy_seed_effects(acid_result.Acided_enemies)
 	_apply_Acided_seed_effects(acid_result.Acided_enemies)
+	_apply_adjacent_seed_heal(acid_result.Acided_enemies)
+	for enemy in early_digested + _resolve_extra_seed_digestions():
+		if not acid_result.Acided_enemies.has(enemy):
+			acid_result.Acided_enemies.append(enemy)
 	var progress_digested := _apply_elapsed_time(elapsed_minutes + acid_result.extra_elapsed_minutes)
 	for enemy in progress_digested:
 		if not acid_result.Acided_enemies.has(enemy):
@@ -869,6 +877,7 @@ func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
 	if hp <= 0:
 		seed_effects.add_revive_event()
 		hp = seed_effects.get_revive_hp(effective_max_hp, REST_HP_RATE)
+		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp, enemies, stomach))
 		var revived_hp := hp
 		if not seed_controller.consume_rest_time_skip():
 			minutes += REST_MINUTES
@@ -888,6 +897,7 @@ func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
 func _apply_progress_effect_result(result: BattleTurnResultData) -> void:
 	if result == null:
 		return
+	result.Acided_enemies = _resolve_extra_seed_digestions(result.Acided_enemies)
 	_apply_acid_spawn_requests(result.spawn_requests)
 	if not result.player_damage_values.is_empty():
 		_apply_player_damage(result.player_damage_values)
@@ -1175,7 +1185,7 @@ func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	var previous_hp := hp
 	hp = seed_controller.apply_direct_Acided_seed_effects(Acided_enemies, hp, effective_max_hp)
 	if hp > previous_hp:
-		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp - previous_hp))
+		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp - previous_hp, enemies, stomach))
 	for seed in seed_controller.collect_Acided_seeds(Acided_enemies):
 		seed_effects.add_Acided_seed_effect(seed, minutes, stomach)
 	_refresh_effective_max_hp(false)
@@ -1236,8 +1246,7 @@ func _apply_acid_damage_seed_heal() -> void:
 	var heal_amount := seed_effects.consume_acid_damage_heal_amount()
 	if heal_amount <= 0:
 		return
-	heal_amount += seed_effects.add_heal_event(heal_amount)
-	hp = mini(effective_max_hp, hp + heal_amount)
+	_recover_player(heal_amount)
 
 
 # removefrom胃袋消化ダメージ適用
@@ -1294,8 +1303,7 @@ func _apply_Acided_enemy_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 		if heal_rate > 0.0:
 			# 回復量
 			var heal_amount := ceili(float(enemy.get_max_hp()) * heal_rate)
-			heal_amount += seed_effects.add_heal_event(heal_amount)
-			hp = mini(effective_max_hp, hp + heal_amount)
+			_recover_player(heal_amount)
 		if max_hp_rate > 0.0:
 			seed_effects.add_max_hp_bonus_rate(max_hp_rate)
 			_refresh_effective_max_hp(false)
@@ -1307,8 +1315,55 @@ func _heal_player_by_rate(rate: float) -> void:
 		return
 	# 回復量
 	var heal_amount := ceili(float(effective_max_hp) * rate)
-	heal_amount += seed_effects.add_heal_event(heal_amount)
-	hp = mini(effective_max_hp, hp + heal_amount)
+	_recover_player(heal_amount)
+
+
+func _recover_player(amount: int) -> void:
+	var recovered := mini(maxi(0, effective_max_hp - hp), maxi(0, amount))
+	if recovered == 0:
+		return
+	hp += recovered
+	hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(recovered, enemies, stomach))
+
+
+func _apply_adjacent_seed_heal(digested: Array[Enemy]) -> void:
+	for target in digested:
+		for source in enemies:
+			if source == target or not source.is_active_in_stomach() or not source.has_seed():
+				continue
+			if not EnemyPlacementQuery.are_enemies_adjacent(source, target):
+				continue
+			var skill := source.get_seed().get_sub_skill()
+			if skill == null:
+				continue
+			for effect in skill.get_effects():
+				_heal_player_by_rate(effect.get_adjacent_digestion_heal_rate())
+
+
+# 即時攻撃で消化された対象も、種の効果・回復・枯渇通知まで同じ試合内で解決する。
+func _resolve_extra_seed_digestions(initial: Array[Enemy] = []) -> Array[Enemy]:
+	var queue: Array[Enemy] = initial.duplicate()
+	queue.append_array(seed_effects.consume_digested_enemies())
+	var processed: Array[Enemy] = []
+	var block_resolver := DreamSeedBlockAcidResolver.new()
+	var index := 0
+	while index < queue.size():
+		var enemy := queue[index]
+		index += 1
+		if enemy == null or not enemy.is_Acided() or processed.has(enemy):
+			continue
+		processed.append(enemy)
+		block_resolver.append_Acided_by_seed_block_effects(
+			enemy, enemies, stomach, minutes, {}, queue,
+			int(_get_acid_damage_info().get("total", 0)),
+			acid_controller.get_step_minutes_breakdown(enemies, false, minutes).total, hp
+		)
+		var single: Array[Enemy] = [enemy]
+		_apply_Acided_enemy_seed_effects(single)
+		_apply_Acided_seed_effects(single)
+		_apply_adjacent_seed_heal(single)
+		queue.append_array(seed_effects.consume_digested_enemies())
+	return processed
 
 
 # 種胃袋サイズeffects適用

@@ -1,6 +1,46 @@
 # 夢の種 説明・実装照合（2026-09-10）
 
-状態: 一部修正済み、仕様確認待ち。
+状態: ユーザー回答を反映して実装・回帰検証済み。目視・手動入力は未検証。
+
+## 仕様回答反映後の結果
+
+以下が最終結果。後半の「照合結果」以降は、最初の調査時点で発見した問題と検証経緯の記録であり、そこにある「確認待ち」「未実装」は下記のとおり解消済み。
+
+- キンセンカ、トケイソウ、ゲッカビジン、ヨルガオ、ユウガオ、ルピナス、ヒツジグサ、ドクダミの消化後補正を試合中持続へ変更。条件付き補正は消化時の時刻で発動を判定する。試合開始時にリセットする。「次の消化」と明記されたホウセンカの加算は1回だけのまま。
+- フジ: メインのバフ倍率を3倍、サブを隣接する夢の種のHPと被消化倍率2倍へ変更。悪夢はサブの対象外。
+- ラフレシア: 胃袋にある間、隣接するモノの消化時にプレイヤーの最大HP20%を回復。自身の消化では回復しない。
+- クレマチス: 時間進行1回につきメイン+2%、副効果+4%の短縮率を加算。上限は40%・80%。副効果は消化時に4%から開始し、試合中持続。
+- トリカブト: プレイヤーHPが実際に減ったイベント1回につき間隔+1%。減少量には依存せず、+200%で停止する。
+- アネモネ: 消化後は試合中の全蘇生で休憩時間を省略。現行の回復率+20%を維持し、数値誤差による余分な切り上げを修正。
+- オトギリソウ: 実際にHPが回復した直後、回復量33%をライン内の悪夢へ即時に与える。自身消化時は現在のプレイヤーHPの300%を隣接悪夢へ与える。
+- ノイバラ: 時間進行時、胃袋外周に接する消化ラインのマスを占めるモノへ500ダメージ。通常の最下行も外周として扱う。
+- トコン: 0より大きい消化ダメージを受けるとHP0になり、消化時に隣接悪夢を吐き戻す。メインはドクダミより後に処理し、装備順によらず最終的な吐き戻しダメージを0にする。ドクダミの悪夢への消化ダメージは維持する。
+
+既存のSeedEffect / Resource / Resolver構成を維持した。ラインへの即時ダメージは既存の固定ラインダメージ処理を共有し、追加攻撃による消化もGameの回復・副効果・枯渇通知へ接続した。
+
+### 最終検証
+
+実行環境はGodot 4.6.2 stable。以下のコマンドは `C:\Program Files\Godot\Godot_v4.6.2-stable_win64.exe --headless --path .` に続けて実行。PowerShellでは `2>&1 | Out-String` で終了を待機した。
+
+- `--import`: 終了0、parse/load failureなし。既存UID警告・終了時2リソース解放エラーあり。
+- 変更Scriptの `--script <path> --check-only`: Game / GameSeedControllerの単体検証では既存Autoload `DebugState` を解決できない。Autoload初期化後の全Script読込・戦闘起動テストでは解決済み。
+- `--quit-after 120`: Main Scene起動は終了0。最終実行でも終了時2リソース解放エラーが残る。
+- `--script tests/dream_seed_description_contract_test.gd`: 終了0、失敗0。持続・試合リセット、時刻境界、発生回数、上下限、フジの対象、トコンとドクダミの装備順、ノイバラの対象、オトギリソウ即時攻撃、ラフレシア回復からの連鎖、ヒマワリの上限反映を確認。
+- `--script tests/anemone_revive_recovery_test.gd`: 終了0。旧50%期待値を現行20%へ更新。
+- `--script tests/hp_revive_recovery_popup_test.gd`: 終了0、失敗0。旧50%期待値・テスト側の未型付け配列・Autoload準備前のクラス参照を修正後、蘇生とポップアップの回帰確認。
+- `--script tests/seed_100109_persistent_sub_effect_test.gd`: 終了0。
+- `--script tests/enemy_digestion_resolver_test.gd`: 終了0。
+- `--script tests/enemy_effect_stomach_activation_test.gd`: 終了0。
+- `--script tests/game_enemy_smoke_test.gd`: 終了0、戦闘Scene初期化成功。
+- `--script tests/game_seed_stomach_base_size_test.gd`: 終了0。
+- `--script tests/seed_resource_classification_test.gd`: 終了0。
+- `--script tests/game_enemy_attack_order_test.gd`: 終了0。終了時26リソースの解放エラーが残るため、エラーなしとは扱わない。
+- `--script tests/enemy_effect_system_depletion_test.gd`: 終了0。
+- `--script tests/all_gdscript_parse_test.gd`: 終了0。Autoload初期化後の全Script読込でcompile/parseエラーなし。
+
+最終ログは `.godot/agent-logs/seed-confirmed-*.log`。テスト中に検出した型付きDictionaryのキー型、テスト側の早期クラス参照・未型付け配列、未初期化のScene描画参照は修正し、再実行した。回復ポップアップテストは旧テストの実行時エラーで停止したため、そのテストプロセスだけを終了して修正後に再実行した。
+
+既知の終了時解放エラーとUID警告は今回の効果修正とは分離して記録する。標準検証スクリプト・formatter/linter設定は未配置のためGodot CLIを直接使用。目視・手動操作は未実施で、headlessテストを視覚的な確認済みとは扱わない。
 
 対象は `data/resources/seeds/seed_catalog.tres` に登録された26種類。ゲーム内表示の `main_description` / `sub_description` と、参照する効果Resource、Resolver、Game / Controllerの呼出経路を照合した。`resource/memo/DreamSeed/dream_seed_skills.md` は旧案と現在値が異なるため正本として使っていない。以下の「一致」はコード照合の結果であり、全組合せを実機操作したことを意味しない。
 

@@ -26,6 +26,7 @@ effects = Array[ExtResource("3_7ke7p")]([SubResource("Resource_main_effect_1")])
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_seed_hp")
 hp_rate = 0.2
+adjacent_digestion_only = true
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")
