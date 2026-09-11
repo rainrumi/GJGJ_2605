@@ -1225,6 +1225,8 @@ func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	var previous_stomach_size := Vector2i(stomach.columns, stomach.rows)
 	for seed in seed_controller.collect_Acided_seeds(Acided_enemies):
 		seed_effects.add_Acided_seed_effect(seed, minutes, stomach)
+		if seed.skill_id == 100120:
+			_refresh_effective_max_hp_and_recover_increase()
 	_shift_clock(-seed_effects.consume_clock_rewind_minutes())
 	if Vector2i(stomach.columns, stomach.rows) != previous_stomach_size:
 		_refresh_enemy_stomach_display_sizes()
@@ -1346,7 +1348,7 @@ func _apply_Acided_enemy_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 			_recover_player(heal_amount)
 		if max_hp_rate > 0.0:
 			seed_effects.add_sunflower_max_hp_bonus(max_hp_rate)
-			_refresh_effective_max_hp(false)
+			_refresh_effective_max_hp_and_recover_increase()
 
 
 # 回復playerby率処理
@@ -1364,6 +1366,12 @@ func _recover_player(amount: int) -> void:
 		return
 	hp += recovered
 	hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(recovered, enemies, stomach))
+
+
+func _refresh_effective_max_hp_and_recover_increase() -> void:
+	var previous_max_hp := effective_max_hp
+	_refresh_effective_max_hp(false)
+	_recover_player(effective_max_hp - previous_max_hp)
 
 
 func _apply_adjacent_seed_heal(digested: Array[Enemy]) -> void:

@@ -115,7 +115,7 @@ func _test_sunflower_max_hp() -> void:
 	var initial_hp: int = game.hp
 	game._apply_Acided_seed_effects(digested)
 	_expect(game.effective_max_hp == roundi(float(game.MAX_HP) * 1.5), "ヒマワリ消化時に実際のHP上限+50%")
-	_expect(game.hp == initial_hp, "HP上限増加は回復を伴わない")
+	_expect(game.hp == initial_hp + game.effective_max_hp - game.MAX_HP, "ヒマワリ消化時にHP上限の増加量だけ回復")
 	flower.free()
 	game.free()
 	await get_tree().process_frame

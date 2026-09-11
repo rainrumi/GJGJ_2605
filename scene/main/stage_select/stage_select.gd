@@ -3,6 +3,12 @@ extends Node2D
 const DEBUG_STAGE_CATALOG_PATH := "res://data/resources/area/debug_stage_catalog.tres"
 const REST_MINUTES := 30
 const REST_HP_RATE := 0.1
+const STAGE_AREA_DISPLAY_ORDER: Array[StageInfo.StageArea] = [
+	StageInfo.StageArea.IRIYU_CAVE,
+	StageInfo.StageArea.ELMENA_UNIVERSITY,
+	StageInfo.StageArea.RIRAN_TREE_GARRISON,
+	StageInfo.StageArea.LUNOVA_OLD_CITY,
+]
 
 signal stage_selected(stage: StageInfo)
 signal today_rest_requested
@@ -87,7 +93,7 @@ func setup_stage_choices(
 			_run_state.planted_flowers
 		)
 	_hovered_stage_definition = null
-	_displayed_stage_definitions = _get_random_stage_definitions()
+	_displayed_stage_definitions = _get_ordered_stage_definitions()
 	map_view.hide_hover()
 	time_view.set_time(_current_minutes)
 	_setup_hp_view()
@@ -216,8 +222,8 @@ func _get_stage_definitions() -> Array[StageInfo]:
 	return stage_definitions
 
 
-# ランダム定義取得
-func _get_random_stage_definitions() -> Array[StageInfo]:
+# 表示順定義取得
+func _get_ordered_stage_definitions() -> Array[StageInfo]:
 	var definitions: Array[StageInfo] = []
 	if DebugState.debug_enabled:
 		definitions = _get_debug_stage_definitions()
@@ -228,8 +234,7 @@ func _get_random_stage_definitions() -> Array[StageInfo]:
 			_current_day,
 			_unlocked_high_difficulty_stage_ids
 		)
-	definitions.shuffle()
-	_move_current_location_to_front(definitions)
+	definitions.sort_custom(_is_stage_before)
 	return definitions
 
 
@@ -242,15 +247,17 @@ func _get_debug_stage_definitions() -> Array[StageInfo]:
 	return debug_stage_catalog.stages.duplicate()
 
 
-# 現在地を先頭へ
-func _move_current_location_to_front(definitions: Array[StageInfo]) -> void:
-	for i in range(definitions.size()):
-		if not _is_current_location(definitions[i]):
-			continue
-		var current_location := definitions[i]
-		definitions.remove_at(i)
-		definitions.insert(0, current_location)
-		return
+# ステージ表示順比較
+func _is_stage_before(left: StageInfo, right: StageInfo) -> bool:
+	return _get_stage_display_order(left) < _get_stage_display_order(right)
+
+
+# ステージ表示順取得
+func _get_stage_display_order(stage_definition: StageInfo) -> int:
+	var display_order := STAGE_AREA_DISPLAY_ORDER.find(stage_definition.stage_area)
+	if display_order >= 0:
+		return display_order
+	return STAGE_AREA_DISPLAY_ORDER.size() + stage_definition.stage_area
 
 
 # 現在地判定

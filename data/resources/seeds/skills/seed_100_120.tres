@@ -17,7 +17,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_ndgbg"]
 script = ExtResource("skill_recover_hp")
-acided_enemy_max_hp_rate = 1.05
+acided_enemy_max_hp_rate = 1.0499999999992724
 
 [sub_resource type="Resource" id="Resource_uosnd"]
 script = ExtResource("skill_seed_skill")
@@ -41,5 +41,5 @@ small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_uosnd")
 sub_skill = SubResource("Resource_rjrmx")
 acid_block = SubResource("Resource_0hguf")
-main_description = "悪夢を消化するとHP上限+5%。重複可能。"
-sub_description = "この花を消化するとHP上限+50％"
+main_description = "悪夢を消化するたびにHP上限+5%。"
+sub_description = "この花を消化するとHP上限+50％。"

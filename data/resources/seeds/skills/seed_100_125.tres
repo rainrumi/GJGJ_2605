@@ -1,35 +1,35 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://bgvkkj7cj2i2s"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_nlr0g"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_jeyfd"]
-[ext_resource type="Texture2D" uid="uid://cucyp6wus7u7j" path="res://resource/image/texture/seed/tex_seed_tokon_small.png" id="2_small_texture"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_0js7g"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_cwst0"]
-[ext_resource type="Texture2D" uid="uid://7uodopboephc" path="res://resource/image/texture/seed/tex_seed_tokon.png" id="4_tph2b"]
-[ext_resource type="Script" uid="uid://dcsgj8tsh41u1" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_return_adjacent.gd" id="skill_return_adjacent"]
-[ext_resource type="Script" uid="uid://1rw2oodn48k" path="res://scene/main/game/seed/skill/on_remove_from_stomach/seed_effect_on_remove_from_stomach_change_damage.gd" id="skill_return_damage"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_nlr0g"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_jeyfd"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_tokon_small.png" id="2_small_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_0js7g"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_cwst0"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_tokon.png" id="4_tph2b"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_return_adjacent.gd" id="skill_return_adjacent"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_remove_from_stomach/seed_effect_on_remove_from_stomach_change_damage.gd" id="skill_return_damage"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_jalbv"]
 script = ExtResource("1_nlr0g")
 texture = ExtResource("2_jeyfd")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_6b5l1"]
 script = ExtResource("skill_return_damage")
-damage_rate = 0.1
+damage_rate = 0.5
 priority = 100
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_ct2ms"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_0js7g")]([SubResource("Resource_main_effect_1")])
+effects = Array[ExtResource("3_0js7g")]([SubResource("Resource_6b5l1")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_ry4bv"]
 script = ExtResource("skill_return_adjacent")
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_8ois2"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_0js7g")]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_0js7g")]([SubResource("Resource_ry4bv")])
 
 [resource]
 script = ExtResource("3_cwst0")
@@ -38,8 +38,8 @@ rarity = 1
 display_name = "トコン"
 texture = ExtResource("4_tph2b")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
-main_description = "吐き戻しで受けるダメージがHP上限10%になる。"
+main_skill = SubResource("Resource_ct2ms")
+sub_skill = SubResource("Resource_8ois2")
+acid_block = SubResource("Resource_jalbv")
+main_description = "吐き戻しで受けるダメージがHP上限50%になる。"
 sub_description = "消化ダメージを受けたときHPが0になり、隣接した悪夢をすべて吐き戻す。"

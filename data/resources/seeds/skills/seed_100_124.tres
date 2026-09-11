@@ -16,9 +16,9 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_uruj0"]
 script = ExtResource("skill_time_rate")
-rate = 0.98
-elapsed_step_rate = 0.98
-min_interval_rate = 0.6
+rate = 0.9799999999995634
+elapsed_step_rate = 0.9799999999995634
+min_interval_rate = 0.6000000000003638
 max_interval_rate = 1.0
 
 [sub_resource type="Resource" id="Resource_e1bkn"]
@@ -27,9 +27,9 @@ effects = Array[ExtResource("3_r2f30")]([SubResource("Resource_uruj0")])
 
 [sub_resource type="Resource" id="Resource_ro37a"]
 script = ExtResource("skill_time_rate")
-rate = 0.97
-elapsed_step_rate = 0.97
-min_interval_rate = 0.4
+rate = 0.9699999999993452
+elapsed_step_rate = 0.9699999999993452
+min_interval_rate = 0.3999999999996362
 max_interval_rate = 1.0
 
 [sub_resource type="Resource" id="Resource_va1tr"]
@@ -46,5 +46,5 @@ small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_e1bkn")
 sub_skill = SubResource("Resource_va1tr")
 acid_block = SubResource("Resource_iu3r8")
-main_description = "消化間隔-2%。時間が経過するたびに効果が2%ずつ上昇する。最大40%。"
-sub_description = "消化間隔-3%。時間が経過するたびに効果が3%ずつ上昇する。最大60%。"
+main_description = "消化間隔が減る。時間が経過するたびに効果が2%ずつ上昇する。最大40%。"
+sub_description = "この花を消化すると消化間隔が減る。時間が経過するたびに効果が3%ずつ上昇する。最大60%。"

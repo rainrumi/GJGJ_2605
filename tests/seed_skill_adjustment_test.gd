@@ -180,8 +180,10 @@ func _test_game() -> void:
 	_expect(game._get_remove_from_stomach_damage() == 20, "100126 doubles final 100125 return damage")
 	game.seed_effects.setup([_seed(120), _seed(120)])
 	nightmare.set_Acided(true)
+	game.hp = 50
 	game._apply_Acided_enemy_seed_effects([nightmare] as Array[Enemy])
 	_expect(game.effective_max_hp == 110, "100120 two copies add 10% max HP")
+	_expect(game.hp == 60, "100120 main heals the max HP increase")
 	_expect(game._get_seed_dynamic_description_rates()[100120].main == 10, "100120 dynamic current bonus")
 	DebugState.set_debug_enabled(true)
 	game._on_debug_instant_clear_requested()
