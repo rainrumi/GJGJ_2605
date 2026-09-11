@@ -12,6 +12,7 @@ func get_adjacent_digestion_heal_rate() -> float:
 
 @export var priority := 0 # 優先度
 @export var enabled := true # 有効状態
+@export var non_stacking_key := "" # 同じ効果区分内で重複させない効果の識別子
 
 
 # Whether a newly hovered seed changes StatusPreview without a runtime condition.

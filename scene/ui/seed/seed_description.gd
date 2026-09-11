@@ -6,19 +6,25 @@ const BLOCK_HP_PLACEHOLDER := "%d"
 
 
 # main説明取得
-static func get_main_description(skill: SeedInfo) -> String:
+static func get_main_description(skill: SeedInfo, current_rate_percent := -1) -> String:
 	if skill == null:
 		return EMPTY_TEXT
-	return _get_or_empty(skill.main_description)
+	return _append_current_rate(_get_or_empty(skill.main_description), current_rate_percent)
 
 
 # sub説明取得
-static func get_sub_description(skill: SeedInfo) -> String:
+static func get_sub_description(skill: SeedInfo, current_rate_percent := -1) -> String:
 	if skill == null:
 		return EMPTY_TEXT
 	# 説明
 	var description := _format_block_status_placeholders(skill.sub_description, skill)
-	return _get_or_empty(description)
+	return _append_current_rate(_get_or_empty(description), current_rate_percent)
+
+
+static func _append_current_rate(description: String, current_rate_percent: int) -> String:
+	if current_rate_percent < 0 or description == EMPTY_TEXT:
+		return description
+	return "%s(現在%d%%)" % [description, current_rate_percent]
 
 
 # sub説明判定

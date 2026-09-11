@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dj7ng1n1ct5e1"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://b826wcb3e5cl6"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_kr1fv"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_lfupt"]
@@ -8,40 +8,29 @@
 [ext_resource type="Script" uid="uid://dnnbgc5igge1m" path="res://scene/main/game/seed/skill/on_fire_acid_enemy/seed_effect_on_fire_acid_enemy_change_acid_damage_buff_rate.gd" id="4_5d06b"]
 [ext_resource type="Texture2D" uid="uid://com78clsyxuym" path="res://resource/image/texture/seed/tex_seed_huji.png" id="4_phtvx"]
 [ext_resource type="Script" uid="uid://crk0gr2g7eg4l" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_hp_rate.gd" id="7_83chu"]
-[ext_resource type="Script" uid="uid://c0ggg1oy1aq1c" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_acid_damage_rate.gd" id="skill_acid_rate"]
-[ext_resource type="Script" uid="uid://ddsprcahop4fq" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_acid_damage_rate.gd" id="skill_adjacent_acid_taken"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_fv4ra"]
 script = ExtResource("1_kr1fv")
 texture = ExtResource("2_lfupt")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
-script = ExtResource("skill_acid_rate")
-rate = 0.1
-
-[sub_resource type="Resource" id="Resource_main_effect_2"]
+[sub_resource type="Resource" id="Resource_8fnuu"]
 script = ExtResource("4_5d06b")
-rate = 3.0
+rate = 2.0
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_o0v8u"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_fv4ra")]([SubResource("Resource_main_effect_1"), SubResource("Resource_main_effect_2")])
+effects = Array[ExtResource("3_fv4ra")]([SubResource("Resource_8fnuu")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_cdisq"]
 script = ExtResource("7_83chu")
-rate = 2.0
+rate = 3.0
 seeds_only = true
 
-[sub_resource type="Resource" id="Resource_sub_effect_2"]
-script = ExtResource("skill_adjacent_acid_taken")
-rate = 2.0
-seeds_only = true
-
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_md0tm"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_fv4ra")]([SubResource("Resource_sub_effect_1"), SubResource("Resource_sub_effect_2")])
+effects = Array[ExtResource("3_fv4ra")]([SubResource("Resource_cdisq")])
 
 [resource]
 script = ExtResource("3_q8lej")
@@ -50,8 +39,8 @@ rarity = 1
 display_name = "フジ"
 texture = ExtResource("4_phtvx")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
-main_description = "消化ダメージ量+10%。消化中の消化ダメージアップ効果が200%上昇する。"
-sub_description = "この花を消化すると消化時に隣接する花のHPと受ける消化ダメージを100%上昇する"
+main_skill = SubResource("Resource_o0v8u")
+sub_skill = SubResource("Resource_md0tm")
+acid_block = SubResource("Resource_fv4ra")
+main_description = "消化中の消化ダメージアップ効果が200%上昇する。"
+sub_description = "この花を消化すると消化時に隣接する花のHPを300%上昇する"

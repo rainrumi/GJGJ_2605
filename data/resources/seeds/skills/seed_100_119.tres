@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://bs01uak7oycr3"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dvi4wkb6ltnxt"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_hbk86"]
 [ext_resource type="Texture2D" uid="uid://b45506q0mia8j" path="res://resource/image/texture/seed/tex_seed_rahuresia_small.png" id="2_small_texture"]
@@ -10,27 +10,27 @@
 [ext_resource type="Script" uid="uid://dpbgcseqafd0r" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_recover_hp.gd" id="skill_seed_hp"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_4xa0p"]
 script = ExtResource("1_hbk86")
 texture = ExtResource("4_block_texture")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_kqu1a"]
 script = ExtResource("skill_recover_hp")
-acided_enemy_heal_rate = 0.2
+acided_enemy_heal_rate = 0.2999999999992724
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_cb3p4"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_7ke7p")]([SubResource("Resource_main_effect_1")])
+effects = Array[ExtResource("3_7ke7p")]([SubResource("Resource_kqu1a")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_cm8dq"]
 script = ExtResource("skill_seed_hp")
-hp_rate = 0.2
+hp_rate = 0.2000000000007276
 adjacent_digestion_only = true
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_ywogd"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_7ke7p")]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_7ke7p")]([SubResource("Resource_cm8dq")])
 
 [resource]
 script = ExtResource("3_bhfpt")
@@ -39,8 +39,8 @@ rarity = 1
 display_name = "ラフレシア"
 texture = ExtResource("2_texture")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
+main_skill = SubResource("Resource_cb3p4")
+sub_skill = SubResource("Resource_ywogd")
+acid_block = SubResource("Resource_4xa0p")
 main_description = "胃の中のモノを消化すると自身のHPを悪夢の最大HP20%分回復する。"
-sub_description = "隣接するモノを消化するとHP+20%"
+sub_description = "隣接するモノを消化するとHP+30%"

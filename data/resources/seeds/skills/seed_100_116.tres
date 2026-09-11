@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://wjghmy5hggyr"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dvnkrov3u0fen"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_cafjl"]
 [ext_resource type="Texture2D" uid="uid://cc0005ym885hv" path="res://resource/image/texture/seed/tex_seed_rupinasu_small.png" id="2_small_texture"]
@@ -6,31 +6,31 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_2t6qm"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_62s2h"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" uid="uid://723kakfbp6lv" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate.gd" id="skill_pending_acid"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" uid="uid://ms3lesvv17q1" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_stomach_rows.gd" id="skill_stomach_rows"]
 [ext_resource type="Script" uid="uid://dgrxdmb2s6din" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_stomach_size.gd" id="skill_stomach_size"]
 
-[sub_resource type="Resource" id="Resource_hh520"]
+[sub_resource type="Resource" id="Resource_2t6qm"]
 script = ExtResource("1_cafjl")
 texture = ExtResource("4_block_texture")
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_2t6qm"]
+[sub_resource type="Resource" id="Resource_m1wv1"]
 script = ExtResource("skill_stomach_size")
-rows_delta = 2
+rows_delta = 1
 unique_equipped_seed_only = true
 
-[sub_resource type="Resource" id="Resource_m1wv1"]
-script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_2t6qm")]([SubResource("Resource_2t6qm")])
-
 [sub_resource type="Resource" id="Resource_2uu0s"]
-script = ExtResource("skill_pending_acid")
-rate = 0.1000000000003638
+script = ExtResource("skill_seed_skill")
+effects = Array[ExtResource("3_2t6qm")]([SubResource("Resource_m1wv1")])
 
 [sub_resource type="Resource" id="Resource_ovqbr"]
+script = ExtResource("skill_stomach_rows")
+rows_delta = 3
+
+[sub_resource type="Resource" id="Resource_80jb5"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_2t6qm")]([SubResource("Resource_2uu0s")])
+effects = Array[ExtResource("3_2t6qm")]([SubResource("Resource_ovqbr")])
 
 [resource]
 script = ExtResource("3_62s2h")
@@ -39,8 +39,8 @@ rarity = 1
 display_name = "ルピナス"
 texture = ExtResource("2_texture")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_m1wv1")
-sub_skill = SubResource("Resource_ovqbr")
-acid_block = SubResource("Resource_hh520")
-main_description = "同じ種を植えていない場合、胃袋マスが縦に2マス増える。"
-sub_description = "消化ダメージ+10%"
+main_skill = SubResource("Resource_2uu0s")
+sub_skill = SubResource("Resource_80jb5")
+acid_block = SubResource("Resource_2t6qm")
+main_description = "同じ種を植えていない場合、胃袋マスが縦に1マス増える。"
+sub_description = "この花を消化すると、胃袋マスが縦に3マス増える。"

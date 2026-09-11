@@ -62,6 +62,11 @@ func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
 		_refresh()
 
 
+func set_dynamic_description_rates(rates_by_seed_id: Dictionary) -> void:
+	equipped_list.set_dynamic_description_rates(rates_by_seed_id)
+	stored_list.set_dynamic_description_rates(rates_by_seed_id)
+
+
 # デバッグ番号設定
 func set_debug_numbers_visible(is_visible: bool) -> void:
 	_debug_numbers_visible = is_visible

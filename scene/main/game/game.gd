@@ -131,9 +131,9 @@ func start_battle(context: BattleInfo = null) -> void:
 	_set_battle_flags(false)
 	_clear_scheduled_acid_events()
 	seed_controller.set_seed_inventory(battle_context.flowers, battle_context.stored_seeds)
+	seed_effects.setup(seed_controller.get_flowers())
 	_refresh_seed_structural_effects()
 	acid_controller.set_battle_start_minutes(minutes)
-	seed_effects.setup(seed_controller.get_flowers())
 	enemy_effects.reset()
 	seed_effects.set_day(current_day)
 	seed_effects.add_acid_damage_bonus_rate(battle_context.permanent_acid_damage_bonus_rate)
@@ -1059,11 +1059,25 @@ func _update_hp_damage_preview(mouse_position: Vector2) -> void:
 		ui.hide_hp_damage_preview()
 # UI更新
 func _refresh_ui(explicit_recovered_hp: int = -1) -> void:
+	ui.set_seed_dynamic_description_rates(_get_seed_dynamic_description_rates())
 	enemy_presenter.refresh_attack_displays(enemies, stomach, minutes)
 	_refresh_acid_ui()
 	_refresh_status_ui(explicit_recovered_hp)
 	_refresh_enemy_page_navigation()
 	_refresh_hover_tooltip()
+
+
+func _get_seed_dynamic_description_rates() -> Dictionary:
+	var result := {}
+	for seed in seed_controller.get_flowers() + seed_controller.get_stored_seeds():
+		if seed is SeedInfo and (seed as SeedInfo).skill_id == 100124:
+			var rates := seed_effects.get_seed_time_reduction_rates(seed as SeedInfo)
+			result[100124] = {
+				"main": roundi(float(rates.main) * 100.0),
+				"sub": roundi(float(rates.sub) * 100.0),
+			}
+			break
+	return result
 
 
 # 悪夢ページ移動表示更新
@@ -1185,8 +1199,11 @@ func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	hp = seed_controller.apply_direct_Acided_seed_effects(Acided_enemies, hp, effective_max_hp)
 	if hp > previous_hp:
 		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp - previous_hp, enemies, stomach))
+	var previous_stomach_size := Vector2i(stomach.columns, stomach.rows)
 	for seed in seed_controller.collect_Acided_seeds(Acided_enemies):
 		seed_effects.add_Acided_seed_effect(seed, minutes, stomach)
+	if Vector2i(stomach.columns, stomach.rows) != previous_stomach_size:
+		_refresh_enemy_stomach_display_sizes()
 	_refresh_effective_max_hp(false)
 	_apply_Acided_seed_hp_effects(Acided_enemies)
 	_queue_depleted_seed_sources(Acided_enemies)
@@ -1413,7 +1430,11 @@ func _refresh_seed_structural_effects() -> void:
 		var skill := flower.get_main_skill()
 		acid_line_rows += skill.get_acid_line_rows_delta()
 	var target_columns := _battle_start_context.stomach_columns + size_bonus.x
-	var target_rows := _battle_start_context.stomach_rows + size_bonus.y
+	var target_rows := (
+		_battle_start_context.stomach_rows
+		+ size_bonus.y
+		+ seed_effects.get_persistent_stomach_rows_bonus()
+	)
 	if stomach.columns != target_columns or stomach.rows != target_rows:
 		_shift_stomach_object_rows(target_rows - stomach.rows)
 		stomach.set_grid_size(target_columns, target_rows)

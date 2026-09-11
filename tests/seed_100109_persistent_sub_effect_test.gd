@@ -18,15 +18,15 @@ func _initialize() -> void:
 
 	effects.refresh_flowers([])
 	_expect(effects.add_Acided_seed_effect(seed), "消化時に100109の副効果を発動する")
-	var active := effects.get_acid_damage_breakdown(100, 0.0, 0, false, 0, 0, 3)
-	_expect(active.seed_buff == 50, "消化後の+50%を夢の種バフへ反映する")
+	var active := effects.get_acid_damage_breakdown(100, 0.0, 0, false, 0, 0, 4, 3)
+	_expect(active.seed_buff == 50, "夢の種を含む胃内4体でも悪夢3体なら+50%を反映する")
 	_expect(is_equal_approx(float(active.seed_rate), 0.5), "消化後の倍率を夢の種倍率へ反映する")
 
-	var inactive := effects.get_acid_damage_breakdown(100, 0.0, 0, false, 0, 0, 4)
-	_expect(inactive.seed_buff == 0, "胃内が4体以上なら持続効果を適用しない")
+	var inactive := effects.get_acid_damage_breakdown(100, 0.0, 0, false, 0, 0, 4, 4)
+	_expect(inactive.seed_buff == 0, "悪夢が4体以上なら持続効果を適用しない")
 
 	effects.refresh_flowers([])
-	var after_sync := effects.get_acid_damage_breakdown(100, 0.0, 0, false, 0, 0, 3)
+	var after_sync := effects.get_acid_damage_breakdown(100, 0.0, 0, false, 0, 0, 4, 3)
 	_expect(after_sync.seed_buff == 50, "装備同期後も今回のゲーム中は副効果を保持する")
 	quit(_failures)
 

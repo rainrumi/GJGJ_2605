@@ -37,7 +37,8 @@ func get_damage_breakdown(
 		consume_pending_bonus,
 		columns,
 		rows,
-		_get_active_stomach_count(enemies)
+		_get_active_stomach_count(enemies),
+		_get_active_stomach_enemy_count(enemies)
 	)
 
 
@@ -184,6 +185,15 @@ func _get_active_stomach_count(enemies: Array[Enemy]) -> int:
 	var count := 0 # 胃内数
 	for enemy in enemies:
 		if enemy != null and enemy.is_stomach_piece():
+			count += 1
+	return count
+
+
+# 胃内悪夢数取得
+func _get_active_stomach_enemy_count(enemies: Array[Enemy]) -> int:
+	var count := 0 # 胃内悪夢数
+	for enemy in enemies:
+		if enemy != null and enemy.is_stomach_piece() and enemy.is_enemy():
 			count += 1
 	return count
 

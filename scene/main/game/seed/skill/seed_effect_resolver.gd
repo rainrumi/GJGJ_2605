@@ -6,7 +6,9 @@ var _status_preview_only := false
 var _state := DreamSeedSkillState.new() # 状態
 var _planted_flowers: Array[SeedInfo] = [] # 植付花
 var _persistent_sub_effects: Array[SeedEffect] = [] # 消化後持続副効果
+var _latest_persistent_sub_effects_by_seed_id: Dictionary = {}
 var _pending_digested: Array[Enemy] = []
+var _activated_non_stacking_sub_effects: Dictionary = {}
 
 
 # 装備中の同種数条件を反映した胃袋サイズ補正
@@ -33,6 +35,8 @@ func setup(flowers: Array) -> void:
 	_status_preview_base_effects.clear()
 	_refresh_flowers(flowers)
 	_persistent_sub_effects.clear()
+	_latest_persistent_sub_effects_by_seed_id.clear()
+	_activated_non_stacking_sub_effects.clear()
 	_pending_digested.clear()
 	_state.reset()
 	for effect in _get_main_effects():
@@ -62,7 +66,8 @@ func get_acid_damage_breakdown(
 	consume_pending_bonus: bool = false,
 	stomach_columns: int = 0,
 	stomach_rows: int = 0,
-	stomach_count: int = 0
+	stomach_count: int = 0,
+	stomach_enemy_count: int = 0
 ) -> Dictionary:
 	var context := { # 文脈
 		"base_damage": base_damage,
@@ -70,6 +75,7 @@ func get_acid_damage_breakdown(
 		"stomach_columns": stomach_columns,
 		"stomach_rows": stomach_rows,
 		"stomach_count": stomach_count,
+		"stomach_enemy_count": stomach_enemy_count,
 	}
 	var seed_rate := _sum_float("get_acid_damage_rate", context) # 種倍率
 	seed_rate += _state.progress_acid_damage_bonus_rate
@@ -156,6 +162,10 @@ func get_time_reduction_rate(
 	return clampf(rate, -2.0, 0.9)
 
 
+func get_persistent_stomach_rows_bonus() -> int:
+	return _state.persistent_stomach_rows_bonus
+
+
 # 消化済み種effect追加
 func add_Acided_seed_effect(seed: SeedInfo, minutes := 0, stomach: StomachBoard = null) -> bool:
 	if seed == null:
@@ -163,15 +173,50 @@ func add_Acided_seed_effect(seed: SeedInfo, minutes := 0, stomach: StomachBoard 
 	var handled := false # 処理済み
 	var context := {"seed": seed, "minutes": minutes, "stomach": stomach} # 文脈
 	for effect in _get_seed_effects(seed.get_sub_skill()):
+		if not effect.non_stacking_key.is_empty() \
+			and _activated_non_stacking_sub_effects.has(effect.non_stacking_key):
+			continue
 		var active_effect := effect.duplicate(true) as SeedEffect if effect.persists_after_seed_digested() else effect
 		if active_effect.on_finish_acid_seed(_state, context):
 			handled = true
+			if not active_effect.non_stacking_key.is_empty():
+				_activated_non_stacking_sub_effects[active_effect.non_stacking_key] = true
 			if active_effect.persists_after_seed_digested():
 				_persistent_sub_effects.append(active_effect)
+				_latest_persistent_sub_effects_by_seed_id[seed.skill_id] = active_effect
 	_persistent_sub_effects.sort_custom(func(a: SeedEffect, b: SeedEffect) -> bool:
 		return a.priority < b.priority
 	)
 	return handled
+
+
+func get_seed_time_reduction_rates(seed: SeedInfo) -> Dictionary:
+	var result := {"main": 0.0, "sub": 0.0}
+	if seed == null:
+		return result
+	var main_effect := _find_time_reduction_effect(seed.get_main_skill())
+	if main_effect != null:
+		result.main = (
+			main_effect.get_time_reduction_rate(_state, {})
+			if _planted_flowers.has(seed)
+			else main_effect.get_initial_time_reduction_rate(_state)
+		)
+	var sub_effect := _latest_persistent_sub_effects_by_seed_id.get(seed.skill_id) \
+		as SeedEffectOnBattleChangeTimeReductionRate
+	if sub_effect != null:
+		result.sub = sub_effect.get_time_reduction_rate(_state, {})
+	else:
+		sub_effect = _find_time_reduction_effect(seed.get_sub_skill())
+		if sub_effect != null:
+			result.sub = sub_effect.get_initial_time_reduction_rate(_state)
+	return result
+
+
+func _find_time_reduction_effect(skill: SeedSkill) -> SeedEffectOnBattleChangeTimeReductionRate:
+	for effect in _get_seed_effects(skill):
+		if effect is SeedEffectOnBattleChangeTimeReductionRate:
+			return effect as SeedEffectOnBattleChangeTimeReductionRate
+	return null
 
 
 # 休憩HP取得
@@ -384,10 +429,16 @@ func _refresh_flowers(flowers: Array) -> void:
 
 func _collect_main_effects(flowers: Array) -> Array[SeedEffect]:
 	var effects: Array[SeedEffect] = [] # 効果群
+	var applied_non_stacking_keys: Dictionary = {}
 	for flower in flowers:
 		if flower == null:
 			continue
-		effects.append_array(_get_seed_effects(flower.get_main_skill()))
+		for effect in _get_seed_effects(flower.get_main_skill()):
+			if not effect.non_stacking_key.is_empty():
+				if applied_non_stacking_keys.has(effect.non_stacking_key):
+					continue
+				applied_non_stacking_keys[effect.non_stacking_key] = true
+			effects.append(effect)
 	effects.sort_custom(func(a: SeedEffect, b: SeedEffect) -> bool:
 		return a.priority < b.priority
 	)

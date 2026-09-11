@@ -42,6 +42,7 @@ var use_remaining_sub_skill_color := true
 var interaction_feedback_enabled := true
 # 現状はUI表示を兼ねた一時的な使用回数。永続状態が必要になったらRuntimeStateへ移す。
 var _display_remaining_sub_skill_uses := 0
+var _dynamic_description_rates: Dictionary = {}
 var _pressing := false
 var _press_started_msec := 0
 var _press_position := Vector2.ZERO
@@ -117,6 +118,11 @@ func get_seed_source() -> Resource:
 # remainingsubスキルuse取得
 func get_remaining_sub_skill_uses() -> int:
 	return _display_remaining_sub_skill_uses
+
+
+func set_dynamic_description_rates(rates: Dictionary) -> void:
+	_dynamic_description_rates = rates.duplicate()
+	_refresh_tooltip()
 
 
 # デバッグ番号visible設定
@@ -283,10 +289,14 @@ func _get_tooltip_text() -> String:
 	# 行一覧
 	var lines: Array[String] = [
 		_get_title_text(),
-		"メイン: %s" % SeedDescription.get_main_description(seed),
+		"メイン: %s" % SeedDescription.get_main_description(
+			seed, int(_dynamic_description_rates.get("main", -1))
+		),
 	]
 	if _has_sub_skill():
-		lines.append("サブ: %s" % SeedDescription.get_sub_description(seed))
+		lines.append("サブ: %s" % SeedDescription.get_sub_description(
+			seed, int(_dynamic_description_rates.get("sub", -1))
+		))
 	if debug_numbers_visible:
 		lines.append("ID: %d" % seed.skill_id)
 	return "\n".join(lines)

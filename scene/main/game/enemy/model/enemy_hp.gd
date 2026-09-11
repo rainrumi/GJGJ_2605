@@ -14,6 +14,7 @@ var modifier_delta := 0 # 一時最大HP差分
 var modifier_multiplier := 1.0 # 一時最大HP倍率
 var _applied_modifier_delta := 0 # 適用済み差分
 var _follow_current_delta := 0 # 現在HP追従差分
+var _applied_follow_current_delta := 0 # 適用済み現在HP追従差分
 
 
 # HP初期化
@@ -24,6 +25,7 @@ func setup(maximum_value: int, current_value: int = -1) -> void:
 	modifier_multiplier = 1.0
 	_applied_modifier_delta = 0
 	_follow_current_delta = 0
+	_applied_follow_current_delta = 0
 	changed.emit(current, maximum)
 
 
@@ -111,9 +113,10 @@ func apply_modifiers() -> void:
 	var base_maximum := maxi(1, maximum - _applied_modifier_delta) # 基準最大HP
 	var next_maximum := maxi(1, roundi(float(base_maximum + modifier_delta) * modifier_multiplier)) # 補正最大HP
 	var next_delta := next_maximum - base_maximum # 新適用差分
-	var current_delta := _follow_current_delta - _applied_modifier_delta # 現在HP差分
+	var current_delta := _follow_current_delta - _applied_follow_current_delta # 現在HP差分
 	set_values(next_maximum, current + current_delta)
 	_applied_modifier_delta = next_delta
+	_applied_follow_current_delta = _follow_current_delta
 	_follow_current_delta = 0
 
 

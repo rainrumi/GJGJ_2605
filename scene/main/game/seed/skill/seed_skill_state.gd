@@ -16,6 +16,7 @@ var day := 1 # 日数
 var remove_from_stomach_disabled := false # 取出無効
 var persistent_acid_damage_bonus_rate := 0.0
 var persistent_time_reduction_bonus_rate := 0.0
+var persistent_stomach_rows_bonus := 0
 var progress_time_count := 0
 var hp_loss_count := 0
 var effect_start_progress_counts: Dictionary[int, int] = {}
@@ -37,6 +38,7 @@ func reset() -> void:
 	remove_from_stomach_disabled = false
 	persistent_acid_damage_bonus_rate = 0.0
 	persistent_time_reduction_bonus_rate = 0.0
+	persistent_stomach_rows_bonus = 0
 	progress_time_count = 0
 	hp_loss_count = 0
 	effect_start_progress_counts.clear()

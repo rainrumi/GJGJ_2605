@@ -1,15 +1,15 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dsv3yg3d0v1gc"]
 
-[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_xh4bt"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_yorugao_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_tque7"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_i03xb"]
-[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_net8h"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_yorugao.png" id="4_aq1du"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_disable_clear_recovery.gd" id="skill_clear_recovery"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_add_extra_choice_after_clock.gd" id="skill_extra_choice"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate_after_clock.gd" id="skill_pending_acid"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_xh4bt"]
+[ext_resource type="Texture2D" uid="uid://bxmhaj8uh21e7" path="res://resource/image/texture/seed/tex_seed_yorugao_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_tque7"]
+[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_i03xb"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_net8h"]
+[ext_resource type="Texture2D" uid="uid://m08iltx6qljl" path="res://resource/image/texture/seed/tex_seed_yorugao.png" id="4_aq1du"]
+[ext_resource type="Script" uid="uid://4dull42pg76m" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_disable_clear_recovery.gd" id="skill_clear_recovery"]
+[ext_resource type="Script" uid="uid://bqdcytghynb40" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_add_extra_choice_after_clock.gd" id="skill_extra_choice"]
+[ext_resource type="Script" uid="uid://cq36h2j85k72s" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate_after_clock.gd" id="skill_pending_acid"]
+[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_8n718"]
 script = ExtResource("1_xh4bt")
@@ -30,7 +30,7 @@ effects = Array[ExtResource("3_i03xb")]([SubResource("Resource_yw61d"), SubResou
 
 [sub_resource type="Resource" id="Resource_5hw5y"]
 script = ExtResource("skill_pending_acid")
-rate = 2.0
+rate = 3.0
 start_minutes = 1680
 
 [sub_resource type="Resource" id="Resource_rye86"]
@@ -48,4 +48,4 @@ main_skill = SubResource("Resource_517io")
 sub_skill = SubResource("Resource_rye86")
 acid_block = SubResource("Resource_8n718")
 main_description = "クリア時にHPを回復出来なくなる。代わりに4時以降にクリアすると夢の種を追加で1回獲得できる。"
-sub_description = "消化された時に時刻が4時以降の場合、消化ダメージが200%上昇する。"
+sub_description = "消化された時の時刻が4時以降の場合、消化ダメージが300%上昇する。"

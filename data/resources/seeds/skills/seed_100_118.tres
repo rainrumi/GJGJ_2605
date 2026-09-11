@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dmjmbbegyqtpm"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://c4p5s3beahbsb"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_txkq8"]
 [ext_resource type="Texture2D" uid="uid://dysnbjkk88gr0" path="res://resource/image/texture/seed/tex_seed_yadorigi_small.png" id="2_small_texture"]
@@ -10,26 +10,26 @@
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 [ext_resource type="Script" uid="uid://ddsprcahop4fq" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_acid_damage_rate.gd" id="skill_target"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_oax7w"]
 script = ExtResource("1_txkq8")
 texture = ExtResource("4_block_texture")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_miivf"]
 script = ExtResource("skill_recover_hp")
-acid_damage_heal_rate = 0.02
+acid_damage_heal_rate = 0.1000000000003638
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_jseq0"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_fqeer")]([SubResource("Resource_main_effect_1")])
+effects = Array[ExtResource("3_fqeer")]([SubResource("Resource_miivf")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_2nfcg"]
 script = ExtResource("skill_target")
-rate = 1.1
+rate = 1.1000000000003638
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_xp2t6"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_fqeer")]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_fqeer")]([SubResource("Resource_2nfcg")])
 
 [resource]
 script = ExtResource("3_ws0qk")
@@ -38,8 +38,8 @@ rarity = 1
 display_name = "ヤドリギ"
 texture = ExtResource("2_texture")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
-main_description = "胃の中にいるモノに与えた消化ダメージ2%のHPを回復する。"
-sub_description = "この花を消化すると隣接するモノが受ける消化ダメージ+10%"
+main_skill = SubResource("Resource_jseq0")
+sub_skill = SubResource("Resource_xp2t6")
+acid_block = SubResource("Resource_oax7w")
+main_description = "胃の中にいるモノに与えた消化ダメージ10%のHPを回復する。"
+sub_description = "この花を消化した時、隣接するモノが受ける消化ダメージ+10%"

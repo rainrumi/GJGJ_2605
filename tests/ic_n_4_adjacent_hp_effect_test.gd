@@ -4,6 +4,7 @@ const TARGET_RESOURCE_PATHS: Array[String] = [
 	"res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_004.tres",
 	"res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_005.tres",
 	"res://data/resources/area/area_iriyu/enemy/boss/001/area_iriyu_enemy_boss_001_001.tres",
+	"res://data/resources/area/area_iriyu/enemy/boss/001/area_iriyu_enemy_boss_001_002.tres",
 ]
 
 var _failures := 0 # 失敗数
@@ -54,6 +55,11 @@ func _test_adjacent_hp_effect(path: String) -> void:
 		target.data.hp.apply_modifiers()
 		_expect(target.max_hp == 200, "%dが隣接対象の最大HPを100増やす" % source_info.skill_id)
 		_expect(target.current_hp == 200, "%dが満タンの隣接対象を追加で100回復する" % source_info.skill_id)
+		target.data.hp.reset_modifiers()
+		max_hp_effect.apply()
+		target.data.hp.apply_modifiers()
+		_expect(target.max_hp == 200, "%dの隣接効果は再評価後も最大HP増加を維持する" % source_info.skill_id)
+		_expect(target.current_hp == 200, "%dの隣接効果は再評価時に現在HPを減らさない" % source_info.skill_id)
 		max_hp_effect.unbind()
 		recovery_effect.unbind()
 	source.free()

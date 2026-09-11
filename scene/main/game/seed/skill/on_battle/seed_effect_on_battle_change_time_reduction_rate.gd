@@ -22,6 +22,12 @@ func get_time_reduction_rate(state: DreamSeedSkillState, _context: Dictionary) -
 	return _clamp_interval_rate(value)
 
 
+func get_initial_time_reduction_rate(state: DreamSeedSkillState) -> float:
+	var value := rate
+	value -= float(state.hp_loss_count) * hp_loss_rate
+	return _clamp_interval_rate(value)
+
+
 # elapsed数
 func on_finish_acid_seed(state: DreamSeedSkillState, _context: Dictionary) -> bool:
 	state.effect_start_progress_counts[get_instance_id()] = state.progress_time_count

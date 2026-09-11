@@ -26,6 +26,7 @@ var slot_separation := 2
 var compact_empty_slots := false
 var icon_horizontal_jitter := 0
 var _rotation_quarter_turns_by_source: Dictionary = {}
+var _dynamic_description_rates_by_seed_id: Dictionary = {}
 var _shake_tween: Tween
 var _shake_base_position := Vector2.ZERO
 
@@ -66,6 +67,13 @@ func set_seed_sources(sources: Array) -> void:
 	var displayed_slot_count := get_child_count()
 	for _slot_index in range(displayed_slot_count, minimum_slot_count):
 		_add_empty_slot()
+
+
+func set_dynamic_description_rates(rates_by_seed_id: Dictionary) -> void:
+	_dynamic_description_rates_by_seed_id = rates_by_seed_id.duplicate(true)
+	for child in get_children():
+		if child is SeedButton:
+			_apply_dynamic_description_rates(child as SeedButton)
 
 
 # 空き枠を省略し、残った種を各段の中央へ寄せる
@@ -159,6 +167,7 @@ func _add_seed_button_list(source: Resource) -> void:
 	var button := BUTTON_SCENE.instantiate() as SeedButton
 	add_child(button)
 	button.set_seed_source(source)
+	_apply_dynamic_description_rates(button)
 	button.set_debug_numbers_visible(debug_numbers_visible)
 	button.set_sub_skill_drag_enabled(sub_skill_drag_enabled)
 	button.set_loadout_edit_enabled(loadout_edit_enabled)
@@ -173,6 +182,14 @@ func _add_seed_button_list(source: Resource) -> void:
 	button.seed_rotation_requested.connect(_on_seed_rotation_requested)
 	button.loadout_edit_requested.connect(_on_loadout_edit_requested)
 	button.debug_removal_requested.connect(_on_debug_removal_requested)
+
+
+func _apply_dynamic_description_rates(button: SeedButton) -> void:
+	if button == null or button.seed == null:
+		return
+	button.set_dynamic_description_rates(
+		_dynamic_description_rates_by_seed_id.get(button.seed.skill_id, {}) as Dictionary
+	)
 
 
 # 空slot追加

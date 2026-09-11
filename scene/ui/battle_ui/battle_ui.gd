@@ -243,6 +243,11 @@ func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:
 	debug_panel.set_seed_inventory(equipped_seeds, stored_seeds)
 
 
+func set_seed_dynamic_description_rates(rates_by_seed_id: Dictionary) -> void:
+	seed_button_list.set_dynamic_description_rates(rates_by_seed_id)
+	owned_seed_panel.set_dynamic_description_rates(rates_by_seed_id)
+
+
 # 頭上に装備した夢の種を一覧単位で揺らす
 func shake_equipped_seeds() -> void:
 	seed_button_list.shake()
