@@ -802,14 +802,18 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	seed_effects.set_damaged_object_count(0)
 	enemy.set_Aciding(false)
 	enemy.return_to_origin()
-	_apply_remove_from_stomach_acid_damage(enemy)
+	var was_digested := _apply_remove_from_stomach_acid_damage(enemy)
 	# ダメージ
 	var damage := _get_remove_from_stomach_damage()
 	# ダメージvalues
 	var damage_values: Array[int] = [damage]
 	if damage > 0:
 		_apply_player_damage(damage_values)
+	if was_digested:
+		_resolve_extra_seed_digestions([enemy] as Array[Enemy])
 	_refresh_after_battle_event()
+	if was_digested:
+		_check_battle_end()
 # advance消化turn処理
 func _advance_acid_turn() -> void:
 	if not _begin_acid_turn():
@@ -1286,22 +1290,22 @@ func _apply_acid_damage_seed_heal() -> void:
 
 
 # removefrom胃袋消化ダメージ適用
-func _apply_remove_from_stomach_acid_damage(enemy: Enemy) -> void:
+func _apply_remove_from_stomach_acid_damage(enemy: Enemy) -> bool:
 	if enemy == null or enemy.is_Acided() or not enemy.is_enemy():
-		return
+		return false
 	# ダメージ率
 	var damage_rate := seed_effects.get_remove_from_stomach_acid_damage_rate()
 	if damage_rate <= 0.0:
-		return
+		return false
 	# 消化ダメージ
 	var acid_damage := _get_remove_from_stomach_damage()
 	# ダメージ
 	var damage := maxi(1, roundi(float(acid_damage) * damage_rate))
 	enemy.show_acid_damage_values([damage])
 	if enemy.take_acid_damage(damage, false):
-		_check_battle_end()
-	else:
-		enemy.pulse_damage()
+		return true
+	enemy.pulse_damage()
+	return false
 
 
 # 消化済み種HPeffects適用
@@ -1535,7 +1539,7 @@ func _shift_clock(delta: int) -> void:
 		return
 	day_elapsed_minutes += maxi(0, delta)
 	minutes = maxi(day_start_minutes, minutes + delta)
-	battle_clock.sync_time(0, minutes * 60)
+	battle_clock.sync_time(battle_clock.elapsed_seconds, minutes * 60)
 
 
 func _on_forcibly_returned(enemy: Enemy) -> void:
@@ -1546,7 +1550,11 @@ func _on_forcibly_returned(enemy: Enemy) -> void:
 func _apply_forced_returns() -> void:
 	var returned := _pending_forced_returns.duplicate()
 	_pending_forced_returns.clear()
+	var digested: Array[Enemy] = []
 	for enemy in returned:
 		var damage := _get_remove_from_stomach_damage()
-		_apply_remove_from_stomach_acid_damage(enemy)
+		if _apply_remove_from_stomach_acid_damage(enemy):
+			digested.append(enemy)
 		_apply_player_damage([damage] as Array[int])
+	if not digested.is_empty():
+		_resolve_extra_seed_digestions(digested)

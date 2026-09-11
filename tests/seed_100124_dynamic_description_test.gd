@@ -39,6 +39,14 @@ func _run() -> void:
 	var tooltip_text := button.call("_get_tooltip_text") as String
 	_expect(tooltip_text.contains("メイン:") and tooltip_text.contains("(現在4%)"), "ボタンのメインツールチップを更新する")
 	_expect(tooltip_text.contains("サブ:") and tooltip_text.contains("(現在8%)"), "ボタンのサブツールチップを更新する")
+	var moon := load("res://data/resources/seeds/skills/seed_100_106.tres") as SeedInfo
+	button.set_seed_source(moon)
+	button.set_dynamic_description_rates({"main": 20})
+	_expect((button.call("_get_tooltip_text") as String).contains("(現在20%)"), "100106の累積消化ダメージをツールチップへ表示する")
+	var sunflower := load("res://data/resources/seeds/skills/seed_100_120.tres") as SeedInfo
+	button.set_seed_source(sunflower)
+	button.set_dynamic_description_rates({"main": 10})
+	_expect((button.call("_get_tooltip_text") as String).contains("(現在+10%)"), "100120のHP上限増加を符号付きでツールチップへ表示する")
 	button.queue_free()
 	await get_tree().process_frame
 	print("Seed100124DynamicDescriptionTest: %d failures" % _failures)

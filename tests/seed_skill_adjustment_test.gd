@@ -212,11 +212,71 @@ func _test_game() -> void:
 	game._apply_time_seed_hp_recovery()
 	_expect(game.hp == 35, "100117 heals 3% x five occupied cells, not two objects")
 	game.enemies = previous_enemies
+	await _test_digestion_batch(game)
 	await _test_rotation_and_visual(game)
 	for enemy in [moon, lotus, yugao, nightmare, mistletoe]:
 		enemy.free()
 	game.attack_se.stop()
 	game.queue_free()
+	await get_tree().process_frame
+
+
+func _test_digestion_batch(game: Node) -> void:
+	var context := BattleInfo.new()
+	context.flowers = [_seed(118)]
+	var info := EnemyInfo.new()
+	info.acid_block = AcidBlockInfo.new()
+	info.acid_block.max_hp = 10000
+	info.acid_block.stomach_shape = [PackedInt32Array([1, 1])]
+	var preset := EnemyPresetInfo.new()
+	preset.enemies = [info, info]
+	context.enemy_preset = preset
+	game.start_battle(context)
+	game.hp = 10
+	var targets: Array[Enemy] = game.enemies
+	targets[0].set_Aciding(true)
+	game.stomach.place_enemy(targets[0], Vector2i(0, 4))
+	var source := game.seed_controller._create_seed_block(_seed(118)) as Enemy
+	game.enemies.append(source)
+	source.set_Aciding(true)
+	game.stomach.place_enemy(source, Vector2i(2, 4))
+	var result: BattleTurnResultData = game._run_acid_core(game.minutes, 30)
+	game._apply_acid_damage_seed_heal()
+	_expect(game.hp == 20, "100118 actual batch counts two damaged objects, not three cells or outside enemy")
+	_expect(result.Acided_enemies.has(source), "100118 actually digested in the line")
+	game._apply_Acided_seed_effects(result.Acided_enemies)
+	_expect(game.hp == 40, "100118 actual digestion sub heals twice 10 HP")
+	game.seed_effects.setup([_seed(125), _seed(126)])
+	game.seed_effects.add_Acided_seed_effect(_seed(126))
+	var before_hp: int = game.hp
+	var before_enemy_hp := targets[0].current_hp
+	targets[0].set_Aciding(false)
+	targets[0].forcibly_returned.emit()
+	game._apply_forced_returns()
+	_expect(game.hp == before_hp - 20, "forced return also applies final doubled player cost")
+	_expect(targets[0].current_hp == before_enemy_hp - 200, "forced return deals 10 times actual doubled cost")
+	game.seed_effects.setup([_seed(108)])
+	game.acid_controller.refresh_enemy_effects(game.enemies, game.stomach)
+	source.set_Acided(false)
+	source.set_hp_values(1000, 1000)
+	source.take_acid_damage(10, false)
+	_expect(source.current_hp == 970, "100108 also triples damage from non-line effects")
+	game.hp = 0
+	var elapsed_before: int = game.day_elapsed_minutes
+	game._apply_elapsed_time(30)
+	_expect(game.day_elapsed_minutes == elapsed_before + 60, "revive counts normal time and rest once each")
+	game.seed_effects.setup([_seed(125), _seed(126)])
+	game.hp = 100
+	var all_enemies: Array[Enemy] = game.enemies
+	game.enemies = [targets[0]] as Array[Enemy]
+	targets[0].set_hp_values(10000, 1)
+	targets[0].set_Aciding(true)
+	game.dragged_enemy_was_Aciding = true
+	var hp_on_clear: Array[int] = []
+	game.battle_finished.connect(func(_won: bool) -> void: hp_on_clear.append(game.hp), CONNECT_ONE_SHOT)
+	game._remove_enemy_from_stomach(targets[0])
+	_expect(hp_on_clear == [90], "lethal return pays player cost before stage-clear notification")
+	game.enemies = all_enemies
 	await get_tree().process_frame
 
 

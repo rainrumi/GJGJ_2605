@@ -24,7 +24,7 @@ func _run() -> void:
 	game.call("start_battle", context)
 	await process_frame
 
-	_expect(game.call("get_stomach_rows") == 7, "ID 100116 は戦闘中の胃袋を縦に2マス増やす")
+	_expect(game.call("get_stomach_rows") == 6, "ID 100116 は戦闘中の胃袋を縦に1マス増やす")
 	_expect(game.call("get_base_stomach_rows") == 5, "ID 100116 の補正を基礎胃袋縦サイズへ含めない")
 	_expect(game.call("get_base_stomach_columns") == 4, "縦補正は基礎胃袋横サイズへ影響しない")
 
