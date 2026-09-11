@@ -807,9 +807,8 @@ func _advance_acid_turn() -> void:
 		return
 	_apply_time_seed_hp_recovery()
 	var early_digested := _resolve_extra_seed_digestions()
-	acid_controller.apply_turn_start_effects(enemies, stomach, minutes)
 	# elapsed分数
-	var elapsed_minutes := acid_controller.get_step_minutes(enemies, minutes)
+	var elapsed_minutes := acid_controller.apply_turn_start_effects(enemies, stomach, minutes)
 	await _wait_for_next_acid_beat()
 	await _wait_while_acid_paused()
 	if not battle_active or _active_acid_count() == 0:

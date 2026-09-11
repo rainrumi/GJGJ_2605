@@ -72,6 +72,8 @@ func _check_enemy_tooltip() -> void:
 	await process_frame
 	_expect(tooltip.layer == TOOLTIP_LAYER, "EnemyTooltip inherits the foreground canvas layer")
 	var enemy := Enemy.new()
+	var enemy_entries := tooltip.call("_get_enemy_entries", enemy, false) as Array
+	_expect(enemy_entries[1].explanation == "効果", "悪夢ツールチップのメイン効果表示を短縮する")
 	var seed := SeedInfo.new()
 	seed.display_name = "テストの種"
 	enemy.seed_info = seed

@@ -12,7 +12,7 @@
 私、毎日2箇所は回ってるわよ。
 @lcm
 @img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
-アンタ、このままだとまずいわよ。
+アンタ、このままだとまずいんじゃない？
 @lcm
 体調も大事だけど、このままだと試験に合格できないかもしれないじゃない。
 @lcm

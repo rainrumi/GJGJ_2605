@@ -283,10 +283,10 @@ func _get_tooltip_text() -> String:
 	# 行一覧
 	var lines: Array[String] = [
 		_get_title_text(),
-		"メインスキル: %s" % SeedDescription.get_main_description(seed),
+		"メイン: %s" % SeedDescription.get_main_description(seed),
 	]
 	if _has_sub_skill():
-		lines.append("サブスキル: %s" % SeedDescription.get_sub_description(seed))
+		lines.append("サブ: %s" % SeedDescription.get_sub_description(seed))
 	if debug_numbers_visible:
 		lines.append("ID: %d" % seed.skill_id)
 	return "\n".join(lines)

@@ -39,12 +39,30 @@ func _run() -> void:
 		if difference != 0:
 			_expect(seed.rarity == (SeedInfo.Rarity.RARE if difference > 0 else SeedInfo.Rarity.NORMAL), "結果のレアリティ制限に従う")
 		_expect(main.run_state.current_hp == 100, "結果に関係なくHPを全回復")
-		_expect(novel._active_novel_text.text == "%sを1つ手に入れた。更にHPが全回復した。\n@lcm" % seed.display_name,
+		_expect(novel._active_novel_text.text == (
+			"%sを1つ手に入れた。更にHPが全回復した。"
+			+ "\n@lcm\n@name \"ラーラ\"\n次は12日目が終わったときよ！\n@lcm"
+			) % seed.display_name,
 			"ノベルのメッセージボックスに獲得名と回復を表示")
 		_expect(main.run_state.current_day == 8, "報酬メッセージ中は翌日へ進めない")
 		main._on_opening_novel_finished()
 		_expect(main.run_state.current_day == 9, "報酬メッセージ後に翌日へ進む")
 		main._return_to_title()
+
+	main.run_state.reset()
+	main.run_state.current_day = 20
+	main.run_state.current_hp = 50
+	main._lara_judge_result = 0
+	main._show_lara_judge_result()
+	main._on_opening_novel_finished()
+	_expect(main.run_state.stored_seeds.is_empty(), "20日目の勝負後はアイテムを付与しない")
+	_expect(main.run_state.current_hp == 50, "20日目の勝負後は報酬によるHP回復を行わない")
+	_expect(novel._active_novel_text.text == (
+		"@name \"ラーラ\"\n"
+		+ "……今日が最後ね。あとは合格を祈りましょう……。\n@lcm"
+		), "20日目は最終日の専用メッセージを表示する")
+	_expect(not novel._active_novel_text.text.contains("次は24日目"), "20日目に次回判定日を表示しない")
+	main._return_to_title()
 
 	main.run_state.reset()
 	main.run_state.current_day = 4
@@ -56,9 +74,10 @@ func _run() -> void:
 	await create_timer(1.1).timeout
 	_expect(novel._active_novel_text == boss.completion_novel_text, "3回目ボスのエリアノベルを勝負より先に再生")
 	main._on_opening_novel_finished()
-	_expect(novel._active_novel_text == main.first_nightmare_event_novel_text, "4日目の初登場イベントを勝負より先に再生")
+	_expect(novel._active_novel_text == main.first_nightmare_event_novel_text, "4日目に初登場イベントを再生")
 	main._on_opening_novel_finished()
-	_expect(novel._active_novel_text.script_path.ends_with("judge_setup_001"), "4日目も初登場イベント後に勝負する")
+	_expect(main.run_state.current_day == 5, "4日目は消化数を比較せず初登場イベント後に翌日へ進む")
+	_expect(not main._lara_judge_pending, "4日目は消化数比較を予約しない")
 	main._return_to_title()
 
 	main.run_state.reset()

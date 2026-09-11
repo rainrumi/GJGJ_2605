@@ -1,49 +1,49 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://g57vaacufqme"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_vf1xj"]
-[ext_resource type="Texture2D" uid="uid://de2go0uhl07al" path="res://resource/image/texture/seed/tex_seed_hitujigusa_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" uid="uid://w25c8ct4liu8" path="res://resource/image/texture/seed/tex_seed_hitujigusa.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_afp8s"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_qxbtq"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" uid="uid://f6m3c8x2waqa" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate_after_clock.gd" id="skill_pending_time_after"]
-[ext_resource type="Script" uid="uid://d4qv5nl3n18m" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate_before_clock.gd" id="skill_pending_time_before"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" uid="uid://c13yomdwh4bja" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_on_target_clock_change_time_reduction_rate_after_clock.gd" id="skill_time_after"]
-[ext_resource type="Script" uid="uid://bs6cpr0xvme4a" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_on_target_clock_change_time_reduction_rate_before_clock.gd" id="skill_time_before"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_vf1xj"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_hitujigusa_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_hitujigusa.png" id="2_texture"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_afp8s"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_qxbtq"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate_after_clock.gd" id="skill_pending_time_after"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate_before_clock.gd" id="skill_pending_time_before"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_on_target_clock_change_time_reduction_rate_after_clock.gd" id="skill_time_after"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_on_target_clock_change_time_reduction_rate_before_clock.gd" id="skill_time_before"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_lujf5"]
 script = ExtResource("1_vf1xj")
 texture = ExtResource("4_block_texture")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_6uryb"]
 script = ExtResource("skill_time_before")
 rate = -0.5
 before_minutes = 1560
 
-[sub_resource type="Resource" id="Resource_main_effect_2"]
+[sub_resource type="Resource" id="Resource_swkfm"]
 script = ExtResource("skill_time_after")
 rate = 0.5
 start_minutes = 1560
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_8nors"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_main_effect_1"), SubResource("Resource_main_effect_2")])
+effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_6uryb"), SubResource("Resource_swkfm")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_j1oph"]
 script = ExtResource("skill_pending_time_before")
-rate = 0.8
+rate = 0.7999999999992724
 before_minutes = 1560
 
-[sub_resource type="Resource" id="Resource_sub_effect_2"]
+[sub_resource type="Resource" id="Resource_6fuma"]
 script = ExtResource("skill_pending_time_after")
-rate = -0.8
+rate = -0.7999999999992724
 start_minutes = 1560
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_o0f5x"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_sub_effect_1"), SubResource("Resource_sub_effect_2")])
+effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_j1oph"), SubResource("Resource_6fuma")])
 
 [resource]
 script = ExtResource("3_afp8s")
@@ -52,8 +52,8 @@ rarity = 1
 display_name = "ヒツジグサ"
 texture = ExtResource("2_texture")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
-main_description = "時刻が2時以降のとき消化間隔-50%。2時以前のとき消化間隔+50%。"
-sub_description = "消化された時刻が2時以降のとき消化間隔+80%、2時以前のとき消化間隔-80%。"
+main_skill = SubResource("Resource_8nors")
+sub_skill = SubResource("Resource_o0f5x")
+acid_block = SubResource("Resource_lujf5")
+main_description = "時刻が2時以前のとき消化間隔+50%。2時以降のとき消化間隔-50%。"
+sub_description = "消化された時刻が2時以前のとき消化間隔-80%。2時以降のとき消化間隔+80%。"

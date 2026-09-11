@@ -67,13 +67,24 @@ func get_step_minutes_breakdown(
 
 
 # ターン開始処理
-func begin_turn(enemies: Array[Enemy], stomach: StomachBoard, minutes: int) -> void:
+func begin_turn(
+	enemies: Array[Enemy],
+	stomach: StomachBoard,
+	minutes: int,
+	elapsed_minutes := -1
+) -> int:
 	_enemy_effects.refresh(enemies, stomach)
 	_enemy_effects.prepare(enemies, stomach)
-	_battle_clock.sync_time(_step_minutes * 60, minutes * 60)
+	var turn_elapsed_minutes := (
+		get_step_minutes(enemies, minutes)
+		if elapsed_minutes < 0
+		else maxi(1, elapsed_minutes)
+	)
+	_battle_clock.sync_time(turn_elapsed_minutes * 60, minutes * 60)
 	for enemy in enemies:
 		if not enemy.is_Acided() and enemy.can_take_stomach_turn():
-			enemy.data.stomach_status.add_elapsed_minutes(_step_minutes)
+			enemy.data.stomach_status.add_elapsed_minutes(turn_elapsed_minutes)
+	return turn_elapsed_minutes
 
 
 # 時間進行処理

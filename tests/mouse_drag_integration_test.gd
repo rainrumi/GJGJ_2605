@@ -38,10 +38,17 @@ func _check_seed_drag(mouse_drag_state: MouseDragTracker) -> void:
 		return
 	var button := packed.instantiate() as SeedButton
 	var seed := SeedInfo.new()
+	seed.main_description = "メイン効果"
+	seed.sub_description = "サブ効果"
 	root.add_child(button)
 	await process_frame
 	button.set_seed_source(seed)
 	button.set_sub_skill_drag_enabled(true)
+	var tooltip_text := button.call("_get_tooltip_text") as String
+	_expect(tooltip_text.contains("メイン: メイン効果"), "夢の種ツールチップのメイン表示を短縮する")
+	_expect(tooltip_text.contains("サブ: サブ効果"), "夢の種ツールチップのサブ表示を短縮する")
+	_expect(not tooltip_text.contains("メインスキル:"), "夢の種ツールチップに旧メイン表示を残さない")
+	_expect(not tooltip_text.contains("サブスキル:"), "夢の種ツールチップに旧サブ表示を残さない")
 	button.tooltip_panel.show_tooltip_at(button.global_position)
 	_expect(button.tooltip_panel.visible, "ドラッグ前は夢の種ツールチップを表示できる")
 

@@ -60,8 +60,14 @@ class TestTurnProcessor:
 
 
 	# ターン開始処理
-	func begin_turn(_enemies: Array[Enemy], _stomach: StomachBoard, _minutes: int) -> void:
+	func begin_turn(
+		_enemies: Array[Enemy],
+		_stomach: StomachBoard,
+		_minutes: int,
+		_elapsed_minutes := -1
+	) -> int:
 		calls.append("begin")
+		return maxi(1, _elapsed_minutes)
 
 
 	# ターン結果構築

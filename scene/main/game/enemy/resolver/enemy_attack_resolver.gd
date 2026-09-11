@@ -28,6 +28,8 @@ func resolve(enemies: Array[Enemy], stomach: StomachBoard, minutes: int) -> Arra
 	for enemy in enemies:
 		if not enemy.should_deal_player_damage() or not enemy.can_take_stomach_turn():
 			continue
+		if enemy.data.stomach_status.elapsed_minutes <= 0:
+			continue
 		if enemy.data.defense_status.default_attack_disabled:
 			continue
 		var damage := get_enemy_attack_damage(enemy, enemies, stomach, minutes) # 敵攻撃値
