@@ -17,7 +17,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_2fb65"]
 script = ExtResource("skill_fire_probability_rate")
-probabirlity = 0.010000000000218279
+probabirlity = 0.049999999999272404
 rate = 8.0
 
 [sub_resource type="Resource" id="Resource_8lluu"]
@@ -43,5 +43,5 @@ small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_8lluu")
 sub_skill = SubResource("Resource_egm25")
 acid_block = SubResource("Resource_mf7mr")
-main_description = "消化ダメージを与えたとき1%の確率で消化ダメージ800%を追加で与える。"
+main_description = "消化ダメージを与えたとき5%の確率で消化ダメージ800%を追加で与える。"
 sub_description = "この花が消化すると消化時に隣接した悪夢が受ける消化ダメージ+200%"

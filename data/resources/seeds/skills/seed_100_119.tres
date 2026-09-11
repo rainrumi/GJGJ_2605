@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dvi4wkb6ltnxt"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_hbk86"]
-[ext_resource type="Texture2D" uid="uid://b45506q0mia8j" path="res://resource/image/texture/seed/tex_seed_rahuresia_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" uid="uid://0yaqddj3ylpm" path="res://resource/image/texture/seed/tex_seed_rahuresia.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_7ke7p"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_bhfpt"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" uid="uid://w1qpp7saqv8b" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_recover_hp.gd" id="skill_recover_hp"]
-[ext_resource type="Script" uid="uid://dpbgcseqafd0r" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_recover_hp.gd" id="skill_seed_hp"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_hbk86"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_rahuresia_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_rahuresia.png" id="2_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_7ke7p"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_bhfpt"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_recover_hp.gd" id="skill_recover_hp"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_recover_hp.gd" id="skill_seed_hp"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_4xa0p"]
 script = ExtResource("1_hbk86")
@@ -17,7 +17,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_kqu1a"]
 script = ExtResource("skill_recover_hp")
-acided_enemy_heal_rate = 0.2999999999992724
+acided_enemy_heal_rate = 0.1499999999996362
 
 [sub_resource type="Resource" id="Resource_cb3p4"]
 script = ExtResource("skill_seed_skill")
@@ -42,5 +42,5 @@ small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_cb3p4")
 sub_skill = SubResource("Resource_ywogd")
 acid_block = SubResource("Resource_4xa0p")
-main_description = "胃の中のモノを消化すると自身のHPを悪夢の最大HP20%分回復する。"
+main_description = "胃の中のモノを消化すると自身のHPを悪夢の最大HP15%分回復する。"
 sub_description = "隣接するモノを消化するとHP+30%"

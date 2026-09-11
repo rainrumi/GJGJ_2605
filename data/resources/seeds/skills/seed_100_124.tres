@@ -1,40 +1,40 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dl38ayy5yufoc"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_cno5e"]
-[ext_resource type="Texture2D" uid="uid://c6jf2snx5tc0l" path="res://resource/image/texture/seed/tex_seed_kurematis_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" uid="uid://bvqagdlucxcpc" path="res://resource/image/texture/seed/tex_seed_kurematis.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_aab15"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_r2f30"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" uid="uid://bc7tnfw70v1m2" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_cno5e"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_kurematis_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_kurematis.png" id="2_texture"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_aab15"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_r2f30"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_iu3r8"]
 script = ExtResource("1_cno5e")
 texture = ExtResource("4_block_texture")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_uruj0"]
 script = ExtResource("skill_time_rate")
-rate = 0.02
-elapsed_step_rate = 0.02
+rate = 0.020000000000436557
+elapsed_step_rate = 0.020000000000436557
 min_interval_rate = 0.0
-max_interval_rate = 0.4
+max_interval_rate = 0.3999999999996362
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_e1bkn"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_r2f30")]([SubResource("Resource_main_effect_1")])
+effects = Array[ExtResource("3_r2f30")]([SubResource("Resource_uruj0")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_2"]
+[sub_resource type="Resource" id="Resource_ro37a"]
 script = ExtResource("skill_time_rate")
-rate = 0.04
-elapsed_step_rate = 0.04
+rate = 0.030000000000654836
+elapsed_step_rate = 0.030000000000654836
 min_interval_rate = 0.0
-max_interval_rate = 0.8
+max_interval_rate = 0.6000000000003638
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_va1tr"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_r2f30")]([SubResource("Resource_sub_effect_2")])
+effects = Array[ExtResource("3_r2f30")]([SubResource("Resource_ro37a")])
 
 [resource]
 script = ExtResource("3_aab15")
@@ -43,8 +43,8 @@ rarity = 1
 display_name = "クレマチス"
 texture = ExtResource("2_texture")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
+main_skill = SubResource("Resource_e1bkn")
+sub_skill = SubResource("Resource_va1tr")
+acid_block = SubResource("Resource_iu3r8")
 main_description = "消化間隔-2%。時間が経過するたびに効果が2%ずつ上昇する。最大40%。"
-sub_description = "消化間隔-4%。時間が経過するたびに効果が4%ずつ上昇する。最大80%。"
+sub_description = "消化間隔-3%。時間が経過するたびに効果が3%ずつ上昇する。最大60%。"
