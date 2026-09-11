@@ -16,7 +16,7 @@ const REST_HP_RATE: float = 0.1
 const RECOVERY_BASE_RATE: float = 1.0
 const RECOVERY_HOURLY_LOSS_RATE: float = 0.1
 const RECOVERY_MINIMUM_RATE: float = 0.5
-const acid_AUTO_INTERVAL: float = 0.05
+const acid_AUTO_INTERVAL: float = 0.65
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const DRAG_CENTER_TWEEN_DURATION := 0.3
 const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
@@ -66,7 +66,6 @@ var turn_processor := EnemyTurnProcessor.new() # ターン処理
 var acid_controller := EnemyController.new()
 var enemy_presenter := EnemyPresentationCoordinator.new() # 敵表示調整
 var seed_controller := GameSeedController.new()
-var beat_conductor: BeatConductor
 var dragging_enemy: Enemy
 var drag_offset := Vector2.ZERO
 var _drag_center_tween: Tween
@@ -110,9 +109,6 @@ func _ready() -> void:
 	_connect_input()
 	_create_Acidion_timer()
 	ui.hide_enemy_tooltip()
-# 拍conductor設定
-func set_beat_conductor(conductor: BeatConductor) -> void:
-	beat_conductor = conductor
 # 戦闘開始
 func start_battle(context: BattleInfo = null) -> void:
 	# 戦闘文脈
@@ -137,7 +133,6 @@ func start_battle(context: BattleInfo = null) -> void:
 	last_time_over_recovery_percent = 0
 	debug_numbers_visible = DebugState.debug_enabled
 	_set_battle_flags(false)
-	_clear_scheduled_acid_events()
 	seed_controller.set_seed_inventory(battle_context.flowers, battle_context.stored_seeds)
 	seed_effects.setup(seed_controller.get_flowers())
 	_refresh_seed_structural_effects()
@@ -201,7 +196,6 @@ func cancel_battle() -> void:
 	auto_acid_paused_by_user = false
 	_acid_pause_ready_for_interaction = false
 	acid_turn_in_progress = false
-	_clear_scheduled_acid_events()
 	_update_auto_acid_timer()
 	_refresh_enemy_page_navigation()
 	ui.hide_time_over_decision()
@@ -822,7 +816,6 @@ func _advance_acid_turn() -> void:
 	var early_digested := _resolve_extra_seed_digestions()
 	# elapsed分数
 	var elapsed_minutes := acid_controller.apply_turn_start_effects(enemies, stomach, minutes)
-	await _wait_for_next_acid_beat()
 	await _wait_while_acid_paused()
 	if not battle_active or _active_acid_count() == 0:
 		if battle_active:
@@ -952,7 +945,6 @@ func _begin_time_over_decision() -> void:
 		return
 	_awaiting_time_over_decision = true
 	_set_battle_flags(false)
-	_clear_scheduled_acid_events()
 	_update_auto_acid_timer()
 	_refresh_after_battle_event()
 	ui.show_time_over_decision()
@@ -1011,7 +1003,6 @@ func _finish_battle(won: bool, _message: String) -> void:
 	auto_acid_enabled = false
 	auto_acid_paused_by_user = false
 	_acid_pause_ready_for_interaction = false
-	_clear_scheduled_acid_events()
 	_update_auto_acid_timer()
 	_refresh_after_battle_event()
 	ui.hide_time_over_decision()
@@ -1182,17 +1173,6 @@ func _sum_damage_values(damage_values: Array[int]) -> int:
 	return total
 
 
-# for消化拍待機
-func _wait_for_next_acid_beat() -> void:
-	if beat_conductor == null or not is_instance_valid(beat_conductor):
-		await get_tree().process_frame
-		return
-	if beat_conductor.audio_player == null or not beat_conductor.audio_player.playing:
-		await get_tree().process_frame
-		return
-	await beat_conductor.wait_until_next_beat()
-
-
 # ユーザーによる消化一時停止待機
 func _wait_while_acid_paused() -> void:
 	if not battle_active or not auto_acid_enabled or not auto_acid_paused_by_user:
@@ -1201,12 +1181,6 @@ func _wait_while_acid_paused() -> void:
 	while battle_active and auto_acid_enabled and auto_acid_paused_by_user:
 		await get_tree().process_frame
 	_acid_pause_ready_for_interaction = false
-
-
-# scheduled消化events消去
-func _clear_scheduled_acid_events() -> void:
-	if beat_conductor != null and is_instance_valid(beat_conductor):
-		beat_conductor.clear_scheduled_events()
 
 
 # 消化生成要求適用

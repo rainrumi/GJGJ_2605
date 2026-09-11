@@ -10,9 +10,9 @@
 [ext_resource type="Resource" uid="uid://d31asowimm0wu" path="res://data/resources/seeds/skills/seed_100_112.tres" id="2113_skill"]
 [ext_resource type="Resource" uid="uid://cbxeqcqi5adco" path="res://data/resources/seeds/skills/seed_100_115.tres" id="rare_115"]
 [ext_resource type="Resource" uid="uid://dg6q7uionqb11" path="res://data/resources/seeds/skills/seed_100_122.tres" id="rare_122"]
-[ext_resource type="Resource" uid="uid://csews35toqoil" path="res://data/resources/seeds/skills/seed_100_126.tres" id="rare_126"]
+[ext_resource type="Resource" uid="uid://cg7d3mgt0sxmk" path="res://data/resources/seeds/skills/seed_100_113.tres" id="rare_113"]
 
 [resource]
 script = ExtResource("1_script")
 common_skills = Array[ExtResource("2_definition")]([ExtResource("1001_skill"), ExtResource("1002_skill"), ExtResource("1003_skill"), ExtResource("1004_skill")])
-rare_skills = Array[ExtResource("2_definition")]([ExtResource("2005_skill"), ExtResource("2113_skill"), ExtResource("rare_115"), ExtResource("rare_126"), ExtResource("rare_122")])
+rare_skills = Array[ExtResource("2_definition")]([ExtResource("2005_skill"), ExtResource("2113_skill"), ExtResource("rare_115"), ExtResource("rare_113"), ExtResource("rare_122")])

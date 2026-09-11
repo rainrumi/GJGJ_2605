@@ -111,6 +111,7 @@ func _run() -> void:
 	_expect(game.get("auto_acid_paused_by_user"), "夢の種設置後も消化の一時停止を維持する")
 
 	var auto_acid_timer := game.get("Acidion_timer") as Timer
+	_expect(is_equal_approx(auto_acid_timer.wait_time, 0.7), "自動消化は0.7秒周期で進む")
 	_press_acid_button(acid_button)
 	_expect(
 		acid_button.texture.resource_path == "res://resource/image/ui/button/ui_button_digestiveSTOP.png",

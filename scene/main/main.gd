@@ -74,8 +74,6 @@ func _ready() -> void:
 	_connect_ui_buttons(self)
 	settings_screen.closed.connect(_on_settings_screen_closed)
 	settings_screen.title_requested.connect(_on_settings_title_requested)
-	if game.has_method("set_beat_conductor"):
-		game.set_beat_conductor(bgm)
 	# 戦闘finishedコール
 	var battle_finished_callback := Callable(self, "_on_game_battle_finished")
 	if game.has_signal("battle_finished") and not game.is_connected("battle_finished", battle_finished_callback):
