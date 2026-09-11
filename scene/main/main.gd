@@ -8,6 +8,11 @@ const FIRST_NIGHTMARE_EVENT_DAY := 4
 const RECURRING_STAGE_NOVEL_STAGE_ID := 0
 const RECURRING_STAGE_NOVEL_SCENARIO_INDEX := 1
 const AREA_COMPLETION_BOSS_DEFEAT_COUNT := 3
+const CLEAR_RECOVERY_START_HOUR := 22
+const CLEAR_RECOVERY_END_HOUR := 27
+const CLEAR_RECOVERY_BASE_RATE := 1.0
+const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
+const CLEAR_RECOVERY_MINIMUM_RATE := 0.5
 
 enum NovelFlow {
 	NONE,
@@ -56,6 +61,7 @@ var _screen_flow_id := 0
 var _last_battle_progress_snapshot: Dictionary = {}
 var _lara_first_interaction := false
 var _lara_judge_pending := false
+var _day_change_time_recovery_pending := false
 var _lara_judge_result := 0
 
 
@@ -221,6 +227,7 @@ func _on_title_start_game() -> void:
 	_screen_flow_id += 1
 	run_state.reset()
 	_lara_judge_pending = false
+	_day_change_time_recovery_pending = false
 	pending_area_completion_novel_text = null
 	_setup_initial_stage_position()
 	should_reset_player_state = true
@@ -277,6 +284,7 @@ func _on_settings_title_requested() -> void:
 func _return_to_title() -> void:
 	_screen_flow_id += 1
 	active_novel_flow = NovelFlow.NONE
+	_day_change_time_recovery_pending = false
 	pending_stage_novel_texts.clear()
 	if game.has_method("cancel_battle"):
 		game.cancel_battle()
@@ -448,6 +456,7 @@ func _on_game_battle_finished(won: bool) -> void:
 	_sync_player_stomach_size()
 	run_state.current_minutes = game.get_clear_minutes()
 	_sync_lara_progress()
+	_day_change_time_recovery_pending = won
 	if won:
 		_queue_area_completion_novel_if_needed(run_state.selected_stage)
 		_last_battle_progress_snapshot = {
@@ -569,9 +578,7 @@ func _on_stage_select_today_rest_requested() -> void:
 	var can_rest_on_first_day := run_state.current_day == 1 and run_state.current_hp < 100
 	if not run_state.is_continuous_play_unlocked and not can_rest_on_first_day:
 		return
-	if stage_clear.has_method("apply_time_recovery"):
-		stage_clear.apply_time_recovery()
-	_sync_run_state_from_stage_clear()
+	_day_change_time_recovery_pending = true
 	_finish_current_day()
 
 
@@ -591,6 +598,7 @@ func _finish_current_day() -> void:
 
 func _advance_to_next_day() -> void:
 	_lara_judge_pending = false
+	_apply_day_change_time_recovery()
 	run_state.current_day += 1
 	run_state.current_minutes = RunState.BATTLE_START_MINUTES
 	run_state.reset_daily_challenge_state()
@@ -600,6 +608,27 @@ func _advance_to_next_day() -> void:
 		return
 	_sync_lara_progress()
 	show_day_intro()
+
+
+func _apply_day_change_time_recovery() -> void:
+	if not _day_change_time_recovery_pending:
+		return
+	_day_change_time_recovery_pending = false
+	var recovery_rate := StageClearCalculatorRecovery.get_clear_time_recovery_rate(
+		run_state.planted_flowers,
+		run_state.current_minutes,
+		CLEAR_RECOVERY_START_HOUR,
+		CLEAR_RECOVERY_END_HOUR,
+		CLEAR_RECOVERY_BASE_RATE,
+		CLEAR_RECOVERY_HOURLY_LOSS_RATE,
+		CLEAR_RECOVERY_MINIMUM_RATE
+	)
+	if recovery_rate <= 0.0:
+		return
+	run_state.current_hp = mini(
+		run_state.max_hp,
+		run_state.current_hp + ceili(float(run_state.max_hp) * recovery_rate)
+	)
 
 
 func _sync_lara_progress() -> void:

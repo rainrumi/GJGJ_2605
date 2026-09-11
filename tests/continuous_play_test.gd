@@ -8,12 +8,33 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	await _check_stage_clear_defers_time_recovery()
 	await _check_stage_clear_returns_to_map()
 	await _check_stage_clear_return_delay_after_unlock()
 	await _check_high_difficulty_day_ends_after_one_battle()
 	await _check_today_rest_button()
+	await _check_day_change_applies_time_recovery()
 	await _check_unlock_and_time_carryover()
 	quit(_failures)
+
+
+func _check_stage_clear_defers_time_recovery() -> void:
+	var packed := load("res://scene/main/stage_clear/stage_clear.tscn") as PackedScene
+	_expect(packed != null, "ステージクリアSceneを読み込める")
+	if packed == null:
+		return
+	var stage_clear := packed.instantiate()
+	root.add_child(stage_clear)
+	await process_frame
+	stage_clear.set_seed_inventory([], [])
+	for continuous_play_enabled: bool in [false, true]:
+		stage_clear.set_continuous_play_enabled(continuous_play_enabled)
+		stage_clear.setup_clear_result(20, 23 * 60)
+		var recovery_rate: float = stage_clear.call("_apply_selection_recovery", 0.0)
+		_expect(is_zero_approx(recovery_rate), "種選択時は時間回復率を加算しない")
+		_expect(stage_clear.get_current_hp() == 20, "種選択時は時間回復をHPへ適用しない")
+	root.remove_child(stage_clear)
+	stage_clear.free()
 
 
 func _check_stage_clear_returns_to_map() -> void:
@@ -42,10 +63,7 @@ func _check_stage_clear_returns_to_map() -> void:
 	stage_clear.continuation_requested.connect(func() -> void: continued[0] = true)
 	stage_clear.call("_on_abandon_button_pressed")
 	_expect(bool(continued[0]), "報酬選択後にマップへ戻る通知を行う")
-	var hp_before_rest: int = stage_clear.get_current_hp()
-	var recovery_rate: float = stage_clear.apply_time_recovery()
-	_expect(recovery_rate > 0.0, "休む時刻に対応するHP回復率を取得する")
-	_expect(stage_clear.get_current_hp() > hp_before_rest, "今日は休む選択時にHPを回復する")
+	_expect(stage_clear.get_current_hp() == 30, "放棄時は追加回復だけを適用して時間回復は保留する")
 	root.remove_child(stage_clear)
 	stage_clear.free()
 	debug_state.set_debug_enabled(original_debug_enabled)
@@ -163,6 +181,47 @@ func _check_today_rest_button() -> void:
 	_expect(not rest_button.visible, "翌日は再挑戦するまで今日は休むボタンを非表示にする")
 	root.remove_child(stage_select)
 	stage_select.free()
+
+
+func _check_day_change_applies_time_recovery() -> void:
+	var packed := load("res://scene/main/main.tscn") as PackedScene
+	_expect(packed != null, "Main Sceneを読み込める")
+	if packed == null:
+		return
+	var main := packed.instantiate()
+	root.add_child(main)
+	await process_frame
+	main.run_state.current_day = 5
+	main.run_state.current_hp = 20
+	main.run_state.current_minutes = 23 * 60
+	main.run_state.planted_flowers.clear()
+	main.call("_advance_to_next_day")
+	_expect(main.run_state.current_day == 6, "日付更新時に翌日へ進む")
+	_expect(main.run_state.current_hp == 20, "回復予約がない日付更新では時間回復を適用しない")
+	main.run_state.current_hp = 20
+	main.run_state.current_minutes = 23 * 60
+	main.set("_day_change_time_recovery_pending", true)
+	main.call("_advance_to_next_day")
+	_expect(main.run_state.current_day == 7, "回復予約後の日付更新でも翌日へ進む")
+	_expect(main.run_state.current_hp == 100, "日付更新時に23時の時間回復を一度適用する")
+	var disable_effect := SeedEffectOnSelectedRewerdDisableClearRecovery.new()
+	var disable_skill := SeedSkill.new()
+	disable_skill.effects.assign([disable_effect])
+	var disable_seed := SeedInfo.new()
+	disable_seed.main_skill = disable_skill
+	main.run_state.current_hp = 20
+	main.run_state.current_minutes = 23 * 60
+	main.run_state.planted_flowers.assign([disable_seed])
+	main.set("_day_change_time_recovery_pending", true)
+	main.call("_advance_to_next_day")
+	_expect(main.run_state.current_hp == 20, "回復無効の種は日付更新時の時間回復も無効にする")
+	main.call("_return_to_title")
+	var bgm := main.get_node("BGM") as BeatConductor
+	bgm.stop()
+	bgm.audio_player.stream = null
+	bgm.bgm_stream = null
+	root.remove_child(main)
+	main.free()
 
 
 func _check_unlock_and_time_carryover() -> void:

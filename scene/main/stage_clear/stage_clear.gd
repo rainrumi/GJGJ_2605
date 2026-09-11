@@ -5,11 +5,6 @@ signal continuation_requested
 signal debug_retry_requested
 
 const ABANDON_HP_RECOVERY_RATE := 0.1
-const CLEAR_RECOVERY_START_HOUR := 22
-const CLEAR_RECOVERY_END_HOUR := 27
-const CLEAR_RECOVERY_BASE_RATE := 1.0
-const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
-const CLEAR_RECOVERY_MINIMUM_RATE := 0.5
 const MAX_HP := 100
 const REST_MINUTES := 30
 const REST_HP_RATE := 0.1
@@ -28,7 +23,7 @@ const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
 var planted_flowers: Array[SeedInfo] = []
 var stored_seeds: Array[SeedInfo] = []
 var current_hp := MAX_HP
-var clear_minutes := CLEAR_RECOVERY_START_HOUR * 60
+var clear_minutes := RunState.BATTLE_START_MINUTES
 var permanent_acid_damage_bonus_rate := 0.0
 var debug_numbers_visible := false
 var continuous_play_enabled := false
@@ -108,22 +103,6 @@ func get_clear_minutes() -> int:
 
 func set_continuous_play_enabled(is_enabled: bool) -> void:
 	continuous_play_enabled = is_enabled
-
-
-func apply_time_recovery() -> float:
-	var recovery_rate := StageClearCalculatorRecovery.get_clear_time_recovery_rate(
-		planted_flowers,
-		clear_minutes,
-		CLEAR_RECOVERY_START_HOUR,
-		CLEAR_RECOVERY_END_HOUR,
-		CLEAR_RECOVERY_BASE_RATE,
-		CLEAR_RECOVERY_HOURLY_LOSS_RATE,
-		CLEAR_RECOVERY_MINIMUM_RATE
-	)
-	if recovery_rate <= 0.0:
-		return 0.0
-	_set_hp(current_hp + ceili(float(MAX_HP) * recovery_rate), true)
-	return recovery_rate
 
 
 # 花取得
@@ -211,7 +190,7 @@ func _initialize_planted_flowers() -> void:
 # clear初期化
 func _reset_clear_state() -> void:
 	current_hp = MAX_HP
-	clear_minutes = CLEAR_RECOVERY_START_HOUR * 60
+	clear_minutes = RunState.BATTLE_START_MINUTES
 	permanent_acid_damage_bonus_rate = 0.0
 	_clear_recovery_applied = false
 	_selected_rewerd_effect_applied = false
@@ -395,16 +374,9 @@ func _finish_reward_selection(recovered_rate: float) -> void:
 
 # clear回復率
 func _get_planned_clear_recovery_rate() -> float:
-	return StageClearCalculatorRecovery.get_planned_recovery_rate(
-		planted_flowers,
-		clear_minutes,
-		_clear_recovery_applied,
-		CLEAR_RECOVERY_START_HOUR,
-		CLEAR_RECOVERY_END_HOUR,
-		CLEAR_RECOVERY_BASE_RATE,
-		CLEAR_RECOVERY_HOURLY_LOSS_RATE,
-		CLEAR_RECOVERY_MINIMUM_RATE
-	)
+	if _clear_recovery_applied:
+		return 0.0
+	return StageClearCalculatorRecovery.get_seed_bonus_rate(planted_flowers, clear_minutes)
 
 
 # 種回復率
@@ -414,16 +386,12 @@ func _get_seed_choice_recovery_rate(seed_index: int) -> float:
 	var seed := _get_seed_option(seed_index)
 	if seed == null:
 		return _get_planned_clear_recovery_rate()
-	return StageClearCalculatorRecovery.get_planned_preview_recovery_rate(
+	var context := StageClearCalculatorRecovery.get_selecting_preview_rewerd_context(
 		planted_flowers,
 		_get_preview_flowers_for_seed(seed),
-		clear_minutes,
-		CLEAR_RECOVERY_START_HOUR,
-		CLEAR_RECOVERY_END_HOUR,
-		CLEAR_RECOVERY_BASE_RATE,
-		CLEAR_RECOVERY_HOURLY_LOSS_RATE,
-		CLEAR_RECOVERY_MINIMUM_RATE
+		clear_minutes
 	)
+	return float(context.get("hp_recovery_rate", 0.0))
 
 
 # 放棄回復率
@@ -465,10 +433,7 @@ func _apply_selection_recovery(extra_recovery_rate: float) -> float:
 	var rewerd_context := _apply_selected_rewerd_effects() # 報酬効果
 	var recovery_rate := 0.0 # 回復率
 	if not _clear_recovery_applied:
-		if continuous_play_enabled:
-			recovery_rate = float(rewerd_context.get("hp_recovery_rate", 0.0)) + extra_recovery_rate
-		else:
-			recovery_rate = _get_selected_rewerd_recovery_rate(rewerd_context) + extra_recovery_rate
+		recovery_rate = float(rewerd_context.get("hp_recovery_rate", 0.0)) + extra_recovery_rate
 		var recovered_hp := mini(MAX_HP, current_hp + ceili(float(MAX_HP) * recovery_rate)) # 回復HP
 		_clear_recovery_applied = true
 		_set_hp(recovered_hp, true)
@@ -487,21 +452,6 @@ func _apply_selected_rewerd_effects() -> Dictionary:
 		_extra_seed_choice_granted = true
 	_selected_rewerd_effect_applied = true
 	return context
-
-
-# 報酬回復率
-func _get_selected_rewerd_recovery_rate(rewerd_context: Dictionary) -> float:
-	var recovery_rate := StageClearCalculatorRecovery.get_clear_time_recovery_rate(
-		planted_flowers,
-		clear_minutes,
-		CLEAR_RECOVERY_START_HOUR,
-		CLEAR_RECOVERY_END_HOUR,
-		CLEAR_RECOVERY_BASE_RATE,
-		CLEAR_RECOVERY_HOURLY_LOSS_RATE,
-		CLEAR_RECOVERY_MINIMUM_RATE
-	)
-	recovery_rate += float(rewerd_context.get("hp_recovery_rate", 0.0))
-	return recovery_rate
 
 
 # 状態変更更新

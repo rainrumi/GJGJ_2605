@@ -1,37 +1,37 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://cqcdull7w5d7y"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_kaibi"]
-[ext_resource type="Texture2D" uid="uid://c7k6ke1gmmey8" path="res://resource/image/texture/seed/tex_seed_otogirisou_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" uid="uid://cpp8elw1dovmr" path="res://resource/image/texture/seed/tex_seed_otogirisou.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_8ifaw"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_agyyv"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" uid="uid://blm8lnep51asi" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_adjacent.gd" id="skill_adjacent_damage"]
-[ext_resource type="Script" uid="uid://1psn6kh0nodp" path="res://scene/main/game/seed/skill/on_heal/seed_effect_on_heal_change_effect.gd" id="skill_heal_effect"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_kaibi"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_otogirisou_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_otogirisou.png" id="2_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_8ifaw"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_agyyv"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_adjacent.gd" id="skill_adjacent_damage"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_heal/seed_effect_on_heal_change_effect.gd" id="skill_heal_effect"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_30bw4"]
 script = ExtResource("1_kaibi")
 texture = ExtResource("4_block_texture")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_q0rcq"]
 script = ExtResource("skill_heal_effect")
-heal_to_line_damage_rate = 0.33
+heal_to_line_damage_rate = 1.0
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_pokqi"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_8ifaw")]([SubResource("Resource_main_effect_1")])
+effects = Array[ExtResource("3_8ifaw")]([SubResource("Resource_q0rcq")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_mosmf"]
 script = ExtResource("skill_adjacent_damage")
+split = false
 player_hp_rate = 3.0
 enemies_only = true
-split = false
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_rvo8m"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_8ifaw")]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_8ifaw")]([SubResource("Resource_mosmf")])
 
 [resource]
 script = ExtResource("3_agyyv")
@@ -40,8 +40,8 @@ rarity = 1
 display_name = "オトギリソウ"
 texture = ExtResource("2_texture")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
-main_description = "HPを回復したとき回復量33%を消化ダメージに変換し消化ラインに触れている悪夢に与える。"
-sub_description = "この花を消化すると現在のHP300%の数値を隣接する悪夢に消化ダメージとして与える。"
+main_skill = SubResource("Resource_pokqi")
+sub_skill = SubResource("Resource_rvo8m")
+acid_block = SubResource("Resource_30bw4")
+main_description = "回復したHPと同等の消化ダメージを消化ラインに触れている悪夢に与える。"
+sub_description = "この花を消化すると現在のHP300%の消化ダメージを隣接する悪夢に与える。"

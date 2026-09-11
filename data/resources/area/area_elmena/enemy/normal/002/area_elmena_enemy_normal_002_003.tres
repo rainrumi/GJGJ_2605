@@ -1,30 +1,30 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://dwn8kogahw4k5"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" uid="uid://bl6hll0yxcp5r" path="res://scene/main/game/enemy/skill/time/enemy_effect_on_clock_count_change_attack.gd" id="effect_5"]
+[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/time/enemy_effect_on_clock_count_change_attack.gd" id="effect_5"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_tswfh"]
 script = ExtResource("2_acid_block")
-max_hp = 480
+max_hp = 650
 damage = 2
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(0, 0, 1), PackedInt32Array(1, 1, 1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_kgr0f"]
 script = ExtResource("effect_5")
-required_count = 5
+required_count = 3
 attack_delta = 4
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_admpd"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_kgr0f")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 11010002003
 display_name = "E3"
-acid_block = SubResource("AcidBlock")
-description = "時刻が5回進むたびに攻撃力が4増える。"
-main_skill = SubResource("MainSkill")
+acid_block = SubResource("Resource_tswfh")
+description = "時刻が3回進むたびに攻撃力が4増える。"
+main_skill = SubResource("Resource_admpd")
