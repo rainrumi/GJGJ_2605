@@ -2,7 +2,7 @@ class_name SeedEffectOnSelectedRewerdChangeAcidDamageRate
 extends SeedEffect
 
 
-@export var rate := 0.0 # acid rate
+@export var rate := 1.0 # acid rate
 
 
 func is_unconditional_status_change() -> bool:
@@ -21,4 +21,4 @@ func on_selected_rewerd(_state: DreamSeedSkillState, context: Dictionary) -> voi
 
 # apply
 func _apply(context: Dictionary) -> void:
-	context["permanent_acid_rate"] = float(context.get("permanent_acid_rate", 0.0)) + rate
+	context["permanent_acid_rate"] = float(context.get("permanent_acid_rate", 0.0)) + (rate - 1.0)

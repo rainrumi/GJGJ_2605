@@ -26,7 +26,8 @@ effects = Array[ExtResource("3_gt67s")]([SubResource("Resource_main_effect_1")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_adjacent_damage")
-damage = 1000
+damage = 1500
+stomach_edge_only = true
 split = false
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
@@ -44,4 +45,4 @@ main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "時間が経過するたびに胃袋の端に隣接する消化ラインに触れているモノに500消化ダメージを与える。"
-sub_description = "隣接するモノに1000消化ダメージを与える。"
+sub_description = "この花を消化すると胃袋端に隣接するモノに1500消化ダメージを与える。"

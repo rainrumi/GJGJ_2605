@@ -602,7 +602,7 @@ func _get_status_preview(flowers: Array[SeedInfo], recovery_rate: float) -> Dict
 		stomach_size.x,
 		stomach_size.y
 	)
-	var time_reduction_rate := seed_effects.get_time_reduction_rate(
+	var time_reduction_rate := 1.0 - seed_effects.get_time_reduction_rate(
 		false,
 		BATTLE_START_MINUTES,
 		BATTLE_START_MINUTES,
@@ -610,7 +610,7 @@ func _get_status_preview(flowers: Array[SeedInfo], recovery_rate: float) -> Dict
 	)
 	var acid_interval_minutes := maxi(
 		1,
-		roundi(float(EnemyController.STEP_MINUTES) * (1.0 - time_reduction_rate))
+		roundi(float(EnemyController.STEP_MINUTES) * (1.0 - time_reduction_rate)) + seed_effects.get_interval_minutes_delta(BATTLE_START_MINUTES)
 	)
 	var acid_interval_info := {
 		"total": acid_interval_minutes,

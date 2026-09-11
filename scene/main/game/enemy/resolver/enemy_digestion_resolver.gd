@@ -45,6 +45,7 @@ func get_damage_breakdown(
 # 消化結果作成
 func create_results(input: EnemyDigestionInput) -> EnemyDigestionBatchResult:
 	var batch := EnemyDigestionBatchResult.new() # 一括結果
+	_seed_effects.set_damaged_object_count(0)
 	batch.turn_start_hp = _get_turn_start_hp(input.enemies)
 	for enemy in input.enemies:
 		var result := _create_enemy_result(enemy, input) # 対象結果
@@ -87,7 +88,9 @@ func apply_result(result: EnemyDigestionResult, damage: int) -> void:
 	result.damage_values = [result.total_damage]
 	result.applied_damage = mini(result.hp_before, result.total_damage)
 	result.overkill_damage = maxi(0, result.total_damage - result.hp_before)
-	result.was_digested = result.enemy.take_acid_damage(result.total_damage, false)
+	result.was_digested = result.enemy.take_acid_damage(result.total_damage, false, false)
+	if result.total_damage > 0 and result.hp_before > 0:
+		_seed_effects.record_damaged_object(result.total_damage, result.enemy)
 
 
 # ダメージ要求作成
@@ -134,7 +137,9 @@ func apply_seed_block_effects(
 		digested_enemies,
 		input.acid_damage_per_cell,
 		input.elapsed_minutes,
-		input.player_hp
+		input.player_hp,
+		input.player_max_hp,
+		input.day_elapsed_minutes
 	)
 
 
@@ -165,10 +170,14 @@ func _sort_digested_enemies(
 
 # 最終消化値取得
 func _get_final_damage(enemy: Enemy, enemies: Array[Enemy], raw_damage: int) -> int:
-	var damage_rate := enemy.acid_damage_taken_multiplier # 対象倍率
+	var damage_rate := enemy.acid_damage_taken_multiplier * _seed_effects.get_seed_target_multiplier(enemy) # 対象倍率
 	if enemy.is_enemy():
 		damage_rate *= _seed_effects.get_acid_target_multiplier()
 	damage_rate *= _seed_block_resolver.get_target_acid_damage_multiplier(enemy, enemies)
+	if enemy.has_seed() and enemy.get_seed().get_sub_skill() != null:
+		for effect in enemy.get_seed().get_sub_skill().get_effects():
+			if effect is SeedEffectOnFinishAcidSeedBlockDamageAdjacent:
+				damage_rate *= effect.self_damage_multiplier
 	return roundi(float(raw_damage) * damage_rate)
 
 
@@ -205,3 +214,7 @@ func _get_enemy_damage_rate(enemies: Array[Enemy]) -> float:
 		if enemy != null and enemy.is_active_in_stomach():
 			multiplier *= enemy.acid_damage_global_multiplier
 	return multiplier - 1.0
+
+
+func get_seed_target_multiplier(enemy: Enemy) -> float:
+	return _seed_effects.get_seed_target_multiplier(enemy)

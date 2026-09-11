@@ -6,9 +6,8 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_ikiiu"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_ohkbt"]
 [ext_resource type="Texture2D" uid="uid://d3hbi37nl1lfb" path="res://resource/image/texture/seed/tex_seed_gekabijin.png" id="4_mmdek"]
-[ext_resource type="Script" uid="uid://dowh00603eyqh" path="res://scene/main/game/seed/skill/seed_effect_bring_limit.gd" id="skill_bring_limit"]
-[ext_resource type="Script" uid="uid://cajt8mj0fdrth" path="res://scene/main/game/seed/skill/on_selected_rewerd/seed_effect_on_selected_rewerd_change_acid_damage_rate_before_clock.gd" id="skill_clear_recovery"]
-[ext_resource type="Script" uid="uid://cp3yui4xe4hu1" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate.gd" id="skill_pending_time"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_day_finished_change_acid_damage.gd" id="skill_clear_recovery"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_rewind_clock.gd" id="skill_pending_time"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_7d4ve"]
@@ -18,20 +17,16 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_08k1e"]
 script = ExtResource("skill_clear_recovery")
-rate = 0.0499999999992724
+rate = 1.1
 before_minutes = 1500
-
-[sub_resource type="Resource" id="Resource_kkpi7"]
-script = ExtResource("skill_bring_limit")
-POSSESSION_LIMIT_KEY = "seed_100106"
 
 [sub_resource type="Resource" id="Resource_w2eup"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_ikiiu")]([SubResource("Resource_08k1e"), SubResource("Resource_kkpi7")])
+effects = Array[ExtResource("3_ikiiu")]([SubResource("Resource_08k1e")])
 
 [sub_resource type="Resource" id="Resource_j4qt0"]
 script = ExtResource("skill_pending_time")
-rate = 0.5
+rewind_minutes = 120
 
 [sub_resource type="Resource" id="Resource_fxodw"]
 script = ExtResource("skill_seed_skill")
@@ -47,5 +42,5 @@ small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_w2eup")
 sub_skill = SubResource("Resource_fxodw")
 acid_block = SubResource("Resource_7d4ve")
-main_description = "1時までにステージをクリアすると消化ダメージが永久に5%上昇する。重複不可。"
-sub_description = "この花を消化すると消化間隔-50%"
+main_description = "1時までに1日を終えると消化ダメージが10%上昇する。1時までに1日を終えられなかったらこの効果はリセットされる。"
+sub_description = "この花を消化すると時刻が2時間戻る。"

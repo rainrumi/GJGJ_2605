@@ -18,7 +18,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 [sub_resource type="Resource" id="Resource_2fb65"]
 script = ExtResource("skill_fire_probability_rate")
 probabirlity = 0.049999999999272404
-rate = 8.0
+rate = 9.0
 
 [sub_resource type="Resource" id="Resource_8lluu"]
 script = ExtResource("skill_seed_skill")

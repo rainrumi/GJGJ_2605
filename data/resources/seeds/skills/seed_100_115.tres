@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_yj3ro"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
 [ext_resource type="Script" uid="uid://dowh00603eyqh" path="res://scene/main/game/seed/skill/seed_effect_bring_limit.gd" id="skill_bring_limit"]
-[ext_resource type="Script" uid="uid://cp3yui4xe4hu1" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_time_reduction_rate.gd" id="skill_pending_time"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_stomach_rows.gd" id="skill_pending_time"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 [ext_resource type="Script" uid="uid://dgrxdmb2s6din" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_stomach_size.gd" id="skill_stomach_size"]
 
@@ -30,7 +30,7 @@ effects = Array[ExtResource("3_yj3ro")]([SubResource("Resource_main_effect_1"), 
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_pending_time")
-rate = 0.1
+columns_delta = 2
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")
@@ -47,4 +47,4 @@ main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
 main_description = "胃袋マスが横に1マス増える。この花は重複不可"
-sub_description = "消化間隔-10%"
+sub_description = "この花を消化すると胃袋マスが横に2マス増える。"

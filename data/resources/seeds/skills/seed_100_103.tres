@@ -17,9 +17,9 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_aixl4"]
 script = ExtResource("skill_time_rate")
-rate = 0.2000000000007276
-min_interval_rate = 0.0
-max_interval_rate = 0.2000000000007276
+rate = 0.8
+min_interval_rate = 0.8
+max_interval_rate = 1.0
 non_stacking_key = "seed_100103_main"
 
 [sub_resource type="Resource" id="Resource_56nkk"]

@@ -17,13 +17,13 @@ func _run() -> void:
 	var effects := SeedEffectResolver.new()
 	effects.setup([seed, seed])
 	_expect(
-		is_equal_approx(effects.get_time_reduction_rate(), 0.2),
+		is_equal_approx(effects.get_time_reduction_rate(), 0.8),
 		"メイン効果は複数装備しても20%だけ発動する"
 	)
 	effects.add_Acided_seed_effect(seed)
 	effects.add_Acided_seed_effect(seed)
 	_expect(
-		is_equal_approx(effects.get_time_reduction_rate(), 0.7),
+		is_equal_approx(effects.get_time_reduction_rate(), 0.3),
 		"サブ効果はメインと独立して50%だけ発動する"
 	)
 	print("Seed100103NonStackingTest: %d failures" % _failures)

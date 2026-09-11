@@ -1,7 +1,7 @@
 class_name SeedEffectOnAcidDamageChangeAcidDamageRateByStomachCount
 extends SeedEffect
 
-@export var rate := 0.5 # 変動率
+@export var rate := 1.5 # 変動率
 @export var max_stomach_count := 3 # 胃内上限
 @export var counts_enemies_only := false # 悪夢のみ数える
 
@@ -22,4 +22,4 @@ func get_acid_damage_rate(_state: DreamSeedSkillState, context: Dictionary) -> f
 	var stomach_count := int(context.get(count_key, 0)) # 胃内数
 	if stomach_count <= max_stomach_count:
 		return rate
-	return 0.0
+	return 1.0

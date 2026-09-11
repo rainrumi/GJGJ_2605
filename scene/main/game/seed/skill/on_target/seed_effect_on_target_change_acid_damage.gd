@@ -5,10 +5,13 @@ extends SeedEffect
 @export var random_chance := 0 # 抽選間隔
 @export var random_multiplier := 1.0 # 抽選倍率
 @export var enemies_only := false
+@export var seeds_only := false
 
 
 # 対象消化倍率
 func get_acid_target_multiplier(_state: DreamSeedSkillState, _context: Dictionary) -> float:
+	if seeds_only:
+		return 1.0
 	if random_chance > 0 and randi() % random_chance == 0:
 		return random_multiplier
 	return multiplier

@@ -1,14 +1,14 @@
 class_name SeedEffectOnHealChangeEffect
 extends SeedEffect
 
-@export var heal_bonus_rate := 0.0 # 回復率
+@export var heal_bonus_rate := 1.0 # 回復率
 @export var heal_to_line_damage_rate := 0.0 # 回復酸化
 @export var max_hp_from_recovery_rate := 0.0 # 累計HP率
 
 
 # 回復補正
 func get_heal_bonus_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
-	return heal_bonus_rate
+	return heal_bonus_rate - 1.0
 
 
 # 戦闘中

@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
 [ext_resource type="Script" uid="uid://w1qpp7saqv8b" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_recover_hp.gd" id="skill_recover_hp"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" uid="uid://ddsprcahop4fq" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_acid_damage_rate.gd" id="skill_target"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_recover_hp.gd" id="skill_target"]
 
 [sub_resource type="Resource" id="Resource_oax7w"]
 script = ExtResource("1_txkq8")
@@ -17,7 +17,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_miivf"]
 script = ExtResource("skill_recover_hp")
-acid_damage_heal_rate = 0.1000000000003638
+heal_per_damaged_object = 5
 
 [sub_resource type="Resource" id="Resource_jseq0"]
 script = ExtResource("skill_seed_skill")
@@ -25,7 +25,7 @@ effects = Array[ExtResource("3_fqeer")]([SubResource("Resource_miivf")])
 
 [sub_resource type="Resource" id="Resource_2nfcg"]
 script = ExtResource("skill_target")
-rate = 1.1000000000003638
+heal_per_damaged_object = 10
 
 [sub_resource type="Resource" id="Resource_xp2t6"]
 script = ExtResource("skill_seed_skill")
@@ -41,5 +41,5 @@ small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_jseq0")
 sub_skill = SubResource("Resource_xp2t6")
 acid_block = SubResource("Resource_oax7w")
-main_description = "胃の中にいるモノに与えた消化ダメージ10%のHPを回復する。"
-sub_description = "この花を消化した時、隣接するモノが受ける消化ダメージ+10%"
+main_description = "消化ダメージを与えたとき、HPを5×消化ダメージを受けたモノの数回復する。"
+sub_description = "この花を消化したとき、HPを10×消化ダメージを受けたモノの数回復する。"

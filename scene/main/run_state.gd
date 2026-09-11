@@ -22,6 +22,10 @@ var current_area_stage: StageInfo
 var planted_flowers: Array[SeedInfo] = []
 var stored_seeds: Array[SeedInfo] = []
 var permanent_acid_damage_bonus_rate := 0.0
+var day_seed_acid_bonus := 0.0
+var day_seed_bonus_deadline := -1
+var day_elapsed_minutes := 0
+var day_start_minutes := BATTLE_START_MINUTES
 var last_time_over_recovery_percent := 0
 var normal_enemy_preset_indices := {}
 var strengthened_enemy_preset_indices := {}
@@ -52,6 +56,10 @@ func reset() -> void:
 	planted_flowers.clear()
 	stored_seeds.clear()
 	permanent_acid_damage_bonus_rate = 0.0
+	day_seed_acid_bonus = 0.0
+	day_seed_bonus_deadline = -1
+	day_elapsed_minutes = 0
+	day_start_minutes = BATTLE_START_MINUTES
 	last_time_over_recovery_percent = 0
 	normal_enemy_preset_indices.clear()
 	strengthened_enemy_preset_indices.clear()
@@ -289,3 +297,19 @@ func _get_exploration_normal_enemy_count(stage: StageInfo) -> int:
 # ステージprogresskey取得
 func _get_stage_progress_key(stage: StageInfo) -> String:
 	return "%d:%d" % [stage.stage_id, stage.stage_area]
+
+
+func apply_day_finished_seed_effects() -> void:
+	var increment := 0.0
+	var expired := day_seed_bonus_deadline >= 0 and current_minutes > day_seed_bonus_deadline
+	for seed in planted_flowers:
+		if seed == null or seed.get_main_skill() == null:
+			continue
+		for effect in seed.get_main_skill().get_effects():
+			if effect is SeedEffectOnDayFinishedChangeAcidDamage:
+				day_seed_bonus_deadline = effect.before_minutes
+				if current_minutes > effect.before_minutes:
+					expired = true
+				else:
+					increment += effect.get_day_finished_bonus(0.0, current_minutes)
+	day_seed_acid_bonus = 0.0 if expired else day_seed_acid_bonus + increment

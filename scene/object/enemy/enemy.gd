@@ -28,6 +28,11 @@ var max_hp: int:
 var current_hp: int:
 	get: return data.hp.current
 	set(value): data.hp.set_current(value)
+signal forcibly_returned
+
+var received_acid_damage_total := 0
+var seed_received_damage_multiplier := 1.0
+
 var damage: int:
 	get: return data.attack.value
 	set(value): data.attack.set_value(value, false)
@@ -122,6 +127,8 @@ func setup(enemy_info: EnemyInfo, target_size: Vector2, has_effect := false, sta
 
 # 種setup
 func setup_seed(seed: SeedInfo, target_size: Vector2, start_position_override := Vector2.ZERO) -> void:
+	received_acid_damage_total = 0
+	seed_received_damage_multiplier = 1.0
 	setup(null, target_size, false, start_position_override, false)
 	setup_as_seed_stomach_block(seed, target_size)
 # for戦闘初期化
@@ -423,12 +430,17 @@ func pulse_cost_label() -> void:
 func pulse_damage() -> void:
 	_presenter.present_damage_pulse()
 # take消化ダメージ処理
-func take_acid_damage(amount: int, show_popup := true) -> bool:
+func take_acid_damage(amount: int, show_popup := true, apply_seed_multiplier := true) -> bool:
+	if apply_seed_multiplier:
+		amount = roundi(float(amount) * seed_received_damage_multiplier)
 	if amount > 0 and has_seed() and seed_info.get_sub_skill() != null:
 		for effect in seed_info.get_sub_skill().get_effects():
+			if apply_seed_multiplier and effect is SeedEffectOnFinishAcidSeedBlockDamageAdjacent:
+				amount = roundi(float(amount) * effect.self_damage_multiplier)
 			if effect.is_lethal_on_acid_damage():
 				amount = maxi(amount, current_hp)
 				break
+	received_acid_damage_total += maxi(0, amount)
 	if show_popup:
 		_presenter.present_damage_popup(amount)
 	if data.hp.take_damage(amount):

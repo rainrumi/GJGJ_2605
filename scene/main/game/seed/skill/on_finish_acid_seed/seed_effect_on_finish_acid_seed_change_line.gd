@@ -5,7 +5,7 @@ extends SeedEffect
 
 
 # 種消化完了
-func on_finish_acid_seed(_state: DreamSeedSkillState, context: Dictionary) -> bool:
+func on_finish_acid_seed(state: DreamSeedSkillState, context: Dictionary) -> bool:
 	var stomach := context.get("stomach") as StomachBoard # 胃ボード
 	if stomach == null or line_delta == 0:
 		return false
@@ -13,6 +13,7 @@ func on_finish_acid_seed(_state: DreamSeedSkillState, context: Dictionary) -> bo
 	var next_rows := maxi(1, previous_rows + line_delta) # 変更後
 	if next_rows == previous_rows:
 		return false
+	state.persistent_acid_line_bonus += next_rows - previous_rows
 	stomach.set_acid_line_rows(next_rows)
 	return true
 

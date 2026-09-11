@@ -377,7 +377,8 @@ func _apply_seed_block_rotation(seed_block: Enemy, quarter_turns: int) -> void:
 func apply_direct_Acided_seed_effects(
 	Acided_enemies: Array[Enemy],
 	current_hp: int,
-	max_hp: int
+	max_hp: int,
+	damaged_object_count: int = 0
 ) -> int:
 	# HP
 	var next_hp := current_hp
@@ -392,7 +393,7 @@ func apply_direct_Acided_seed_effects(
 				var recover_effect := effect as SeedEffectOnFinishAcidSeedRecoverHp
 				if recover_effect.adjacent_digestion_only:
 					continue
-				next_hp = mini(max_hp, next_hp + _get_seed_recovery_amount(recover_effect, enemy, max_hp))
+				next_hp = mini(max_hp, next_hp + _get_seed_recovery_amount(recover_effect, enemy, max_hp) + recover_effect.heal_per_damaged_object * damaged_object_count)
 				continue
 			if effect is SeedEffectOnFinishAcidSeedSkipRestTime:
 				# skip効果
@@ -448,7 +449,8 @@ func _get_finish_seed_effects(seed: SeedInfo) -> Array[SeedEffect]:
 func _get_seed_recovery_amount(
 	effect: SeedEffectOnFinishAcidSeedRecoverHp,
 	enemy: Enemy,
-	max_hp: int
+	max_hp: int,
+	damaged_object_count: int = 0
 ) -> int:
 	# 回復率
 	var recovery_rate := effect.hp_rate

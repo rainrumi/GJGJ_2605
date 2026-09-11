@@ -17,7 +17,7 @@ stomach_shape = null
 
 [sub_resource type="Resource" id="Resource_main_effect_1"]
 script = ExtResource("skill_acid_rate")
-rate = 0.1
+rate = 1.1
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
@@ -25,7 +25,7 @@ effects = Array[ExtResource("3_kvh1i")]([SubResource("Resource_main_effect_1")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_pending_acid")
-rate = 0.2
+rate = 1.2
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")

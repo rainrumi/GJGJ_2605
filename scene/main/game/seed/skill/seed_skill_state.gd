@@ -19,11 +19,24 @@ var persistent_time_reduction_bonus_rate := 0.0
 var persistent_stomach_rows_bonus := 0
 var progress_time_count := 0
 var hp_loss_count := 0
-var effect_start_progress_counts: Dictionary[int, int] = {}
+var pending_clock_rewind_minutes := 0
+var persistent_interval_minutes_delta := 0
+var persistent_stomach_columns_bonus := 0
+var persistent_acid_line_bonus := 0
+var remove_damage_multiplier := 1.0
+var last_damaged_object_count := 0
+var sunflower_max_hp_bonus := 0.0
 
 
 # 初期化
 func reset() -> void:
+	sunflower_max_hp_bonus = 0.0
+	last_damaged_object_count = 0
+	remove_damage_multiplier = 1.0
+	persistent_acid_line_bonus = 0
+	persistent_stomach_columns_bonus = 0
+	persistent_interval_minutes_delta = 0
+	pending_clock_rewind_minutes = 0
 	next_acid_damage_bonus_rate = 0.0
 	next_time_reduction_bonus_rate = 0.0
 	next_acid_damage_flat_bonus = 0
@@ -41,4 +54,3 @@ func reset() -> void:
 	persistent_stomach_rows_bonus = 0
 	progress_time_count = 0
 	hp_loss_count = 0
-	effect_start_progress_counts.clear()

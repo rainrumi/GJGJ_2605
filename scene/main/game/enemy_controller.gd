@@ -40,6 +40,8 @@ func reset_enemy_effects() -> void:
 # 敵効果更新
 func refresh_enemy_effects(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	enemy_effects.refresh(enemies, stomach)
+	for enemy in enemies:
+		enemy.seed_received_damage_multiplier = digestion_resolver.get_seed_target_multiplier(enemy)
 
 
 # ターン処理実行
@@ -103,12 +105,16 @@ func acid_enemys(
 	stomach: StomachBoard,
 	minutes: int,
 	elapsed_minutes: int = STEP_MINUTES,
-	player_hp: int = 0
+	player_hp: int = 0,
+	player_max_hp: int = 0,
+	day_elapsed_minutes: int = 0
 ) -> Array[Enemy]:
 	var per_cell := int(get_acid_damage_breakdown(enemies, minutes, true, stomach)["total"]) # セル消化値
 	var input := EnemyDigestionInput.new() # 消化入力
 	input.setup(enemies, stomach, minutes, elapsed_minutes, per_cell)
 	input.player_hp = player_hp
+	input.player_max_hp = player_max_hp
+	input.day_elapsed_minutes = day_elapsed_minutes
 	if digestion_processor == null:
 		return digestion_resolver.resolve(input).digested_enemies
 	return digestion_processor.process(input).digested_enemies

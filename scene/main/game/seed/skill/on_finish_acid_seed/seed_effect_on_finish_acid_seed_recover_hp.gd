@@ -1,6 +1,7 @@
 class_name SeedEffectOnFinishAcidSeedRecoverHp
 extends SeedEffect
 
+@export var heal_per_damaged_object := 0
 @export var hp_rate := 0.0 # HP率
 @export var adjacent_digestion_only := false
 @export var hp_rate_per_size := 0.0 # サイズ率

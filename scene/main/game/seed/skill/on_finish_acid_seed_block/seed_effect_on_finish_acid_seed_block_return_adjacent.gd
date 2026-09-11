@@ -17,3 +17,4 @@ func on_finish_acid_seed_block(context: Dictionary) -> void:
 			continue
 		adjacent_enemy.set_Aciding(false)
 		adjacent_enemy.return_to_origin()
+		adjacent_enemy.forcibly_returned.emit()

@@ -17,7 +17,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_rjtwx"]
 script = ExtResource("skill_recover_hp")
-time_active_count_heal_rate = 0.030000000000654836
+time_active_count_heal_rate = 0.03
 
 [sub_resource type="Resource" id="Resource_f71sv"]
 script = ExtResource("skill_seed_skill")
@@ -41,5 +41,5 @@ small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_f71sv")
 sub_skill = SubResource("Resource_nynee")
 acid_block = SubResource("Resource_px2m0")
-main_description = "時間が経過したときHPが3%×胃の中にいるモノの数回復する。"
+main_description = "時間が経過したとき、HPを3%×胃袋の占有マスの数回復する。"
 sub_description = "この花を消化するとHPを5%×占有マスの数回復する。"

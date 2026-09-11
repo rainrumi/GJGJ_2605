@@ -17,7 +17,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_ndgbg"]
 script = ExtResource("skill_recover_hp")
-acided_enemy_max_hp_rate = 0.049999999999272404
+acided_enemy_max_hp_rate = 1.05
 
 [sub_resource type="Resource" id="Resource_uosnd"]
 script = ExtResource("skill_seed_skill")
@@ -25,7 +25,7 @@ effects = Array[ExtResource("3_qkx0o")]([SubResource("Resource_ndgbg")])
 
 [sub_resource type="Resource" id="Resource_7ede0"]
 script = ExtResource("skill_max_hp")
-rate = 0.5
+rate = 1.5
 
 [sub_resource type="Resource" id="Resource_rjrmx"]
 script = ExtResource("skill_seed_skill")

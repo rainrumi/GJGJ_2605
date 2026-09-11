@@ -25,7 +25,8 @@ effects = Array[ExtResource("3_q1ii8")]([SubResource("Resource_1tlwo")])
 
 [sub_resource type="Resource" id="Resource_vcci7"]
 script = ExtResource("skill_line_damage")
-damage = 1000
+damage = 0
+damage_per_stomach_cell = 5
 
 [sub_resource type="Resource" id="Resource_1p5w3"]
 script = ExtResource("skill_seed_skill")
@@ -42,4 +43,4 @@ main_skill = SubResource("Resource_hifjf")
 sub_skill = SubResource("Resource_1p5w3")
 acid_block = SubResource("Resource_wcst2")
 main_description = "消化ダメージを胃袋マスX×Y×2の値増やす"
-sub_description = "この花を消化すると消化ライン内の悪夢に1000消化ダメージを与える。"
+sub_description = "この花を消化すると消化ライン内の悪夢に胃袋マスX×Y×5の消化ダメージを与える。"

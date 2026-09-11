@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_1trdx"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_dr4of"]
 [ext_resource type="Texture2D" uid="uid://d244n5mk305jc" path="res://resource/image/texture/seed/tex_seed_dokudami.png" id="4_jtoxl"]
-[ext_resource type="Script" uid="uid://723kakfbp6lv" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate.gd" id="skill_pending_acid"]
 [ext_resource type="Script" uid="uid://1rw2oodn48k" path="res://scene/main/game/seed/skill/on_remove_from_stomach/seed_effect_on_remove_from_stomach_change_damage.gd" id="skill_return_damage"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
@@ -17,8 +16,7 @@ stomach_shape = null
 
 [sub_resource type="Resource" id="Resource_main_effect_1"]
 script = ExtResource("skill_return_damage")
-damage_rate = 0.5
-acid_damage_rate = 0.33
+acid_damage_rate = 10.0
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
@@ -26,16 +24,12 @@ effects = Array[ExtResource("3_1trdx")]([SubResource("Resource_main_effect_1")])
 
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_return_damage")
-damage_rate = 1.0
+final_damage_multiplier = 2.0
 disable_after_seed_acid = true
-
-[sub_resource type="Resource" id="Resource_sub_effect_2"]
-script = ExtResource("skill_pending_acid")
-rate = 1.0
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_1trdx")]([SubResource("Resource_sub_effect_1"), SubResource("Resource_sub_effect_2")])
+effects = Array[ExtResource("3_1trdx")]([SubResource("Resource_sub_effect_1")])
 
 [resource]
 script = ExtResource("3_dr4of")
@@ -47,5 +41,5 @@ small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_main_skill")
 sub_skill = SubResource("Resource_sub_skill")
 acid_block = SubResource("Resource_drag_block")
-main_description = "吐き戻した悪夢に消化ダメージ33%を与える。吐き戻し時のダメージがHP50%になる。"
-sub_description = "この花を消化するとドラッグ操作での吐き戻しが出来なくなる。代わりに消化ダメージ+100%"
+main_description = "吐き戻した悪夢に10×吐き戻しで受けるダメージ分の消化ダメージを与える。"
+sub_description = "この花を消化するとドラッグ操作での吐き戻しが出来なくなり、吐き戻しで受けるダメージ+100%。"

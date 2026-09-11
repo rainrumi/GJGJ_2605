@@ -16,10 +16,10 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_uruj0"]
 script = ExtResource("skill_time_rate")
-rate = 0.020000000000436557
-elapsed_step_rate = 0.020000000000436557
-min_interval_rate = 0.0
-max_interval_rate = 0.3999999999996362
+rate = 0.98
+elapsed_step_rate = 0.98
+min_interval_rate = 0.6
+max_interval_rate = 1.0
 
 [sub_resource type="Resource" id="Resource_e1bkn"]
 script = ExtResource("skill_seed_skill")
@@ -27,10 +27,10 @@ effects = Array[ExtResource("3_r2f30")]([SubResource("Resource_uruj0")])
 
 [sub_resource type="Resource" id="Resource_ro37a"]
 script = ExtResource("skill_time_rate")
-rate = 0.030000000000654836
-elapsed_step_rate = 0.030000000000654836
-min_interval_rate = 0.0
-max_interval_rate = 0.6000000000003638
+rate = 0.97
+elapsed_step_rate = 0.97
+min_interval_rate = 0.4
+max_interval_rate = 1.0
 
 [sub_resource type="Resource" id="Resource_va1tr"]
 script = ExtResource("skill_seed_skill")

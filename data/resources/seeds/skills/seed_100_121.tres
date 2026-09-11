@@ -26,7 +26,7 @@ effects = Array[ExtResource("3_8ifaw")]([SubResource("Resource_q0rcq")])
 [sub_resource type="Resource" id="Resource_mosmf"]
 script = ExtResource("skill_adjacent_damage")
 split = false
-player_hp_rate = 30.0
+player_max_hp_rate = 30.0
 enemies_only = true
 
 [sub_resource type="Resource" id="Resource_rvo8m"]
@@ -44,4 +44,4 @@ main_skill = SubResource("Resource_pokqi")
 sub_skill = SubResource("Resource_rvo8m")
 acid_block = SubResource("Resource_30bw4")
 main_description = "回復したHPと同等の消化ダメージを消化ラインに触れている悪夢に与える。"
-sub_description = "この花を消化すると現在のHP3000%の消化ダメージを隣接する悪夢に与える。"
+sub_description = "この花を消化すると現在のHP上限3000%の消化ダメージを隣接する悪夢に与える。"

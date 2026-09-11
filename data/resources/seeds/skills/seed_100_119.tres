@@ -7,7 +7,7 @@
 [ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_bhfpt"]
 [ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
 [ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_recover_hp.gd" id="skill_recover_hp"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_recover_hp.gd" id="skill_seed_hp"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_hp_rate.gd" id="skill_seed_hp"]
 [ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_4xa0p"]
@@ -25,8 +25,8 @@ effects = Array[ExtResource("3_7ke7p")]([SubResource("Resource_kqu1a")])
 
 [sub_resource type="Resource" id="Resource_cm8dq"]
 script = ExtResource("skill_seed_hp")
-hp_rate = 0.2000000000007276
-adjacent_digestion_only = true
+rate = 2.5
+highest_hp_only = true
 
 [sub_resource type="Resource" id="Resource_ywogd"]
 script = ExtResource("skill_seed_skill")
@@ -43,4 +43,4 @@ main_skill = SubResource("Resource_cb3p4")
 sub_skill = SubResource("Resource_ywogd")
 acid_block = SubResource("Resource_4xa0p")
 main_description = "胃の中のモノを消化すると自身のHPを悪夢の最大HP15%分回復する。"
-sub_description = "隣接するモノを消化するとHP+30%"
+sub_description = "この花を消化したとき、胃の中の一番HPが高いモノのHPを150%増加する。"

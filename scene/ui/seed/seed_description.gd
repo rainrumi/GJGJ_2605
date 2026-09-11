@@ -9,7 +9,10 @@ const BLOCK_HP_PLACEHOLDER := "%d"
 static func get_main_description(skill: SeedInfo, current_rate_percent := -1) -> String:
 	if skill == null:
 		return EMPTY_TEXT
-	return _append_current_rate(_get_or_empty(skill.main_description), current_rate_percent)
+	var description := _get_or_empty(skill.main_description)
+	if skill.skill_id == 100120 and current_rate_percent >= 0:
+		return "%s(現在+%d%%)" % [description, current_rate_percent]
+	return _append_current_rate(description, current_rate_percent)
 
 
 # sub説明取得

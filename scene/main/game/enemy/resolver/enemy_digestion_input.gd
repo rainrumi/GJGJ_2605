@@ -7,6 +7,8 @@ var minutes := 0 # 現在分数
 var elapsed_minutes := 0 # 経過分数
 var acid_damage_per_cell := 0 # セル消化値
 var player_hp := 0
+var player_max_hp := 0
+var day_elapsed_minutes := 0
 
 
 # 入力値設定

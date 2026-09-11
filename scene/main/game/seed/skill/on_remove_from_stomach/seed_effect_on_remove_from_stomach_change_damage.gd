@@ -1,6 +1,7 @@
 class_name SeedEffectOnRemoveFromStomachChangeDamage
 extends SeedEffect
 
+@export var final_damage_multiplier := 1.0
 @export var damage_rate := -1.0 # 戻し率
 @export var acid_damage_rate := 0.0 # 酸戻し率
 @export var disable_after_seed_acid := false # 種後無効
@@ -10,6 +11,7 @@ extends SeedEffect
 func on_finish_acid_seed(state: DreamSeedSkillState, _context: Dictionary) -> bool:
 	if disable_after_seed_acid:
 		state.remove_from_stomach_disabled = true
+		state.remove_damage_multiplier *= final_damage_multiplier
 		return true
 	return false
 

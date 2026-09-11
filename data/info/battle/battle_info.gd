@@ -12,3 +12,6 @@ var stomach_rows := RunState.DEFAULT_STOMACH_ROWS
 var flowers: Array[SeedInfo] = []
 var stored_seeds: Array[SeedInfo] = []
 var permanent_acid_damage_bonus_rate := 0.0
+var day_seed_acid_bonus := 0.0
+var day_elapsed_minutes := 0
+var day_start_minutes := RunState.BATTLE_START_MINUTES

@@ -3,6 +3,9 @@ extends RefCounted
 
 var _status_preview_base_effects: Array[SeedEffect] = []
 var _status_preview_only := false
+var _damaged_objects: Dictionary[int, bool] = {}
+var _pending_damaged_objects: Dictionary[int, bool] = {}
+
 var _state := DreamSeedSkillState.new() # 状態
 var _planted_flowers: Array[SeedInfo] = [] # 植付花
 var _persistent_sub_effects: Array[SeedEffect] = [] # 消化後持続副効果
@@ -38,6 +41,8 @@ func setup(flowers: Array) -> void:
 	_latest_persistent_sub_effects_by_seed_id.clear()
 	_activated_non_stacking_sub_effects.clear()
 	_pending_digested.clear()
+	_damaged_objects.clear()
+	_pending_damaged_objects.clear()
 	_state.reset()
 	for effect in _get_main_effects():
 		effect.setup(_state)
@@ -53,6 +58,8 @@ func setup_status_preview(base_flowers: Array[SeedInfo], preview_flowers: Array[
 	setup(preview_flowers)
 	_status_preview_only = true
 	_status_preview_base_effects = _collect_main_effects(base_flowers)
+	_damaged_objects.clear()
+	_pending_damaged_objects.clear()
 	_state.reset()
 	for effect in _get_main_effects():
 		effect.setup(_state)
@@ -159,7 +166,7 @@ func get_time_reduction_rate(
 	rate += _state.persistent_time_reduction_bonus_rate
 	if consume_pending_bonus:
 		_state.next_time_reduction_bonus_rate = 0.0
-	return clampf(rate, -2.0, 0.9)
+	return 1.0 - clampf(rate, -2.0, 0.9)
 
 
 func get_persistent_stomach_rows_bonus() -> int:
@@ -196,7 +203,7 @@ func get_seed_time_reduction_rates(seed: SeedInfo) -> Dictionary:
 		return result
 	var main_effect := _find_time_reduction_effect(seed.get_main_skill())
 	if main_effect != null:
-		result.main = (
+		result.main = 1.0 - (
 			main_effect.get_time_reduction_rate(_state, {})
 			if _planted_flowers.has(seed)
 			else main_effect.get_initial_time_reduction_rate(_state)
@@ -204,11 +211,11 @@ func get_seed_time_reduction_rates(seed: SeedInfo) -> Dictionary:
 	var sub_effect := _latest_persistent_sub_effects_by_seed_id.get(seed.skill_id) \
 		as SeedEffectOnBattleChangeTimeReductionRate
 	if sub_effect != null:
-		result.sub = sub_effect.get_time_reduction_rate(_state, {})
+		result.sub = 1.0 - sub_effect.get_time_reduction_rate(_state, {})
 	else:
 		sub_effect = _find_time_reduction_effect(seed.get_sub_skill())
 		if sub_effect != null:
-			result.sub = sub_effect.get_initial_time_reduction_rate(_state)
+			result.sub = 1.0 - sub_effect.get_time_reduction_rate(_state, {})
 	return result
 
 
@@ -285,8 +292,12 @@ func add_acid_damage_total(amount: int) -> void:
 
 # 消化ダメージ回復量消費
 func consume_acid_damage_heal_amount() -> int:
-	var heal_amount := floori(float(_state.last_acid_damage_total) * _sum_float("get_acid_damage_heal_rate", {})) # 回復量
+	var heal_amount := floori(float(_state.last_acid_damage_total) * _sum_float("get_acid_damage_heal_rate", {}))
+	for effect in _get_main_effects():
+		if effect is SeedEffectOnBattleRecoverHp:
+			heal_amount += effect.heal_per_damaged_object * _pending_damaged_objects.size() # 回復量
 	_state.last_acid_damage_total = 0
+	_pending_damaged_objects.clear()
 	return heal_amount
 
 
@@ -458,7 +469,13 @@ func _get_seed_effects(skill: SeedSkill) -> Array[SeedEffect]:
 func _sum_float(method_name: String, context: Dictionary) -> float:
 	var total := 0.0 # 合計
 	for effect in _get_main_effects():
-		total += float(effect.call(method_name, _state, context))
+		var value := float(effect.call(method_name, _state, context))
+		if method_name == "get_acid_damage_rate":
+			total += value - 1.0
+		elif method_name == "get_time_reduction_rate":
+			total += 1.0 - value
+		else:
+			total += value
 	return total
 
 
@@ -468,3 +485,67 @@ func _sum_int(method_name: String, context: Dictionary) -> int:
 	for effect in _get_main_effects():
 		total += int(effect.call(method_name, _state, context))
 	return total
+
+
+func get_interval_minutes_delta(minutes: int) -> int:
+	var delta := _state.persistent_interval_minutes_delta
+	for effect in _get_main_effects():
+		if effect is SeedEffectClockIntervalMinutes:
+			delta += effect.get_interval_minutes_delta(minutes)
+	return delta
+
+
+func consume_clock_rewind_minutes() -> int:
+	var value := _state.pending_clock_rewind_minutes
+	_state.pending_clock_rewind_minutes = 0
+	return value
+
+
+func get_persistent_stomach_columns_bonus() -> int:
+	return _state.persistent_stomach_columns_bonus
+
+
+func get_persistent_acid_line_bonus() -> int:
+	return _state.persistent_acid_line_bonus
+
+
+func get_remove_damage_multiplier() -> float:
+	return _state.remove_damage_multiplier
+
+
+func get_damaged_object_count() -> int:
+	return _state.last_damaged_object_count
+
+
+func set_damaged_object_count(count: int) -> void:
+	_state.last_damaged_object_count = count
+	if count == 0:
+		_damaged_objects.clear()
+		_pending_damaged_objects.clear()
+
+
+func get_sunflower_max_hp_bonus() -> float:
+	return _state.sunflower_max_hp_bonus
+
+
+func add_sunflower_max_hp_bonus(value: float) -> void:
+	_state.sunflower_max_hp_bonus += value
+	add_max_hp_bonus_rate(value)
+
+
+func get_seed_target_multiplier(target: Enemy) -> float:
+	var value := 1.0
+	for effect in _get_main_effects():
+		if effect is SeedEffectOnTargetChangeAcidDamage and effect.seeds_only:
+			value *= effect.multiplier if target.has_seed() else 1.0
+	return value
+
+
+func record_damaged_object(amount: int, enemy: Enemy) -> void:
+	if amount <= 0:
+		return
+	var id := enemy.get_instance_id()
+	if not _damaged_objects.has(id):
+		_damaged_objects[id] = true
+		_pending_damaged_objects[id] = true
+	_state.last_damaged_object_count = _damaged_objects.size()

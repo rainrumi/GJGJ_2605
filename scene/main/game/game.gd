@@ -33,6 +33,10 @@ var hp := MAX_HP
 var current_stage_id := 0
 var current_stage: StageInfo
 var current_day := 1
+var day_start_minutes := RunState.BATTLE_START_MINUTES
+var day_elapsed_minutes := 0
+var day_seed_acid_bonus := 0.0
+var _pending_forced_returns: Array[Enemy] = []
 var current_enemy_preset: EnemyPresetInfo
 var battle_active := false
 var auto_acid_enabled := false
@@ -117,7 +121,11 @@ func start_battle(context: BattleInfo = null) -> void:
 	_battle_start_context = _copy_battle_context(battle_context)
 	_awaiting_time_over_decision = false
 	_pending_depleted_seed_sources.clear()
-	minutes = maxi(0, battle_context.starting_minutes)
+	_pending_forced_returns.clear()
+	day_start_minutes = battle_context.day_start_minutes
+	day_elapsed_minutes = battle_context.day_elapsed_minutes
+	day_seed_acid_bonus = battle_context.day_seed_acid_bonus
+	minutes = maxi(day_start_minutes, battle_context.starting_minutes)
 	effective_max_hp = MAX_HP
 	hp = clampi(battle_context.starting_hp, 0, effective_max_hp)
 	current_day = battle_context.day
@@ -136,7 +144,7 @@ func start_battle(context: BattleInfo = null) -> void:
 	acid_controller.set_battle_start_minutes(minutes)
 	enemy_effects.reset()
 	seed_effects.set_day(current_day)
-	seed_effects.add_acid_damage_bonus_rate(battle_context.permanent_acid_damage_bonus_rate)
+	seed_effects.add_acid_damage_bonus_rate(battle_context.permanent_acid_damage_bonus_rate + day_seed_acid_bonus)
 	_refresh_effective_max_hp(false)
 	dragging_enemy = null
 	seed_controller.cancel_drag()
@@ -211,12 +219,12 @@ func get_stomach_rows() -> int:
 
 # 基礎胃袋列取得
 func get_base_stomach_columns() -> int:
-	return stomach.columns - _get_seed_stomach_column_bonus()
+	return stomach.columns - _get_seed_stomach_column_bonus() - seed_effects.get_persistent_stomach_columns_bonus()
 
 
 # 基礎胃袋行取得
 func get_base_stomach_rows() -> int:
-	return stomach.rows - _get_seed_stomach_row_bonus()
+	return stomach.rows - _get_seed_stomach_row_bonus() - seed_effects.get_persistent_stomach_rows_bonus()
 
 
 # 装備種取得
@@ -791,6 +799,7 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	if not dragged_enemy_was_Aciding:
 		enemy.return_to_origin()
 		return
+	seed_effects.set_damaged_object_count(0)
 	enemy.set_Aciding(false)
 	enemy.return_to_origin()
 	_apply_remove_from_stomach_acid_damage(enemy)
@@ -819,6 +828,7 @@ func _advance_acid_turn() -> void:
 		return
 	# 消化結果
 	var acid_result := _run_acid_core(minutes, elapsed_minutes)
+	_apply_forced_returns()
 	_apply_acid_damage_seed_heal()
 	_apply_Acided_enemy_seed_effects(acid_result.Acided_enemies)
 	_apply_Acided_seed_effects(acid_result.Acided_enemies)
@@ -826,12 +836,14 @@ func _advance_acid_turn() -> void:
 	for enemy in early_digested + _resolve_extra_seed_digestions():
 		if not acid_result.Acided_enemies.has(enemy):
 			acid_result.Acided_enemies.append(enemy)
-	var progress_digested := _apply_elapsed_time(elapsed_minutes + acid_result.extra_elapsed_minutes)
+	var progress_digested := _apply_elapsed_time(elapsed_minutes)
 	for enemy in progress_digested:
 		if not acid_result.Acided_enemies.has(enemy):
 			acid_result.Acided_enemies.append(enemy)
+	_shift_clock(acid_result.extra_elapsed_minutes)
 	if acid_result.time_override_minutes >= 0:
-		minutes = acid_result.time_override_minutes
+		_shift_clock(acid_result.time_override_minutes - minutes)
+	if acid_result.extra_elapsed_minutes != 0 or acid_result.time_override_minutes >= 0:
 		_refresh_after_battle_event()
 	_apply_player_damage_values()
 	if _all_enemys_Acided():
@@ -854,7 +866,7 @@ func _begin_acid_turn() -> bool:
 # run消化core処理
 func _run_acid_core(current_minutes: int, elapsed_minutes: int) -> BattleTurnResultData:
 	# 消化済み敵
-	var Acided_enemies: Array[Enemy] = acid_controller.acid_enemys(enemies, stomach, current_minutes, elapsed_minutes, hp)
+	var Acided_enemies: Array[Enemy] = acid_controller.acid_enemys(enemies, stomach, current_minutes, elapsed_minutes, hp, effective_max_hp, day_elapsed_minutes)
 	# 消化結果
 	var acid_result := acid_controller.build_turn_result(Acided_enemies)
 	_apply_acid_spawn_requests(acid_result.spawn_requests)
@@ -871,7 +883,8 @@ func _finish_empty_acid_turn() -> void:
 # elapsed時間適用
 func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
 	var previous_minutes := minutes # 前時刻
-	minutes += elapsed_minutes
+	day_elapsed_minutes += maxi(0, elapsed_minutes)
+	minutes = maxi(day_start_minutes, minutes + elapsed_minutes)
 	var effect_result: BattleTurnResultData
 	if hp <= 0:
 		seed_effects.add_revive_event()
@@ -880,6 +893,7 @@ func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
 		var revived_hp := hp
 		if not seed_controller.consume_rest_time_skip():
 			minutes += REST_MINUTES
+			day_elapsed_minutes += REST_MINUTES
 			elapsed_minutes += REST_MINUTES
 		effect_result = acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
 		_apply_progress_effect_result(effect_result)
@@ -901,7 +915,7 @@ func _apply_progress_effect_result(result: BattleTurnResultData) -> void:
 	if not result.player_damage_values.is_empty():
 		_apply_player_damage(result.player_damage_values)
 	if result.extra_elapsed_minutes != 0:
-		minutes += result.extra_elapsed_minutes
+		_shift_clock(result.extra_elapsed_minutes)
 
 
 # 消化turn終了
@@ -971,6 +985,9 @@ func _copy_battle_context(source: BattleInfo) -> BattleInfo:
 	copy.flowers = source.flowers.duplicate()
 	copy.stored_seeds = source.stored_seeds.duplicate()
 	copy.permanent_acid_damage_bonus_rate = source.permanent_acid_damage_bonus_rate
+	copy.day_seed_acid_bonus = source.day_seed_acid_bonus
+	copy.day_elapsed_minutes = source.day_elapsed_minutes
+	copy.day_start_minutes = source.day_start_minutes
 	return copy
 
 
@@ -1076,7 +1093,8 @@ func _get_seed_dynamic_description_rates() -> Dictionary:
 				"main": roundi(float(rates.main) * 100.0),
 				"sub": roundi(float(rates.sub) * 100.0),
 			}
-			break
+	result[100106] = {"main": roundi(day_seed_acid_bonus * 100.0)}
+	result[100120] = {"main": roundi(seed_effects.get_sunflower_max_hp_bonus() * 100.0)}
 	return result
 
 
@@ -1114,6 +1132,7 @@ func _refresh_hover_tooltip() -> void:
 		ui.show_enemy_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 # after戦闘イベント更新
 func _refresh_after_battle_event(explicit_recovered_hp: int = -1) -> void:
+	_apply_acid_damage_seed_heal()
 	acid_controller.refresh_enemy_effects(enemies, stomach)
 	enemy_setup.refresh_enemy_page_visibility(enemies)
 	_refresh_ui(explicit_recovered_hp)
@@ -1149,7 +1168,7 @@ func _active_acid_count() -> int:
 func _get_remove_from_stomach_damage() -> int:
 	# ダメージ率
 	var damage_rate := seed_effects.get_remove_from_stomach_damage_rate(REMOVE_FROM_STOMACH_DAMAGE_RATE)
-	return ceili(float(effective_max_hp) * damage_rate)
+	return ceili(float(ceili(float(effective_max_hp) * damage_rate)) * seed_effects.get_remove_damage_multiplier())
 # sumダメージvalues処理
 func _sum_damage_values(damage_values: Array[int]) -> int:
 	# 合計
@@ -1196,12 +1215,13 @@ func _apply_acid_spawn_requests(spawn_requests: Array[BattleSpawnEnemyData]) -> 
 func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	# HP
 	var previous_hp := hp
-	hp = seed_controller.apply_direct_Acided_seed_effects(Acided_enemies, hp, effective_max_hp)
+	hp = seed_controller.apply_direct_Acided_seed_effects(Acided_enemies, hp, effective_max_hp, seed_effects.get_damaged_object_count())
 	if hp > previous_hp:
 		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp - previous_hp, enemies, stomach))
 	var previous_stomach_size := Vector2i(stomach.columns, stomach.rows)
 	for seed in seed_controller.collect_Acided_seeds(Acided_enemies):
 		seed_effects.add_Acided_seed_effect(seed, minutes, stomach)
+	_shift_clock(-seed_effects.consume_clock_rewind_minutes())
 	if Vector2i(stomach.columns, stomach.rows) != previous_stomach_size:
 		_refresh_enemy_stomach_display_sizes()
 	_refresh_effective_max_hp(false)
@@ -1249,7 +1269,7 @@ func _refresh_effective_max_hp(keep_rate: bool) -> void:
 # 時間種HP回復適用
 func _apply_time_seed_hp_recovery() -> void:
 	# 回復率
-	var recovery_rate := seed_effects.get_time_hp_recovery_rate(_active_acid_count())
+	var recovery_rate := seed_effects.get_time_hp_recovery_rate(stomach.get_current_fullness(enemies))
 	recovery_rate += seed_effects.get_hour_hp_recovery_rate(minutes)
 	if recovery_rate <= 0.0:
 		return
@@ -1267,14 +1287,14 @@ func _apply_acid_damage_seed_heal() -> void:
 
 # removefrom胃袋消化ダメージ適用
 func _apply_remove_from_stomach_acid_damage(enemy: Enemy) -> void:
-	if enemy == null or enemy.is_Acided():
+	if enemy == null or enemy.is_Acided() or not enemy.is_enemy():
 		return
 	# ダメージ率
 	var damage_rate := seed_effects.get_remove_from_stomach_acid_damage_rate()
 	if damage_rate <= 0.0:
 		return
 	# 消化ダメージ
-	var acid_damage := int(_get_acid_damage_info().get("total", 0))
+	var acid_damage := _get_remove_from_stomach_damage()
 	# ダメージ
 	var damage := maxi(1, roundi(float(acid_damage) * damage_rate))
 	enemy.show_acid_damage_values([damage])
@@ -1321,7 +1341,7 @@ func _apply_Acided_enemy_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 			var heal_amount := ceili(float(enemy.get_max_hp()) * heal_rate)
 			_recover_player(heal_amount)
 		if max_hp_rate > 0.0:
-			seed_effects.add_max_hp_bonus_rate(max_hp_rate)
+			seed_effects.add_sunflower_max_hp_bonus(max_hp_rate)
 			_refresh_effective_max_hp(false)
 
 
@@ -1372,12 +1392,13 @@ func _resolve_extra_seed_digestions(initial: Array[Enemy] = []) -> Array[Enemy]:
 		block_resolver.append_Acided_by_seed_block_effects(
 			enemy, enemies, stomach, minutes, {}, queue,
 			int(_get_acid_damage_info().get("total", 0)),
-			acid_controller.get_step_minutes_breakdown(enemies, false, minutes).total, hp
+			acid_controller.get_step_minutes_breakdown(enemies, false, minutes).total, hp, effective_max_hp, day_elapsed_minutes
 		)
 		var single: Array[Enemy] = [enemy]
 		_apply_Acided_enemy_seed_effects(single)
 		_apply_Acided_seed_effects(single)
 		_apply_adjacent_seed_heal(single)
+		_apply_forced_returns()
 		queue.append_array(seed_effects.consume_digested_enemies())
 	return processed
 
@@ -1423,13 +1444,13 @@ func _refresh_seed_structural_effects() -> void:
 		return
 	var flowers := seed_controller.get_flowers()
 	var size_bonus := SeedEffectResolver.get_stomach_size_bonus(flowers)
-	var acid_line_rows := 1
+	var acid_line_rows := 1 + seed_effects.get_persistent_acid_line_bonus()
 	for flower in flowers:
 		if flower == null or flower.get_main_skill() == null:
 			continue
 		var skill := flower.get_main_skill()
 		acid_line_rows += skill.get_acid_line_rows_delta()
-	var target_columns := _battle_start_context.stomach_columns + size_bonus.x
+	var target_columns := _battle_start_context.stomach_columns + size_bonus.x + seed_effects.get_persistent_stomach_columns_bonus()
 	var target_rows := (
 		_battle_start_context.stomach_rows
 		+ size_bonus.y
@@ -1487,6 +1508,12 @@ func _connect_enemy_damage_attack_se(enemy: Enemy) -> void:
 		return
 	if not enemy.data.hp.damaged.is_connected(_on_enemy_damaged_for_attack_se):
 		enemy.data.hp.damaged.connect(_on_enemy_damaged_for_attack_se)
+	var damaged := seed_effects.record_damaged_object.bind(enemy)
+	if not enemy.data.hp.damaged.is_connected(damaged):
+		enemy.data.hp.damaged.connect(damaged)
+	var returned := _on_forcibly_returned.bind(enemy)
+	if not enemy.forcibly_returned.is_connected(returned):
+		enemy.forcibly_returned.connect(returned)
 
 
 func _on_enemy_damaged_for_attack_se(_amount: int) -> void:
@@ -1501,3 +1528,25 @@ func _get_acid_damage_info() -> Dictionary:
 # 消化interval情報取得
 func _get_acid_interval_info() -> Dictionary:
 	return acid_controller.get_step_minutes_breakdown(enemies, false, minutes)
+
+
+func _shift_clock(delta: int) -> void:
+	if delta == 0:
+		return
+	day_elapsed_minutes += maxi(0, delta)
+	minutes = maxi(day_start_minutes, minutes + delta)
+	battle_clock.sync_time(0, minutes * 60)
+
+
+func _on_forcibly_returned(enemy: Enemy) -> void:
+	if not _pending_forced_returns.has(enemy):
+		_pending_forced_returns.append(enemy)
+
+
+func _apply_forced_returns() -> void:
+	var returned := _pending_forced_returns.duplicate()
+	_pending_forced_returns.clear()
+	for enemy in returned:
+		var damage := _get_remove_from_stomach_damage()
+		_apply_remove_from_stomach_acid_damage(enemy)
+		_apply_player_damage([damage] as Array[int])

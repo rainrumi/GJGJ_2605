@@ -1,13 +1,18 @@
 class_name SeedEffectOnFinishAcidSeedBlockFixedDamageLine
 extends SeedEffect
 
+@export var damage_per_stomach_cell := 0
 @export var damage := 0 # 固定ダメ
 @export var split := false # 分割有無
 
 
 # 種ブロック完了
 func on_finish_acid_seed_block(context: Dictionary) -> void:
-	apply_line_damage(context, damage, split)
+	var stomach := context.get("stomach") as StomachBoard
+	var total := damage
+	if stomach != null:
+		total += stomach.columns * stomach.rows * damage_per_stomach_cell
+	apply_line_damage(context, total, split)
 
 
 static func apply_line_damage(

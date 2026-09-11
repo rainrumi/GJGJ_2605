@@ -455,6 +455,7 @@ func _grant_lara_interaction_reward() -> String:
 func _on_game_battle_finished(won: bool) -> void:
 	_sync_player_stomach_size()
 	run_state.current_minutes = game.get_clear_minutes()
+	run_state.day_elapsed_minutes = game.day_elapsed_minutes
 	_sync_lara_progress()
 	_day_change_time_recovery_pending = won
 	if won:
@@ -536,6 +537,7 @@ func _finish_end_gameover_novel() -> void:
 		stage_clear.setup_hp(game.get_current_hp())
 	_sync_run_state_from_stage_clear()
 	run_state.current_minutes = game.get_clear_minutes()
+	run_state.day_elapsed_minutes = game.day_elapsed_minutes
 	_sync_lara_progress()
 	_finish_current_day()
 
@@ -599,6 +601,8 @@ func _finish_current_day() -> void:
 func _advance_to_next_day() -> void:
 	_lara_judge_pending = false
 	_apply_day_change_time_recovery()
+	run_state.apply_day_finished_seed_effects()
+	run_state.day_elapsed_minutes = 0
 	run_state.current_day += 1
 	run_state.current_minutes = RunState.BATTLE_START_MINUTES
 	run_state.reset_daily_challenge_state()
@@ -897,6 +901,9 @@ func _create_battle_start_context(reset_player_state: bool) -> BattleInfo:
 	context.flowers = run_state.planted_flowers.duplicate()
 	context.stored_seeds = run_state.stored_seeds.duplicate()
 	context.permanent_acid_damage_bonus_rate = run_state.permanent_acid_damage_bonus_rate
+	context.day_seed_acid_bonus = run_state.day_seed_acid_bonus
+	context.day_elapsed_minutes = run_state.day_elapsed_minutes
+	context.day_start_minutes = run_state.day_start_minutes
 	return context
 
 

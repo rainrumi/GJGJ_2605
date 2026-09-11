@@ -30,7 +30,7 @@ effects = Array[ExtResource("3_i03xb")]([SubResource("Resource_yw61d"), SubResou
 
 [sub_resource type="Resource" id="Resource_5hw5y"]
 script = ExtResource("skill_pending_acid")
-rate = 3.0
+rate = 4.0
 start_minutes = 1680
 
 [sub_resource type="Resource" id="Resource_rye86"]

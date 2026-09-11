@@ -31,6 +31,7 @@ effects = Array[ExtResource("3_svnoj")]([SubResource("Resource_cv3l6"), SubResou
 [sub_resource type="Resource" id="Resource_4swm0"]
 script = ExtResource("skill_adjacent_damage")
 received_damage_rate = 1.0
+self_damage_multiplier = 3.0
 
 [sub_resource type="Resource" id="Resource_e40uw"]
 script = ExtResource("skill_seed_skill")
@@ -47,4 +48,4 @@ main_skill = SubResource("Resource_k8b83")
 sub_skill = SubResource("Resource_e40uw")
 acid_block = SubResource("Resource_nijqu")
 main_description = "受けたダメージを次の消化ダメージに加算する。"
-sub_description = "消化されるまでに受けた消化ダメージを隣接するモノに分配して与える。"
+sub_description = "この花の受けるダメージ+200%。消化されるまでに受けた消化ダメージを隣接するモノに分配して与える。"
