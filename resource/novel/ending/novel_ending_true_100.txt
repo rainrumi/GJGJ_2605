@@ -68,11 +68,12 @@
 @lcm
 「先天的なものだろう。」検査をした人はそう言った。
 @lcm
+@bg "res://resource/image/texture/still/tex_still_end_300.png"
 色々あったが、私は特例として無事に試験に合格し、ラーラと入学することができた。
 @lcm
 これは嬉しいことだった。
 @lcm
 私はラーラとともに笑い合い、新たな生活へと踏み出した。
 @lcm
-トゥルーエンド - After ‘The Canary’s Song
+トゥルーエンド - After The Canary's Song
 @lcm

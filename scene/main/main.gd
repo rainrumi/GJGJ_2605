@@ -22,6 +22,7 @@ enum NovelFlow {
 	LARA_JUDGE_SETUP,
 	LARA_JUDGE_RESULT,
 	LARA_JUDGE_REWARD,
+	DEBUG_PREVIEW,
 }
 
 @export var end_gameover_novel_text: NovelTextInfo
@@ -241,6 +242,16 @@ func _on_quit_requested() -> void:
 	get_tree().quit()
 
 
+# デバッグノベル要求処理
+func _on_title_debug_novel_requested(novel_text: NovelTextInfo) -> void:
+	if not DebugState.debug_enabled or novel_text == null:
+		return
+	_screen_flow_id += 1
+	title.visible = false
+	active_novel_flow = NovelFlow.DEBUG_PREVIEW
+	opening_novel.start_with_text(novel_text)
+
+
 # open設定画面処理
 func _open_settings_screen() -> void:
 	if settings_screen.visible:
@@ -319,6 +330,9 @@ func _on_opening_novel_finished() -> void:
 			run_state.unlock_lara()
 			run_state.unlock_continuous_play()
 			_finish_current_day()
+		NovelFlow.DEBUG_PREVIEW:
+			active_novel_flow = NovelFlow.NONE
+			show_title()
 		_:
 			active_novel_flow = NovelFlow.NONE
 			show_day_intro()

@@ -79,6 +79,38 @@ theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
 text = "終了"
 
+[node name="DebugButton" type="Button" parent="." unique_id=1174410901]
+offset_left = 13.0
+offset_top = 320.0
+offset_right = 153.0
+offset_bottom = 350.0
+toggle_mode = true
+theme_override_font_sizes/font_size = 12
+text = "Debug"
+
+[node name="NovelDebugPanel" type="PanelContainer" parent="." unique_id=1485036647]
+visible = false
+offset_left = 310.0
+offset_top = 10.0
+offset_right = 630.0
+offset_bottom = 350.0
+
+[node name="Margin" type="MarginContainer" parent="NovelDebugPanel" unique_id=1066131467]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Scroll" type="ScrollContainer" parent="NovelDebugPanel/Margin" unique_id=1520936682]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="NovelButtonList" type="VBoxContainer" parent="NovelDebugPanel/Margin/Scroll" unique_id=937143090]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
 [connection signal="pressed" from="Menu/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="Menu/ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed" from="Menu/SettingsButton" to="." method="_on_settings_button_pressed"]
