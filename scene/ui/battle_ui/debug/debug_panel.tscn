@@ -130,6 +130,16 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
 text = "リトライ"
 
+[node name="DebugNextEnemyButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 263.0
+offset_top = 317.0
+offset_right = 316.5
+offset_bottom = 335.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 9
+text = "次の敵"
+
 [node name="DebugAllSeedButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 377.0

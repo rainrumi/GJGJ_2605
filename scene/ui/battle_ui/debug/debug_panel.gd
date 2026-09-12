@@ -6,6 +6,7 @@ signal debug_reroll_requested
 signal debug_stomach_size_requested(delta_columns: int, delta_rows: int)
 signal debug_seed_requested
 signal debug_retry_requested
+signal debug_next_enemy_requested
 signal debug_instant_clear_requested
 signal debug_seed_acquisition_requested(seed: SeedInfo)
 signal seed_parameter_applied(original_seed: SeedInfo, edited_seed: SeedInfo)
@@ -29,6 +30,7 @@ const DEBUG_BUTTON_ACTIVE_PRESSED_COLOR := Color(0.76, 0.76, 0.76, 1.0)
 @onready var seed_parameter_panel: DebugSeedParameterPanel = $DebugSeedParameterPanel
 @onready var debug_enemy_parameter_button: Button = $DebugEnemyParameterButton
 @onready var debug_retry_button: Button = $DebugRetryButton
+@onready var debug_next_enemy_button: Button = $DebugNextEnemyButton
 @onready var debug_instant_clear_button: Button = $DebugInstantClearButton
 @onready var enemy_parameter_panel: DebugEnemyParameterPanel = $DebugEnemyParameterPanel
 @onready var debug_all_seed_button: Button = $DebugAllSeedButton
@@ -53,6 +55,7 @@ func _ready() -> void:
 	seed_parameter_panel.seed_parameter_applied.connect(_on_seed_parameter_applied)
 	debug_enemy_parameter_button.pressed.connect(enemy_parameter_panel.open_panel)
 	debug_retry_button.pressed.connect(_on_debug_retry_button_pressed)
+	debug_next_enemy_button.pressed.connect(_on_debug_next_enemy_button_pressed)
 	debug_instant_clear_button.pressed.connect(_on_debug_instant_clear_button_pressed)
 	enemy_parameter_panel.enemy_parameter_applied.connect(_on_enemy_parameter_applied)
 	debug_all_seed_button.pressed.connect(all_seed_panel.open_panel)
@@ -130,6 +133,7 @@ func _prepare_mouse_filters() -> void:
 	debug_seed_parameter_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_enemy_parameter_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_retry_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	debug_next_enemy_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_instant_clear_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	debug_all_seed_button.mouse_filter = Control.MOUSE_FILTER_STOP
 
@@ -182,6 +186,7 @@ func _set_debug_controls_visible(is_visible: bool) -> void:
 	debug_seed_parameter_button.visible = is_visible
 	debug_enemy_parameter_button.visible = is_visible
 	debug_retry_button.visible = is_visible
+	debug_next_enemy_button.visible = is_visible
 	debug_instant_clear_button.visible = is_visible
 	debug_all_seed_button.visible = is_visible
 
@@ -200,6 +205,12 @@ func _on_debug_retry_button_pressed() -> void:
 	if not debug_button_active:
 		return
 	debug_retry_requested.emit()
+
+
+func _on_debug_next_enemy_button_pressed() -> void:
+	if not debug_button_active:
+		return
+	debug_next_enemy_requested.emit()
 
 
 func _on_debug_instant_clear_button_pressed() -> void:

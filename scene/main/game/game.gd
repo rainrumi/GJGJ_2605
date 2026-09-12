@@ -243,6 +243,7 @@ func _connect_ui() -> void:
 	ui.debug_stomach_size_requested.connect(_on_debug_stomach_size_requested)
 	ui.debug_seed_requested.connect(_on_debug_seed_requested)
 	ui.debug_retry_requested.connect(_on_debug_retry_requested)
+	ui.debug_next_enemy_requested.connect(_on_debug_next_enemy_requested)
 	ui.debug_instant_clear_requested.connect(_on_debug_instant_clear_requested)
 	ui.seed_drag_started.connect(_on_seed_drag_started)
 	ui.seed_drag_moved.connect(_on_seed_drag_moved)
@@ -495,6 +496,24 @@ func _on_debug_seed_removal_requested(collection: int, slot_index: int) -> void:
 
 func _on_debug_retry_requested() -> void:
 	retry_last_battle()
+
+
+func _on_debug_next_enemy_requested() -> void:
+	if _battle_start_context == null or current_stage == null or current_stage.enemy_data == null:
+		return
+	var presets := current_stage.enemy_data.normal_enemy_presets
+	if current_stage.enemy_data.strengthened_enemy_presets.has(_battle_start_context.enemy_preset):
+		presets = current_stage.enemy_data.strengthened_enemy_presets
+	if presets.is_empty():
+		return
+	var current_index := presets.find(_battle_start_context.enemy_preset)
+	var next_index := posmod(current_index + 1, presets.size())
+	var next_preset := presets[next_index] as EnemyPresetInfo
+	if next_preset == null:
+		return
+	var next_context := _copy_battle_context(_battle_start_context)
+	next_context.enemy_preset = next_preset
+	start_battle(next_context)
 
 
 func _on_debug_instant_clear_requested() -> void:
