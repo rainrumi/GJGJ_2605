@@ -23,6 +23,7 @@ signal today_rest_requested
 @export var stage_choice_scene: PackedScene
 
 @onready var map_view: StageSelectMapView = $CharacterArea/Map
+@onready var title_label: Label = $UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesPadding/TitleLabel
 @onready var stage_choice_list: StageSelectChoiceList = $UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoicesPadding/StageChoices
 @onready var stage_choices_scroll: ScrollContainer = $UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll
 @onready var time_view: TimeView = $UI/TimeView
@@ -36,6 +37,7 @@ signal today_rest_requested
 var _displayed_stage_definitions: Array[StageInfo] = []
 var _current_stage_definition: StageInfo
 var _current_day := 1
+var _title_base_text := ""
 var _current_minutes := RunState.BATTLE_START_MINUTES
 var _unlocked_high_difficulty_stage_ids: Array[int] = []
 var _run_state: RunState
@@ -45,6 +47,7 @@ var stage_selection_service := StageSelectionService.new()
 
 # 初期化
 func _ready() -> void:
+	_title_base_text = title_label.text
 	_connect_stage_choice_list()
 	time_view.tooltip_requested.connect(_on_time_tooltip_requested)
 	time_view.tooltip_hide_requested.connect(_on_time_tooltip_hide_requested)
@@ -81,6 +84,7 @@ func setup_stage_choices(
 ) -> void:
 	_current_stage_definition = current_stage_definition
 	_current_day = current_day
+	title_label.text = "%s (%d日目)" % [_title_base_text, _current_day]
 	_current_minutes = current_minutes
 	_unlocked_high_difficulty_stage_ids = unlocked_high_difficulty_stage_ids.duplicate()
 	_run_state = run_state

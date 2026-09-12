@@ -148,6 +148,8 @@ func _check_today_rest_button() -> void:
 
 	run_state.unlock_continuous_play()
 	stage_select.setup_stage_choices(null, 5, unlocked_stage_ids, run_state, 23 * 60)
+	var title_label := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesPadding/TitleLabel") as Label
+	_expect(title_label.text == "夢の主を選択 (5日目)", "ステージ選択タイトルに現在の日数を表示する")
 	_expect(rest_button != null and not rest_button.visible, "当日未挑戦なら今日は休むボタンを表示しない")
 	run_state.mark_area_challenged_today()
 	var scroll := stage_select.get_node("UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll") as ScrollContainer
@@ -178,6 +180,7 @@ func _check_today_rest_button() -> void:
 	_expect(label.position.y < 9.0, "LocationLabelを上へ移動する")
 	run_state.reset_daily_challenge_state()
 	stage_select.setup_stage_choices(null, 6, unlocked_stage_ids, run_state, 22 * 60)
+	_expect(title_label.text == "夢の主を選択 (6日目)", "翌日はステージ選択タイトルの日数を更新する")
 	_expect(not rest_button.visible, "翌日は再挑戦するまで今日は休むボタンを非表示にする")
 	root.remove_child(stage_select)
 	stage_select.free()
