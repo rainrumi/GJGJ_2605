@@ -8,25 +8,27 @@
 
 [sub_resource type="Resource" id="AcidBlock"]
 script = ExtResource("2_acid_block")
-max_hp = 30
+max_hp = 280
 damage = 6
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_e75qy"]
 script = ExtResource("effect_5")
+spawn_count = 4
 max_spawn_count = 4
-hp_base = 30
+hp_source = 2
+hp_delta = -40
 attack_source = 3
 attack_delta = 8
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_tukjq"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_e75qy")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 20010005002
 display_name = "E2"
 acid_block = SubResource("AcidBlock")
-description = "消化された時、埋まってない胃袋マスに自身の最大攻撃力+8の攻撃力を持った寄生型悪夢を生成する。（最大4マス）"
-main_skill = SubResource("MainSkill")
+description = "消化された時、埋まってない胃袋マスに自身の最大攻撃力+8の攻撃力と最大HP-40の体力を持った寄生型悪夢を生成する。（最大4マス）"
+main_skill = SubResource("Resource_tukjq")
