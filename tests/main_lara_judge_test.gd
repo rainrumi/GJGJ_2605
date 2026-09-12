@@ -34,15 +34,16 @@ func _run() -> void:
 		var outcome := "win" if difference > 0 else ("lose" if difference < 0 else "draw")
 		_expect(novel._active_novel_text.script_path.contains("judge_%s_" % outcome), "消化数比較に応じた結果を表示")
 		main._on_opening_novel_finished()
+		_expect(novel._images.has(1), "勝敗結果後の報酬文中にラーラを表示")
 		_expect(main.run_state.stored_seeds.size() == 1, "結果後に種を1つ付与する")
 		var seed := main.run_state.stored_seeds[0] as SeedInfo
 		if difference != 0:
 			_expect(seed.rarity == (SeedInfo.Rarity.RARE if difference > 0 else SeedInfo.Rarity.NORMAL), "結果のレアリティ制限に従う")
 		_expect(main.run_state.current_hp == 100, "結果に関係なくHPを全回復")
-		_expect(novel._active_novel_text.text == (
+		_expect(novel._active_novel_text.text.ends_with((
 			"%sを1つ手に入れた。更にHPが全回復した。"
 			+ "\n@lcm\n@name \"ラーラ\"\n次は12日目が終わったときよ！\n@lcm"
-			) % seed.display_name,
+			) % seed.display_name),
 			"ノベルのメッセージボックスに獲得名と回復を表示")
 		_expect(main.run_state.current_day == 8, "報酬メッセージ中は翌日へ進めない")
 		main._on_opening_novel_finished()
@@ -55,9 +56,10 @@ func _run() -> void:
 	main._lara_judge_result = 0
 	main._show_lara_judge_result()
 	main._on_opening_novel_finished()
+	_expect(novel._images.has(1), "20日目も勝敗結果後のメッセージ中にラーラを表示")
 	_expect(main.run_state.stored_seeds.is_empty(), "20日目の勝負後はアイテムを付与しない")
 	_expect(main.run_state.current_hp == 50, "20日目の勝負後は報酬によるHP回復を行わない")
-	_expect(novel._active_novel_text.text == (
+	_expect(novel._active_novel_text.text.ends_with(
 		"@name \"ラーラ\"\n"
 		+ "……今日が最後ね。あとは合格を祈りましょう……。\n@lcm"
 		), "20日目は最終日の専用メッセージを表示する")

@@ -320,9 +320,12 @@ func _on_opening_novel_finished() -> void:
 		NovelFlow.LARA_JUDGE_SETUP:
 			_show_lara_judge_result()
 		NovelFlow.LARA_JUDGE_RESULT:
+			var after_text := NovelTextInfo.new()
+			after_text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_after"
 			var reward_text := NovelTextInfo.new()
+			reward_text.text = after_text.get_script_text() + "\n"
 			if run_state.current_day >= STORY_CLEAR_DAY:
-				reward_text.text = (
+				reward_text.text += (
 					"@name \"ラーラ\"\n"
 					+ "……今日が最後ね。あとは合格を祈りましょう……。\n@lcm"
 				)
@@ -331,7 +334,7 @@ func _on_opening_novel_finished() -> void:
 					"次は%d日目が終わったときよ！"
 					% (run_state.current_day + HIGH_DIFFICULTY_DAY_INTERVAL)
 				)
-				reward_text.text = (
+				reward_text.text += (
 					_grant_lara_judge_reward()
 					+ "\n@lcm\n@name \"ラーラ\"\n%s\n@lcm" % next_judge_text
 				)
