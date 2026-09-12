@@ -24,6 +24,12 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	_test_spawned_enemy_attack_delay()
+	_test_elapsed_time_acid_damage_uses_own_accumulation()
+	quit(_failures)
+
+
+func _test_spawned_enemy_attack_delay() -> void:
 	var seed_effects := SeedEffectResolver.new()
 	seed_effects.setup([])
 	var enemy_effects := TestEnemyEffectSystem.new()
@@ -61,7 +67,30 @@ func _run() -> void:
 	_expect(enemy.stomach_elapsed_minutes == 40, "悪夢へ補正後の消化間隔を加算する")
 
 	enemy.free()
-	quit(_failures)
+
+
+func _test_elapsed_time_acid_damage_uses_own_accumulation() -> void:
+	var enemy := Enemy.new()
+	enemy.max_hp = 2000
+	enemy.current_hp = 2000
+
+	var effect := EnemyEffectOnElapsedTimeTakeAcidDamage.new()
+	effect.interval_seconds = 40 * 60
+	effect.damage = 999
+	effect.bind_source(enemy)
+	effect.setup_digestion_state(EnemyDigestionState.new())
+
+	effect.begin_activation(ProgressTimeActivationData.new(30 * 60, 30 * 60))
+	effect.apply()
+	effect.end_activation()
+	_expect(enemy.current_hp == 2000, "胃袋内の経過時間が間隔未満なら消化ダメージを受けない")
+
+	effect.begin_activation(ProgressTimeActivationData.new(10 * 60, 40 * 60))
+	effect.apply()
+	effect.end_activation()
+	_expect(enemy.current_hp == 1001, "同じ悪夢自身の胃袋内累積時間が間隔へ達した時だけ発火する")
+
+	enemy.free()
 
 
 func _expect(condition: bool, message: String) -> void:

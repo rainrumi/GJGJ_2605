@@ -19,13 +19,13 @@ static func deal_acid_damage(
 	value: int,
 	hit_count := 1
 ) -> void:
-	if enemy == null or enemy.is_Acided() or value <= 0:
+	if enemy == null or enemy.is_Acided() or value <= 0 or hit_count <= 0:
 		return
 	var activation := effect.get_activation_data() as DigestionActivationData # 消化発動値
 	var digested: Array[Enemy] = [] # 消化済み一覧
 	if activation != null:
 		digested = activation.digested_enemies
-	for _index in range(maxi(1, hit_count)):
+	for _index in range(hit_count):
 		var damage := maxi(0, roundi(EnemyEffectValueCalculator.scale(effect.source, float(value)))) # 消化値
 		if enemy.take_acid_damage(damage):
 			if not digested.has(enemy):
