@@ -6,9 +6,8 @@
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_afp8s"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_qxbtq"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_clock_interval_minutes.gd" id="skill_pending_time_before"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_clock_interval_minutes.gd" id="skill_time_before"]
+[ext_resource type="Script" uid="uid://cen3cbqyvb43t" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_clock_interval_minutes.gd" id="skill_time_before"]
 
 [sub_resource type="Resource" id="Resource_lujf5"]
 script = ExtResource("1_vf1xj")
@@ -17,17 +16,13 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_6uryb"]
 script = ExtResource("skill_time_before")
-boundary_minutes = 1560
-before_delta = 60
-after_delta = -10
 
 [sub_resource type="Resource" id="Resource_8nors"]
 script = ExtResource("skill_seed_skill")
 effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_6uryb")])
 
 [sub_resource type="Resource" id="Resource_j1oph"]
-script = ExtResource("skill_pending_time_before")
-boundary_minutes = 1560
+script = ExtResource("skill_time_before")
 before_delta = -20
 after_delta = 120
 on_digestion = true

@@ -23,7 +23,7 @@ func get_candidate_stages(
 	unlocked_high_difficulty_stage_ids: Array[int] = []
 ) -> Array[StageInfo]:
 	if _is_high_difficulty_day(current_day):
-		return _get_high_difficulty_stage_definitions(stage_definitions, current_stage_definition, unlocked_high_difficulty_stage_ids)
+		return _get_high_difficulty_stage_definitions(stage_definitions, unlocked_high_difficulty_stage_ids)
 	# 定義
 	var definitions: Array[StageInfo] = []
 	for stage_definition in stage_definitions:
@@ -56,13 +56,12 @@ func _is_high_difficulty_day(current_day: int) -> bool:
 # high難度ステージ定義取得
 func _get_high_difficulty_stage_definitions(
 	stage_definitions: Array[StageInfo],
-	current_stage_definition: StageInfo,
 	unlocked_high_difficulty_stage_ids: Array[int]
 ) -> Array[StageInfo]:
 	# 定義
 	var definitions: Array[StageInfo] = []
 	# 元データstages
-	var source_stages := _get_high_difficulty_source_stages(stage_definitions, current_stage_definition, unlocked_high_difficulty_stage_ids)
+	var source_stages := _get_high_difficulty_source_stages(stage_definitions, unlocked_high_difficulty_stage_ids)
 	for source_stage in source_stages:
 		if source_stage == null:
 			continue
@@ -78,22 +77,12 @@ func _get_high_difficulty_stage_definitions(
 # high難度元データstages取得
 func _get_high_difficulty_source_stages(
 	stage_definitions: Array[StageInfo],
-	current_stage_definition: StageInfo,
 	unlocked_high_difficulty_stage_ids: Array[int]
 ) -> Array[StageInfo]:
 	# 元データstages
 	var source_stages: Array[StageInfo] = []
-	if current_stage_definition == null:
-		for stage_definition in stage_definitions:
-			if _is_unlocked_high_difficulty_source_stage(stage_definition, unlocked_high_difficulty_stage_ids):
-				source_stages.append(stage_definition)
-		return source_stages
-	if _is_unlocked_high_difficulty_source_stage(current_stage_definition, unlocked_high_difficulty_stage_ids):
-		source_stages.append(current_stage_definition)
 	for stage_definition in stage_definitions:
-		if stage_definition == current_stage_definition:
-			continue
-		if _is_unlocked_high_difficulty_only_stage(stage_definition, unlocked_high_difficulty_stage_ids):
+		if _is_unlocked_high_difficulty_source_stage(stage_definition, unlocked_high_difficulty_stage_ids):
 			source_stages.append(stage_definition)
 	return source_stages
 
@@ -106,16 +95,6 @@ func _is_unlocked_high_difficulty_source_stage(
 	if stage_definition == null or stage_definition.is_high_difficulty:
 		return false
 	return unlocked_high_difficulty_stage_ids.has(stage_definition.stage_id)
-
-
-# onlyステージ判定
-func _is_unlocked_high_difficulty_only_stage(
-	stage_definition: StageInfo,
-	unlocked_high_difficulty_stage_ids: Array[int]
-) -> bool:
-	if not _is_unlocked_high_difficulty_source_stage(stage_definition, unlocked_high_difficulty_stage_ids):
-		return false
-	return not stage_definition.has_normal_stage
 
 
 # findステージ定義byID処理

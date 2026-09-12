@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dll7ti4sero01" path="res://resource/image/texture/seed/tex_seed_huji_small.png" id="2_small_texture"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_fv4ra"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_q8lej"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_target/seed_effect_on_target_change_acid_damage.gd" id="4_5d06b"]
+[ext_resource type="Script" uid="uid://ca7drmtjcjtgv" path="res://scene/main/game/seed/skill/on_target/seed_effect_on_target_change_acid_damage.gd" id="4_5d06b"]
 [ext_resource type="Texture2D" uid="uid://com78clsyxuym" path="res://resource/image/texture/seed/tex_seed_huji.png" id="4_phtvx"]
 [ext_resource type="Script" uid="uid://crk0gr2g7eg4l" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_hp_rate.gd" id="7_83chu"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]

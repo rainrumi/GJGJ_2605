@@ -252,6 +252,15 @@ func get_strengthened_enemy_unlock_count(stage: StageInfo) -> int:
 	return get_stage_novel_unlock_count(stage)
 
 
+# 挑戦可能な未クリア強化敵がいるか
+func has_pending_strengthened_enemy(stage: StageInfo) -> bool:
+	if stage == null:
+		return false
+	var unlocked_count := get_strengthened_enemy_unlock_count(stage)
+	var defeated_count := int(strengthened_enemy_defeat_counts.get(_get_stage_progress_key(stage), 0))
+	return defeated_count < unlocked_count
+
+
 # ステージノベル解放数取得
 func get_stage_novel_unlock_count(stage: StageInfo) -> int:
 	if stage == null:

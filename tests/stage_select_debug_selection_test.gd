@@ -1,6 +1,18 @@
 extends Node
 
-const EXPECTED_DEBUG_AREA_COUNT := 11
+const EXPECTED_NORMAL_DEBUG_AREAS: Array[int] = [
+	StageInfo.StageArea.IRIYU_CAVE,
+	StageInfo.StageArea.LUNOVA_OLD_CITY,
+	StageInfo.StageArea.ELMENA_UNIVERSITY,
+	StageInfo.StageArea.RIRAN_TREE_GARRISON,
+]
+const EXPECTED_BOSS_DEBUG_AREAS: Array[int] = [
+	StageInfo.StageArea.IRIYU_CAVE,
+	StageInfo.StageArea.LUNOVA_OLD_CITY,
+	StageInfo.StageArea.ELMENA_UNIVERSITY,
+	StageInfo.StageArea.RIRAN_TREE_GARRISON,
+	StageInfo.StageArea.huwahuwaSchool,
+]
 
 var _failures := 0
 var _selected_stage_areas: Array[int] = []
@@ -38,10 +50,10 @@ func _run() -> void:
 		get_tree().quit(_failures)
 		return
 	debug_button.pressed.emit()
-	_check_all_areas(stage_select, "1日目")
+	_check_debug_areas(stage_select, "1日目", EXPECTED_NORMAL_DEBUG_AREAS, false)
 
 	stage_select.call("setup_stage_choices", iriyu, 4)
-	_check_all_areas(stage_select, "高難度日の4日目")
+	_check_debug_areas(stage_select, "高難度日の4日目", EXPECTED_BOSS_DEBUG_AREAS, true)
 
 	stage_select.call("setup_stage_choices", iriyu, 1)
 	debug_button.pressed.emit()
@@ -57,18 +69,34 @@ func _run() -> void:
 	get_tree().quit(_failures)
 
 
-# 全エリア確認
-func _check_all_areas(stage_select: Node, context: String) -> void:
+# debug表示エリア確認
+func _check_debug_areas(
+	stage_select: Node,
+	context: String,
+	expected_stage_areas: Array[int],
+	expects_boss_day: bool
+) -> void:
 	var stage_definitions := _get_displayed_stages(stage_select)
 	_expect(
-		stage_definitions.size() == EXPECTED_DEBUG_AREA_COUNT,
-		"%sのdebug時は11エリアを表示する（候補数: %d）" % [context, stage_definitions.size()]
+		stage_definitions.size() == expected_stage_areas.size(),
+		"%sのdebug表示数が期待値と一致する（候補数: %d）" % [context, stage_definitions.size()]
 	)
 	var found_stage_areas: Array[int] = []
 	for stage_definition in stage_definitions:
 		if stage_definition != null:
 			found_stage_areas.append(stage_definition.stage_area)
-	for stage_area in range(1, EXPECTED_DEBUG_AREA_COUNT + 1):
+			if stage_definition.stage_area == StageInfo.StageArea.huwahuwaSchool:
+				_expect(expects_boss_day, "%sではボス戦日にだけふわふわを表示する" % context)
+				_expect(
+					stage_definition.is_high_difficulty,
+					"%sのふわふわはボス戦用ステージとして表示する" % context
+				)
+			else:
+				_expect(
+					stage_definition.is_high_difficulty == expects_boss_day,
+					"%sの通常4エリアの+α状態が期待値と一致する" % context
+				)
+	for stage_area in expected_stage_areas:
 		_expect(found_stage_areas.has(stage_area), "%sにエリア%dを含む" % [context, stage_area])
 
 	_selected_stage_areas.clear()
@@ -82,10 +110,10 @@ func _check_all_areas(stage_select: Node, context: String) -> void:
 			child.mouse_exited.emit()
 			child.pressed.emit()
 	_expect(
-		_selected_stage_areas.size() == EXPECTED_DEBUG_AREA_COUNT,
-		"%sの11エリアをすべて選択できる（選択数: %d）" % [context, _selected_stage_areas.size()]
+		_selected_stage_areas.size() == expected_stage_areas.size(),
+		"%sの表示エリアをすべて選択できる（選択数: %d）" % [context, _selected_stage_areas.size()]
 	)
-	for stage_area in range(1, EXPECTED_DEBUG_AREA_COUNT + 1):
+	for stage_area in expected_stage_areas:
 		_expect(_selected_stage_areas.has(stage_area), "%sでエリア%dを選択できる" % [context, stage_area])
 
 

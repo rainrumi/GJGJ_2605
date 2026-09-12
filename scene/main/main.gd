@@ -874,7 +874,7 @@ func _get_unlocked_high_difficulty_stage_ids() -> Array[int]:
 	for stage in _get_stage_definitions_for_progress():
 		if stage == null or stage.is_high_difficulty:
 			continue
-		if run_state.get_strengthened_enemy_unlock_count(stage) > 0:
+		if run_state.has_pending_strengthened_enemy(stage):
 			stage_ids.append(stage.stage_id)
 	return stage_ids
 

@@ -1,8 +1,13 @@
 extends Node2D
 
-const DEBUG_STAGE_CATALOG_PATH := "res://data/resources/area/debug_stage_catalog.tres"
 const REST_MINUTES := 30
 const REST_HP_RATE := 0.1
+const DEBUG_NORMAL_STAGE_AREAS: Array[StageInfo.StageArea] = [
+	StageInfo.StageArea.IRIYU_CAVE,
+	StageInfo.StageArea.LUNOVA_OLD_CITY,
+	StageInfo.StageArea.ELMENA_UNIVERSITY,
+	StageInfo.StageArea.RIRAN_TREE_GARRISON,
+]
 const STAGE_AREA_DISPLAY_ORDER: Array[StageInfo.StageArea] = [
 	StageInfo.StageArea.IRIYU_CAVE,
 	StageInfo.StageArea.ELMENA_UNIVERSITY,
@@ -240,11 +245,30 @@ func _get_ordered_stage_definitions() -> Array[StageInfo]:
 
 # debug用ステージ定義取得
 func _get_debug_stage_definitions() -> Array[StageInfo]:
-	var debug_stage_catalog := load(DEBUG_STAGE_CATALOG_PATH) as StageCatalogInfo
-	if debug_stage_catalog == null:
-		push_error("StageSelect: debug用ステージカタログを読み込めません: %s" % DEBUG_STAGE_CATALOG_PATH)
-		return []
-	return debug_stage_catalog.stages.duplicate()
+	var normal_stages: Array[StageInfo] = []
+	var normal_stage_ids: Array[int] = []
+	var huwahuwa_stage: StageInfo
+	for stage_definition in _get_stage_definitions():
+		if stage_definition != null and stage_definition.stage_area == StageInfo.StageArea.huwahuwaSchool:
+			huwahuwa_stage = stage_definition
+			continue
+		if stage_definition == null or stage_definition.is_high_difficulty:
+			continue
+		if not stage_definition.has_normal_stage or not DEBUG_NORMAL_STAGE_AREAS.has(stage_definition.stage_area):
+			continue
+		normal_stages.append(stage_definition)
+		normal_stage_ids.append(stage_definition.stage_id)
+	if _current_day <= 0 or _current_day % 4 != 0:
+		return normal_stages
+	var boss_day_stages := stage_selection_service.get_candidate_stages(
+		normal_stages,
+		null,
+		_current_day,
+		normal_stage_ids
+	)
+	if huwahuwa_stage != null:
+		boss_day_stages.append(huwahuwa_stage.create_high_difficulty_fallback())
+	return boss_day_stages
 
 
 # ステージ表示順比較
