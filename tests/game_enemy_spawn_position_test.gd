@@ -23,6 +23,7 @@ func _initialize() -> void:
 	_test_spawn_request_keeps_source_cells()
 	_test_spawn_effect_defaults()
 	_test_rtg_spawn_areas()
+	_test_riran_n5_spawn_stats()
 	quit(_failures)
 
 
@@ -66,6 +67,21 @@ func _test_rtg_spawn_areas() -> void:
 			effect.spawn_area == EnemyEffect.SpawnArea.SAME_CELLS,
 			"生成元セルを基準にする: %s" % path
 		)
+
+
+func _test_riran_n5_spawn_stats() -> void:
+	var paths: Array[String] = [
+		"res://data/resources/area/area_riran/enemy/normal/005/area_riran_enemy_normal_005_001.tres",
+		"res://data/resources/area/area_riran/enemy/normal/005/area_riran_enemy_normal_005_002.tres",
+	]
+	for path in paths:
+		var info := load(path) as EnemyInfo
+		var effect := info.main_skill.effects[0] as EnemyEffectOnDigestedSpawnEnemy
+		_expect(effect.hp_source == EnemyEffect.ValueSource.SELF_MAX_HP, "生成元の最大HPを参照する: %s" % path)
+		_expect(effect.hp_delta == -1, "生成元の最大HPから1減らす: %s" % path)
+		_expect(effect.attack_source == EnemyEffect.ValueSource.SELF_ATTACK, "生成元の最大攻撃力を参照する: %s" % path)
+		_expect(effect.attack_delta == 8, "生成元の最大攻撃力に8加える: %s" % path)
+		_expect(effect.max_spawn_count == 4, "生成上限を4マスにする: %s" % path)
 
 
 func _expect(condition: bool, message: String) -> void:

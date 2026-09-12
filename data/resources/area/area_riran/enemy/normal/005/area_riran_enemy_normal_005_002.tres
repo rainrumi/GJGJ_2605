@@ -1,34 +1,34 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://ckm4cupvp1xie"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" uid="uid://btrqwl7sf6f3e" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_spawn_enemy.gd" id="effect_5"]
+[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_spawn_enemy.gd" id="effect_5"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_e75qy"]
 script = ExtResource("2_acid_block")
-max_hp = 280
+max_hp = 320
 damage = 6
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_e75qy"]
+[sub_resource type="Resource" id="Resource_tukjq"]
 script = ExtResource("effect_5")
 spawn_count = 4
 max_spawn_count = 4
 hp_source = 2
-hp_delta = -40
+hp_delta = -80
 attack_source = 3
 attack_delta = 8
 
-[sub_resource type="Resource" id="Resource_tukjq"]
+[sub_resource type="Resource" id="Resource_3pes4"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_e75qy")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_tukjq")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 20010005002
 display_name = "E2"
-acid_block = SubResource("AcidBlock")
-description = "消化された時、埋まってない胃袋マスに自身の最大攻撃力+8の攻撃力と最大HP-40の体力を持った寄生型悪夢を生成する。（最大4マス）"
-main_skill = SubResource("Resource_tukjq")
+acid_block = SubResource("Resource_e75qy")
+description = "消化された時、埋まってない胃袋マスに自身の最大攻撃力+8の攻撃力と最大HP-80の体力を持った寄生型悪夢を生成する。（最大4マス）"
+main_skill = SubResource("Resource_3pes4")

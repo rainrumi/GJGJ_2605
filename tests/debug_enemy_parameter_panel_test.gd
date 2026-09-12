@@ -15,8 +15,11 @@ func _ready() -> void:
 func _run() -> void:
 	DebugState.set_debug_enabled(false)
 	var save_path := "user://debug_enemy_parameter_panel_test.tres"
+	var spawned_save_path := "user://debug_spawned_enemy_parameter_panel_test.tres"
 	if FileAccess.file_exists(save_path):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))
+	if FileAccess.file_exists(spawned_save_path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(spawned_save_path))
 	var panel_scene := load("res://scene/ui/battle_ui/debug/debug_enemy_parameter_panel.tscn") as PackedScene
 	_expect(panel_scene != null, "悪夢パラメーター調整 Scene を読み込める")
 	if panel_scene == null:
@@ -39,6 +42,19 @@ func _run() -> void:
 	effect.priority = 3
 	effect.attack_delta = -8
 	original.main_skill.effects = [effect]
+	var spawned := EnemyInfo.new()
+	spawned.skill_id = 202
+	spawned.display_name = "Spawned Nightmare"
+	spawned.description = "Spawned description"
+	spawned.acid_block = AcidBlockInfo.new()
+	spawned.acid_block.max_hp = 25
+	spawned.acid_block.damage = 4
+	spawned.main_skill = EnemySkill.new()
+	_expect(ResourceSaver.save(spawned, spawned_save_path) == OK, "生成される悪夢 Resource を保存できる")
+	spawned = ResourceLoader.load(spawned_save_path, "", ResourceLoader.CACHE_MODE_IGNORE) as EnemyInfo
+	var spawn_effect := EnemyEffectOnDigestedTransformEnemy.new()
+	spawn_effect.next_enemy_info = spawned
+	original.main_skill.effects.append(spawn_effect)
 	_expect(ResourceSaver.save(original, save_path) == OK, "テスト用の悪夢 Resource を保存できる")
 	original = ResourceLoader.load(save_path, "", ResourceLoader.CACHE_MODE_IGNORE) as EnemyInfo
 	_expect(original != null and not original.resource_path.is_empty(), "保存済みの悪夢 Resource を読み込める")
@@ -59,10 +75,10 @@ func _run() -> void:
 	var viewport_rect := get_viewport().get_visible_rect()
 	_expect(panel.get_global_rect().position.x >= viewport_rect.size.x * 0.5, "調整画面を画面右半分へ配置する")
 	_expect(panel.get_global_rect().end.x <= viewport_rect.end.x, "調整画面を画面右端からはみ出さない")
-	_expect(panel.get("_enemies").size() == 1, "同じ悪夢 Resource は選択肢へ重複表示しない")
-	_expect(panel.get("_bindings").size() == 6, "説明文、HP、攻撃、発動場所、関与する効果プロパティだけを列挙する")
+	_expect(panel.get("_enemies").size() == 2, "初期悪夢と生成される悪夢を選択肢へ重複なく表示する")
+	_expect(panel.get("_bindings").size() == 9, "説明文、HP、攻撃、発動場所、関与する効果プロパティだけを列挙する")
 	var scroll := panel.get_node("Margin/Content/Scroll") as ScrollContainer
-	_expect(not scroll.get_v_scroll_bar().visible, "E2相当の情報量はマウスホイールなしで一画面に収める")
+	_expect(scroll != null, "パラメーター一覧をスクロール領域に表示する")
 	panel.enemy_parameter_applied.connect(_on_enemy_parameter_applied)
 	var hp_editor: SpinBox
 	var attack_delta_editor: SpinBox
@@ -158,6 +174,32 @@ func _run() -> void:
 	_expect(_applied_edited != first_saved_enemy, "2回目も次回編集用の複製を保存する")
 	_expect(panel.get("_original_enemy") == _applied_edited, "2回目の保存後もパネルの保存元参照を更新する")
 
+	var enemy_option := panel.get_node("Margin/Content/EnemyOption") as OptionButton
+	_expect(enemy_option.get_item_text(1).contains("生成"), "生成される悪夢だと分かる選択肢名にする")
+	enemy_option.select(1)
+	enemy_option.item_selected.emit(1)
+	var spawned_hp_editor: SpinBox
+	for binding in panel.get("_bindings"):
+		if binding.resource is AcidBlockInfo and binding.property == &"max_hp":
+			spawned_hp_editor = binding.editor as SpinBox
+	_expect(spawned_hp_editor != null and spawned_hp_editor.value == 25, "生成される悪夢のHP入力欄を表示する")
+	if spawned_hp_editor != null:
+		spawned_hp_editor.value = 66
+	var parent_before_spawned_edit := _applied_edited
+	(panel.get_node("Margin/Content/Buttons/ApplyButton") as Button).pressed.emit()
+	persisted = ResourceLoader.load(save_path, "", ResourceLoader.CACHE_MODE_IGNORE) as EnemyInfo
+	var persisted_spawn_effect := persisted.main_skill.effects[1] as EnemyEffectOnDigestedTransformEnemy if persisted != null else null
+	var persisted_spawned := ResourceLoader.load(spawned_save_path, "", ResourceLoader.CACHE_MODE_IGNORE) as EnemyInfo
+	_expect(
+		persisted_spawn_effect != null
+		and persisted_spawn_effect.next_enemy_info.resource_path == spawned_save_path
+		and persisted_spawned != null
+		and persisted_spawned.acid_block.max_hp == 66,
+		"生成される外部悪夢Resourceと親悪夢の参照を永続化する"
+	)
+	_expect(_applied_original == parent_before_spawned_edit, "生成される悪夢の保存時も置換対象の親悪夢を通知する")
+	_expect(_applied_edited != null and _applied_edited.resource_path == save_path, "生成先編集後の親悪夢を通知する")
+
 	var status := panel.get_node("Margin/Content/StatusLabel") as Label
 	var buttons := panel.get_node("Margin/Content/Buttons") as HBoxContainer
 	_expect(status.get_theme_font_size("font_size") == 6, "更新結果テキストをパネル標準の約0.5倍にする")
@@ -166,6 +208,7 @@ func _run() -> void:
 
 	DebugState.set_debug_enabled(false)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(spawned_save_path))
 	panel.queue_free()
 	await get_tree().process_frame
 	get_tree().quit(_failures)

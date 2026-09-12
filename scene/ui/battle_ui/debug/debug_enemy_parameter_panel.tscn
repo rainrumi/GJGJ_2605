@@ -37,6 +37,7 @@ autowrap_mode = 2
 [node name="EnemyOption" type="OptionButton" parent="Margin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
+fit_to_longest_item = false
 
 [node name="EmptyLabel" type="Label" parent="Margin/Content"]
 unique_name_in_owner = true

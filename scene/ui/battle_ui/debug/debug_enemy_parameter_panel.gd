@@ -19,7 +19,13 @@ const BOOL_ACTIVE_BACKGROUND := Color("699ce8")
 @onready var close_button: Button = %CloseButton
 
 var _enemies: Array[EnemyInfo] = []
+var _enemy_roots: Array[EnemyInfo] = []
+var _enemy_paths: Array[Array] = []
+var _enemy_labels: Array[String] = []
 var _original_enemy: EnemyInfo
+var _original_root_enemy: EnemyInfo
+var _selected_enemy_path: Array = []
+var _edited_root_enemy: EnemyInfo
 var _edited_enemy: EnemyInfo
 var _bindings: Array[Dictionary] = []
 
@@ -33,11 +39,50 @@ func _ready() -> void:
 
 func set_enemy_preset(enemy_preset: EnemyPresetInfo) -> void:
 	_enemies.clear()
+	_enemy_roots.clear()
+	_enemy_paths.clear()
+	_enemy_labels.clear()
 	if enemy_preset != null:
 		for source in enemy_preset.enemies:
-			if source != null and not _enemies.has(source):
-				_enemies.append(source)
+			if source != null and not _enemy_roots.has(source):
+				_append_enemy_entry(source, source, [], "", [])
 	_rebuild_enemy_options()
+
+
+func _append_enemy_entry(
+	root_enemy: EnemyInfo,
+	enemy: EnemyInfo,
+	path: Array,
+	parent_label: String,
+	visited: Array[EnemyInfo]
+) -> void:
+	if enemy == null or visited.has(enemy):
+		return
+	var next_visited := visited.duplicate()
+	next_visited.append(enemy)
+	var enemy_label := "%d: %s" % [enemy.skill_id, enemy.display_name]
+	var full_label := enemy_label if parent_label.is_empty() else "%s > 生成: %s" % [parent_label, enemy_label]
+	_enemies.append(enemy)
+	_enemy_roots.append(root_enemy)
+	_enemy_paths.append(path)
+	_enemy_labels.append(full_label)
+	if enemy.main_skill == null:
+		return
+	for effect_index in range(enemy.main_skill.effects.size()):
+		var effect := enemy.main_skill.effects[effect_index]
+		if effect == null:
+			continue
+		for property in effect.get_property_list():
+			if not (int(property.usage) & PROPERTY_USAGE_SCRIPT_VARIABLE):
+				continue
+			var property_name := StringName(property.name)
+			var property_value: Variant = effect.get(property_name)
+			if not property_value is EnemyInfo:
+				continue
+			var generated_enemy := property_value as EnemyInfo
+			var generated_path := path.duplicate()
+			generated_path.append({"effect_index": effect_index, "property": property_name})
+			_append_enemy_entry(root_enemy, generated_enemy, generated_path, full_label, next_visited)
 
 
 func open_panel() -> void:
@@ -55,13 +100,15 @@ func close() -> void:
 func _rebuild_enemy_options() -> void:
 	var previous_enemy := _original_enemy
 	enemy_option.clear()
-	for enemy in _enemies:
-		enemy_option.add_item("%d: %s" % [enemy.skill_id, enemy.display_name])
+	for enemy_label in _enemy_labels:
+		enemy_option.add_item(enemy_label)
 	var selected_index := _enemies.find(previous_enemy)
 	if selected_index < 0 and not _enemies.is_empty():
 		selected_index = 0
 	enemy_option.select(selected_index)
 	_original_enemy = _enemies[selected_index] if selected_index >= 0 else null
+	_original_root_enemy = _enemy_roots[selected_index] if selected_index >= 0 else null
+	_selected_enemy_path = _enemy_paths[selected_index] if selected_index >= 0 else []
 	if visible:
 		_rebuild_editor()
 
@@ -70,7 +117,11 @@ func _rebuild_editor() -> void:
 	for child in parameter_list.get_children():
 		child.queue_free()
 	_bindings.clear()
-	_edited_enemy = _original_enemy.duplicate(true) as EnemyInfo if _original_enemy != null else null
+	_edited_root_enemy = _original_root_enemy.duplicate(true) as EnemyInfo if _original_root_enemy != null else null
+	_edited_enemy = _resolve_enemy_path(_edited_root_enemy, _selected_enemy_path)
+	if _edited_enemy != null and not _selected_enemy_path.is_empty():
+		_edited_enemy = _edited_enemy.duplicate(true) as EnemyInfo
+		_set_enemy_at_path(_edited_root_enemy, _selected_enemy_path, _edited_enemy)
 	empty_label.visible = _edited_enemy == null
 	apply_button.disabled = _edited_enemy == null
 	if _edited_enemy == null:
@@ -84,6 +135,39 @@ func _rebuild_editor() -> void:
 			_append_effect_parameters(_edited_enemy.main_skill.effects[index], index)
 	empty_label.visible = _bindings.is_empty()
 	apply_button.disabled = _bindings.is_empty()
+
+
+func _resolve_enemy_path(root_enemy: EnemyInfo, path: Array) -> EnemyInfo:
+	var enemy := root_enemy
+	for segment in path:
+		if enemy == null or enemy.main_skill == null:
+			return null
+		var effect_index: int = segment.effect_index
+		if effect_index < 0 or effect_index >= enemy.main_skill.effects.size():
+			return null
+		var effect := enemy.main_skill.effects[effect_index]
+		if effect == null:
+			return null
+		enemy = effect.get(segment.property) as EnemyInfo
+	return enemy
+
+
+func _set_enemy_at_path(root_enemy: EnemyInfo, path: Array, value: EnemyInfo) -> bool:
+	if root_enemy == null or path.is_empty():
+		return false
+	var parent_path := path.duplicate()
+	var final_segment: Dictionary = parent_path.pop_back()
+	var parent_enemy := _resolve_enemy_path(root_enemy, parent_path)
+	if parent_enemy == null or parent_enemy.main_skill == null:
+		return false
+	var effect_index: int = final_segment.effect_index
+	if effect_index < 0 or effect_index >= parent_enemy.main_skill.effects.size():
+		return false
+	var effect := parent_enemy.main_skill.effects[effect_index]
+	if effect == null:
+		return false
+	effect.set(final_segment.property, value)
+	return true
 
 
 func _append_effect_parameters(effect: EnemyEffect, index: int) -> void:
@@ -199,11 +283,13 @@ func _create_fallback_unchecked_icon() -> ImageTexture:
 func _on_enemy_selected(index: int) -> void:
 	status_label.text = ""
 	_original_enemy = _enemies[index] if index >= 0 and index < _enemies.size() else null
+	_original_root_enemy = _enemy_roots[index] if index >= 0 and index < _enemy_roots.size() else null
+	_selected_enemy_path = _enemy_paths[index] if index >= 0 and index < _enemy_paths.size() else []
 	_rebuild_editor()
 
 
 func _on_apply_pressed() -> void:
-	if not DebugState.debug_enabled or _original_enemy == null or _edited_enemy == null:
+	if not DebugState.debug_enabled or _original_root_enemy == null or _edited_root_enemy == null or _edited_enemy == null:
 		return
 	for binding in _bindings:
 		var editor := binding.editor as Control
@@ -216,22 +302,36 @@ func _on_apply_pressed() -> void:
 			var spin_box := editor as SpinBox
 			value = int(spin_box.value) if spin_box.get_meta("integer_value") else spin_box.value
 		(binding.resource as Resource).set(binding.property, value)
-	var save_path := _original_enemy.resource_path
+	var save_path := _original_root_enemy.resource_path
 	if save_path.is_empty():
 		status_label.text = "保存先のない悪夢です"
 		return
-	var save_error := ResourceSaver.save(_edited_enemy, save_path)
+	var selected_save_path := _original_enemy.resource_path
+	if not selected_save_path.is_empty() and selected_save_path != save_path:
+		var selected_save_error := ResourceSaver.save(_edited_enemy, selected_save_path)
+		if selected_save_error != OK:
+			status_label.text = "生成される悪夢の保存に失敗しました: %s" % error_string(selected_save_error)
+			push_error(
+				"DebugEnemyParameterPanel: 生成される悪夢を保存できません: %s (error: %s)"
+				% [selected_save_path, selected_save_error]
+			)
+			return
+		_edited_enemy.take_over_path(selected_save_path)
+	var save_error := ResourceSaver.save(_edited_root_enemy, save_path)
 	if save_error != OK:
 		status_label.text = "保存に失敗しました: %s" % error_string(save_error)
 		push_error("DebugEnemyParameterPanel: 悪夢を保存できません: %s (error: %s)" % [save_path, save_error])
 		return
-	var replaced_enemy := _original_enemy
-	var saved_enemy := _edited_enemy
+	var replaced_enemy := _original_root_enemy
+	var saved_enemy := _edited_root_enemy
 	saved_enemy.take_over_path(save_path)
 	for index in range(_enemies.size()):
-		if _enemies[index] == replaced_enemy:
-			_enemies[index] = saved_enemy
-	_original_enemy = saved_enemy
+		if _enemy_roots[index] == replaced_enemy:
+			_enemy_roots[index] = saved_enemy
+			_enemies[index] = _resolve_enemy_path(saved_enemy, _enemy_paths[index])
+	var selected_index := enemy_option.selected
+	_original_root_enemy = saved_enemy
+	_original_enemy = _enemies[selected_index] if selected_index >= 0 else null
 	_rebuild_editor()
 	enemy_parameter_applied.emit(replaced_enemy, saved_enemy)
 	status_label.text = "保存しました: %s" % save_path
