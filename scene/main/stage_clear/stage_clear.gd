@@ -319,12 +319,12 @@ func _on_seed_choice_pressed(seed_index: int) -> void:
 		planted_flowers.append(seed)
 		_refresh_after_reward_state_changed()
 		var recovered_rate := _apply_selection_recovery(0.0)
-		_finish_seed_choice(recovered_rate, "%sを植えました" % _get_seed_display_name(seed))
+		await _finish_seed_choice(recovered_rate, "%sを植えました" % _get_seed_display_name(seed))
 		return
 	stored_seeds.append(seed)
 	_refresh_after_reward_state_changed()
 	var stored_recovered_rate := _apply_selection_recovery(0.0)
-	_finish_seed_choice(stored_recovered_rate, "%sを所持枠へ加えました" % _get_seed_display_name(seed))
+	await _finish_seed_choice(stored_recovered_rate, "%sを所持枠へ加えました" % _get_seed_display_name(seed))
 
 
 # 放棄押下
@@ -359,6 +359,10 @@ func _can_receive_seed(seed: SeedInfo) -> bool:
 func _finish_seed_choice(recovered_rate: float, message: String) -> void:
 	if _remaining_extra_seed_choices > 0:
 		_remaining_extra_seed_choices -= 1
+		_seed_choice_active = false
+		ui.set_debug_state(debug_numbers_visible, _seed_choice_active)
+		await ui.play_extra_seed_choice_transition()
+		_reroll_seed_options()
 		_show_select_mode()
 		return
 	_show_finished_mode(message)

@@ -29,6 +29,8 @@ const BENEFICIAL_DELTA_COLOR := Color(0.35, 1.0, 0.45, 1.0)
 const HARMFUL_DELTA_COLOR := Color(1.0, 0.35, 0.35, 1.0)
 # ゲーム画面の Character.position (95, 210) と SeedButtonList.position (40, 54) の差分
 const HEAD_SEED_OFFSET_FROM_CHARACTER := Vector2(-55.0, -156.0)
+const MORE_SELECT_FADE_DURATION := 0.5
+const MORE_SELECT_HOLD_DURATION := 0.7
 
 # 案内文
 @onready var guide_text: Label = $GuideText
@@ -40,6 +42,7 @@ const HEAD_SEED_OFFSET_FROM_CHARACTER := Vector2(-55.0, -156.0)
 @onready var debug_retry_button: Button = $DebugRetryButton
 # 種選択一覧
 @onready var seed_choice_list: StageClearChoiceSeed = $SeedChoices
+@onready var more_select: VBoxContainer = $MoreSelect2
 # 放棄ボタン
 @onready var abandon_button: StageClearAbandonButton = $AbandonButton
 # 消化ダメージ表示
@@ -61,6 +64,8 @@ var _head_drag_source: SeedButton
 
 # 初期化
 func _ready() -> void:
+	more_select.visible = false
+	seed_choice_list.visible = true
 	head_seed_list.set_compact_centered_layout(true)
 	head_seed_list.set_slot_separation(10)
 	head_seed_list.set_display_style(false, Color("#f0e0ff"))
@@ -104,6 +109,20 @@ func setup_seed_choices(seed_options: Array[SeedInfo], selectable_states: Array[
 		_debug_numbers_visible,
 		selectable_states
 	)
+
+
+func play_extra_seed_choice_transition() -> void:
+	seed_choice_list.visible = false
+	more_select.modulate.a = 0.0
+	more_select.visible = true
+	var tween := create_tween()
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_property(more_select, "modulate:a", 1.0, MORE_SELECT_FADE_DURATION)
+	await tween.finished
+	await get_tree().create_timer(MORE_SELECT_HOLD_DURATION).timeout
+	more_select.visible = false
+	seed_choice_list.visible = true
 
 
 # 状態予測設定

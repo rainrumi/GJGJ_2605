@@ -185,6 +185,7 @@ offset_right = 505.0
 offset_bottom = 331.0
 
 [node name="MoreSelect2" type="VBoxContainer" parent="UI" unique_id=2119916994]
+visible = false
 layout_mode = 0
 offset_left = 236.0
 offset_top = 46.0
@@ -217,7 +218,6 @@ vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="SeedChoices" type="VBoxContainer" parent="UI" unique_id=42702980]
-visible = false
 layout_mode = 0
 offset_left = 247.0
 offset_top = 4.0
