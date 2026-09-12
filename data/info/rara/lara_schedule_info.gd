@@ -21,6 +21,22 @@ func get_area(day: int, minutes: int) -> StageInfo.StageArea:
 	return days[day - 1].get_area(normalize_minutes(minutes))
 
 
+func get_visited_areas(from_day: int, from_minutes: int, to_day: int, to_minutes: int) -> Array[int]:
+	assert(from_day >= 1 and to_day <= days.size(), "LaraScheduleInfo: 訪問期間の日付が予定範囲外です")
+	var normalized_from := normalize_minutes(from_minutes)
+	var normalized_to := normalize_minutes(to_minutes)
+	if from_day > to_day or (from_day == to_day and normalized_from > normalized_to):
+		return [get_area(to_day, normalized_to)]
+	var areas: Array[int] = []
+	for day in range(from_day, to_day + 1):
+		var period_start := normalized_from if day == from_day else NIGHT_START
+		var period_end := normalized_to if day == to_day else NIGHT_END
+		for area in days[day - 1].get_visited_areas(period_start, period_end):
+			if area not in areas:
+				areas.append(area)
+	return areas
+
+
 static func normalize_minutes(minutes: int) -> int:
 	if minutes < NIGHT_START:
 		minutes += 24 * 60

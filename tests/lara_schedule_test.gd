@@ -29,6 +29,9 @@ func _run() -> void:
 	_expect(schedule.get_area(1, boundary) == first.area, "終了時刻まではそのエリアにいる")
 	_expect(schedule.get_area(1, boundary + 1) == schedule.days[0].digestions[1].area, "翌分に次エリアへ移る")
 	_expect(schedule.get_area(1, 1800) == schedule.days[0].fallback_area, "予定終了後は予定外エリア")
+	var skipped_areas := schedule.get_visited_areas(6, 2 * 60, 7, 22 * 60)
+	_expect(StageInfo.StageArea.ZAIKA_ADMIN_DISTRICT in skipped_areas,
+		"6日目2時から7日目22時までを遡るとザイカ行政区を含む")
 	_expect(schedule.get_total_digestion_count(1, 180) == schedule.get_total_digestion_count(1, 1620),
 		"午前3時の24時間表記と30時間表記を同じ時刻として扱う")
 	var catalog := load("res://data/resources/area/lara_location_catalog.tres") as StageCatalogInfo
@@ -45,6 +48,18 @@ func _run() -> void:
 	state.current_minutes = 1320
 	state.update_lara_progress(schedule, catalog.stages)
 	_expect(state.lara_digestion_count == 8, "休息や日飛ばしでも前4日分を含む")
+	state.lara_area_visit_record_day = 6
+	state.lara_area_visit_record_minutes = 2 * 60
+	state.current_day = 7
+	state.current_minutes = 22 * 60
+	state.update_lara_area_novel_visits(schedule)
+	_expect(
+		state.lara_area_novel_states[StageInfo.StageArea.ZAIKA_ADMIN_DISTRICT]
+			== RunState.LaraAreaNovelState.VISITED,
+		"休息で飛ばした期間のザイカ行政区を訪問済みにする"
+	)
+	_expect(state.lara_area_visit_record_day == 7 and state.lara_area_visit_record_minutes == 22 * 60,
+		"訪問更新後の日数と時刻をキャッシュする")
 	var normal := StageInfo.new()
 	normal.stage_id = 1
 	normal.stage_area = StageInfo.StageArea.LUNOVA_OLD_CITY

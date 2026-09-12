@@ -13,6 +13,15 @@ const CLEAR_RECOVERY_END_HOUR := 27
 const CLEAR_RECOVERY_BASE_RATE := 1.0
 const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
 const CLEAR_RECOVERY_MINIMUM_RATE := 0.5
+const LARA_AREA_NOVEL_NAMES := {
+	StageInfo.StageArea.COROTTA_STREET: "corotta",
+	StageInfo.StageArea.ERAMIA_DISTRICT: "eramia",
+	StageInfo.StageArea.FELIS_GARDEN_DISTRICT: "felis",
+	StageInfo.StageArea.GONSAL_DISTRICT: "gonsal",
+	StageInfo.StageArea.MIRUNE_STREET: "mirune",
+	StageInfo.StageArea.NERIX_MAGIC_SCHOOL: "nerix",
+	StageInfo.StageArea.ZAIKA_ADMIN_DISTRICT: "zaika",
+}
 
 enum NovelFlow {
 	NONE,
@@ -162,6 +171,7 @@ func show_title() -> void:
 # ステージselect表示
 func show_stage_select() -> void:
 	_sync_lara_progress()
+	run_state.update_lara_area_novel_visits(lara_schedule)
 	title.visible = false
 	opening_novel.visible = false
 	day_intro.visible = false
@@ -404,20 +414,11 @@ func _start_selected_stage_with_lara() -> void:
 	if _lara_first_interaction:
 		run_state.lara_interaction_day = run_state.current_day
 		scenario = "common/novel_event_rara_common_%03d" % randi_range(1, 8)
-		var area_names := {
-			StageInfo.StageArea.COROTTA_STREET: "corotta",
-			StageInfo.StageArea.ERAMIA_DISTRICT: "eramia",
-			StageInfo.StageArea.FELIS_GARDEN_DISTRICT: "felis",
-			StageInfo.StageArea.GONSAL_DISTRICT: "gonsal",
-			StageInfo.StageArea.MIRUNE_STREET: "mirune",
-			StageInfo.StageArea.NERIX_MAGIC_SCHOOL: "nerix",
-			StageInfo.StageArea.ZAIKA_ADMIN_DISTRICT: "zaika",
-		}
-		var previous := run_state.previous_area_stage
-		if previous != null and area_names.has(previous.stage_area) \
-			and not run_state.played_lara_area_novels.has(previous.stage_area):
-			scenario = "area/novel_event_rara_%s_001" % area_names[previous.stage_area]
-			run_state.played_lara_area_novels[previous.stage_area] = true
+		var area_candidates := run_state.get_visited_lara_area_novel_candidates()
+		if not area_candidates.is_empty():
+			var area: int = area_candidates.pick_random()
+			scenario = "area/novel_event_rara_%s_001" % LARA_AREA_NOVEL_NAMES[area]
+			run_state.mark_lara_area_novel_played(area)
 	title.visible = false
 	stage_select.visible = false
 	game.visible = false

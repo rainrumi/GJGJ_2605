@@ -10,6 +10,22 @@ const STAGE_NOVEL_UNLOCK_DEFEAT_INTERVAL := 3
 const MAX_STAGE_NOVEL_INDEX := 3
 const BATTLE_START_MINUTES := 22 * 60
 
+enum LaraAreaNovelState {
+	NOT_VISITED,
+	VISITED,
+	PLAYED,
+}
+
+const LARA_AREA_NOVEL_AREAS: Array[int] = [
+	StageInfo.StageArea.COROTTA_STREET,
+	StageInfo.StageArea.ERAMIA_DISTRICT,
+	StageInfo.StageArea.FELIS_GARDEN_DISTRICT,
+	StageInfo.StageArea.GONSAL_DISTRICT,
+	StageInfo.StageArea.MIRUNE_STREET,
+	StageInfo.StageArea.NERIX_MAGIC_SCHOOL,
+	StageInfo.StageArea.ZAIKA_ADMIN_DISTRICT,
+]
+
 var current_day := 1
 var current_hp := 100
 var current_minutes := BATTLE_START_MINUTES
@@ -38,7 +54,9 @@ var has_challenged_area_today := false
 var lara_current_location: StageInfo
 var previous_area_stage: StageInfo
 var lara_interaction_day := 0
-var played_lara_area_novels: Dictionary[int, bool] = {}
+var lara_area_novel_states: Dictionary[int, int] = _create_default_lara_area_novel_states()
+var lara_area_visit_record_day := 1
+var lara_area_visit_record_minutes := BATTLE_START_MINUTES
 var lara_digestion_count := 0
 var last_lara_judge_day := 0
 
@@ -72,7 +90,9 @@ func reset() -> void:
 	lara_current_location = null
 	previous_area_stage = null
 	lara_interaction_day = 0
-	played_lara_area_novels.clear()
+	lara_area_novel_states = _create_default_lara_area_novel_states()
+	lara_area_visit_record_day = 1
+	lara_area_visit_record_minutes = BATTLE_START_MINUTES
 	lara_digestion_count = 0
 	last_lara_judge_day = 0
 
@@ -92,6 +112,34 @@ func mark_area_challenged_today() -> void:
 
 func reset_daily_challenge_state() -> void:
 	has_challenged_area_today = false
+
+
+func get_visited_lara_area_novel_candidates() -> Array[int]:
+	var candidates: Array[int] = []
+	for area in LARA_AREA_NOVEL_AREAS:
+		if lara_area_novel_states[area] == LaraAreaNovelState.VISITED:
+			candidates.append(area)
+	return candidates
+
+
+func mark_lara_area_novel_played(area: int) -> void:
+	if lara_area_novel_states.get(area, LaraAreaNovelState.NOT_VISITED) \
+			== LaraAreaNovelState.VISITED:
+		lara_area_novel_states[area] = LaraAreaNovelState.PLAYED
+
+
+func update_lara_area_novel_visits(schedule: LaraScheduleInfo) -> void:
+	for area in schedule.get_visited_areas(
+		lara_area_visit_record_day,
+		lara_area_visit_record_minutes,
+		current_day,
+		current_minutes
+	):
+		if lara_area_novel_states.get(area, LaraAreaNovelState.PLAYED) \
+				== LaraAreaNovelState.NOT_VISITED:
+			lara_area_novel_states[area] = LaraAreaNovelState.VISITED
+	lara_area_visit_record_day = current_day
+	lara_area_visit_record_minutes = current_minutes
 
 
 # 進行時刻から再計算し、再表示や日またぎで二重加算しない。
@@ -134,6 +182,13 @@ func select_stage(stage: StageInfo) -> void:
 	if stage.stage_area != StageInfo.StageArea.huwahuwaSchool:
 		previous_area_stage = current_area_stage
 		current_area_stage = stage
+
+
+static func _create_default_lara_area_novel_states() -> Dictionary[int, int]:
+	var states: Dictionary[int, int] = {}
+	for area in LARA_AREA_NOVEL_AREAS:
+		states[area] = LaraAreaNovelState.NOT_VISITED
+	return states
 
 
 # 敵編成選択

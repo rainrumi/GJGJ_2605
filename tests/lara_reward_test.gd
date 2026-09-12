@@ -36,11 +36,20 @@ func _initialize() -> void:
 	next_stage.stage_area = StageInfo.StageArea.COROTTA_STREET
 	state.select_stage(next_stage)
 	_expect(state.previous_area_stage == stage, "選択前のエリアを保持する")
+	_expect(
+		state.lara_area_novel_states[StageInfo.StageArea.COROTTA_STREET]
+			== RunState.LaraAreaNovelState.NOT_VISITED,
+		"プレイヤーのステージ選択ではラーラの訪問状態を変更しない"
+	)
 	state.lara_interaction_day = 5
-	state.played_lara_area_novels[10] = true
 	state.reset()
 	_expect(state.previous_area_stage == null and state.lara_interaction_day == 0
-		and state.played_lara_area_novels.is_empty(), "ニューゲームで交流履歴を初期化する")
+		and state.get_visited_lara_area_novel_candidates().is_empty()
+		and state.lara_area_novel_states[StageInfo.StageArea.COROTTA_STREET]
+			== RunState.LaraAreaNovelState.NOT_VISITED
+		and state.lara_area_visit_record_day == 1
+		and state.lara_area_visit_record_minutes == RunState.BATTLE_START_MINUTES,
+		"ニューゲームで交流履歴を未訪問へ初期化する")
 	print("LaraRewardTest: %d failures" % _failures)
 	quit(_failures)
 
