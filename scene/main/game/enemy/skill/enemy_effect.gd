@@ -50,7 +50,14 @@ enum ValueSource {
 @export var activates_in_stomach := true
 @export var activates_outside_stomach := false
 @export_group("")
+@export_group("効果量・確率の対象変数")
+@export var effect_amount_configured := false
+@export var effect_amount_fields: PackedStringArray = []
+@export var probability_configured := false
+@export var probability_fields: PackedStringArray = []
+@export_group("")
 var state := EnemyEffectState.new() # 個体効果状態
+var _original_field_values: Dictionary = {}
 var _activation_data: EnemyEffectActivationData # 発動時値
 var owner: EnemyData # 効果所有データ
 var effect_stack: EnemyEffectStack # 効果スタック
@@ -92,6 +99,27 @@ func end_activation() -> void:
 	_activation_data = null
 
 
+# 選択済み変数だけを個体効果の実行中に補正する。
+func begin_field_adjustment(amount_multiplier: float, chance_multiplier: float) -> void:
+	assert(_original_field_values.is_empty(), "効果変数の補正が重複しました")
+	var available := EffectFieldValues.numeric_fields(self)
+	for field in effect_amount_fields:
+		if effect_amount_configured and available.has(field):
+			_original_field_values[field] = get(field)
+			set(field, EffectFieldValues.adjusted_value(get(field), amount_multiplier, false))
+	for field in probability_fields:
+		if probability_configured and available.has(field):
+			if not _original_field_values.has(field):
+				_original_field_values[field] = get(field)
+			set(field, EffectFieldValues.adjusted_value(get(field), chance_multiplier, true))
+
+
+func end_field_adjustment() -> void:
+	for field in _original_field_values:
+		set(field, _original_field_values[field])
+	_original_field_values.clear()
+
+
 # 要求可能判定
 func can_request(data: EnemyEffectActivationData) -> bool:
 	if not enabled or owner == null or data == null or not data.is_valid():
@@ -105,7 +133,14 @@ func can_request(data: EnemyEffectActivationData) -> bool:
 		lifecycle_allowed = activates_in_stomach
 	else:
 		lifecycle_allowed = activates_outside_stomach
-	return lifecycle_allowed and accepts_activation(data)
+	if not lifecycle_allowed:
+		return false
+	begin_field_adjustment(owner.defense_status.effect_multiplier, owner.defense_status.chance_multiplier)
+	EnemyEffectValueCalculator.begin_adjustment_scope(owner, effect_amount_configured, probability_configured)
+	var accepted := accepts_activation(data)
+	EnemyEffectValueCalculator.end_adjustment_scope()
+	end_field_adjustment()
+	return accepted
 
 
 # 消化後発動可否

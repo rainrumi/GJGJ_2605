@@ -13,6 +13,33 @@ func get_adjacent_digestion_heal_rate() -> float:
 @export var priority := 0 # 優先度
 @export var enabled := true # 有効状態
 @export var non_stacking_key := "" # 同じ効果区分内で重複させない効果の識別子
+@export_group("効果量・確率の対象変数")
+@export var effect_amount_configured := false
+@export var effect_amount_fields: PackedStringArray = []
+@export var probability_configured := false
+@export var probability_fields: PackedStringArray = []
+@export_group("")
+
+
+# 共有定義を変更せず、種ブロックの個体補正を適用した実行用効果を返す。
+func adjusted_for_seed_block(seed_block: Enemy) -> SeedEffect:
+	if seed_block == null:
+		return self
+	var amount_multiplier := seed_block.data.defense_status.effect_multiplier
+	var chance_multiplier := seed_block.data.defense_status.chance_multiplier
+	var fields := EffectFieldValues.numeric_fields(self)
+	var adjusted: SeedEffect = self
+	for field in effect_amount_fields:
+		if effect_amount_configured and fields.has(field):
+			if adjusted == self:
+				adjusted = duplicate(true) as SeedEffect
+			adjusted.set(field, EffectFieldValues.adjusted_value(get(field), amount_multiplier, false))
+	for field in probability_fields:
+		if probability_configured and fields.has(field):
+			if adjusted == self:
+				adjusted = duplicate(true) as SeedEffect
+			adjusted.set(field, EffectFieldValues.adjusted_value(get(field), chance_multiplier, true))
+	return adjusted
 
 
 # Whether a newly hovered seed changes StatusPreview without a runtime condition.

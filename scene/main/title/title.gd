@@ -20,11 +20,15 @@ const DEBUG_NOVEL_AREA_DIRECTORIES := [
 @onready var debug_button: Button = $DebugButton
 @onready var novel_debug_panel: PanelContainer = $NovelDebugPanel
 @onready var novel_button_list: VBoxContainer = $NovelDebugPanel/Margin/Scroll/NovelButtonList
+@onready var effect_field_settings_button: Button = $EffectFieldSettingsButton
+@onready var effect_field_settings_panel: EffectFieldSettingsPanel = $EffectFieldSettingsPanel
 
 
 # 初期化
 func _ready() -> void:
 	debug_button.pressed.connect(_on_debug_button_pressed)
+	effect_field_settings_button.pressed.connect(_on_effect_field_settings_pressed)
+	effect_field_settings_panel.closed.connect(_on_effect_field_settings_closed)
 	if not DebugState.debug_enabled_changed.is_connected(_on_debug_enabled_changed):
 		DebugState.debug_enabled_changed.connect(_on_debug_enabled_changed)
 	_build_novel_buttons()
@@ -96,6 +100,14 @@ func _collect_novel_paths(directory_path: String, paths: Array[String]) -> void:
 # Debug押下
 func _on_debug_button_pressed() -> void:
 	DebugState.toggle_debug_enabled()
+
+
+func _on_effect_field_settings_pressed() -> void:
+	effect_field_settings_panel.open()
+
+
+func _on_effect_field_settings_closed() -> void:
+	effect_field_settings_button.grab_focus()
 
 
 # Debug状態変更

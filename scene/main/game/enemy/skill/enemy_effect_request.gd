@@ -25,5 +25,9 @@ func execute() -> void:
 	if effect == null or not effect.can_request(activation_data):
 		return
 	effect.begin_activation(activation_data)
+	effect.begin_field_adjustment(effect.owner.defense_status.effect_multiplier, effect.owner.defense_status.chance_multiplier)
+	EnemyEffectValueCalculator.begin_adjustment_scope(effect.owner, effect.effect_amount_configured, effect.probability_configured)
 	effect.apply()
+	EnemyEffectValueCalculator.end_adjustment_scope()
+	effect.end_field_adjustment()
 	effect.end_activation()

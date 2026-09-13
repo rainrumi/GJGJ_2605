@@ -8,7 +8,8 @@ func get_acid_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
 	for enemy in enemies:
 		if enemy == null or not enemy.is_active_in_stomach() or not enemy.has_seed():
 			continue
-		for effect in _get_seed_block_effects(enemy):
+		for definition in _get_seed_block_effects(enemy):
+			var effect := definition.adjusted_for_seed_block(enemy)
 			rate += effect.get_seed_block_acid_damage_rate({
 				"seed_block": enemy,
 				"enemies": enemies,
@@ -46,7 +47,8 @@ func append_Acided_by_seed_block_effects(
 		"player_max_hp": player_max_hp,
 		"day_elapsed_minutes": day_elapsed_minutes,
 	}
-	for effect in _get_seed_block_effects(seed_block):
+	for definition in _get_seed_block_effects(seed_block):
+		var effect := definition.adjusted_for_seed_block(seed_block)
 		effect.on_finish_acid_seed_block(context)
 
 
@@ -70,7 +72,8 @@ func get_target_acid_damage_multiplier(target: Enemy, enemies: Array[Enemy]) -> 
 			continue
 		if not EnemyPlacementQuery.are_enemies_adjacent(enemy, target):
 			continue
-		for effect in _get_seed_block_effects(enemy):
+		for definition in _get_seed_block_effects(enemy):
+			var effect := definition.adjusted_for_seed_block(enemy)
 			multiplier *= effect.get_seed_block_target_acid_multiplier({
 				"seed_block": enemy,
 				"target": target,

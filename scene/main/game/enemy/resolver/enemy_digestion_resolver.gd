@@ -177,7 +177,8 @@ func _get_final_damage(enemy: Enemy, enemies: Array[Enemy], raw_damage: int) -> 
 	if enemy.has_seed() and enemy.get_seed().get_sub_skill() != null:
 		for effect in enemy.get_seed().get_sub_skill().get_effects():
 			if effect is SeedEffectOnFinishAcidSeedBlockDamageAdjacent:
-				damage_rate *= effect.self_damage_multiplier
+				var adjusted := effect.adjusted_for_seed_block(enemy) as SeedEffectOnFinishAcidSeedBlockDamageAdjacent
+				damage_rate *= adjusted.self_damage_multiplier
 	return roundi(float(raw_damage) * damage_rate)
 
 

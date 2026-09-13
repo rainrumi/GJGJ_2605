@@ -1,0 +1,133 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scene/main/title/effect_field_settings_panel.gd" id="1_script"]
+
+[node name="EffectFieldSettingsPanel" type="PanelContainer"]
+visible = false
+offset_right = 640.0
+offset_bottom = 360.0
+script = ExtResource("1_script")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="Layout" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="Top" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Margin/Layout/Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "効果の対象変数を選ぶ"
+
+[node name="CloseButton" type="Button" parent="Margin/Layout/Top"]
+layout_mode = 2
+text = "閉じる"
+
+[node name="Tabs" type="TabContainer" parent="Margin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Amount" type="VBoxContainer" parent="Margin/Layout/Tabs"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Help" type="Label" parent="Margin/Layout/Tabs/Amount"]
+layout_mode = 2
+text = "対象変数だけに倍率を適用。未設定の効果は従来計算です。"
+
+[node name="Picker" type="HBoxContainer" parent="Margin/Layout/Tabs/Amount"]
+layout_mode = 2
+
+[node name="Type" type="OptionButton" parent="Margin/Layout/Tabs/Amount/Picker"]
+layout_mode = 2
+custom_minimum_size = Vector2(94, 28)
+fit_to_longest_item = false
+clip_text = true
+
+[node name="Search" type="LineEdit" parent="Margin/Layout/Tabs/Amount/Picker"]
+layout_mode = 2
+custom_minimum_size = Vector2(130, 28)
+placeholder_text = "名前・ID・場所で検索"
+
+[node name="Item" type="OptionButton" parent="Margin/Layout/Tabs/Amount/Picker"]
+layout_mode = 2
+size_flags_horizontal = 3
+fit_to_longest_item = false
+clip_text = true
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/Layout/Tabs/Amount"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Rows" type="VBoxContainer" parent="Margin/Layout/Tabs/Amount/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Bottom" type="HBoxContainer" parent="Margin/Layout/Tabs/Amount"]
+layout_mode = 2
+
+[node name="Status" type="Label" parent="Margin/Layout/Tabs/Amount/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "項目を選んでください"
+
+[node name="Save" type="Button" parent="Margin/Layout/Tabs/Amount/Bottom"]
+layout_mode = 2
+text = "効果量の選択を保存"
+
+[node name="Probability" type="VBoxContainer" parent="Margin/Layout/Tabs"]
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Help" type="Label" parent="Margin/Layout/Tabs/Probability"]
+layout_mode = 2
+text = "対象変数だけに倍率を適用し0〜1に収めます。未設定は従来計算です。"
+
+[node name="Picker" type="HBoxContainer" parent="Margin/Layout/Tabs/Probability"]
+layout_mode = 2
+
+[node name="Type" type="OptionButton" parent="Margin/Layout/Tabs/Probability/Picker"]
+layout_mode = 2
+custom_minimum_size = Vector2(94, 28)
+fit_to_longest_item = false
+clip_text = true
+
+[node name="Search" type="LineEdit" parent="Margin/Layout/Tabs/Probability/Picker"]
+layout_mode = 2
+custom_minimum_size = Vector2(130, 28)
+placeholder_text = "名前・ID・場所で検索"
+
+[node name="Item" type="OptionButton" parent="Margin/Layout/Tabs/Probability/Picker"]
+layout_mode = 2
+size_flags_horizontal = 3
+fit_to_longest_item = false
+clip_text = true
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/Layout/Tabs/Probability"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Rows" type="VBoxContainer" parent="Margin/Layout/Tabs/Probability/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Bottom" type="HBoxContainer" parent="Margin/Layout/Tabs/Probability"]
+layout_mode = 2
+
+[node name="Status" type="Label" parent="Margin/Layout/Tabs/Probability/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "項目を選んでください"
+
+[node name="Save" type="Button" parent="Margin/Layout/Tabs/Probability/Bottom"]
+layout_mode = 2
+text = "確率の選択を保存"

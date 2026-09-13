@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://8cvikryskr5p" path="res://resource/image/texture/logo/tex_logo.png" id="4_5ajwd"]
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="4_button"]
 [ext_resource type="Script" uid="uid://bg0cexfvy68ed" path="res://scene/main/title/title_character.gd" id="5_title_character"]
+[ext_resource type="PackedScene" path="res://scene/main/title/effect_field_settings_panel.tscn" id="6_effect_fields"]
 
 [node name="Title" type="Node2D" unique_id=2003881678]
 script = ExtResource("3_script")
@@ -110,6 +111,16 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 4
+
+[node name="EffectFieldSettingsButton" type="Button" parent="."]
+offset_left = 160.0
+offset_top = 320.0
+offset_right = 305.0
+offset_bottom = 350.0
+theme_override_font_sizes/font_size = 11
+text = "効果量・確率の対象設定"
+
+[node name="EffectFieldSettingsPanel" parent="." instance=ExtResource("6_effect_fields")]
 
 [connection signal="pressed" from="Menu/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="Menu/ContinueButton" to="." method="_on_continue_button_pressed"]
