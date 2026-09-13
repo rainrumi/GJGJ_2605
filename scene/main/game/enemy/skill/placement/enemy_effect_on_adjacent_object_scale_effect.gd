@@ -30,7 +30,8 @@ func apply() -> void:
 		if _get_contact_count(enemy) >= required_contact_count:
 			targets.append(enemy)
 	if targets.size() < required_count: return
-	for enemy in targets: EnemyEffectStatChanges.multiply_effect(enemy, effect_multiplier)
+	for enemy in targets:
+		EnemyEffectStatChanges.multiply_effect(enemy, EnemyEffectValueCalculator.scale(source, effect_multiplier))
 
 
 func _get_contact_count(target: Enemy) -> int:

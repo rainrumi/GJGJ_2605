@@ -24,6 +24,7 @@ func on_finish_acid_seed_block(context: Dictionary) -> void:
 	total_damage += int(context.get("day_elapsed_minutes", 0)) * elapsed_minute_damage
 	if seed_block == null or total_damage <= 0:
 		return
+	total_damage = roundi(EnemyEffectValueCalculator.scale(seed_block, float(total_damage)))
 	var targets := EnemyPlacementQuery.get_adjacent_enemies(seed_block, enemies, true) # 対象敵
 	if stomach_edge_only:
 		var stomach := context.get("stomach") as StomachBoard
