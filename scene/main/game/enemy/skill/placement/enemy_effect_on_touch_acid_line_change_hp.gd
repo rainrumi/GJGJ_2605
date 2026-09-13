@@ -18,9 +18,12 @@ func clear_dependencies() -> void:
 # HP差分
 @export var hp_delta := 0
 
+# 最大HP補正確定前の上限外回復
+@export var heal_over_maximum := false
+
 # 効果適用
 func apply() -> void:
 	var active := 1 if EnemyEffectTargetQuery.get_acid_line_contact_count(source, stomach) > 0 else 0 # 接触状態
 	var previous := get_state_int("active") # 直前状態
 	set_state("active", active)
-	EnemyEffectStatChanges.change_hp(source, source, hp_delta * (active - previous))
+	EnemyEffectStatChanges.change_hp(source, source, hp_delta * (active - previous), heal_over_maximum)

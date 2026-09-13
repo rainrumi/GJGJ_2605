@@ -25,6 +25,13 @@ func clear_dependencies() -> void:
 # マス毎HP
 @export var hp_delta_per_cell := 0
 
+# 最大HP補正確定前の上限外回復
+@export var heal_over_maximum := false
+
 # 効果適用
 func apply() -> void:
-	EnemyEffectStatChanges.change_hp(source, source, hp_delta_per_cell * (EnemyEffectTargetQuery.get_empty_cell_count(enemies, stomach) - get_state_int("empty_count"))); set_state("empty_count", EnemyEffectTargetQuery.get_empty_cell_count(enemies, stomach))
+	var empty_count := EnemyEffectTargetQuery.get_empty_cell_count(enemies, stomach)
+	EnemyEffectStatChanges.change_hp(
+		source, source, hp_delta_per_cell * (empty_count - get_state_int("empty_count")), heal_over_maximum
+	)
+	set_state("empty_count", empty_count)

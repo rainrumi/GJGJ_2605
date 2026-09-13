@@ -842,6 +842,7 @@ func _advance_acid_turn() -> void:
 			_check_battle_end()
 		acid_turn_in_progress = false
 		return
+	stomach.apply_gravity(enemies)
 	# 消化結果
 	var acid_result := _run_acid_core(minutes, elapsed_minutes)
 	_apply_forced_returns()

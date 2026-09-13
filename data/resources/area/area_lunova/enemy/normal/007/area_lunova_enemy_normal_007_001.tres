@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
 [ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
 [ext_resource type="Script" uid="uid://bl11yx5d7if2u" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_battle_change_hp_by_empty_cell.gd" id="effect_5"]
+[ext_resource type="Script" uid="uid://c0163r4kwpsn2" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_battle_change_max_hp_by_empty_cell.gd" id="effect_6"]
 
 [sub_resource type="Resource" id="AcidBlock"]
 script = ExtResource("2_acid_block")
@@ -12,18 +13,23 @@ max_hp = 653
 damage = 12
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
+[sub_resource type="Resource" id="Effect_2"]
+script = ExtResource("effect_6")
+max_hp_delta_per_cell = 100
+
 [sub_resource type="Resource" id="Effect_1"]
 script = ExtResource("effect_5")
 hp_delta_per_cell = 100
+heal_over_maximum = true
 
 [sub_resource type="Resource" id="MainSkill"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_2"), SubResource("Effect_1")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 17010007001
 display_name = "E1"
 acid_block = SubResource("AcidBlock")
-description = "自身のHPを100×何も設置されていない消化マスの数増やす"
+description = "自身の最大HPとHPを100×何も設置されていない消化マスの数増やす"
 main_skill = SubResource("MainSkill")
