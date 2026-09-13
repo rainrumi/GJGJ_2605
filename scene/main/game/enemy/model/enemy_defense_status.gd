@@ -14,6 +14,7 @@ var taken_acid_multiplier := 1.0 # 被消化倍率
 var global_acid_multiplier := 1.0 # 全体消化倍率
 var effect_multiplier := 1.0 # 効果倍率
 var chance_delta := 0.0 # 確率差分
+var chance_multiplier := 1.0 # 確率倍率
 var extra_attack_count := 0 # 追加攻撃回数
 
 
@@ -37,6 +38,7 @@ func reset_refresh_modifiers() -> void:
 	acid_damage_multiplier = 1.0
 	effect_multiplier = 1.0
 	chance_delta = 0.0
+	chance_multiplier = 1.0
 	changed.emit()
 
 
@@ -116,6 +118,12 @@ func multiply_effect(value: float) -> void:
 # 確率差分追加
 func add_chance_delta(value: float) -> void:
 	chance_delta += value
+	changed.emit()
+
+
+# 確率倍率追加
+func multiply_chance(value: float) -> void:
+	chance_multiplier *= value
 	changed.emit()
 
 

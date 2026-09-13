@@ -19,12 +19,13 @@ func _initialize() -> void:
 # 隣接最大HP・回復効果試験
 func _run() -> void:
 	for path in TARGET_RESOURCE_PATHS:
-		_test_adjacent_hp_effect(path)
+		_test_adjacent_hp_effect(path, 100)
+	_test_adjacent_hp_effect("res://data/resources/area/area_elmena/enemy/normal/009/area_elmena_enemy_normal_009_006.tres", 200)
 	quit(_failures)
 
 
 # 隣接体力効果試験
-func _test_adjacent_hp_effect(path: String) -> void:
+func _test_adjacent_hp_effect(path: String, expected_delta: int) -> void:
 	var source_info := load(path) as EnemyInfo # 効果元定義
 	_expect(source_info != null, "%sのEnemyInfoを読み込める" % path)
 	if source_info == null:
@@ -34,6 +35,7 @@ func _test_adjacent_hp_effect(path: String) -> void:
 	for cell in source.get_occupied_cells(source.stomach_cell):
 		right_edge = maxi(right_edge, cell.x)
 	var target := _create_enemy(_create_target_info(), Vector2i(right_edge + 1, 0)) # 隣接対象
+	var distant := _create_enemy(_create_target_info(), Vector2i(right_edge + 3, 0)) # 非隣接対象
 	var effects := source.get_enemy_effects() # メイン効果
 	_expect(effects.size() == 2, "%dがメイン効果を2つ持つ" % source_info.skill_id)
 	var max_hp_effect: EnemyEffectOnAdjacentObjectChangeTargetMaxHp
@@ -46,10 +48,10 @@ func _test_adjacent_hp_effect(path: String) -> void:
 	_expect(max_hp_effect != null, "%dが隣接対象の最大HP変更効果を持つ" % source_info.skill_id)
 	_expect(recovery_effect != null, "%dが隣接対象のHP回復効果を持つ" % source_info.skill_id)
 	if max_hp_effect != null and recovery_effect != null:
-		_expect(max_hp_effect.max_hp_delta == 100, "%dの最大HP増加量が100" % source_info.skill_id)
-		_expect(recovery_effect.hp_delta == 100, "%dのHP回復量が100" % source_info.skill_id)
+		_expect(max_hp_effect.max_hp_delta == expected_delta, "%dの最大HP増加量が%d" % [source_info.skill_id, expected_delta])
+		_expect(recovery_effect.hp_delta == expected_delta, "%dのHP回復量が%d" % [source_info.skill_id, expected_delta])
 		_expect(recovery_effect.heal_over_maximum, "%dが最大HP補正確定前に回復できる" % source_info.skill_id)
-		var enemies: Array[Enemy] = [source, target] # 配置対象一覧
+		var enemies: Array[Enemy] = [source, target, distant] # 配置対象一覧
 		max_hp_effect.bind_source(source)
 		max_hp_effect.setup_enemies(enemies)
 		recovery_effect.bind_source(source)
@@ -57,17 +59,19 @@ func _test_adjacent_hp_effect(path: String) -> void:
 		max_hp_effect.apply()
 		recovery_effect.apply()
 		target.data.hp.apply_modifiers()
-		_expect(target.max_hp == 200, "%dが隣接対象の最大HPを100増やす" % source_info.skill_id)
-		_expect(target.current_hp == 200, "%dが満タンの隣接対象を追加で100回復する" % source_info.skill_id)
+		_expect(target.max_hp == 100 + expected_delta, "%dが隣接対象の最大HPを%d増やす" % [source_info.skill_id, expected_delta])
+		_expect(target.current_hp == 100 + expected_delta, "%dが満タンの隣接対象を追加で%d回復する" % [source_info.skill_id, expected_delta])
+		_expect(distant.max_hp == 100 and distant.current_hp == 100, "%dは非隣接対象のHPを変えない" % source_info.skill_id)
 		target.data.hp.reset_modifiers()
 		max_hp_effect.apply()
 		target.data.hp.apply_modifiers()
-		_expect(target.max_hp == 200, "%dの隣接効果は再評価後も最大HP増加を維持する" % source_info.skill_id)
-		_expect(target.current_hp == 200, "%dの隣接効果は再評価時に現在HPを減らさない" % source_info.skill_id)
+		_expect(target.max_hp == 100 + expected_delta, "%dの隣接効果は再評価後も最大HP増加を維持する" % source_info.skill_id)
+		_expect(target.current_hp == 100 + expected_delta, "%dの隣接効果は再評価時に現在HPを減らさない" % source_info.skill_id)
 		max_hp_effect.unbind()
 		recovery_effect.unbind()
 	source.free()
 	target.free()
+	distant.free()
 
 
 # 試験Enemy作成

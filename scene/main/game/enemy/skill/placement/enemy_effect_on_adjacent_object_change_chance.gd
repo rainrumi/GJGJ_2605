@@ -17,6 +17,10 @@ func clear_dependencies() -> void:
 
 # 確率差分
 @export_range(-1.0, 1.0, 0.01) var chance_delta := 0.0
+
+# 確率倍率
+@export_range(0.0, 10.0, 0.1) var chance_multiplier := 1.0
+
 # 必要隣接数
 @export_range(1, 64, 1) var required_count := 1
 
@@ -24,4 +28,8 @@ func clear_dependencies() -> void:
 func apply() -> void:
 	var targets := EnemyEffectTargetQuery.get_adjacent_objects(source, enemies) # 隣接対象
 	if targets.size() < required_count: return
-	for enemy in targets: EnemyEffectStatChanges.add_chance_delta(enemy, chance_delta)
+	for enemy in targets:
+		if chance_delta != 0.0:
+			EnemyEffectStatChanges.add_chance_delta(enemy, chance_delta)
+		if chance_multiplier != 1.0:
+			EnemyEffectStatChanges.multiply_chance(enemy, chance_multiplier)

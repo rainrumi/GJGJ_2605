@@ -5,7 +5,8 @@ extends RefCounted
 # 確率判定
 static func roll(source: Enemy, chance: float, invert := false) -> bool:
 	var delta := source.data.defense_status.chance_delta if source != null else 0.0 # 確率差分
-	var adjusted := clampf(chance + delta, 0.0, 1.0) # 補正確率
+	var multiplier := source.data.defense_status.chance_multiplier if source != null else 1.0 # 確率倍率
+	var adjusted := clampf((chance + delta) * multiplier, 0.0, 1.0) # 補正確率
 	if invert:
 		adjusted = 1.0 - adjusted
 	return randf() <= adjusted

@@ -75,6 +75,12 @@ static func add_chance_delta(enemy: Enemy, value: float) -> void:
 		enemy.data.defense_status.add_chance_delta(value)
 
 
+# 確率倍率追加
+static func multiply_chance(enemy: Enemy, value: float) -> void:
+	if enemy != null:
+		enemy.data.defense_status.multiply_chance(value)
+
+
 # 攻撃無効追加
 static func add_attack_guards(enemy: Enemy, value: int) -> void:
 	if enemy != null:
