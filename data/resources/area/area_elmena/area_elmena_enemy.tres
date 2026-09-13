@@ -11,7 +11,6 @@
 [ext_resource type="Resource" path="res://data/resources/area/area_elmena/enemy/normal/007/area_elmena_enemy_normal_preset_007.tres" id="2_normal_007"]
 [ext_resource type="Resource" path="res://data/resources/area/area_elmena/enemy/normal/008/area_elmena_enemy_normal_preset_008.tres" id="2_normal_008"]
 [ext_resource type="Resource" path="res://data/resources/area/area_elmena/enemy/normal/009/area_elmena_enemy_normal_preset_009.tres" id="2_normal_009"]
-[ext_resource type="Resource" uid="uid://c1xjfds8rcklw" path="res://data/resources/area/area_elmena/enemy/endless/001/area_elmena_enemy_endless_preset_001.tres" id="3_endless"]
 [ext_resource type="Resource" uid="uid://bs7kauvq4thnl" path="res://data/resources/area/area_elmena/enemy/boss/001/area_elmena_enemy_boss_preset_001.tres" id="4_strengthened"]
 [ext_resource type="Resource" uid="uid://d5sbe2wy7ld2" path="res://data/resources/area/area_elmena/enemy/boss/002/area_elmena_enemy_boss_preset_002.tres" id="5_strengthened"]
 [ext_resource type="Resource" uid="uid://cioskpkoavkw5" path="res://data/resources/area/area_elmena/enemy/boss/003/area_elmena_enemy_boss_preset_003.tres" id="6_strengthened"]
@@ -19,5 +18,5 @@
 [resource]
 script = ExtResource("1_script")
 normal_enemy_presets = Array[ExtResource("1_b8gld")]([ExtResource("2_normal"), ExtResource("2_normal_002"), ExtResource("2_normal_003"), ExtResource("2_normal_004"), ExtResource("2_normal_005"), ExtResource("2_normal_006"), ExtResource("2_normal_007"), ExtResource("2_normal_008"), ExtResource("2_normal_009")])
-endless_enemy_presets = Array[ExtResource("1_b8gld")]([ExtResource("3_endless")])
+endless_enemy_presets = Array[ExtResource("1_b8gld")]([ExtResource("2_normal"), ExtResource("2_normal_002"), ExtResource("2_normal_003"), ExtResource("2_normal_004"), ExtResource("2_normal_005"), ExtResource("2_normal_006"), ExtResource("2_normal_007"), ExtResource("2_normal_008"), ExtResource("2_normal_009")])
 strengthened_enemy_presets = Array[ExtResource("1_b8gld")]([ExtResource("4_strengthened"), ExtResource("5_strengthened"), ExtResource("6_strengthened")])
