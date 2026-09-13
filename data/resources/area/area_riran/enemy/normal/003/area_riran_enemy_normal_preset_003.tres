@@ -3,10 +3,10 @@
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/enemy/enemy_preset_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_skill_script"]
 [ext_resource type="Resource" uid="uid://dicsvnkwrgsrr" path="res://data/resources/area/area_riran/enemy/normal/003/area_riran_enemy_normal_003_001.tres" id="2_enemy_001"]
-[ext_resource type="Resource" uid="uid://d0t6iwc5iftgx" path="res://data/resources/area/area_riran/enemy/normal/003/area_riran_enemy_normal_003_002.tres" id="2_enemy_002"]
 [ext_resource type="Resource" uid="uid://c8fhn2en6osd5" path="res://data/resources/area/area_riran/enemy/normal/003/area_riran_enemy_normal_003_003.tres" id="2_enemy_003"]
-[ext_resource type="Resource" uid="uid://yd2lot1fdy6h" path="res://data/resources/area/area_riran/enemy/normal/003/area_riran_enemy_normal_003_004.tres" id="2_enemy_004"]
+[ext_resource type="Resource" uid="uid://bcpy1abj6kmmp" path="res://data/resources/area/area_riran/enemy/normal/003/area_riran_enemy_normal_003_005.tres" id="4_f3fyv"]
+[ext_resource type="Resource" uid="uid://r6ufjiadwtnj" path="res://data/resources/area/area_riran/enemy/normal/003/area_riran_enemy_normal_003_007.tres" id="5_4j86r"]
 
 [resource]
 script = ExtResource("1_script")
-enemies = Array[ExtResource("1_skill_script")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_002"), ExtResource("2_enemy_003"), ExtResource("2_enemy_004")])
+enemies = Array[ExtResource("1_skill_script")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_003"), ExtResource("4_f3fyv"), ExtResource("5_4j86r")])
