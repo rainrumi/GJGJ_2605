@@ -32,11 +32,12 @@ func resolve(enemies: Array[Enemy], stomach: StomachBoard, minutes: int) -> Arra
 			continue
 		if enemy.data.defense_status.default_attack_disabled:
 			continue
-		var damage := get_enemy_attack_damage(enemy, enemies, stomach, minutes) # 敵攻撃値
-		if damage <= 0:
+		var base_damage := get_enemy_attack_damage(enemy, enemies, stomach, minutes) # 敵攻撃値
+		if base_damage <= 0:
 			continue
 		var attack_values: Array[int] = [] # 敵別攻撃値
 		for _index in range(maxi(0, 1 + enemy.data.defense_status.extra_attack_count)):
+			var damage := roundi(float(base_damage) * _enemy_effects.get_attack_damage_multiplier(enemy))
 			attack_values.append(damage)
 		raw_values.append_array(attack_values)
 		total_damage += _sum_damage_values(attack_values)

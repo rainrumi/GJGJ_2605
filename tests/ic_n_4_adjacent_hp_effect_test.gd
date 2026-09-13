@@ -3,6 +3,7 @@ extends SceneTree
 const TARGET_RESOURCE_PATHS: Array[String] = [
 	"res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_004.tres",
 	"res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_005.tres",
+	"res://data/resources/area/area_iriyu/enemy/normal/007/area_iriyu_enemy_normal_007_003.tres",
 	"res://data/resources/area/area_iriyu/enemy/boss/001/area_iriyu_enemy_boss_001_001.tres",
 	"res://data/resources/area/area_iriyu/enemy/boss/001/area_iriyu_enemy_boss_001_002.tres",
 ]
@@ -29,7 +30,10 @@ func _test_adjacent_hp_effect(path: String) -> void:
 	if source_info == null:
 		return
 	var source := _create_enemy(source_info, Vector2i.ZERO) # 効果元
-	var target := _create_enemy(_create_target_info(), Vector2i.RIGHT) # 隣接対象
+	var right_edge := 0 # 効果元の右端
+	for cell in source.get_occupied_cells(source.stomach_cell):
+		right_edge = maxi(right_edge, cell.x)
+	var target := _create_enemy(_create_target_info(), Vector2i(right_edge + 1, 0)) # 隣接対象
 	var effects := source.get_enemy_effects() # メイン効果
 	_expect(effects.size() == 2, "%dがメイン効果を2つ持つ" % source_info.skill_id)
 	var max_hp_effect: EnemyEffectOnAdjacentObjectChangeTargetMaxHp

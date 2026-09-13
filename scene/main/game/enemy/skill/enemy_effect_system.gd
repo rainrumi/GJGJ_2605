@@ -82,6 +82,20 @@ func consume_player_damage() -> Array[int]:
 	return _player_health.consume_damage()
 
 
+# 通常攻撃1回分の効果倍率
+func get_attack_damage_multiplier(enemy: Enemy) -> float:
+	if not enemy.should_apply_enemy_skill():
+		return 1.0
+	var effects := enemy.get_enemy_effects()
+	if _inheritance != null:
+		effects.append_array(_inheritance.get_effects(enemy))
+	var multiplier := 1.0
+	for effect in effects:
+		if effect is EnemyEffectOnAttackChanceScaleDamage and effect.enabled:
+			multiplier *= effect.get_damage_multiplier(enemy)
+	return multiplier
+
+
 # 生成要求消費
 func consume_spawns() -> Array[BattleSpawnEnemyData]:
 	return _spawn_queue.consume()
