@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/enemy/enemy_preset_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_skill_script"]
-[ext_resource type="Resource" uid="uid://tutb8iblrmo4" path="res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_001.tres" id="2_enemy_001"]
-[ext_resource type="Resource" uid="uid://dgawduhh2wh75" path="res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_002.tres" id="2_enemy_002"]
-[ext_resource type="Resource" uid="uid://ckyvgjv3hcrtm" path="res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_003.tres" id="2_enemy_003"]
-[ext_resource type="Resource" uid="uid://bc6xfvsrmcd67" path="res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_004.tres" id="2_enemy_004"]
-[ext_resource type="Resource" uid="uid://ddoh7gs6qb1ur" path="res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_005.tres" id="2_enemy_005"]
+[ext_resource type="Resource" uid="uid://dd5hbc3a8ktjx" path="res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_001.tres" id="2_enemy_001"]
+[ext_resource type="Resource" uid="uid://btgdk0ln7fekx" path="res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_002.tres" id="2_enemy_002"]
+[ext_resource type="Resource" uid="uid://56wi5qksatfj" path="res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_003.tres" id="2_enemy_003"]
+[ext_resource type="Resource" uid="uid://bm3c1ogemdtmf" path="res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_004.tres" id="2_enemy_004"]
+[ext_resource type="Resource" uid="uid://cpqjbp1mwwuup" path="res://data/resources/area/area_iriyu/enemy/normal/004/area_iriyu_enemy_normal_004_005.tres" id="2_enemy_005"]
 
 [resource]
 script = ExtResource("1_script")
