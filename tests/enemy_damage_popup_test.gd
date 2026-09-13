@@ -63,6 +63,10 @@ func _run() -> void:
 	await create_timer(EnemyDamagePopup.TOTAL_DURATION).timeout
 	await process_frame
 	_expect(not is_instance_valid(latest_popup), "完了時間後に消化ダメージ表示を解放する")
+	EnemyDamagePopup.show_damage(owner, hp_label, 0, Color.RED)
+	var zero_popup := owner.get_child(owner.get_child_count() - 1) as Label
+	_expect(zero_popup != null and zero_popup.text == "0", "無効化された0ダメージも数値表示する")
+	_expect(zero_popup != null and zero_popup.visible, "0ダメージにもポップアップ演出を表示する")
 
 	owner.queue_free()
 	quit(_failures)

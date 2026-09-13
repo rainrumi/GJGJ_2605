@@ -3,8 +3,8 @@ extends RefCounted
 
 
 # 隣接モノ取得
-static func get_adjacent_objects(source: Enemy, enemies: Array[Enemy]) -> Array[Enemy]:
-	return EnemyPlacementQuery.get_adjacent_enemies(source, enemies)
+static func get_adjacent_objects(source: Enemy, enemies: Array[Enemy], include_digested_source := false) -> Array[Enemy]:
+	return EnemyPlacementQuery.get_adjacent_enemies(source, enemies, include_digested_source)
 
 
 # 隣接悪夢取得
@@ -21,13 +21,14 @@ static func get_targets(
 	source: Enemy,
 	enemies: Array[Enemy],
 	stomach: StomachBoard,
-	target_type: EnemyEffect.EffectTarget
+	target_type: EnemyEffect.EffectTarget,
+	include_digested_source := false
 ) -> Array[Enemy]:
 	match target_type:
 		EnemyEffect.EffectTarget.SELF:
 			return [source]
 		EnemyEffect.EffectTarget.ADJACENT_OBJECTS:
-			return get_adjacent_objects(source, enemies)
+			return get_adjacent_objects(source, enemies, include_digested_source)
 		EnemyEffect.EffectTarget.ADJACENT_ENEMIES:
 			return get_adjacent_enemies(source, enemies)
 		EnemyEffect.EffectTarget.ALL_ENEMIES:

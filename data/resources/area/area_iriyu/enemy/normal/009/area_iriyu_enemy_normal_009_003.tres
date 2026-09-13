@@ -14,8 +14,8 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1, 0), PackedInt32A
 
 [sub_resource type="Resource" id="Resource_2n35r"]
 script = ExtResource("effect_5")
-activates_outside_stomach = true
 recovery_rate = 0.5
+activates_outside_stomach = true
 
 [sub_resource type="Resource" id="Resource_0g8kx"]
 script = ExtResource("4_enemy_skill")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://b33o6dfeu4mkb"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://mutc14407hno"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -6,27 +6,28 @@
 [ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
 [ext_resource type="Script" uid="uid://btrqwl7sf6f3e" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_spawn_enemy.gd" id="effect_5"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_8qecq"]
 script = ExtResource("2_acid_block")
 max_hp = 64
 damage = 8
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_gy823"]
 script = ExtResource("effect_5")
+spawn_count = 4
 max_spawn_count = 4
 hp_source = 2
 hp_delta = -16
 attack_source = 3
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_habrp"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_gy823")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 20010004002
 display_name = "E2"
-acid_block = SubResource("AcidBlock")
+acid_block = SubResource("Resource_8qecq")
 description = "消化された時、埋まってない胃袋マスに自身の最大HP-16の体力と自身の攻撃力を持った寄生型悪夢を生成する。（最大4マス）"
-main_skill = SubResource("MainSkill")
+main_skill = SubResource("Resource_habrp")

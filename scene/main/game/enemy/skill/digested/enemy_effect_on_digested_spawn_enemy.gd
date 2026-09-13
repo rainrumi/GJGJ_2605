@@ -44,10 +44,35 @@ func clear_dependencies() -> void:
 # スキル継承
 @export var inherit_skill := false
 
+# 消化時の受領ダメージを生成先の無効化閾値へ渡す
+@export var pass_taken_damage_as_threshold := false
+
 # 効果適用
 func apply() -> void:
 	var hp_value := hp_base + roundi(float(resolve_value(hp_source, 0)) * hp_multiplier) + hp_delta # 生成HP
 	if hp_value <= 0:
 		return
 	var attack_value := attack_base + roundi(float(resolve_value(attack_source, 0)) * attack_multiplier) + attack_delta # 生成攻撃
-	EnemyEffectWorldActions.spawn_enemy(self, spawn_queue, enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)
+	var spawn_info := enemy_info
+	if pass_taken_damage_as_threshold:
+		var digestion_damage := get_activation_damage() # 消化前に記録された受領値
+		if enemy_info == null or enemy_info.main_skill == null:
+			push_error("消化ダメージ継承先の悪夢スキルが未設定です: %s" % resource_path)
+			return
+		spawn_info = enemy_info.duplicate(false) as EnemyInfo
+		var skill := enemy_info.main_skill.duplicate(false) as EnemySkill
+		skill.effects = []
+		var threshold_found := false
+		for effect in enemy_info.main_skill.effects:
+			var copied_effect := effect.duplicate(true) as EnemyEffect
+			if copied_effect is EnemyEffectOnBattleIgnoreAcidDamageAtMost:
+				(copied_effect as EnemyEffectOnBattleIgnoreAcidDamageAtMost).threshold_source = ValueSource.FIXED
+				(copied_effect as EnemyEffectOnBattleIgnoreAcidDamageAtMost).threshold = digestion_damage
+				threshold_found = true
+			skill.effects.append(copied_effect)
+		if not threshold_found:
+			push_error("消化ダメージ継承先にダメージ無効化効果がありません: %s" % enemy_info.resource_path)
+			return
+		spawn_info.main_skill = skill
+		spawn_info.description += "(消化ダメージ:%dダメージ)" % digestion_damage
+	EnemyEffectWorldActions.spawn_enemy(self, spawn_queue, spawn_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)

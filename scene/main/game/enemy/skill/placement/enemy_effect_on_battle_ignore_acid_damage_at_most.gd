@@ -10,7 +10,7 @@ extends EnemyEffectOnSelfBeforeAcidDamage
 # 発動条件判定
 func accepts_activation(data: EnemyEffectActivationData) -> bool:
 	return super.accepts_activation(data) \
-		and get_activation_damage_from(data) <= resolve_value_from(threshold_source, threshold, data)
+		and get_activation_damage_from(data) - resolve_value_from(threshold_source, threshold, data) <= 0
 
 
 # 効果適用

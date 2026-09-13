@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://ds17kx7r8fheu"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://dyxb8xich0in0"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -6,23 +6,23 @@
 [ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
 [ext_resource type="Script" uid="uid://2fgbuk3mnj4u" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_deal_adjacent_inherited_overkill_acid_damage.gd" id="effect_5"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_t8s6j"]
 script = ExtResource("2_acid_block")
-max_hp = 30
+max_hp = 120
 damage = 6
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_yspv3"]
 script = ExtResource("effect_5")
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_htr87"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_yspv3")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 20010006002
 display_name = "E2"
-acid_block = SubResource("AcidBlock")
-description = "消化された時、隣接するモノにE1の消化時に受けた超過ダメージ分の消化ダメージを与える。"
-main_skill = SubResource("MainSkill")
+acid_block = SubResource("Resource_t8s6j")
+description = "消化された時、隣接するモノに自身の消化時に受けた超過ダメージ分の消化ダメージを与える。"
+main_skill = SubResource("Resource_htr87")

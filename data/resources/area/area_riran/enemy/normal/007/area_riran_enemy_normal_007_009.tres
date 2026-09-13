@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bl6bmxureobdj"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://cqoe4qls18nbo"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_cm76m"]
 script = ExtResource("2_acid_block")
 damage = 6
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
@@ -12,4 +12,4 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 script = ExtResource("1_enemy_info")
 skill_id = 20010007009
 display_name = "E9"
-acid_block = SubResource("AcidBlock")
+acid_block = SubResource("Resource_cm76m")

@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="EnemyPresetInfo" format=3]
+[gd_resource type="Resource" script_class="EnemyPresetInfo" format=3 uid="uid://cir1ua1rf5ybc"]
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/enemy/enemy_preset_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_skill_script"]
-[ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/normal/009/area_riran_enemy_normal_009_001.tres" id="2_enemy_001"]
-[ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/normal/009/area_riran_enemy_normal_009_002.tres" id="2_enemy_002"]
+[ext_resource type="Resource" uid="uid://1le80qpxxgmv" path="res://data/resources/area/area_riran/enemy/normal/009/area_riran_enemy_normal_009_001.tres" id="2_enemy_001"]
+[ext_resource type="Resource" uid="uid://bdq7642035yg" path="res://data/resources/area/area_riran/enemy/normal/009/area_riran_enemy_normal_009_003.tres" id="3_hxet1"]
 
 [resource]
 script = ExtResource("1_script")
-enemies = Array[ExtResource("1_skill_script")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_002")])
+enemies = Array[ExtResource("1_skill_script")]([ExtResource("2_enemy_001"), ExtResource("3_hxet1")])

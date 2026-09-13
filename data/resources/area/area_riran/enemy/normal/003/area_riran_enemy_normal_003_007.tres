@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://r6ufjiadwtnj"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://dulcmyf0srvaw"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -7,26 +7,27 @@
 [ext_resource type="Script" uid="uid://btrqwl7sf6f3e" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_spawn_enemy.gd" id="effect_5"]
 [ext_resource type="Resource" uid="uid://bsahjsfsr1c6w" path="res://data/resources/area/area_riran/enemy/normal/003/area_riran_enemy_normal_003_008.tres" id="enemy_6"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_5smvj"]
 script = ExtResource("2_acid_block")
-max_hp = 56
+max_hp = 480
 damage = 7
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(0, 1, 0), PackedInt32Array(1, 1, 1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_w1avb"]
 script = ExtResource("effect_5")
 enemy_info = ExtResource("enemy_6")
+spawn_count = 4
 hp_base = 32
 attack_source = 5
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_ou5qc"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_w1avb")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 20010003007
 display_name = "E7"
-acid_block = SubResource("AcidBlock")
+acid_block = SubResource("Resource_5smvj")
 description = "消化された時に受けた超過ダメージ分のATを持つ寄生型悪夢を生成する。"
-main_skill = SubResource("MainSkill")
+main_skill = SubResource("Resource_ou5qc")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://i21d22fxecq7"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://b7qn5gl6mailv"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_pckvp"]
 [ext_resource type="Texture2D" uid="uid://dmqj7abrj0a38" path="res://resource/image/texture/seed/tex_seed_noibara_small.png" id="2_small_texture"]
@@ -10,29 +10,29 @@
 [ext_resource type="Script" uid="uid://dfy1oks3ymocm" path="res://scene/main/game/seed/skill/on_progress_time/seed_effect_on_progress_time_damage_line.gd" id="skill_progress_line"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_33b0n"]
 script = ExtResource("1_pckvp")
 texture = ExtResource("4_block_texture")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_dxqgq"]
 script = ExtResource("skill_progress_line")
-damage = 500
+damage = 100
 edge_only = true
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_gtncw"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_gt67s")]([SubResource("Resource_main_effect_1")])
+effects = Array[ExtResource("3_gt67s")]([SubResource("Resource_dxqgq")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_1mnxl"]
 script = ExtResource("skill_adjacent_damage")
 stomach_edge_only = true
-damage = 1500
+damage = 500
 split = false
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_rob6i"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_gt67s")]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_gt67s")]([SubResource("Resource_1mnxl")])
 
 [resource]
 script = ExtResource("3_6m0ja")
@@ -41,8 +41,8 @@ rarity = 1
 display_name = "ノイバラ"
 texture = ExtResource("2_texture")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
-main_description = "時間が経過するたびに胃袋の端に隣接する消化ラインに触れているモノに500消化ダメージを与える。"
-sub_description = "この花を消化すると胃袋端に隣接するモノに1500消化ダメージを与える。"
+main_skill = SubResource("Resource_gtncw")
+sub_skill = SubResource("Resource_rob6i")
+acid_block = SubResource("Resource_33b0n")
+main_description = "時間が経過するたびに胃袋の端に隣接する消化ラインに触れているモノに100消化ダメージを与える。"
+sub_description = "この花を消化すると胃袋端に隣接するモノに500消化ダメージを与える。"

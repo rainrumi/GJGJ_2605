@@ -358,7 +358,7 @@ func _spawn_effect_enemy(enemies: Array[Enemy], request: BattleSpawnEnemyData) -
 
 # 生成セル検索
 func _find_spawn_cell(
-	enemy: Enemy,
+	_enemy: Enemy,
 	request: BattleSpawnEnemyData,
 	enemies: Array[Enemy],
 	spawn_shape: Array[Vector2i]
@@ -374,14 +374,16 @@ func _find_spawn_cell(
 			_stomach.rows
 		)
 	elif request.spawn_area == EnemyEffect.SpawnArea.EMPTY_ADJACENT:
-		for cell in request.source_enemy.get_occupied_cells(request.source_enemy.stomach_cell):
+		for cell in request.source_cells:
 			for direction in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
-				if not candidates.has(cell + direction): candidates.append(cell + direction)
+				var adjacent: Vector2i = cell + direction
+				if not request.source_cells.has(adjacent) and not candidates.has(adjacent):
+					candidates.append(adjacent)
 	else:
 		for row in range(_stomach.rows):
 			for column in range(_stomach.columns): candidates.append(Vector2i(column, row))
 	for cell in candidates:
-		if _stomach.can_place_shape(enemy, cell, spawn_shape, enemies):
+		if _stomach.can_place_shape(null, cell, spawn_shape, enemies):
 			return cell
 	return Vector2i(-1, -1)
 

@@ -36,5 +36,5 @@ func clear_dependencies() -> void:
 
 # 効果適用
 func apply() -> void:
-	for enemy in EnemyEffectTargetQuery.get_targets(source, enemies, stomach, target):
+	for enemy in EnemyEffectTargetQuery.get_targets(source, enemies, stomach, target, true):
 		EnemyEffectBattleActions.deal_acid_damage(self, digestion_state, enemy, roundi(float(get_activation_overkill_damage()) * overkill_multiplier))

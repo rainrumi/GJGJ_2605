@@ -22,8 +22,8 @@ static func show_damage_values(owner: Node, hp_label: Label, damage_values: Arra
 	# ダメージtexts
 	var damage_texts: Array[String] = []
 	for damage in damage_values:
-		if damage > 0:
-			damage_texts.append("-%d" % damage)
+		if damage >= 0:
+			damage_texts.append("0" if damage == 0 else "-%d" % damage)
 	if damage_texts.is_empty():
 		return
 	var popup_frame := Engine.get_process_frames()

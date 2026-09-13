@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://cakay2rp52hg3"]
+
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_3mhq5"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="2_dhxag"]
+
+[sub_resource type="Resource" id="AcidBlock"]
+script = ExtResource("1_3mhq5")
+max_hp = 160
+damage = 6
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
+
+[resource]
+script = ExtResource("2_dhxag")
+skill_id = 20010008002
+display_name = "E2"
+acid_block = SubResource("AcidBlock")

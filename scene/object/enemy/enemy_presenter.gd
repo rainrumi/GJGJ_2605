@@ -80,6 +80,8 @@ func _on_revived() -> void:
 func present_digestion_result(result: EnemyDigestionResult) -> void:
 	if result == null or result.enemy == null or result.enemy.data != _model or _view == null:
 		return
+	if result.total_damage == 0:
+		_view.pulse_damage()
 	_view.show_damage_values(result.damage_values)
 
 

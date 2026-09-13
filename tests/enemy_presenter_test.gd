@@ -83,9 +83,16 @@ func _run() -> void:
 	_expect(view.damage_batches == 0, "別Enemyの結果を自身のViewへ表示しない")
 	var own_result := EnemyDigestionResult.new() # 自身結果
 	own_result.enemy = owner
+	own_result.total_damage = 4
 	own_result.damage_values = [4]
 	presenter.present_digestion_result(own_result)
 	_expect(view.damage_batches == 1, "自身の結果だけをViewへ表示する")
+	var blocked_result := EnemyDigestionResult.new()
+	blocked_result.enemy = owner
+	blocked_result.total_damage = 0
+	blocked_result.damage_values = [0]
+	presenter.present_digestion_result(blocked_result)
+	_expect(view.damage_batches == 2 and view.damage_pulses == 2, "0ダメージでも表示と被弾演出を行う")
 	var presenter_source := FileAccess.get_file_as_string(
 		"res://scene/object/enemy/enemy_presenter.gd"
 	) # Presenterソース
