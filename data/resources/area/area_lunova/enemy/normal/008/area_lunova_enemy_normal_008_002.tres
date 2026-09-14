@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://dcmjetvsh20"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://purqvpxnekuq"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -16,6 +16,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1)])
 [sub_resource type="Resource" id="Resource_ncblf"]
 script = ExtResource("effect_5")
 hp_multiplier = 2.0
+activates_outside_stomach = true
 effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_61snc"]
@@ -32,5 +33,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010008002
 display_name = "E2"
 acid_block = SubResource("Resource_rbafy")
-description = "隣接するモノが持つHPを2倍にし、攻撃力を半分にする。"
+description = "隣接するモノの最大HPを2倍にして増加分回復する。さらに攻撃力を半分にする。"
 main_skill = SubResource("Resource_o5f2a")

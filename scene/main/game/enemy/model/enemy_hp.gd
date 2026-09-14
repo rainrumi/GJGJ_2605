@@ -111,13 +111,19 @@ func multiply_modifier(value: float) -> void:
 # 最大HP補正適用
 func apply_modifiers() -> void:
 	var base_maximum := maxi(1, maximum - _applied_modifier_delta) # 基準最大HP
-	var next_maximum := maxi(1, roundi(float(base_maximum + modifier_delta) * modifier_multiplier)) # 補正最大HP
+	var next_maximum := get_modified_maximum() # 補正最大HP
 	var next_delta := next_maximum - base_maximum # 新適用差分
 	var current_delta := _follow_current_delta - _applied_follow_current_delta # 現在HP差分
 	set_values(next_maximum, current + current_delta)
 	_applied_modifier_delta = next_delta
 	_applied_follow_current_delta = _follow_current_delta
 	_follow_current_delta = 0
+
+
+# 補正適用後の最大HP取得
+func get_modified_maximum() -> int:
+	var base_maximum := maxi(1, maximum - _applied_modifier_delta) # 基準最大HP
+	return maxi(1, roundi(float(base_maximum + modifier_delta) * modifier_multiplier))
 
 
 # 一時補正初期化

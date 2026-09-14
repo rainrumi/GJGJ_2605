@@ -23,5 +23,12 @@ func clear_dependencies() -> void:
 # 効果適用
 func apply() -> void:
 	var targets := EnemyEffectTargetQuery.get_adjacent_objects(source, enemies) # 隣接対象
-	if targets.size() < required_count: return
-	for enemy in targets: EnemyEffectStatChanges.multiply_hp(source, enemy, hp_multiplier)
+	if targets.size() < required_count:
+		state.set_value("adjacent_ids", [])
+		return
+	var new_targets := EnemyEffectTracking.get_new_adjacent_objects(state, source, enemies) # 新規隣接対象
+	for enemy in targets:
+		var previous_maximum := enemy.data.hp.get_modified_maximum()
+		EnemyEffectStatChanges.multiply_hp(source, enemy, hp_multiplier)
+		if new_targets.has(enemy):
+			enemy.heal_over_max(maxi(0, enemy.data.hp.get_modified_maximum() - previous_maximum))

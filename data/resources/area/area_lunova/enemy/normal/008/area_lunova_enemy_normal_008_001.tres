@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://cdon0ut7mms5y"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://dyh40tad4cib7"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -10,7 +10,7 @@
 script = ExtResource("2_acid_block")
 max_hp = 8192
 damage = 8
-stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1, 1), PackedInt32Array(1, 0, 0), PackedInt32Array(1, 1, 1)])
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1, 1), PackedInt32Array(1, 0, 0), PackedInt32Array(1, 1, 0)])
 
 [sub_resource type="Resource" id="Resource_de6mp"]
 script = ExtResource("effect_5")
@@ -25,5 +25,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010008001
 display_name = "E1"
 acid_block = SubResource("Resource_1xa0j")
-description = "消化ダメージを受けたとき、1回攻撃を行う。"
+description = "消化ダメージを受けたとき、攻撃を追加で1回行う。"
 main_skill = SubResource("Resource_0842a")
