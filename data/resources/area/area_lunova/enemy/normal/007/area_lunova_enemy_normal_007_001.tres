@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bcpsuprrfg1mj"]
 
-[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_battle_change_hp_by_empty_cell.gd" id="effect_5"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_battle_change_max_hp_by_empty_cell.gd" id="effect_6"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" uid="uid://bl11yx5d7if2u" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_battle_change_hp_by_empty_cell.gd" id="effect_5"]
+[ext_resource type="Script" uid="uid://c0163r4kwpsn2" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_battle_change_max_hp_by_empty_cell.gd" id="effect_6"]
 
 [sub_resource type="Resource" id="Resource_uivwd"]
 script = ExtResource("2_acid_block")
@@ -17,16 +17,12 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 script = ExtResource("effect_6")
 max_hp_delta_per_cell = 100
 effect_amount_configured = true
-effect_amount_fields = PackedStringArray("max_hp_delta_per_cell")
-probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_1u2h7"]
 script = ExtResource("effect_5")
 hp_delta_per_cell = 100
 heal_over_maximum = true
 effect_amount_configured = true
-effect_amount_fields = PackedStringArray("hp_delta_per_cell")
-probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_35rke"]
 script = ExtResource("4_enemy_skill")

@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://dejyf1e4cfg04"]
 
-[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_vya8k"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="2_vi6wi"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_stomach_change_attack.gd" id="3_3hk0t"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_j8pai"]
-[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="5_jcjuy"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_vya8k"]
+[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="2_vi6wi"]
+[ext_resource type="Script" uid="uid://c24swwsn7gvk4" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_stomach_change_attack.gd" id="3_3hk0t"]
+[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_j8pai"]
+[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="5_jcjuy"]
 
 [sub_resource type="Resource" id="Resource_vya8k"]
 script = ExtResource("1_vya8k")
@@ -16,8 +16,6 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 0), PackedInt32Arra
 script = ExtResource("3_3hk0t")
 attack_delta = -8
 effect_amount_configured = true
-effect_amount_fields = PackedStringArray("attack_delta")
-probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_3hk0t"]
 script = ExtResource("4_j8pai")

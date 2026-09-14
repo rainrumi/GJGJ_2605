@@ -1,15 +1,15 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://b2aojxhycrnv2"]
 
-[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_30onk"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_yugao_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_yugao.png" id="2_texture"]
-[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_flhnt"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_yj3ro"]
-[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect_bring_limit.gd" id="skill_bring_limit"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_stomach_rows.gd" id="skill_pending_time"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_stomach_size.gd" id="skill_stomach_size"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_30onk"]
+[ext_resource type="Texture2D" uid="uid://tt1hx4imun3" path="res://resource/image/texture/seed/tex_seed_yugao_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" uid="uid://bi0o31ykn4prh" path="res://resource/image/texture/seed/tex_seed_yugao.png" id="2_texture"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_flhnt"]
+[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_yj3ro"]
+[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" uid="uid://dowh00603eyqh" path="res://scene/main/game/seed/skill/seed_effect_bring_limit.gd" id="skill_bring_limit"]
+[ext_resource type="Script" uid="uid://ms3lesvv17q1" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_stomach_rows.gd" id="skill_pending_time"]
+[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" uid="uid://dgrxdmb2s6din" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_stomach_size.gd" id="skill_stomach_size"]
 
 [sub_resource type="Resource" id="Resource_ltldn"]
 script = ExtResource("1_30onk")
@@ -20,14 +20,10 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 script = ExtResource("skill_stomach_size")
 columns_delta = 1
 effect_amount_configured = true
-effect_amount_fields = PackedStringArray("columns_delta")
-probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_q82on"]
 script = ExtResource("skill_bring_limit")
 POSSESSION_LIMIT_KEY = "seed_100115"
-effect_amount_fields = PackedStringArray()
-probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_cbv6h"]
 script = ExtResource("skill_seed_skill")
@@ -37,8 +33,6 @@ effects = Array[ExtResource("3_yj3ro")]([SubResource("Resource_ibdae"), SubResou
 script = ExtResource("skill_pending_time")
 columns_delta = 2
 effect_amount_configured = true
-effect_amount_fields = PackedStringArray("columns_delta")
-probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_ana0k"]
 script = ExtResource("skill_seed_skill")
