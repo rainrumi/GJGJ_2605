@@ -35,5 +35,6 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010003003
 display_name = "E3"
 acid_block = SubResource("Resource_br3h1")
-description = "消化された時、時刻を30分巻き戻す。さらに埋まってない胃袋マスに自身の2倍の体力と、時刻を巻き戻すスキルを持った寄生型悪夢を2体生成する。"
+description = "消化された時、時刻を30分巻き戻す。さらに埋まってない胃袋マスに自身の2倍の体力と、時刻を巻き戻すスキルを持った寄生型悪夢を2体生成する。誕生してから12時間経過すると寄生型悪夢を生成せずに消化または消滅する。"
+lifetime_minutes = 720
 main_skill = SubResource("Resource_vk3bf")

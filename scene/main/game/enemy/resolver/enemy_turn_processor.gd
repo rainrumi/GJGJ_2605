@@ -8,6 +8,7 @@ var _battle_clock: BattleClock # 戦闘時刻
 var _digestion_state: EnemyDigestionState # 消化状態
 var _step_minutes := 30 # 基準進行分
 var _battle_start_minutes := 0 # 戦闘開始分
+var _age_minutes_accounted := 0 # 今回の進行で既に加算した分数
 
 
 # 依存関係設定
@@ -81,7 +82,10 @@ func begin_turn(
 		else maxi(1, elapsed_minutes)
 	)
 	_battle_clock.sync_time(turn_elapsed_minutes * 60, minutes * 60)
+	_age_minutes_accounted = turn_elapsed_minutes
 	for enemy in enemies:
+		if not enemy.is_Acided() and enemy.is_enemy():
+			enemy.data.add_age_minutes(turn_elapsed_minutes)
 		if not enemy.is_Acided() and enemy.can_take_stomach_turn():
 			enemy.data.stomach_status.add_elapsed_minutes(turn_elapsed_minutes)
 	return turn_elapsed_minutes
@@ -94,6 +98,13 @@ func progress_time(
 	enemies: Array[Enemy],
 	stomach: StomachBoard
 ) -> BattleTurnResultData:
+	var actual_elapsed_minutes := maxi(0, minutes - previous_minutes)
+	var additional_minutes := maxi(0, actual_elapsed_minutes - _age_minutes_accounted)
+	_age_minutes_accounted = 0
+	if additional_minutes > 0:
+		for enemy in enemies:
+			if not enemy.is_Acided() and enemy.is_enemy():
+				enemy.data.add_age_minutes(additional_minutes)
 	_seed_effects.apply_progress_time(previous_minutes, minutes, enemies, stomach)
 	var elapsed_seconds := maxi(0, minutes - previous_minutes) * 60 # 経過秒数
 	var current_seconds := minutes * 60 # 現在秒数
@@ -104,6 +115,15 @@ func progress_time(
 	for enemy in _seed_effects.consume_digested_enemies():
 		if not digested_enemies.has(enemy):
 			digested_enemies.append(enemy)
+	for enemy in enemies:
+		if enemy.is_Acided() or not enemy.is_enemy() or enemy.data.definition == null:
+			continue
+		var lifetime := enemy.data.definition.lifetime_minutes
+		if lifetime <= 0 or enemy.data.age_minutes < lifetime:
+			continue
+		enemy.current_hp = 0
+		enemy.set_Acided(true)
+		digested_enemies.append(enemy)
 	var digested_data := _to_enemy_data(digested_enemies) # 消化データ一覧
 	for enemy in digested_enemies:
 		enemy.data.stomach_status.publish_digestion(0, 0, elapsed_seconds, current_seconds, digested_data)

@@ -9,6 +9,8 @@ extends Resource
 @export var acid_block: AcidBlockInfo
 # 説明
 @export_multiline var description := ""
+# 誕生から消化・消滅までの時間（0は無期限）
+@export var lifetime_minutes := 0
 # スキル有無
 @export var enemy_skill_enabled := true
 # メインスキル

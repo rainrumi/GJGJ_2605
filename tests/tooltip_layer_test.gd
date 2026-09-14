@@ -74,6 +74,16 @@ func _check_enemy_tooltip() -> void:
 	var enemy := Enemy.new()
 	var enemy_entries := tooltip.call("_get_enemy_entries", enemy, false) as Array
 	_expect(enemy_entries[1].explanation == "効果", "悪夢ツールチップのメイン効果表示を短縮する")
+	var nightmare := load("res://data/resources/area/area_lunova/enemy/normal/003/area_lunova_enemy_normal_003_001.tres") as EnemyInfo
+	_expect(nightmare != null, "17010003001の悪夢定義を読み込む")
+	if nightmare != null:
+		enemy.data.definition = nightmare
+		enemy.data.main_skill_active = true
+		enemy.stomach_elapsed_minutes = 35
+		tooltip.show_enemy(enemy, "", false)
+		_expect(tooltip.call("_get_tooltip_text").ends_with("(経過時間:0.6hour)"), "効果文末に小数第一位の経過時間を表示する")
+		enemy.stomach_elapsed_minutes = 90
+		_expect(tooltip.call("_get_tooltip_text").contains("(経過時間:1.5hour)"), "表示中の時間変更をツールチップへ反映する")
 	var seed := SeedInfo.new()
 	seed.display_name = "テストの種"
 	enemy.seed_info = seed

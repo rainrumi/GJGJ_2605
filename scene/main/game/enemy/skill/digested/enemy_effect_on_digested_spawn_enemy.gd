@@ -49,6 +49,10 @@ func clear_dependencies() -> void:
 
 # 効果適用
 func apply() -> void:
+	if owner != null and owner.definition != null:
+		var lifetime := owner.definition.lifetime_minutes
+		if lifetime > 0 and owner.age_minutes >= lifetime:
+			return
 	var hp_value := hp_base + roundi(float(resolve_value(hp_source, 0)) * hp_multiplier) + hp_delta # 生成HP
 	if hp_value <= 0:
 		return
