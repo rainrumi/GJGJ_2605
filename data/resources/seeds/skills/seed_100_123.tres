@@ -1,37 +1,41 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://byonfexxgqff4"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_vf1xj"]
-[ext_resource type="Texture2D" uid="uid://de2go0uhl07al" path="res://resource/image/texture/seed/tex_seed_hitujigusa_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" uid="uid://w25c8ct4liu8" path="res://resource/image/texture/seed/tex_seed_hitujigusa.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_afp8s"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_qxbtq"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" uid="uid://cen3cbqyvb43t" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_clock_interval_minutes.gd" id="skill_time_before"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_vf1xj"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_hitujigusa_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_hitujigusa.png" id="2_texture"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_afp8s"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_qxbtq"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_clock_interval_minutes.gd" id="skill_time_before"]
 
-[sub_resource type="Resource" id="Resource_lujf5"]
+[sub_resource type="Resource" id="Resource_ock3h"]
 script = ExtResource("1_vf1xj")
 texture = ExtResource("4_block_texture")
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_6uryb"]
+[sub_resource type="Resource" id="Resource_s71kl"]
 script = ExtResource("skill_time_before")
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("before_delta", "after_delta")
+probability_fields = PackedStringArray()
 
-[sub_resource type="Resource" id="Resource_8nors"]
+[sub_resource type="Resource" id="Resource_qxbtq"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_6uryb")])
+effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_s71kl")])
 
-[sub_resource type="Resource" id="Resource_j1oph"]
+[sub_resource type="Resource" id="Resource_lujf5"]
 script = ExtResource("skill_time_before")
 before_delta = -20
 after_delta = 120
 on_digestion = true
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("before_delta", "after_delta")
+probability_fields = PackedStringArray()
 
-[sub_resource type="Resource" id="Resource_o0f5x"]
+[sub_resource type="Resource" id="Resource_6uryb"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_j1oph")])
+effects = Array[ExtResource("3_qxbtq")]([SubResource("Resource_lujf5")])
 
 [resource]
 script = ExtResource("3_afp8s")
@@ -40,8 +44,8 @@ rarity = 1
 display_name = "ヒツジグサ"
 texture = ExtResource("2_texture")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_8nors")
-sub_skill = SubResource("Resource_o0f5x")
-acid_block = SubResource("Resource_lujf5")
+main_skill = SubResource("Resource_qxbtq")
+sub_skill = SubResource("Resource_6uryb")
+acid_block = SubResource("Resource_ock3h")
 main_description = "時刻が2時以前のとき消化間隔+1h。2時以降のとき消化間隔-10m。"
 sub_description = "消化された時刻が2時以前のとき消化間隔-20m。2時以降のとき消化間隔+2h。"

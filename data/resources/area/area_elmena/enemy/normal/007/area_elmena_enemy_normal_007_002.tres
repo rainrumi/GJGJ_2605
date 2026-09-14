@@ -1,30 +1,32 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://be6h3plvwivos"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" uid="uid://dhdl87qb1cbny" path="res://scene/main/game/enemy/skill/damage/enemy_effect_on_acid_damage_transfer.gd" id="effect_5"]
+[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/damage/enemy_effect_on_acid_damage_transfer.gd" id="effect_5"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_g0ch3"]
 script = ExtResource("2_acid_block")
 max_hp = 600
 damage = 4
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1, 0), PackedInt32Array(0, 1, 1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_ren8c"]
 script = ExtResource("effect_5")
 transfer_rate = 0.5
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("transfer_rate")
+probability_fields = PackedStringArray()
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_ur8at"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_ren8c")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 11010007002
 display_name = "E2"
-acid_block = SubResource("AcidBlock")
+acid_block = SubResource("Resource_g0ch3")
 description = "自身が受けた消化ダメージの半分を隣接する一番HPが少ない敵に譲渡する。"
-main_skill = SubResource("MainSkill")
+main_skill = SubResource("Resource_ur8at")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://d2djd20t22hjy"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://1r88th44r113"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_l0k03"]
 [ext_resource type="Texture2D" uid="uid://b0sewup04462r" path="res://resource/image/texture/seed/tex_seed_kinsenka.png" id="2_gdfog"]
@@ -10,28 +10,29 @@
 [ext_resource type="Script" uid="uid://723kakfbp6lv" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_change_acid_damage_rate.gd" id="skill_pending_acid"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
-[sub_resource type="Resource" id="Resource_drag_block"]
+[sub_resource type="Resource" id="Resource_86j2i"]
 script = ExtResource("1_l0k03")
 texture = ExtResource("4_block_texture")
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_main_effect_1"]
+[sub_resource type="Resource" id="Resource_2pwaa"]
 script = ExtResource("skill_acid_rate")
 rate = 1.1
 effect_amount_configured = true
+probability_configured = true
 
-[sub_resource type="Resource" id="Resource_main_skill"]
+[sub_resource type="Resource" id="Resource_snaqa"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_kvh1i")]([SubResource("Resource_main_effect_1")])
+effects = Array[ExtResource("3_kvh1i")]([SubResource("Resource_2pwaa")])
 
-[sub_resource type="Resource" id="Resource_sub_effect_1"]
+[sub_resource type="Resource" id="Resource_hryiy"]
 script = ExtResource("skill_pending_acid")
 rate = 1.2
 effect_amount_configured = true
 
-[sub_resource type="Resource" id="Resource_sub_skill"]
+[sub_resource type="Resource" id="Resource_6rf41"]
 script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_kvh1i")]([SubResource("Resource_sub_effect_1")])
+effects = Array[ExtResource("3_kvh1i")]([SubResource("Resource_hryiy")])
 
 [resource]
 script = ExtResource("3_8g8ja")
@@ -39,8 +40,8 @@ skill_id = 100101
 display_name = "キンセンカ"
 texture = ExtResource("2_gdfog")
 small_texture = ExtResource("2_small_texture")
-main_skill = SubResource("Resource_main_skill")
-sub_skill = SubResource("Resource_sub_skill")
-acid_block = SubResource("Resource_drag_block")
+main_skill = SubResource("Resource_snaqa")
+sub_skill = SubResource("Resource_6rf41")
+acid_block = SubResource("Resource_86j2i")
 main_description = "消化ダメージ+10%"
 sub_description = "この花を消化すると消化ダメージ+20%"

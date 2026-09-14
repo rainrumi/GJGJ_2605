@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dkakqw3k3u7un"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_64q2q"]
-[ext_resource type="Texture2D" uid="uid://byky3cr21bo8s" path="res://resource/image/texture/seed/tex_seed_matuyoigusa_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" uid="uid://bxwxtr77xsac2" path="res://resource/image/texture/seed/tex_seed_matuyoigusa.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_2uhbw"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_rrnf1"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" uid="uid://nju1jc33vwty" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_line.gd" id="skill_line_damage"]
-[ext_resource type="Script" uid="uid://dps4akvj70m1w" path="res://scene/main/game/seed/skill/on_acid_damage/seed_effect_on_acid_damage_change_acid_damage_rate_by_stomach_count.gd" id="skill_progress_rate"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_64q2q"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_matuyoigusa_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_matuyoigusa.png" id="2_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_2uhbw"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_rrnf1"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_line.gd" id="skill_line_damage"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_acid_damage/seed_effect_on_acid_damage_change_acid_damage_rate_by_stomach_count.gd" id="skill_progress_rate"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_3vack"]
 script = ExtResource("1_64q2q")
@@ -18,6 +18,8 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 [sub_resource type="Resource" id="Resource_gsd33"]
 script = ExtResource("skill_progress_rate")
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("rate")
+probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_cxvfl"]
 script = ExtResource("skill_seed_skill")
@@ -26,6 +28,8 @@ effects = Array[ExtResource("3_2uhbw")]([SubResource("Resource_gsd33")])
 [sub_resource type="Resource" id="Resource_tpkeu"]
 script = ExtResource("skill_line_damage")
 split = true
+effect_amount_fields = PackedStringArray()
+probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_j612k"]
 script = ExtResource("skill_seed_skill")

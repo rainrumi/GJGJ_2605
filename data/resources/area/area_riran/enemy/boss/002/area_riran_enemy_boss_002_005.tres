@@ -6,27 +6,27 @@
 [ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
 [ext_resource type="Script" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_deal_adjacent_fixed_acid_damage.gd" id="effect_5"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_g8lps"]
 script = ExtResource("2_acid_block")
 max_hp = 30
 damage = 6
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_tp83r"]
 script = ExtResource("effect_5")
 damage = 20
 effect_amount_configured = true
 effect_amount_fields = PackedStringArray("damage")
 probability_fields = PackedStringArray()
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_wkb35"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_tp83r")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 20020002005
 display_name = "E5"
-acid_block = SubResource("AcidBlock")
+acid_block = SubResource("Resource_g8lps")
 description = "消化された時、隣接するモノに20消化ダメージを与える。"
-main_skill = SubResource("MainSkill")
+main_skill = SubResource("Resource_wkb35")

@@ -212,59 +212,111 @@ func _save_tab(tab_index: int) -> void:
 	if _drafts[tab_index].is_empty():
 		_set_status(tab_index, "変更はありません")
 		return
-	var affected_paths: Dictionary = {}
-	var original_values: Dictionary = {}
+	var choices_by_path: Dictionary = {}
 	for choice in _drafts[tab_index].values():
 		var path := String(choice.path)
+		if not choices_by_path.has(path):
+			choices_by_path[path] = []
+		choices_by_path[path].append(choice)
+	var failed: Array[String] = []
+	var saved_count := 0
+	var saved_definitions: Dictionary = {}
+	var saved_choices: Array[Dictionary] = []
+	for path in choices_by_path:
 		var definition := _resources.get(path) as Resource
 		if definition == null:
+			failed.append("%s: 定義が見つかりません" % path)
 			continue
-		var skill := definition.get(choice.slot) as Resource
-		if skill == null:
+		var choices: Array = choices_by_path[path]
+		var invalid := false
+		for choice in choices:
+			var effect := _effect_for_choice(definition, choice)
+			if effect == null or not EffectFieldValues.numeric_fields(effect).has(choice.field):
+				invalid = true
+				break
+		if invalid:
+			failed.append("%s: 対象変数を確認できません" % path)
 			continue
-		var effects: Array = skill.get("effects")
-		var effect := effects[int(choice.index)] as Resource
-		if effect == null or not EffectFieldValues.numeric_fields(effect).has(choice.field):
-			continue
-		if not original_values.has(path):
-			original_values[path] = {}
-		if not original_values[path].has(effect):
-			original_values[path][effect] = {
-				"fields": (effect.effect_amount_fields if tab_index == 0 else effect.probability_fields).duplicate(),
-				"configured": effect.effect_amount_configured if tab_index == 0 else effect.probability_configured,
-			}
-		var fields: PackedStringArray = effect.effect_amount_fields if tab_index == 0 else effect.probability_fields
-		fields = fields.duplicate()
-		if choice.selected and not fields.has(choice.field):
-			fields.append(choice.field)
-		elif not choice.selected:
-			fields.erase(choice.field)
-		if tab_index == 0:
-			effect.effect_amount_fields = fields
-			effect.effect_amount_configured = true
-		else:
-			effect.probability_fields = fields
-			effect.probability_configured = true
-		affected_paths[path] = true
-	var failed: Array[String] = []
-	for path in affected_paths:
-		var error := ResourceSaver.save(_resources[path], path)
+		var previous_values: Dictionary = {}
+		for choice in choices:
+			var effect := _effect_for_choice(definition, choice)
+			if not previous_values.has(effect):
+				previous_values[effect] = {
+					"fields": (effect.effect_amount_fields if tab_index == 0 else effect.probability_fields).duplicate(),
+					"configured": effect.effect_amount_configured if tab_index == 0 else effect.probability_configured,
+				}
+			var fields: PackedStringArray = effect.effect_amount_fields if tab_index == 0 else effect.probability_fields
+			fields = fields.duplicate()
+			if choice.selected and not fields.has(choice.field):
+				fields.append(choice.field)
+			elif not choice.selected:
+				fields.erase(choice.field)
+			if tab_index == 0:
+				effect.effect_amount_fields = fields
+				effect.effect_amount_configured = true
+			else:
+				effect.probability_fields = fields
+				effect.probability_configured = true
+		var error := ResourceSaver.save(definition, path)
 		if error != OK:
 			failed.append("%s: %s" % [path, error_string(error)])
-			for effect in original_values[path]:
-				var previous: Dictionary = original_values[path][effect]
-				if tab_index == 0:
-					effect.effect_amount_fields = previous.fields
-					effect.effect_amount_configured = previous.configured
-				else:
-					effect.probability_fields = previous.fields
-					effect.probability_configured = previous.configured
+			_restore_fields(previous_values, tab_index)
+			continue
+		var reloaded := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as Resource
+		for choice in choices:
+			var effect := _effect_for_choice(reloaded, choice)
+			if effect == null:
+				invalid = true
+				break
+			var fields: PackedStringArray = effect.effect_amount_fields if tab_index == 0 else effect.probability_fields
+			var configured: bool = effect.effect_amount_configured if tab_index == 0 else effect.probability_configured
+			if not configured or fields.has(choice.field) != bool(choice.selected):
+				invalid = true
+				break
+		if invalid:
+			failed.append("%s: 保存後の再読込で選択が一致しません" % path)
+			_restore_fields(previous_values, tab_index)
+			continue
+		saved_definitions[path] = definition
+		for choice in choices:
+			saved_choices.append(choice)
+		saved_count += 1
+	if not saved_definitions.is_empty():
+		var settings_error := (get_node("/root/EffectFieldSettings") as EffectFieldSettingsStore).save_definitions(saved_definitions)
+		if settings_error != OK:
+			failed.append("user://effect_field_targets.cfg: %s" % error_string(settings_error))
+		else:
+			for choice in saved_choices:
+				_drafts[tab_index].erase(_draft_key(choice.path, choice.slot, choice.index, choice.field))
 	if not failed.is_empty():
-		_set_status(tab_index, "保存失敗: " + ", ".join(failed))
+		_set_status(tab_index, "%s 件保存・%s 件失敗: %s" % [saved_count, failed.size(), ", ".join(failed)])
 		push_error("効果変数設定: " + ", ".join(failed))
 		return
-	_drafts[tab_index].clear()
-	_set_status(tab_index, "%s 件の定義を保存しました" % affected_paths.size())
+	_set_status(tab_index, "%s 件の定義を保存しました" % saved_count)
+
+
+func _effect_for_choice(definition: Resource, choice: Dictionary) -> Resource:
+	if definition == null:
+		return null
+	var skill := definition.get(choice.slot) as Resource
+	if skill == null:
+		return null
+	var effects: Array = skill.get("effects")
+	var index := int(choice.index)
+	if index < 0 or index >= effects.size():
+		return null
+	return effects[index] as Resource
+
+
+func _restore_fields(previous_values: Dictionary, tab_index: int) -> void:
+	for effect in previous_values:
+		var previous: Dictionary = previous_values[effect]
+		if tab_index == 0:
+			effect.effect_amount_fields = previous.fields
+			effect.effect_amount_configured = previous.configured
+		else:
+			effect.probability_fields = previous.fields
+			effect.probability_configured = previous.configured
 
 
 func _set_status(tab_index: int, message: String) -> void:

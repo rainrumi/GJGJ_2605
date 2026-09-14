@@ -14,6 +14,9 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	var settings_store := root.get_node("EffectFieldSettings") as EffectFieldSettingsStore
+	settings_store.settings_path = "res://tests/_effect_field_settings_test.cfg"
+	settings_store.load_settings()
 	_test_selection_values()
 	_test_effect_chain()
 	await _test_panel_and_save()
@@ -90,6 +93,7 @@ func _test_effect_chain() -> void:
 
 
 func _test_panel_and_save() -> void:
+	var settings_path := "res://tests/_effect_field_settings_test.cfg"
 	var panel := PANEL_SCENE.instantiate() as EffectFieldSettingsPanel
 	root.add_child(panel)
 	await process_frame
@@ -153,6 +157,7 @@ func _test_panel_and_save() -> void:
 			await process_frame
 	_expect(has_value, "変数名と現在値を表示する")
 	_expect(panel._drafts[0].has(panel._draft_key(SEED_PATH, "sub_skill", 0, "player_max_hp_rate")), "ラジオ操作を未保存選択に反映")
+	_expect(bool(panel._drafts[0][panel._draft_key(SEED_PATH, "sub_skill", 0, "player_max_hp_rate")].selected), "対象を選んだ結果を保持")
 	panel._drafts[0].clear()
 	var temporary := SeedInfo.new()
 	temporary.skill_id = 999999
@@ -176,7 +181,20 @@ func _test_panel_and_save() -> void:
 	_expect(reloaded != null and reloaded.sub_skill.effects[0].probability_fields.has("received_damage_rate"), "確率タブの選択をResourceへ記録")
 	_expect(reloaded != null and reloaded.sub_skill.effects[0].effect_amount_fields.has("player_max_hp_rate"), "確率保存でも効果量の選択を保持")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	var real_seed_path := "res://tests/_effect_field_settings_real_seed_temporary.tres"
+	var real_seed := load(SEED_PATH) as SeedInfo
+	_expect(ResourceSaver.save(real_seed.duplicate(true), real_seed_path) == OK, "100121の複製を保存できる")
+	panel._resources[real_seed_path] = ResourceLoader.load(real_seed_path, "", ResourceLoader.CACHE_MODE_IGNORE)
+	var real_key := panel._draft_key(real_seed_path, "sub_skill", 0, "player_max_hp_rate")
+	panel._drafts[0][real_key] = {"path": real_seed_path, "slot": "sub_skill", "index": 0, "field": "player_max_hp_rate", "selected": true}
+	panel._save_tab(0)
+	var saved_real_seed := ResourceLoader.load(real_seed_path, "", ResourceLoader.CACHE_MODE_IGNORE) as SeedInfo
+	_expect(FileAccess.get_file_as_string(real_seed_path).contains('effect_amount_fields = PackedStringArray("player_max_hp_rate")'), "100121の対象変数名をファイルへ記録")
+	_expect(saved_real_seed != null and saved_real_seed.sub_skill.effects[0].effect_amount_fields.has("player_max_hp_rate"), "100121の対象選択をディスクから再読込できる")
+	_expect(not panel._drafts[0].has(real_key), "再読込で一致した選択だけ未保存から外す")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(real_seed_path))
 	panel.free()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(settings_path))
 
 
 func _click(control: Control) -> void:

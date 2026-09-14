@@ -1,38 +1,42 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://6gxjjbj6ifvu"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" uid="uid://b8c67sf2j6pnm" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_scale_effect.gd" id="effect_5"]
-[ext_resource type="Script" uid="uid://1nro1ju2aeem" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_chance_scale_taken_acid_damage.gd" id="effect_6"]
+[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_scale_effect.gd" id="effect_5"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_chance_scale_taken_acid_damage.gd" id="effect_6"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_exqbb"]
 script = ExtResource("2_acid_block")
 max_hp = 600
 damage = 10
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 0), PackedInt32Array(1, 1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_evcjm"]
 script = ExtResource("effect_5")
 effect_multiplier = 3.0
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("effect_multiplier")
+probability_fields = PackedStringArray()
 
-[sub_resource type="Resource" id="Effect_2"]
+[sub_resource type="Resource" id="Resource_s53ri"]
 script = ExtResource("effect_6")
 chance = 0.2
 damage_multiplier = 3.0
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("damage_multiplier")
 probability_configured = true
+probability_fields = PackedStringArray()
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_cj44s"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1"), SubResource("Effect_2")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_evcjm"), SubResource("Resource_s53ri")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 16020003002
 display_name = "E2"
-acid_block = SubResource("AcidBlock")
+acid_block = SubResource("Resource_exqbb")
 description = "隣接するモノが持つ効果を3倍にし、消化ダメージを受けた時20%の確率で3倍のダメージを受けるようにする。"
-main_skill = SubResource("MainSkill")
+main_skill = SubResource("Resource_cj44s")

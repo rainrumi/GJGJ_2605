@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://cxscrkfucwey1"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_h4lmg"]
-[ext_resource type="Texture2D" uid="uid://vmqeowr6p235" path="res://resource/image/texture/seed/tex_seed_uikyo_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" uid="uid://dqqveivb8wq13" path="res://resource/image/texture/seed/tex_seed_uikyo.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_s2kvg"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_t12jc"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" uid="uid://w1qpp7saqv8b" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_recover_hp.gd" id="skill_recover_hp"]
-[ext_resource type="Script" uid="uid://dpbgcseqafd0r" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_recover_hp.gd" id="skill_seed_hp"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_h4lmg"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_uikyo_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_uikyo.png" id="2_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_s2kvg"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_t12jc"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_recover_hp.gd" id="skill_recover_hp"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_recover_hp.gd" id="skill_seed_hp"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 
 [sub_resource type="Resource" id="Resource_px2m0"]
 script = ExtResource("1_h4lmg")
@@ -19,6 +19,8 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 script = ExtResource("skill_recover_hp")
 time_active_count_heal_rate = 0.03
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("time_active_count_heal_rate")
+probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_f71sv"]
 script = ExtResource("skill_seed_skill")
@@ -28,6 +30,8 @@ effects = Array[ExtResource("3_s2kvg")]([SubResource("Resource_rjtwx")])
 script = ExtResource("skill_seed_hp")
 hp_rate_per_size = 0.0499999999992724
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("hp_rate_per_size")
+probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_nynee"]
 script = ExtResource("skill_seed_skill")

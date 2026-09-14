@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dme0af1oacnpy"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://pcorwwtaagk5"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_c2jy8"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_n5a61"]

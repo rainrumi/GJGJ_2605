@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bjohoena8vfww"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://cujcpip5fajyd"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -6,27 +6,27 @@
 [ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
 [ext_resource type="Script" uid="uid://dqxqmjg03st26" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_battle_chance_ignore_acid_damage.gd" id="effect_5"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_fdi77"]
 script = ExtResource("2_acid_block")
 max_hp = 7777
 damage = 7
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1), PackedInt32Array(1, 1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_e0i0i"]
 script = ExtResource("effect_5")
 chance = 0.4
 invert_chance = true
 effect_amount_configured = true
 probability_configured = true
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_8fcwf"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_e0i0i")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 17020001001
 display_name = "E1"
-acid_block = SubResource("AcidBlock")
+acid_block = SubResource("Resource_fdi77")
 description = "消化ダメージを受けない。この効果は40%の確率で無効化される。"
-main_skill = SubResource("MainSkill")
+main_skill = SubResource("Resource_8fcwf")

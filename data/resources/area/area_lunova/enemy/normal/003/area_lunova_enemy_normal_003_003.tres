@@ -1,23 +1,25 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://dtbhw15kcp7ga"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" uid="uid://bk48becn12jgm" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_change_time.gd" id="effect_5"]
-[ext_resource type="Script" uid="uid://btrqwl7sf6f3e" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_spawn_enemy.gd" id="effect_6"]
+[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_change_time.gd" id="effect_5"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_spawn_enemy.gd" id="effect_6"]
 
-[sub_resource type="Resource" id="AcidBlock"]
+[sub_resource type="Resource" id="Resource_br3h1"]
 script = ExtResource("2_acid_block")
 damage = 1
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Effect_1"]
+[sub_resource type="Resource" id="Resource_r053b"]
 script = ExtResource("effect_5")
 seconds_delta = -1800
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("seconds_delta")
+probability_fields = PackedStringArray()
 
-[sub_resource type="Resource" id="Effect_2"]
+[sub_resource type="Resource" id="Resource_bic5o"]
 script = ExtResource("effect_6")
 spawn_count = 2
 spawn_area = 1
@@ -25,15 +27,17 @@ hp_source = 2
 hp_multiplier = 2.0
 attack_base = 1
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("spawn_count", "hp_multiplier", "max_spawn_count")
+probability_fields = PackedStringArray()
 
-[sub_resource type="Resource" id="MainSkill"]
+[sub_resource type="Resource" id="Resource_vk3bf"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1"), SubResource("Effect_2")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_r053b"), SubResource("Resource_bic5o")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 17010003003
 display_name = "E3"
-acid_block = SubResource("AcidBlock")
+acid_block = SubResource("Resource_br3h1")
 description = "消化された時、時刻を30分巻き戻す。さらに埋まってない胃袋マスに自身の2倍の体力と、時刻を巻き戻すスキルを持った寄生型悪夢を2体生成する。"
-main_skill = SubResource("MainSkill")
+main_skill = SubResource("Resource_vk3bf")
