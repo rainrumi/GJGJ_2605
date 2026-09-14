@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://b7qn5gl6mailv"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://byd5jsu2clbl5"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_pckvp"]
 [ext_resource type="Texture2D" uid="uid://dmqj7abrj0a38" path="res://resource/image/texture/seed/tex_seed_noibara_small.png" id="2_small_texture"]
@@ -19,6 +19,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 script = ExtResource("skill_progress_line")
 damage = 100
 edge_only = true
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_gtncw"]
 script = ExtResource("skill_seed_skill")
@@ -29,6 +30,7 @@ script = ExtResource("skill_adjacent_damage")
 stomach_edge_only = true
 damage = 500
 split = false
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_rob6i"]
 script = ExtResource("skill_seed_skill")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bxt0lh7ggybqr"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bxkgwm2j6bgmf"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -17,6 +17,8 @@ script = ExtResource("effect_5")
 attack_multiplier = 777.0
 chance = 0.4
 invert_chance = true
+effect_amount_configured = true
+probability_configured = true
 
 [sub_resource type="Resource" id="MainSkill"]
 script = ExtResource("4_enemy_skill")

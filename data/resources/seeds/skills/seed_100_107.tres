@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dsv3yg3d0v1gc"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dmv5i6l3wkg4a"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_xh4bt"]
 [ext_resource type="Texture2D" uid="uid://bxmhaj8uh21e7" path="res://resource/image/texture/seed/tex_seed_yorugao_small.png" id="2_small_texture"]
@@ -32,6 +32,7 @@ effects = Array[ExtResource("3_i03xb")]([SubResource("Resource_yw61d"), SubResou
 script = ExtResource("skill_pending_acid")
 rate = 4.0
 start_minutes = 1680
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_rye86"]
 script = ExtResource("skill_seed_skill")

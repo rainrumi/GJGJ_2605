@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://cvdy1lkx0ub37"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://d2xwwysnytk"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -17,6 +17,7 @@ script = ExtResource("effect_5")
 interval_seconds = 600
 recovery = 100
 suppress_default_attack = true
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="MainSkill"]
 script = ExtResource("4_enemy_skill")

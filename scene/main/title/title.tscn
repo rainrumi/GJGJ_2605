@@ -85,8 +85,8 @@ offset_left = 13.0
 offset_top = 320.0
 offset_right = 153.0
 offset_bottom = 350.0
-toggle_mode = true
 theme_override_font_sizes/font_size = 12
+toggle_mode = true
 text = "Debug"
 
 [node name="NovelDebugPanel" type="PanelContainer" parent="." unique_id=1485036647]
@@ -112,7 +112,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 4
 
-[node name="EffectFieldSettingsButton" type="Button" parent="."]
+[node name="EffectFieldSettingsButton" type="Button" parent="." unique_id=1502511832]
+visible = false
 offset_left = 160.0
 offset_top = 320.0
 offset_right = 305.0
@@ -120,7 +121,7 @@ offset_bottom = 350.0
 theme_override_font_sizes/font_size = 11
 text = "効果量・確率の対象設定"
 
-[node name="EffectFieldSettingsPanel" parent="." instance=ExtResource("6_effect_fields")]
+[node name="EffectFieldSettingsPanel" parent="." unique_id=279586925 instance=ExtResource("6_effect_fields")]
 
 [connection signal="pressed" from="Menu/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="Menu/ContinueButton" to="." method="_on_continue_button_pressed"]

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://kpg6qaaspaqa"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dbyuodsee4dlg"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_s658i"]
 [ext_resource type="Texture2D" uid="uid://cqmahjh3dgflv" path="res://resource/image/texture/seed/tex_seed_torikabuto_small.png" id="2_small_texture"]
@@ -20,6 +20,7 @@ script = ExtResource("skill_time_rate")
 hp_loss_rate = 1.02
 min_interval_rate = 1.0
 max_interval_rate = 3.0
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_vva2t"]
 script = ExtResource("skill_seed_skill")
@@ -29,6 +30,7 @@ effects = Array[ExtResource("3_85vbj")]([SubResource("Resource_5dso2")])
 script = ExtResource("6_md7tm")
 elapsed_minute_damage = 10
 split = false
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_4b24p"]
 script = ExtResource("skill_seed_skill")

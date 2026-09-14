@@ -45,22 +45,10 @@ text = "対象変数だけに倍率を適用。未設定の効果は従来計算
 [node name="Picker" type="HBoxContainer" parent="Margin/Layout/Tabs/Amount"]
 layout_mode = 2
 
-[node name="Type" type="OptionButton" parent="Margin/Layout/Tabs/Amount/Picker"]
-layout_mode = 2
-custom_minimum_size = Vector2(94, 28)
-fit_to_longest_item = false
-clip_text = true
-
 [node name="Search" type="LineEdit" parent="Margin/Layout/Tabs/Amount/Picker"]
 layout_mode = 2
-custom_minimum_size = Vector2(130, 28)
-placeholder_text = "名前・ID・場所で検索"
-
-[node name="Item" type="OptionButton" parent="Margin/Layout/Tabs/Amount/Picker"]
-layout_mode = 2
 size_flags_horizontal = 3
-fit_to_longest_item = false
-clip_text = true
+placeholder_text = "名前・ID・場所で検索"
 
 [node name="Scroll" type="ScrollContainer" parent="Margin/Layout/Tabs/Amount"]
 layout_mode = 2
@@ -94,22 +82,10 @@ text = "対象変数だけに倍率を適用し0〜1に収めます。未設定�
 [node name="Picker" type="HBoxContainer" parent="Margin/Layout/Tabs/Probability"]
 layout_mode = 2
 
-[node name="Type" type="OptionButton" parent="Margin/Layout/Tabs/Probability/Picker"]
-layout_mode = 2
-custom_minimum_size = Vector2(94, 28)
-fit_to_longest_item = false
-clip_text = true
-
 [node name="Search" type="LineEdit" parent="Margin/Layout/Tabs/Probability/Picker"]
 layout_mode = 2
-custom_minimum_size = Vector2(130, 28)
-placeholder_text = "名前・ID・場所で検索"
-
-[node name="Item" type="OptionButton" parent="Margin/Layout/Tabs/Probability/Picker"]
-layout_mode = 2
 size_flags_horizontal = 3
-fit_to_longest_item = false
-clip_text = true
+placeholder_text = "名前・ID・場所で検索"
 
 [node name="Scroll" type="ScrollContainer" parent="Margin/Layout/Tabs/Probability"]
 layout_mode = 2

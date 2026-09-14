@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dbtrm6cbw2tnx"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://ca02d7i4fiaiy"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_cafjl"]
 [ext_resource type="Texture2D" uid="uid://cc0005ym885hv" path="res://resource/image/texture/seed/tex_seed_rupinasu_small.png" id="2_small_texture"]
@@ -19,6 +19,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 script = ExtResource("skill_stomach_size")
 rows_delta = 1
 unique_equipped_seed_only = true
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_2uu0s"]
 script = ExtResource("skill_seed_skill")
@@ -27,6 +28,7 @@ effects = Array[ExtResource("3_2t6qm")]([SubResource("Resource_m1wv1")])
 [sub_resource type="Resource" id="Resource_ovqbr"]
 script = ExtResource("skill_stomach_rows")
 rows_delta = 3
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_80jb5"]
 script = ExtResource("skill_seed_skill")

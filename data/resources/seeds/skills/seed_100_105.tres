@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://brcfr8ror3qn2"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://qwr27768kgsu"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_qrrqf"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_kof6u"]
@@ -32,6 +32,7 @@ effects = Array[ExtResource("3_svnoj")]([SubResource("Resource_cv3l6"), SubResou
 script = ExtResource("skill_adjacent_damage")
 self_damage_multiplier = 3.0
 received_damage_rate = 1.0
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_e40uw"]
 script = ExtResource("skill_seed_skill")

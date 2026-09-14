@@ -13,7 +13,6 @@ const SEED_DIRECTORY := "res://data/resources/seeds/skills"
 var _catalog: Array[Dictionary] = []
 var _resources: Dictionary = {}
 var _drafts: Array[Dictionary] = [{}, {}]
-var _selected_paths: Array[String] = ["", ""]
 
 
 func _ready() -> void:
@@ -22,13 +21,7 @@ func _ready() -> void:
 	($Margin/Layout/Tabs as TabContainer).set_tab_title(1, "確率")
 	for tab_index in range(2):
 		var tab := _tab(tab_index)
-		var type_picker := tab.get_node("Picker/Type") as OptionButton
-		type_picker.add_item("夢の種")
-		type_picker.add_item("悪夢")
-		type_picker.select(0)
-		type_picker.item_selected.connect(_on_type_selected.bind(tab_index))
 		(tab.get_node("Picker/Search") as LineEdit).text_changed.connect(_on_search_changed.bind(tab_index))
-		(tab.get_node("Picker/Item") as OptionButton).item_selected.connect(_on_item_selected.bind(tab_index))
 		(tab.get_node("Bottom/Save") as Button).pressed.connect(_save_tab.bind(tab_index))
 
 
@@ -37,7 +30,7 @@ func open() -> void:
 	if _catalog.is_empty():
 		_load_catalog()
 	for tab_index in range(2):
-		_refresh_picker(tab_index)
+		_render_rows(tab_index)
 	(amount_tab.get_node("Picker/Search") as LineEdit).grab_focus()
 
 
@@ -61,25 +54,23 @@ func _load_catalog() -> void:
 		var definition := ResourceLoader.load(path) as Resource
 		if definition is not EnemyInfo and definition is not SeedInfo:
 			continue
-		var effects := _effects_for(definition)
-		var has_numbers := false
-		for entry in effects:
-			if not EffectFieldValues.numeric_fields(entry.effect).is_empty():
-				has_numbers = true
-				break
-		if not has_numbers:
+		if _effects_for(definition).is_empty():
 			continue
 		_resources[path] = definition
 		var is_enemy := definition is EnemyInfo
 		var area := path.trim_prefix(ENEMY_DIRECTORY + "/").get_slice("/", 0)
-		var label := "%s %s (%s)" % [definition.skill_id, definition.display_name, area] if is_enemy else "%s %s" % [definition.skill_id, definition.display_name]
+		var label := "悪夢 %s %s (%s)" % [definition.skill_id, definition.display_name, area] if is_enemy else "夢の種 %s %s" % [definition.skill_id, definition.display_name]
 		_catalog.append({
 			"path": path,
 			"kind": 1 if is_enemy else 0,
 			"label": label,
 			"search": "%s %s" % [label, path],
 		})
-	_catalog.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.label < b.label)
+	_catalog.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if a.kind != b.kind:
+			return a.kind < b.kind
+		return a.label < b.label
+	)
 
 
 func _collect_paths(directory_path: String, paths: Array[String]) -> void:
@@ -116,48 +107,6 @@ func _effects_for(definition: Resource) -> Array[Dictionary]:
 
 
 func _on_search_changed(_value: String, tab_index: int) -> void:
-	_refresh_picker(tab_index)
-
-
-func _on_type_selected(_index: int, tab_index: int) -> void:
-	_selected_paths[tab_index] = ""
-	var search := _tab(tab_index).get_node("Picker/Search") as LineEdit
-	search.clear()
-	_refresh_picker(tab_index)
-
-
-func _refresh_picker(tab_index: int) -> void:
-	var tab := _tab(tab_index)
-	var picker := tab.get_node("Picker/Item") as OptionButton
-	var kind := (tab.get_node("Picker/Type") as OptionButton).selected
-	var query := (tab.get_node("Picker/Search") as LineEdit).text.strip_edges().to_lower()
-	picker.clear()
-	for item in _catalog:
-		if item.kind != kind:
-			continue
-		if not query.is_empty() and not String(item.search).to_lower().contains(query):
-			continue
-		picker.add_item(item.label)
-		picker.set_item_metadata(picker.item_count - 1, item.path)
-	if picker.item_count == 0:
-		_selected_paths[tab_index] = ""
-		_render_rows(tab_index)
-		return
-	var selected_index := 0
-	for index in range(picker.item_count):
-		if picker.get_item_metadata(index) == _selected_paths[tab_index]:
-			selected_index = index
-			break
-	picker.select(selected_index)
-	_selected_paths[tab_index] = String(picker.get_item_metadata(selected_index))
-	picker.tooltip_text = _selected_paths[tab_index]
-	_render_rows(tab_index)
-
-
-func _on_item_selected(index: int, tab_index: int) -> void:
-	var picker := _tab(tab_index).get_node("Picker/Item") as OptionButton
-	_selected_paths[tab_index] = String(picker.get_item_metadata(index))
-	picker.tooltip_text = _selected_paths[tab_index]
 	_render_rows(tab_index)
 
 
@@ -169,12 +118,35 @@ func _render_rows(tab_index: int) -> void:
 	var tab := _tab(tab_index)
 	var rows := tab.get_node("Scroll/Rows") as VBoxContainer
 	for child in rows.get_children():
+		rows.remove_child(child)
 		child.queue_free()
-	var path := _selected_paths[tab_index]
-	if path.is_empty() or not _resources.has(path):
+	var query := (tab.get_node("Picker/Search") as LineEdit).text.strip_edges().to_lower()
+	var count := 0
+	for item in _catalog:
+		if not query.is_empty() and not String(item.search).to_lower().contains(query):
+			continue
+		_render_definition(rows, item, tab_index)
+		count += 1
+	if count == 0:
 		_set_status(tab_index, "該当する項目がありません")
 		return
+	_set_status(tab_index, "%s 件表示・%s 件の未保存選択" % [count, _drafts[tab_index].size()])
+
+
+func _render_definition(rows: VBoxContainer, item: Dictionary, tab_index: int) -> void:
+	var path := String(item.path)
 	var definition := _resources[path] as Resource
+	if rows.get_child_count() > 0:
+		rows.add_child(HSeparator.new())
+	var title := Label.new()
+	title.text = String(item.label)
+	title.add_theme_font_size_override("font_size", 12)
+	rows.add_child(title)
+	if definition is SeedInfo:
+		_add_description(rows, "メイン: " + SeedDescription.get_main_description(definition))
+		_add_description(rows, "サブ: " + SeedDescription.get_sub_description(definition))
+	else:
+		_add_description(rows, "効果: " + String(definition.description).strip_edges())
 	for entry in _effects_for(definition):
 		var effect := entry.effect as Resource
 		var fields := EffectFieldValues.numeric_fields(effect)
@@ -187,7 +159,15 @@ func _render_rows(tab_index: int) -> void:
 		rows.add_child(heading)
 		for field in fields:
 			_add_field_row(rows, path, entry.slot, entry.index, effect, field, tab_index)
-	_set_status(tab_index, "%s 件の未保存選択" % _drafts[tab_index].size())
+
+
+func _add_description(rows: VBoxContainer, value: String) -> void:
+	var description := Label.new()
+	description.text = value
+	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	description.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	description.add_theme_font_size_override("font_size", 10)
+	rows.add_child(description)
 
 
 func _add_field_row(rows: VBoxContainer, path: String, slot: String, index: int, effect: Resource, field: String, tab_index: int) -> void:

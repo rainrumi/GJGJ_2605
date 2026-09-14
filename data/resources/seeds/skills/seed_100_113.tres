@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://bub34t4bxmqfq"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dbe6lk2jewev"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_7ne22"]
 [ext_resource type="Texture2D" uid="uid://sq80lp52mejv" path="res://resource/image/texture/seed/tex_seed_amaririsu_small.png" id="2_small_texture"]
@@ -18,6 +18,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 [sub_resource type="Resource" id="Resource_1tlwo"]
 script = ExtResource("skill_stomach_grid_rate")
 amount = 2.0
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_hifjf"]
 script = ExtResource("skill_seed_skill")
@@ -26,6 +27,7 @@ effects = Array[ExtResource("3_q1ii8")]([SubResource("Resource_1tlwo")])
 [sub_resource type="Resource" id="Resource_vcci7"]
 script = ExtResource("skill_line_damage")
 damage_per_stomach_cell = 5
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_1p5w3"]
 script = ExtResource("skill_seed_skill")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://ombvr86e57di"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://b5xtjs548ujgw"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -17,15 +17,18 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1), PackedInt32Arra
 [sub_resource type="Resource" id="Resource_o5nq1"]
 script = ExtResource("effect_7")
 max_hp_delta = 3000
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_iketr"]
 script = ExtResource("effect_5")
 hp_delta = 3000
 heal_over_maximum = true
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_qakeg"]
 script = ExtResource("effect_6")
 attack_delta = 10
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_iiqh7"]
 script = ExtResource("4_enemy_skill")

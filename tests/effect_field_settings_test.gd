@@ -95,25 +95,52 @@ func _test_panel_and_save() -> void:
 	await process_frame
 	panel.open()
 	_expect(not panel._catalog.is_empty(), "画面に悪夢・夢の種の一覧を読み込める")
-	var type_picker := panel.amount_tab.get_node("Picker/Type") as OptionButton
-	_expect(type_picker.selected == 0 and panel._selected_paths[0].begins_with("res://data/resources/seeds/skills/"), "初期表示で夢の種の効果を見られる")
-	type_picker.select(1)
-	type_picker.item_selected.emit(1)
-	_expect(panel._selected_paths[0].contains("/enemy/"), "種類を悪夢へ切り替えられる")
-	type_picker.select(0)
-	type_picker.item_selected.emit(0)
+	var rows := panel.amount_tab.get_node("Scroll/Rows") as VBoxContainer
+	var scroll := panel.amount_tab.get_node("Scroll") as ScrollContainer
+	var seed_count := 0
+	var enemy_count := 0
+	var separator_count := 0
+	var has_seed_description := false
+	var has_enemy_description := false
+	for child in rows.get_children():
+		if child is HSeparator:
+			separator_count += 1
+		elif child is Label:
+			if child.text.begins_with("夢の種 "):
+				seed_count += 1
+			elif child.text.begins_with("悪夢 "):
+				enemy_count += 1
+			elif child.text.begins_with("メイン: "):
+				has_seed_description = has_seed_description or child.text.length() > "メイン: ".length()
+			elif child.text.begins_with("効果: "):
+				has_enemy_description = has_enemy_description or child.text.length() > "効果: ".length()
+	_expect(seed_count > 0 and enemy_count > 0, "初期表示で夢の種と悪夢をすべて縦に並べる")
+	_expect(seed_count + enemy_count == panel._catalog.size(), "検索前は対象の全件を表示する")
+	_expect(separator_count == seed_count + enemy_count - 1, "各項目を線で区切る")
+	_expect(has_seed_description and has_enemy_description, "夢の種と悪夢の効果をテキスト表示する")
+	await process_frame
+	_expect(scroll.get_v_scroll_bar().max_value > scroll.size.y, "マウスホイールで一覧を縦スクロールできる")
+	var wheel := InputEventMouseButton.new()
+	wheel.position = scroll.get_global_rect().get_center()
+	wheel.global_position = wheel.position
+	wheel.button_index = MOUSE_BUTTON_WHEEL_DOWN
+	wheel.pressed = true
+	root.push_input(wheel, true)
+	await process_frame
+	_expect(scroll.scroll_vertical > 0, "マウスホイール入力で一覧が下へ動く")
 	var search := panel.amount_tab.get_node("Picker/Search") as LineEdit
 	search.text = "100121"
 	search.text_changed.emit(search.text)
-	_expect(panel._selected_paths[0] == SEED_PATH, "ID検索でオトギリソウを選べる")
+	_expect(rows.get_child_count() > 0 and (rows.get_child(0) as Label).text.contains("100121"), "ID検索でオトギリソウを絞り込める")
 	await process_frame
-	var rows := panel.amount_tab.get_node("Scroll/Rows") as VBoxContainer
 	var has_value := false
 	for row in rows.get_children():
 		if row is HBoxContainer and row.get_child_count() > 0 and "player_max_hp_rate = 30" in String(row.get_child(0).text):
 			has_value = true
 			var target := row.get_child(1) as CheckBox
 			var excluded := row.get_child(2) as CheckBox
+			scroll.ensure_control_visible(target)
+			await process_frame
 			var bounds := target.get_global_rect()
 			_expect(bounds.position.x >= 0 and bounds.end.x <= 640 and bounds.position.y >= 0 and bounds.end.y <= 360, "ラジオボタンが画面内に表示される: %s / panel %s / rows %s" % [bounds, panel.get_global_rect(), rows.get_global_rect()])
 			_click(target)

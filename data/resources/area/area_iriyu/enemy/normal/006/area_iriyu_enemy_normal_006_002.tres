@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://dvo4lixhawd1c"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bifrquj5kobli"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -17,6 +17,8 @@ script = ExtResource("effect_5")
 attack_delta = -5
 chance = 0.09999999997671694
 chance_multiplier = 2.0
+effect_amount_configured = true
+probability_configured = true
 
 [sub_resource type="Resource" id="Resource_sefp5"]
 script = ExtResource("4_enemy_skill")

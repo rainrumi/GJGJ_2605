@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://chxqqd0wv46di"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://ccm800u7uq2ae"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_xv40f"]
 [ext_resource type="Texture2D" uid="uid://ce2qoj6dekcbs" path="res://resource/image/texture/seed/tex_seed_mosengokei_small.png" id="2_small_texture"]
@@ -18,6 +18,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 [sub_resource type="Resource" id="Resource_nbkin"]
 script = ExtResource("skill_fire_rate")
 rate = 1.5
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_75mkk"]
 script = ExtResource("skill_seed_skill")
@@ -27,6 +28,7 @@ effects = Array[ExtResource("3_7wwav")]([SubResource("Resource_nbkin")])
 script = ExtResource("skill_acid_rate")
 rate = 2.0
 counts_enemies_only = true
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_jxmw6"]
 script = ExtResource("skill_seed_skill")

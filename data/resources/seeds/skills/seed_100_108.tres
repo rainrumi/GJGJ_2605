@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://b826wcb3e5cl6"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://cjaoorbp0if75"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_kr1fv"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_lfupt"]
@@ -19,6 +19,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 script = ExtResource("4_5d06b")
 multiplier = 3.0
 seeds_only = true
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_o0v8u"]
 script = ExtResource("skill_seed_skill")
@@ -28,6 +29,7 @@ effects = Array[ExtResource("3_fv4ra")]([SubResource("Resource_8fnuu")])
 script = ExtResource("7_83chu")
 rate = 3.0
 seeds_only = true
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_md0tm"]
 script = ExtResource("skill_seed_skill")

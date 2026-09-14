@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://csgeoeitd1m1u"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://bgepjsj84ak5b"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_8s68j"]
 [ext_resource type="Texture2D" uid="uid://laq0ilquhvab" path="res://resource/image/texture/seed/tex_seed_tokeisou_small.png" id="2_small_texture"]
@@ -21,6 +21,7 @@ rate = 0.7999999999992724
 min_interval_rate = 0.7999999999992724
 max_interval_rate = 1.0
 non_stacking_key = "seed_100103_main"
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_56nkk"]
 script = ExtResource("skill_seed_skill")
@@ -30,6 +31,7 @@ effects = Array[ExtResource("3_jxxml")]([SubResource("Resource_aixl4")])
 script = ExtResource("skill_pending_time")
 rate = 0.5
 non_stacking_key = "seed_100103_sub"
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_spkn5"]
 script = ExtResource("skill_seed_skill")

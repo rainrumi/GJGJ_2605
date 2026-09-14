@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://c6k1iv1t14w6e"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://cwnovx74m0ib4"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_cno5e"]
 [ext_resource type="Texture2D" uid="uid://c6jf2snx5tc0l" path="res://resource/image/texture/seed/tex_seed_kurematis_small.png" id="2_small_texture"]
@@ -20,6 +20,7 @@ rate = 0.9799999999995634
 elapsed_step_rate = 0.9799999999995634
 min_interval_rate = 0.6000000000003638
 max_interval_rate = 1.0
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_e1bkn"]
 script = ExtResource("skill_seed_skill")
@@ -31,6 +32,7 @@ rate = 0.9699999999993452
 elapsed_step_rate = 0.9699999999993452
 min_interval_rate = 0.3999999999996362
 max_interval_rate = 1.0
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_va1tr"]
 script = ExtResource("skill_seed_skill")

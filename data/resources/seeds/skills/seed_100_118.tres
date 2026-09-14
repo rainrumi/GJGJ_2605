@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://c4p5s3beahbsb"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://blqx8if6vjf3"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_txkq8"]
 [ext_resource type="Texture2D" uid="uid://dysnbjkk88gr0" path="res://resource/image/texture/seed/tex_seed_yadorigi_small.png" id="2_small_texture"]
@@ -18,6 +18,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 [sub_resource type="Resource" id="Resource_miivf"]
 script = ExtResource("skill_recover_hp")
 heal_per_damaged_object = 5
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_jseq0"]
 script = ExtResource("skill_seed_skill")
@@ -26,6 +27,7 @@ effects = Array[ExtResource("3_fqeer")]([SubResource("Resource_miivf")])
 [sub_resource type="Resource" id="Resource_2nfcg"]
 script = ExtResource("skill_target")
 heal_per_damaged_object = 10
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_xp2t6"]
 script = ExtResource("skill_seed_skill")

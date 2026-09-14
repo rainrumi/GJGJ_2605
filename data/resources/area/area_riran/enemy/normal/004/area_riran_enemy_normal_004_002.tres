@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://mutc14407hno"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bcdcs4vltpec7"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -19,6 +19,7 @@ max_spawn_count = 4
 hp_source = 2
 hp_delta = -16
 attack_source = 3
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_habrp"]
 script = ExtResource("4_enemy_skill")

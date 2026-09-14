@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://ds56vvcttl301"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://eitdwwqylkrv"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -29,6 +29,7 @@ enemy_info = SubResource("Resource_36ix2")
 spawn_count = 5
 hp_base = 32
 attack_source = 5
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_r30mr"]
 script = ExtResource("4_enemy_skill")

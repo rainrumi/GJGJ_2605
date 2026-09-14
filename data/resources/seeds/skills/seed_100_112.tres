@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://d31asowimm0wu"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://cw3ltcxes3gh3"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_t0ep0"]
 [ext_resource type="Texture2D" uid="uid://bsme582w444dq" path="res://resource/image/texture/seed/tex_seed_hasu_small.png" id="2_small_texture"]
@@ -12,11 +12,12 @@
 [sub_resource type="Resource" id="Resource_drag_block"]
 script = ExtResource("1_t0ep0")
 texture = ExtResource("4_block_texture")
-stomach_shape = null
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_main_effect_2"]
 script = ExtResource("skill_line_change")
 line_delta = 1
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_main_skill"]
 script = ExtResource("skill_seed_skill")
@@ -25,6 +26,7 @@ effects = Array[ExtResource("3_iopi5")]([SubResource("Resource_main_effect_2")])
 [sub_resource type="Resource" id="Resource_sub_effect_1"]
 script = ExtResource("skill_line_change")
 line_delta = 2
+effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_sub_skill"]
 script = ExtResource("skill_seed_skill")
