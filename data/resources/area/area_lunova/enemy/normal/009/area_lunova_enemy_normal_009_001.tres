@@ -1,15 +1,15 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://hj5wwld4f7rr"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
-[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
-[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" uid="uid://b6maq86xjy4eb" path="res://scene/main/game/enemy/skill/time/enemy_effect_on_elapsed_time_attack.gd" id="effect_5"]
+[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/time/enemy_effect_on_elapsed_time_attack.gd" id="effect_5"]
 
 [sub_resource type="Resource" id="Resource_yee8f"]
 script = ExtResource("2_acid_block")
 max_hp = 12000
-damage = 365
+damage = 9999
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1), PackedInt32Array(1, 1), PackedInt32Array(1, 1)])
 
 [sub_resource type="Resource" id="Resource_2ccmr"]
@@ -18,6 +18,8 @@ interval_seconds = 3600
 suppress_default_attack = true
 damage_source = 7
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("attack_count")
+probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_ge5cu"]
 script = ExtResource("4_enemy_skill")
@@ -28,5 +30,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010009001
 display_name = "E1"
 acid_block = SubResource("Resource_yee8f")
-description = "時間経過時に攻撃を行わない。胃袋の中で1時間経過するたびに失ったHP分の攻撃力で1回攻撃する。"
+description = "時間経過時に攻撃を行わない。胃袋の中で1時間経過するたびにその間で失ったHP分の攻撃力で1回攻撃する。"
 main_skill = SubResource("Resource_ge5cu")

@@ -34,6 +34,19 @@ func _run() -> void:
 	hp.damaged.connect(func(amount: int) -> void: damaged_values.append(amount))
 	hp.take_damage(4)
 	_expect(damaged_values == [4], "HP変更は普遍的な被弾量だけを通知する")
+	_expect(hp.lost_hp_total == 4, "実際に減ったHPを累計する")
+	hp.heal(2)
+	_expect(hp.lost_hp_total == 4, "回復では失HP累計を減らさない")
+	hp.set_current(5)
+	hp.set_values(12, 4)
+	_expect(hp.lost_hp_total == 8, "現在HPを直接減らす経路も累計する")
+	hp.take_damage(20)
+	_expect(hp.lost_hp_total == 12, "過剰ダメージは実際に減ったHPまで数える")
+	hp.setup(10)
+	_expect(hp.lost_hp_total == 0, "HP初期化時に失HP累計をリセットする")
+	hp.take_damage(2)
+	hp.reset_lost_hp()
+	_expect(hp.lost_hp_total == 0, "戦闘リセット時に失HP累計をリセットする")
 	var clock := BattleClock.new() # 時刻状態
 	var progressed_values: Array[int] = [] # 時刻通知値
 	clock.progressed.connect(func(elapsed: int, current: int) -> void:

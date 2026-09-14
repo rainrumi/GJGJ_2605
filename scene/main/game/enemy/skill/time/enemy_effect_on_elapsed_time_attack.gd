@@ -34,4 +34,12 @@ func suppresses_default_attack() -> bool:
 # 効果適用
 func apply() -> void:
 	var triggers := consume_interval(interval_seconds) # 発火数
-	EnemyEffectBattleActions.attack_player(source, player_health, resolve_value(damage_source, fixed_damage), attack_count * triggers)
+	var attacks := attack_count * triggers
+	if damage_source == EnemyEffect.ValueSource.LOST_HP:
+		if player_health == null or owner == null:
+			return
+		for _index in range(attacks):
+			EnemyEffectBattleActions.attack_player(source, player_health, resolve_value(damage_source, fixed_damage))
+			owner.hp.reset_lost_hp()
+		return
+	EnemyEffectBattleActions.attack_player(source, player_health, resolve_value(damage_source, fixed_damage), attacks)

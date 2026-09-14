@@ -133,6 +133,7 @@ func setup_seed(seed: SeedInfo, target_size: Vector2, start_position_override :=
 	setup_as_seed_stomach_block(seed, target_size)
 # for戦闘初期化
 func reset_for_battle() -> void:
+	data.hp.reset_lost_hp()
 	current_hp = max_hp
 	Aciding = false
 	Acided = false

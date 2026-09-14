@@ -15,8 +15,10 @@ func show_enemy(enemy: Enemy, debug_number_text: String, debug_numbers_visible: 
 	set_title(enemy.get_display_name())
 	set_note("", false)
 	set_entries(_get_enemy_entries(enemy, debug_numbers_visible))
-	if enemy.data.definition != null and enemy.data.definition.skill_id == 17010003001:
+	if enemy.data.definition != null and enemy.data.definition.skill_id in [17010003001, 17010009001, 17010009002, 17010009003]:
 		enemy.data.stomach_status.elapsed_changed.connect(_on_elapsed_changed)
+	if enemy.data.definition != null and enemy.data.definition.skill_id == 17010009001:
+		enemy.data.hp.changed.connect(_on_hp_changed)
 	if enemy.data.definition != null and enemy.data.definition.lifetime_minutes > 0:
 		enemy.data.age_changed.connect(_on_elapsed_changed)
 	enemy.data.special_effects_changed.connect(_on_special_effects_changed)
@@ -44,6 +46,8 @@ func hide_tooltip() -> void:
 func _disconnect_elapsed_changed() -> void:
 	if _enemy != null and _enemy.data.stomach_status.elapsed_changed.is_connected(_on_elapsed_changed):
 		_enemy.data.stomach_status.elapsed_changed.disconnect(_on_elapsed_changed)
+	if _enemy != null and _enemy.data.hp.changed.is_connected(_on_hp_changed):
+		_enemy.data.hp.changed.disconnect(_on_hp_changed)
 	if _enemy != null and _enemy.data.age_changed.is_connected(_on_elapsed_changed):
 		_enemy.data.age_changed.disconnect(_on_elapsed_changed)
 	if _enemy != null and _enemy.data.special_effects_changed.is_connected(_on_special_effects_changed):
@@ -51,6 +55,11 @@ func _disconnect_elapsed_changed() -> void:
 
 
 func _on_elapsed_changed(_minutes: int) -> void:
+	if visible and _enemy != null:
+		set_entries(_get_enemy_entries(_enemy, _debug_numbers_visible))
+
+
+func _on_hp_changed(_current: int, _maximum: int) -> void:
 	if visible and _enemy != null:
 		set_entries(_get_enemy_entries(_enemy, _debug_numbers_visible))
 
@@ -86,6 +95,15 @@ func _get_enemy_entries(enemy: Enemy, debug_numbers_visible: bool) -> Array:
 	var main_effect_text := enemy.get_main_effect_text()
 	if enemy.data.definition != null and enemy.data.definition.skill_id == 17010003001 and not main_effect_text.is_empty():
 		main_effect_text += " (経過時間:%.1f時間)" % (float(enemy.stomach_elapsed_minutes) / 60.0)
+	if enemy.data.definition != null and not main_effect_text.is_empty():
+		match enemy.data.definition.skill_id:
+			17010009001:
+				main_effect_text += " (経過時間:%d時間)(失ったHP:%d)" % [
+					enemy.stomach_elapsed_minutes / 60,
+					enemy.data.hp.lost_hp_total,
+				]
+			17010009002, 17010009003:
+				main_effect_text += " (経過時間:%d分)" % enemy.stomach_elapsed_minutes
 	if enemy.data.definition != null and enemy.data.definition.lifetime_minutes > 0 and not main_effect_text.is_empty():
 		main_effect_text += "(経過時間:%.1f時間)" % (float(enemy.data.age_minutes) / 60)
 	entries.append({

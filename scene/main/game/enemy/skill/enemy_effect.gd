@@ -201,7 +201,7 @@ func resolve_value_from(
 		ValueSource.SELF_MAX_HP: return owner.hp.maximum if owner != null else 0
 		ValueSource.SELF_ATTACK: return owner.attack.get_modified_value(owner.attack.get_value()) if owner != null else 0
 		ValueSource.DIGESTED_MINUTES: return owner.stomach_status.elapsed_minutes if owner != null else 0
-		ValueSource.LOST_HP: return maxi(0, owner.hp.maximum - owner.hp.current) if owner != null else 0
+		ValueSource.LOST_HP: return owner.hp.lost_hp_total if owner != null else 0
 		ValueSource.FIXED: return fixed_value
 	return get_event_value(source_type, data)
 

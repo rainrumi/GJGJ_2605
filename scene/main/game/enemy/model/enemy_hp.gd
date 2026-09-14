@@ -10,6 +10,7 @@ signal damage_resolved(amount: int, overkill: int)
 
 var maximum := 1 # 最大HP
 var current := 1 # 現在HP
+var lost_hp_total := 0 # 実際に減ったHPの累計
 var modifier_delta := 0 # 一時最大HP差分
 var modifier_multiplier := 1.0 # 一時最大HP倍率
 var _applied_modifier_delta := 0 # 適用済み差分
@@ -21,6 +22,7 @@ var _applied_follow_current_delta := 0 # 適用済み現在HP追従差分
 func setup(maximum_value: int, current_value: int = -1) -> void:
 	maximum = maxi(1, maximum_value)
 	current = maximum if current_value < 0 else clampi(current_value, 0, maximum)
+	lost_hp_total = 0
 	modifier_delta = 0
 	modifier_multiplier = 1.0
 	_applied_modifier_delta = 0
@@ -31,8 +33,10 @@ func setup(maximum_value: int, current_value: int = -1) -> void:
 
 # HP設定
 func set_values(maximum_value: int, current_value: int) -> void:
+	var previous_current := current
 	maximum = maxi(1, maximum_value)
 	current = clampi(current_value, 0, maximum)
+	_record_hp_loss(previous_current)
 	changed.emit(current, maximum)
 
 
@@ -43,7 +47,9 @@ func set_maximum(value: int) -> void:
 
 # 現在HP設定
 func set_current(value: int) -> void:
+	var previous_current := current
 	current = clampi(value, 0, maximum)
+	_record_hp_loss(previous_current)
 	changed.emit(current, maximum)
 	if current == 0:
 		depleted.emit()
@@ -62,6 +68,7 @@ func take_damage(amount: int) -> bool:
 	var before := current # 適用前HP
 	var applied := maxi(0, mini(current, amount)) # 適用量
 	current = maxi(0, current - requested)
+	lost_hp_total += applied
 	if applied > 0:
 		damaged.emit(applied)
 	changed.emit(current, maximum)
@@ -83,17 +90,32 @@ func heal(amount: int) -> void:
 
 # 上限外回復
 func heal_over_max(amount: int) -> void:
+	var previous_current := current
 	current = maxi(0, current + amount)
+	_record_hp_loss(previous_current)
 	changed.emit(current, maximum)
 
 
 # 最大HP追加
 func add_maximum(amount: int, also_heal := true) -> void:
+	var previous_current := current
 	maximum = maxi(1, maximum + amount)
 	if also_heal:
 		current += amount
 	current = maxi(0, current)
+	_record_hp_loss(previous_current)
 	changed.emit(current, maximum)
+
+
+func reset_lost_hp() -> void:
+	if lost_hp_total == 0:
+		return
+	lost_hp_total = 0
+	changed.emit(current, maximum)
+
+
+func _record_hp_loss(previous_current: int) -> void:
+	lost_hp_total += maxi(0, previous_current - current)
 
 
 # 最大HP差分追加
