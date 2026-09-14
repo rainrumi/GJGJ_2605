@@ -25,6 +25,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_test_spawned_enemy_attack_delay()
+	_test_seed_block_attack()
 	_test_elapsed_time_acid_damage_uses_own_accumulation()
 	quit(_failures)
 
@@ -67,6 +68,33 @@ func _test_spawned_enemy_attack_delay() -> void:
 	_expect(enemy.stomach_elapsed_minutes == 40, "悪夢へ補正後の消化間隔を加算する")
 
 	enemy.free()
+
+
+func _test_seed_block_attack() -> void:
+	var packed := load("res://scene/object/enemy/enemy.tscn") as PackedScene
+	var seed_info := load("res://data/resources/seeds/skills/seed_100_101.tres") as SeedInfo
+	_expect(packed != null and seed_info != null, "夢の種ブロックのSceneと定義を読める")
+	if packed == null or seed_info == null:
+		return
+	var seed_block := packed.instantiate() as Enemy
+	root.add_child(seed_block)
+	seed_block.setup_seed(seed_info, Vector2(40, 40))
+	seed_block.set_Aciding(true)
+	seed_block.stomach_elapsed_minutes = 30
+	var seed_effects := SeedEffectResolver.new()
+	seed_effects.setup([])
+	var attack_resolver := EnemyAttackResolver.new()
+	attack_resolver.setup(seed_effects, TestEnemyEffectSystem.new(), 0)
+	var objects: Array[Enemy] = [seed_block]
+	_expect(seed_block.get_damage() == 0, "通常の夢の種ブロックは攻撃力0")
+	_expect(attack_resolver.resolve(objects, null, 30).is_empty(), "攻撃力0ではプレイヤーにダメージを与えない")
+
+	seed_block.add_damage(5)
+	seed_block.data.defense_status.add_extra_attacks(1)
+	_expect(seed_block.get_display_damage() == 5, "増加した夢の種ブロックの攻撃力を表示する")
+	_expect(attack_resolver.resolve(objects, null, 30) == [5, 5], "攻撃力が増えた夢の種ブロックは追加攻撃も行う")
+	root.remove_child(seed_block)
+	seed_block.free()
 
 
 func _test_elapsed_time_acid_damage_uses_own_accumulation() -> void:

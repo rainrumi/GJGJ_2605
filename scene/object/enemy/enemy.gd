@@ -214,7 +214,7 @@ func should_apply_enemy_skill() -> bool:
 
 # shoulddealplayerダメ処理
 func should_deal_player_damage() -> bool:
-	return is_enemy()
+	return true
 
 
 # should数for消化order処理
@@ -368,7 +368,6 @@ func setup_as_seed_stomach_block(seed: SeedInfo, target_size: Vector2) -> void:
 	current_hp = max_hp
 	damage = block_definition.get_damage() if block_definition != null else 0
 	base_damage = damage
-	display_damage_override = damage
 	_update_hp_label()
 	_update_damage_label()
 

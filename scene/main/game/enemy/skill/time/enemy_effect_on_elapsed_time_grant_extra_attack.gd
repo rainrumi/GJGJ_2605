@@ -41,4 +41,25 @@ func suppresses_default_attack() -> bool:
 # 効果適用
 func apply() -> void:
 	var count := consume_interval(interval_seconds) # 発火数
-	for enemy in EnemyEffectTargetQuery.get_targets(source, enemies, stomach, target): EnemyEffectStatChanges.add_extra_attacks(enemy, mini(stack_limit, extra_attack_count * count))
+	var amount := mini(stack_limit, extra_attack_count * count)
+	if amount <= 0:
+		return
+	var selected := _select_target(EnemyEffectTargetQuery.get_targets(source, enemies, stomach, target))
+	if selected == null:
+		return
+	EnemyEffectStatChanges.add_extra_attacks(selected, amount)
+	selected.add_damage(5 * amount)
+	selected.data.add_special_effect(EnemyData.SpecialEffect.CALAMITY, amount)
+
+
+func _select_target(candidates: Array[Enemy]) -> Enemy:
+	var other_enemy: Enemy
+	var self_target: Enemy
+	for candidate in candidates:
+		if candidate.is_seed_stomach_block():
+			return candidate
+		if candidate == source:
+			self_target = candidate
+		elif other_enemy == null:
+			other_enemy = candidate
+	return other_enemy if other_enemy != null else self_target

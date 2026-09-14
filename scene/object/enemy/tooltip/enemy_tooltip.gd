@@ -19,6 +19,7 @@ func show_enemy(enemy: Enemy, debug_number_text: String, debug_numbers_visible: 
 		enemy.data.stomach_status.elapsed_changed.connect(_on_elapsed_changed)
 	if enemy.data.definition != null and enemy.data.definition.lifetime_minutes > 0:
 		enemy.data.age_changed.connect(_on_elapsed_changed)
+	enemy.data.special_effects_changed.connect(_on_special_effects_changed)
 	show_tooltip()
 
 
@@ -45,9 +46,16 @@ func _disconnect_elapsed_changed() -> void:
 		_enemy.data.stomach_status.elapsed_changed.disconnect(_on_elapsed_changed)
 	if _enemy != null and _enemy.data.age_changed.is_connected(_on_elapsed_changed):
 		_enemy.data.age_changed.disconnect(_on_elapsed_changed)
+	if _enemy != null and _enemy.data.special_effects_changed.is_connected(_on_special_effects_changed):
+		_enemy.data.special_effects_changed.disconnect(_on_special_effects_changed)
 
 
 func _on_elapsed_changed(_minutes: int) -> void:
+	if visible and _enemy != null:
+		set_entries(_get_enemy_entries(_enemy, _debug_numbers_visible))
+
+
+func _on_special_effects_changed() -> void:
 	if visible and _enemy != null:
 		set_entries(_get_enemy_entries(_enemy, _debug_numbers_visible))
 
@@ -88,6 +96,7 @@ func _get_enemy_entries(enemy: Enemy, debug_numbers_visible: bool) -> Array:
 		"value": _get_effect_text(main_effect_text),
 		"enabled": not main_effect_text.is_empty(),
 	})
+	_append_special_effects_entry(entries, enemy.data)
 	return entries
 
 
@@ -121,7 +130,19 @@ func _get_seed_block_entries(enemy: Enemy, debug_numbers_visible: bool) -> Array
 			"value": _get_seed_block_effect_text(enemy.seed_info),
 		},
 	])
+	_append_special_effects_entry(entries, enemy.data)
 	return entries
+
+
+func _append_special_effects_entry(entries: Array, enemy_data: EnemyData) -> void:
+	var effects: Array[String] = []
+	for effect: int in enemy_data.special_effects:
+		var amount := enemy_data.special_effects[effect]
+		var name := EnemyData.get_special_effect_name(effect)
+		if amount > 0 and not name.is_empty():
+			effects.append("%s+%d" % [name, amount])
+	if not effects.is_empty():
+		entries.append({"explanation": "特殊効果", "value": ", ".join(effects)})
 
 
 # 種ブロックeffect文言取得

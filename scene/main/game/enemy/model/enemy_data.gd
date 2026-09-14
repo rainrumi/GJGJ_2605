@@ -3,6 +3,11 @@ extends RefCounted
 
 signal skills_changed
 signal age_changed(minutes: int)
+signal special_effects_changed
+
+enum SpecialEffect {
+	CALAMITY,
+}
 
 var definition: EnemyInfo # 敵定義
 var hp := EnemyHp.new() # 敵HP
@@ -15,6 +20,7 @@ var main_skill: EnemySkill # メインスキル
 var main_skill_active := false # メイン有効
 var skills_enabled := true # スキル有効
 var age_minutes := 0 # 誕生からの経過分数
+var special_effects: Dictionary[int, int] = {} # 個体に付与された特殊効果
 
 
 # 敵データ初期化
@@ -27,6 +33,8 @@ func setup(info: EnemyInfo, maximum_hp: int, attack_value: int, use_main_skill: 
 	age_minutes = 0
 	age_changed.emit(age_minutes)
 	defense_status.reset()
+	special_effects.clear()
+	special_effects_changed.emit()
 	main_skill_active = use_main_skill
 	skills_enabled = enable_skills
 	main_skill = _duplicate_skill(info.get_main_skill_definition() if info != null else null)
@@ -36,6 +44,24 @@ func setup(info: EnemyInfo, maximum_hp: int, attack_value: int, use_main_skill: 
 func add_age_minutes(value: int) -> void:
 	age_minutes += maxi(0, value)
 	age_changed.emit(age_minutes)
+
+
+func add_special_effect(effect: SpecialEffect, amount: int) -> void:
+	if amount <= 0:
+		return
+	special_effects[effect] = special_effects.get(effect, 0) + amount
+	special_effects_changed.emit()
+
+
+func get_special_effect_amount(effect: SpecialEffect) -> int:
+	return special_effects.get(effect, 0)
+
+
+static func get_special_effect_name(effect: SpecialEffect) -> String:
+	match effect:
+		SpecialEffect.CALAMITY:
+			return "災禍"
+	return ""
 
 
 # 使用スキル取得
