@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bcpsuprrfg1mj"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://p7s6a6aywnrk"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -15,13 +15,14 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_n1eti"]
 script = ExtResource("effect_6")
-max_hp_delta_per_cell = 100
+max_hp_delta_per_cell = 500
 effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_1u2h7"]
 script = ExtResource("effect_5")
-hp_delta_per_cell = 100
+hp_delta_per_cell = 500
 heal_over_maximum = true
+activates_outside_stomach = true
 effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_35rke"]
@@ -33,5 +34,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010007001
 display_name = "E1"
 acid_block = SubResource("Resource_uivwd")
-description = "自身の最大HPとHPを100×何も設置されていない消化マスの数増やす"
+description = "自身の最大HPとHPを500×何も設置されていない消化マスの数増やす。"
 main_skill = SubResource("Resource_35rke")

@@ -30,6 +30,9 @@ func clear_dependencies() -> void:
 
 # 効果適用
 func apply() -> void:
+	if not source.is_active_in_stomach():
+		set_state("empty_count", 0)
+		return
 	var empty_count := EnemyEffectTargetQuery.get_empty_cell_count(enemies, stomach)
 	EnemyEffectStatChanges.change_hp(
 		source, source, hp_delta_per_cell * (empty_count - get_state_int("empty_count")), heal_over_maximum

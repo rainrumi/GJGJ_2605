@@ -10,11 +10,12 @@
 script = ExtResource("2_acid_block")
 max_hp = 1013
 damage = 6
-stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1)])
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1), PackedInt32Array(1), PackedInt32Array(1)])
 
 [sub_resource type="Resource" id="Resource_nrym5"]
 script = ExtResource("effect_5")
 hp_multiplier = 5.0
+activates_outside_stomach = true
 effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_18m83"]

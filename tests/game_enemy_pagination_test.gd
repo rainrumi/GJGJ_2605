@@ -5,6 +5,7 @@ const ENEMY_CENTER_X := 500.0
 const ENEMY_RIGHT_X := 575.0
 const ENEMY_TOP_Y := 140.0
 const ENEMY_BOTTOM_Y := 252.5
+const ENEMY_SINGLE_POSITION := Vector2(480.0, 190.0)
 
 var _failures := 0 # 失敗数
 
@@ -50,6 +51,7 @@ func _run() -> void:
 	await _check_time_effect_damage_visuals(game)
 	_check_eleven_enemy_pages(game, previous_button, next_button)
 	_check_thirteen_enemy_pages(game, previous_button, next_button)
+	_check_single_enemy_page(game, previous_button, next_button)
 	game.call("cancel_battle")
 	root.remove_child(game)
 	game.free()
@@ -62,6 +64,14 @@ func _run() -> void:
 	packed = null
 	await process_frame
 	quit(_failures)
+
+
+# 1体表示試験
+func _check_single_enemy_page(game: Node, previous_button: Button, next_button: Button) -> void:
+	_start_battle_with_enemy_count(game, 1)
+	var enemies: Array[Enemy] = game.get("enemies")
+	_expect(enemies[0].position == ENEMY_SINGLE_POSITION, "1体の悪夢を指定位置に配置する")
+	_expect(not previous_button.visible and not next_button.visible, "1体編成ではページボタンを隠す")
 
 
 # 4体表示試験
@@ -82,7 +92,7 @@ func _check_five_enemy_pages(game: Node, previous_button: Button, next_button: B
 	_expect(next_button.visible, "5体編成の1ページ目では次ページボタンを表示する")
 	next_button.pressed.emit()
 	_expect_visible_range(enemies, 4, 5, 5, "5体編成の2ページ目")
-	_expect(enemies[4].position == Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y), "1体のページは従来の1体配置を使う")
+	_expect(enemies[4].position == ENEMY_SINGLE_POSITION, "1体のページは指定位置に配置する")
 	_expect(previous_button.visible, "2ページ目では前ページボタンを表示する")
 	_expect(not next_button.visible, "最終ページでは次ページボタンを隠す")
 	previous_button.pressed.emit()
@@ -231,7 +241,7 @@ func _check_thirteen_enemy_pages(game: Node, previous_button: Button, next_butto
 	_expect(next_button.visible, "3ページ目では次ページボタンを表示する")
 	next_button.pressed.emit()
 	_expect_visible_range(enemies, 12, 13, 13, "13体編成の4ページ目")
-	_expect(enemies[12].position == Vector2(ENEMY_LEFT_X, ENEMY_BOTTOM_Y), "4ページ目にも従来の1体配置を使う")
+	_expect(enemies[12].position == ENEMY_SINGLE_POSITION, "4ページ目も1体なら指定位置に配置する")
 	_expect(previous_button.visible, "4ページ目では前ページボタンを表示する")
 	_expect(not next_button.visible, "4ページ目では次ページボタンを隠す")
 

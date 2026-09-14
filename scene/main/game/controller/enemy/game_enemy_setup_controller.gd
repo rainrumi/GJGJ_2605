@@ -7,6 +7,7 @@ const ENEMY_BOTTOM_Y := 252.5
 const ENEMY_LEFT_X := 425.0
 const ENEMY_CENTER_X := 500.0
 const ENEMY_RIGHT_X := 575.0
+const ENEMY_SINGLE_POSITION := Vector2(480.0, 190.0)
 const ENEMIES_PER_PAGE := 4
 const ENEMY_SCENE := preload("res://scene/object/enemy/enemy.tscn")
 const DEFAULT_ENEMY_STOMACH_SIZE := Vector2i(2, 3)
@@ -248,6 +249,8 @@ func _get_enemy_stomach_size(skill: EnemyInfo) -> Vector2i:
 # 敵positions取得
 func _get_enemy_positions(enemy_count: int) -> Array[Vector2]:
 	match enemy_count:
+		1:
+			return [ENEMY_SINGLE_POSITION]
 		2:
 			return [
 				Vector2(ENEMY_LEFT_X, ENEMY_MIDDLE_Y),
