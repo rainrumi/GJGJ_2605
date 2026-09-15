@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://biaejtngivtgk" path="res://scene/main/stage_select/choice/stage_choice.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://drk1rtl23138w" path="res://resource/image/texture/frame/tex_frame_100.png" id="3_frame"]
-[ext_resource type="Texture2D" uid="uid://dll7ti4sero01" path="res://resource/image/texture/seed/tex_seed_huji_small.png" id="4_dj5lj"]
+[ext_resource type="Texture2D" uid="uid://dysnbjkk88gr0" path="res://resource/image/texture/seed/tex_seed_yadorigi_small.png" id="4_mqvsy"]
 
 [node name="StageChoice" type="Button" unique_id=188156610]
 custom_minimum_size = Vector2(270, 54)
@@ -19,10 +19,10 @@ layout_mode = 0
 offset_right = 270.0
 offset_bottom = 54.0
 texture = ExtResource("3_frame")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+patch_margin_left = 20
+patch_margin_top = 4
+patch_margin_right = 20
+patch_margin_bottom = 35
 
 [node name="NameLabel" type="Label" parent="." unique_id=794671039]
 visible = false
@@ -99,15 +99,17 @@ text = "報酬"
 vertical_alignment = 1
 
 [node name="RewardHBoxContainer" type="HBoxContainer" parent="." unique_id=754154955]
+visible = false
 layout_mode = 0
 offset_left = 8.0
-offset_top = 18.0
-offset_right = 255.0
-offset_bottom = 48.0
-theme_override_constants/separation = 1
+offset_top = 20.0
+offset_right = 262.0
+offset_bottom = 50.0
+theme_override_constants/separation = 2
+alignment = 1
 
 [node name="RewardIcon" type="TextureRect" parent="RewardHBoxContainer" unique_id=1446009597]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 2
 mouse_filter = 2
-texture = ExtResource("4_dj5lj")
+texture = ExtResource("4_mqvsy")
