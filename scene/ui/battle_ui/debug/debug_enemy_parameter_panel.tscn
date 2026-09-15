@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scene/ui/battle_ui/debug/debug_enemy_parameter_panel.gd" id="1"]
+[ext_resource type="Script" path="res://scene/ui/battle_ui/debug/debug_enemy_option_button.gd" id="2"]
 
 [node name="DebugEnemyParameterPanel" type="PanelContainer"]
 visible = false
@@ -37,7 +38,9 @@ autowrap_mode = 2
 [node name="EnemyOption" type="OptionButton" parent="Margin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 fit_to_longest_item = false
+script = ExtResource("2")
 
 [node name="EmptyLabel" type="Label" parent="Margin/Content"]
 unique_name_in_owner = true

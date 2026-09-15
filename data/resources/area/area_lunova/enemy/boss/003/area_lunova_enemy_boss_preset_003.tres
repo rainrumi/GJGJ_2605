@@ -1,12 +1,9 @@
-[gd_resource type="Resource" script_class="EnemyPresetInfo" format=3]
+[gd_resource type="Resource" script_class="EnemyPresetInfo" format=3 uid="uid://41ix8q6adgh6"]
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/enemy/enemy_preset_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_skill_script"]
-[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/boss/003/area_lunova_enemy_boss_003_001.tres" id="2_enemy_001"]
-[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/boss/003/area_lunova_enemy_boss_003_002.tres" id="2_enemy_002"]
-[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/boss/003/area_lunova_enemy_boss_003_003.tres" id="2_enemy_003"]
-[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/boss/003/area_lunova_enemy_boss_003_004.tres" id="2_enemy_004"]
+[ext_resource type="Resource" uid="uid://kvu4lb1x08gg" path="res://data/resources/area/area_lunova/enemy/boss/003/area_lunova_enemy_boss_003_001.tres" id="2_enemy_001"]
 
 [resource]
 script = ExtResource("1_script")
-enemies = Array[ExtResource("1_skill_script")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_002"), ExtResource("2_enemy_003"), ExtResource("2_enemy_004")])
+enemies = Array[ExtResource("1_skill_script")]([ExtResource("2_enemy_001")])
