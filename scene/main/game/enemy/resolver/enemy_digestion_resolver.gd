@@ -20,6 +20,12 @@ func setup(
 	_digestion_state = digestion_state
 
 
+# 種ブロック由来の再評価時補正適用
+func apply_seed_block_refresh_modifiers(enemies: Array[Enemy]) -> void:
+	if _seed_block_resolver != null:
+		_seed_block_resolver.apply_refresh_modifiers(enemies)
+
+
 # 消化内訳取得
 func get_damage_breakdown(
 	enemies: Array[Enemy],

@@ -2,6 +2,17 @@ class_name DreamSeedBlockAcidResolver
 extends RefCounted
 
 
+# 再評価時補正適用
+func apply_refresh_modifiers(enemies: Array[Enemy]) -> void:
+	for seed_block in enemies:
+		if seed_block == null or not seed_block.is_active_in_stomach() or not seed_block.has_seed():
+			continue
+		var context := {"seed_block": seed_block, "enemies": enemies}
+		for definition in _get_seed_block_effects(seed_block):
+			var effect := definition.adjusted_for_seed_block(seed_block)
+			effect.apply_seed_block_refresh_modifiers(context)
+
+
 # 消化ダメージ率取得
 func get_acid_damage_rate(enemies: Array[Enemy], minutes: int) -> float:
 	var rate := 0.0

@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
 [ext_resource type="Script" uid="uid://c81l3uqa4v2nd" path="res://scene/main/game/seed/skill/on_fire_acid_enemy/seed_effect_on_fire_acid_enemy_probability_change_acid_damage_rate.gd" id="skill_fire_probability_rate"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" uid="uid://ca7drmtjcjtgv" path="res://scene/main/game/seed/skill/on_target/seed_effect_on_target_change_acid_damage.gd" id="skill_target"]
+[ext_resource type="Script" uid="uid://di4akr83h4in3" path="res://scene/main/game/seed/skill/on_target/seed_effect_on_adjacent_object_change_chance.gd" id="skill_adjacent_chance"]
 
 [sub_resource type="Resource" id="Resource_mf7mr"]
 script = ExtResource("1_irj3a")
@@ -27,10 +27,8 @@ script = ExtResource("skill_seed_skill")
 effects = Array[ExtResource("3_3imsh")]([SubResource("Resource_2fb65")])
 
 [sub_resource type="Resource" id="Resource_f43ek"]
-script = ExtResource("skill_target")
-multiplier = 2.0
-enemies_only = true
-effect_amount_configured = true
+script = ExtResource("skill_adjacent_chance")
+chance_multiplier = 2.0
 
 [sub_resource type="Resource" id="Resource_egm25"]
 script = ExtResource("skill_seed_skill")
@@ -47,4 +45,4 @@ main_skill = SubResource("Resource_8lluu")
 sub_skill = SubResource("Resource_egm25")
 acid_block = SubResource("Resource_mf7mr")
 main_description = "消化ダメージを与えたとき5%の確率で消化ダメージ800%を追加で与える。"
-sub_description = "この花が消化すると消化時に隣接した悪夢が受ける消化ダメージ+200%"
+sub_description = "この花と隣接しているモノが持つすべての確率を2倍にする"

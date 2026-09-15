@@ -72,6 +72,7 @@ var _lara_first_interaction := false
 var _lara_judge_pending := false
 var _day_change_time_recovery_pending := false
 var _lara_judge_result := 0
+var _debug_forced_enemy_preset: EnemyPresetInfo
 
 
 # 初期化
@@ -388,6 +389,27 @@ func show_day_intro() -> void:
 
 # 選択処理
 func _on_stage_select_stage_selected(stage: StageInfo) -> void:
+	_debug_forced_enemy_preset = null
+	_select_stage(stage)
+
+
+# debugボス選択処理
+func _on_stage_select_debug_boss_stage_selected(stage: StageInfo) -> void:
+	if not DebugState.debug_enabled or stage == null or not stage.is_high_difficulty:
+		return
+	if stage.enemy_data == null:
+		push_error("Main: debugボスステージに敵定義がありません: %s" % stage.location)
+		return
+	var boss_preset := stage.enemy_data.get_strengthened_enemy_preset(0)
+	if boss_preset == null:
+		push_error("Main: debugボスステージにB-1編成がありません: %s" % stage.location)
+		return
+	_debug_forced_enemy_preset = boss_preset
+	_select_stage(stage)
+
+
+# ステージ選択共通処理
+func _select_stage(stage: StageInfo) -> void:
 	if stage == null:
 		return
 	run_state.select_stage(stage)
@@ -897,7 +919,12 @@ func _create_battle_start_context(reset_player_state: bool) -> BattleInfo:
 	context.day = run_state.current_day
 	context.stage_id = run_state.selected_stage_id
 	context.stage = run_state.selected_stage
-	context.enemy_preset = run_state.pick_enemy_preset(run_state.selected_stage)
+	context.enemy_preset = (
+		_debug_forced_enemy_preset
+		if _debug_forced_enemy_preset != null
+		else run_state.pick_enemy_preset(run_state.selected_stage)
+	)
+	_debug_forced_enemy_preset = null
 	context.stomach_columns = run_state.stomach_columns
 	context.stomach_rows = run_state.stomach_rows
 	context.flowers = run_state.planted_flowers.duplicate()

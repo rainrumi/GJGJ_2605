@@ -35,6 +35,7 @@ func _run() -> void:
 	get_tree().root.add_child(stage_select)
 	await get_tree().process_frame
 	stage_select.connect("stage_selected", _on_stage_selected)
+	stage_select.connect("debug_boss_stage_selected", _on_stage_selected)
 
 	var iriyu := load("res://data/resources/area/area_iriyu/area_iriyu.tres") as StageInfo
 	stage_select.call("setup_stage_choices", iriyu, 1)
@@ -49,14 +50,31 @@ func _run() -> void:
 	if debug_button == null:
 		get_tree().quit(_failures)
 		return
+	var boss_button := stage_select.get_node_or_null("UI/BossButton") as Button
+	_expect(boss_button != null, "ボスボタンを構成する")
+	if boss_button == null:
+		get_tree().quit(_failures)
+		return
+	_expect(not boss_button.visible, "通常モードではボスボタンを表示しない")
+	_expect(
+		boss_button.position.y >= debug_button.position.y + debug_button.size.y,
+		"ボスボタンをDebugボタンの下に配置する"
+	)
 	debug_button.pressed.emit()
+	_expect(boss_button.visible, "debugモードではボスボタンを表示する")
 	_check_debug_areas(stage_select, "1日目", EXPECTED_NORMAL_DEBUG_AREAS, false)
+	boss_button.button_pressed = true
+	_check_debug_areas(stage_select, "ボス絞り込み", EXPECTED_BOSS_DEBUG_AREAS, true)
+	boss_button.button_pressed = false
+	_check_debug_areas(stage_select, "ボス絞り込み解除", EXPECTED_NORMAL_DEBUG_AREAS, false)
 
 	stage_select.call("setup_stage_choices", iriyu, 4)
 	_check_debug_areas(stage_select, "高難度日の4日目", EXPECTED_BOSS_DEBUG_AREAS, true)
 
 	stage_select.call("setup_stage_choices", iriyu, 1)
 	debug_button.pressed.emit()
+	_expect(not boss_button.visible, "debug解除時はボスボタンを表示しない")
+	_expect(not boss_button.button_pressed, "debug解除時はボス絞り込みを解除する")
 	_expect(_get_displayed_stages(stage_select).size() == 4, "debug解除時は通常の候補へ戻す")
 
 	get_tree().root.remove_child(stage_select)
@@ -65,6 +83,7 @@ func _run() -> void:
 	iriyu = null
 	packed = null
 	debug_button = null
+	boss_button = null
 	await get_tree().process_frame
 	get_tree().quit(_failures)
 

@@ -213,3 +213,16 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 10
 text = "Debug"
 script = ExtResource("40_debug_button")
+
+[node name="BossButton" type="Button" parent="UI"]
+visible = false
+layout_mode = 0
+offset_left = 560.0
+offset_top = 74.0
+offset_right = 632.0
+offset_bottom = 100.0
+mouse_filter = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 10
+toggle_mode = true
+text = "ボス"

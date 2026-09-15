@@ -63,9 +63,15 @@ func _test_enemy_only_damage() -> void:
 	_expect(effects.get_acid_damage_breakdown(100, 0.0, 0).total == 100, "ベラドンナは表示用の全体ダメージで抽選しない")
 	_expect(resolver._get_final_damage(enemy, enemies, 100) == 900, "ベラドンナ当選時は実データの9倍")
 	_expect(resolver._get_final_damage(flower, enemies, 100) == 100, "ベラドンナの抽選効果は花に適用しない")
-	var aura := belladonna.sub_skill.effects[0]
-	_expect(aura.get_seed_block_target_acid_multiplier({"target": enemy}) == 2.0, "ベラドンナの隣接悪夢は2倍")
-	_expect(aura.get_seed_block_target_acid_multiplier({"target": flower}) == 1.0, "ベラドンナの隣接花は対象外")
+	var source := _enemy(Vector2i.RIGHT, belladonna)
+	flower.set_stomach_cell(Vector2i(2, 0))
+	var aura := belladonna.sub_skill.effects[0] as SeedEffectOnAdjacentObjectChangeChance
+	_expect(aura != null and aura.chance_multiplier == 2.0, "ベラドンナは隣接確率を2倍にする")
+	DreamSeedBlockAcidResolver.new().apply_refresh_modifiers([source, enemy, flower] as Array[Enemy])
+	_expect(enemy.data.defense_status.chance_multiplier == 2.0, "ベラドンナは隣接悪夢の確率を2倍にする")
+	_expect(flower.data.defense_status.chance_multiplier == 2.0, "ベラドンナは隣接花の確率を2倍にする")
+	_expect(source.data.defense_status.chance_multiplier == 1.0, "ベラドンナ自身は対象外")
+	source.free()
 	enemy.free()
 	flower.free()
 

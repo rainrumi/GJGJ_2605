@@ -92,6 +92,11 @@ func on_finish_acid_seed_block(_context: Dictionary) -> void:
 	pass
 
 
+# 種ブロック由来の再評価時補正
+func apply_seed_block_refresh_modifiers(_context: Dictionary) -> void:
+	pass
+
+
 # 敵消化中
 func on_fire_acid_enemy(_state: DreamSeedSkillState, _context: Dictionary) -> void:
 	pass

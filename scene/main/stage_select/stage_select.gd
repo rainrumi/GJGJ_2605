@@ -16,6 +16,7 @@ const STAGE_AREA_DISPLAY_ORDER: Array[StageInfo.StageArea] = [
 ]
 
 signal stage_selected(stage: StageInfo)
+signal debug_boss_stage_selected(stage: StageInfo)
 signal today_rest_requested
 
 @export var stage_catalog: StageCatalogInfo
@@ -31,6 +32,7 @@ signal today_rest_requested
 @onready var digestion_counts: VBoxContainer = $UI/DigestionCounts
 @onready var lara_count_label: Label = $UI/DigestionCounts/LaraCount
 @onready var player_count_label: Label = $UI/DigestionCounts/PlayerCount
+@onready var boss_button: Button = $UI/BossButton
 @onready var today_rest_button: TodayRestButton = $UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoicesPadding/StageChoices/TodayRestButton
 @onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
@@ -42,6 +44,7 @@ var _current_minutes := RunState.BATTLE_START_MINUTES
 var _unlocked_high_difficulty_stage_ids: Array[int] = []
 var _run_state: RunState
 var _hovered_stage_definition: StageInfo
+var _debug_boss_only := false
 var stage_selection_service := StageSelectionService.new()
 
 
@@ -53,8 +56,10 @@ func _ready() -> void:
 	time_view.tooltip_hide_requested.connect(_on_time_tooltip_hide_requested)
 	hp_view.tooltip_requested.connect(_on_hp_tooltip_requested)
 	hp_view.tooltip_hide_requested.connect(_on_hp_tooltip_hide_requested)
+	boss_button.toggled.connect(_on_boss_button_toggled)
 	today_rest_button.pressed.connect(_on_today_rest_button_pressed)
 	_connect_debug_state()
+	_apply_debug_button_visibility()
 	setup_stage_choices()
 
 
@@ -167,7 +172,11 @@ func _connect_debug_state() -> void:
 
 
 # debug状態変更処理
-func _on_debug_enabled_changed(_is_enabled: bool) -> void:
+func _on_debug_enabled_changed(is_enabled: bool) -> void:
+	if not is_enabled:
+		_debug_boss_only = false
+		boss_button.set_pressed_no_signal(false)
+	_apply_debug_button_visibility()
 	setup_stage_choices(
 		_current_stage_definition,
 		_current_day,
@@ -177,12 +186,32 @@ func _on_debug_enabled_changed(_is_enabled: bool) -> void:
 	)
 
 
+# ボス絞り込み処理
+func _on_boss_button_toggled(is_pressed: bool) -> void:
+	_debug_boss_only = is_pressed and DebugState.debug_enabled
+	setup_stage_choices(
+		_current_stage_definition,
+		_current_day,
+		_unlocked_high_difficulty_stage_ids,
+		_run_state,
+		_current_minutes
+	)
+
+
+# debug用ボタン表示更新
+func _apply_debug_button_visibility() -> void:
+	boss_button.visible = DebugState.debug_enabled
+
+
 # 押下処理
 func _on_stage_choice_pressed(choice_index: int) -> void:
 	if choice_index >= _displayed_stage_definitions.size():
 		return
 	var stage_definition := _displayed_stage_definitions[choice_index]
 	if stage_definition == null:
+		return
+	if DebugState.debug_enabled and _debug_boss_only:
+		debug_boss_stage_selected.emit(stage_definition)
 		return
 	stage_selected.emit(stage_definition)
 
@@ -235,7 +264,11 @@ func _get_stage_definitions() -> Array[StageInfo]:
 func _get_ordered_stage_definitions() -> Array[StageInfo]:
 	var definitions: Array[StageInfo] = []
 	if DebugState.debug_enabled:
-		definitions = _get_debug_stage_definitions()
+		definitions = (
+			_get_debug_boss_stage_definitions()
+			if _debug_boss_only
+			else _get_debug_stage_definitions()
+		)
 	else:
 		definitions = stage_selection_service.get_candidate_stages(
 			_get_stage_definitions(),
@@ -273,6 +306,28 @@ func _get_debug_stage_definitions() -> Array[StageInfo]:
 	if huwahuwa_stage != null:
 		boss_day_stages.append(huwahuwa_stage.create_high_difficulty_fallback())
 	return boss_day_stages
+
+
+# debug用ボスステージ定義取得
+func _get_debug_boss_stage_definitions() -> Array[StageInfo]:
+	var source_stages: Array[StageInfo] = []
+	var source_stage_ids: Array[int] = []
+	for stage_definition in _get_stage_definitions():
+		if stage_definition == null or stage_definition.is_high_difficulty:
+			continue
+		if (
+			not DEBUG_NORMAL_STAGE_AREAS.has(stage_definition.stage_area)
+			and stage_definition.stage_area != StageInfo.StageArea.huwahuwaSchool
+		):
+			continue
+		source_stages.append(stage_definition)
+		source_stage_ids.append(stage_definition.stage_id)
+	return stage_selection_service.get_candidate_stages(
+		source_stages,
+		null,
+		4,
+		source_stage_ids
+	)
 
 
 # ステージ表示順比較

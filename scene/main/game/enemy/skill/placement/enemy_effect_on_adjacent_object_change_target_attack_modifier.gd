@@ -1,4 +1,4 @@
-class_name EnemyEffectOnAdjacentObjectChangeTargetMaxHp
+class_name EnemyEffectOnAdjacentObjectChangeTargetAttackModifier
 extends EnemyEffectOnRefresh
 
 
@@ -15,12 +15,10 @@ func setup_enemies(value: Array[Enemy]) -> void:
 func clear_dependencies() -> void:
 	enemies = []
 
-# 最大HP差分
-@export var max_hp_delta := 0
-# 現在HPも最大HP差分へ追従
-@export var follow_current_hp := false
+# 攻撃差分
+@export var attack_delta := 0
 
 # 効果適用
 func apply() -> void:
 	for enemy in EnemyEffectTargetQuery.get_adjacent_objects(source, enemies):
-		EnemyEffectStatChanges.add_max_hp_delta(source, enemy, max_hp_delta, follow_current_hp)
+		EnemyEffectStatChanges.add_attack_delta(source, enemy, attack_delta)

@@ -24,6 +24,12 @@ func setup(
 	attack_resolver = attack
 	turn_processor = turns
 	enemy_effects = effects
+	if not enemy_effects.refresh_modifiers_cleared.is_connected(
+		digestion_resolver.apply_seed_block_refresh_modifiers
+	):
+		enemy_effects.refresh_modifiers_cleared.connect(
+			digestion_resolver.apply_seed_block_refresh_modifiers
+		)
 
 
 # 開始分設定

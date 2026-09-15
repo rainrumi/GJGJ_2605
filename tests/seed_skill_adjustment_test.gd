@@ -285,7 +285,6 @@ func _test_digestion_batch(game: Node) -> void:
 func _test_rotation_and_visual(game: Node) -> void:
 	game.start_battle(BattleInfo.new())
 	var aura_seed := _seed(110).duplicate(true) as SeedInfo
-	aura_seed.sub_skill.effects[0].enemies_only = false
 	var source := game.seed_controller._create_seed_block(aura_seed) as Enemy
 	var target_seed := _seed(124).duplicate(true) as SeedInfo
 	target_seed.acid_block.stomach_shape = [PackedInt32Array([1, 1])]
@@ -296,14 +295,14 @@ func _test_rotation_and_visual(game: Node) -> void:
 	target.set_Aciding(true)
 	game.stomach.place_enemy(source, Vector2i(2, 1))
 	game.stomach.place_enemy(target, Vector2i(1, 2))
-	var resolver := DreamSeedBlockAcidResolver.new()
-	_expect(resolver.get_target_acid_damage_multiplier(target, game.enemies) == 2.0, "adjacent aura before rotation")
+	game.acid_controller.refresh_enemy_effects(game.enemies, game.stomach)
+	_expect(target.data.defense_status.chance_multiplier == 2.0, "adjacent chance aura before rotation")
 	game._on_enemy_rotation_requested(target)
 	_expect(target.get_stomach_size() == Vector2i(1, 2), "seed rotates inside stomach through game input handler")
-	_expect(resolver.get_target_acid_damage_multiplier(target, game.enemies) == 1.0, "rotation removes lost adjacency effect")
+	_expect(target.data.defense_status.chance_multiplier == 1.0, "rotation removes lost chance aura")
 	for index in range(3):
 		game._on_enemy_rotation_requested(target)
-	_expect(resolver.get_target_acid_damage_multiplier(target, game.enemies) == 2.0, "four rotations restore aura without stacking")
+	_expect(target.data.defense_status.chance_multiplier == 2.0, "four rotations restore chance aura without stacking")
 	var nightmare := game.enemies[0] as Enemy
 	nightmare.set_Acided(false)
 	var initial_size := nightmare.get_stomach_size()
@@ -313,9 +312,11 @@ func _test_rotation_and_visual(game: Node) -> void:
 	nightmare.set_Aciding(false)
 	for index in range(3):
 		source.set_Aciding(false)
-		_expect(resolver.get_target_acid_damage_multiplier(target, game.enemies) == 1.0, "aura removed on return")
+		game.acid_controller.refresh_enemy_effects(game.enemies, game.stomach)
+		_expect(target.data.defense_status.chance_multiplier == 1.0, "chance aura removed on return")
 		source.set_Aciding(true)
-		_expect(resolver.get_target_acid_damage_multiplier(target, game.enemies) == 2.0, "aura restored exactly once on reinsertion")
+		game.acid_controller.refresh_enemy_effects(game.enemies, game.stomach)
+		_expect(target.data.defense_status.chance_multiplier == 2.0, "chance aura restored exactly once on reinsertion")
 	game._refresh_after_battle_event()
 	game._set_hovered_enemy(null)
 	game.ui.hide_enemy_tooltip()

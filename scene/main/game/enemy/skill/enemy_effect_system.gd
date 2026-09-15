@@ -1,6 +1,8 @@
 class_name EnemyEffectSystem
 extends RefCounted
 
+signal refresh_modifiers_cleared(enemies: Array[Enemy])
+
 var _digestion_interval: DigestionInterval # 消化間隔
 var _acid_modifiers: EnemyAcidDamageModifiers # 全体消化補正
 var _player_health: PlayerHealth # プレイヤーHP
@@ -66,6 +68,7 @@ func refresh(enemies: Array[Enemy], stomach: StomachBoard) -> void:
 	_register_enemies(enemies)
 	_installer.sync(enemies, stomach)
 	_refresh_processor.clear_refresh_modifiers()
+	refresh_modifiers_cleared.emit(enemies)
 	_reset_global_modifiers()
 	_refresh_processor.request_preprocess()
 	_effect_stack.execute()
