@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="SeedPoolInfo" format=3]
+
+[ext_resource type="Script" uid="uid://dxuaadwlh5qe4" path="res://data/info/seed/seed_pool_info.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="2_definition"]
+[ext_resource type="Resource" uid="uid://ytm8th14yfet" path="res://data/resources/seeds/skills/seed_100_105.tres" id="seed_105"]
+[ext_resource type="Resource" uid="uid://pcorwwtaagk5" path="res://data/resources/seeds/skills/seed_100_106.tres" id="seed_106"]
+[ext_resource type="Resource" uid="uid://bscwmk3cd5tql" path="res://data/resources/seeds/skills/seed_100_107.tres" id="seed_107"]
+[ext_resource type="Resource" uid="uid://duyd0lfcxj673" path="res://data/resources/seeds/skills/seed_100_108.tres" id="seed_108"]
+[ext_resource type="Resource" uid="uid://cwqvwiljroctf" path="res://data/resources/seeds/skills/seed_100_109.tres" id="seed_109"]
+[ext_resource type="Resource" uid="uid://6c4g7w22aypk" path="res://data/resources/seeds/skills/seed_100_110.tres" id="seed_110"]
+[ext_resource type="Resource" uid="uid://c4yeib86dvy71" path="res://data/resources/seeds/skills/seed_100_111.tres" id="seed_111"]
+[ext_resource type="Resource" uid="uid://c0ek8ppqdhik" path="res://data/resources/seeds/skills/seed_100_112.tres" id="seed_112"]
+[ext_resource type="Resource" uid="uid://d3pdt4odevey6" path="res://data/resources/seeds/skills/seed_100_113.tres" id="seed_113"]
+[ext_resource type="Resource" uid="uid://brvrhm4i8l1nb" path="res://data/resources/seeds/skills/seed_100_114.tres" id="seed_114"]
+[ext_resource type="Resource" uid="uid://b2aojxhycrnv2" path="res://data/resources/seeds/skills/seed_100_115.tres" id="seed_115"]
+[ext_resource type="Resource" uid="uid://c6lo0fe5rqktk" path="res://data/resources/seeds/skills/seed_100_116.tres" id="seed_116"]
+[ext_resource type="Resource" uid="uid://2e238rbhwnds" path="res://data/resources/seeds/skills/seed_100_117.tres" id="seed_117"]
+[ext_resource type="Resource" uid="uid://bqpykta3dxgu1" path="res://data/resources/seeds/skills/seed_100_118.tres" id="seed_118"]
+[ext_resource type="Resource" uid="uid://c3x7b42v56yq0" path="res://data/resources/seeds/skills/seed_100_119.tres" id="seed_119"]
+[ext_resource type="Resource" uid="uid://csmx15o8bm0ii" path="res://data/resources/seeds/skills/seed_100_120.tres" id="seed_120"]
+[ext_resource type="Resource" uid="uid://dva0uuyr22nkb" path="res://data/resources/seeds/skills/seed_100_121.tres" id="seed_121"]
+[ext_resource type="Resource" uid="uid://bgdjophgtc2ew" path="res://data/resources/seeds/skills/seed_100_122.tres" id="seed_122"]
+[ext_resource type="Resource" uid="uid://b856ihty1x0m5" path="res://data/resources/seeds/skills/seed_100_123.tres" id="seed_123"]
+[ext_resource type="Resource" uid="uid://w5mfir7jj1oa" path="res://data/resources/seeds/skills/seed_100_124.tres" id="seed_124"]
+[ext_resource type="Resource" uid="uid://cq2fdlxs2k5an" path="res://data/resources/seeds/skills/seed_100_125.tres" id="seed_125"]
+[ext_resource type="Resource" uid="uid://bbrnhis68kpp" path="res://data/resources/seeds/skills/seed_100_126.tres" id="seed_126"]
+
+[resource]
+script = ExtResource("1_script")
+common_skills = Array[ExtResource("2_definition")]([])
+rare_skills = Array[ExtResource("2_definition")]([ExtResource("seed_105"), ExtResource("seed_106"), ExtResource("seed_107"), ExtResource("seed_108"), ExtResource("seed_109"), ExtResource("seed_110"), ExtResource("seed_111"), ExtResource("seed_112"), ExtResource("seed_113"), ExtResource("seed_114"), ExtResource("seed_115"), ExtResource("seed_116"), ExtResource("seed_117"), ExtResource("seed_118"), ExtResource("seed_119"), ExtResource("seed_120"), ExtResource("seed_121"), ExtResource("seed_122"), ExtResource("seed_123"), ExtResource("seed_124"), ExtResource("seed_125"), ExtResource("seed_126")])
+epic_skills = Array[ExtResource("2_definition")]([])
