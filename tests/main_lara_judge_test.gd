@@ -34,20 +34,22 @@ func _run() -> void:
 		var outcome := "win" if difference > 0 else ("lose" if difference < 0 else "draw")
 		_expect(novel._active_novel_text.script_path.contains("judge_%s_" % outcome), "消化数比較に応じた結果を表示")
 		main._on_opening_novel_finished()
-		_expect(novel._images.has(1), "勝敗結果後の報酬文中にラーラを表示")
 		_expect(main.run_state.stored_seeds.size() == 1, "結果後に種を1つ付与する")
 		var seed := main.run_state.stored_seeds[0] as SeedInfo
 		if difference != 0:
 			_expect(seed.rarity == (SeedInfo.Rarity.RARE if difference > 0 else SeedInfo.Rarity.NORMAL), "結果のレアリティ制限に従う")
 		_expect(main.run_state.current_hp == 100, "結果に関係なくHPを全回復")
-		_expect(novel._active_novel_text.text.ends_with((
-			"%sを1つ手に入れた。更にHPが全回復した。"
-			+ "\n@lcm\n@name \"ラーラ\"\n次は12日目が終わったときよ！\n@lcm"
-			) % seed.display_name),
+		_expect(novel._active_novel_text.text == "%sを1つ手に入れた。更にHPが全回復した。" % seed.display_name,
 			"ノベルのメッセージボックスに獲得名と回復を表示")
+		var reward_choice := main.get_node("SeedRewardOverlay/SeedChoice") as StageClearSeedChoice
+		_expect(main.get_node("SeedRewardOverlay").visible, "報酬文中に獲得した夢の種を表示する")
+		_expect(reward_choice.current_seed == seed and reward_choice.disabled, "報酬表示の種を操作不可にする")
 		_expect(main.run_state.current_day == 8, "報酬メッセージ中は翌日へ進めない")
 		main._on_opening_novel_finished()
-		_expect(main.run_state.current_day == 9, "報酬メッセージ後に翌日へ進む")
+		_expect(not main.get_node("SeedRewardOverlay").visible, "後続のラーラ会話前に報酬表示を隠す")
+		_expect(novel._active_novel_text.text.contains("次は12日目が終わったときよ！"), "報酬後にラーラの後続会話を表示する")
+		main._on_opening_novel_finished()
+		_expect(main.run_state.current_day == 9, "ラーラの後続会話後に翌日へ進む")
 		main._return_to_title()
 
 	main.run_state.reset()

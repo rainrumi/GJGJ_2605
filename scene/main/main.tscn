@@ -20,6 +20,7 @@
 [ext_resource type="AudioStream" uid="uid://lhn1aubvc0wx" path="res://resource/sound/se/se_select.mp3" id="15_se_select"]
 [ext_resource type="Resource" path="res://data/resources/novel/novel_event_100.tres" id="17_event_100_text"]
 [ext_resource type="Resource" path="res://data/resources/area/lara_location_catalog.tres" id="18_lara_location_catalog"]
+[ext_resource type="PackedScene" uid="uid://cdxfuey83p5f0" path="res://scene/main/stage_clear/seed_choice/seed_choice.tscn" id="20_seed_reward_choice"]
 
 [node name="Main" type="Node" unique_id=1753159910]
 script = ExtResource("1_6vuhr")
@@ -60,6 +61,19 @@ stream = ExtResource("15_se_select")
 
 [node name="OpeningNovel" parent="." unique_id=20044076 instance=ExtResource("6_opening_novel")]
 visible = false
+
+[node name="SeedRewardOverlay" type="CanvasLayer" parent="." unique_id=1674959120]
+layer = 110
+visible = false
+
+[node name="SeedChoice" parent="SeedRewardOverlay" unique_id=1674959121 instance=ExtResource("20_seed_reward_choice")]
+offset_left = 130.0
+offset_top = 120.0
+offset_right = 510.0
+offset_bottom = 218.0
+focus_mode = 0
+mouse_filter = 2
+disabled = true
 
 [node name="DayIntro" parent="." unique_id=108404082 instance=ExtResource("8_day_intro")]
 visible = false

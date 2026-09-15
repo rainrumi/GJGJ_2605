@@ -13,6 +13,7 @@ const CLEAR_RECOVERY_END_HOUR := 27
 const CLEAR_RECOVERY_BASE_RATE := 1.0
 const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
 const CLEAR_RECOVERY_MINIMUM_RATE := 0.5
+const SEED_REWARD_FADE_IN_DURATION := 0.6
 const LARA_AREA_NOVEL_NAMES := {
 	StageInfo.StageArea.COROTTA_STREET: "corotta",
 	StageInfo.StageArea.ERAMIA_DISTRICT: "eramia",
@@ -36,6 +37,7 @@ enum NovelFlow {
 	LARA_JUDGE_SETUP,
 	LARA_JUDGE_RESULT,
 	LARA_JUDGE_REWARD,
+	LARA_JUDGE_AFTER,
 	DEBUG_PREVIEW,
 }
 
@@ -58,6 +60,8 @@ enum NovelFlow {
 @onready var se_click: AudioStreamPlayer = $SeClick
 @onready var se_select: AudioStreamPlayer = $SeSelect
 @onready var settings_screen: SettingsScreen = $SettingsScreen
+@onready var seed_reward_overlay: CanvasLayer = $SeedRewardOverlay
+@onready var seed_reward_choice: StageClearSeedChoice = $SeedRewardOverlay/SeedChoice
 @onready var _mouse_drag_state: MouseDragTracker = get_node("/root/MouseDragState")
 
 var run_state := RunState.new()
@@ -72,6 +76,8 @@ var _lara_first_interaction := false
 var _lara_judge_pending := false
 var _day_change_time_recovery_pending := false
 var _lara_judge_result := 0
+var _lara_judge_reward_message := ""
+var _seed_reward_fade_tween: Tween
 var _debug_forced_enemy_preset: EnemyPresetInfo
 
 
@@ -160,6 +166,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 # title表示
 func show_title() -> void:
+	_hide_seed_reward()
 	title.visible = true
 	opening_novel.visible = false
 	day_intro.visible = false
@@ -171,6 +178,7 @@ func show_title() -> void:
 
 # ステージselect表示
 func show_stage_select() -> void:
+	_hide_seed_reward()
 	_sync_lara_progress()
 	run_state.update_lara_area_novel_visits(lara_schedule)
 	title.visible = false
@@ -193,6 +201,7 @@ func show_stage_select() -> void:
 
 # ゲーム表示
 func show_game(reset_player_state: bool = true) -> void:
+	_hide_seed_reward()
 	title.visible = false
 	opening_novel.visible = false
 	day_intro.visible = false
@@ -206,6 +215,7 @@ func show_game(reset_player_state: bool = true) -> void:
 
 # ステージclear表示
 func show_stage_clear() -> void:
+	_hide_seed_reward()
 	title.visible = false
 	opening_novel.visible = false
 	day_intro.visible = false
@@ -327,31 +337,37 @@ func _on_opening_novel_finished() -> void:
 			else:
 				_start_selected_battle()
 		NovelFlow.LARA_INTERACTION_REWARD:
+			_hide_seed_reward()
 			_start_selected_battle()
 		NovelFlow.LARA_JUDGE_SETUP:
 			_show_lara_judge_result()
 		NovelFlow.LARA_JUDGE_RESULT:
-			var after_text := NovelTextInfo.new()
-			after_text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_after"
-			var reward_text := NovelTextInfo.new()
-			reward_text.text = after_text.get_script_text() + "\n"
 			if run_state.current_day >= STORY_CLEAR_DAY:
-				reward_text.text += (
+				_hide_seed_reward()
+				active_novel_flow = NovelFlow.LARA_JUDGE_AFTER
+				opening_novel.start_with_text(_get_lara_judge_after_text(
 					"@name \"ラーラ\"\n"
 					+ "……今日が最後ね。あとは合格を祈りましょう……。\n@lcm"
-				)
+				))
 			else:
-				var next_judge_text := (
-					"次は%d日目が終わったときよ！"
-					% (run_state.current_day + HIGH_DIFFICULTY_DAY_INTERVAL)
-				)
-				reward_text.text += (
-					_grant_lara_judge_reward()
-					+ "\n@lcm\n@name \"ラーラ\"\n%s\n@lcm" % next_judge_text
-				)
-			active_novel_flow = NovelFlow.LARA_JUDGE_REWARD
-			opening_novel.start_with_text(reward_text)
+				_lara_judge_reward_message = _grant_lara_judge_reward()
+				active_novel_flow = NovelFlow.LARA_JUDGE_REWARD
+				var reward_text := NovelTextInfo.new()
+				reward_text.text = _lara_judge_reward_message + "\n@lcm"
+				opening_novel.start_with_text(reward_text)
+			return
 		NovelFlow.LARA_JUDGE_REWARD:
+			_hide_seed_reward()
+			active_novel_flow = NovelFlow.LARA_JUDGE_AFTER
+			var next_judge_text := (
+				"次は%d日目が終わったときよ！"
+				% (run_state.current_day + HIGH_DIFFICULTY_DAY_INTERVAL)
+			)
+			opening_novel.start_with_text(_get_lara_judge_after_text(
+				"@name \"ラーラ\"\n%s\n@lcm" % next_judge_text
+			))
+		NovelFlow.LARA_JUDGE_AFTER:
+			_hide_seed_reward()
 			active_novel_flow = NovelFlow.NONE
 			_finish_current_day()
 		NovelFlow.AREA_COMPLETION:
@@ -459,6 +475,7 @@ func _get_lara_reward_candidates(rarity: int = -1) -> Array[SeedInfo]:
 
 
 func _grant_lara_interaction_reward() -> String:
+	_hide_seed_reward()
 	var message: String
 	if randi_range(1, 100) <= 33:
 		var percent: int = [50, 80, 100].pick_random()
@@ -469,7 +486,9 @@ func _grant_lara_interaction_reward() -> String:
 		if candidates.is_empty():
 			push_error("Main: ラーラの交流報酬候補がありません。StageInfo.drop_seed_poolを確認してください")
 			return "獲得できる夢の種がありません。"
-		message = LaraReward.grant_seed(run_state, candidates.pick_random())
+		var seed: SeedInfo = candidates.pick_random()
+		message = LaraReward.grant_seed(run_state, seed)
+		_show_seed_reward(seed)
 	_sync_stage_clear_seed_inventory()
 	stage_clear.setup_hp(run_state.current_hp)
 	return message
@@ -700,13 +719,51 @@ func _grant_lara_judge_reward() -> String:
 		rarity = SeedInfo.Rarity.NORMAL
 	var candidates := _get_lara_reward_candidates(rarity)
 	assert(not candidates.is_empty(), "Main: ラーラ勝負の報酬候補がありません。出現プールを確認してください")
-	var message := LaraReward.grant_seed(run_state, candidates.pick_random())
+	var seed: SeedInfo = candidates.pick_random()
+	var message := LaraReward.grant_seed(run_state, seed)
+	_show_seed_reward(seed)
 	if run_state.current_hp < run_state.max_hp:
 		LaraReward.recover_hp(run_state, 100)
 		message += "更にHPが全回復した。"
 	_sync_stage_clear_seed_inventory()
 	stage_clear.setup_hp(run_state.current_hp)
 	return message
+
+
+func _get_lara_judge_after_text(additional_text: String) -> NovelTextInfo:
+	var source_text := NovelTextInfo.new()
+	source_text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_after"
+	var after_text := NovelTextInfo.new()
+	after_text.text = source_text.get_script_text() + "\n" + additional_text
+	return after_text
+
+
+func _show_seed_reward(seed: SeedInfo) -> void:
+	if seed == null:
+		return
+	if _seed_reward_fade_tween != null and _seed_reward_fade_tween.is_valid():
+		_seed_reward_fade_tween.kill()
+	seed_reward_choice.setup_choice(seed)
+	seed_reward_choice.set_debug_numbers_visible(DebugState.debug_enabled)
+	seed_reward_choice.set_choice_disabled(true)
+	seed_reward_choice.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	seed_reward_choice.modulate.a = 0.0
+	seed_reward_overlay.visible = true
+	_seed_reward_fade_tween = create_tween()
+	_seed_reward_fade_tween.set_trans(Tween.TRANS_CUBIC)
+	_seed_reward_fade_tween.set_ease(Tween.EASE_OUT)
+	_seed_reward_fade_tween.tween_property(
+		seed_reward_choice, "modulate:a", 1.0, SEED_REWARD_FADE_IN_DURATION
+	)
+
+
+func _hide_seed_reward() -> void:
+	if _seed_reward_fade_tween != null and _seed_reward_fade_tween.is_valid():
+		_seed_reward_fade_tween.kill()
+	if seed_reward_overlay != null:
+		seed_reward_overlay.visible = false
+	if seed_reward_choice != null:
+		seed_reward_choice.modulate.a = 0.0
 
 
 func _queue_area_completion_novel_if_needed(stage: StageInfo) -> void:
