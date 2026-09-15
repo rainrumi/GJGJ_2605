@@ -17,5 +17,8 @@
 
 [resource]
 script = ExtResource("1_script")
+use_stage_clear_rarity_probabilities = true
+normal_probability = 0.25
+rare_probability = 0.75
 common_skills = Array[ExtResource("2_definition")]([ExtResource("1001_skill"), ExtResource("1002_skill"), ExtResource("1003_skill"), ExtResource("1004_skill")])
 rare_skills = Array[ExtResource("2_definition")]([ExtResource("2110_skill"), ExtResource("2114_skill"), ExtResource("rare_106"), ExtResource("rare_123"), ExtResource("rare_107"), ExtResource("rare_117"), ExtResource("rare_108"), ExtResource("rare_122")])

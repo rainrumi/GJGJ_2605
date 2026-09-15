@@ -53,6 +53,10 @@ func get_stage_seed_options(
 ) -> Array[SeedInfo]:
 	if stage == null or stage.drop_seed_pool == null:
 		return _duplicate_seed_array(base_seed_options)
+	if stage.drop_seed_pool.use_stage_clear_rarity_probabilities:
+		var rarity_options := stage.drop_seed_pool.get_stage_clear_seed_options(base_seed_options.size())
+		if not rarity_options.is_empty():
+			return rarity_options
 	# ステージ種options
 	var stage_seed_options: Array[SeedInfo] = []
 	for seed in stage.drop_seed_pool.get_all_skills():
