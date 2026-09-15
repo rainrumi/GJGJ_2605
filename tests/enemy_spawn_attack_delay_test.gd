@@ -25,6 +25,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_test_spawned_enemy_attack_delay()
+	_test_stomach_elapsed_minutes_includes_clock_delta()
 	_test_seed_block_attack()
 	_test_elapsed_time_acid_damage_uses_own_accumulation()
 	quit(_failures)
@@ -66,6 +67,39 @@ func _test_spawned_enemy_attack_delay() -> void:
 	var elapsed_minutes := turn_processor.begin_turn(enemies, null, 0)
 	_expect(elapsed_minutes == 40, "補正後の消化間隔をターン経過分として返す")
 	_expect(enemy.stomach_elapsed_minutes == 40, "悪夢へ補正後の消化間隔を加算する")
+
+	enemy.free()
+
+
+func _test_stomach_elapsed_minutes_includes_clock_delta() -> void:
+	var seed_effects := SeedEffectResolver.new()
+	seed_effects.setup([])
+	var enemy_effects := TestEnemyEffectSystem.new()
+	var enemy := Enemy.new()
+	enemy.set_Aciding(true)
+	var enemies: Array[Enemy] = [enemy]
+	var turn_processor := EnemyTurnProcessor.new()
+	turn_processor.setup(
+		seed_effects,
+		enemy_effects,
+		DigestionInterval.new(),
+		BattleClock.new(),
+		EnemyDigestionState.new(),
+		30
+	)
+
+	turn_processor.begin_turn(enemies, null, 100, 30)
+	_expect(enemy.stomach_elapsed_minutes == 30, "初回は今ターンの経過時刻を加算する")
+	turn_processor.begin_turn(enemies, null, 145, 30)
+	_expect(
+		enemy.stomach_elapsed_minutes == 75,
+		"前回記録後にゲーム時刻へ追加された15分と今ターンの30分を加算する"
+	)
+	turn_processor.begin_turn(enemies, null, 120, 30)
+	_expect(
+		enemy.stomach_elapsed_minutes == 105,
+		"ゲーム時刻が前回記録時刻より前でも負の差分を加算しない"
+	)
 
 	enemy.free()
 

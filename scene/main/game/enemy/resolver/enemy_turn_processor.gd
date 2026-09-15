@@ -87,7 +87,7 @@ func begin_turn(
 		if not enemy.is_Acided() and enemy.is_enemy():
 			enemy.data.add_age_minutes(turn_elapsed_minutes)
 		if not enemy.is_Acided() and enemy.can_take_stomach_turn():
-			enemy.data.stomach_status.add_elapsed_minutes(turn_elapsed_minutes)
+			enemy.data.stomach_status.advance_elapsed_minutes(minutes, turn_elapsed_minutes)
 	return turn_elapsed_minutes
 
 

@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="EnemyPresetInfo" format=3]
+[gd_resource type="Resource" script_class="EnemyPresetInfo" format=3 uid="uid://cje1ao8ei4bt0"]
 
 [ext_resource type="Script" uid="uid://cj3sf2masn43x" path="res://data/info/enemy/enemy_preset_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_u8c6a"]
-[ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/boss/002/area_riran_enemy_boss_002_001.tres" id="2_enemy_001"]
-[ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/boss/002/area_riran_enemy_boss_002_002.tres" id="2_enemy_002"]
-[ext_resource type="Resource" path="res://data/resources/area/area_riran/enemy/boss/002/area_riran_enemy_boss_002_003.tres" id="2_enemy_003"]
+[ext_resource type="Resource" uid="uid://dogkeyc44pdc1" path="res://data/resources/area/area_riran/enemy/boss/002/area_riran_enemy_boss_002_001.tres" id="2_enemy_001"]
+[ext_resource type="Resource" uid="uid://c0oe8px0vxlh1" path="res://data/resources/area/area_riran/enemy/boss/002/area_riran_enemy_boss_002_002.tres" id="2_enemy_002"]
+[ext_resource type="Resource" uid="uid://bfyopj44dmlrj" path="res://data/resources/area/area_riran/enemy/boss/002/area_riran_enemy_boss_002_004.tres" id="4_kedfr"]
 
 [resource]
 script = ExtResource("1_script")
-enemies = Array[ExtResource("1_u8c6a")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_002"), ExtResource("2_enemy_003")])
+enemies = Array[ExtResource("1_u8c6a")]([ExtResource("2_enemy_001"), ExtResource("2_enemy_002"), ExtResource("4_kedfr")])

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://chlbnoqpony1p"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://dogkeyc44pdc1"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -10,7 +10,7 @@
 script = ExtResource("2_acid_block")
 max_hp = 360
 damage = 8
-stomach_shape = Array[PackedInt32Array]([PackedInt32Array(0, 1, 0), PackedInt32Array(1, 1, 1), PackedInt32Array(0, 1, 0)])
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1)])
 
 [sub_resource type="Resource" id="Resource_kdv1k"]
 script = ExtResource("effect_5")
@@ -26,5 +26,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 20020002001
 display_name = "E1"
 acid_block = SubResource("Resource_051br")
-description = "時間が経過した時、自身の攻撃力バフを5×場に存在するモノの数で上書きする"
+description = "時間が経過した時、自身の攻撃力を5×場に存在するモノの数で上書きする"
 main_skill = SubResource("Resource_vufut")

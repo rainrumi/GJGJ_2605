@@ -20,6 +20,7 @@ var activation_deferred := false # 起動保留
 var cell := Vector2i.ZERO # 配置セル
 var elapsed_minutes := 0 # 経過分数
 var revive_count := 0 # 復活回数
+var _last_elapsed_clock_minutes := -1
 
 
 # 状態初期化
@@ -30,6 +31,7 @@ func reset() -> void:
 	activation_deferred = false
 	cell = Vector2i.ZERO
 	elapsed_minutes = 0
+	_last_elapsed_clock_minutes = -1
 	revive_count = 0
 	placement_changed.emit(false)
 	elapsed_changed.emit(elapsed_minutes)
@@ -39,6 +41,7 @@ func reset() -> void:
 func set_digesting(value: bool) -> void:
 	if is_digesting != value:
 		set_elapsed_minutes(0)
+		_last_elapsed_clock_minutes = -1
 	is_digesting = value
 	placement_changed.emit(is_digesting and not is_digested)
 
@@ -64,6 +67,17 @@ func set_elapsed_minutes(value: int) -> void:
 # 経過分追加
 func add_elapsed_minutes(value: int) -> void:
 	set_elapsed_minutes(elapsed_minutes + value)
+
+
+# 今ターン分と、前回記録したターン終了相当時刻から進んだ分を加算
+func advance_elapsed_minutes(current_minutes: int, turn_elapsed_minutes: int) -> void:
+	var safe_current_minutes := maxi(0, current_minutes)
+	var safe_turn_elapsed_minutes := maxi(0, turn_elapsed_minutes)
+	var elapsed_since_last := 0
+	if _last_elapsed_clock_minutes >= 0:
+		elapsed_since_last = maxi(0, safe_current_minutes - _last_elapsed_clock_minutes)
+	set_elapsed_minutes(elapsed_minutes + elapsed_since_last + safe_turn_elapsed_minutes)
+	_last_elapsed_clock_minutes = safe_current_minutes + safe_turn_elapsed_minutes
 
 
 # 復活記録

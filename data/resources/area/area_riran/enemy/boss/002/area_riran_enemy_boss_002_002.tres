@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bn3hrhemqn3or"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bja1r3i2tlko0"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_enemy_info"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
@@ -11,13 +11,13 @@
 script = ExtResource("2_acid_block")
 max_hp = 60
 damage = 12
-stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1), PackedInt32Array(1, 1)])
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1, 1), PackedInt32Array(1, 1, 1), PackedInt32Array(1, 1, 1), PackedInt32Array(1, 1, 1)])
 
 [sub_resource type="Resource" id="Resource_urmhb"]
 script = ExtResource("effect_5")
 enemy_info = ExtResource("enemy_6")
-max_spawn_count = 4
-spawn_area = 1
+spawn_count = 12
+max_spawn_count = 12
 hp_base = 30
 attack_base = 6
 effect_amount_configured = true
@@ -31,5 +31,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 20020002002
 display_name = "E2"
 acid_block = SubResource("Resource_5wwr5")
-description = "消化された時、埋まってない胃袋マスに寄生型悪夢を生成する。（最大4マス）"
+description = "消化された時、埋まってない胃袋マスに寄生型悪夢を生成する。（最大12マス）"
 main_skill = SubResource("Resource_4gjf0")
