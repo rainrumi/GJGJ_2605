@@ -91,6 +91,31 @@ func _run() -> void:
 	_expect(enemy.data.defense_status.extra_attack_count == 2, "自身にも重複付与できる")
 	_expect(enemy.get_damage() == 10, "自身への重複付与でも攻撃力を加算する")
 
+	var excuse_definition := load("res://data/resources/area/area_elmena/enemy/boss/003/area_elmena_enemy_boss_003_003.tres") as EnemyInfo
+	_expect(excuse_definition != null and excuse_definition.skill_id == 11020003003, "エルメナB-3の言い逃れ付与悪夢を読み込める")
+	var excuse_effect := excuse_definition.main_skill.effects[0].duplicate(true) as EnemyEffectOnClockCountGrantAdjacentGuard
+	_expect(excuse_effect != null, "エルメナB-3 E3が言い逃れ付与効果を使用する")
+	enemy.set_stomach_footprint_override(Vector2i.ONE, [Vector2i.ZERO], 1)
+	other.set_stomach_footprint_override(Vector2i.ONE, [Vector2i.ZERO], 1)
+	enemy.set_stomach_cell(Vector2i.ZERO)
+	other.set_stomach_cell(Vector2i.RIGHT)
+	enemy.set_Aciding(true)
+	other.set_Aciding(true)
+	excuse_effect.bind_source(enemy)
+	excuse_effect.setup_enemies([enemy, other])
+	for _count in excuse_effect.required_count:
+		excuse_effect.apply()
+	_expect(other.data.get_special_effect_amount(EnemyData.SpecialEffect.EXCUSE) == 1, "隣接する悪夢へ言い逃れを特殊効果として付与する")
+	tooltip.show_enemy(other, "", false)
+	_expect(_tooltip_text(tooltip).contains("言い逃れ+1"), "言い逃れを他の特殊効果と同じツールチップ欄へ表示する")
+	var acid_modifiers := EnemyAcidDamageModifiers.new()
+	_expect(acid_modifiers.resolve(other, 100) == 0, "言い逃れで次の消化ダメージを無効化する")
+	_expect(other.data.get_special_effect_amount(EnemyData.SpecialEffect.EXCUSE) == 0, "無効化時に言い逃れを1回消費する")
+	_expect(not _tooltip_text(tooltip).contains("言い逃れ"), "消費した言い逃れを表示中のツールチップから除く")
+	_expect(acid_modifiers.resolve(other, 100) == 100, "言い逃れ消費後は消化ダメージを通す")
+	excuse_effect.unbind()
+
+	tooltip.show_enemy(enemy, "", false)
 	enemy.data.setup(null, 10, 1, false, false)
 	_expect(enemy.data.special_effects.is_empty(), "個体再設定時に特殊効果を消す")
 	_expect(not _tooltip_text(tooltip).contains("特殊効果:"), "特殊効果消去時に表示も消す")

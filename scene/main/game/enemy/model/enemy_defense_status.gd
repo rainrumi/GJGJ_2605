@@ -4,7 +4,6 @@ extends RefCounted
 signal changed
 
 var attack_guard_count := 0 # 攻撃無効回数
-var acid_guard_count := 0 # 消化無効回数
 var default_attack_disabled := false # 通常攻撃停止
 var acid_damage_delta := 0 # 消化差分
 var acid_damage_multiplier := 1.0 # 消化倍率
@@ -21,7 +20,6 @@ var extra_attack_count := 0 # 追加攻撃回数
 # 防御状態初期化
 func reset() -> void:
 	attack_guard_count = 0
-	acid_guard_count = 0
 	permanent_acid_delta = 0
 	permanent_acid_multiplier = 1.0
 	taken_acid_multiplier = 1.0
@@ -53,21 +51,6 @@ func consume_attack_guard() -> bool:
 	if attack_guard_count <= 0:
 		return false
 	attack_guard_count -= 1
-	changed.emit()
-	return true
-
-
-# 消化無効追加
-func add_acid_guards(value: int) -> void:
-	acid_guard_count += maxi(0, value)
-	changed.emit()
-
-
-# 消化無効消費
-func consume_acid_guard() -> bool:
-	if acid_guard_count <= 0:
-		return false
-	acid_guard_count -= 1
 	changed.emit()
 	return true
 

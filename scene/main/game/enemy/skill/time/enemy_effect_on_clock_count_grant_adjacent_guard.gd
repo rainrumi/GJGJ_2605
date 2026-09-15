@@ -34,4 +34,5 @@ func apply() -> void:
 	var count := get_state_int("clock_count") + 1 # 時刻回数
 	set_state("clock_count", count % required_count)
 	if count >= required_count:
-		for enemy in EnemyEffectTargetQuery.get_targets(source, enemies, stomach, target): EnemyEffectStatChanges.add_acid_guards(enemy, guard_count)
+		for enemy in EnemyEffectTargetQuery.get_targets(source, enemies, stomach, target):
+			enemy.data.add_special_effect(EnemyData.SpecialEffect.EXCUSE, guard_count)

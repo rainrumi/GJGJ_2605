@@ -87,12 +87,6 @@ static func add_attack_guards(enemy: Enemy, value: int) -> void:
 		enemy.data.defense_status.add_attack_guards(value)
 
 
-# 消化無効追加
-static func add_acid_guards(enemy: Enemy, value: int) -> void:
-	if enemy != null:
-		enemy.data.defense_status.add_acid_guards(value)
-
-
 # 追加攻撃追加
 static func add_extra_attacks(enemy: Enemy, value: int) -> void:
 	if enemy != null:

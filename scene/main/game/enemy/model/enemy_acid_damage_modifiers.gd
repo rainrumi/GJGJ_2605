@@ -25,7 +25,7 @@ func add_modifier(value_delta: int, value_multiplier: float) -> void:
 func resolve(enemy: Enemy, base_value: int) -> int:
 	if enemy == null:
 		return maxi(0, base_value)
-	if enemy.data.defense_status.consume_acid_guard():
+	if enemy.data.consume_special_effect(EnemyData.SpecialEffect.EXCUSE):
 		return 0
 	var defense := enemy.data.defense_status # 防御状態
 	var value := base_value + delta + defense.acid_damage_delta + defense.permanent_acid_delta # 補正前値

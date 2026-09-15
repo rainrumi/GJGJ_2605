@@ -7,6 +7,7 @@ signal special_effects_changed
 
 enum SpecialEffect {
 	CALAMITY,
+	EXCUSE,
 }
 
 var definition: EnemyInfo # 敵定義
@@ -57,10 +58,24 @@ func get_special_effect_amount(effect: SpecialEffect) -> int:
 	return special_effects.get(effect, 0)
 
 
+func consume_special_effect(effect: SpecialEffect) -> bool:
+	var amount := get_special_effect_amount(effect)
+	if amount <= 0:
+		return false
+	if amount == 1:
+		special_effects.erase(effect)
+	else:
+		special_effects[effect] = amount - 1
+	special_effects_changed.emit()
+	return true
+
+
 static func get_special_effect_name(effect: SpecialEffect) -> String:
 	match effect:
 		SpecialEffect.CALAMITY:
 			return "災禍"
+		SpecialEffect.EXCUSE:
+			return "言い逃れ"
 	return ""
 
 
