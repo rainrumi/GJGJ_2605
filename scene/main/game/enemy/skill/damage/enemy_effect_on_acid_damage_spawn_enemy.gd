@@ -43,6 +43,8 @@ func clear_dependencies() -> void:
 # 効果適用
 func apply() -> void:
 	var hp_value := roundi(float(resolve_value(hp_source)) * hp_multiplier) # 生成HP
+	if hp_value < 1:
+		return
 	var attack_value := roundi(float(resolve_value(attack_source)) * attack_multiplier) # 生成攻撃
 	EnemyEffectWorldActions.spawn_enemy(self, spawn_queue, enemy_info, spawn_skill, spawn_count, max_spawn_count, spawn_area, hp_value, attack_value, inherit_skill)
 	source.set_hp_values(roundi(float(source.get_max_hp()) * self_hp_multiplier_on_success), mini(source.get_current_hp(), roundi(float(source.get_max_hp()) * self_hp_multiplier_on_success)))

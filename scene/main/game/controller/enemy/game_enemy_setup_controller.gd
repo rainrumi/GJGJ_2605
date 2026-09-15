@@ -324,7 +324,11 @@ func _spawn_effect_enemy(enemies: Array[Enemy], request: BattleSpawnEnemyData) -
 		runtime_info.main_skill = request.main_skill
 	var block := runtime_info.acid_block.duplicate(true) as AcidBlockInfo if runtime_info.acid_block != null else AcidBlockInfo.new() # 個体ブロック
 	if request.max_hp >= 0:
-		block.max_hp = maxi(1, request.max_hp)
+		if request.max_hp < 1:
+			return false
+		block.max_hp = request.max_hp
+	elif block.max_hp < 1:
+		return false
 	if request.damage >= 0:
 		block.damage = maxi(0, request.damage)
 	runtime_info.acid_block = block

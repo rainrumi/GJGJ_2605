@@ -24,6 +24,7 @@ func _initialize() -> void:
 	_test_spawn_effect_defaults()
 	_test_rtg_spawn_areas()
 	_test_riran_n5_spawn_stats()
+	_test_spawn_rejects_subminimum_hp()
 	quit(_failures)
 
 
@@ -82,6 +83,26 @@ func _test_riran_n5_spawn_stats() -> void:
 		_expect(effect.attack_source == EnemyEffect.ValueSource.SELF_ATTACK, "生成元の最大攻撃力を参照する: %s" % path)
 		_expect(effect.attack_delta == 8, "生成元の最大攻撃力に8加える: %s" % path)
 		_expect(effect.max_spawn_count == 4, "生成上限を4マスにする: %s" % path)
+
+
+func _test_spawn_rejects_subminimum_hp() -> void:
+	var path := "res://data/resources/area/area_riran/enemy/boss/003/area_riran_enemy_boss_003_004.tres"
+	var info := load(path) as EnemyInfo
+	_expect(info != null, "HP1未満の生成テスト用悪夢を読み込める")
+	if info == null:
+		return
+	var source := Enemy.new()
+	source.data.setup(info, 1, 1, true, true)
+	var effect := source.get_enemy_effects()[0] as EnemyEffectOnAcidDamageSpawnEnemy
+	var queue := EnemySpawnQueue.new()
+	effect.bind_source(source)
+	effect.bind_owner(source.data, EnemyEffectStack.new())
+	effect.setup_spawn_queue(queue)
+	effect.apply()
+	_expect(queue.consume().is_empty(), "生成HPが1未満の場合は生成要求を出さない")
+	_expect(source.max_hp == 1 and source.damage == 1, "生成失敗時は生成元のHPと攻撃力を減らさない")
+	effect.unbind()
+	source.free()
 
 
 func _expect(condition: bool, message: String) -> void:
