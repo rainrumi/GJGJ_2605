@@ -2,21 +2,21 @@
 
 [ext_resource type="Script" uid="uid://dxuaadwlh5qe4" path="res://data/info/seed/seed_pool_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="2_definition"]
-[ext_resource type="Resource" uid="uid://sqlt6j4xlv0b" path="res://data/resources/seeds/skills/seed_100_101.tres" id="1001_skill"]
-[ext_resource type="Resource" uid="uid://c6y5aptnps475" path="res://data/resources/seeds/skills/seed_100_102.tres" id="1002_skill"]
-[ext_resource type="Resource" uid="uid://cyxosr30hvu3g" path="res://data/resources/seeds/skills/seed_100_103.tres" id="1003_skill"]
-[ext_resource type="Resource" uid="uid://cdjgp7641yh08" path="res://data/resources/seeds/skills/seed_100_104.tres" id="1004_skill"]
-[ext_resource type="Resource" uid="uid://d2pcfr4150g1o" path="res://data/resources/seeds/skills/seed_100_109.tres" id="2107_skill"]
-[ext_resource type="Resource" uid="uid://wjghmy5hggyr" path="res://data/resources/seeds/skills/seed_100_116.tres" id="2119_skill"]
-[ext_resource type="Resource" uid="uid://dmjmbbegyqtpm" path="res://data/resources/seeds/skills/seed_100_118.tres" id="rare_118"]
-[ext_resource type="Resource" uid="uid://bs01uak7oycr3" path="res://data/resources/seeds/skills/seed_100_119.tres" id="rare_119"]
-[ext_resource type="Resource" uid="uid://cqcdull7w5d7y" path="res://data/resources/seeds/skills/seed_100_121.tres" id="rare_121"]
+[ext_resource type="Resource" uid="uid://1r88th44r113" path="res://data/resources/seeds/skills/seed_100_101.tres" id="1001_skill"]
+[ext_resource type="Resource" uid="uid://caerakqdj6ehi" path="res://data/resources/seeds/skills/seed_100_102.tres" id="1002_skill"]
+[ext_resource type="Resource" uid="uid://drt413lott54a" path="res://data/resources/seeds/skills/seed_100_103.tres" id="1003_skill"]
+[ext_resource type="Resource" uid="uid://ditxncam826tj" path="res://data/resources/seeds/skills/seed_100_104.tres" id="1004_skill"]
+[ext_resource type="Resource" uid="uid://cwqvwiljroctf" path="res://data/resources/seeds/skills/seed_100_109.tres" id="2107_skill"]
+[ext_resource type="Resource" uid="uid://c6lo0fe5rqktk" path="res://data/resources/seeds/skills/seed_100_116.tres" id="2119_skill"]
 [ext_resource type="Resource" uid="uid://b2aojxhycrnv2" path="res://data/resources/seeds/skills/seed_100_115.tres" id="rare_115"]
+[ext_resource type="Resource" uid="uid://bqpykta3dxgu1" path="res://data/resources/seeds/skills/seed_100_118.tres" id="rare_118"]
+[ext_resource type="Resource" uid="uid://c3x7b42v56yq0" path="res://data/resources/seeds/skills/seed_100_119.tres" id="rare_119"]
+[ext_resource type="Resource" uid="uid://dva0uuyr22nkb" path="res://data/resources/seeds/skills/seed_100_121.tres" id="rare_121"]
 
 [resource]
 script = ExtResource("1_script")
-use_stage_clear_rarity_probabilities = true
-normal_probability = 0.25
-rare_probability = 0.75
 common_skills = Array[ExtResource("2_definition")]([ExtResource("1001_skill"), ExtResource("1002_skill"), ExtResource("1003_skill"), ExtResource("1004_skill")])
 rare_skills = Array[ExtResource("2_definition")]([ExtResource("2107_skill"), ExtResource("2119_skill"), ExtResource("rare_118"), ExtResource("rare_121"), ExtResource("rare_119"), ExtResource("rare_115")])
+use_stage_clear_rarity_probabilities = true
+normal_probability = 0.2
+rare_probability = 0.8

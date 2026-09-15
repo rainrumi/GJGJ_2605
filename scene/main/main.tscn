@@ -10,16 +10,15 @@
 [ext_resource type="Resource" path="res://data/resources/novel/novel_ending_gameover.tres" id="9_end_gameover_text"]
 [ext_resource type="AudioStream" uid="uid://dc8vyar0jf1e4" path="res://resource/sound/bgm/Night_Dance.mp3" id="10_bgm"]
 [ext_resource type="PackedScene" uid="uid://dpm4cf8ncpl8m" path="res://systems/audio/beat_conductor.tscn" id="11_beat_conductor"]
-[ext_resource type="Resource" path="res://data/resources/novel/novel_ending_true.tres" id="12_true_ending"]
-[ext_resource type="Resource" path="res://data/resources/novel/novel_ending_normal.tres" id="12_normal_ending"]
 [ext_resource type="Resource" path="res://data/resources/novel/novel_ending_bad.tres" id="12_bad_ending"]
-[ext_resource type="Resource" path="res://data/resources/rara/lara_schedule.tres" id="19_lara_schedule"]
+[ext_resource type="Resource" path="res://data/resources/novel/novel_ending_normal.tres" id="12_normal_ending"]
+[ext_resource type="Resource" path="res://data/resources/novel/novel_ending_true.tres" id="12_true_ending"]
 [ext_resource type="PackedScene" uid="uid://o8cavvep5sxl" path="res://scene/main/settings/settings_screen.tscn" id="13_settings"]
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://resource/sound/se/se_click.mp3" id="14_se_click"]
-[ext_resource type="Script" uid="uid://i5mdrfe7b8vm" path="res://data/info/stage/stage_info.gd" id="15_q2oic"]
 [ext_resource type="AudioStream" uid="uid://lhn1aubvc0wx" path="res://resource/sound/se/se_select.mp3" id="15_se_select"]
 [ext_resource type="Resource" path="res://data/resources/novel/novel_event_100.tres" id="17_event_100_text"]
 [ext_resource type="Resource" path="res://data/resources/area/lara_location_catalog.tres" id="18_lara_location_catalog"]
+[ext_resource type="Resource" uid="uid://7xohkl7dv8hm" path="res://data/resources/rara/lara_schedule.tres" id="19_lara_schedule"]
 [ext_resource type="PackedScene" uid="uid://cdxfuey83p5f0" path="res://scene/main/stage_clear/seed_choice/seed_choice.tscn" id="20_seed_reward_choice"]
 
 [node name="Main" type="Node" unique_id=1753159910]
@@ -80,7 +79,6 @@ visible = false
 
 [node name="StageSelect" parent="." unique_id=578703049 instance=ExtResource("7_stage_select")]
 visible = false
-stage_definitions = Array[ExtResource("15_q2oic")]([])
 
 [node name="Game" parent="." unique_id=335814330 instance=ExtResource("3_qtsyf")]
 visible = false
@@ -90,10 +88,10 @@ visible = false
 
 [node name="SettingsScreen" parent="." unique_id=20343102 instance=ExtResource("13_settings")]
 
+[connection signal="debug_novel_requested" from="Title" to="." method="_on_title_debug_novel_requested"]
 [connection signal="quit_requested" from="Title" to="." method="_on_quit_requested"]
 [connection signal="settings_requested" from="Title" to="." method="_on_settings_requested"]
 [connection signal="start_game" from="Title" to="." method="_on_title_start_game"]
-[connection signal="debug_novel_requested" from="Title" to="." method="_on_title_debug_novel_requested"]
 [connection signal="finished" from="OpeningNovel" to="." method="_on_opening_novel_finished"]
 [connection signal="debug_boss_stage_selected" from="StageSelect" to="." method="_on_stage_select_debug_boss_stage_selected"]
 [connection signal="stage_selected" from="StageSelect" to="." method="_on_stage_select_stage_selected"]

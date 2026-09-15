@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedPoolInfo" format=3]
+[gd_resource type="Resource" script_class="SeedPoolInfo" format=3 uid="uid://cee7pycoedn6s"]
 
 [ext_resource type="Script" uid="uid://dxuaadwlh5qe4" path="res://data/info/seed/seed_pool_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="2_definition"]
@@ -27,6 +27,6 @@
 
 [resource]
 script = ExtResource("1_script")
-common_skills = Array[ExtResource("2_definition")]([])
 rare_skills = Array[ExtResource("2_definition")]([ExtResource("seed_105"), ExtResource("seed_106"), ExtResource("seed_107"), ExtResource("seed_108"), ExtResource("seed_109"), ExtResource("seed_110"), ExtResource("seed_111"), ExtResource("seed_112"), ExtResource("seed_113"), ExtResource("seed_114"), ExtResource("seed_115"), ExtResource("seed_116"), ExtResource("seed_117"), ExtResource("seed_118"), ExtResource("seed_119"), ExtResource("seed_120"), ExtResource("seed_121"), ExtResource("seed_122"), ExtResource("seed_123"), ExtResource("seed_124"), ExtResource("seed_125"), ExtResource("seed_126")])
-epic_skills = Array[ExtResource("2_definition")]([])
+normal_probability = 0.2
+rare_probability = 0.8
