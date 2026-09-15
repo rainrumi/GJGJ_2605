@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://ld55ttrpk4a2" path="res://scene/main/game/enemy/skill/digested/enemy_effect_on_digested_transform_enemy.gd" id="effect_5"]
 [ext_resource type="Script" uid="uid://dymf42645ccta" path="res://scene/main/game/enemy/skill/special/enemy_effect_on_adjacent_weaker_absorb_attack.gd" id="effect_7"]
 [ext_resource type="Script" uid="uid://cyphsbjjfj87t" path="res://scene/main/game/enemy/skill/special/enemy_effect_on_adjacent_weaker_absorb_hp.gd" id="effect_8"]
-[ext_resource type="Script" uid="uid://dqdidy88pje31" path="res://scene/main/game/enemy/skill/special/enemy_effect_on_adjacent_weaker_absorb_skill.gd" id="effect_9"]
 [ext_resource type="Resource" uid="uid://b0kficltussfs" path="res://data/resources/area/area_lunova/enemy/boss/003/area_lunova_enemy_boss_003_004.tres" id="enemy_6"]
 
 [sub_resource type="Resource" id="AcidBlock"]
@@ -30,19 +29,14 @@ script = ExtResource("effect_8")
 damage = 99999
 effect_amount_configured = true
 
-[sub_resource type="Resource" id="Effect_4"]
-script = ExtResource("effect_9")
-damage = 99999
-effect_amount_configured = true
-
 [sub_resource type="Resource" id="MainSkill"]
 script = ExtResource("4_enemy_skill")
-effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1"), SubResource("Effect_2"), SubResource("Effect_3"), SubResource("Effect_4")])
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Effect_1"), SubResource("Effect_2"), SubResource("Effect_3")])
 
 [resource]
 script = ExtResource("1_enemy_info")
 skill_id = 17020003003
 display_name = "E3"
 acid_block = SubResource("AcidBlock")
-description = "消化されたとき、胃袋内から吐き出されて新しい悪夢に生まれ変わる。隣接するモノの攻撃力が自分の攻撃力より低いとき、そのモノに99999消化ダメージを与えてHP、攻撃力、スキルを手に入れる。"
+description = "消化されたとき、胃袋内から吐き出されて新しい悪夢に生まれ変わる。隣接するモノの攻撃力が自分の攻撃力より低いとき、そのモノに99999消化ダメージを与えてHP、攻撃力を手に入れる。"
 main_skill = SubResource("MainSkill")
