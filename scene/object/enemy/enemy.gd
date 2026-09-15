@@ -566,7 +566,7 @@ func get_category_detail() -> String:
 	return EnemyTooltipFormatter.get_category_detail(data.main_skill_active, data.definition)
 # maineffect文言取得
 func get_main_effect_text() -> String:
-	return EnemyTooltipFormatter.get_main_effect_text(data.main_skill_active, data.definition)
+	return EnemyTooltipFormatter.get_main_effect_text(data.main_skill_active, data.definition, data)
 # subeffect文言取得
 func get_sub_effect_text() -> String:
 	return "-"

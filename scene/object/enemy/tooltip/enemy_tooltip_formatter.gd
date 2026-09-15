@@ -1,6 +1,8 @@
 class_name EnemyTooltipFormatter
 extends RefCounted
 
+const REVIVE_CHANCE_TOOLTIP_SKILL_IDS := [17020002001, 17020002002]
+
 
 # categoryname取得
 static func get_category_name(has_main_effect: bool, skill_definition: EnemyInfo) -> String:
@@ -31,10 +33,44 @@ static func get_category_detail(has_main_effect: bool, skill_definition: EnemyIn
 
 
 # maineffect文言取得
-static func get_main_effect_text(has_main_effect: bool, skill_definition: EnemyInfo) -> String:
+static func get_main_effect_text(
+	has_main_effect: bool,
+	skill_definition: EnemyInfo,
+	enemy_data: EnemyData = null
+) -> String:
 	if not has_main_effect or skill_definition == null:
 		return ""
-	return skill_definition.description
+	var description := skill_definition.description
+	if skill_definition.skill_id in REVIVE_CHANCE_TOOLTIP_SKILL_IDS:
+		description = _append_chance_description(description, skill_definition, enemy_data)
+	return description
+
+
+static func _append_chance_description(
+	description: String,
+	skill_definition: EnemyInfo,
+	enemy_data: EnemyData,
+) -> String:
+	if description.is_empty():
+		return description
+	var skill := skill_definition.main_skill
+	if enemy_data != null and enemy_data.get_active_skill() != null:
+		skill = enemy_data.get_active_skill()
+	if skill == null:
+		return description
+	for effect in skill.effects:
+		if effect is EnemyEffectOnDigestedChanceRevive:
+			var chance_effect := effect as EnemyEffectOnDigestedChanceRevive
+			var adjusted_chance := chance_effect.chance
+			if enemy_data != null:
+				adjusted_chance = clampf(
+					(adjusted_chance + enemy_data.defense_status.chance_delta)
+					* enemy_data.defense_status.chance_multiplier,
+					0.0,
+					1.0
+				)
+			return "%s(確率:%.1f%%)" % [description, adjusted_chance * 100.0]
+	return description
 
 
 # category文言取得

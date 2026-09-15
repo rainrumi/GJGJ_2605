@@ -15,6 +15,8 @@ func show_enemy(enemy: Enemy, debug_number_text: String, debug_numbers_visible: 
 	set_title(enemy.get_display_name())
 	set_note("", false)
 	set_entries(_get_enemy_entries(enemy, debug_numbers_visible))
+	if not enemy.data.defense_status.changed.is_connected(_on_defense_status_changed):
+		enemy.data.defense_status.changed.connect(_on_defense_status_changed)
 	if enemy.data.definition != null and enemy.data.definition.skill_id in [17010003001, 17010009001, 17010009002, 17010009003]:
 		enemy.data.stomach_status.elapsed_changed.connect(_on_elapsed_changed)
 	if enemy.data.definition != null and enemy.data.definition.skill_id == 17010009001:
@@ -52,6 +54,8 @@ func _disconnect_elapsed_changed() -> void:
 		_enemy.data.age_changed.disconnect(_on_elapsed_changed)
 	if _enemy != null and _enemy.data.special_effects_changed.is_connected(_on_special_effects_changed):
 		_enemy.data.special_effects_changed.disconnect(_on_special_effects_changed)
+	if _enemy != null and _enemy.data.defense_status.changed.is_connected(_on_defense_status_changed):
+		_enemy.data.defense_status.changed.disconnect(_on_defense_status_changed)
 
 
 func _on_elapsed_changed(_minutes: int) -> void:
@@ -65,6 +69,11 @@ func _on_hp_changed(_current: int, _maximum: int) -> void:
 
 
 func _on_special_effects_changed() -> void:
+	if visible and _enemy != null:
+		set_entries(_get_enemy_entries(_enemy, _debug_numbers_visible))
+
+
+func _on_defense_status_changed() -> void:
 	if visible and _enemy != null:
 		set_entries(_get_enemy_entries(_enemy, _debug_numbers_visible))
 

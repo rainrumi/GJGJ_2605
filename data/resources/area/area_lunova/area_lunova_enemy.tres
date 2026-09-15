@@ -12,9 +12,11 @@
 [ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/normal/008/area_lunova_enemy_normal_preset_008.tres" id="2_normal_008"]
 [ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/normal/009/area_lunova_enemy_normal_preset_009.tres" id="2_normal_009"]
 [ext_resource type="Resource" uid="uid://cbwvilyvxt05o" path="res://data/resources/area/area_lunova/enemy/boss/001/area_lunova_enemy_boss_preset_001.tres" id="4_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/boss/002/area_lunova_enemy_boss_preset_002.tres" id="5_strengthened"]
+[ext_resource type="Resource" path="res://data/resources/area/area_lunova/enemy/boss/003/area_lunova_enemy_boss_preset_003.tres" id="6_strengthened"]
 
 [resource]
 script = ExtResource("1_script")
 normal_enemy_presets = Array[ExtResource("1_nyi61")]([ExtResource("2_normal"), ExtResource("2_normal_002"), ExtResource("2_normal_003"), ExtResource("2_normal_004"), ExtResource("2_normal_005"), ExtResource("2_normal_006"), ExtResource("2_normal_007"), ExtResource("2_normal_008"), ExtResource("2_normal_009")])
 endless_enemy_presets = Array[ExtResource("1_nyi61")]([ExtResource("2_normal"), ExtResource("2_normal_002"), ExtResource("2_normal_003"), ExtResource("2_normal_004"), ExtResource("2_normal_005"), ExtResource("2_normal_006"), ExtResource("2_normal_007"), ExtResource("2_normal_008"), ExtResource("2_normal_009")])
-strengthened_enemy_presets = Array[ExtResource("1_nyi61")]([ExtResource("4_strengthened")])
+strengthened_enemy_presets = Array[ExtResource("1_nyi61")]([ExtResource("4_strengthened"), ExtResource("5_strengthened"), ExtResource("6_strengthened")])

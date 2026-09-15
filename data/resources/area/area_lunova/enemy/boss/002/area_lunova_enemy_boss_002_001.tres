@@ -8,13 +8,13 @@
 
 [sub_resource type="Resource" id="Resource_y1dwu"]
 script = ExtResource("2_acid_block")
-max_hp = 300
+max_hp = 100
 damage = 5
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(0, 1, 0), PackedInt32Array(1, 1, 1), PackedInt32Array(0, 1, 0), PackedInt32Array(1, 0, 1)])
 
 [sub_resource type="Resource" id="Resource_i0ldl"]
 script = ExtResource("effect_5")
-chance = 0.01
+chance = 0.010000000009313226
 invert_chance = true
 effect_amount_configured = true
 effect_amount_fields = PackedStringArray("chance")

@@ -1,6 +1,7 @@
 extends Node
 
 const RIRAN_STAGE_PATH := "res://data/resources/area/area_riran/area_riran.tres"
+const LUNOVA_STAGE_PATH := "res://data/resources/area/area_lunova/area_lunova.tres"
 
 var _failures := 0
 
@@ -60,6 +61,21 @@ func _run() -> void:
 		_expect(game.current_enemy_preset == boss_presets[0], "リラン-B-3の次はリラン-B-1へ戻る")
 		game.retry_last_battle()
 		_expect(game.current_enemy_preset == boss_presets[0], "ボス戦のリトライも切替後の敵を維持する")
+
+	var lunova_stage := load(LUNOVA_STAGE_PATH) as StageInfo
+	_expect(lunova_stage != null and lunova_stage.enemy_data != null, "ルノヴァのステージ定義を読み込める")
+	if lunova_stage != null and lunova_stage.enemy_data != null:
+		var lunova_boss_presets := lunova_stage.enemy_data.strengthened_enemy_presets
+		_expect(lunova_boss_presets.size() == 3, "ルノヴァのボス敵がB-1からB-3まである")
+		if lunova_boss_presets.size() == 3:
+			context.stage = lunova_stage
+			context.stage_id = lunova_stage.stage_id
+			context.enemy_preset = lunova_boss_presets[0]
+			game.start_battle(context)
+			next_enemy_button.pressed.emit()
+			_expect(game.current_enemy_preset == lunova_boss_presets[1], "ルノヴァ-B-1からルノヴァ-B-2へ切り替える")
+			next_enemy_button.pressed.emit()
+			_expect(game.current_enemy_preset == lunova_boss_presets[2], "ルノヴァ-B-2からルノヴァ-B-3へ切り替える")
 
 	DebugState.set_debug_enabled(false)
 	get_tree().root.remove_child(game)
