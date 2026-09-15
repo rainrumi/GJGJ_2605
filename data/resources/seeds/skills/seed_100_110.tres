@@ -6,9 +6,9 @@
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_3imsh"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_kfne7"]
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_target/seed_effect_on_adjacent_object_change_chance.gd" id="skill_adjacent_chance"]
 [ext_resource type="Script" uid="uid://c81l3uqa4v2nd" path="res://scene/main/game/seed/skill/on_fire_acid_enemy/seed_effect_on_fire_acid_enemy_probability_change_acid_damage_rate.gd" id="skill_fire_probability_rate"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" uid="uid://di4akr83h4in3" path="res://scene/main/game/seed/skill/on_target/seed_effect_on_adjacent_object_change_chance.gd" id="skill_adjacent_chance"]
 
 [sub_resource type="Resource" id="Resource_mf7mr"]
 script = ExtResource("1_irj3a")
