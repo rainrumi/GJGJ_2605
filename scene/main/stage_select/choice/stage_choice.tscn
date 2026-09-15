@@ -37,32 +37,40 @@ theme_override_font_sizes/font_size = 9
 vertical_alignment = 1
 text_overrun_behavior = 3
 
-[node name="DifficultyLabel" type="Label" parent="." unique_id=863256926]
+[node name="HBoxContainer2" type="HBoxContainer" parent="." unique_id=1265119550]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 4.0
-offset_right = 255.0
-offset_bottom = 14.0
+offset_left = 54.0
+offset_top = 5.0
+offset_right = 254.0
+offset_bottom = 16.0
+alignment = 2
+
+[node name="DifficultyLabel" type="Label" parent="HBoxContainer2" unique_id=863256926]
+layout_mode = 2
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 10
 text = "難易度"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ExplorationLabel" type="Label" parent="." unique_id=2041957300]
-layout_mode = 0
-offset_left = 155.0
-offset_top = 14.0
-offset_right = 255.0
-offset_bottom = 29.0
+[node name="SlashLabel" type="Label" parent="HBoxContainer2" unique_id=1655657359]
+layout_mode = 2
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 10
+text = "/"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ExplorationLabel" type="Label" parent="HBoxContainer2" unique_id=2041957300]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 10
 text = "探索率 0%"
 horizontal_alignment = 2
 vertical_alignment = 1
-text_overrun_behavior = 3
 
 [node name="LocationLabel" type="Label" parent="." unique_id=1473998700]
 layout_mode = 0
@@ -90,14 +98,16 @@ theme_override_font_sizes/font_size = 9
 text = "報酬"
 vertical_alignment = 1
 
-[node name="RewardIcon" type="TextureRect" parent="." unique_id=1446009597]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+[node name="RewardHBoxContainer" type="HBoxContainer" parent="." unique_id=754154955]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 20.0
-offset_right = 38.0
-offset_bottom = 50.0
+offset_top = 19.0
+offset_right = 255.0
+offset_bottom = 49.0
+theme_override_constants/separation = 1
+
+[node name="RewardIcon" type="TextureRect" parent="RewardHBoxContainer" unique_id=1446009597]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("4_dj5lj")
-expand_mode = 1
-stretch_mode = 5
