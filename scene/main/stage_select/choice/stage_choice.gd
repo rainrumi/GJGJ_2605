@@ -9,15 +9,17 @@ const HIGH_DIFFICULTY_TEXT_COLOR := Color(1.0, 0.027451, 0.211765, 1.0)
 
 @onready var frame: NinePatchRect = $Frame
 @onready var name_label: Label = $NameLabel
-@onready var difficulty_label: Label = $DifficultyLabel
+@onready var difficulty_label: Label = $HBoxContainer2/DifficultyLabel
 @onready var location_label: Label = $LocationLabel
-@onready var exploration_label: Label = $ExplorationLabel
-@onready var reward_icon: TextureRect = $RewardIcon
+@onready var exploration_label: Label = $HBoxContainer2/ExplorationLabel
+@onready var reward_hbox_container: HBoxContainer = $RewardHBoxContainer
+@onready var reward_icon: TextureRect = $RewardHBoxContainer/RewardIcon
 
 var _base_scale := Vector2.ONE
 var _hovered := false
 var _pressed := false
 var _scale_tween: Tween
+var _reward_seed_icons: Array[TextureRect] = []
 
 
 # 初期化
@@ -45,6 +47,7 @@ func setup_choice(
 		location_label.text = ""
 		exploration_label.text = ""
 		reward_icon.texture = null
+		_clear_reward_seed_icons()
 		return
 	visible = true
 	disabled = false
@@ -54,7 +57,32 @@ func setup_choice(
 	location_label.text = "%s%s" % [stage_definition.location, "（現在地）" if is_current_location else ""]
 	exploration_label.text = "探索率 %d%%" % exploration_percent
 	reward_icon.texture = stage_definition.reward_icon
+	_setup_reward_seed_icons(stage_definition.drop_seed_pool)
 	_apply_stage_text_color(stage_definition)
+
+
+func _setup_reward_seed_icons(seed_pool: SeedPoolInfo) -> void:
+	_clear_reward_seed_icons()
+	if seed_pool == null:
+		return
+
+	for seed in seed_pool.rare_skills:
+		if seed == null or seed.rarity != SeedInfo.Rarity.RARE:
+			continue
+		var icon := reward_icon.duplicate() as TextureRect
+		icon.texture = seed.get_small_texture()
+		icon.visible = true
+		reward_hbox_container.add_child(icon)
+		_reward_seed_icons.append(icon)
+
+
+func _clear_reward_seed_icons() -> void:
+	for icon in _reward_seed_icons:
+		if not is_instance_valid(icon):
+			continue
+		reward_hbox_container.remove_child(icon)
+		icon.free()
+	_reward_seed_icons.clear()
 
 
 # イベント処理
