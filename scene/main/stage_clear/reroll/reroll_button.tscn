@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://crqrfo80lkcwl"]
+
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="1_56af3"]
+[ext_resource type="Script" uid="uid://ce3s60lbqwdan" path="res://scene/main/stage_clear/abandon/abandon_button.gd" id="2_n11xy"]
+[ext_resource type="Texture2D" uid="uid://drk1rtl23138w" path="res://resource/image/texture/frame/tex_frame_100.png" id="3_ihlap"]
+
+[node name="RerollButton" type="Button" unique_id=1178344794]
+offset_right = 120.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_pressed_color = Color(0.15686275, 0.13333334, 0.5647059, 1)
+theme_override_colors/font_hover_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_disabled_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_fonts/font = ExtResource("1_56af3")
+theme_override_font_sizes/font_size = 13
+text = "リロール(残り0回)"
+flat = true
+script = ExtResource("2_n11xy")
+
+[node name="Frame" type="NinePatchRect" parent="." unique_id=1808600798]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_bottom = 26.0
+grow_horizontal = 0
+texture = ExtResource("3_ihlap")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8

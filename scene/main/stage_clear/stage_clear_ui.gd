@@ -36,7 +36,7 @@ const MORE_SELECT_HOLD_DURATION := 0.7
 @onready var guide_text: Label = $GuideText
 @onready var _default_guide_text := guide_text.text
 # 再抽選ボタン
-@onready var reroll_button: Button = $RerollButton
+@onready var debug_reroll_button: Button = $DebugRerollButton
 # debugボタン
 @onready var debug_button: Button = $DebugButton
 @onready var debug_retry_button: Button = $DebugRetryButton
@@ -232,7 +232,7 @@ func _connect_child_signals() -> void:
 	abandon_button.pressed.connect(_on_abandon_button_pressed)
 	abandon_button.mouse_entered.connect(_on_abandon_button_mouse_entered)
 	abandon_button.mouse_exited.connect(_on_abandon_button_mouse_exited)
-	reroll_button.pressed.connect(_on_reroll_button_pressed)
+	debug_reroll_button.pressed.connect(_on_reroll_button_pressed)
 	debug_button.pressed.connect(_on_debug_button_pressed)
 	debug_retry_button.pressed.connect(_on_debug_retry_button_pressed)
 	acid_damage_view.tooltip_requested.connect(_on_status_tooltip_requested)
@@ -362,8 +362,8 @@ func _apply_debug_button_state() -> void:
 
 # reroll状態更新
 func _update_reroll_button_state() -> void:
-	reroll_button.visible = _debug_numbers_visible
-	reroll_button.disabled = not _debug_numbers_visible or not _seed_choice_active
+	debug_reroll_button.visible = _debug_numbers_visible
+	debug_reroll_button.disabled = not _debug_numbers_visible or not _seed_choice_active
 
 
 # debug外観作成

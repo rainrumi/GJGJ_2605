@@ -39,10 +39,10 @@ text_overrun_behavior = 3
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="." unique_id=1265119550]
 layout_mode = 0
-offset_left = 54.0
-offset_top = 5.0
-offset_right = 254.0
-offset_bottom = 16.0
+offset_left = 64.0
+offset_top = 37.0
+offset_right = 264.0
+offset_bottom = 48.0
 alignment = 2
 
 [node name="DifficultyLabel" type="Label" parent="HBoxContainer2" unique_id=863256926]
