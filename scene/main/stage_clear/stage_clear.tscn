@@ -179,6 +179,7 @@ visible = false
 layout_mode = 0
 
 [node name="RerollButton" parent="UI" unique_id=1178344794 instance=ExtResource("16_1dhno")]
+visible = false
 layout_mode = 0
 offset_left = 250.0
 offset_top = 331.0
