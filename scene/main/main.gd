@@ -23,6 +23,13 @@ const LARA_AREA_NOVEL_NAMES := {
 	StageInfo.StageArea.NERIX_MAGIC_SCHOOL: "nerix",
 	StageInfo.StageArea.ZAIKA_ADMIN_DISTRICT: "zaika",
 }
+const AREA_BOSS_REROLL_NOVEL_NAMES := {
+	StageInfo.StageArea.LUNOVA_OLD_CITY: "lunova",
+	StageInfo.StageArea.ELMENA_UNIVERSITY: "elmena",
+	StageInfo.StageArea.RIRAN_TREE_GARRISON: "riran",
+	StageInfo.StageArea.IRIYU_CAVE: "iriyu",
+}
+const AREA_BOSS_REROLL_NOVEL_MAX_DEFEAT_COUNT := 3
 
 enum NovelFlow {
 	NONE,
@@ -39,6 +46,7 @@ enum NovelFlow {
 	LARA_JUDGE_REWARD,
 	LARA_JUDGE_AFTER,
 	DEBUG_PREVIEW,
+	AREA_BOSS_REROLL,
 }
 
 @export var end_gameover_novel_text: NovelTextInfo
@@ -69,6 +77,7 @@ var should_reset_player_state := true
 var active_novel_flow := NovelFlow.NONE
 var pending_stage_novel_texts: Array[NovelTextInfo] = []
 var pending_area_completion_novel_text: NovelTextInfo
+var pending_area_boss_reroll_novel_text: NovelTextInfo
 var _settings_paused_tree := false
 var _screen_flow_id := 0
 var _last_battle_progress_snapshot: Dictionary = {}
@@ -252,6 +261,7 @@ func _on_title_start_game() -> void:
 	_lara_judge_pending = false
 	_day_change_time_recovery_pending = false
 	pending_area_completion_novel_text = null
+	pending_area_boss_reroll_novel_text = null
 	_setup_initial_stage_position()
 	should_reset_player_state = true
 	if stage_clear.has_method("reset_player_state"):
@@ -309,6 +319,7 @@ func _return_to_title() -> void:
 	active_novel_flow = NovelFlow.NONE
 	_day_change_time_recovery_pending = false
 	pending_stage_novel_texts.clear()
+	pending_area_boss_reroll_novel_text = null
 	if game.has_method("cancel_battle"):
 		game.cancel_battle()
 	if settings_screen.visible:
@@ -378,6 +389,10 @@ func _on_opening_novel_finished() -> void:
 			active_novel_flow = NovelFlow.NONE
 			pending_area_completion_novel_text = null
 			_finish_current_day()
+		NovelFlow.AREA_BOSS_REROLL:
+			active_novel_flow = NovelFlow.NONE
+			pending_area_boss_reroll_novel_text = null
+			show_stage_clear()
 		NovelFlow.FIRST_NIGHTMARE_EVENT:
 			active_novel_flow = NovelFlow.NONE
 			run_state.unlock_lara()
@@ -514,12 +529,16 @@ func _on_game_battle_finished(won: bool) -> void:
 			"strengthened_enemy_defeat_counts": run_state.strengthened_enemy_defeat_counts.duplicate(),
 		}
 		run_state.record_stage_clear(run_state.selected_stage)
+		_queue_area_boss_reroll_novel_if_needed(run_state.selected_stage)
 		_lara_judge_pending = (
 			run_state.selected_stage.is_high_difficulty
 			and _is_high_difficulty_day(run_state.current_day)
 			and run_state.current_day > FIRST_NIGHTMARE_EVENT_DAY
 		)
-		show_stage_clear()
+		if pending_area_boss_reroll_novel_text != null:
+			show_area_boss_reroll_novel()
+		else:
+			show_stage_clear()
 	else:
 		show_end_gameover_novel()
 
@@ -546,6 +565,7 @@ func _restore_last_battle_progress() -> void:
 	run_state.strengthened_enemy_defeat_counts = _last_battle_progress_snapshot["strengthened_enemy_defeat_counts"].duplicate()
 	_lara_judge_pending = false
 	pending_area_completion_novel_text = null
+	pending_area_boss_reroll_novel_text = null
 
 
 # 枯渇処理
@@ -780,6 +800,28 @@ func _queue_area_completion_novel_if_needed(stage: StageInfo) -> void:
 		pending_area_completion_novel_text = stage.completion_novel_text
 
 
+func _queue_area_boss_reroll_novel_if_needed(stage: StageInfo) -> void:
+	pending_area_boss_reroll_novel_text = null
+	if stage == null or not stage.is_high_difficulty:
+		return
+	var area_name := String(AREA_BOSS_REROLL_NOVEL_NAMES.get(stage.stage_area, ""))
+	if area_name.is_empty():
+		return
+	var defeated_boss_count := run_state.get_area_boss_defeat_count(stage.stage_area)
+	if defeated_boss_count <= 0 or defeated_boss_count > AREA_BOSS_REROLL_NOVEL_MAX_DEFEAT_COUNT:
+		return
+	var script_path := (
+		"res://resource/novel/area/area_%s/novel_area_%s_event_reroll_%03d.txt"
+		% [area_name, area_name, defeated_boss_count]
+	)
+	if not FileAccess.file_exists(script_path):
+		push_error("Main: ボス撃破後ノベルが見つかりません: %s" % script_path)
+		return
+	var novel_text := NovelTextInfo.new()
+	novel_text.script_path = script_path
+	pending_area_boss_reroll_novel_text = novel_text
+
+
 func show_area_completion_novel() -> void:
 	title.visible = false
 	opening_novel.visible = false
@@ -790,6 +832,18 @@ func show_area_completion_novel() -> void:
 	stage_clear.visible = false
 	active_novel_flow = NovelFlow.AREA_COMPLETION
 	opening_novel.start_with_text(pending_area_completion_novel_text)
+
+
+func show_area_boss_reroll_novel() -> void:
+	title.visible = false
+	opening_novel.visible = false
+	day_intro.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+	active_novel_flow = NovelFlow.AREA_BOSS_REROLL
+	opening_novel.start_with_text(pending_area_boss_reroll_novel_text)
 
 
 func _get_lara_location_candidates() -> Array[StageInfo]:
