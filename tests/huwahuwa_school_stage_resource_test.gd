@@ -53,15 +53,15 @@ func _validate_stage_12(preset: EnemyPresetInfo) -> void:
 
 
 func _validate_stage_16(preset: EnemyPresetInfo) -> void:
-	_validate_stage_16_dynamic_tooltip(preset.enemies[1])
+	_validate_stage_16_fixed_tooltip(preset.enemies[1])
 	_expect(preset.enemies[0].main_skill != null and preset.enemies[0].main_skill.effects.size() == 2, "ST16 E1の生成・自己弱体化効果")
-	_expect(preset.enemies[1].main_skill != null, "ST16 E2の個数倍率効果")
-	_expect(preset.enemies[2].main_skill != null, "ST16 E3の個数倍率効果")
-	_expect(not preset.enemies[1].description.contains("(倍率:%d倍)"), "ST16 E2の倍率表示をコード側へ移す")
-	_expect(not preset.enemies[2].description.contains("(倍率:%d倍)"), "ST16 E3の倍率表示をコード側へ移す")
+	_expect(preset.enemies[1].main_skill != null, "ST16 E2の2倍効果")
+	_expect(preset.enemies[2].main_skill != null, "ST16 E3の2倍効果")
+	_expect(preset.enemies[1].description == "胃袋内の他のモノの効果を2倍する。", "ST16 E2の説明文")
+	_expect(preset.enemies[2].description == "胃袋内の他のモノの効果を2倍する。", "ST16 E3の説明文")
 
 
-func _validate_stage_16_dynamic_tooltip(skill_definition: EnemyInfo) -> void:
+func _validate_stage_16_fixed_tooltip(skill_definition: EnemyInfo) -> void:
 	var source := _create_active_enemy(skill_definition, true)
 	var other_1 := _create_active_enemy(skill_definition, false)
 	var other_2 := _create_active_enemy(skill_definition, false)
@@ -73,10 +73,10 @@ func _validate_stage_16_dynamic_tooltip(skill_definition: EnemyInfo) -> void:
 			enemy.free()
 		return
 	var effect := effects[0] as EnemyEffectOnOtherObjectScaleEffectByObjectCount
-	_expect(effect != null, "ST16 E2の倍率効果を取得する")
+	_expect(effect != null, "ST16 E2の2倍効果を取得する")
 	if effect != null:
 		effect.setup_enemies(objects)
-		_expect(source.get_main_effect_text().ends_with("(倍率:3倍)"), "ST16 E2の倍率を有効なモノの数から動的表示する")
+		_expect(source.get_main_effect_text() == skill_definition.description, "ST16 E2のツールチップに倍率表示を付けない")
 	for enemy in objects:
 		enemy.free()
 

@@ -1,6 +1,8 @@
 class_name EnemyEffectInstaller
 extends RefCounted
 
+var _turn_processor: EnemyTurnProcessor
+
 var _player_health: PlayerHealth # プレイヤーHP
 var _spawn_queue: EnemySpawnQueue # 敵生成要求
 var _battle_clock: BattleClock # 戦闘時刻
@@ -27,7 +29,8 @@ func setup(
 	digestion_state: EnemyDigestionState,
 	inheritance: EnemyEffectInheritance,
 	effect_stack: EnemyEffectStack,
-	refresh_processor: EnemyEffectRefreshProcessor
+	refresh_processor: EnemyEffectRefreshProcessor,
+	turn_processor: EnemyTurnProcessor = null
 ) -> void:
 	_player_health = player_health
 	_spawn_queue = spawn_queue
@@ -38,6 +41,7 @@ func setup(
 	_inheritance = inheritance
 	_effect_stack = effect_stack
 	_refresh_processor = refresh_processor
+	_turn_processor = turn_processor
 	if not _inheritance.effects_changed.is_connected(_on_effects_changed):
 		_inheritance.effects_changed.connect(_on_effects_changed)
 
@@ -122,6 +126,7 @@ func _inject_dependencies(
 	_call_setup(effect, &"setup_acid_modifiers", [_acid_modifiers])
 	_call_setup(effect, &"setup_digestion_state", [_digestion_state])
 	_call_setup(effect, &"setup_inheritance", [_inheritance])
+	_call_setup(effect, &"setup_turn_processor", [_turn_processor])
 
 
 # 任意ゲーム依存注入

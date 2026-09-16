@@ -4,6 +4,16 @@ extends EnemyEffectOnTimeProgressed
 
 var digestion_state: EnemyDigestionState # 効果依存
 var digestion_interval: DigestionInterval # 効果依存
+var turn_processor: EnemyTurnProcessor
+var enemies: Array[Enemy] = []
+
+
+func setup_enemies(value: Array[Enemy]) -> void:
+	enemies = value
+
+
+func setup_turn_processor(value: EnemyTurnProcessor) -> void:
+	turn_processor = value
 
 
 # 消化状態設定
@@ -20,6 +30,8 @@ func setup_digestion_interval(value: DigestionInterval) -> void:
 func clear_dependencies() -> void:
 	digestion_state = null
 	digestion_interval = null
+	turn_processor = null
+	enemies.clear()
 
 
 # 発動間隔
@@ -32,18 +44,20 @@ func clear_dependencies() -> void:
 
 # 効果適用
 func apply() -> void:
-	var count := consume_interval(interval_seconds)
-	if count <= 0 or source == null:
+	var activation_count := consume_interval(interval_seconds)
+	if activation_count <= 0 or source == null:
 		return
 	var interval_minutes := 1.0
-	if digestion_interval != null:
+	if turn_processor != null:
+		var current_minutes := floori(float(get_activation_current_seconds()) / 60.0)
+		var interval_breakdown := turn_processor.get_step_minutes_breakdown(enemies, false, current_minutes)
+		interval_minutes = float(interval_breakdown["total"])
+	elif digestion_interval != null:
 		interval_minutes = float(digestion_interval.resolve(1800)) / 60.0
 	var damage := roundi(pow(exponent_base, interval_minutes / float(interval_divisor_minutes)))
-	for _index in range(count):
-		if source.is_Acided():
-			break
-		if source.take_acid_damage(damage):
-			if digestion_state != null:
-				digestion_state.register(source)
-			break
-		source.current_hp = source.max_hp
+	# 「時間が経過した」1回につき、経過時間に関係なく1回だけ発動する。
+	if source.take_acid_damage(damage):
+		if digestion_state != null:
+			digestion_state.register(source)
+		return
+	source.current_hp = source.max_hp

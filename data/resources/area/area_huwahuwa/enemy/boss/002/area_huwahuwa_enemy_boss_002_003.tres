@@ -17,7 +17,7 @@ metadata/_custom_type_script = "uid://baxftffqfh10a"
 [resource]
 script = ExtResource("1_script")
 skill_id = 15020002003
-display_name = "E3"
+display_name = "試験用悪夢3"
 acid_block = SubResource("Resource_block")
 description = "アナタの試験合格を見守っている。"
 main_skill = SubResource("Resource_ff8tg")

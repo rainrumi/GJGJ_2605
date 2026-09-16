@@ -25,7 +25,8 @@ func setup(
 	digestion_state: EnemyDigestionState,
 	inheritance: EnemyEffectInheritance,
 	effect_stack: EnemyEffectStack,
-	installer: EnemyEffectInstaller
+	installer: EnemyEffectInstaller,
+	turn_processor: EnemyTurnProcessor = null
 ) -> void:
 	_player_health = player_health
 	_spawn_queue = spawn_queue
@@ -45,7 +46,8 @@ func setup(
 		_digestion_state,
 		_inheritance,
 		_effect_stack,
-		_refresh_processor
+		_refresh_processor,
+		turn_processor
 	)
 
 

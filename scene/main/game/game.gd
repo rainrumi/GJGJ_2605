@@ -92,7 +92,8 @@ func _ready() -> void:
 		digestion_state,
 		effect_inheritance,
 		effect_stack,
-		effect_installer
+		effect_installer,
+		turn_processor
 	)
 	digestion_resolver.setup(seed_effects, DreamSeedBlockAcidResolver.new(), acid_modifiers, digestion_state)
 	attack_resolver.setup(seed_effects, enemy_effects, EnemyController.ACID_DAMAGE)

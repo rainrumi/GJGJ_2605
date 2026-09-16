@@ -23,7 +23,7 @@ effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_effect")])
 [resource]
 script = ExtResource("1_script")
 skill_id = 15020002001
-display_name = "E1"
+display_name = "試験用悪夢1"
 acid_block = SubResource("Resource_block")
 description = "隣接したモノが受ける消化ダメージを半分にする。"
 main_skill = SubResource("Resource_skill")

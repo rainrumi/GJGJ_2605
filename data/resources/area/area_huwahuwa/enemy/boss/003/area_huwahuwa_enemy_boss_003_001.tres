@@ -31,7 +31,7 @@ effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_effect_aci
 [resource]
 script = ExtResource("1_script")
 skill_id = 15020003001
-display_name = "E1"
+display_name = "試験用悪夢1"
 acid_block = SubResource("Resource_block")
 description = "胃袋の中で1時間経過するたびに胃袋内すべてのモノに500消化ダメージを与え、消化ダメージ50の攻撃を1回行う。"
 main_skill = SubResource("Resource_skill")

@@ -39,14 +39,14 @@ func _run() -> void:
 		EnemyEffectInstaller.new()
 	)
 	enemy_effects.refresh(enemies, stomach)
-	_expect(lotus_block.data.defense_status.effect_multiplier == 9.0, "E2/E3の効果量倍率をハスへ累積する")
+	_expect(lotus_block.data.defense_status.effect_multiplier == 4.0, "E2/E3の2倍効果をハスへ累積する")
 	lotus_block.set_Acided(true)
 	enemy_effects.refresh(enemies, stomach)
 	_expect(lotus_block.data.defense_status.effect_multiplier == 1.0, "消化済みハスの一時倍率は再評価で解除される")
 
 	var resolver := SeedEffectResolver.new()
 	resolver.add_Acided_seed_effect(lotus, 0, stomach, lotus_block)
-	_expect(stomach.get_acid_line_rows() == 19, "E2/E3の9倍をハスのline_deltaへ適用する")
+	_expect(stomach.get_acid_line_rows() == 9, "E2/E3の4倍をハスのline_deltaへ適用する")
 
 	for enemy in enemies:
 		enemy.free()

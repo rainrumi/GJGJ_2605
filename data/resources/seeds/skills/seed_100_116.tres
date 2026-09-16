@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://c6lo0fe5rqktk"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://dn80ic5ilws8m"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_cafjl"]
 [ext_resource type="Texture2D" uid="uid://cc0005ym885hv" path="res://resource/image/texture/seed/tex_seed_rupinasu_small.png" id="2_small_texture"]
@@ -44,5 +44,5 @@ small_texture = ExtResource("2_small_texture")
 main_skill = SubResource("Resource_2uu0s")
 sub_skill = SubResource("Resource_80jb5")
 acid_block = SubResource("Resource_2t6qm")
-main_description = "同じ種を植えていない場合、胃袋マスが縦に1マス増える。"
-sub_description = "この花を消化すると胃袋マスが縦に3マス増える。"
+main_description = "同じ種を植えていない場合、胃袋マスが縦に1マス増える。この種は効果バフの影響を受けない。"
+sub_description = "この花を消化すると胃袋マスが縦に3マス増える。この種は効果バフの影響を受けない。"

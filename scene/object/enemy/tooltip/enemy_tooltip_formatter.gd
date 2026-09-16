@@ -42,21 +42,8 @@ static func get_main_effect_text(
 	if not has_main_effect or skill_definition == null:
 		return ""
 	var description := skill_definition.description
-	description = _append_dynamic_effect_descriptions(description, active_effects)
 	if skill_definition.skill_id in REVIVE_CHANCE_TOOLTIP_SKILL_IDS:
 		description = _append_chance_description(description, skill_definition, enemy_data)
-	return description
-
-
-# 効果の動的説明追記
-static func _append_dynamic_effect_descriptions(
-	description: String,
-	active_effects: Array[EnemyEffect]
-) -> String:
-	for effect in active_effects:
-		if effect is EnemyEffectOnOtherObjectScaleEffectByObjectCount:
-			var count := (effect as EnemyEffectOnOtherObjectScaleEffectByObjectCount).get_object_count()
-			return "%s(倍率:%d倍)" % [description, count]
 	return description
 
 

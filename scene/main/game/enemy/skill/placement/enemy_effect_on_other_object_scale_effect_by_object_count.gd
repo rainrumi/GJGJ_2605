@@ -3,6 +3,7 @@ extends EnemyEffectOnRefreshPreprocess
 
 
 var enemies: Array[Enemy] = [] # 効果依存
+const EFFECT_MULTIPLIER := 2.0
 
 
 # 敵一覧設定
@@ -22,10 +23,9 @@ func get_object_count() -> int:
 
 # 効果適用
 func apply() -> void:
-	var count := get_object_count()
-	if count <= 0:
-		return
-	var multiplier := EnemyEffectValueCalculator.scale(source, float(count))
 	for enemy in EnemyEffectTargetQuery.get_active_objects(enemies):
 		if enemy != source:
-			EnemyEffectStatChanges.multiply_effect(enemy, multiplier)
+			EnemyEffectStatChanges.multiply_effect(
+				enemy,
+				EnemyEffectValueCalculator.scale(source, EFFECT_MULTIPLIER)
+			)
