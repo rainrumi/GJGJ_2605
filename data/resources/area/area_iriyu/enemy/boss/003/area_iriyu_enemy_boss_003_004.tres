@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
 [ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
 [ext_resource type="Script" uid="uid://dxkuo4oepof25" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_change_target_max_hp.gd" id="effect_5"]
-[ext_resource type="Script" uid="uid://bawjagu3r3u72" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_change_target_attack_modifier.gd" id="effect_6"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_adjacent_object_change_target_attack_modifier.gd" id="effect_6"]
 
 [sub_resource type="Resource" id="Resource_jrlwh"]
 script = ExtResource("2_acid_block")

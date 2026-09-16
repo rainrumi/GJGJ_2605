@@ -73,6 +73,15 @@ func _run() -> void:
 	await process_frame
 	_expect(game.call("get_stomach_columns") == 5, "ID 100115 は戦闘中の胃袋を横に1マス増やす")
 	_expect(game.call("get_base_stomach_columns") == 4, "ID 100115 の補正を基礎胃袋横サイズへ含めない")
+	var yugao := context.flowers[0] as SeedInfo
+	_expect(
+		StageClearCalculatorRecovery.can_receive_seed(yugao, [yugao, yugao]),
+		"ID 100115 は同じ夢の種を複数所持できる"
+	)
+	context.flowers = [yugao, yugao]
+	game.call("start_battle", context)
+	await process_frame
+	_expect(game.call("get_stomach_columns") == 5, "ID 100115 を複数装備しても横幅効果は1つだけ発動する")
 
 	game.queue_free()
 	await process_frame
