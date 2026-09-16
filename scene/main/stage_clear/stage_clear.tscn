@@ -152,9 +152,9 @@ text = "Debug"
 [node name="DebugRetryButton" type="Button" parent="UI" unique_id=2031247070]
 visible = false
 layout_mode = 0
-offset_left = 312.0
+offset_left = 387.0
 offset_top = 333.0
-offset_right = 372.0
+offset_right = 447.0
 offset_bottom = 355.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)

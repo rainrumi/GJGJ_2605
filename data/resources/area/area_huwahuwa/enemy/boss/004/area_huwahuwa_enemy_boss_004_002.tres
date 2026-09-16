@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_block"]
 [ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
 [ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_other_object_scale_effect_by_object_count.gd" id="effect_5"]
+[ext_resource type="Script" uid="uid://b6c36ml2e0i57" path="res://scene/main/game/enemy/skill/placement/enemy_effect_on_other_object_scale_effect_by_object_count.gd" id="effect_5"]
 
 [sub_resource type="Resource" id="Resource_block"]
 script = ExtResource("2_block")
@@ -24,5 +24,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 15020004002
 display_name = "E2"
 acid_block = SubResource("Resource_block")
-description = "胃袋内の他のモノの効果をモノの数だけ倍増する。(倍率:%d倍)"
+description = "胃袋内の他のモノの効果をモノの数だけ倍増する。"
 main_skill = SubResource("Resource_skill")

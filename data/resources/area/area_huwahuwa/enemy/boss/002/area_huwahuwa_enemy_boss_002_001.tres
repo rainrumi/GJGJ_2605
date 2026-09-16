@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bvx16j4vt7jx8"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://fc3n75hi1pxy"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_block"]

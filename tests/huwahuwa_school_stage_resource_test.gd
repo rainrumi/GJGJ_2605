@@ -53,9 +53,40 @@ func _validate_stage_12(preset: EnemyPresetInfo) -> void:
 
 
 func _validate_stage_16(preset: EnemyPresetInfo) -> void:
+	_validate_stage_16_dynamic_tooltip(preset.enemies[1])
 	_expect(preset.enemies[0].main_skill != null and preset.enemies[0].main_skill.effects.size() == 2, "ST16 E1の生成・自己弱体化効果")
 	_expect(preset.enemies[1].main_skill != null, "ST16 E2の個数倍率効果")
 	_expect(preset.enemies[2].main_skill != null, "ST16 E3の個数倍率効果")
+	_expect(not preset.enemies[1].description.contains("(倍率:%d倍)"), "ST16 E2の倍率表示をコード側へ移す")
+	_expect(not preset.enemies[2].description.contains("(倍率:%d倍)"), "ST16 E3の倍率表示をコード側へ移す")
+
+
+func _validate_stage_16_dynamic_tooltip(skill_definition: EnemyInfo) -> void:
+	var source := _create_active_enemy(skill_definition, true)
+	var other_1 := _create_active_enemy(skill_definition, false)
+	var other_2 := _create_active_enemy(skill_definition, false)
+	var objects: Array[Enemy] = [source, other_1, other_2]
+	var effects := source.get_enemy_effects()
+	_expect(effects.size() == 1, "ST16 E2の倍率効果数を確認する")
+	if effects.is_empty():
+		for enemy in objects:
+			enemy.free()
+		return
+	var effect := effects[0] as EnemyEffectOnOtherObjectScaleEffectByObjectCount
+	_expect(effect != null, "ST16 E2の倍率効果を取得する")
+	if effect != null:
+		effect.setup_enemies(objects)
+		_expect(source.get_main_effect_text().ends_with("(倍率:3倍)"), "ST16 E2の倍率を有効なモノの数から動的表示する")
+	for enemy in objects:
+		enemy.free()
+
+
+func _create_active_enemy(info: EnemyInfo, use_skill: bool) -> Enemy:
+	var enemy := Enemy.new()
+	enemy.data.setup(info, 100, 10, use_skill, use_skill)
+	enemy.set_stomach_footprint_override(Vector2i.ONE, [Vector2i.ZERO], 1)
+	enemy.set_Aciding(true)
+	return enemy
 
 
 func _validate_stage_20(preset: EnemyPresetInfo) -> void:

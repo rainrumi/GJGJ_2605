@@ -15,9 +15,14 @@ func clear_dependencies() -> void:
 	enemies = []
 
 
+# 倍増倍率取得
+func get_object_count() -> int:
+	return EnemyEffectTargetQuery.get_active_objects(enemies).size()
+
+
 # 効果適用
 func apply() -> void:
-	var count := EnemyEffectTargetQuery.get_active_objects(enemies).size()
+	var count := get_object_count()
 	if count <= 0:
 		return
 	var multiplier := EnemyEffectValueCalculator.scale(source, float(count))
