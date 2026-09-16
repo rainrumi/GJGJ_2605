@@ -1,6 +1,37 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://do2tgyugyab5w"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_block"]
+[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" uid="uid://mtphhk0kino4" path="res://scene/main/game/enemy/skill/time/enemy_effect_on_elapsed_time_deal_all_acid_damage.gd" id="effect_5"]
+[ext_resource type="Script" uid="uid://b6maq86xjy4eb" path="res://scene/main/game/enemy/skill/time/enemy_effect_on_elapsed_time_attack.gd" id="effect_6"]
+
+[sub_resource type="Resource" id="Resource_block"]
+script = ExtResource("2_block")
+max_hp = 6000
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(0, 1, 0), PackedInt32Array(1, 1, 1), PackedInt32Array(0, 1, 0)])
+
+[sub_resource type="Resource" id="Resource_effect_acid"]
+script = ExtResource("effect_5")
+interval_seconds = 3600
+damage = 500
+effect_amount_configured = true
+
+[sub_resource type="Resource" id="Resource_effect_attack"]
+script = ExtResource("effect_6")
+interval_seconds = 3600
+fixed_damage = 50
+effect_amount_configured = true
+
+[sub_resource type="Resource" id="Resource_skill"]
+script = ExtResource("4_enemy_skill")
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_effect_acid"), SubResource("Resource_effect_attack")])
 
 [resource]
 script = ExtResource("1_script")
+skill_id = 15020003001
+display_name = "E1"
+acid_block = SubResource("Resource_block")
+description = "胃袋の中で1時間経過するたびに胃袋内すべてのモノに500消化ダメージを与え、消化ダメージ50の攻撃を1回行う。"
+main_skill = SubResource("Resource_skill")

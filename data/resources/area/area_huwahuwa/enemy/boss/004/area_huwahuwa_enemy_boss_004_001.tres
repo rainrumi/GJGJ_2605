@@ -1,6 +1,50 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://bej8utjexld1u"]
 
 [ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_block"]
+[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
+[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
+[ext_resource type="Script" uid="uid://bvh6ief35g2yw" path="res://scene/main/game/enemy/skill/damage/enemy_effect_on_damage_spawn_enemy.gd" id="effect_5"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/damage/enemy_effect_on_acid_damage_change_self.gd" id="effect_6"]
+
+[sub_resource type="Resource" id="Resource_block"]
+script = ExtResource("2_block")
+max_hp = 100000
+damage = 50
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1, 1, 1)])
+
+[sub_resource type="Resource" id="Resource_parasite_block"]
+script = ExtResource("2_block")
+max_hp = 998
+damage = 1
+stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
+
+[sub_resource type="Resource" id="Resource_parasite"]
+script = ExtResource("1_script")
+display_name = "寄生型悪夢"
+acid_block = SubResource("Resource_parasite_block")
+
+[sub_resource type="Resource" id="Resource_spawn"]
+script = ExtResource("effect_5")
+enemy_info = SubResource("Resource_parasite")
+spawn_hp = 998
+spawn_attack = 1
+effect_amount_configured = true
+
+[sub_resource type="Resource" id="Resource_change"]
+script = ExtResource("effect_6")
+hp_delta = -1000
+attack_delta = -1
+effect_amount_configured = true
+
+[sub_resource type="Resource" id="Resource_skill"]
+script = ExtResource("4_enemy_skill")
+effects = Array[ExtResource("3_enemy_effect")]([SubResource("Resource_spawn"), SubResource("Resource_change")])
 
 [resource]
 script = ExtResource("1_script")
+skill_id = 15020004001
+display_name = "E1"
+acid_block = SubResource("Resource_block")
+description = "消化ダメージを受けるたびに自身のHPを1000減らし、攻撃力を1失う。同時にHP998と攻撃力1の寄生型悪夢を生成する。"
+main_skill = SubResource("Resource_skill")
