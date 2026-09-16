@@ -225,6 +225,7 @@ func show_game(reset_player_state: bool = true) -> void:
 # ステージclear表示
 func show_stage_clear() -> void:
 	_hide_seed_reward()
+	run_state.update_area_reroll_counts()
 	title.visible = false
 	opening_novel.visible = false
 	day_intro.visible = false
@@ -667,7 +668,6 @@ func _finish_current_day() -> void:
 
 func _advance_to_next_day() -> void:
 	_lara_judge_pending = false
-	run_state.update_area_reroll_counts_before_day_change()
 	_apply_day_change_time_recovery()
 	run_state.apply_day_finished_seed_effects()
 	run_state.day_elapsed_minutes = 0

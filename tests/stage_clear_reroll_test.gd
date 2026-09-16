@@ -22,10 +22,10 @@ func _run() -> void:
 		run_state.get_area_boss_defeat_count(StageInfo.StageArea.ERAMIA_DISTRICT) == 0,
 		"別エリアのボス撃破数を混在させない"
 	)
-	run_state.update_area_reroll_counts_before_day_change()
+	run_state.update_area_reroll_counts()
 	_expect(
 		run_state.get_area_reroll_count(StageInfo.StageArea.LUNOVA_OLD_CITY) == 5,
-		"日付変更直前にボス撃破数からリロール回数を判定する"
+		"ボス撃破数からエリア別リロール回数を判定する"
 	)
 
 	var stage_clear := STAGE_CLEAR_SCENE.instantiate()
@@ -65,10 +65,11 @@ func _run() -> void:
 	var cleared_stage := StageInfo.new()
 	cleared_stage.stage_area = StageInfo.StageArea.ERAMIA_DISTRICT
 	main.run_state.select_stage(cleared_stage)
-	main.run_state.area_reroll_counts[cleared_stage.stage_area] = 2
+	main.run_state.area_reroll_counts[cleared_stage.stage_area] = 1
+	main.run_state.strengthened_enemy_defeat_counts["1:%d" % cleared_stage.stage_area] = 2
 	main.call("show_stage_clear")
 	var main_reroll_button := main.stage_clear.get_node("UI/RerollButton") as Button
-	_expect(main_reroll_button.text == "リロール(残り2回)", "Mainは現在エリアのリロールデータを渡す")
+	_expect(main_reroll_button.text == "リロール(残り2回)", "Mainはステージクリア入場時に現在エリアのリロール回数を更新して渡す")
 	var bgm := main.get_node("BGM") as BeatConductor
 	bgm.stop()
 	bgm.audio_player.stream = null

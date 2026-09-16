@@ -183,8 +183,8 @@ func get_area_boss_defeat_count(area: StageInfo.StageArea) -> int:
 	return count
 
 
-# エリア別リロール回数更新（日付変更直前）
-func update_area_reroll_counts_before_day_change() -> void:
+# エリア別リロール回数更新
+func update_area_reroll_counts() -> void:
 	var areas: Array[int] = []
 	for key: String in strengthened_enemy_defeat_counts:
 		var area := key.get_slice(":", 1).to_int()
