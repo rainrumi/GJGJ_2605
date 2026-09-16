@@ -11,9 +11,6 @@ const REST_HP_RATE := 0.1
 const BATTLE_START_MINUTES := 22 * 60
 const MAX_EQUIPPED_SEEDS := 6
 const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
-const FIRST_BOSS_REROLL_COUNT := 1
-const SECOND_BOSS_REROLL_COUNT := 2
-const THIRD_BOSS_REROLL_COUNT := 5
 
 @export var max_flowers := MAX_EQUIPPED_SEEDS
 @export var initial_flower: SeedInfo
@@ -73,10 +70,10 @@ func setup_clear_result(
 	cleared_stage: StageInfo = null,
 	stomach_columns: int = RunState.DEFAULT_STOMACH_COLUMNS,
 	stomach_rows: int = RunState.DEFAULT_STOMACH_ROWS,
-	area_boss_defeat_count: int = 0
+	reroll_count: int = 0
 ) -> void:
 	_set_clear_result_state(value, cleared_minutes)
-	_reset_reroll_count(area_boss_defeat_count)
+	_set_reroll_count(reroll_count)
 	_current_clear_stage = cleared_stage
 	_stomach_columns = maxi(1, stomach_columns)
 	_stomach_rows = maxi(1, stomach_rows)
@@ -459,18 +456,14 @@ func _reset_extra_seed_choices() -> void:
 
 
 # reroll回数初期化
-func _reset_reroll_count(area_boss_defeat_count: int = 0) -> void:
-	if area_boss_defeat_count <= 0:
-		_remaining_reroll_count = 0
-		_reroll_unlocked = false
-		return
-	_reroll_unlocked = true
-	if area_boss_defeat_count == 1:
-		_remaining_reroll_count = FIRST_BOSS_REROLL_COUNT
-	elif area_boss_defeat_count == 2:
-		_remaining_reroll_count = SECOND_BOSS_REROLL_COUNT
-	else:
-		_remaining_reroll_count = THIRD_BOSS_REROLL_COUNT
+func _reset_reroll_count() -> void:
+	_set_reroll_count(0)
+
+
+# reroll回数反映
+func _set_reroll_count(count: int) -> void:
+	_remaining_reroll_count = maxi(0, count)
+	_reroll_unlocked = _remaining_reroll_count > 0
 
 
 # reroll表示更新

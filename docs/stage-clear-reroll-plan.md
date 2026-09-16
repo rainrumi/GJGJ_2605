@@ -11,8 +11,8 @@
 
 - `RunState.strengthened_enemy_defeat_counts` は `stage_id:stage_area` ごとにボス撃破を保持し、戦闘勝利時に更新される。
 - `Main` はこの更新後に `StageClear.setup_clear_result()` を呼ぶ。
-- `RunState` にエリア別のボス撃破回数を合算する API を追加し、`Main` がその値を `StageClear` へ渡す。
-- `StageClear` が画面ごとの残回数を保持して消費し、`StageClearUi` は既存の `RerollButton` の可視・無効状態と文言だけを表示する。
+- `RunState` が日付変更直前にエリア別ボス撃破回数を 1 / 2 / 5 回のデータへ変換し、`Main` がそのデータを `StageClear` へ渡す。
+- `StageClear` は渡されたリロール可能回数を画面ごとの状態へ反映して消費し、`StageClearUi` は既存の `RerollButton` の可視・無効状態と文言だけを表示する。
 - 既存のデバッグ用無制限リロールを残し、通常の `RerollButton` は同じ候補再抽選処理を回数制限付きで呼び出す。
 
 ## 実装と検証

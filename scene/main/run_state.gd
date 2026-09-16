@@ -9,6 +9,9 @@ const MAX_HUWAHUWA_SCHOOL_STRENGTHENED_ENEMY_INDEX := 5
 const STAGE_NOVEL_UNLOCK_DEFEAT_INTERVAL := 3
 const MAX_STAGE_NOVEL_INDEX := 3
 const BATTLE_START_MINUTES := 22 * 60
+const FIRST_BOSS_REROLL_COUNT := 1
+const SECOND_BOSS_REROLL_COUNT := 2
+const THIRD_BOSS_REROLL_COUNT := 5
 
 enum LaraAreaNovelState {
 	NOT_VISITED,
@@ -47,6 +50,7 @@ var normal_enemy_preset_indices := {}
 var strengthened_enemy_preset_indices := {}
 var normal_enemy_defeat_counts := {}
 var strengthened_enemy_defeat_counts := {}
+var area_reroll_counts: Dictionary[int, int] = {}
 var played_stage_novel_indices := {}
 var is_lara_unlocked := false
 var is_continuous_play_unlocked := false
@@ -83,6 +87,7 @@ func reset() -> void:
 	strengthened_enemy_preset_indices.clear()
 	normal_enemy_defeat_counts.clear()
 	strengthened_enemy_defeat_counts.clear()
+	area_reroll_counts.clear()
 	played_stage_novel_indices.clear()
 	is_lara_unlocked = false
 	is_continuous_play_unlocked = false
@@ -176,6 +181,34 @@ func get_area_boss_defeat_count(area: StageInfo.StageArea) -> int:
 		if key.get_slice(":", 1).to_int() == area:
 			count += int(strengthened_enemy_defeat_counts[key])
 	return count
+
+
+# エリア別リロール回数更新（日付変更直前）
+func update_area_reroll_counts_before_day_change() -> void:
+	var areas: Array[int] = []
+	for key: String in strengthened_enemy_defeat_counts:
+		var area := key.get_slice(":", 1).to_int()
+		if not areas.has(area):
+			areas.append(area)
+	for area in areas:
+		area_reroll_counts[area] = _get_reroll_count_for_boss_defeats(
+			get_area_boss_defeat_count(area as StageInfo.StageArea)
+		)
+
+
+# エリア別リロール回数取得
+func get_area_reroll_count(area: StageInfo.StageArea) -> int:
+	return int(area_reroll_counts.get(area, 0))
+
+
+func _get_reroll_count_for_boss_defeats(boss_defeat_count: int) -> int:
+	if boss_defeat_count <= 0:
+		return 0
+	if boss_defeat_count == 1:
+		return FIRST_BOSS_REROLL_COUNT
+	if boss_defeat_count == 2:
+		return SECOND_BOSS_REROLL_COUNT
+	return THIRD_BOSS_REROLL_COUNT
 
 
 # 戦闘ステージ選択

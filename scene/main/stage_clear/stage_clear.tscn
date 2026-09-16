@@ -166,10 +166,10 @@ text = "リトライ"
 [node name="OwnedSeedOpenButton" type="TextureButton" parent="UI" unique_id=990684587]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
-offset_left = 247.0
-offset_top = 305.0
-offset_right = 373.0
-offset_bottom = 329.0
+offset_left = 379.0
+offset_top = 333.0
+offset_right = 505.0
+offset_bottom = 357.0
 focus_mode = 0
 texture_normal = ExtResource("24_owned_seed_open_texture")
 script = ExtResource("25_hover_scale")
@@ -179,19 +179,18 @@ visible = false
 layout_mode = 0
 
 [node name="RerollButton" parent="UI" unique_id=1178344794 instance=ExtResource("16_1dhno")]
-visible = false
 layout_mode = 0
-offset_left = 250.0
-offset_top = 331.0
-offset_right = 370.0
-offset_bottom = 357.0
+offset_left = 249.0
+offset_top = 305.0
+offset_right = 369.0
+offset_bottom = 331.0
 text = "リロール"
 
 [node name="AbandonButton" parent="UI" unique_id=1850666034 instance=ExtResource("16_abandon_button")]
 layout_mode = 0
-offset_left = 385.0
+offset_left = 382.0
 offset_top = 305.0
-offset_right = 505.0
+offset_right = 502.0
 offset_bottom = 331.0
 
 [node name="MoreSelect2" type="VBoxContainer" parent="UI" unique_id=2119916994]
