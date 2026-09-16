@@ -403,6 +403,17 @@ func apply_direct_Acided_seed_effects(
 
 
 # collect消化済み種skills処理
+func collect_Acided_seed_blocks(Acided_enemies: Array[Enemy]) -> Array[Enemy]:
+	var seed_blocks: Array[Enemy] = []
+	for enemy in Acided_enemies:
+		if enemy == null or not enemy.has_seed():
+			continue
+		if _is_direct_controller_effect(enemy.get_seed()):
+			continue
+		seed_blocks.append(enemy)
+	return seed_blocks
+
+
 func collect_Acided_seeds(Acided_enemies: Array[Enemy]) -> Array[SeedInfo]:
 	# skills
 	var skills: Array[SeedInfo] = []

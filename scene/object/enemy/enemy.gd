@@ -62,7 +62,14 @@ var Aciding: bool:
 	set(value): data.stomach_status.set_digesting(value)
 var Acided: bool:
 	get: return data.stomach_status.is_digested
-	set(value): data.stomach_status.set_digested(value)
+	set(value):
+		if value and not data.stomach_status.is_digested:
+			_effect_multiplier_at_digestion = data.defense_status.effect_multiplier
+			_chance_multiplier_at_digestion = data.defense_status.chance_multiplier
+		if not value:
+			_effect_multiplier_at_digestion = 1.0
+			_chance_multiplier_at_digestion = 1.0
+		data.stomach_status.set_digested(value)
 var gravity_locked: bool:
 	get: return data.stomach_status.gravity_locked
 	set(value): data.stomach_status.gravity_locked = value
@@ -78,6 +85,8 @@ var _stomach_shape_override: Array[Vector2i] = []
 var _size_override := 0
 var _texture_override: Texture2D
 var _presenter := EnemyPresenter.new() # Model表示仲介
+var _effect_multiplier_at_digestion := 1.0
+var _chance_multiplier_at_digestion := 1.0
 
 
 # 表示準備
@@ -322,6 +331,16 @@ func set_Acided(value: bool) -> void:
 	Acided = value
 	if Acided:
 		Aciding = false
+
+
+# 消化時点の種ブロック効果量倍率取得
+func get_seed_effect_multiplier() -> float:
+	return _effect_multiplier_at_digestion if Acided else data.defense_status.effect_multiplier
+
+
+# 消化時点の種ブロック確率倍率取得
+func get_seed_chance_multiplier() -> float:
+	return _chance_multiplier_at_digestion if Acided else data.defense_status.chance_multiplier
 # 胃袋セル設定
 func set_stomach_cell(cell: Vector2i) -> void:
 	stomach_cell = cell

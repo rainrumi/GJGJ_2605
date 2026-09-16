@@ -25,8 +25,8 @@ func get_adjacent_digestion_heal_rate() -> float:
 func adjusted_for_seed_block(seed_block: Enemy) -> SeedEffect:
 	if seed_block == null:
 		return self
-	var amount_multiplier := seed_block.data.defense_status.effect_multiplier
-	var chance_multiplier := seed_block.data.defense_status.chance_multiplier
+	var amount_multiplier := seed_block.get_seed_effect_multiplier()
+	var chance_multiplier := seed_block.get_seed_chance_multiplier()
 	var fields := EffectFieldValues.numeric_fields(self)
 	var adjusted: SeedEffect = self
 	for field in effect_amount_fields:

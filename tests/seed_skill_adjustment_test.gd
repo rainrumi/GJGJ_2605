@@ -35,6 +35,7 @@ func _enemy(cell: Vector2i, seed: SeedInfo = null) -> Enemy:
 
 func _run() -> void:
 	_test_rates_and_growth()
+	_test_digested_seed_block_effect_adjustment()
 	_test_day_end()
 	_test_block_effects()
 	await _test_game()
@@ -74,6 +75,22 @@ func _test_rates_and_growth() -> void:
 	resolver.setup([])
 	resolver.add_Acided_seed_effect(_seed(123), 1560)
 	_expect(resolver.get_interval_minutes_delta(1600) == 120, "100123 late sub +120 minutes")
+
+
+func _test_digested_seed_block_effect_adjustment() -> void:
+	var resolver := SeedEffectResolver.new()
+	var lotus := _seed(112).duplicate(true) as SeedInfo
+	var sub_effect := lotus.sub_skill.effects[0] as SeedEffectOnFinishAcidSeedChangeLine
+	sub_effect.effect_amount_configured = true
+	sub_effect.effect_amount_fields = PackedStringArray(["line_delta"])
+	var stomach := StomachBoard.new()
+	stomach.set_acid_line_rows(1)
+	var seed_block := _enemy(Vector2i.ZERO, lotus)
+	seed_block.data.defense_status.effect_multiplier = 3.0
+	resolver.add_Acided_seed_effect(lotus, 0, stomach, seed_block)
+	_expect(stomach.get_acid_line_rows() == 7, "100112の消化時line_deltaに種ブロックの効果量倍率を適用する")
+	seed_block.free()
+	stomach.free()
 
 
 func _test_day_end() -> void:

@@ -174,7 +174,12 @@ func get_persistent_stomach_rows_bonus() -> int:
 
 
 # 消化済み種effect追加
-func add_Acided_seed_effect(seed: SeedInfo, minutes := 0, stomach: StomachBoard = null) -> bool:
+func add_Acided_seed_effect(
+	seed: SeedInfo,
+	minutes := 0,
+	stomach: StomachBoard = null,
+	seed_block: Enemy = null
+) -> bool:
 	if seed == null:
 		return false
 	var handled := false # 処理済み
@@ -183,7 +188,8 @@ func add_Acided_seed_effect(seed: SeedInfo, minutes := 0, stomach: StomachBoard 
 		if not effect.non_stacking_key.is_empty() \
 			and _activated_non_stacking_sub_effects.has(effect.non_stacking_key):
 			continue
-		var active_effect := effect.duplicate(true) as SeedEffect if effect.persists_after_seed_digested() else effect
+		var adjusted_effect := effect.adjusted_for_seed_block(seed_block) if seed_block != null else effect
+		var active_effect := adjusted_effect.duplicate(true) as SeedEffect if adjusted_effect.persists_after_seed_digested() else adjusted_effect
 		if active_effect.on_finish_acid_seed(_state, context):
 			handled = true
 			if not active_effect.non_stacking_key.is_empty():

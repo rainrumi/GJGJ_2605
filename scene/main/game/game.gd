@@ -1217,8 +1217,9 @@ func _apply_Acided_seed_effects(Acided_enemies: Array[Enemy]) -> void:
 	if hp > previous_hp:
 		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp - previous_hp, enemies, stomach))
 	var previous_stomach_size := Vector2i(stomach.columns, stomach.rows)
-	for seed in seed_controller.collect_Acided_seeds(Acided_enemies):
-		seed_effects.add_Acided_seed_effect(seed, minutes, stomach)
+	for seed_block in seed_controller.collect_Acided_seed_blocks(Acided_enemies):
+		var seed := seed_block.get_seed()
+		seed_effects.add_Acided_seed_effect(seed, minutes, stomach, seed_block)
 		if seed.skill_id == 100120:
 			_refresh_effective_max_hp_and_recover_increase()
 	_shift_clock(-seed_effects.consume_clock_rewind_minutes())
