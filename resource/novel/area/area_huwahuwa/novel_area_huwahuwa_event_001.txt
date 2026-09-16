@@ -1,3 +1,6 @@
 @bg "res://resource/image/texture/still/tex_still_area_huwa_100.png"
-恒常_ふわふわ学校_現在%d回目
+@name "試験官"
+ふわふわ学校の試験会場にようこそ。
+@lcm
+悪夢を6時までに消化できれば合格になります。
 @lcm
