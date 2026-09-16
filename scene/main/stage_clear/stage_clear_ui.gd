@@ -8,6 +8,7 @@ signal abandon_pressed
 signal abandon_hovered
 signal abandon_unhovered
 signal reroll_pressed
+signal debug_reroll_pressed
 signal debug_pressed
 signal debug_retry_pressed
 signal seed_equip_requested(seed: SeedInfo)
@@ -36,6 +37,8 @@ const MORE_SELECT_HOLD_DURATION := 0.7
 @onready var guide_text: Label = $GuideText
 @onready var _default_guide_text := guide_text.text
 # 再抽選ボタン
+@onready var reroll_button: Button = $RerollButton
+# debug再抽選ボタン
 @onready var debug_reroll_button: Button = $DebugRerollButton
 # debugボタン
 @onready var debug_button: Button = $DebugButton
@@ -59,6 +62,8 @@ const MORE_SELECT_HOLD_DURATION := 0.7
 
 var _debug_numbers_visible := false
 var _seed_choice_active := false
+var _remaining_reroll_count := 0
+var _reroll_unlocked := false
 var _head_drag_source: SeedButton
 
 
@@ -78,6 +83,7 @@ func _ready() -> void:
 	_connect_child_signals()
 	_apply_debug_button_state()
 	_update_reroll_button_state()
+	_update_debug_reroll_button_state()
 
 
 # 選択表示
@@ -217,6 +223,14 @@ func set_debug_state(is_visible: bool, is_seed_choice_active: bool) -> void:
 	owned_seed_panel.set_debug_numbers_visible(_debug_numbers_visible)
 	_apply_debug_button_state()
 	_update_reroll_button_state()
+	_update_debug_reroll_button_state()
+
+
+# reroll状態設定
+func set_reroll_state(remaining_count: int, is_unlocked: bool) -> void:
+	_remaining_reroll_count = maxi(0, remaining_count)
+	_reroll_unlocked = is_unlocked
+	_update_reroll_button_state()
 
 
 # 選択数取得
@@ -232,7 +246,8 @@ func _connect_child_signals() -> void:
 	abandon_button.pressed.connect(_on_abandon_button_pressed)
 	abandon_button.mouse_entered.connect(_on_abandon_button_mouse_entered)
 	abandon_button.mouse_exited.connect(_on_abandon_button_mouse_exited)
-	debug_reroll_button.pressed.connect(_on_reroll_button_pressed)
+	reroll_button.pressed.connect(_on_reroll_button_pressed)
+	debug_reroll_button.pressed.connect(_on_debug_reroll_button_pressed)
 	debug_button.pressed.connect(_on_debug_button_pressed)
 	debug_retry_button.pressed.connect(_on_debug_retry_button_pressed)
 	acid_damage_view.tooltip_requested.connect(_on_status_tooltip_requested)
@@ -362,6 +377,13 @@ func _apply_debug_button_state() -> void:
 
 # reroll状態更新
 func _update_reroll_button_state() -> void:
+	reroll_button.text = "リロール(残り%d回)" % _remaining_reroll_count
+	reroll_button.visible = _reroll_unlocked
+	reroll_button.disabled = not _reroll_unlocked or _remaining_reroll_count <= 0 or not _seed_choice_active
+
+
+# debug reroll状態更新
+func _update_debug_reroll_button_state() -> void:
 	debug_reroll_button.visible = _debug_numbers_visible
 	debug_reroll_button.disabled = not _debug_numbers_visible or not _seed_choice_active
 
@@ -413,6 +435,12 @@ func _on_abandon_button_mouse_exited() -> void:
 # reroll通知
 func _on_reroll_button_pressed() -> void:
 	reroll_pressed.emit()
+
+
+# debug reroll通知
+func _on_debug_reroll_button_pressed() -> void:
+	if _debug_numbers_visible and _seed_choice_active:
+		debug_reroll_pressed.emit()
 
 
 # debug通知

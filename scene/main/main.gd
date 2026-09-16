@@ -229,12 +229,16 @@ func show_stage_clear() -> void:
 			run_state.is_continuous_play_unlocked and not _is_high_difficulty_day(run_state.current_day)
 		)
 	if stage_clear.has_method("setup_clear_result") and game.has_method("get_current_hp") and game.has_method("get_clear_minutes"):
+		var area_boss_defeat_count := 0
+		if run_state.selected_stage != null:
+			area_boss_defeat_count = run_state.get_area_boss_defeat_count(run_state.selected_stage.stage_area)
 		stage_clear.setup_clear_result(
 			game.get_current_hp(),
 			game.get_clear_minutes(),
 			run_state.selected_stage,
 			run_state.stomach_columns,
-			run_state.stomach_rows
+			run_state.stomach_rows,
+			area_boss_defeat_count
 		)
 	elif stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
 		stage_clear.setup_hp(game.get_current_hp())

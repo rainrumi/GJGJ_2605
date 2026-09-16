@@ -166,9 +166,14 @@ func get_player_digestion_count() -> int:
 
 
 func get_lunova_boss_defeat_count() -> int:
+	return get_area_boss_defeat_count(StageInfo.StageArea.LUNOVA_OLD_CITY)
+
+
+# エリア別ボス撃破数取得
+func get_area_boss_defeat_count(area: StageInfo.StageArea) -> int:
 	var count := 0
 	for key: String in strengthened_enemy_defeat_counts:
-		if key.get_slice(":", 1).to_int() == StageInfo.StageArea.LUNOVA_OLD_CITY:
+		if key.get_slice(":", 1).to_int() == area:
 			count += int(strengthened_enemy_defeat_counts[key])
 	return count
 

@@ -11,6 +11,9 @@ const REST_HP_RATE := 0.1
 const BATTLE_START_MINUTES := 22 * 60
 const MAX_EQUIPPED_SEEDS := 6
 const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
+const FIRST_BOSS_REROLL_COUNT := 1
+const SECOND_BOSS_REROLL_COUNT := 2
+const THIRD_BOSS_REROLL_COUNT := 5
 
 @export var max_flowers := MAX_EQUIPPED_SEEDS
 @export var initial_flower: SeedInfo
@@ -33,6 +36,8 @@ var _selected_rewerd_effect_applied := false
 var _remaining_extra_seed_choices := 0
 var _extra_seed_choice_granted := false
 var _seed_choice_active := false
+var _remaining_reroll_count := 0
+var _reroll_unlocked := false
 var _base_seed_options: Array[SeedInfo] = []
 var _current_clear_stage: StageInfo
 var _stomach_columns := RunState.DEFAULT_STOMACH_COLUMNS
@@ -67,9 +72,11 @@ func setup_clear_result(
 	cleared_minutes: int,
 	cleared_stage: StageInfo = null,
 	stomach_columns: int = RunState.DEFAULT_STOMACH_COLUMNS,
-	stomach_rows: int = RunState.DEFAULT_STOMACH_ROWS
+	stomach_rows: int = RunState.DEFAULT_STOMACH_ROWS,
+	area_boss_defeat_count: int = 0
 ) -> void:
 	_set_clear_result_state(value, cleared_minutes)
+	_reset_reroll_count(area_boss_defeat_count)
 	_current_clear_stage = cleared_stage
 	_stomach_columns = maxi(1, stomach_columns)
 	_stomach_rows = maxi(1, stomach_rows)
@@ -172,6 +179,7 @@ func _connect_ui_signals() -> void:
 	ui.abandon_hovered.connect(_on_abandon_button_mouse_entered)
 	ui.abandon_unhovered.connect(_on_abandon_button_mouse_exited)
 	ui.reroll_pressed.connect(_on_reroll_button_pressed)
+	ui.debug_reroll_pressed.connect(_on_debug_reroll_button_pressed)
 	ui.debug_pressed.connect(_on_debug_button_pressed)
 	ui.debug_retry_pressed.connect(_on_debug_retry_pressed)
 	ui.seed_equip_requested.connect(_on_seed_equip_requested)
@@ -195,6 +203,7 @@ func _reset_clear_state() -> void:
 	_clear_recovery_applied = false
 	_selected_rewerd_effect_applied = false
 	_reset_extra_seed_choices()
+	_reset_reroll_count()
 
 
 # HP状態設定
@@ -203,6 +212,7 @@ func _set_clear_hp_state(value: int) -> void:
 	_clear_recovery_applied = false
 	_selected_rewerd_effect_applied = false
 	_reset_extra_seed_choices()
+	_reset_reroll_count()
 
 
 # 結果状態設定
@@ -212,6 +222,7 @@ func _set_clear_result_state(value: int, cleared_minutes: int) -> void:
 	_clear_recovery_applied = false
 	_selected_rewerd_effect_applied = false
 	_reset_extra_seed_choices()
+	_reset_reroll_count()
 
 
 # base種保持
@@ -274,17 +285,29 @@ func _set_debug_numbers_visible(is_visible: bool) -> void:
 
 # reroll押下
 func _on_reroll_button_pressed() -> void:
+	if not _reroll_unlocked or _remaining_reroll_count <= 0 or not _seed_choice_active:
+		return
+	if not _reroll_seed_options():
+		return
+	_remaining_reroll_count -= 1
+	_refresh_after_reward_state_changed()
+	_update_reroll_state()
+
+
+# debug reroll押下
+func _on_debug_reroll_button_pressed() -> void:
 	if not debug_numbers_visible or not _seed_choice_active:
 		return
-	_reroll_seed_options()
+	if not _reroll_seed_options():
+		return
 	_refresh_after_reward_state_changed()
 
 
 # 種reroll
-func _reroll_seed_options() -> void:
+func _reroll_seed_options() -> bool:
 	var skills := _get_reroll_seed_candidates()
 	if skills.is_empty():
-		return
+		return false
 	skills.shuffle()
 	var rerolled_options: Array[SeedInfo] = []
 	for i in range(ui.get_seed_choice_count()):
@@ -293,6 +316,7 @@ func _reroll_seed_options() -> void:
 			continue
 		rerolled_options.append(skills[i % skills.size()])
 	seed_options = rerolled_options
+	return true
 
 
 # reroll候補
@@ -306,6 +330,7 @@ func _show_select_mode() -> void:
 	ui.show_select_mode(_get_abandon_extra_recovery_rate())
 	_refresh_reward_ui()
 	ui.set_debug_state(debug_numbers_visible, _seed_choice_active)
+	_update_reroll_state()
 
 
 # 種押下
@@ -342,6 +367,7 @@ func _show_finished_mode(message: String) -> void:
 	_seed_choice_active = false
 	ui.show_finished_mode(message)
 	ui.set_debug_state(debug_numbers_visible, _seed_choice_active)
+	_update_reroll_state()
 	_update_hp_heal_plan()
 
 
@@ -430,6 +456,27 @@ func _get_all_owned_seeds() -> Array[SeedInfo]:
 func _reset_extra_seed_choices() -> void:
 	_remaining_extra_seed_choices = 0
 	_extra_seed_choice_granted = false
+
+
+# reroll回数初期化
+func _reset_reroll_count(area_boss_defeat_count: int = 0) -> void:
+	if area_boss_defeat_count <= 0:
+		_remaining_reroll_count = 0
+		_reroll_unlocked = false
+		return
+	_reroll_unlocked = true
+	if area_boss_defeat_count == 1:
+		_remaining_reroll_count = FIRST_BOSS_REROLL_COUNT
+	elif area_boss_defeat_count == 2:
+		_remaining_reroll_count = SECOND_BOSS_REROLL_COUNT
+	else:
+		_remaining_reroll_count = THIRD_BOSS_REROLL_COUNT
+
+
+# reroll表示更新
+func _update_reroll_state() -> void:
+	if is_node_ready():
+		ui.set_reroll_state(_remaining_reroll_count, _reroll_unlocked)
 
 
 # 回復適用
