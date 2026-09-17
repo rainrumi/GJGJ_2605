@@ -23,19 +23,19 @@
 [ext_resource type="Texture2D" uid="uid://b6e4f8ur53n17" path="res://resource/image/ui/icon/select/ui_icon_select_beacon_06.png" id="21_beacon_06"]
 [ext_resource type="Texture2D" uid="uid://n6dm8iyo40gq" path="res://resource/image/ui/icon/select/ui_icon_select_beacon_07.png" id="22_beacon_07"]
 [ext_resource type="Texture2D" uid="uid://c8wj77g7r27xu" path="res://resource/image/ui/icon/location/ui_icon_location_outline_01.png" id="23_location_outline_01"]
-[ext_resource type="Texture2D" uid="uid://bc0hbq127wgw7" path="res://resource/image/ui/icon/location/ui_icon_location_01.png" id="24_location_01"]
+[ext_resource type="Texture2D" uid="uid://kt8usuvfbtgr" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_01.png" id="24_rara_beacon_01"]
 [ext_resource type="Texture2D" uid="uid://dix5nm5twocjy" path="res://resource/image/ui/icon/location/ui_icon_location_outline_02.png" id="25_location_outline_02"]
 [ext_resource type="Texture2D" uid="uid://2juwbhpysedi" path="res://resource/image/ui/icon/location/ui_icon_location_outline_03.png" id="26_location_outline_03"]
 [ext_resource type="Texture2D" uid="uid://b1lnm3pttmim6" path="res://resource/image/ui/icon/location/ui_icon_location_outline_04.png" id="27_location_outline_04"]
 [ext_resource type="Texture2D" uid="uid://b47kn8wq665kl" path="res://resource/image/ui/icon/location/ui_icon_location_outline_05.png" id="28_location_outline_05"]
 [ext_resource type="Texture2D" uid="uid://bm5o4ft31oadj" path="res://resource/image/ui/icon/location/ui_icon_location_outline_06.png" id="29_location_outline_06"]
 [ext_resource type="Texture2D" uid="uid://c2ymhjnbnn01g" path="res://resource/image/ui/icon/location/ui_icon_location_outline_07.png" id="30_location_outline_07"]
-[ext_resource type="Texture2D" uid="uid://brqcxy6m2vf7h" path="res://resource/image/ui/icon/location/ui_icon_location_02.png" id="31_location_02"]
-[ext_resource type="Texture2D" uid="uid://7wntfm800xnt" path="res://resource/image/ui/icon/location/ui_icon_location_03.png" id="32_location_03"]
-[ext_resource type="Texture2D" uid="uid://uiyjowad5tit" path="res://resource/image/ui/icon/location/ui_icon_location_04.png" id="33_location_04"]
-[ext_resource type="Texture2D" uid="uid://b3wgnduijbf4x" path="res://resource/image/ui/icon/location/ui_icon_location_05.png" id="34_location_05"]
-[ext_resource type="Texture2D" uid="uid://b4r4q0rq841dw" path="res://resource/image/ui/icon/location/ui_icon_location_06.png" id="35_location_06"]
-[ext_resource type="Texture2D" uid="uid://br16sseuu25m3" path="res://resource/image/ui/icon/location/ui_icon_location_07.png" id="36_location_07"]
+[ext_resource type="Texture2D" uid="uid://u4446otoym1c" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_02.png" id="31_rara_beacon_02"]
+[ext_resource type="Texture2D" uid="uid://dy8qwsxups4lc" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_03.png" id="32_rara_beacon_03"]
+[ext_resource type="Texture2D" uid="uid://bl5oc8cvxnydf" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_04.png" id="33_rara_beacon_04"]
+[ext_resource type="Texture2D" uid="uid://bqr021hrjhst5" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_05.png" id="34_rara_beacon_05"]
+[ext_resource type="Texture2D" uid="uid://dltpncjqk8bjr" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_06.png" id="35_rara_beacon_06"]
+[ext_resource type="Texture2D" uid="uid://wvr76hr2vlgx" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_07.png" id="36_rara_beacon_07"]
 [ext_resource type="Script" uid="uid://wm4hijfwmw0a" path="res://scene/main/stage_select/map/stage_select_map_view.gd" id="37_stage_select_map_view"]
 [ext_resource type="Script" uid="uid://d7ydvghfpo18" path="res://scene/main/stage_select/choice/stage_choice_list.gd" id="38_stage_choice_list"]
 [ext_resource type="Script" uid="uid://d0tgljokt842x" path="res://scene/main/stage_select/debug/stage_select_debug_button.gd" id="40_debug_button"]
@@ -75,14 +75,14 @@ texture = ExtResource("16_beacon_01")
 visible = false
 script = ExtResource("42_location_marker")
 outline_frames = Array[Texture2D]([ExtResource("23_location_outline_01"), ExtResource("25_location_outline_02"), ExtResource("26_location_outline_03"), ExtResource("27_location_outline_04"), ExtResource("28_location_outline_05"), ExtResource("29_location_outline_06"), ExtResource("30_location_outline_07")])
-fill_frames = Array[Texture2D]([ExtResource("24_location_01"), ExtResource("31_location_02"), ExtResource("32_location_03"), ExtResource("33_location_04"), ExtResource("34_location_05"), ExtResource("35_location_06"), ExtResource("36_location_07")])
+fill_frames = Array[Texture2D]([ExtResource("24_rara_beacon_01"), ExtResource("31_rara_beacon_02"), ExtResource("32_rara_beacon_03"), ExtResource("33_rara_beacon_04"), ExtResource("34_rara_beacon_05"), ExtResource("35_rara_beacon_06"), ExtResource("36_rara_beacon_07")])
 
 [node name="Outline" type="Sprite2D" parent="CharacterArea/Map/LocationMarker" unique_id=163030934]
 texture = ExtResource("23_location_outline_01")
 
 [node name="Fill" type="Sprite2D" parent="CharacterArea/Map/LocationMarker" unique_id=1417365329]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
-texture = ExtResource("24_location_01")
+texture = ExtResource("24_rara_beacon_01")
 
 [node name="UI" type="Control" parent="." unique_id=299033329]
 layout_mode = 3
