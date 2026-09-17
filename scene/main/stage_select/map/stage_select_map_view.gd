@@ -16,7 +16,7 @@ func _ready() -> void:
 func setup_view() -> void:
 	var background_color := _get_background_color()
 	beacon.setup_marker(background_color)
-	location_marker.setup_marker(background_color)
+	location_marker.setup_marker()
 
 
 # ラーラ現在地設定

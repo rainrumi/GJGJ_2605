@@ -44,10 +44,11 @@ func _run() -> void:
 			other_choice = choice
 
 	_expect(location_marker.visible, "ラーラ解放後はlocationアイコンを表示する")
+	_expect(location_marker.get_node_or_null("Outline") == null, "ラーラ位置のアウトラインを表示しない")
 	_expect(location_marker.position.is_equal_approx(current_stage.map_position), "locationアイコンをラーラの現在地へ配置する")
-	var initial_texture := location_marker.outline.texture
+	var initial_texture := location_marker.fill.texture
 	location_marker.call("_process_frame", 0.11)
-	_expect(location_marker.outline.texture != initial_texture, "locationアイコンを常時フレームアニメーションする")
+	_expect(location_marker.fill.texture != initial_texture, "locationアイコンを常時フレームアニメーションする")
 	_expect(current_choice != null, "現在地の選択肢に現在地表記を付ける")
 	if current_choice != null:
 		_expect(
