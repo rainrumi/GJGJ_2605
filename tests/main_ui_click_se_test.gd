@@ -40,8 +40,8 @@ func _run() -> void:
 		"A Web mouse press restarts BGM even when the player reports that it is already playing"
 	)
 	_expect(
-		ProjectSettings.get_setting("audio/general/default_playback_type.web", -1) == 1,
-		"Web audio uses the browser sample playback path"
+		ProjectSettings.get_setting("audio/general/default_playback_type.web", -1) == 0,
+		"Web audio uses stream playback so custom BGM/SE buses remain audible"
 	)
 	main.set("_web_audio_started", false)
 	bgm.stop()
