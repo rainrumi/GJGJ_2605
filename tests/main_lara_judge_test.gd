@@ -29,7 +29,7 @@ func _run() -> void:
 		_expect(main.stage_clear.visible and main._lara_judge_pending, "ボス勝利直後は通常報酬を先に表示する")
 		main._on_stage_clear_selection_finished(0.0)
 		await create_timer(1.1).timeout
-		_expect(novel._active_novel_text.script_path.ends_with("judge_setup_001"), "報酬選択後に勝負setupを表示")
+		_expect(novel._active_novel_text.script_path.ends_with("judge_setup_001.txt"), "報酬選択後に勝負setupを表示")
 		main._on_opening_novel_finished()
 		var outcome := "win" if difference > 0 else ("lose" if difference < 0 else "draw")
 		_expect(novel._active_novel_text.script_path.contains("judge_%s_" % outcome), "消化数比較に応じた結果を表示")

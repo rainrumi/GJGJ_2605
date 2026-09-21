@@ -39,12 +39,15 @@ func _collect_scripts(directory_path: String, scripts: Dictionary[String, String
 		var child_path := directory_path.path_join(entry)
 		if directory.current_is_dir():
 			_collect_scripts(child_path, scripts)
-		elif entry.get_extension() == "txt" or entry.get_extension().is_empty():
+		elif entry.get_extension() == "txt":
 			var source_text := FileAccess.get_file_as_string(child_path)
 			if source_text.is_empty():
 				_failures += 1
 				push_error("Novel source is empty or unreadable: %s" % child_path)
 			else:
 				scripts[child_path] = source_text.replace("\r\n", "\n").replace("\r", "\n")
+		elif entry.get_extension().is_empty():
+			_failures += 1
+			push_error("Novel scenario must use the .txt extension: %s" % child_path)
 		entry = directory.get_next()
 	directory.list_dir_end()

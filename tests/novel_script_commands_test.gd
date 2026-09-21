@@ -108,8 +108,18 @@ func _verify_scenario_resources(path: String) -> int:
 		if directory.current_is_dir():
 			scenario_count += _verify_scenario_resources(child_path)
 		elif entry.ends_with(".tres"):
+			var resource := load(child_path)
+			if resource is NovelScriptCatalog:
+				var catalog := resource as NovelScriptCatalog
+				for script_path in catalog.scripts:
+					_expect(
+						script_path.ends_with(".txt"),
+						"Catalog scenario uses the .txt extension: %s" % script_path
+					)
+				entry = directory.get_next()
+				continue
 			scenario_count += 1
-			var scenario := load(child_path) as NovelTextInfo
+			var scenario := resource as NovelTextInfo
 			_expect(scenario != null, "Scenario resource loads: %s" % child_path)
 			if scenario != null:
 				_expect(

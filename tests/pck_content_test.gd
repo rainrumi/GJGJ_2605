@@ -1,7 +1,7 @@
 extends SceneTree
 
 const NOVEL_PATH := "res://resource/novel/novel_opening.txt"
-const DYNAMIC_NOVEL_PATH := "res://resource/novel/event/judge/novel_event_rara_judge_setup_001"
+const DYNAMIC_NOVEL_PATH := "res://resource/novel/event/judge/novel_event_rara_judge_setup_001.txt"
 const AUDIO_PATHS: Array[String] = [
 	"res://resource/sound/bgm/Night_Dance.mp3",
 	"res://resource/sound/se/se_attack.mp3",
@@ -25,6 +25,13 @@ func _run() -> void:
 	_expect(catalog != null, "Bundled novel script catalog loads")
 	if catalog != null:
 		_expect(catalog.scripts.size() >= 91, "All authored novel scripts are bundled")
+		for script_path in catalog.scripts:
+			_expect(script_path.ends_with(".txt"), "Bundled scenario uses .txt: %s" % script_path)
+			_expect(FileAccess.file_exists(script_path), "Scenario txt is included: %s" % script_path)
+			_expect(
+				not FileAccess.get_file_as_string(script_path).is_empty(),
+				"Scenario txt can be read: %s" % script_path,
+			)
 		_expect(not catalog.get_script_text(NOVEL_PATH).is_empty(), "Opening novel is bundled as a Resource")
 		_expect(
 			not catalog.get_script_text(DYNAMIC_NOVEL_PATH).is_empty(),

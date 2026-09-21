@@ -839,7 +839,7 @@ by 試験官
 @l
 Thank You for Playing!!
 @lcm",
-"res://resource/novel/event/area/novel_event_rara_corotta_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/area/novel_event_rara_corotta_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 あ、ティーナ。
 @lcm
@@ -896,7 +896,7 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_6000.png\"
 今じゃなくていいから、卒業するまでには、絶対よ？
 @lcm",
-"res://resource/novel/event/area/novel_event_rara_eramia_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/area/novel_event_rara_eramia_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 あら、ティーナ。
 @lcm
@@ -928,7 +928,7 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 心配してるわけじゃないんだから！ ありがたく使いなさいよ！
 @lcm",
-"res://resource/novel/event/area/novel_event_rara_felis_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/area/novel_event_rara_felis_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 あら、奇遇ね。
 @lcm
@@ -972,7 +972,7 @@ Thank You for Playing!!
 フェリス庭区のおみやげよ。
 @lcm
 ",
-"res://resource/novel/event/area/novel_event_rara_gonsal_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/area/novel_event_rara_gonsal_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 また会ったわね。
 @lcm
@@ -1007,7 +1007,7 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 ゴンサル地区で手に入れたの。じゃあね。
 @lcm",
-"res://resource/novel/event/area/novel_event_rara_mirune_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/area/novel_event_rara_mirune_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 ティーナ、調子はどうかしら？ 私は上々よ。
 @lcm
@@ -1043,7 +1043,7 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
 ミルネ街で手に入れたの。じゃあね。
 @lcm",
-"res://resource/novel/event/area/novel_event_rara_nerix_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/area/novel_event_rara_nerix_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 ティーナ、また会ったわね。
 @lcm
@@ -1079,7 +1079,7 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
 じゃあね！ がんばりなさい！
 @lcm",
-"res://resource/novel/event/area/novel_event_rara_zaika_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/area/novel_event_rara_zaika_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 ティーナ、おつかれさま。
 @lcm
@@ -1109,7 +1109,7 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 はい。イイモノをあげる。ありがたく思いなさい！
 @lcm",
-"res://resource/novel/event/common/novel_event_rara_common_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/common/novel_event_rara_common_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 あら。
 @lcm
@@ -1119,14 +1119,14 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
 試験、がんばりなさい！
 @lcm",
-"res://resource/novel/event/common/novel_event_rara_common_002": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+"res://resource/novel/event/common/novel_event_rara_common_002.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 @name \"ラーラ\"
 調子はどう？ ティーナ。
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 お腹壊さないように気をつけなさいよ！
 @lcm",
-"res://resource/novel/event/common/novel_event_rara_common_003": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_4000.png\"
+"res://resource/novel/event/common/novel_event_rara_common_003.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_4000.png\"
 @name \"ラーラ\"
 ふわーあ。
 @lcm
@@ -1139,14 +1139,14 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 はい、イイモノあげるわ。
 @lcm",
-"res://resource/novel/event/common/novel_event_rara_common_004": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+"res://resource/novel/event/common/novel_event_rara_common_004.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 @name \"ラーラ\"
 あら、どれくらい進んだの？
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 私に負けないようにがんばりなさい！
 @lcm",
-"res://resource/novel/event/common/novel_event_rara_common_005": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/common/novel_event_rara_common_005.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 どうも。
 @lcm
@@ -1155,7 +1155,7 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 はい。イイモノをどうぞ。
 @lcm",
-"res://resource/novel/event/common/novel_event_rara_common_006": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+"res://resource/novel/event/common/novel_event_rara_common_006.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 @name \"ラーラ\"
 ティーナ、元気？
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
@@ -1165,26 +1165,26 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 良かったわ。はい。まだ時間はあるわよ！
 @lcm",
-"res://resource/novel/event/common/novel_event_rara_common_007": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/common/novel_event_rara_common_007.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 ティーナ、きちんと寝てる？
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 これあげるから、しっかり悪夢を消化しなさい！
 @lcm",
-"res://resource/novel/event/common/novel_event_rara_common_008": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/common/novel_event_rara_common_008.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 ティーナ、おつかれさま。
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 これでも使ってがんばりなさい！
 @lcm",
-"res://resource/novel/event/false/novel_event_rara_false_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/false/novel_event_rara_false_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 ここの悪夢を消化するの？ 今日はもう何もあげれないけど、頑張りなさい。
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_after": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"",
-"res://resource/novel/event/judge/novel_event_rara_judge_draw_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/judge/novel_event_rara_judge_after.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"",
+"res://resource/novel/event/judge/novel_event_rara_judge_draw_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 あいこね。
 @lcm
@@ -1193,48 +1193,48 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 その調子よ、次は勝てるように頑張りなさい！
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_draw_002": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/judge/novel_event_rara_judge_draw_002.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 同点ね。
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
 同点まで食べたの？ 偉いじゃない！
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_draw_003": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
+"res://resource/novel/event/judge/novel_event_rara_judge_draw_003.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
 @name \"ラーラ\"
 同点じゃない！
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 次もこの調子でがんばりなさい。
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_lose_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/judge/novel_event_rara_judge_lose_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 私の勝ちね。
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 次がんばりなさい！
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_lose_002": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/judge/novel_event_rara_judge_lose_002.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 私の勝ちね。
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 頑張ってほしいけど、無理しない範囲で消化しなさいよ！
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_lose_003": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
+"res://resource/novel/event/judge/novel_event_rara_judge_lose_003.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
 @name \"ラーラ\"
 私の勝ちね！
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 カンタンな場所で沢山悪夢を消化するのもアリよ。がんばりなさい！
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_setup_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/judge/novel_event_rara_judge_setup_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 さて、勝負と行こうじゃないの。
 @lcm
 悪夢の消化数は……
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_win_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/judge/novel_event_rara_judge_win_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 私の負けじゃないの……。
 @lcm
@@ -1244,7 +1244,7 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 これあげるわ。頑張った証よ。
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_win_002": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
+"res://resource/novel/event/judge/novel_event_rara_judge_win_002.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
 @name \"ラーラ\"
 私の負け！？
 @lcm
@@ -1254,7 +1254,7 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 はい。約束の品よ。
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_win_003": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+"res://resource/novel/event/judge/novel_event_rara_judge_win_003.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 私が負けたのね。
 @lcm

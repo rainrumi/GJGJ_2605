@@ -506,7 +506,7 @@ func _start_selected_stage_with_lara() -> void:
 	stage_clear.visible = false
 	active_novel_flow = NovelFlow.LARA_INTERACTION
 	var novel_text := NovelTextInfo.new()
-	novel_text.script_path = "res://resource/novel/event/" + scenario
+	novel_text.script_path = "res://resource/novel/event/" + scenario + ".txt"
 	opening_novel.start_with_text(novel_text)
 
 
@@ -742,7 +742,7 @@ func _show_lara_judge_setup() -> void:
 	stage_clear.visible = false
 	active_novel_flow = NovelFlow.LARA_JUDGE_SETUP
 	var text := NovelTextInfo.new()
-	text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_setup_001"
+	text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_setup_001.txt"
 	opening_novel.start_with_text(text)
 
 
@@ -753,7 +753,7 @@ func _show_lara_judge_result() -> void:
 	elif _lara_judge_result < 0:
 		result_name = "lose"
 	var text := NovelTextInfo.new()
-	text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_%s_%03d" % [result_name, randi_range(1, 3)]
+	text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_%s_%03d.txt" % [result_name, randi_range(1, 3)]
 	active_novel_flow = NovelFlow.LARA_JUDGE_RESULT
 	opening_novel.start_with_text(text)
 
@@ -779,7 +779,7 @@ func _grant_lara_judge_reward() -> String:
 
 func _get_lara_judge_after_text(additional_text: String) -> NovelTextInfo:
 	var source_text := NovelTextInfo.new()
-	source_text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_after"
+	source_text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_after.txt"
 	var after_text := NovelTextInfo.new()
 	after_text.text = source_text.get_script_text() + "\n" + additional_text
 	return after_text

@@ -38,7 +38,7 @@ func _run() -> void:
 	var novel := main.get_node("OpeningNovel") as OpeningNovel
 	_expect(novel.visible and not main.get_node("Game").visible,
 		"ラーラとの交流が戦闘開始を待たせる")
-	_expect(novel._active_novel_text.script_path.ends_with("novel_event_rara_corotta_001"),
+	_expect(novel._active_novel_text.script_path.ends_with("novel_event_rara_corotta_001.txt"),
 		"訪問済みエリアの初回シナリオを優先する")
 	_expect(
 		main.run_state.lara_area_novel_states[StageInfo.StageArea.COROTTA_STREET]
@@ -54,7 +54,7 @@ func _run() -> void:
 	_expect(main.get_node("Game").visible, "報酬表示の後に戦闘を開始する")
 	main.get_node("Game").cancel_battle()
 	main._on_stage_select_stage_selected(destination)
-	_expect(novel._active_novel_text.script_path.ends_with("novel_event_rara_false_001"),
+	_expect(novel._active_novel_text.script_path.ends_with("novel_event_rara_false_001.txt"),
 		"同日2回目はfalseシナリオ")
 	var hp_before: int = main.run_state.current_hp
 	before_seed_count = main.run_state.stored_seeds.size()
@@ -73,7 +73,7 @@ func _run() -> void:
 	main.run_state.select_stage(eramia)
 	main.run_state.select_stage(corotta)
 	main._on_stage_select_stage_selected(destination)
-	_expect(novel._active_novel_text.script_path.ends_with("novel_event_rara_eramia_001"),
+	_expect(novel._active_novel_text.script_path.ends_with("novel_event_rara_eramia_001.txt"),
 		"未再生の訪問済みエリアがあれば直前エリアでなくても専用交流を再生する")
 	main.run_state.current_day = 8
 	var felis := load("res://data/resources/area/area_felis/area_felis.tres") as StageInfo
@@ -86,8 +86,8 @@ func _run() -> void:
 	main.run_state.select_stage(gonsal)
 	main._on_stage_select_stage_selected(destination)
 	var selected_multiple_area := (
-		novel._active_novel_text.script_path.ends_with("novel_event_rara_felis_001")
-		or novel._active_novel_text.script_path.ends_with("novel_event_rara_gonsal_001")
+		novel._active_novel_text.script_path.ends_with("novel_event_rara_felis_001.txt")
+		or novel._active_novel_text.script_path.ends_with("novel_event_rara_gonsal_001.txt")
 	)
 	_expect(selected_multiple_area, "複数の訪問済みエリアから専用交流をランダムに選ぶ")
 	var played_count := 0
