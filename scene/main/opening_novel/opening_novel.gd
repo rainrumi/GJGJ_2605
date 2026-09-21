@@ -31,6 +31,7 @@ var _images: Dictionary[int, TextureRect] = {}
 var _image_source_lines: Dictionary[int, int] = {}
 var _active_novel_text: NovelTextInfo
 var _is_debug_dragging := false
+var _script_load_failed := false
 
 
 # 初期化
@@ -57,6 +58,7 @@ func start_with_text(next_novel_text: NovelTextInfo) -> void:
 func _start_script(next_novel_text: NovelTextInfo, show_default_background: bool) -> void:
 	_script_request_id += 1
 	_active_novel_text = next_novel_text
+	_script_load_failed = false
 	# requestID
 	var request_id := _script_request_id
 	_script_lines.clear()
@@ -78,6 +80,12 @@ func _start_script(next_novel_text: NovelTextInfo, show_default_background: bool
 	text_label.text = ""
 	next_label.visible = false
 	layer = 100
+	if script_text.strip_edges().is_empty():
+		_script_load_failed = true
+		var source_path := next_novel_text.script_path if next_novel_text != null else "<null>"
+		text_label.text = "ノベルデータの読み込みに失敗しました。\n%s" % source_path
+		push_error("OpeningNovel refused to skip an unreadable scenario: %s" % source_path)
+		return
 	_run_script(request_id)
 
 

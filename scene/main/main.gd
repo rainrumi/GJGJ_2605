@@ -88,6 +88,7 @@ var _lara_judge_result := 0
 var _lara_judge_reward_message := ""
 var _seed_reward_fade_tween: Tween
 var _debug_forced_enemy_preset: EnemyPresetInfo
+var _web_audio_started := false
 
 
 # 初期化
@@ -107,7 +108,9 @@ func _ready() -> void:
 		game.connect("seed_depleted", Callable(self, "_on_game_seed_depleted"))
 	if game.has_signal("seed_inventory_changed"):
 		game.connect("seed_inventory_changed", Callable(self, "_on_game_seed_inventory_changed"))
-	_play_bgm()
+	# Web exports cannot start audio before a user gesture.
+	if not OS.has_feature("web"):
+		_play_bgm()
 	show_title()
 
 
@@ -137,6 +140,7 @@ func _on_ui_button_pressed(button: BaseButton) -> void:
 		return
 	if _mouse_drag_state.is_dragging():
 		return
+	_play_bgm()
 	_play_se_click()
 
 
@@ -171,6 +175,24 @@ func _unhandled_input(event: InputEvent) -> void:
 				settings_screen.close()
 			else:
 				_open_settings_screen()
+
+
+func _input(event: InputEvent) -> void:
+	_start_bgm_from_web_input(event, OS.has_feature("web"))
+
+
+func _start_bgm_from_web_input(event: InputEvent, is_web: bool) -> void:
+	if not is_web or _web_audio_started:
+		return
+	var is_activation_event := (
+		(event is InputEventMouseButton and (event as InputEventMouseButton).pressed)
+		or (event is InputEventKey and (event as InputEventKey).pressed)
+		or (event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed)
+	)
+	if not is_activation_event or bgm.audio_player == null or bgm.bgm_stream == null:
+		return
+	_web_audio_started = true
+	_restart_bgm()
 
 
 # title表示
@@ -1120,3 +1142,8 @@ func _play_bgm() -> void:
 		mp3_stream.loop = true
 	if bgm.audio_player != null and not bgm.audio_player.playing:
 		bgm.play()
+
+
+func _restart_bgm() -> void:
+	bgm.stop()
+	_play_bgm()

@@ -1,0 +1,1353 @@
+[gd_resource type="Resource" script_class="NovelScriptCatalog" format=3]
+
+[ext_resource type="Script" path="res://data/info/novel/novel_script_catalog.gd" id="1_x02gd"]
+
+[resource]
+script = ExtResource("1_x02gd")
+scripts = Dictionary[String, String]({
+"res://resource/novel/area/area_corotta/novel_area_corotta_event_001.txt": "休日が週１になる悪夢
+@lcm
+政府が平日を１日増やすと言った。
+@lcm
+休日は週に１回だけ。
+@lcm
+毎日仕事をするたびに鬱憤がたまっていく。
+@lcm
+政府は悪だ。市民のことを何も考えてない！
+@lcm
+誰もがそう思い、やがてザイカ行政区の前にでもが生まれる。私はその中に混じりたまった鬱憤を吐き続けた。
+@lcm
+",
+"res://resource/novel/area/area_corotta/novel_area_corotta_event_002.txt": "妖精と結婚できない悪夢
+@lcm
+たまにコロッタ街へ訪れる一匹の妖精に見惚れた。
+@lcm
+どんなことにも協力的で、真剣で、心の感情を大事にする妖精だった。だけど、ぱたりと姿を見せなくなり、いやな想像が頭をよぎり、夢の中にも現れる。
+@lcm
+周りにいる人と妖精がどんどん愛をはぐくみ始めて私は焦る。歩くたびに年を取り、孤独なまま体だけが大人になっていった。
+@lcm
+",
+"res://resource/novel/area/area_corotta/novel_area_corotta_event_003.txt": "おなかが痛くなる悪夢
+@lcm
+朝に賞味期限が切れたご飯を食べた。少し時間がたつとおなかが痛くなって何度もトイレにこもっていた。
+@lcm
+神様に何度も祈って祈って、祈り続ける。それでもおさまらず、いつの間にか夜になっていた。
+@lcm
+",
+"res://resource/novel/area/area_corotta/novel_area_corotta_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+お疲れさまでした。
+@lcm
+これで『コロッタ街』の試験は全て終わりました。
+@lcm
+コロッタ街の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm
+",
+"res://resource/novel/area/area_elmena/novel_area_elmena_event_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+最近はエルメナ大学で実習をしているみたいですね。
+@lcm
+現在の成績を鑑み、エルメナ大学での試験が許可されました。
+@lcm
+試験に出る悪夢は現地で確認してください。
+@lcm
+@bg \"res://resource/image/texture/still/tex_still_area_elmena_100.png\"
+@name \"大学生\"
+うーん、うーん。
+@lcm
+待ってよ～。
+@lcm
+今年で大学生活も終わりだってのに～。
+@lcm
+むにゃむにゃ……。
+@lcm
+@name \"案内図のメモ\"
+今回の試験は、『最高の大学生活をしようと色んな人にアプローチをするが誰にも目を向けられない悪夢』です。
+@lcm
+何度も倒れてもあきらめずに立ち直る姿は勇敢ですが、辛いですよね。
+@lcm
+私もイケメンを追っていたのでよく分かります。
+@lcm
+では、試験を始めてくださいね。
+@lcm
+",
+"res://resource/novel/area/area_elmena/novel_area_elmena_event_002.txt": "@bg \"res://resource/image/texture/still/tex_still_area_elmena_100.png\"
+エルメナ大学はこの国で唯一存在する上級学校。
+@lcm
+多くの在学生が日夜研究に没頭し、『単位の悪夢』と死闘を繰り広げています。
+@lcm
+@name \"机に伏した学生\"
+うえーん。おしまいだぁぁ……。
+@lcm
+@name \"\"
+おや、今回の試験に出る悪夢はとても凶悪そうですよ。
+@lcm
+@name \"机に伏した学生\"
+まだだ……まだ戦える……。
+@lcm
+この論文が評価されれば……
+@lcm
+……あれ、なんか、研究データが消えてる……
+@lcm
+@name \"\"
+今回の試験相手は、『無限に同じ研究と論文をやらされる悪夢』です。
+@lcm
+……これを書いていたら、私も腹が立ってきました。
+@lcm
+ティーナさん、ボコボコに消化するつもりで試験を始めちゃってくださいね。
+@lcm
+by 試験官
+@lcm",
+"res://resource/novel/area/area_elmena/novel_area_elmena_event_003.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+ティーナさん、エルメナ大学の悪夢をかなり消化したみたいですね。
+@lcm
+そんな大学好きなティーナさんにとっておきの試験がありますよ。
+@lcm
+ここ最近、『単位の悪夢』が変異して現れるようになったそうで。
+@lcm
+エルメナ大学の最後の悪夢は『卒論の悪夢』です。
+@lcm
+@bg \"res://resource/image/texture/still/tex_still_area_elmena_100.png\"
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+@name \"ラーラ\"
+『卒論の悪夢』？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+ここの学生たちも大変ね。
+@lcm
+えーっと、なんて書かれてるの？……
+@lcm
+@name \"案内図のメモ\"
+卒論の悪夢は完璧な研究資料を完成させた後、対象者本人が盛大に手元のクリームコーヒーをぶちまける悪夢を見せます。
+@lcm
+記憶だよりに再び書き上げるも、発表時の資料は全てコーヒーの香りに包まれており、冷たい視線を浴びせられます。
+@lcm
+……因みに私も論文を書いた記憶があります。
+@lcm
+みなさんはしっかりバックアップを取りましょうね。（1敗）
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_6000.png\"
+@name \"ラーラ\"
+……なんか大変そうね。
+@lcm",
+"res://resource/novel/area/area_elmena/novel_area_elmena_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+お疲れさまでした。
+@lcm
+これで『エルメナ大学』の試験は全て終わりました。
+@lcm
+エルメナ大学の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm",
+"res://resource/novel/area/area_elmena/novel_area_elmena_event_reroll_001.txt": "@name \"\"
+エルメナ大学の悪夢を消化したおかげでティーナはほんの少し成長した。
+@lcm
+エルメナ大学で夢の種を選ぶときにリロールが1回できるようになった！
+@lcm",
+"res://resource/novel/area/area_elmena/novel_area_elmena_event_reroll_002.txt": "@name \"\"
+エルメナ大学の悪夢を消化したおかげでティーナは少し成長した。
+@lcm
+エルメナ大学で夢の種を選ぶときにリロールが2回できるようになった！
+@lcm",
+"res://resource/novel/area/area_elmena/novel_area_elmena_event_reroll_003.txt": "@name \"\"
+エルメナ大学の悪夢を消化したおかげでティーナは成長した。
+@lcm
+エルメナ大学で夢の種を選ぶときにリロールが5回できるようになった！
+@lcm",
+"res://resource/novel/area/area_eramia/novel_area_eramia_event_001.txt": "納品に追われる悪夢
+@lcm
+エラミア区の状況を説明する。高級都市よりも悪辣な環境で夜なのに明るい場所も多い。そのなかでも一人の人間がうなされているのを見つける。
+@lcm
+",
+"res://resource/novel/area/area_eramia/novel_area_eramia_event_002.txt": "みんなでやれば怖くない悪夢
+@lcm
+前の場所よりもひどく、大勢の人と妖精が働いている場所を見つける。寝ているものもちらほらいて、夜なのに騒がしい。
+@lcm
+",
+"res://resource/novel/area/area_eramia/novel_area_eramia_event_003.txt": "感覚麻痺の悪夢
+@lcm
+あまりにも働きすぎて感覚がマヒしてしまった悪夢にかかっている、精神が限界突破している妖精を見つける。行き過ぎた労働は生命を殺してしまう
+@lcm
+",
+"res://resource/novel/area/area_eramia/novel_area_eramia_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+お疲れさまでした。
+@lcm
+これで『エラミア区』の試験は全て終わりました。
+@lcm
+エラミア区の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm
+",
+"res://resource/novel/area/area_felis/novel_area_felis_event_001.txt": "宝くじを外す悪夢
+@lcm
+大量の宝くじを購入して遊戯をする。
+@lcm
+当たったらうれしい。外れたら何も思わない。
+@lcm
+当たれば当たるほど嬉しくなるよね。
+@lcm
+",
+"res://resource/novel/area/area_felis/novel_area_felis_event_002.txt": "すぐにものを捨てられる悪夢
+@lcm
+良いものも悪いものもすぐに捨てられる。
+@lcm
+なんで、まだ使えるのに、どうして捨てるの。まだ見捨てないで、私はまだあなたと一緒にいたいのに。
+@lcm
+",
+"res://resource/novel/area/area_felis/novel_area_felis_event_003.txt": "生活リズムが治らない悪夢
+@lcm
+起きるのは夕方、眠るのは朝。
+@lcm
+もう何度目だろう。夜は体がよく動くからしょうがない。夜は夜空がきれいで友人たちもにぎわっている。朝に起きなくてもいいんだ。僕はもう成功した大人だから。
+@lcm
+",
+"res://resource/novel/area/area_felis/novel_area_felis_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+お疲れさまでした。
+@lcm
+これで『フェリス庭区』の試験は全て終わりました。
+@lcm
+フェリス庭区の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm
+",
+"res://resource/novel/area/area_gonsal/novel_area_gonsal_event_001.txt": "資産を奪う悪夢
+@lcm
+多くの資産を持っていたのに、ほかの競合他社に目をつけられて倒産まで追い込まれた。何度逃げようとしても詰め寄られ、資産（HP）を削られる。
+@lcm
+",
+"res://resource/novel/area/area_gonsal/novel_area_gonsal_event_002.txt": "薬に染まる悪夢
+@lcm
+一度大きなお金を渡せばそれ以下の金銭では購入できなくなる。報酬を得るために強い刺激を与えると、最終的にそれは自分の命を削ることになる。
+@lcm
+",
+"res://resource/novel/area/area_gonsal/novel_area_gonsal_event_003.txt": "多くの叱責を受ける悪夢
+@lcm
+世の中の人々におおくの悪口をかけられて精神が病んでしまった。自分に自信を無くし、いつか他人からの悪口に対してダメージを受けなくなってしまった。
+@lcm
+",
+"res://resource/novel/area/area_gonsal/novel_area_gonsal_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+お疲れさまでした。
+@lcm
+これで『ゴンサル地区』の試験は全て終わりました。
+@lcm
+ゴンサル地区の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm
+",
+"res://resource/novel/area/area_huwahuwa/novel_area_huwahuwa_event_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+ふわふわ学校の試験会場にようこそ。
+@lcm
+悪夢を6時までに消化できれば合格になります。
+@lcm
+",
+"res://resource/novel/area/area_iriyu/novel_area_iriyu_event_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+イリユ洞窟の悪夢を消化してるんですか。ありがとうございます。
+@lcm
+昔はここに悪夢は出なかったんですけどね。巣の近くに食べ物があるのは嬉しいのですが。
+@lcm
+ティーナさん用のイリユ洞窟の試験が許可されたので案内を出しておきますね。
+@lcm
+試験の詳細は現地で確認してください。
+@lcm
+@bg \"res://resource/image/texture/still/tex_still_area_iriyu_100.png\"
+@name \"成長期のバク\"
+うぅ……。
+@lcm
+ぐすん。
+@lcm
+@name \"案内図のメモ\"
+今回の試験は、『自分だけ人型に成長できない悪夢』です。
+@lcm
+私たちバクは、摂取した悪夢と自己性質によって多様な人間の姿に変化するんです。
+@lcm
+変態期を終えたバクは一生その姿で過ごすことになるので、下手をすると心の傷になってしまうんですよね。
+@lcm
+この悪夢を見るバクは繊細な時期であることが多いので慎重に消化するようにしてください。
+@lcm",
+"res://resource/novel/area/area_iriyu/novel_area_iriyu_event_002.txt": "@bg \"res://resource/image/texture/still/tex_still_area_iriyu_100.png\"
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+アンタもここで受けるのね。
+@lcm
+今回の試験は何の悪夢なの？
+@lcm
+@name \"案内図のメモ\"
+悪夢を食べた後に生まれる夢の花は、妖精を生むためのエネルギーになる貴重なものです。
+@lcm
+幼いバクは目が発達しておらず、花に混じった個体特有の香りで他のバクを認知します。
+@lcm
+しかし今回の『バクを失う悪夢』を見ているバクはその花を悪夢と勘違いして食べてしまうみたいです。
+@lcm
+ティーナさんのようにたくさん夢の花を植えていると狙われやすいので気をつけてくださいね。
+@lcm
+@name \"ラーラ\"
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+……アンタ、気をつけなさいよ。
+@lcm",
+"res://resource/novel/area/area_iriyu/novel_area_iriyu_event_003.txt": "@bg \"res://resource/image/texture/still/tex_still_area_iriyu_100.png\"
+@name \"案内図のメモ\"
+今回の試験がイリユ洞窟最後の試験です。
+@lcm
+今回出る悪夢は昔起きた出来事の残滓だそうですよ。
+@lcm
+私もあまり詳しくありませんが、『人間に支配される悪夢』だそうです。
+@lcm
+この悪夢はバクを無気力にさせて延々と悪夢を食べさせる家畜にさせられるみたいです。
+@lcm
+美味しい悪夢がいっぱい食べれるのなら悪くはない気がしますけどね。
+@lcm
+ではイリユ洞窟最後の試験頑張ってください。
+@lcm",
+"res://resource/novel/area/area_iriyu/novel_area_iriyu_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+お疲れさまでした。
+@lcm
+これで『イリユ洞窟』の試験は全て終わりました。
+@lcm
+イリユ洞窟の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm
+",
+"res://resource/novel/area/area_iriyu/novel_area_iriyu_event_reroll_001.txt": "@name \"\"
+イリユ洞窟の悪夢を消化したおかげでティーナはほんの少し成長した。
+@lcm
+イリユ洞窟で夢の種を選ぶときにリロールが1回できるようになった！
+@lcm",
+"res://resource/novel/area/area_iriyu/novel_area_iriyu_event_reroll_002.txt": "@name \"\"
+イリユ洞窟の悪夢を消化したおかげでティーナは少し成長した。
+@lcm
+イリユ洞窟で夢の種を選ぶときにリロールが2回できるようになった！
+@lcm",
+"res://resource/novel/area/area_iriyu/novel_area_iriyu_event_reroll_003.txt": "@name \"\"
+イリユ洞窟の悪夢を消化したおかげでティーナは成長した。
+@lcm
+イリユ洞窟で夢の種を選ぶときにリロールが5回できるようになった！
+@lcm",
+"res://resource/novel/area/area_lunova/novel_area_lunova_event_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_lunova_100.png\"
+@name \"\"
+そこは色を失った場所のようで、どこか幻想的だった。
+@lcm
+悪夢がぽつりぽつりと闊歩していて、ふと私の目に留まる。
+@lcm
+悪夢はのそのそと他の悪夢へ近づき、抱きかかえ、泣きつくように他の悪夢を飲み込んだ。
+@lcm
+ばりばりと音をたて、その悪夢からはとろとろした赤い液体がしたたる。
+@lcm
+『赤いクロワッサン』を食べ終えた悪夢はくるりとこちらを見た。
+@lcm
+不思議な感覚に襲われて、私もその悪夢を見つめ返して食べる準備をした。
+@lcm",
+"res://resource/novel/area/area_lunova/novel_area_lunova_event_002.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+@name \"ラーラ\"
+ルノヴァ旧市街？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+あそこは昔、人間たちが住んでた場所らしいわよ。
+@lcm
+でも何かあって住めなくなったとか……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+なんでって？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+今は悪夢に汚染されちゃってるし、何かあったんじゃない？
+@lcm
+てかアンタ、あの場所は入ったらダメなのよ。まさか行ってないでしょうね？
+@lcm
+……。
+@lcm
+そうよね。行くわけないわよね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+危ないから行っちゃダメよ！
+@lcm
+@img_remove 1
+@bg \"res://resource/image/texture/still/tex_still_area_lunova_100.png\"
+@name \"\"
+ルノヴァ旧市街にくると、確かに人間の建物らしい残骸が散見された。
+@lcm
+ラーラはあんな言ってたけど、大丈夫だよね。
+@lcm
+ルノヴァ旧市街には焼け焦げた跡と、不思議な模様がたくさんある。
+@lcm
+これも昔人間が作り出したものなのだろうか。
+@lcm
+そうこう構っていると、悪夢を見つけた。
+@lcm
+しかし、人のように歩いていたその悪夢はやがて『熱されたかき氷』のようにどろどろに溶けてしまった。
+@lcm",
+"res://resource/novel/area/area_lunova/novel_area_lunova_event_003.txt": "@bg \"res://resource/image/texture/still/tex_still_area_lunova_100.png\"
+@name \"\"
+だいぶこの場所を探索して、ある事に気づいた。
+@lcm
+この場所には人間の悪夢しかおらず、バクや妖精の悪夢が全くいない。
+@lcm
+目の前で雨乞いをしている悪夢も人間。
+@lcm
+静かに上を向いているその悪夢はとても美しかった。
+@lcm
+人間はこの場所で何をしたのだろう。
+@lcm
+これを消化したら他の人に聞いてみよう。
+@lcm",
+"res://resource/novel/area/area_lunova/novel_area_lunova_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+あ、ティーナさん。どこに行ってたんですか？
+@lcm
+……え、ルノヴァ旧市街に！？
+@lcm
+あそこは危険なので行っちゃダメなんですよ。
+@lcm
+……。
+@lcm
+……え、もっと怒られると思ってた？
+@lcm
+なら何で話したんですか。
+@lcm
+私は試験官でしかないので生徒の試験しか管理しませんよ。
+@lcm
+……ルノヴァ旧市街のことを知りたいんですか？
+@lcm
+いいですよ。私、物知りなので。
+@lcm
+あそこは昔人間が住んでたんです。
+@lcm
+今住んでないのは、ティーナさんが見た通り悪夢に汚染されてしまったからですね。
+@lcm
+人間が昔、バクを家畜にしようとしていた話は知ってますか？
+@lcm
+人間にとってバクは妖精を作ってくれて、悪夢を食べてくれるご都合存在なのでしょう。
+@lcm
+妖精は人間より力が強くて魔法の技術を持っているので、うまく改造すれば人間の技術を低リスクで底上げできると思ったんでしょう。
+@lcm
+ところが、バクを管理するなんて人間には出来ませんでした。
+@lcm
+どんどんバクは個体数が減り、巣もなくなり、妖精も生まれにくくなりました。
+@lcm
+バクが少なくなったせいで悪夢が増え、人間が住んでいたルノヴァ旧市街は悪夢に乗っ取られてしまったんです。
+@lcm
+人間が一番悪夢を見やすいのに、それを治す方法を失ったんですね。
+@lcm
+それから人間の政府はバクを管理するのをやめ、都市も移しました。
+@lcm
+妖精もこれには激怒しましたが、妖精の偉い人は人間を許し、平和条約を結んだんです。
+@lcm
+それが今の時代ですね。
+@lcm
+妖精が何を考えてるのかは私も知りません。
+@lcm
+まあ、妖精たちは妖精たちで人間が作った精密なインフラを好んでいるのでwinwinなのでしょう。
+@lcm
+……と、こんなところですかね。
+@lcm
+とりあえずティーナさん。
+@lcm
+『ルノヴァ旧市街』の悪夢を消化したみたいなので、試験をクリアしたということで処理しておきますね。
+@lcm
+今後も『ルノヴァ旧市街』に行ってもいいですが、もう試験をクリアしたとみなさないので注意してください。
+@lcm
+あの場所の悪夢たちを消化してくれてありがとうございました。
+@lcm",
+"res://resource/novel/area/area_lunova/novel_area_lunova_event_reroll_001.txt": "@name \"\"
+ルノヴァ旧市街の悪夢を消化したおかげでティーナはほんの少し成長した。
+@lcm
+ルノヴァ旧市街で夢の種を選ぶときにリロールが1回できるようになった！
+@lcm",
+"res://resource/novel/area/area_lunova/novel_area_lunova_event_reroll_002.txt": "@name \"\"
+ルノヴァ旧市街の悪夢を消化したおかげでティーナは少し成長した。
+@lcm
+ルノヴァ旧市街で夢の種を選ぶときにリロールが2回できるようになった！
+@lcm",
+"res://resource/novel/area/area_lunova/novel_area_lunova_event_reroll_003.txt": "@name \"\"
+ルノヴァ旧市街の悪夢を消化したおかげでティーナは成長した。
+@lcm
+ルノヴァ旧市街で夢の種を選ぶときにリロールが5回できるようになった！
+@lcm",
+"res://resource/novel/area/area_mirune/novel_area_mirune_event_001.txt": "すぐにものを壊す悪夢
+@lcm
+人間が作るものは脆い。
+@lcm
+成長期は力のコントロールができずにいろんなものを壊しがち。
+@lcm
+間違えて大切なものを壊してしまう悪夢。ああ、もう同じものは手に入らないのに
+@lcm
+",
+"res://resource/novel/area/area_mirune/novel_area_mirune_event_002.txt": "人間を壊す悪夢
+@lcm
+少しだけ力の使い方を覚えた時期に訪れる悪夢。
+@lcm
+力を弱めればいいと気づくが、分散しても結局壊してしまう。
+@lcm
+力の使い方を理解したと勘違いするこの時期が一番恐ろしい。
+@lcm
+この時期は人間と触れ合うのは禁止されているのに、自分の制御を過信して人間と出会う。
+@lcm
+結果はみんな同じ。全身が血まみれになり、絶叫し、泣き叫ぶ。
+@lcm
+あなたが悪いの。あなたが信じたのが悪い。
+@lcm
+もっと自分を理解していればよかったのに。最初から最後まで全部あなたのせいだよ
+@lcm
+",
+"res://resource/novel/area/area_mirune/novel_area_mirune_event_003.txt": "精神が乱れた悪夢
+@lcm
+成長期を終えた妖精のほとんどは力の使い方や魔法の出し方を完全に学び、自分の好きな人生を歩み始める。
+@lcm
+大学校に通ってもいいし、エラミア区で仕事に励んでもいい。力の使い方を間違えたらいけない。
+@lcm
+暴君になってほかの人間や妖精を支配下に置いてはいけない。自分が傷つかなければいいなんてことはないんだよ。
+@lcm
+",
+"res://resource/novel/area/area_mirune/novel_area_mirune_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+お疲れさまでした。
+@lcm
+これで『ミルネ街』の試験は全て終わりました。
+@lcm
+ミルネ街の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm
+",
+"res://resource/novel/area/area_nerix/novel_area_nerix_event_001.txt": "ほかの存在を敵視する悪夢
+@lcm
+友人はいらない。
+@lcm
+みんな敵だ。
+@lcm
+友好心はいらない。
+@lcm
+みんな敵だから。
+@lcm
+実力と根性があればどうとでもなる。
+@lcm
+だから何も考えずにほかの人を傷つけて、踏み越えればいい。
+@lcm
+",
+"res://resource/novel/area/area_nerix/novel_area_nerix_event_002.txt": "疑心暗鬼になる悪夢
+@lcm
+なんで私だけひどく当たるの。
+@lcm
+みんな仲良くしてるのに、私が話してる時だけちょっと気まずい気がする。
+@lcm
+みんな私だけを仲間はずれにしようとしているの？
+@lcm
+おはようの声も、私にだけ小さい気がする。
+@lcm
+ご飯の量も、ちょっと少ない気がする。
+@lcm
+みんなそうやって私を馬鹿にするなら、仕返しをすればいいんだ。
+@lcm
+",
+"res://resource/novel/area/area_nerix/novel_area_nerix_event_003.txt": "自己中心になる悪夢
+@lcm
+自分よりすごい人がいなくなれば自分が大学校に進学できる。
+@lcm
+ほかの生徒を支配して自分の配下に置けばいい。
+@lcm
+かわりに僕が君たちの代わりに動くから、全部私にゆだねてほしい。
+@lcm
+",
+"res://resource/novel/area/area_nerix/novel_area_nerix_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+お疲れさまでした。
+@lcm
+これで『ネリクス魔法学校』の試験は全て終わりました。
+@lcm
+ネリクス魔法学校の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm
+",
+"res://resource/novel/area/area_riran/novel_area_riran_event_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+『大樹リラン駐屯地』の試験が許可されました。
+@lcm
+……ティーナさん、すごいですね。あの1体いれば100体出てくる悪夢がいるような場所に……。
+@lcm
+ここで悪夢食べ放題店とか出せば儲かったりするんですかね？
+@lcm
+@bg \"res://resource/image/texture/still/tex_still_area_riran_100.png\"
+@name \"案内図のメモ\"
+リラン駐屯地は大樹リランを悪夢から守るために管理している妖精が住んでいます。
+@lcm
+妖精には私たちも助けられてるのですが、『妖精が生まれない悪夢』を見てる妖精もいるみたいなんです。
+@lcm
+この悪夢が生まれたせいで増殖する悪夢が生まれたらしいです。
+@lcm
+それでは、試験がんばってくださいね。
+@lcm",
+"res://resource/novel/area/area_riran/novel_area_riran_event_002.txt": "@bg \"res://resource/image/texture/still/tex_still_area_riran_100.png\"
+@name \"案内図のメモ\"
+ティーナさんは妖精がどのように生まれるかご存じですか？
+@lcm
+この国の妖精は、大樹リランとイリユ洞窟の巣窟によって生まれるんです。
+@lcm
+大樹の根から染み出たエキスが土を通してイリユ洞窟に漏れ出し、巣窟から出た成分と交わって生まれるんです。
+@lcm
+なのでバクがいなくなると巣窟も消え、妖精も生まれなくなるんですね。
+@lcm
+妖精には色々助けられてるので、こうして私たちも悪夢を食べてあげるわけです。
+@lcm
+妖精に私の仕事も手伝ってもらえたらいいんですけどね。
+@lcm
+そんな妖精が苦しんでいる『悪夢が倒せない悪夢』が今回の試験対象です。
+@lcm
+悪夢は無限に膨れ上がるので、はやめに消化できるよう頑張ってくださいね。
+@lcm",
+"res://resource/novel/area/area_riran/novel_area_riran_event_003.txt": "@bg \"res://resource/image/texture/still/tex_still_area_riran_100.png\"
+@name \"案内図のメモ\"
+今回が大樹リラン駐屯地で最後の試験です。
+@lcm
+最後の試験では『妖精が殺される悪夢』が出てきます。
+@lcm
+人間にそこまで力があるわけないですけどね。悪夢ですから。
+@lcm
+昔の厄災でバクが大量に減少し、妖精が生まれる素材が減ったときに生まれた悪夢らしいです。
+@lcm
+ではがんばってくださいね。
+@lcm",
+"res://resource/novel/area/area_riran/novel_area_riran_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+お疲れさまでした。
+@lcm
+これで『大樹リラン駐屯地』の試験は全て終わりました。
+@lcm
+大樹リラン駐屯地の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm
+",
+"res://resource/novel/area/area_riran/novel_area_riran_event_reroll_001.txt": "@name \"\"
+大樹リラン駐屯地の悪夢を消化したおかげでティーナはほんの少し成長した。
+@lcm
+大樹リラン駐屯地で夢の種を選ぶときにリロールが1回できるようになった！
+@lcm",
+"res://resource/novel/area/area_riran/novel_area_riran_event_reroll_002.txt": "@name \"\"
+大樹リラン駐屯地の悪夢を消化したおかげでティーナは少し成長した。
+@lcm
+大樹リラン駐屯地で夢の種を選ぶときにリロールが2回できるようになった！
+@lcm",
+"res://resource/novel/area/area_riran/novel_area_riran_event_reroll_003.txt": "@name \"\"
+大樹リラン駐屯地の悪夢を消化したおかげでティーナは成長した。
+@lcm
+大樹リラン駐屯地で夢の種を選ぶときにリロールが5回できるようになった！
+@lcm",
+"res://resource/novel/area/area_zaika/novel_area_zaika_event_001.txt": "ほかの権力者に見放される悪夢
+@lcm
+他人からの信頼は必要なものであり、たった一人の力は国家には及ばない。
+@lcm
+金を使ってあがいても、大きな力に滅ぼされるだけ。
+@lcm
+そうならないように悪夢の中では必死にあがく。
+@lcm",
+"res://resource/novel/area/area_zaika/novel_area_zaika_event_002.txt": "依存する悪夢
+@lcm
+妖精が生まれるにはいくつかの手順が必要になる。
+@lcm
+大樹リランの実った木の実が地面に落ち、土の中に染みたエキスがイリユ洞窟に住むバクが放出する成分と混ざり合うことで妖精の卵が生まれる。
+@lcm
+30年前、これを知った政府はバクを飼育して生まれる妖精の能力をコントロールしようと試みた。
+@lcm
+結果は大失敗だった。
+@lcm
+バクはとても繊細で、人間が管理できるような生物ではなかった。
+@lcm
+これによりバクと妖精が大激減し、人類は孤独な運命を歩むことになりかけた。
+@lcm
+",
+"res://resource/novel/area/area_zaika/novel_area_zaika_event_003.txt": "妖精に人類を支配される悪夢
+@lcm
+妖精は人類よりも大きな能力を秘めている生物である。
+@lcm
+その存在があったからこそ人類は今の生活を手に入れた。
+@lcm
+彼らは崇拝すべき存在だが、完全に力を与えてしまえば人類は今の生活ができなくなる。
+@lcm
+今も大妖精が私たちを管理する秘策を進めているかもしれない。
+@lcm
+",
+"res://resource/novel/area/area_zaika/novel_area_zaika_event_003_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+お疲れさまでした。
+@lcm
+これで『ザイカ行政区』の試験は全て終わりました。
+@lcm
+ザイカ行政区の悪夢は今後も食べれますが、試験はもう更新されないので気をつけてくださいね。
+@lcm
+",
+"res://resource/novel/ending/novel_ending_bad_100.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"\"
+ティーナさん、お疲れ様でした。
+@lcm
+試験の結果ですが、不合格です。
+@lcm
+@bg \"res://resource/image/texture/still/tex_still_0000.png\"
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+どうだった？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+……。
+@lcm
+……え、不合格……？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+……そっか。
+@lcm
+……まあ、来年もまた受ければ良いじゃない。
+@lcm
+私たち違う学年になっちゃうけど。
+@lcm
+@img_remove 1
+@name \"\"
+あなたは試験に受からなかった。
+@lcm
+だが、これもまた人生、いやバク生だろう。
+@lcm
+今はまだ自分の体の成長が追い付いていなかっただけだ。
+@lcm
+幼馴染ラーラとの甘い学生生活が無くなってもすべてを失ったわけではない。
+@lcm
+これはきっと新たな世界線を開拓した証なのだ。
+@lcm
+バッドエンディング - 乱れる飽和",
+"res://resource/novel/ending/novel_ending_normal_100.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"\"
+ティーナさん、お疲れ様でした。
+@lcm
+試験の結果ですが、合格です。おめでとうございます！
+@lcm
+@bg \"res://resource/image/texture/still/tex_still_0000.png\"
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+どうだった？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
+え！ 合格！？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
+やったわね！ よくやったわティーナ！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
+これで私たちもバクとして少しだけ成長できたのよ！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+6年間、これからもよろしくね。ティーナ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
+これからの学校生活が楽しみね！
+@lcm
+@name \"\"
+あなたは無事に試験に合格することができた。
+@lcm
+これは幾つもの難関を自らの腹で消化することができたあなた自身の功績だ。
+@lcm
+おめでとう。
+@lcm
+あなたはこれからもバクとして悪夢を消化する生活をすることができる。
+@lcm
+ひとりのバクとして。幼馴染のラーラと一緒に。
+@lcm
+これからどんな楽しいことが待っているんだろう！
+@lcm
+私は胸に期待を膨らませながらラーラと笑顔で笑いあった。
+@lcm
+ノーマルエンド - 好奇心の芽生え
+@lcm",
+"res://resource/novel/ending/novel_ending_true_100.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"\"
+ティーナさん、お疲れ様でした。
+@lcm
+試験の結果ですが、合格です。おめでとうございます！
+@lcm
+@bg \"res://resource/image/texture/still/tex_still_0000.png\"
+@lcm
+……。
+@lcm
+@name \"？？？\"
+ちょっと待ちなさい。
+@lcm
+@name \"\"
+え、あなたは、理事長！？
+@lcm
+@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"理事長\"
+いやはや、おめでとう。ティーナさん。
+@lcm
+ところで、君はルノヴァ旧市街の悪夢を消化したようだね。
+@lcm
+身体に異常は？
+@lcm
+……。
+@lcm
+……何ともないか。
+@lcm
+……ティーナさん。
+@lcm
+君は異常な存在だ。
+@lcm
+今すぐ身体を精密に検査しよう。
+@lcm
+@bg \"res://resource/image/texture/still/tex_still_0000.png\"
+@name \"ラーラ\"
+ティーナ？
+@lcm
+ちょ、ちょっと待ちなさい！ どこに連れていくの！？
+@lcm
+@name \"理事長\"
+試験官、取り押さえて。
+@lcm
+@name \"試験官\"
+そうは言われましても、私は試験のことしか
+@lcm
+@name \"理事長\"
+もし従えば、給料を100倍にする。
+@lcm
+@name \"試験官\"
+イエッサー、理事長様。
+@name \"\"
+……。
+@lcm
+……それから、長い身体検査が始まった。
+@lcm
+……数日後。
+@lcm
+私の身体からは異常が見つかった。
+@lcm
+それは昔、親が私にルノヴァ旧市街の悪夢を食べさせたのが原因だった。
+@lcm
+バクが食べた悪夢の成分は、変態期の成長に影響する。
+@lcm
+私の目が他の人と違うのはそのせいだった。
+@lcm
+しかし、おなかを壊しやすい原因は見つからなかった。
+@lcm
+「先天的なものだろう。」検査をした人はそう言った。
+@lcm
+@bg \"res://resource/image/texture/still/tex_still_end_300.png\"
+色々あったが、ルノヴァ旧市街の悪夢を消化した事実は覆らないとされ、特例で合格することができた。
+@lcm
+これは嬉しいことだった。
+@lcm
+何てったって、おなかを壊しやすかった私がラーラと一緒に学校へ入学することができたのだから！
+@lcm
+これからの生活が楽しみだね、ラーラ！
+@lcm
+私はラーラとともに笑い合い、新たな生活へと踏み出した。
+@lcm
+トゥルーエンド - After The Canary's Song
+@l
+Thank You for Playing!!
+@lcm",
+"res://resource/novel/event/area/novel_event_rara_corotta_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+あ、ティーナ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+私、ちょっと前にコロッタ街に行ったの。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
+コロッタ街は面白い場所よ！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+沢山の歯車がかみ合って、大きな生き物が動いてるの。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
+街全体が大きな工場みたいになってて面白かったわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+人間の服はコロッタ街で作られるらしいわよ。
+@lcm
+人間って、私たちとは違って色んな人が同じ服を着てるの。ちょっと変よね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+そういえば、ずっと気になってたんだけど、アンタの服……
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_5000.png\"
+……なんていうかちょっと大雑把すぎない？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+アンタはまだ気にならないかもしれないけど、お腹は隠れるようにした方がいいと思うわよ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+……え、枕で隠れるから気にならない？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
+そもそも中に何も着てない……！？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
+……下も…………！？ツルが邪魔……！？？？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+………………。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_6000.png\"
+……信じらんない。幼馴染なのに初めて聞いたわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+これあげるからもうちょっと考えなさい。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_6000.png\"
+今じゃなくていいから、卒業するまでには、絶対よ？
+@lcm",
+"res://resource/novel/event/area/novel_event_rara_eramia_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+あら、ティーナ。
+@lcm
+ちょっと前にエラミア区に行ったの。
+@lcm
+エラミア区はね、人間の悪夢がたくさんあるのよ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+働きすぎるって大変よね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+仕事してる人って、仕事中に寝ちゃったりしないのかしら。
+@lcm
+エラミア区っていろんな会社があるのよ。
+@lcm
+そのおかげで朝も夜も寝てる人がいるから、一日中悪夢を食べれるのよね。
+@lcm
+エラミア区があるおかげでバクが生きれて、妖精も生まれて、人間が働いてるから……
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+ブラック会社は全部潰れろ～！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
+……っても言えないのよね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+はいこれ。余ってるからあげるわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+心配してるわけじゃないんだから！ ありがたく使いなさいよ！
+@lcm",
+"res://resource/novel/event/area/novel_event_rara_felis_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+あら、奇遇ね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+ティーナ、フェリス庭区って行ったことある？
+@lcm
+……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+そうなの。
+@lcm
+私この前フェリス庭区に行ったんだけど、
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
+あの場所、面白い人と面白い妖精がいっぱいいて面白かったわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
+みんなね、変な格好をしてるの。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+頭がソフトクリームみたいにまかれてたり、
+@lcm
+星型の黒い眼鏡をかけてたり、
+@lcm
+あ、あと、スカートが3メートルくらいある人もいたわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+人間ってああいうのを好むのね。
+@lcm
+あと、あんな格好してるのに悪夢の内容は本当にしょうもないの。
+@lcm
+ベッドの下に何かいないか怖がってたり、持ち会社が破産しないかだったり、
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+ほんと、いちいち悪夢を見てくれるのってありがたいわね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+ティーナ、これあげる。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
+フェリス庭区のおみやげよ。
+@lcm
+",
+"res://resource/novel/event/area/novel_event_rara_gonsal_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+また会ったわね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+この前、ゴンサル地区に行ったの。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+ゴンサル地区はスラムみたいな場所だったわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+みんなうつむいた表情をしてて、ボロボロの建物がたくさんあったのよ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+人間も大変そうだったけど妖精も大変そうよね。
+@lcm
+妖精って、生まれる時に自分のパートナーの元に移動してから生まれるのよ。
+@lcm
+妖精たちは、人間が居てこそ生まれる意味を持てるの。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+でも、妖精はどの人間の側で生まれるかは決めれない。全部運任せなのよ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+生まれた後は自分で運命を決めれるのに、大半の妖精が人間と同じ道を選ぶわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
+良くも悪くも、ちょっとロマンチックよね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+はい、これあげるわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+ゴンサル地区で手に入れたの。じゃあね。
+@lcm",
+"res://resource/novel/event/area/novel_event_rara_mirune_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+ティーナ、調子はどうかしら？ 私は上々よ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+最近ね、ミルネ街に行ったの。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+ミルネ街はコロッタ街の西にある妖精の街よ。
+@lcm
+因みにコロッタ街は人間主体の街で、ミルネ街は妖精主体の街なの。知ってたかしら？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+ミルネ街って、建物が全部植物とか土で出来てるのよ。すごいわよね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
+私たちの家は悪夢から貰ったエネルギーで出来てるから全く作り方が違いそうでワクワクするわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+ちなみに、人間のパートナーがいない妖精は大体がミルネ街で生まれるの。
+@lcm
+人間が使うための遠隔連絡とか、空間移動とか、魔法で効率化できる技術に取り組んでる会社が多いらしいわ。
+@lcm
+バクは妖精の魔法を使わなくてもふつうに瞬間移動出来るけど、人間はできないみたい。
+@lcm
+……人間って、悪夢を生むことしかできないのかしら。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+大人になったら一回話してみたいわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+じゃあ、これあげる。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
+ミルネ街で手に入れたの。じゃあね。
+@lcm",
+"res://resource/novel/event/area/novel_event_rara_nerix_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+ティーナ、また会ったわね。
+@lcm
+この前ね、なんと人間と妖精のための学校に行ってきたの！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+ネリクス魔法学校って言うらしいわよ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+私たちの学校と大して変わらなかったわ。
+@lcm
+ふつうの勉強ってどの学校でもやるのね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+でも、あっちの学校はもっと勉強したかったらエルメナ大学って場所に行くらしいわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+人間たちって不思議よね。
+@lcm
+悪夢を見たくないっていうのに、自分から悪夢を見に行くの。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_6000.png\"
+単位の悪夢……うう、考えるだけでも頭が痛いわ。
+@lcm
+……でも、人間たちにとっては働くほうが悪夢なのかもしれないわね……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+……あ、そうだった。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+これあげる。あんたに役立つと思ったの、受け取って。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
+じゃあね！ がんばりなさい！
+@lcm",
+"res://resource/novel/event/area/novel_event_rara_zaika_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+ティーナ、おつかれさま。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+……私この前『ザイカ行政区』に行ってきたんだけど、
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+あの場所すごいのよ。
+@lcm
+ひげをいっぱい生やした人間とか、超太ってる妖精とかいるんだけど、
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+みーんな大きい羽根が付いた妖精と超高身長の人間に土下座してるのよ！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+遂に人間と妖精が共同で変な宗教でも立てたのかと思ったわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+土下座されてる人はニコニコしてたから、きっと推し活的なやつでしょうね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
+あんなことしちゃうくらい好きな人がいるなんて、良い生活だと思わない？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+あ、そこで悪夢消化した時にいいものを手に入れたのよ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+はい。イイモノをあげる。ありがたく思いなさい！
+@lcm",
+"res://resource/novel/event/common/novel_event_rara_common_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+あら。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+がんばってるかしら。はいこれ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1200.png\"
+試験、がんばりなさい！
+@lcm",
+"res://resource/novel/event/common/novel_event_rara_common_002": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+@name \"ラーラ\"
+調子はどう？ ティーナ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+お腹壊さないように気をつけなさいよ！
+@lcm",
+"res://resource/novel/event/common/novel_event_rara_common_003": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_4000.png\"
+@name \"ラーラ\"
+ふわーあ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
+……！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_5000.png\"
+……な、なによ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+はい、イイモノあげるわ。
+@lcm",
+"res://resource/novel/event/common/novel_event_rara_common_004": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+@name \"ラーラ\"
+あら、どれくらい進んだの？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+私に負けないようにがんばりなさい！
+@lcm",
+"res://resource/novel/event/common/novel_event_rara_common_005": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+どうも。
+@lcm
+夢の種をいっぱい植えれる体質が羨ましいわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+はい。イイモノをどうぞ。
+@lcm",
+"res://resource/novel/event/common/novel_event_rara_common_006": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+@name \"ラーラ\"
+ティーナ、元気？
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@lcm
+……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+良かったわ。はい。まだ時間はあるわよ！
+@lcm",
+"res://resource/novel/event/common/novel_event_rara_common_007": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+ティーナ、きちんと寝てる？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+これあげるから、しっかり悪夢を消化しなさい！
+@lcm",
+"res://resource/novel/event/common/novel_event_rara_common_008": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+ティーナ、おつかれさま。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+これでも使ってがんばりなさい！
+@lcm",
+"res://resource/novel/event/false/novel_event_rara_false_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+ここの悪夢を消化するの？ 今日はもう何もあげれないけど、頑張りなさい。
+@lcm",
+"res://resource/novel/event/judge/novel_event_rara_judge_after": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"",
+"res://resource/novel/event/judge/novel_event_rara_judge_draw_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+あいこね。
+@lcm
+……まあこんなこともあるわよ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+その調子よ、次は勝てるように頑張りなさい！
+@lcm",
+"res://resource/novel/event/judge/novel_event_rara_judge_draw_002": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+同点ね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
+同点まで食べたの？ 偉いじゃない！
+@lcm",
+"res://resource/novel/event/judge/novel_event_rara_judge_draw_003": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
+@name \"ラーラ\"
+同点じゃない！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+次もこの調子でがんばりなさい。
+@lcm",
+"res://resource/novel/event/judge/novel_event_rara_judge_lose_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+私の勝ちね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+次がんばりなさい！
+@lcm",
+"res://resource/novel/event/judge/novel_event_rara_judge_lose_002": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+私の勝ちね。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+頑張ってほしいけど、無理しない範囲で消化しなさいよ！
+@lcm",
+"res://resource/novel/event/judge/novel_event_rara_judge_lose_003": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
+@name \"ラーラ\"
+私の勝ちね！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+カンタンな場所で沢山悪夢を消化するのもアリよ。がんばりなさい！
+@lcm",
+"res://resource/novel/event/judge/novel_event_rara_judge_setup_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+さて、勝負と行こうじゃないの。
+@lcm
+悪夢の消化数は……
+@lcm",
+"res://resource/novel/event/judge/novel_event_rara_judge_win_001": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+私の負けじゃないの……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
+えらいわね、アンタ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+これあげるわ。頑張った証よ。
+@lcm",
+"res://resource/novel/event/judge/novel_event_rara_judge_win_002": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
+@name \"ラーラ\"
+私の負け！？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+アンタ、なかなかやるじゃない。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+はい。約束の品よ。
+@lcm",
+"res://resource/novel/event/judge/novel_event_rara_judge_win_003": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+私が負けたのね。
+@lcm
+よくやったわ。ティーナ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+はい。おつかれさま。
+@lcm",
+"res://resource/novel/novel_ending_gameclear.txt": "ゲームクリア！7
+@lcm
+",
+"res://resource/novel/novel_ending_gameover.txt": "昨夜は悪夢をすべて食べきれなかった。
+@lcm
+今日の夜に備えてしっかり休もう…
+@lcm
+",
+"res://resource/novel/novel_event_100.txt": "@bg \"\"
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+どう？ 順調？
+@lcm
+……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_3000.png\"
+えっ、毎日1箇所しか回ってないの！？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+私、毎日2箇所は回ってるわよ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+アンタ、このままだとまずいんじゃない？
+@lcm
+体調も大事だけど、このままだと試験に合格できないかもしれないじゃない。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_2000.png\"
+…そうだ。アンタ、私と勝負しなさい。
+@lcm
+悪夢を食べるのに成功した回数を定期試験の日ごとに比べるの。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+その時アナタが私に勝ってたら、ちょっとイイものをあげるわ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+…私が勝ってたら何をするかって？
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+そ、そんなこと気にしなくていいのよ！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_5000.png\"
+私は…アンタが無事に試験に合格してくれたらそれで良いのよ。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+…分かった？ はいじゃあ明日から頑張りなさい！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+次は8日目が終わったときよ！
+@lcm
+@name \"\"
+機能開放！
+@r
+ラーラのいる場所と、悪夢を食べきった回数が分かるようになりました！
+@lcm
+機能開放2！
+@r
+毎日複数のエリアを回れるようになりました！
+@r
+ミスをせず、朝の6時前であれば複数のエリアに挑戦できます。
+@lcm",
+"res://resource/novel/novel_opening.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+みなさん、ふわふわ学校へ受験いただきありがとうございます。
+@lcm
+早速ですが、あなたたちはこれから１か月間悪夢を食べる練習をしていただきます。
+@lcm
+自身の体力と能力を考えて20日間悪夢を食べましょう。
+@lcm
+4日に1回能力試験を行いますのでぜひ奮ってご参加ください。
+@lcm
+@bg \"\"
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+今日から試験だけど、アンタ大丈夫なの？
+@lcm
+今回の試験、悪夢を毎日食べるのよ。
+@lcm
+アンタ、生まれつきおなか壊しやすいじゃない。
+@lcm
+……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+な、何かあったら私を頼りなさいよ！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+アンタのこと一番知ってるのは私なんだから……。
+@lcm
+"
+})

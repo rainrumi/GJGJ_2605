@@ -17,6 +17,7 @@ func _run() -> void:
 	root.add_child(main)
 	await process_frame
 	var click_se := main.get_node("SeClick") as AudioStreamPlayer
+	var bgm := main.get_node("BGM") as BeatConductor
 	var stage_choice := main.get_node(
 		"StageSelect/UI/StageChoicesScroll/StageChoicesMargin/SelectContainer/StageChoicesListScroll/StageChoicesPadding/StageChoices/StageChoice1"
 	) as BaseButton
@@ -25,6 +26,24 @@ func _run() -> void:
 	root.add_child(drag_owner)
 	click_se.stream = AudioStreamGenerator.new()
 	click_se.stop()
+	bgm.audio_player.stream = AudioStreamGenerator.new()
+	bgm.stop()
+	var playback_started_count := [0]
+	bgm.playback_started.connect(func() -> void: playback_started_count[0] += 1)
+	bgm.audio_player.play()
+	var web_click := InputEventMouseButton.new()
+	web_click.pressed = true
+	main.call("_start_bgm_from_web_input", web_click, true)
+	_expect(bgm.audio_player.playing, "A Web mouse press starts BGM inside the input event")
+	_expect(
+		playback_started_count[0] == 1,
+		"A Web mouse press restarts BGM even when the player reports that it is already playing"
+	)
+	_expect(
+		ProjectSettings.get_setting("audio/general/default_playback_type.web", -1) == 0,
+		"Web audio uses stream playback instead of the browser sample playback path"
+	)
+	bgm.stop()
 	var opening_novel := main.get_node("OpeningNovel") as OpeningNovel
 	opening_novel.advanced.emit()
 	_expect(not click_se.playing, "ノベル送り操作はクリックSEを再生しない")
@@ -35,6 +54,7 @@ func _run() -> void:
 
 	mouse_drag_state.end_drag(drag_owner)
 	main.call("_on_ui_button_pressed", stage_choice)
+	_expect(bgm.audio_player.playing, "The first valid button press starts BGM")
 	_expect(click_se.playing, "通常のボタン操作はクリックSEを再生する")
 
 	root.remove_child(drag_owner)
