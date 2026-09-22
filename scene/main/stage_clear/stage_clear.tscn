@@ -164,6 +164,7 @@ theme_override_font_sizes/font_size = 10
 text = "リトライ"
 
 [node name="OwnedSeedOpenButton" type="TextureButton" parent="UI" unique_id=990684587]
+visible = false
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 248.0
@@ -180,18 +181,18 @@ layout_mode = 0
 
 [node name="RerollButton" parent="UI" unique_id=1178344794 instance=ExtResource("16_1dhno")]
 layout_mode = 0
-offset_left = 382.0
-offset_top = 305.0
-offset_right = 502.0
-offset_bottom = 331.0
+offset_left = 379.0
+offset_top = 314.0
+offset_right = 499.0
+offset_bottom = 340.0
 text = "リロール"
 
 [node name="AbandonButton" parent="UI" unique_id=1850666034 instance=ExtResource("16_abandon_button")]
 layout_mode = 0
-offset_left = 251.0
-offset_top = 305.0
-offset_right = 371.0
-offset_bottom = 331.0
+offset_left = 247.0
+offset_top = 314.0
+offset_right = 367.0
+offset_bottom = 340.0
 
 [node name="MoreSelect2" type="VBoxContainer" parent="UI" unique_id=2119916994]
 visible = false
@@ -233,7 +234,7 @@ offset_top = 4.0
 offset_right = 627.0
 offset_bottom = 294.0
 mouse_filter = 2
-theme_override_constants/separation = 89
+theme_override_constants/separation = 3
 script = ExtResource("20_seed_choice_list_script")
 
 [node name="SeedChoice1" parent="UI/SeedChoices" unique_id=507694198 instance=ExtResource("5_seed_choice")]

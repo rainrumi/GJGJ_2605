@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://llc58wsg7b3n" path="res://scene/main/stage_clear/seed_choice/seed_choice_label_effect.gd" id="10_raa8t"]
 
 [node name="SeedChoice" type="Button" unique_id=188041236]
+custom_minimum_size = Vector2(380, 96)
 offset_right = 380.0
 offset_bottom = 96.0
 flat = true
@@ -76,11 +77,10 @@ theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 7
 text = "メインスキル"
 autowrap_mode = 3
 script = ExtResource("10_raa8t")
-effect_type = 0
 
 [node name="SubEffectLabel" type="Label" parent="." unique_id=985799255]
 layout_mode = 0
@@ -92,7 +92,7 @@ theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 7
 text = "サブスキル"
 autowrap_mode = 3
 script = ExtResource("10_raa8t")
