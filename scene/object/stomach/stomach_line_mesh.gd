@@ -4,7 +4,6 @@ extends MeshInstance2D
 
 @export var size := Vector2(153.0, 10.0)
 @export var texture_size := Vector2(156.0, 44.0)
-@export var line_texture_size := Vector2(6.0, 6.0)
 @export var patch_margin_left := 8.0
 @export var patch_margin_top := 4.0
 @export var patch_margin_right := 8.0
@@ -29,10 +28,9 @@ func _process(_delta: float) -> void:
 # rebuildmeshifneede処理
 func _rebuild_mesh_if_needed() -> void:
 	# signature
-	var signature := "%s|%s|%s|%s|%s|%s|%s|%s" % [
+	var signature := "%s|%s|%s|%s|%s|%s|%s" % [
 		size,
 		texture_size,
-		line_texture_size,
 		patch_margin_left,
 		patch_margin_top,
 		patch_margin_right,
@@ -110,10 +108,8 @@ func set_line_rect(line_position: Vector2, line_size: Vector2) -> void:
 # shaderparameters更新
 func _update_shader_parameters() -> void:
 	if material is ShaderMaterial:
-		# shadermaterial
 		var shader_material := material as ShaderMaterial
 		shader_material.set_shader_parameter("mesh_size", size)
-		shader_material.set_shader_parameter("line_texture_size", line_texture_size)
 
 
 # xpositions取得
