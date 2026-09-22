@@ -16,6 +16,7 @@ const DEFAULT_TEXT_INTERVAL := 0.04
 @onready var text_label: Label = $Screen/TextBox/TextLabel
 @onready var next_label: Label = $Screen/TextBox/NextLabel
 @onready var character_se: AudioStreamPlayer = $CharacterSe
+@onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 @onready var debug_panel: NovelDebugPanel = $Screen/DebugPanel
 
 var _script_lines: Array[String] = []
@@ -383,6 +384,8 @@ func _parse_command(command_line: String) -> Dictionary:
 
 func _play_character_se() -> void:
 	if character_se.stream == null:
+		return
+	if _web_audio.play_se(character_se.stream, &"opening_character"):
 		return
 	character_se.stop()
 	character_se.play()

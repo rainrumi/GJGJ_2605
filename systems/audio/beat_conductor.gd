@@ -16,6 +16,7 @@ signal playback_stopped()
 @export var debug_print_beats: bool = false
 
 @onready var audio_player: AudioStreamPlayer = $AudioStreamPlayer
+@onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 
 var _beat_interval := 0.0
 var _subdivision_interval := 0.0
@@ -41,7 +42,7 @@ func _ready() -> void:
 
 # 毎フレーム処理
 func _process(_delta: float) -> void:
-	if audio_player == null or not audio_player.playing:
+	if not is_playing():
 		return
 	# 曲時間
 	var song_time := get_song_time()
@@ -57,7 +58,8 @@ func play(from_position: float = 0.0) -> void:
 		return
 	_last_beat_index = -1
 	_last_subdivision_index = -1
-	audio_player.play(from_position)
+	if not _web_audio.play_bgm(bgm_stream, from_position):
+		audio_player.play(from_position)
 	playback_started.emit()
 
 
@@ -65,7 +67,8 @@ func play(from_position: float = 0.0) -> void:
 func stop() -> void:
 	if audio_player == null:
 		return
-	audio_player.stop()
+	if not _web_audio.stop_bgm():
+		audio_player.stop()
 	clear_scheduled_events()
 	_last_beat_index = -1
 	_last_subdivision_index = -1
@@ -74,20 +77,28 @@ func stop() -> void:
 
 # 対象一時停止
 func pause() -> void:
-	if audio_player != null:
+	if not _web_audio.pause_bgm() and audio_player != null:
 		audio_player.stream_paused = true
 
 
 # 対象再開
 func resume() -> void:
-	if audio_player != null:
+	if not _web_audio.resume_bgm() and audio_player != null:
 		audio_player.stream_paused = false
+
+
+func is_playing() -> bool:
+	if _web_audio.is_enabled():
+		return _web_audio.is_bgm_playing()
+	return audio_player != null and audio_player.playing
 
 
 # 曲時間取得
 func get_song_time() -> float:
 	if audio_player == null:
 		return 0.0
+	if _web_audio.is_enabled():
+		return _web_audio.get_bgm_position() - beat_offset
 	# 時間
 	var time := audio_player.get_playback_position()
 	time += AudioServer.get_time_since_last_mix()

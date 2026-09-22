@@ -15,8 +15,9 @@ layer = 200
 visible = false
 script = ExtResource("1_script")
 
-[node name="SePlayer" type="AudioStreamPlayer" parent="." unique_id=1559835908]
+[node name="SePlayer" type="AudioStreamPlayer" parent="." groups=["se_audio_players"] unique_id=1559835908]
 stream = ExtResource("5_click_se")
+bus = &"Master"
 
 [node name="Screen" type="Control" parent="." unique_id=738985149]
 layout_mode = 3

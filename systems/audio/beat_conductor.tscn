@@ -5,5 +5,5 @@
 [node name="BeatConductor" type="Node" unique_id=1851646400]
 script = ExtResource("1_script")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=2110352408]
-bus = &"BGM"
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." groups=["bgm_audio_players"] unique_id=2110352408]
+bus = &"Master"

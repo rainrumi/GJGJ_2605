@@ -3,8 +3,8 @@ extends Node
 signal settings_changed
 
 const SETTINGS_PATH := "user://settings.cfg"
-const BGM_BUS_NAME := "BGM"
-const SE_BUS_NAME := "SE"
+const BGM_PLAYER_GROUP := &"bgm_audio_players"
+const SE_PLAYER_GROUP := &"se_audio_players"
 
 const DEFAULT_MASTER_VOLUME := 80.0
 const DEFAULT_BGM_VOLUME := 70.0
@@ -39,8 +39,7 @@ var difficulty := DEFAULT_DIFFICULTY
 
 # 初期化
 func _ready() -> void:
-	_ensure_audio_bus(BGM_BUS_NAME)
-	_ensure_audio_bus(SE_BUS_NAME)
+	get_tree().node_added.connect(_on_node_added)
 	load_settings()
 	apply_settings()
 
@@ -78,11 +77,9 @@ func save_settings() -> void:
 
 # 設定適用
 func apply_settings() -> void:
-	_ensure_audio_bus(BGM_BUS_NAME)
-	_ensure_audio_bus(SE_BUS_NAME)
 	_set_bus_volume("Master", master_volume)
-	_set_bus_volume(BGM_BUS_NAME, bgm_volume)
-	_set_bus_volume(SE_BUS_NAME, se_volume)
+	_apply_group_volume(BGM_PLAYER_GROUP, bgm_volume)
+	_apply_group_volume(SE_PLAYER_GROUP, se_volume)
 	_apply_window_settings()
 	settings_changed.emit()
 
@@ -166,15 +163,25 @@ func _set_bus_volume(bus_name: String, volume_percent: float) -> void:
 		AudioServer.set_bus_volume_db(bus_index, linear_to_db(linear_volume))
 
 
-# ensure音声bus処理
-func _ensure_audio_bus(bus_name: String) -> void:
-	if AudioServer.get_bus_index(bus_name) >= 0:
+# カテゴリ別プレイヤー音量適用
+func _apply_group_volume(group_name: StringName, volume_percent: float) -> void:
+	for node in get_tree().get_nodes_in_group(group_name):
+		if node is AudioStreamPlayer:
+			_set_player_volume(node as AudioStreamPlayer, volume_percent)
+
+
+func _set_player_volume(player: AudioStreamPlayer, volume_percent: float) -> void:
+	player.volume_linear = clampf(volume_percent / 100.0, 0.0, 1.0)
+
+
+func _on_node_added(node: Node) -> void:
+	if not node is AudioStreamPlayer:
 		return
-	AudioServer.add_bus()
-	# bus番号
-	var bus_index := AudioServer.get_bus_count() - 1
-	AudioServer.set_bus_name(bus_index, bus_name)
-	AudioServer.set_bus_send(bus_index, "Master")
+	var player := node as AudioStreamPlayer
+	if player.is_in_group(BGM_PLAYER_GROUP):
+		_set_player_volume(player, bgm_volume)
+	elif player.is_in_group(SE_PLAYER_GROUP):
+		_set_player_volume(player, se_volume)
 
 
 # ウィンドウ設定適用

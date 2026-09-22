@@ -67,10 +67,12 @@ position = Vector2(270, 192.97)
 [node name="Character" parent="." unique_id=652368236 instance=ExtResource("6_character")]
 position = Vector2(95, 210)
 
-[node name="ClickSe" type="AudioStreamPlayer" parent="." unique_id=163842910]
+[node name="ClickSe" type="AudioStreamPlayer" parent="." groups=["se_audio_players"] unique_id=163842910]
+bus = &"Master"
 
-[node name="AttackSe" type="AudioStreamPlayer" parent="." unique_id=489052507]
+[node name="AttackSe" type="AudioStreamPlayer" parent="." groups=["se_audio_players"] unique_id=489052507]
 stream = ExtResource("22_attack_se")
+bus = &"Master"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]
 script = ExtResource("3_battle_ui_script")

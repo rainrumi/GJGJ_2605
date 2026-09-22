@@ -40,9 +40,11 @@ func _run() -> void:
 		"A Web mouse press restarts BGM even when the player reports that it is already playing"
 	)
 	_expect(
-		ProjectSettings.get_setting("audio/general/default_playback_type.web", -1) == 0,
-		"Web audio uses stream playback so custom BGM/SE buses remain audible"
+		ProjectSettings.get_setting("audio/driver/driver.web", "") == "Dummy",
+		"Web disables Godot's AudioWorklet driver because unityroom serves its modules with an invalid MIME type"
 	)
+	_expect(root.get_node_or_null("WebAudioFallback") != null, "Web browser audio fallback is registered")
+	_expect(AudioServer.get_bus_count() == 1, "Web audio uses only the Master bus")
 	main.set("_web_audio_started", false)
 	bgm.stop()
 	var web_touch := InputEventScreenTouch.new()

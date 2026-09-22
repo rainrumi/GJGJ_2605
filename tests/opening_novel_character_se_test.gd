@@ -21,7 +21,8 @@ func _run() -> void:
 	var character_se := opening_novel.get_node("CharacterSe") as AudioStreamPlayer
 	_expect(character_se != null, "CharacterSe node exists")
 	_expect(character_se.stream != null, "CharacterSe has se_popopo stream")
-	_expect(character_se.bus == "SE", "CharacterSe uses SE bus")
+	_expect(character_se.bus == "Master", "CharacterSe uses Master bus")
+	_expect(character_se.is_in_group("se_audio_players"), "CharacterSe has the SE volume group")
 
 	var game_settings := root.get_node_or_null("/root/GameSettings")
 	var original_text_speed := 1

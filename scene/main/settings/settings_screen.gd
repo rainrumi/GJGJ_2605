@@ -5,6 +5,7 @@ signal closed
 signal title_requested
 
 @onready var se_player: AudioStreamPlayer = $SePlayer
+@onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 @onready var setting_rows: Array[Node] = [
 	$Screen/Panel/Rows/MasterVolume,
 	$Screen/Panel/Rows/BgmVolume,
@@ -56,6 +57,8 @@ func _refresh_values() -> void:
 # 操作音再生
 func _play_se() -> void:
 	if se_player.stream == null:
+		return
+	if _web_audio.play_se(se_player.stream, &"settings_click"):
 		return
 	se_player.stop()
 	se_player.play()

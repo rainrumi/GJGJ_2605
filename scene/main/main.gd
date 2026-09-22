@@ -67,6 +67,7 @@ enum NovelFlow {
 @onready var bgm: BeatConductor = $BGM
 @onready var se_click: AudioStreamPlayer = $SeClick
 @onready var se_select: AudioStreamPlayer = $SeSelect
+@onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 @onready var settings_screen: SettingsScreen = $SettingsScreen
 @onready var seed_reward_overlay: CanvasLayer = $SeedRewardOverlay
 @onready var seed_reward_choice: StageClearSeedChoice = $SeedRewardOverlay/SeedChoice
@@ -153,12 +154,16 @@ func _on_ui_button_mouse_entered(button: BaseButton) -> void:
 func _play_se_click() -> void:
 	if se_click.stream == null:
 		return
+	if _web_audio.play_se(se_click.stream, &"main_click"):
+		return
 	se_click.stop()
 	se_click.play()
 
 
 func _play_se_select() -> void:
 	if se_select.stream == null:
+		return
+	if _web_audio.play_se(se_select.stream, &"main_select"):
 		return
 	se_select.stop()
 	se_select.play()
@@ -189,7 +194,7 @@ func _start_bgm_from_web_input(event: InputEvent, is_web: bool) -> void:
 		or (event is InputEventKey and (event as InputEventKey).pressed)
 		or (event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed)
 	)
-	if not is_activation_event or bgm.audio_player == null or bgm.bgm_stream == null:
+	if not is_activation_event or bgm.bgm_stream == null:
 		return
 	_web_audio_started = true
 	_restart_bgm()
@@ -441,6 +446,9 @@ func show_day_intro() -> void:
 	stage_clear.visible = false
 	await day_intro.show_day(run_state.current_day, run_state.planted_flowers)
 	if flow_id != _screen_flow_id:
+		return
+	if run_state.current_day == 1:
+		_start_first_day_battle()
 		return
 	show_stage_select()
 
@@ -898,6 +906,18 @@ func _setup_initial_stage_position() -> void:
 	run_state.select_stage(initial_stage)
 
 
+func _start_first_day_battle() -> void:
+	var initial_stage := run_state.selected_stage
+	if initial_stage == null or initial_stage.stage_id != INITIAL_STAGE_ID:
+		if stage_select.has_method("get_stage_definition_by_id"):
+			initial_stage = stage_select.call("get_stage_definition_by_id", INITIAL_STAGE_ID) as StageInfo
+	if initial_stage == null:
+		push_error("Main: 1日目の初期ステージ(イリユ洞窟)が見つかりません")
+		show_stage_select()
+		return
+	_select_stage(initial_stage)
+
+
 # ゲームclearノベル表示
 func show_game_clear_novel() -> void:
 	title.visible = false
@@ -1140,7 +1160,7 @@ func _play_bgm() -> void:
 		# mp3stream
 		var mp3_stream := bgm.bgm_stream as AudioStreamMP3
 		mp3_stream.loop = true
-	if bgm.audio_player != null and not bgm.audio_player.playing:
+	if not bgm.is_playing():
 		bgm.play()
 
 
