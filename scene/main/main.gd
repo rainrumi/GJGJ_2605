@@ -907,10 +907,9 @@ func _setup_initial_stage_position() -> void:
 
 
 func _start_first_day_battle() -> void:
-	var initial_stage := run_state.selected_stage
-	if initial_stage == null or initial_stage.stage_id != INITIAL_STAGE_ID:
-		if stage_select.has_method("get_stage_definition_by_id"):
-			initial_stage = stage_select.call("get_stage_definition_by_id", INITIAL_STAGE_ID) as StageInfo
+	var initial_stage: StageInfo
+	if stage_select.has_method("get_stage_definition_by_id"):
+		initial_stage = stage_select.call("get_stage_definition_by_id", INITIAL_STAGE_ID) as StageInfo
 	if initial_stage == null:
 		push_error("Main: 1日目の初期ステージ(イリユ洞窟)が見つかりません")
 		show_stage_select()

@@ -21,7 +21,6 @@ func _run() -> void:
 
 	main.run_state.reset()
 	main.run_state.current_day = 1
-	main.call("_setup_initial_stage_position")
 	main.call("show_day_intro")
 	await create_timer(main.day_intro.DISPLAY_DURATION + 0.2).timeout
 
