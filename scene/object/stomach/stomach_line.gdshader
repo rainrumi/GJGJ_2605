@@ -30,6 +30,11 @@ float get_top_wave_y(float local_x, vec2 scale, float origin_x) {
 }
 
 
+float get_top_wave_pixel_y(float local_x, vec2 scale, float origin_x) {
+	return ceil(get_top_wave_y(local_x, scale, origin_x));
+}
+
+
 float get_line_group_visibility(vec2 group_origin, vec2 group_size, vec2 scale, vec2 origin) {
 	vec2 group_top_left = (group_origin - origin) / max(scale, vec2(0.0001));
 	vec2 group_bottom_right = (group_origin + group_size - origin) / max(scale, vec2(0.0001));
@@ -53,12 +58,28 @@ float get_line_group_visibility(vec2 group_origin, vec2 group_size, vec2 scale, 
 float get_top_edge_visibility(vec2 pixel_position, vec2 scale, vec2 origin) {
 	float local_x = (pixel_position.x - origin.x) / max(scale.x, 0.0001);
 	float local_y = (pixel_position.y - origin.y) / max(scale.y, 0.0001);
-	float wave_y = get_top_wave_y(local_x, scale, origin.x);
-	float edge_line = 1.0 - step(top_edge_thickness, abs(local_y - wave_y));
+	float wave_y = get_top_wave_pixel_y(local_x, scale, origin.x);
+	float pixel_y = floor(local_y + 0.5);
+	float local_x_step = 1.0 / max(scale.x, 0.0001);
+	float previous_wave_y = get_top_wave_pixel_y(local_x - local_x_step, scale, origin.x);
+	float next_wave_y = get_top_wave_pixel_y(local_x + local_x_step, scale, origin.x);
+	float current_dot = 1.0 - step(top_edge_thickness, abs(pixel_y - wave_y));
+	float previous_dot = step(min(wave_y, previous_wave_y) - 0.001, pixel_y) * (1.0 - step(max(wave_y, previous_wave_y) + 0.001, pixel_y));
+	float next_dot = step(min(wave_y, next_wave_y) - 0.001, pixel_y) * (1.0 - step(max(wave_y, next_wave_y) + 0.001, pixel_y));
+	float edge_line = max(current_dot, max(previous_dot, next_dot));
 	float dot_phase = mod(pixel_position.x - origin.x, top_edge_dot_period);
 	float dot_line = 1.0 - step(top_edge_dot_width, dot_phase);
 	float inside_mesh = step(0.0, local_x) * (1.0 - step(mesh_size.x, local_x));
 	return edge_line * dot_line * inside_mesh;
+}
+
+
+float get_top_wave_clip(vec2 pixel_position, vec2 scale, vec2 origin) {
+	float local_x = (pixel_position.x - origin.x) / max(scale.x, 0.0001);
+	float local_y = (pixel_position.y - origin.y) / max(scale.y, 0.0001);
+	float wave_y = get_top_wave_pixel_y(local_x, scale, origin.x);
+	float pixel_y = floor(local_y + 0.5);
+	return step(wave_y + top_edge_thickness, pixel_y);
 }
 
 
@@ -87,6 +108,8 @@ void fragment() {
 	float raw_mask_value = mask_color.a * max(max(mask_color.r, mask_color.g), mask_color.b);
 	float mask_value = smoothstep(mask_clip_threshold, mask_clip_threshold + 0.01, raw_mask_value);
 	float top_edge_value = get_top_edge_visibility(floor(world_position), world_scale, world_origin);
-	float line_value = max(hatch_value * line_group_visibility, top_edge_value);
-	COLOR = vec4(dot_color.rgb, line_value * dot_color.a * mask_value) * COLOR;
+	float top_wave_clip = get_top_wave_clip(floor(world_position), world_scale, world_origin);
+	float hatch_value_masked = hatch_value * line_group_visibility * top_wave_clip * mask_value;
+	float line_value = max(hatch_value_masked, top_edge_value);
+	COLOR = vec4(dot_color.rgb, line_value * dot_color.a) * COLOR;
 }
