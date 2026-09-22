@@ -20,6 +20,8 @@
 [ext_resource type="PackedScene" uid="uid://dqdytqcjhv1yw" path="res://scene/ui/seed/owned_seed_panel.tscn" id="44_owned_seed_panel"]
 [ext_resource type="Texture2D" uid="uid://vq7lurgv5gjw" path="res://resource/image/ui/button/ui_button_seed_directory_open.png" id="45_owned_seed_open_texture"]
 [ext_resource type="Script" uid="uid://c284ogkr07lmb" path="res://scene/ui/button/hover_scale_texture_button.gd" id="46_hover_scale"]
+[ext_resource type="PackedScene" uid="uid://cw5upfry3m3nf" path="res://scene/main/opening_novel/opening_novel.tscn" id="47_tutorial_novel"]
+[ext_resource type="Resource" path="res://data/resources/novel/tutorial/tutorial_100.tres" id="48_tutorial_text"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enemy_return_hint"]
 bg_color = Color(0.07, 0.06, 0.09, 0.78)
@@ -43,6 +45,7 @@ corner_radius_bottom_left = 4
 
 [node name="Game" type="Node2D" unique_id=95022133]
 script = ExtResource("12_game_script")
+tutorial_novel_text = ExtResource("48_tutorial_text")
 
 [node name="Background" parent="." unique_id=1278647446 instance=ExtResource("1_background")]
 
@@ -76,6 +79,10 @@ bus = &"Master"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=185732557]
 script = ExtResource("3_battle_ui_script")
+
+[node name="TutorialNovel" parent="." unique_id=185732558 instance=ExtResource("47_tutorial_novel")]
+novel_layer = 120
+visible = false
 
 [node name="StageInfo" type="VBoxContainer" parent="UI" unique_id=992397045]
 offset_left = 12.0

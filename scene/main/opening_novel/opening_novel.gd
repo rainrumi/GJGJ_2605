@@ -8,6 +8,7 @@ signal click_wait_completed
 const DEFAULT_TEXT_INTERVAL := 0.04
 
 @export var novel_text: NovelTextInfo
+@export var novel_layer := 100
 
 @onready var screen: Control = $Screen
 @onready var opening_still: TextureRect = $Screen/OpeningStill
@@ -82,7 +83,7 @@ func _start_script(next_novel_text: NovelTextInfo, show_default_background: bool
 	text_label.text = ""
 	text_layer.clear_text()
 	next_label.visible = false
-	layer = 100
+	layer = novel_layer
 	if script_text.strip_edges().is_empty():
 		_script_load_failed = true
 		var source_path := next_novel_text.script_path if next_novel_text != null else "<null>"

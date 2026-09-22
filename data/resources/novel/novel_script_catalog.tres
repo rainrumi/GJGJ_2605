@@ -1351,5 +1351,12 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 アンタのこと一番知ってるのは私なんだから……。
 @lcm
-"
+",
+"res://resource/novel/tutorial/tutorial_100.txt": "@name \"\"
+チュートリアル
+@lcm
+これはてすとです
+@lcm
+終了
+@lcm"
 })

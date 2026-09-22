@@ -2,6 +2,7 @@ extends Node2D
 signal battle_finished(won: bool)
 signal seed_depleted(source: Resource)
 signal seed_inventory_changed(equipped_seeds: Array[SeedInfo], stored_seeds: Array[SeedInfo])
+
 enum DragMode {
 	NONE,
 	ENEMY,
@@ -22,10 +23,12 @@ const DRAG_CENTER_TWEEN_DURATION := 0.3
 const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
+@export var tutorial_novel_text: NovelTextInfo
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
 @onready var attack_se: AudioStreamPlayer = $AttackSe
+@onready var tutorial_novel: OpeningNovel = $TutorialNovel
 @onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 @onready var character: Character = $Character
 @onready var enemies: Array[Enemy] = [$EnemyLeft as Enemy, $EnemyCenter as Enemy, $EnemyRight as Enemy, $EnemyUpperRight as Enemy]
@@ -80,6 +83,7 @@ var _battle_start_context: BattleInfo
 var _awaiting_time_over_decision := false
 var _pending_depleted_seed_sources: Array[Resource] = []
 var _attack_se_requested_this_timing := false
+var _tutorial_active := false
 # 初期化
 func _ready() -> void:
 	randomize()
@@ -105,12 +109,34 @@ func _ready() -> void:
 	enemy_setup.setup(self, input_controller, stomach)
 	seed_controller.setup(self, stomach, input_controller)
 	child_entered_tree.connect(_on_child_entered_tree_for_attack_se)
+	tutorial_novel.finished.connect(_on_tutorial_novel_finished)
 	for enemy in enemies:
 		_connect_enemy_damage_attack_se(enemy)
 	_connect_ui()
 	_connect_input()
 	_create_Acidion_timer()
 	ui.hide_enemy_tooltip()
+
+
+func show_tutorial() -> void:
+	if tutorial_novel_text == null:
+		push_error("Game requires tutorial_novel_text to be assigned.")
+		return
+	if not battle_active:
+		return
+	_tutorial_active = true
+	_set_battle_flags(false)
+	tutorial_novel.start_with_text(tutorial_novel_text)
+
+
+func _on_tutorial_novel_finished() -> void:
+	if not _tutorial_active:
+		return
+	_tutorial_active = false
+	if not is_inside_tree() or not visible:
+		return
+	_set_battle_flags(true)
+	_refresh_ui()
 # 戦闘開始
 func start_battle(context: BattleInfo = null) -> void:
 	# 戦闘文脈
@@ -189,6 +215,8 @@ func get_last_time_over_recovery_percent() -> int:
 
 # 戦闘取消
 func cancel_battle() -> void:
+	_tutorial_active = false
+	tutorial_novel.visible = false
 	_awaiting_time_over_decision = false
 	_pending_depleted_seed_sources.clear()
 	battle_active = false
