@@ -83,7 +83,6 @@ theme_override_font_sizes/font_size = 16
 text = "終了"
 
 [node name="DebugButton" type="Button" parent="." unique_id=1174410901]
-visible = false
 offset_left = 13.0
 offset_top = 320.0
 offset_right = 153.0

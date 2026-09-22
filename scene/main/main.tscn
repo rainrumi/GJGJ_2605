@@ -48,15 +48,13 @@ process_mode = 3
 auto_play = false
 bgm_stream = ExtResource("10_bgm")
 
-[node name="SeClick" type="AudioStreamPlayer" parent="." groups=["se_audio_players"] unique_id=488706143]
+[node name="SeClick" type="AudioStreamPlayer" parent="." unique_id=488706143 groups=["se_audio_players"]]
 process_mode = 3
 stream = ExtResource("14_se_click")
-bus = &"Master"
 
-[node name="SeSelect" type="AudioStreamPlayer" parent="." groups=["se_audio_players"] unique_id=14639934]
+[node name="SeSelect" type="AudioStreamPlayer" parent="." unique_id=14639934 groups=["se_audio_players"]]
 process_mode = 3
 stream = ExtResource("15_se_select")
-bus = &"Master"
 
 [node name="Title" parent="." unique_id=1609153234 instance=ExtResource("2_a0c6e")]
 

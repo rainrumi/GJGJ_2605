@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b5om836obl82m" path="res://scene/main/opening_novel/opening_novel.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Resource" uid="uid://dpwdn5mwco1y8" path="res://data/resources/novel/novel_opening.tres" id="3_text"]
+[ext_resource type="Texture2D" uid="uid://cug38r2oqxn8g" path="res://resource/image/texture/still/tex_still_area_iriyu_100.png" id="4_n3wnt"]
 [ext_resource type="AudioStream" uid="uid://bisemm55nx4fe" path="res://resource/sound/se/se_popopo.mp3" id="5_character_se"]
 [ext_resource type="PackedScene" path="res://scene/main/opening_novel/novel_debug_panel.tscn" id="6_debug_panel"]
 
@@ -23,9 +24,8 @@ layer = 50
 script = ExtResource("1_script")
 novel_text = ExtResource("3_text")
 
-[node name="CharacterSe" type="AudioStreamPlayer" parent="." groups=["se_audio_players"] unique_id=1344018540]
+[node name="CharacterSe" type="AudioStreamPlayer" parent="." unique_id=1344018540 groups=["se_audio_players"]]
 stream = ExtResource("5_character_se")
-bus = &"Master"
 
 [node name="Screen" type="Control" parent="." unique_id=1190891835]
 layout_mode = 3
@@ -44,6 +44,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+texture = ExtResource("4_n3wnt")
 expand_mode = 1
 stretch_mode = 5
 
@@ -57,6 +58,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="TextBox" type="Panel" parent="Screen" unique_id=1725155311]
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -72,34 +74,35 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_text_box")
 
 [node name="NameLabel" type="Label" parent="Screen/TextBox" unique_id=754539284]
-visible = false
 layout_mode = 0
-offset_left = 17.0
-offset_top = -24.0
-offset_right = 220.0
-offset_bottom = -2.0
+offset_left = -25.0
+offset_top = 40.0
+offset_right = 178.0
+offset_bottom = 55.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 14
 
 [node name="TextLabel" type="Label" parent="Screen/TextBox" unique_id=1311919522]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 17.0
-offset_top = 12.0
-offset_right = -17.0
-offset_bottom = -21.0
+offset_left = 23.0
+offset_top = 57.0
+offset_right = -11.0
+offset_bottom = 16.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 15
+horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="NextLabel" type="Label" parent="Screen/TextBox" unique_id=719110256]
@@ -109,10 +112,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -39.0
-offset_top = -21.0
-offset_right = -15.0
-offset_bottom = -6.0
+offset_left = -10.0
+offset_top = 1.0
+offset_right = 14.0
+offset_bottom = 16.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
