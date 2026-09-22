@@ -49,6 +49,7 @@
 @lcm
 @name "試験官"
 イエッサー、理事長様。
+@lcm
 @name ""
 ……。
 @lcm
@@ -81,5 +82,6 @@
 @lcm
 トゥルーエンド - After The Canary's Song
 @l
+@r
 Thank You for Playing!!
 @lcm

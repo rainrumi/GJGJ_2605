@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="NovelScriptCatalog" format=3]
+[gd_resource type="Resource" script_class="NovelScriptCatalog" format=3 uid="uid://crcavn3w53lp3"]
 
 [ext_resource type="Script" path="res://data/info/novel/novel_script_catalog.gd" id="1_x02gd"]
 
@@ -805,6 +805,7 @@ by 試験官
 @lcm
 @name \"試験官\"
 イエッサー、理事長様。
+@lcm
 @name \"\"
 ……。
 @lcm
@@ -837,6 +838,7 @@ by 試験官
 @lcm
 トゥルーエンド - After The Canary's Song
 @l
+@r
 Thank You for Playing!!
 @lcm",
 "res://resource/novel/event/area/novel_event_rara_corotta_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"

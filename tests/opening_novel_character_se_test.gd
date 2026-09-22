@@ -33,8 +33,11 @@ func _run() -> void:
 	novel_text.text = "ab"
 	opening_novel.start_with_text(novel_text)
 
+	var text_label := opening_novel.get_node("Screen/TextBox/TextLabel") as Label
+	var text_layer := opening_novel.get_node("Screen/TextBox/TextLayer") as NovelTextLayer
 	_expect(character_se.playing, "CharacterSe plays when the first character appears")
-	_expect((opening_novel.get_node("Screen/TextBox/TextLabel") as Label).text == "a", "First character appears before the interval")
+	_expect(text_label.text == "ab", "Full text is laid out before typing starts")
+	_expect(text_layer.get_visible_characters() == 1, "Only the first character is visible before the interval")
 
 	if game_settings != null:
 		game_settings.set("text_speed", original_text_speed)

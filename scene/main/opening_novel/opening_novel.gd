@@ -14,6 +14,7 @@ const DEFAULT_TEXT_INTERVAL := 0.04
 @onready var image_layer: Control = $Screen/ImageLayer
 @onready var name_label: Label = $Screen/TextBox/NameLabel
 @onready var text_label: Label = $Screen/TextBox/TextLabel
+@onready var text_layer: NovelTextLayer = $Screen/TextBox/TextLayer
 @onready var next_label: Label = $Screen/TextBox/NextLabel
 @onready var character_se: AudioStreamPlayer = $CharacterSe
 @onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
@@ -79,12 +80,13 @@ func _start_script(next_novel_text: NovelTextInfo, show_default_background: bool
 	name_label.text = ""
 	name_label.visible = false
 	text_label.text = ""
+	text_layer.clear_text()
 	next_label.visible = false
 	layer = 100
 	if script_text.strip_edges().is_empty():
 		_script_load_failed = true
 		var source_path := next_novel_text.script_path if next_novel_text != null else "<null>"
-		text_label.text = "ノベルデータの読み込みに失敗しました。\n%s" % source_path
+		_set_text_layout("ノベルデータの読み込みに失敗しました。\n%s" % source_path, -1)
 		push_error("OpeningNovel refused to skip an unreadable scenario: %s" % source_path)
 		return
 	_run_script(request_id)
@@ -109,11 +111,23 @@ func _run_script(request_id: int) -> void:
 
 
 # テキスト表示
+func _set_text_layout(target_text: String, visible_character_count: int) -> void:
+	text_label.text = target_text
+	text_label.visible_characters = -1
+	text_layer.rebuild_from_label(text_label, target_text)
+	text_layer.set_visible_characters(visible_character_count)
+
+
 func _type_text(source_text: String, request_id: int) -> void:
 	_typing_request_id += 1
 	# typing要求ID
 	var typing_request_id := _typing_request_id
-	_current_text_target = text_label.text + source_text
+	var previous_text := text_label.text
+	var previous_visible_characters := text_layer.get_visible_characters()
+	if previous_visible_characters < 0:
+		previous_visible_characters = previous_text.length()
+	_current_text_target = previous_text + source_text
+	_set_text_layout(_current_text_target, previous_visible_characters)
 	next_label.visible = false
 	_is_typing = true
 	# 文字間隔
@@ -124,7 +138,7 @@ func _type_text(source_text: String, request_id: int) -> void:
 	for character in source_text:
 		if request_id != _script_request_id or typing_request_id != _typing_request_id:
 			return
-		text_label.text += character
+		text_layer.set_visible_characters(text_layer.get_visible_characters() + 1)
 		_play_character_se()
 		await get_tree().create_timer(type_interval).timeout
 	if request_id != _script_request_id or typing_request_id != _typing_request_id:
@@ -136,6 +150,7 @@ func _type_text(source_text: String, request_id: int) -> void:
 func _complete_typing() -> void:
 	_typing_request_id += 1
 	text_label.text = _current_text_target
+	text_layer.set_visible_characters(-1)
 	_is_typing = false
 
 
@@ -345,7 +360,7 @@ func _command_l(request_id: int) -> void:
 # rコマンド
 func _command_r() -> void:
 	_current_text_target = text_label.text + "\n"
-	text_label.text = _current_text_target
+	_set_text_layout(_current_text_target, -1)
 
 
 # cmコマンド
@@ -354,6 +369,7 @@ func _command_cm() -> void:
 	_is_typing = false
 	_current_text_target = ""
 	text_label.text = ""
+	text_layer.clear_text()
 	next_label.visible = false
 
 

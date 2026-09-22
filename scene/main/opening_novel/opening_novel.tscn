@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cug38r2oqxn8g" path="res://resource/image/texture/still/tex_still_area_iriyu_100.png" id="4_n3wnt"]
 [ext_resource type="AudioStream" uid="uid://bisemm55nx4fe" path="res://resource/sound/se/se_popopo.mp3" id="5_character_se"]
 [ext_resource type="PackedScene" path="res://scene/main/opening_novel/novel_debug_panel.tscn" id="6_debug_panel"]
+[ext_resource type="Script" uid="uid://bi36xsb5wpwff" path="res://scene/main/opening_novel/novel_text_layer.gd" id="7_text_layer_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text_box"]
 bg_color = Color(0.012145013, 0.009099999, 0.07, 0.7058824)
@@ -86,6 +87,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 14
 
 [node name="TextLabel" type="Label" parent="Screen/TextBox" unique_id=1311919522]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -104,6 +106,20 @@ theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="TextLayer" type="Control" parent="Screen/TextBox" unique_id=1311919523]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 23.0
+offset_top = 57.0
+offset_right = -11.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("7_text_layer_script")
 
 [node name="NextLabel" type="Label" parent="Screen/TextBox" unique_id=719110256]
 layout_mode = 1
