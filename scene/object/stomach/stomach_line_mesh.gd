@@ -9,6 +9,7 @@ extends MeshInstance2D
 @export var patch_margin_top := 2.0
 @export var patch_margin_right := 8.0
 @export var patch_margin_bottom := 8.0
+@export var max_patch_margin_ratio := 0.5
 @export_range(1, 64, 1) var horizontal_segments := 32
 
 var _last_build_signature := ""
@@ -121,7 +122,7 @@ func _get_x_positions() -> PackedFloat32Array:
 	var positions := PackedFloat32Array()
 	positions.append(0.0)
 	# left幅
-	var left_width := minf(patch_margin_left, size.x * 0.5)
+	var left_width := minf(patch_margin_left, size.x * max_patch_margin_ratio)
 	# right幅
 	var right_width := minf(patch_margin_right, size.x - left_width)
 	positions.append(left_width)
@@ -142,7 +143,7 @@ func _get_y_positions() -> PackedFloat32Array:
 	var positions := PackedFloat32Array()
 	positions.append(0.0)
 	# top高さ
-	var top_height := minf(patch_margin_top, size.y * 0.5)
+	var top_height := minf(patch_margin_top, size.y * max_patch_margin_ratio)
 	# bottom高さ
 	var bottom_height := minf(patch_margin_bottom, size.y - top_height)
 	positions.append(top_height)
@@ -169,7 +170,7 @@ func _get_unique_sorted_positions(values: PackedFloat32Array) -> PackedFloat32Ar
 # 元データx取得
 func _get_source_x(local_x: float) -> float:
 	# left幅
-	var left_width := minf(patch_margin_left, size.x * 0.5)
+	var left_width := minf(patch_margin_left, size.x * max_patch_margin_ratio)
 	# right幅
 	var right_width := minf(patch_margin_right, size.x - left_width)
 	# centerstart
@@ -186,7 +187,7 @@ func _get_source_x(local_x: float) -> float:
 # 元データy取得
 func _get_source_y(local_y: float) -> float:
 	# top高さ
-	var top_height := minf(patch_margin_top, size.y * 0.5)
+	var top_height := minf(patch_margin_top, size.y * max_patch_margin_ratio)
 	# bottom高さ
 	var bottom_height := minf(patch_margin_bottom, size.y - top_height)
 	# centerstart

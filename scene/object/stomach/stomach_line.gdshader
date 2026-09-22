@@ -4,6 +4,7 @@ uniform sampler2D line_texture : source_color, repeat_enable, filter_nearest;
 uniform vec4 dot_color : source_color = vec4(0.94117647, 0.87843137, 1.0, 1.0);
 uniform vec2 line_texture_size = vec2(6.0, 6.0);
 uniform vec2 line_texture_group_count = vec2(6.0, 6.0);
+uniform float hatch_period = 10.0;
 uniform vec2 mesh_size = vec2(153.0, 10.0);
 uniform float wave_amplitude = 1.0;
 uniform float wave_frequency = 15.0;
@@ -61,12 +62,14 @@ void vertex() {
 void fragment() {
 	vec4 mask_color = texture(TEXTURE, UV);
 	vec2 texture_uv = world_position / line_texture_size;
-	vec4 line_color = texture(line_texture, texture_uv);
 	vec2 texture_group_uv = floor(texture_uv * line_texture_group_count) / line_texture_group_count;
 	vec2 group_origin = texture_group_uv * line_texture_size;
 	vec2 group_size = line_texture_size / line_texture_group_count;
 	float line_group_visibility = get_line_group_visibility(group_origin, group_size, world_scale, world_origin);
+	vec2 pixel_uv = floor(world_position);
+	float hatch_phase = mod(pixel_uv.x + pixel_uv.y, hatch_period);
+	float hatch_value = 1.0 - step(1.0, hatch_phase);
 	float raw_mask_value = mask_color.a * max(max(mask_color.r, mask_color.g), mask_color.b);
 	float mask_value = smoothstep(mask_clip_threshold, mask_clip_threshold + 0.01, raw_mask_value);
-	COLOR = vec4(dot_color.rgb, line_color.a * dot_color.a * mask_value * line_group_visibility) * COLOR;
+	COLOR = vec4(dot_color.rgb, hatch_value * dot_color.a * mask_value * line_group_visibility) * COLOR;
 }
