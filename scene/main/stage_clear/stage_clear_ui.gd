@@ -261,7 +261,6 @@ func _connect_child_signals() -> void:
 	owned_seed_panel.equip_requested.connect(_on_seed_equip_requested)
 	owned_seed_panel.unequip_requested.connect(_on_seed_unequip_requested)
 	owned_seed_panel.seed_drag_released.connect(_on_seed_drag_released)
-	_close_owned_seed_panel()
 
 
 func set_seed_inventory(equipped_seeds: Array, stored_seeds: Array) -> void:

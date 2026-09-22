@@ -620,6 +620,7 @@ func _check_stage_clear_storage_reward() -> void:
 	var stage_clear_ui := stage_clear.get_node("UI") as StageClearUi
 	var open_button := stage_clear_ui.get_node("OwnedSeedOpenButton") as TextureButton
 	var owned_panel := stage_clear_ui.get_node("OwnedSeedPanel") as OwnedSeedPanel
+	_expect(not open_button.visible, "ステージクリア画面の所持種ボタンはSceneの初期表示設定に従う")
 	var equipped_seeds := _create_seeds(2, 700)
 	equipped_seeds[1].game_clear_drag_enabled = true
 	stage_clear.call("set_seed_inventory", equipped_seeds, _create_seeds(3, 800))
