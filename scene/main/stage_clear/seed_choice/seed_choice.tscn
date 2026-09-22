@@ -12,9 +12,8 @@
 [ext_resource type="Script" uid="uid://llc58wsg7b3n" path="res://scene/main/stage_clear/seed_choice/seed_choice_label_effect.gd" id="10_raa8t"]
 
 [node name="SeedChoice" type="Button" unique_id=188041236]
-custom_minimum_size = Vector2(300, 70)
-offset_right = 300.0
-offset_bottom = 70.0
+offset_right = 380.0
+offset_bottom = 96.0
 flat = true
 script = ExtResource("1_script")
 
@@ -22,7 +21,7 @@ script = ExtResource("1_script")
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_right = 380.0
-offset_bottom = 98.0
+offset_bottom = 96.0
 texture = ExtResource("3_frame")
 patch_margin_left = 8
 patch_margin_top = 8
@@ -46,9 +45,9 @@ script = ExtResource("6_rare_script")
 self_modulate = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_left = 283.0
-offset_top = 2.0
+offset_top = 1.0
 offset_right = 377.0
-offset_bottom = 96.0
+offset_bottom = 95.0
 texture = ExtResource("6_dn7uk")
 expand_mode = 1
 script = ExtResource("7_texture_script")
@@ -63,33 +62,33 @@ theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 14
 text = "夢の種の名前"
 script = ExtResource("8_name_script")
 
 [node name="EffectLabel" type="Label" parent="." unique_id=713516620]
 layout_mode = 0
 offset_left = 5.0
-offset_top = 23.0
+offset_top = 27.0
 offset_right = 281.0
-offset_bottom = 83.0
+offset_bottom = 87.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 8
 text = "効果テキスト"
+vertical_alignment = 1
 autowrap_mode = 3
 script = ExtResource("10_raa8t")
 
-[node name="PerformanceMark" type="Label" parent="."]
+[node name="PerformanceMark" type="Label" parent="." unique_id=538643324]
 visible = false
 layout_mode = 0
 offset_left = 343.0
 offset_top = 25.0
 offset_right = 377.0
 offset_bottom = 59.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
