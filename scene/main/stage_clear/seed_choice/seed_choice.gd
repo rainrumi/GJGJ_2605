@@ -10,7 +10,8 @@ extends Button
 # 名前表示
 @onready var name_label: StageClearSeedChoiceLabelName = $NameLabel
 # 効果表示
-@onready var effect_label: StageClearSeedChoiceLabelEffect = $EffectLabel
+@onready var main_effect_label: StageClearSeedChoiceLabelEffect = $MainEffectLabel
+@onready var sub_effect_label: StageClearSeedChoiceLabelEffect = $SubEffectLabel
 @onready var performance_mark: Label = $PerformanceMark
 
 var current_seed: SeedInfo
@@ -40,7 +41,8 @@ func setup_choice(seed: SeedInfo) -> void:
 	valuable_icon.setup_choice(seed)
 	seed_texture_rect.setup_choice(seed)
 	name_label.setup_choice(seed)
-	effect_label.setup_choice(seed)
+	main_effect_label.setup_choice(seed)
+	sub_effect_label.setup_choice(seed)
 	_refresh_performance_mark()
 
 

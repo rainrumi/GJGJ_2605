@@ -66,21 +66,37 @@ theme_override_font_sizes/font_size = 14
 text = "夢の種の名前"
 script = ExtResource("8_name_script")
 
-[node name="EffectLabel" type="Label" parent="." unique_id=713516620]
+[node name="MainEffectLabel" type="Label" parent="." unique_id=713516620]
 layout_mode = 0
 offset_left = 5.0
-offset_top = 27.0
+offset_top = 25.0
 offset_right = 281.0
-offset_bottom = 87.0
+offset_bottom = 55.0
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 8
-text = "効果テキスト"
-vertical_alignment = 1
+text = "メインスキル"
 autowrap_mode = 3
 script = ExtResource("10_raa8t")
+effect_type = 0
+
+[node name="SubEffectLabel" type="Label" parent="." unique_id=985799255]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 59.0
+offset_right = 281.0
+offset_bottom = 89.0
+theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 8
+text = "サブスキル"
+autowrap_mode = 3
+script = ExtResource("10_raa8t")
+effect_type = 1
 
 [node name="PerformanceMark" type="Label" parent="." unique_id=538643324]
 visible = false

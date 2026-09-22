@@ -71,7 +71,13 @@ func _check_stage_clear_choice(seed: SeedInfo) -> void:
 	var choice := packed.instantiate() as StageClearSeedChoice
 	get_tree().root.add_child(choice)
 	await get_tree().process_frame
+	seed.main_description = "メイン効果"
+	seed.sub_description = "サブ効果"
 	choice.setup_choice(seed)
+	var main_effect_label := choice.get_node("MainEffectLabel") as Label
+	var sub_effect_label := choice.get_node("SubEffectLabel") as Label
+	_expect(main_effect_label.text == "メインスキル\nメイン効果", "メインスキルをメイン効果Labelへ表示する")
+	_expect(sub_effect_label.text == "サブスキル\nサブ効果", "サブスキルをサブ効果Labelへ表示する")
 	choice.set_debug_numbers_visible(true)
 	_expect(choice.performance_mark.visible, "夢の種選択ボタンでチェックマークを表示する")
 	var right_click := InputEventMouseButton.new()
