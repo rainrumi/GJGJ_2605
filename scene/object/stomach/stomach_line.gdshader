@@ -4,12 +4,15 @@ uniform sampler2D line_texture : source_color, repeat_enable, filter_nearest;
 uniform vec4 dot_color : source_color = vec4(0.94117647, 0.87843137, 1.0, 1.0);
 uniform vec2 line_texture_size = vec2(6.0, 6.0);
 uniform vec2 line_texture_group_count = vec2(6.0, 6.0);
-uniform float hatch_period = 10.0;
+uniform float hatch_period = 5.0;
 uniform vec2 mesh_size = vec2(153.0, 10.0);
 uniform float wave_amplitude = 1.0;
 uniform float wave_frequency = 15.0;
 uniform float edge_keep_width = 8.0;
 uniform float mask_clip_threshold = 0.05;
+uniform float top_edge_dot_period = 1.0;
+uniform float top_edge_dot_width = 1.0;
+uniform float top_edge_thickness = 1.0;
 
 varying vec2 world_position;
 varying vec2 world_origin;
@@ -47,6 +50,18 @@ float get_line_group_visibility(vec2 group_origin, vec2 group_size, vec2 scale, 
 }
 
 
+float get_top_edge_visibility(vec2 pixel_position, vec2 scale, vec2 origin) {
+	float local_x = (pixel_position.x - origin.x) / max(scale.x, 0.0001);
+	float local_y = (pixel_position.y - origin.y) / max(scale.y, 0.0001);
+	float wave_y = get_top_wave_y(local_x, scale, origin.x);
+	float edge_line = 1.0 - step(top_edge_thickness, abs(local_y - wave_y));
+	float dot_phase = mod(pixel_position.x - origin.x, top_edge_dot_period);
+	float dot_line = 1.0 - step(top_edge_dot_width, dot_phase);
+	float inside_mesh = step(0.0, local_x) * (1.0 - step(mesh_size.x, local_x));
+	return edge_line * dot_line * inside_mesh;
+}
+
+
 void vertex() {
 	vec2 scale = vec2(length(MODEL_MATRIX[0].xy), length(MODEL_MATRIX[1].xy));
 	vec2 origin = (MODEL_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).xy;
@@ -71,5 +86,7 @@ void fragment() {
 	float hatch_value = 1.0 - step(1.0, hatch_phase);
 	float raw_mask_value = mask_color.a * max(max(mask_color.r, mask_color.g), mask_color.b);
 	float mask_value = smoothstep(mask_clip_threshold, mask_clip_threshold + 0.01, raw_mask_value);
-	COLOR = vec4(dot_color.rgb, hatch_value * dot_color.a * mask_value * line_group_visibility) * COLOR;
+	float top_edge_value = get_top_edge_visibility(floor(world_position), world_scale, world_origin);
+	float line_value = max(hatch_value * line_group_visibility, top_edge_value);
+	COLOR = vec4(dot_color.rgb, line_value * dot_color.a * mask_value) * COLOR;
 }

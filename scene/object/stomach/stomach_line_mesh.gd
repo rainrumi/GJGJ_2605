@@ -6,7 +6,7 @@ extends MeshInstance2D
 @export var texture_size := Vector2(156.0, 44.0)
 @export var line_texture_size := Vector2(6.0, 6.0)
 @export var patch_margin_left := 8.0
-@export var patch_margin_top := 2.0
+@export var patch_margin_top := 4.0
 @export var patch_margin_right := 8.0
 @export var patch_margin_bottom := 8.0
 @export var max_patch_margin_ratio := 0.5
