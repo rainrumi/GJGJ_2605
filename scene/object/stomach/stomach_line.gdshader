@@ -6,6 +6,7 @@ uniform float hatch_period = 5.0;
 uniform float wave_amplitude = 1.0;
 uniform float wave_frequency = 15.0;
 uniform float wave_speed = 1.0;
+// The wave's vertical position inside the fixed-size line mesh.
 uniform float wave_base_y = 2.0;
 uniform float wave_edge_fade_width = 8.0;
 uniform float top_edge_thickness = 1.0;

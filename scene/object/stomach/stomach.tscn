@@ -15,7 +15,7 @@ shader_parameter/hatch_period = 8.0
 shader_parameter/wave_amplitude = 3.0
 shader_parameter/wave_frequency = 3.0
 shader_parameter/wave_speed = 0.2
-shader_parameter/wave_base_y = 5.0
+shader_parameter/wave_base_y = 201.0
 shader_parameter/wave_edge_fade_width = 8.0
 shader_parameter/top_edge_thickness = 1.0
 shader_parameter/mask_clip_threshold = 0.05
@@ -43,7 +43,6 @@ position = Vector2(-76, -117)
 mesh = SubResource("ArrayMesh_naj01")
 texture = ExtResource("2_ogirn")
 script = ExtResource("7_line_mesh_script")
-size = Vector2(153, 235)
 texture_size = Vector2(153, 235)
 
 [node name="grid_frame" type="NinePatchRect" parent="." unique_id=1967012628]
