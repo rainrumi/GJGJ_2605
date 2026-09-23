@@ -473,24 +473,25 @@ func _save_image_position(image_index: int) -> void:
 		return
 	var command := _parse_command(_script_lines[source_line_index].strip_edges())
 	var arguments := _parse_comma_separated_arguments(String(command["argument"]))
-	if String(command["name"]) != "img" or arguments.size() != 4:
+	if (
+		String(command["name"]) != "img"
+		or arguments.size() != 4
+		or not arguments[0].is_valid_int()
+		or arguments[0].to_int() != image_index
+	):
 		push_error(
 			"OpeningNovel could not update @img coordinates on scenario line %d."
 			% (source_line_index + 1)
 		)
 		return
-	_script_lines[source_line_index] = (
-		"@img %d, %s, %s, \"%s\""
-		% [image_index, _format_coordinate(image.position.x), _format_coordinate(image.position.y), arguments[3]]
+	_script_lines[source_line_index] = _replace_command_arguments(
+		_script_lines[source_line_index],
+		{
+			1: _format_coordinate(image.position.x),
+			2: _format_coordinate(image.position.y),
+		}
 	)
-	var file := FileAccess.open(_active_novel_text.script_path, FileAccess.WRITE)
-	if file == null:
-		push_error(
-			"OpeningNovel could not write debug coordinates to scenario text: %s (error %d)"
-			% [_active_novel_text.script_path, FileAccess.get_open_error()]
-		)
-		return
-	file.store_string("\n".join(_script_lines))
+	_write_debug_script_changes()
 
 
 func _save_textbox_geometry(textbox_index: int) -> void:
@@ -502,22 +503,97 @@ func _save_textbox_geometry(textbox_index: int) -> void:
 		return
 	var command := _parse_command(_script_lines[source_line_index].strip_edges())
 	var arguments := _parse_comma_separated_arguments(String(command["argument"]))
-	if String(command["name"]) != "textbox_set" or arguments.size() != 5:
+	if (
+		String(command["name"]) != "textbox_set"
+		or arguments.size() != 5
+		or not arguments[0].is_valid_int()
+		or arguments[0].to_int() != textbox_index
+	):
 		push_error(
 			"OpeningNovel could not update @textbox_set geometry on scenario line %d."
 			% (source_line_index + 1)
 		)
 		return
-	_script_lines[source_line_index] = (
-		"@textbox_set %d, %s, %s, %s, %s"
-		% [
-			textbox_index,
-			_format_coordinate(textbox.position.x),
-			_format_coordinate(textbox.position.y),
-			_format_coordinate(textbox.size.x),
-			_format_coordinate(textbox.size.y),
-		]
+	_script_lines[source_line_index] = _replace_command_arguments(
+		_script_lines[source_line_index],
+		{
+			1: _format_coordinate(textbox.position.x),
+			2: _format_coordinate(textbox.position.y),
+			3: _format_coordinate(textbox.size.x),
+			4: _format_coordinate(textbox.size.y),
+		}
 	)
+	_write_debug_script_changes()
+
+
+func _replace_command_arguments(source_line: String, replacements: Dictionary) -> String:
+	var command_start := 0
+	while command_start < source_line.length() and (
+		source_line[command_start] == " "
+		or source_line[command_start] == "\t"
+		or source_line[command_start] == "\r"
+	):
+		command_start += 1
+	if command_start >= source_line.length() or source_line[command_start] != "@":
+		return source_line
+	var command_end := -1
+	for index in range(command_start + 1, source_line.length()):
+		if source_line[index] == " " or source_line[index] == "\t":
+			command_end = index
+			break
+	if command_end < 0:
+		return source_line
+	var argument_start := command_end
+	while argument_start < source_line.length() and (
+		source_line[argument_start] == " " or source_line[argument_start] == "\t"
+	):
+		argument_start += 1
+
+	var argument_ranges: Array[Vector2i] = []
+	var token_start := argument_start
+	var inside_quotes := false
+	var index := argument_start
+	while index <= source_line.length():
+		if index == source_line.length() or (source_line[index] == "," and not inside_quotes):
+			var token_end := index
+			while token_start < token_end and (
+				source_line[token_start] == " "
+				or source_line[token_start] == "\t"
+				or source_line[token_start] == "\r"
+			):
+				token_start += 1
+			while token_end > token_start and (
+				source_line[token_end - 1] == " "
+				or source_line[token_end - 1] == "\t"
+				or source_line[token_end - 1] == "\r"
+			):
+				token_end -= 1
+			argument_ranges.append(Vector2i(token_start, token_end))
+			token_start = index + 1
+		elif source_line[index] == "\"":
+			if inside_quotes and index + 1 < source_line.length() and source_line[index + 1] == "\"":
+				index += 1
+			else:
+				inside_quotes = not inside_quotes
+		index += 1
+
+	var replacement_indices: Array = replacements.keys()
+	replacement_indices.sort()
+	replacement_indices.reverse()
+	var updated_line := source_line
+	for argument_index: int in replacement_indices:
+		if argument_index < 0 or argument_index >= argument_ranges.size():
+			continue
+		var token_range := argument_ranges[argument_index]
+		updated_line = (
+			updated_line.substr(0, token_range.x)
+			+ String(replacements[argument_index])
+			+ updated_line.substr(token_range.y)
+		)
+	return updated_line
+
+
+func _write_debug_script_changes() -> void:
 	var file := FileAccess.open(_active_novel_text.script_path, FileAccess.WRITE)
 	if file == null:
 		push_error(

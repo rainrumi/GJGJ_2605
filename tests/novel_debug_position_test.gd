@@ -21,9 +21,11 @@ func _run() -> void:
 	await process_frame
 
 	var source_file := FileAccess.open(TEMP_SCRIPT_PATH, FileAccess.WRITE)
-	source_file.store_string(
-		"@img 2, 10, 20, \"%s\"\n@textbox_set 0, 10, 20, 100, 50\n@l" % IMAGE_PATH
-	)
+	var test_script := "@img 2, 10, 20, \"%s\"\n" % IMAGE_PATH
+	test_script += "@textbox_set 0, 10, 20, 100, 50\n@l\n"
+	test_script += "@textbox_set 0, 110, 120, 200, 60\n"
+	test_script += "@img 2, 110, 120, \"%s\"\n@l" % IMAGE_PATH
+	source_file.store_string(test_script)
 	source_file = null
 	var text := NovelTextInfo.new()
 	text.script_path = TEMP_SCRIPT_PATH
@@ -87,6 +89,27 @@ func _run() -> void:
 		FileAccess.get_file_as_string(TEMP_SCRIPT_PATH).contains("@textbox_set 0, 30, 18, 128, 56"),
 		"Dragged textbox geometry saves to the scenario"
 	)
+	var saved_lines := FileAccess.get_file_as_string(TEMP_SCRIPT_PATH).split("\n")
+	_expect(saved_lines[3] == "@textbox_set 0, 110, 120, 200, 60", "Editing the first textbox command preserves the next command")
+	_expect(saved_lines[4] == "@img 2, 110, 120, \"%s\"" % IMAGE_PATH, "Editing the first image command preserves the next image command")
+	panel.set_drag_mode(false)
+	novel.call("_on_screen_gui_input", _mouse_button(true))
+	await process_frame
+	_expect(textbox.position == Vector2(110.0, 120.0), "Playback applies the second textbox command")
+	_expect(textbox.size == Vector2(200.0, 60.0), "Second textbox command keeps its original size")
+	_expect(image.position == Vector2(110.0, 120.0), "Playback applies the second image command")
+	panel.x_position.value = 210.0
+	panel.x_position.value_changed.emit(210.0)
+	var saved_second_command := FileAccess.get_file_as_string(TEMP_SCRIPT_PATH).split("\n")
+	_expect(saved_second_command[1] == "@textbox_set 0, 30, 18, 128, 56", "Editing the second command preserves the first command")
+	_expect(saved_second_command[3] == "@textbox_set 0, 210, 120, 200, 60", "Only the active textbox command's numeric value changes")
+	panel.image_selector.select(0)
+	panel.call("_on_image_selected", 0)
+	panel.x_position.value = 220.0
+	panel.x_position.value_changed.emit(220.0)
+	var saved_second_image := FileAccess.get_file_as_string(TEMP_SCRIPT_PATH).split("\n")
+	_expect(saved_second_image[0] == "@img 2, 37, 37, \"%s\"" % IMAGE_PATH, "Editing the second image preserves the first image command")
+	_expect(saved_second_image[4] == "@img 2, 220, 120, \"%s\"" % IMAGE_PATH, "Only the active image command's coordinates change")
 
 	debug_state.call("set_debug_enabled", original_debug_enabled)
 	novel.queue_free()

@@ -26,6 +26,7 @@ WebAudioFallback="*res://systems/audio/web_audio_fallback.gd"
 DebugState="*res://systems/debug/debug_state.gd"
 MouseDragState="*res://systems/input/mouse_drag_tracker.gd"
 EffectFieldSettings="*res://systems/settings/effect_field_settings_store.gd"
+NovelScriptCatalogSync="*res://systems/novel/novel_script_catalog_sync.gd"
 
 [display]
 
