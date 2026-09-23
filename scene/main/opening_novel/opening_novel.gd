@@ -13,6 +13,7 @@ const DEFAULT_TEXT_INTERVAL := 0.04
 @onready var screen: Control = $Screen
 @onready var opening_still: TextureRect = $Screen/OpeningStill
 @onready var image_layer: Control = $Screen/ImageLayer
+@onready var textbox_layer: Control = $Screen/TextBoxLayer
 @onready var name_label: Label = $Screen/TextBox/NameLabel
 @onready var text_label: Label = $Screen/TextBox/TextLabel
 @onready var text_layer: NovelTextLayer = $Screen/TextBox/TextLayer
@@ -31,6 +32,7 @@ var _typing_request_id := 0
 var _script_request_id := 0
 var _default_background: Texture2D
 var _images: Dictionary[int, TextureRect] = {}
+var _textboxes: Dictionary[int, Label] = {}
 var _image_source_lines: Dictionary[int, int] = {}
 var _active_novel_text: NovelTextInfo
 var _is_debug_dragging := false
@@ -78,6 +80,7 @@ func _start_script(next_novel_text: NovelTextInfo, show_default_background: bool
 	opening_still.texture = _default_background
 	opening_still.visible = show_default_background
 	_clear_images()
+	_clear_textboxes()
 	name_label.text = ""
 	name_label.visible = false
 	text_label.text = ""
@@ -169,6 +172,12 @@ func _execute_command(command_line: String, request_id: int) -> void:
 			_command_img(argument)
 		"img_remove":
 			_command_img_remove(argument)
+		"textbox_set":
+			_command_textbox_set(argument)
+		"textbox_clear":
+			_command_textbox_clear(argument)
+		"text":
+			_command_text(argument)
 		"l":
 			await _command_l(request_id)
 		"r":
@@ -186,12 +195,13 @@ func _execute_command(command_line: String, request_id: int) -> void:
 
 # nameコマンド
 func _command_name(character_name: String) -> void:
-	name_label.text = character_name
-	name_label.visible = not character_name.is_empty()
+	name_label.text = _parse_single_argument(character_name)
+	name_label.visible = not name_label.text.is_empty()
 
 
 # bgコマンド
 func _command_bg(background_path: String) -> void:
+	background_path = _parse_single_argument(background_path)
 	if background_path.is_empty():
 		opening_still.texture = null
 		opening_still.visible = false
@@ -268,14 +278,101 @@ func _command_img_remove(argument: String) -> void:
 	_refresh_debug_images()
 
 
+func _command_textbox_set(argument: String) -> void:
+	var arguments := _parse_comma_separated_arguments(argument)
+	if arguments.size() != 5:
+		push_error(
+			"OpeningNovel @textbox_set requires index, position_x, position_y, size_x, and size_y on scenario line %d."
+			% _line_index
+		)
+		return
+	if not arguments[0].is_valid_int():
+		push_error("OpeningNovel @textbox_set received an invalid index on scenario line %d." % _line_index)
+		return
+	for index in range(1, arguments.size()):
+		if not arguments[index].is_valid_float():
+			push_error("OpeningNovel @textbox_set received an invalid coordinate or size on scenario line %d." % _line_index)
+			return
+	var textbox_size := Vector2(arguments[3].to_float(), arguments[4].to_float())
+	if textbox_size.x < 0.0 or textbox_size.y < 0.0:
+		push_error("OpeningNovel @textbox_set requires non-negative sizes on scenario line %d." % _line_index)
+		return
+	var textbox_index := arguments[0].to_int()
+	var textbox := _textboxes.get(textbox_index) as Label
+	if textbox == null:
+		textbox = Label.new()
+		textbox.name = "TextBox%d" % textbox_index
+		textbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		textbox.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		textbox.add_theme_font_override("font", text_label.get_theme_font("font"))
+		textbox.add_theme_font_size_override("font_size", text_label.get_theme_font_size("font_size"))
+		textbox.add_theme_color_override("font_color", text_label.get_theme_color("font_color"))
+		textbox.add_theme_color_override("font_outline_color", text_label.get_theme_color("font_outline_color"))
+		textbox.add_theme_constant_override("outline_size", text_label.get_theme_constant("outline_size"))
+		textbox_layer.add_child(textbox)
+		_textboxes[textbox_index] = textbox
+	textbox.position = Vector2(arguments[1].to_float(), arguments[2].to_float())
+	textbox.size = textbox_size
+
+
+func _command_textbox_clear(argument: String) -> void:
+	var textbox_index_text := argument.strip_edges().trim_prefix("\"").trim_suffix("\"")
+	if not textbox_index_text.is_valid_int():
+		push_error("OpeningNovel @textbox_clear requires an index on scenario line %d." % _line_index)
+		return
+	var textbox_index := textbox_index_text.to_int()
+	var textbox := _textboxes.get(textbox_index) as Label
+	if textbox == null:
+		return
+	_textboxes.erase(textbox_index)
+	textbox_layer.remove_child(textbox)
+	textbox.queue_free()
+
+
+func _command_text(argument: String) -> void:
+	var arguments := _parse_comma_separated_arguments(argument)
+	if arguments.size() != 2 or not arguments[0].is_valid_int():
+		push_error("OpeningNovel @text requires an index and text on scenario line %d." % _line_index)
+		return
+	var textbox := _textboxes.get(arguments[0].to_int()) as Label
+	if textbox == null:
+		return
+	textbox.text = arguments[1]
+
+
 func _parse_comma_separated_arguments(argument: String) -> Array[String]:
 	var arguments: Array[String] = []
-	for value in argument.split(",", true):
-		var parsed_value := value.strip_edges()
-		if parsed_value.length() >= 2 and parsed_value.begins_with("\"") and parsed_value.ends_with("\""):
-			parsed_value = parsed_value.substr(1, parsed_value.length() - 2)
-		arguments.append(parsed_value)
+	var current_value := ""
+	var inside_quotes := false
+	var index := 0
+	while index < argument.length():
+		var character := argument[index]
+		if character == "\"":
+			if inside_quotes and index + 1 < argument.length() and argument[index + 1] == "\"":
+				current_value += "\""
+				index += 1
+			else:
+				inside_quotes = not inside_quotes
+		elif character == "," and not inside_quotes:
+			arguments.append(current_value.strip_edges())
+			current_value = ""
+		else:
+			current_value += character
+		index += 1
+	arguments.append(current_value.strip_edges())
 	return arguments
+
+
+func _parse_single_argument(argument: String) -> String:
+	var arguments := _parse_comma_separated_arguments(argument)
+	return arguments[0] if arguments.size() == 1 else argument.strip_edges()
+
+
+func _clear_textboxes() -> void:
+	for textbox: Label in _textboxes.values():
+		textbox_layer.remove_child(textbox)
+		textbox.queue_free()
+	_textboxes.clear()
 
 
 func _clear_images() -> void:
@@ -394,8 +491,6 @@ func _parse_command(command_line: String) -> Dictionary:
 		return {"name": command_body, "argument": ""}
 	var command_name := command_body.substr(0, separator_index)
 	var argument := command_body.substr(separator_index + 1).strip_edges()
-	if argument.length() >= 2 and argument.begins_with("\"") and argument.ends_with("\""):
-		argument = argument.substr(1, argument.length() - 2)
 	return {"name": command_name, "argument": argument}
 
 
@@ -427,6 +522,7 @@ func _finish() -> void:
 	visible = false
 	opening_still.visible = false
 	_clear_images()
+	_clear_textboxes()
 	finished.emit()
 
 
