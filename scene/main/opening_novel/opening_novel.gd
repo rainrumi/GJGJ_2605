@@ -613,9 +613,10 @@ func _save_active_debug_target() -> void:
 
 
 func _format_coordinate(value: float) -> String:
-	if is_equal_approx(value, roundf(value)):
-		return str(int(roundf(value)))
-	return str(value)
+	var rounded_value := roundf(value * 10.0) / 10.0
+	if is_equal_approx(rounded_value, roundf(rounded_value)):
+		return str(int(roundf(rounded_value)))
+	return "%.1f" % rounded_value
 
 
 # lコマンド
