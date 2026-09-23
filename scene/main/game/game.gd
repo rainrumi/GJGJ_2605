@@ -84,6 +84,7 @@ var _awaiting_time_over_decision := false
 var _pending_depleted_seed_sources: Array[Resource] = []
 var _attack_se_requested_this_timing := false
 var _tutorial_active := false
+var _initial_tutorial_played := false
 # 初期化
 func _ready() -> void:
 	randomize()
@@ -199,6 +200,9 @@ func start_battle(context: BattleInfo = null) -> void:
 	battle_active = true
 	input_controller.set_active(true)
 	_refresh_ui()
+	if not _initial_tutorial_played:
+		_initial_tutorial_played = true
+		show_tutorial()
 # HP取得
 func get_current_hp() -> int:
 	return hp

@@ -21,7 +21,9 @@ func _run() -> void:
 	await process_frame
 
 	var source_file := FileAccess.open(TEMP_SCRIPT_PATH, FileAccess.WRITE)
-	source_file.store_string("@img 2, 10, 20, \"%s\"\n@l" % IMAGE_PATH)
+	source_file.store_string(
+		"@img 2, 10, 20, \"%s\"\n@textbox_set 0, 10, 20, 100, 50\n@l" % IMAGE_PATH
+	)
 	source_file = null
 	var text := NovelTextInfo.new()
 	text.script_path = TEMP_SCRIPT_PATH
@@ -30,11 +32,13 @@ func _run() -> void:
 
 	var panel := novel.get_node("Screen/DebugPanel") as NovelDebugPanel
 	var image := novel.get_node("Screen/ImageLayer/Image2") as TextureRect
+	var textbox := novel.get_node("Screen/TextBoxLayer/TextBox0") as Label
 	_expect(panel != null, "Novel debug panel exists")
 	_expect(not panel.controls.visible, "Debug controls begin hidden with shared debug disabled")
 	debug_state.call("set_debug_enabled", true)
 	_expect(panel.controls.visible, "Shared debug state shows novel controls")
 	_expect(panel.get_selected_image_index() == 2, "Dropdown selects the current @img index")
+	_expect(panel.get_selected_textbox_index() == -1, "Image target is selected before textboxes")
 
 	panel.image_position_changed.emit(2, Vector2(30, 40))
 	_expect(image.position == Vector2(30, 40), "Direct coordinates update the selected image")
@@ -52,6 +56,38 @@ func _run() -> void:
 		"Changed coordinates overwrite the active scenario txt"
 	)
 
+	panel.image_selector.select(1)
+	panel.call("_on_image_selected", 1)
+	_expect(panel.get_selected_textbox_index() == 0, "Dropdown selects a scenario textbox")
+	_expect(
+		bool(novel.get_node("Screen/DebugTextBoxOutline").get("visible")),
+		"Debug mode outlines the selected textbox and resize handle"
+	)
+	_expect(panel.width.value == 100.0 and panel.height.value == 50.0, "Textbox size fields show @textbox_set size")
+	panel.x_position.value = 25.0
+	panel.x_position.value_changed.emit(25.0)
+	panel.width.value = 120.0
+	panel.width.value_changed.emit(120.0)
+	_expect(textbox.position == Vector2(25.0, 20.0), "Numeric coordinates update textbox position")
+	_expect(textbox.size == Vector2(120.0, 50.0), "Numeric size updates textbox dimensions")
+
+	var saved_geometry := FileAccess.get_file_as_string(TEMP_SCRIPT_PATH)
+	_expect(saved_geometry.contains("@textbox_set 0, 25, 20, 120, 50"), "Numeric textbox changes save to the scenario")
+	var textbox_drag_start := textbox.position + Vector2(10.0, 10.0)
+	novel.call("_on_screen_gui_input", _mouse_button(true, textbox_drag_start))
+	novel.call("_on_screen_gui_input", _mouse_motion(Vector2(5.0, -2.0)))
+	novel.call("_on_screen_gui_input", _mouse_button(false, textbox_drag_start + Vector2(5.0, -2.0)))
+	_expect(textbox.position == Vector2(30.0, 18.0), "Dragging the selected textbox moves it")
+	var resize_start := textbox.position + textbox.size - Vector2(2.0, 2.0)
+	novel.call("_on_screen_gui_input", _mouse_button(true, resize_start))
+	novel.call("_on_screen_gui_input", _mouse_motion(Vector2(8.0, 6.0)))
+	novel.call("_on_screen_gui_input", _mouse_button(false, resize_start + Vector2(8.0, 6.0)))
+	_expect(textbox.size == Vector2(128.0, 56.0), "Dragging the resize handle changes textbox size")
+	_expect(
+		FileAccess.get_file_as_string(TEMP_SCRIPT_PATH).contains("@textbox_set 0, 30, 18, 128, 56"),
+		"Dragged textbox geometry saves to the scenario"
+	)
+
 	debug_state.call("set_debug_enabled", original_debug_enabled)
 	novel.queue_free()
 	await process_frame
@@ -59,10 +95,11 @@ func _run() -> void:
 	quit(_failures)
 
 
-func _mouse_button(pressed: bool) -> InputEventMouseButton:
+func _mouse_button(pressed: bool, position: Vector2 = Vector2.ZERO) -> InputEventMouseButton:
 	var event := InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = pressed
+	event.position = position
 	return event
 
 

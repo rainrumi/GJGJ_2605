@@ -27,8 +27,24 @@ func _run() -> void:
 
 		var game: Node = main.get("game") as Node
 		var tutorial := game.get_node("TutorialNovel") as OpeningNovel
-		_expect(not tutorial.visible, "Tutorial is not auto-played on the first game scene")
-		_expect(bool(game.get("battle_active")), "Battle input starts without auto-playing tutorial")
+		_expect(tutorial.visible, "Tutorial auto-plays on the first game scene")
+		_expect(not bool(game.get("battle_active")), "Battle input pauses during the initial tutorial")
+		var initial_tutorial_text := tutorial.get("_active_novel_text") as NovelTextInfo
+		_expect(
+			initial_tutorial_text != null
+				and initial_tutorial_text.script_path == "res://resource/novel/tutorial/tutorial_100_100.txt",
+			"Initial tutorial uses tutorial_100_100.txt"
+		)
+		var novel_catalog := load("res://data/resources/novel/novel_script_catalog.tres") as NovelScriptCatalog
+		_expect(
+			novel_catalog != null
+				and novel_catalog.get_script_text("res://resource/novel/tutorial/tutorial_100_100.txt").begins_with("@textbox_set"),
+			"Tutorial scenario is included in the bundled novel catalog"
+		)
+
+		tutorial.call("_finish")
+		await process_frame
+		_expect(bool(game.get("battle_active")), "Battle input resumes after the initial tutorial")
 
 		game.show_tutorial()
 		await process_frame
@@ -38,8 +54,8 @@ func _run() -> void:
 		_expect(tutorial.novel_layer == 120 and tutorial.layer == 120, "Tutorial overlay uses the foreground layer")
 		_expect(
 			tutorial_text != null
-				and tutorial_text.script_path == "res://resource/novel/tutorial/tutorial_100.txt",
-			"Tutorial uses tutorial_100.txt"
+				and tutorial_text.script_path == "res://resource/novel/tutorial/tutorial_100_100.txt",
+			"Tutorial uses tutorial_100_100.txt"
 		)
 
 		tutorial.call("_finish")
@@ -49,6 +65,7 @@ func _run() -> void:
 		main.show_game(false)
 		await process_frame
 		_expect(not tutorial.visible, "Tutorial is not auto-played when the game scene is shown again")
+		_expect(bool(game.get("battle_active")), "Battle input starts normally when re-entering the game scene")
 
 	root.remove_child(main)
 	main.free()

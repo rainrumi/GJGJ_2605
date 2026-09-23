@@ -11,7 +11,7 @@ anchor_right = 1.0
 offset_left = -194.0
 offset_top = 8.0
 offset_right = -8.0
-offset_bottom = 174.0
+offset_bottom = 208.0
 grow_horizontal = 0
 mouse_filter = 1
 script = ExtResource("1_script")
@@ -20,7 +20,7 @@ script = ExtResource("1_script")
 layout_mode = 0
 offset_top = 32.0
 offset_right = 186.0
-offset_bottom = 166.0
+offset_bottom = 200.0
 mouse_filter = 2
 
 [node name="DebugButton" type="Button" parent="."]
@@ -41,7 +41,7 @@ text = "Debug"
 layout_mode = 0
 offset_top = 34.0
 offset_right = 186.0
-offset_bottom = 166.0
+offset_bottom = 200.0
 theme_override_constants/separation = 5
 
 [node name="ImageSelector" type="OptionButton" parent="Controls"]
@@ -66,6 +66,38 @@ layout_mode = 2
 min_value = -10000.0
 max_value = 10000.0
 allow_lesser = true
+allow_greater = true
+
+[node name="SizeRow" type="HBoxContainer" parent="Controls"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="WidthLabel" type="Label" parent="Controls/SizeRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "w"
+
+[node name="Width" type="SpinBox" parent="Controls/SizeRow"]
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+min_value = 0.0
+max_value = 10000.0
+value = 100.0
+allow_greater = true
+
+[node name="HeightLabel" type="Label" parent="Controls/SizeRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "h"
+
+[node name="Height" type="SpinBox" parent="Controls/SizeRow"]
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+min_value = 0.0
+max_value = 10000.0
+value = 100.0
 allow_greater = true
 
 [node name="YLabel" type="Label" parent="Controls/PositionRow"]
@@ -106,5 +138,5 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 14
-text = "ドラッグ指定モード有効化中"
+text = "枠内:移動 / 右下:サイズ変更"
 horizontal_alignment = 1

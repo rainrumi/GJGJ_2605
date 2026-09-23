@@ -1352,6 +1352,24 @@ Thank You for Playing!!
 アンタのこと一番知ってるのは私なんだから……。
 @lcm
 ",
+"res://resource/novel/tutorial/tutorial_100_100.txt": "@textbox_set 0,-60, 15, 320, 80
+@img 0, -60, 15, \"res://resource/image/texture/tutorial/tex_tutorial_enemy_100_100.png\"
+@text \"0\",\"テストテストテストテストテストテストテスト\"
+@lcm
+@text \"0\",\"これは「悪夢」です。\"
+@lcm
+@text \"0\",\"悪夢はクリックで回転することができます。\"
+@lcm
+@text \"0\",\"悪夢は「胃袋」の中で「消化」しなければなりません。\"
+@lcm
+
+@text \"0\",\"これが「胃袋」です。\"
+@lcm
+@text \"0\",\"悪夢は胃袋の中で消化することができます。\"
+@lcm
+@text \"0\",\"悪夢を胃袋へドラッグして食べてみましょう。\"
+@lcm
+",
 "res://resource/novel/tutorial/tutorial_100.txt": "@name \"\"
 チュートリアル
 @lcm

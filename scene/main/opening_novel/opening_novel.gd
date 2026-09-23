@@ -21,6 +21,8 @@ const DEFAULT_TEXT_INTERVAL := 0.04
 @onready var character_se: AudioStreamPlayer = $CharacterSe
 @onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 @onready var debug_panel: NovelDebugPanel = $Screen/DebugPanel
+@onready var debug_textbox_outline: Panel = $Screen/DebugTextBoxOutline
+@onready var debug_textbox_resize_handle: ColorRect = $Screen/DebugTextBoxOutline/ResizeHandle
 
 var _script_lines: Array[String] = []
 var _line_index := 0
@@ -33,9 +35,11 @@ var _script_request_id := 0
 var _default_background: Texture2D
 var _images: Dictionary[int, TextureRect] = {}
 var _textboxes: Dictionary[int, Label] = {}
+var _textbox_source_lines: Dictionary[int, int] = {}
 var _image_source_lines: Dictionary[int, int] = {}
 var _active_novel_text: NovelTextInfo
 var _is_debug_dragging := false
+var _is_debug_resizing_textbox := false
 var _script_load_failed := false
 
 
@@ -45,8 +49,18 @@ func _ready() -> void:
 	visible = false
 	screen.gui_input.connect(_on_screen_gui_input)
 	debug_panel.image_position_changed.connect(_on_debug_image_position_changed)
+	debug_panel.textbox_geometry_changed.connect(_on_debug_textbox_geometry_changed)
+	debug_panel.target_selection_changed.connect(_update_debug_textbox_outline)
 	debug_panel.drag_mode_changed.connect(_on_debug_drag_mode_changed)
-	_refresh_debug_images()
+	var debug_state := get_node("/root/DebugState")
+	debug_state.connect("debug_enabled_changed", _on_debug_enabled_changed)
+	var outline_style := StyleBoxFlat.new()
+	outline_style.bg_color = Color(1.0, 0.85, 0.2, 0.0)
+	outline_style.border_color = Color(1.0, 0.85, 0.2, 1.0)
+	outline_style.set_border_width_all(2)
+	debug_textbox_outline.add_theme_stylebox_override("panel", outline_style)
+	_refresh_debug_targets()
+	debug_textbox_outline.visible = false
 
 
 # 対象開始
@@ -311,8 +325,10 @@ func _command_textbox_set(argument: String) -> void:
 		textbox.add_theme_constant_override("outline_size", text_label.get_theme_constant("outline_size"))
 		textbox_layer.add_child(textbox)
 		_textboxes[textbox_index] = textbox
+	_textbox_source_lines[textbox_index] = _line_index - 1
 	textbox.position = Vector2(arguments[1].to_float(), arguments[2].to_float())
 	textbox.size = textbox_size
+	_refresh_debug_targets()
 
 
 func _command_textbox_clear(argument: String) -> void:
@@ -325,8 +341,10 @@ func _command_textbox_clear(argument: String) -> void:
 	if textbox == null:
 		return
 	_textboxes.erase(textbox_index)
+	_textbox_source_lines.erase(textbox_index)
 	textbox_layer.remove_child(textbox)
 	textbox.queue_free()
+	_refresh_debug_targets()
 
 
 func _command_text(argument: String) -> void:
@@ -373,6 +391,8 @@ func _clear_textboxes() -> void:
 		textbox_layer.remove_child(textbox)
 		textbox.queue_free()
 	_textboxes.clear()
+	_textbox_source_lines.clear()
+	_refresh_debug_targets()
 
 
 func _clear_images() -> void:
@@ -385,9 +405,14 @@ func _clear_images() -> void:
 
 
 func _refresh_debug_images() -> void:
+	_refresh_debug_targets()
+
+
+func _refresh_debug_targets() -> void:
 	if not is_node_ready():
 		return
-	debug_panel.set_images(_images)
+	debug_panel.set_targets(_images, _textboxes)
+	_update_debug_textbox_outline()
 
 
 func _on_debug_image_position_changed(image_index: int, position: Vector2) -> void:
@@ -398,13 +423,45 @@ func _on_debug_image_position_changed(image_index: int, position: Vector2) -> vo
 	image.position = position
 	debug_panel.set_selected_position(position)
 	_save_image_position(image_index)
+	_update_debug_textbox_outline()
+
+
+func _on_debug_textbox_geometry_changed(textbox_index: int, position: Vector2, size: Vector2) -> void:
+	var textbox := _textboxes.get(textbox_index) as Label
+	if textbox == null:
+		_refresh_debug_targets()
+		return
+	textbox.position = position
+	textbox.size = size
+	debug_panel.set_selected_geometry(position, size)
+	_update_debug_textbox_outline()
+	_save_textbox_geometry(textbox_index)
+
+
+func _update_debug_textbox_outline() -> void:
+	if not is_node_ready():
+		return
+	var textbox := _textboxes.get(debug_panel.get_selected_textbox_index()) as Label
+	var debug_enabled := bool(get_node("/root/DebugState").get("debug_enabled"))
+	debug_textbox_outline.visible = debug_enabled and textbox != null
+	if textbox == null:
+		return
+	debug_textbox_outline.position = textbox.position
+	debug_textbox_outline.size = textbox.size
+	debug_textbox_resize_handle.position = textbox.size - debug_textbox_resize_handle.size
+
+
+func _on_debug_enabled_changed(_is_enabled: bool) -> void:
+	_update_debug_textbox_outline()
 
 
 func _on_debug_drag_mode_changed(is_enabled: bool) -> void:
 	if not is_enabled:
 		if _is_debug_dragging:
-			_save_image_position(debug_panel.get_selected_image_index())
+			_save_active_debug_target()
 		_is_debug_dragging = false
+		_is_debug_resizing_textbox = false
+	_update_debug_textbox_outline()
 
 
 func _save_image_position(image_index: int) -> void:
@@ -434,6 +491,49 @@ func _save_image_position(image_index: int) -> void:
 		)
 		return
 	file.store_string("\n".join(_script_lines))
+
+
+func _save_textbox_geometry(textbox_index: int) -> void:
+	var textbox := _textboxes.get(textbox_index) as Label
+	var source_line_index := int(_textbox_source_lines.get(textbox_index, -1))
+	if textbox == null or source_line_index < 0 or source_line_index >= _script_lines.size():
+		return
+	if _active_novel_text == null or _active_novel_text.script_path.is_empty():
+		return
+	var command := _parse_command(_script_lines[source_line_index].strip_edges())
+	var arguments := _parse_comma_separated_arguments(String(command["argument"]))
+	if String(command["name"]) != "textbox_set" or arguments.size() != 5:
+		push_error(
+			"OpeningNovel could not update @textbox_set geometry on scenario line %d."
+			% (source_line_index + 1)
+		)
+		return
+	_script_lines[source_line_index] = (
+		"@textbox_set %d, %s, %s, %s, %s"
+		% [
+			textbox_index,
+			_format_coordinate(textbox.position.x),
+			_format_coordinate(textbox.position.y),
+			_format_coordinate(textbox.size.x),
+			_format_coordinate(textbox.size.y),
+		]
+	)
+	var file := FileAccess.open(_active_novel_text.script_path, FileAccess.WRITE)
+	if file == null:
+		push_error(
+			"OpeningNovel could not write debug geometry to scenario text: %s (error %d)"
+			% [_active_novel_text.script_path, FileAccess.get_open_error()]
+		)
+		return
+	file.store_string("\n".join(_script_lines))
+
+
+func _save_active_debug_target() -> void:
+	var textbox_index := debug_panel.get_selected_textbox_index()
+	if textbox_index >= 0:
+		_save_textbox_geometry(textbox_index)
+	else:
+		_save_image_position(debug_panel.get_selected_image_index())
 
 
 func _format_coordinate(value: float) -> String:
@@ -546,15 +646,41 @@ func _handle_debug_drag_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
-			if not mouse_event.pressed and _is_debug_dragging:
-				_save_image_position(debug_panel.get_selected_image_index())
-			_is_debug_dragging = mouse_event.pressed
+			if mouse_event.pressed:
+				var textbox := _textboxes.get(debug_panel.get_selected_textbox_index()) as Label
+				if textbox != null:
+					var point := mouse_event.position
+					var resize_area := Rect2(
+						textbox.position + textbox.size - Vector2(18.0, 18.0), Vector2(36.0, 36.0)
+					)
+					_is_debug_resizing_textbox = resize_area.has_point(point)
+					_is_debug_dragging = Rect2(textbox.position, textbox.size).has_point(point)
+				else:
+					_is_debug_dragging = true
+			else:
+				if _is_debug_dragging:
+					_save_active_debug_target()
+				_is_debug_dragging = false
+				_is_debug_resizing_textbox = false
 			screen.accept_event()
 		return
 	if event is InputEventMouseMotion and _is_debug_dragging:
+		var textbox_index := debug_panel.get_selected_textbox_index()
+		var textbox := _textboxes.get(textbox_index) as Label
+		if textbox != null:
+			var delta := (event as InputEventMouseMotion).relative
+			if _is_debug_resizing_textbox:
+				textbox.size = Vector2(maxf(1.0, textbox.size.x + delta.x), maxf(1.0, textbox.size.y + delta.y))
+			else:
+				textbox.position += delta
+			debug_panel.set_selected_geometry(textbox.position, textbox.size)
+			_update_debug_textbox_outline()
+			screen.accept_event()
+			return
 		var image_index := debug_panel.get_selected_image_index()
 		var image := _images.get(image_index) as TextureRect
 		if image != null:
 			image.position += (event as InputEventMouseMotion).relative
 			debug_panel.set_selected_position(image.position)
+			_update_debug_textbox_outline()
 		screen.accept_event()
