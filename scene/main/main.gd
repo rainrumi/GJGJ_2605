@@ -45,6 +45,7 @@ enum NovelFlow {
 	LARA_JUDGE_RESULT,
 	LARA_JUDGE_REWARD,
 	LARA_JUDGE_AFTER,
+	LARA_DIGESTION_COUNT_TUTORIAL,
 	DEBUG_PREVIEW,
 	AREA_BOSS_REROLL,
 }
@@ -84,6 +85,7 @@ var _screen_flow_id := 0
 var _last_battle_progress_snapshot: Dictionary = {}
 var _lara_first_interaction := false
 var _lara_judge_pending := false
+var _lara_digestion_count_tutorial_played := false
 var _day_change_time_recovery_pending := false
 var _lara_judge_result := 0
 var _lara_judge_reward_message := ""
@@ -233,6 +235,17 @@ func show_stage_select() -> void:
 			run_state,
 			run_state.current_minutes
 		)
+	_try_show_lara_digestion_count_tutorial()
+
+
+func _try_show_lara_digestion_count_tutorial() -> void:
+	if _lara_digestion_count_tutorial_played or not run_state.is_lara_unlocked:
+		return
+	_lara_digestion_count_tutorial_played = true
+	var tutorial_text := NovelTextInfo.new()
+	tutorial_text.script_path = "res://resource/novel/tutorial/tutorial_400_100.txt"
+	active_novel_flow = NovelFlow.LARA_DIGESTION_COUNT_TUTORIAL
+	opening_novel.start_with_text(tutorial_text)
 
 
 # ゲーム表示
@@ -287,6 +300,7 @@ func _on_title_start_game() -> void:
 	_screen_flow_id += 1
 	run_state.reset()
 	_lara_judge_pending = false
+	_lara_digestion_count_tutorial_played = false
 	_day_change_time_recovery_pending = false
 	pending_area_completion_novel_text = null
 	pending_area_boss_reroll_novel_text = null
@@ -426,6 +440,8 @@ func _on_opening_novel_finished() -> void:
 			run_state.unlock_lara()
 			run_state.unlock_continuous_play()
 			_finish_current_day()
+		NovelFlow.LARA_DIGESTION_COUNT_TUTORIAL:
+			active_novel_flow = NovelFlow.NONE
 		NovelFlow.DEBUG_PREVIEW:
 			active_novel_flow = NovelFlow.NONE
 			show_title()
