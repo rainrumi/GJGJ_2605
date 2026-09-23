@@ -746,9 +746,12 @@ func _handle_debug_drag_input(event: InputEvent) -> void:
 		if textbox != null:
 			var delta := (event as InputEventMouseMotion).relative
 			if _is_debug_resizing_textbox:
-				textbox.size = Vector2(maxf(1.0, textbox.size.x + delta.x), maxf(1.0, textbox.size.y + delta.y))
+				textbox.size = Vector2(
+					maxf(1.0, _round_debug_coordinate(textbox.size.x + delta.x)),
+					maxf(1.0, _round_debug_coordinate(textbox.size.y + delta.y))
+				)
 			else:
-				textbox.position += delta
+				textbox.position = _round_debug_position(textbox.position + delta)
 			debug_panel.set_selected_geometry(textbox.position, textbox.size)
 			_update_debug_textbox_outline()
 			screen.accept_event()
@@ -756,7 +759,15 @@ func _handle_debug_drag_input(event: InputEvent) -> void:
 		var image_index := debug_panel.get_selected_image_index()
 		var image := _images.get(image_index) as TextureRect
 		if image != null:
-			image.position += (event as InputEventMouseMotion).relative
+			image.position = _round_debug_position(image.position + (event as InputEventMouseMotion).relative)
 			debug_panel.set_selected_position(image.position)
 			_update_debug_textbox_outline()
 		screen.accept_event()
+
+
+func _round_debug_position(position: Vector2) -> Vector2:
+	return Vector2(_round_debug_coordinate(position.x), _round_debug_coordinate(position.y))
+
+
+func _round_debug_coordinate(value: float) -> float:
+	return roundf(value * 10.0) / 10.0
