@@ -1406,8 +1406,8 @@ Thank You for Playing!!
 @lcm
 @text 0, \"復活時、時刻は強制的に30分進行するので気をつけましょう。\"
 @lcm",
-"res://resource/novel/tutorial/tutorial_300_100.txt": "@textbox_set 0, 39, 69, 114, 183
-@img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_seed_bag_100_100.png\"
+"res://resource/novel/tutorial/tutorial_300_100.txt": "@textbox_set 0, 213.4, 258.6, 142.8, 68.6
+@img 0, -1.8, -6.4, \"res://resource/image/texture/tutorial/tex_tutorial_seed_bag_100_100.png\"
 @text 0, \"取得した夢の種はここから植え替えることができます。\"
 @lcm",
 "res://resource/novel/tutorial/tutorial_300_200.txt": "@textbox_set 0, 39, 69, 114, 183

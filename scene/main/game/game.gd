@@ -24,6 +24,7 @@ const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
 @export var tutorial_novel_text: NovelTextInfo
+@export var owned_seed_tutorial_text: NovelTextInfo
 @export var all_nightmares_tutorial_text: NovelTextInfo
 @export var first_digestion_tutorial_text: NovelTextInfo
 @export var first_player_revive_tutorial_text: NovelTextInfo
@@ -131,6 +132,16 @@ func _ready() -> void:
 
 func show_tutorial() -> void:
 	_start_tutorial(tutorial_novel_text, "tutorial_novel_text")
+
+
+func _has_owned_seed(flowers: Array[SeedInfo], stored_seeds: Array[SeedInfo]) -> bool:
+	for seed in flowers:
+		if seed != null:
+			return true
+	for seed in stored_seeds:
+		if seed != null:
+			return true
+	return false
 
 
 func _start_tutorial(novel_text: NovelTextInfo, property_name: String) -> bool:
@@ -256,9 +267,13 @@ func start_battle(context: BattleInfo = null) -> void:
 	battle_active = true
 	input_controller.set_active(true)
 	_refresh_ui()
-	if not _initial_tutorial_played:
+	var is_first_battle_entry := not _initial_tutorial_played
+	if is_first_battle_entry:
 		_initial_tutorial_played = true
 		_capture_initial_tutorial_enemies()
+	if _has_owned_seed(battle_context.flowers, battle_context.stored_seeds):
+		_start_tutorial(owned_seed_tutorial_text, "owned_seed_tutorial_text")
+	elif is_first_battle_entry:
 		show_tutorial()
 # HP取得
 func get_current_hp() -> int:
