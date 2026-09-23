@@ -2,3 +2,5 @@
 @img 0, -33.4, -1.6, "res://resource/image/texture/tutorial/tex_tutorial_acid_count_100_100.png"
 @text 0, "ラーラとティーナの消化数はここで確認できます。"
 @lcm
+@text 0, "ラーラの消化数に負けないように消化数を増やしていきましょう。"
+@lcm

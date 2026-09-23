@@ -84,6 +84,22 @@ func _run() -> void:
 		_expect(not tutorial.visible, "Tutorial is not auto-played when the game scene is shown again")
 		_expect(bool(game.get("battle_active")), "Battle input starts normally when re-entering the game scene")
 
+		main.run_state.stored_seeds.append(load("res://data/resources/seeds/skills/seed_100_101.tres") as SeedInfo)
+		main.show_game(false)
+		await get_tree().process_frame
+		var owned_seed_tutorial := tutorial.get("_active_novel_text") as NovelTextInfo
+		_expect(tutorial.visible, "Owned-seed tutorial auto-plays when a seed is first present")
+		_expect(
+			owned_seed_tutorial != null
+				and owned_seed_tutorial.script_path == "res://resource/novel/tutorial/tutorial_300_100.txt",
+			"Owned-seed tutorial uses tutorial_300_100.txt"
+		)
+		tutorial.call("_finish")
+		await get_tree().process_frame
+		main.show_game(false)
+		await get_tree().process_frame
+		_expect(not tutorial.visible, "Owned-seed tutorial does not replay on later battles")
+
 	get_tree().root.remove_child(main)
 	main.free()
 	await get_tree().process_frame

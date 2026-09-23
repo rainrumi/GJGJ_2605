@@ -94,6 +94,7 @@ var _all_nightmares_tutorial_played := false
 var _first_digestion_tutorial_played := false
 var _first_digestion_tutorial_pending := false
 var _first_player_revive_tutorial_played := false
+var _owned_seed_tutorial_played := false
 var _owned_seed_panel_tutorial_played := false
 var _initial_tutorial_enemy_preset: EnemyPresetInfo
 var _initial_tutorial_enemies: Array[Enemy] = []
@@ -273,8 +274,11 @@ func start_battle(context: BattleInfo = null) -> void:
 	if is_first_battle_entry:
 		_initial_tutorial_played = true
 		_capture_initial_tutorial_enemies()
-	if _has_owned_seed(battle_context.flowers, battle_context.stored_seeds):
-		_start_tutorial(owned_seed_tutorial_text, "owned_seed_tutorial_text")
+	if not _owned_seed_tutorial_played and _has_owned_seed(battle_context.flowers, battle_context.stored_seeds):
+		_owned_seed_tutorial_played = _start_tutorial(
+			owned_seed_tutorial_text,
+			"owned_seed_tutorial_text"
+		)
 	elif is_first_battle_entry:
 		show_tutorial()
 # HP取得
