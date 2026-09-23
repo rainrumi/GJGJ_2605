@@ -26,6 +26,7 @@ const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転で
 @export var tutorial_novel_text: NovelTextInfo
 @export var all_nightmares_tutorial_text: NovelTextInfo
 @export var first_digestion_tutorial_text: NovelTextInfo
+@export var first_player_revive_tutorial_text: NovelTextInfo
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
@@ -90,6 +91,7 @@ var _initial_tutorial_played := false
 var _all_nightmares_tutorial_played := false
 var _first_digestion_tutorial_played := false
 var _first_digestion_tutorial_pending := false
+var _first_player_revive_tutorial_played := false
 var _initial_tutorial_enemy_preset: EnemyPresetInfo
 var _initial_tutorial_enemies: Array[Enemy] = []
 # 初期化
@@ -992,6 +994,7 @@ func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
 	day_elapsed_minutes += maxi(0, elapsed_minutes)
 	minutes = maxi(day_start_minutes, minutes + elapsed_minutes)
 	var effect_result: BattleTurnResultData
+	var first_revive_penalty_applied := false
 	if hp <= 0:
 		seed_effects.add_revive_event()
 		hp = seed_effects.get_revive_hp(effective_max_hp, REST_HP_RATE)
@@ -1001,6 +1004,7 @@ func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
 			minutes += REST_MINUTES
 			day_elapsed_minutes += REST_MINUTES
 			elapsed_minutes += REST_MINUTES
+			first_revive_penalty_applied = true
 		effect_result = acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
 		_apply_progress_effect_result(effect_result)
 		_refresh_after_battle_event(revived_hp)
@@ -1009,6 +1013,11 @@ func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
 		_apply_progress_effect_result(effect_result)
 		_refresh_after_battle_event()
 	ui.show_time_elapsed(elapsed_minutes)
+	if first_revive_penalty_applied and not _first_player_revive_tutorial_played:
+		_first_player_revive_tutorial_played = _start_tutorial(
+			first_player_revive_tutorial_text,
+			"first_player_revive_tutorial_text"
+		)
 	return effect_result.Acided_enemies if effect_result != null else []
 
 

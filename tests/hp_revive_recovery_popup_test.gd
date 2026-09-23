@@ -30,6 +30,10 @@ func _run() -> void:
 	context.enemy_preset = preset
 	game.call("start_battle", context)
 	await process_frame
+	var initial_tutorial := game.get_node("TutorialNovel") as OpeningNovel
+	if initial_tutorial.visible:
+		initial_tutorial.call("_finish")
+		await process_frame
 	var attack_se := game.get_node("AttackSe") as AudioStreamPlayer
 	var initial_damage: Array[int] = [1]
 	game.call("_apply_player_damage", initial_damage)
@@ -44,7 +48,17 @@ func _run() -> void:
 	var damage_values: Array[int] = [20]
 	battle_ui.call("show_hp_damage_values", damage_values)
 	game.set("hp", 0)
+	var minutes_before_revive := int(game.get("minutes"))
 	game.call("_apply_elapsed_time", 30)
+	var revive_tutorial := game.get_node("TutorialNovel") as OpeningNovel
+	var revive_tutorial_text := revive_tutorial.get("_active_novel_text") as NovelTextInfo
+	_expect(int(game.get("minutes")) == minutes_before_revive + 60, "復活時に通常経過分と30分ペナルティを加算する")
+	_expect(revive_tutorial.visible, "初回復活後にチュートリアルを再生する")
+	_expect(
+		revive_tutorial_text != null
+			and revive_tutorial_text.script_path == "res://resource/novel/tutorial/tutorial_200_100.txt",
+		"初回復活チュートリアルにtutorial_200_100.txtを使う"
+	)
 	var damage_popup := _find_hp_value_popup(hp_view, "-20")
 	var recovery_popup := _find_recovery_popup(hp_view, "+10")
 	_expect(game.call("get_current_hp") == 10, "HPが0になった後に最大HPの10%で復活する")

@@ -1400,8 +1400,8 @@ Thank You for Playing!!
 @text 0, \"すべての悪夢を消化しきるとステージクリアになるので覚えておきましょう。\"
 @lcm
 ## いらんきがする",
-"res://resource/novel/tutorial/tutorial_200_100.txt": "@textbox_set 0, 39, 69, 114, 183
-@img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_hp_100_100.png\"
+"res://resource/novel/tutorial/tutorial_200_100.txt": "@textbox_set 0, 31.4, 135, 135.2, 81
+@img 0, 1.8, -0.4, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_hp_100_100.png\"
 @text 0, \"胃袋HPが0になるとティーナは30分間休憩をして復活します。\"
 @lcm
 @text 0, \"復活時、時刻は強制的に30分進行するので気をつけましょう。\"
