@@ -24,6 +24,7 @@ const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
 @export var tutorial_novel_text: NovelTextInfo
+@export var all_nightmares_tutorial_text: NovelTextInfo
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
@@ -85,6 +86,9 @@ var _pending_depleted_seed_sources: Array[Resource] = []
 var _attack_se_requested_this_timing := false
 var _tutorial_active := false
 var _initial_tutorial_played := false
+var _all_nightmares_tutorial_played := false
+var _initial_tutorial_enemy_preset: EnemyPresetInfo
+var _initial_tutorial_enemies: Array[Enemy] = []
 # 初期化
 func _ready() -> void:
 	randomize()
@@ -113,6 +117,7 @@ func _ready() -> void:
 	tutorial_novel.finished.connect(_on_tutorial_novel_finished)
 	for enemy in enemies:
 		_connect_enemy_damage_attack_se(enemy)
+		_connect_enemy_tutorial_signal(enemy)
 	_connect_ui()
 	_connect_input()
 	_create_Acidion_timer()
@@ -120,14 +125,18 @@ func _ready() -> void:
 
 
 func show_tutorial() -> void:
-	if tutorial_novel_text == null:
-		push_error("Game requires tutorial_novel_text to be assigned.")
+	_start_tutorial(tutorial_novel_text, "tutorial_novel_text")
+
+
+func _start_tutorial(novel_text: NovelTextInfo, property_name: String) -> void:
+	if novel_text == null:
+		push_error("Game requires %s to be assigned." % property_name)
 		return
 	if not battle_active:
 		return
 	_tutorial_active = true
 	_set_battle_flags(false)
-	tutorial_novel.start_with_text(tutorial_novel_text)
+	tutorial_novel.start_with_text(novel_text)
 
 
 func _on_tutorial_novel_finished() -> void:
@@ -138,6 +147,42 @@ func _on_tutorial_novel_finished() -> void:
 		return
 	_set_battle_flags(true)
 	_refresh_ui()
+	_try_play_all_nightmares_tutorial()
+
+
+func _on_enemy_placement_changed(_is_placed: bool) -> void:
+	call_deferred("_try_play_all_nightmares_tutorial")
+
+
+func _try_play_all_nightmares_tutorial() -> void:
+	if (
+		_all_nightmares_tutorial_played
+		or not _initial_tutorial_played
+		or _tutorial_active
+		or not battle_active
+		or current_enemy_preset != _initial_tutorial_enemy_preset
+		or _initial_tutorial_enemies.is_empty()
+	):
+		return
+	var has_enemy_in_stomach := false
+	for enemy in _initial_tutorial_enemies:
+		if enemy != null and enemy.is_active_in_stomach():
+			has_enemy_in_stomach = true
+			break
+	if not has_enemy_in_stomach:
+		return
+	_all_nightmares_tutorial_played = true
+	_start_tutorial(all_nightmares_tutorial_text, "all_nightmares_tutorial_text")
+
+
+func _capture_initial_tutorial_enemies() -> void:
+	_initial_tutorial_enemy_preset = current_enemy_preset
+	_initial_tutorial_enemies.clear()
+	if current_enemy_preset == null:
+		return
+	var enemy_count := mini(current_enemy_preset.enemies.size(), enemies.size())
+	for index in range(enemy_count):
+		_initial_tutorial_enemies.append(enemies[index])
 # 戦闘開始
 func start_battle(context: BattleInfo = null) -> void:
 	# 戦闘文脈
@@ -202,6 +247,7 @@ func start_battle(context: BattleInfo = null) -> void:
 	_refresh_ui()
 	if not _initial_tutorial_played:
 		_initial_tutorial_played = true
+		_capture_initial_tutorial_enemies()
 		show_tutorial()
 # HP取得
 func get_current_hp() -> int:
@@ -1543,7 +1589,17 @@ func _reset_attack_se_timing() -> void:
 
 func _on_child_entered_tree_for_attack_se(node: Node) -> void:
 	if node is Enemy:
-		_connect_enemy_damage_attack_se(node as Enemy)
+		var enemy := node as Enemy
+		_connect_enemy_damage_attack_se(enemy)
+		_connect_enemy_tutorial_signal(enemy)
+
+
+func _connect_enemy_tutorial_signal(enemy: Enemy) -> void:
+	if enemy == null or enemy.data == null:
+		return
+	var placement_changed := enemy.data.stomach_status.placement_changed
+	if not placement_changed.is_connected(_on_enemy_placement_changed):
+		placement_changed.connect(_on_enemy_placement_changed)
 
 
 func _connect_enemy_damage_attack_se(enemy: Enemy) -> void:

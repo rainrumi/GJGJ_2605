@@ -1,7 +1,5 @@
 @textbox_set 0, 96, 101, 241, 88
 @img 0, -47, 6, "res://resource/image/texture/tutorial/tex_tutorial_enemy_100_100.png"
-@text "0","テストテストテストテストテストテストテスト"
-@lcm
 @text "0","これは「悪夢」です。"
 @lcm
 @text "0","悪夢はクリックで回転することができます。"

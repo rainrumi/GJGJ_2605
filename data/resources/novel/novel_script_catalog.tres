@@ -1357,8 +1357,6 @@ Thank You for Playing!!
 ",
 "res://resource/novel/tutorial/tutorial_100_100.txt": "@textbox_set 0, 96, 101, 241, 88
 @img 0, -47, 6, \"res://resource/image/texture/tutorial/tex_tutorial_enemy_100_100.png\"
-@text \"0\",\"テストテストテストテストテストテストテスト\"
-@lcm
 @text \"0\",\"これは「悪夢」です。\"
 @lcm
 @text \"0\",\"悪夢はクリックで回転することができます。\"
@@ -1373,62 +1371,70 @@ Thank You for Playing!!
 @lcm
 @text \"0\",\"悪夢を胃袋へドラッグして食べてみましょう。\"
 @lcm",
-"res://resource/novel/tutorial/tutorial_100_200.txt": "@textbox_set 0, 100, 200, 320, 80
-@img 0, 100, 200, \"res://resource/image/texture/tutorial/tex_tutorial_enemy_100_100.png\"
-胃袋内にある「斜線」があるマスは「消化ライン」と言います。
+"res://resource/novel/tutorial/tutorial_100_200.txt": "@textbox_set 0, 39.200023651123, 52.7999534606934, 110.399703979492, 180.799407958984
+@img 0, 7.20002841949463, -40, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_100_100.png\"
+@text 0, \"胃袋内にある「斜線」があるマスは「消化ライン」と言います。\"
 @lcm
-悪夢は「消化ラインに触れているマスの数」によって
+@text 0, \"悪夢は「消化ラインに触れているマスの数」によって\"
 @r
-受けるダメージが変化します。
+@text 0, \"受けるダメージが変化します。\"
 @lcm
-@textbox_set 0, 100, 200, 320, 80
-@img 0, 100, 200, \"res://resource/image/texture/tutorial/tex_tutorial_acid_damage_100_100.png\"
-悪夢が受ける消化ダメージはここに表示されます。
+@textbox_set 0, 40.799976348877, 100.399955749512, 140.400482177734, 119.600074768066
+@img 0, 6.40002965927124, -12.4000091552734, \"res://resource/image/texture/tutorial/tex_tutorial_acid_damage_100_100.png\"
+@text 0, \"悪夢が受ける消化ダメージはここに表示されます。\"
 @lcm
-受けるダメージは「数値」×「触れているマス数」です。
+@text 0, \"受けるダメージは「数値」×「触れているマス数」です。\"
 @lcm
-例えば数値が50で触れたマス数が2なら、
+@text 0, \"例えば数値が50で触れたマス数が2なら、\"
 @r
-50×2=100ダメージ与えます。
+@text 0, \"50×2=100ダメージ与えます。\"
 @lcm
-@textbox_set 0, 100, 200, 320, 80
-@img 0, 100, 200, \"res://resource/image/texture/tutorial/tex_tutorial_acid_start_100_100.png\"
-悪夢を食べた後はこのボタンを押して消化を開始しましょう。
+@textbox_set 0, 277.200042724609, 245.599960327148, 176.799682617188, 76.1999359130859
+@img 0, 54.600025177002, -12.7999849319458, \"res://resource/image/texture/tutorial/tex_tutorial_acid_start_100_100.png\"
+@text 0, \"悪夢を食べた後はこのボタンを押して消化を開始しましょう。\"
 @lcm",
 "res://resource/novel/tutorial/tutorial_100_300.txt": "@textbox_set 0, 100, 200, 320, 80
 @img 0, 100, 200, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_hp_100_100.png\"
-消化が進行すると、悪夢は胃袋の中で暴れるため「胃袋HP」にダメージを与えます。
+@text 0, \"消化が進行すると、悪夢は胃袋の中で暴れるため「胃袋HP」にダメージを与えます。\"
 @lcm
-悪夢が与えるダメージは、悪夢の下に表示された数値です。
+@text 0, \"悪夢が与えるダメージは、悪夢の下に表示された数値です。\"
 @lcm
-悪夢の上に表示された数値は「悪夢のHP」です。これが0になると対象の悪夢は完全に消化されます。
+@text 0, \"悪夢の上に表示された数値は「悪夢のHP」です。これが0になると対象の悪夢は完全に消化されます。\"
 @lcm
-すべての悪夢を消化しきるとステージクリアになるので覚えておきましょう。
+@text 0, \"すべての悪夢を消化しきるとステージクリアになるので覚えておきましょう。\"
 @lcm
 ## いらんきがする",
-"res://resource/novel/tutorial/tutorial_200_100.txt": "胃袋HPが0になるとティーナは30分間休憩をして復活します。
+"res://resource/novel/tutorial/tutorial_200_100.txt": "@textbox_set 0, 39, 69, 114, 183
+@img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_hp_100_100.png\"
+@text 0, \"胃袋HPが0になるとティーナは30分間休憩をして復活します。\"
 @lcm
-復活時、時刻は強制的に30分進行するので気をつけましょう。
+@text 0, \"復活時、時刻は強制的に30分進行するので気をつけましょう。\"
 @lcm",
-"res://resource/novel/tutorial/tutorial_300_100.txt": "取得した夢の種はここから植え替えることができます。
+"res://resource/novel/tutorial/tutorial_300_100.txt": "@textbox_set 0, 39, 69, 114, 183
+@img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_seed_bag_100_100.png\"
+@text 0, \"取得した夢の種はここから植え替えることができます。\"
 @lcm",
-"res://resource/novel/tutorial/tutorial_300_200.txt": "これは夢の種バッグです。
+"res://resource/novel/tutorial/tutorial_300_200.txt": "@textbox_set 0, 39, 69, 114, 183
+@img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100.png\"
+@text 0, \"これは夢の種バッグです。\"
 @lcm
-
-上が頭に植える花で、「メインスキル」の効果を常に発揮します。
+@img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100_100.png\"
+@text 0, \"上が頭に植える花で、「メインスキル」の効果を常に発揮します。\"
 @lcm
-
-下は現在所持している夢の種です。この状態だと何も効果を発揮しません。
+@img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_seed_panel_200.png\"
+@text 0, \"下は現在所持している夢の種です。この状態だと何も効果を発揮しません。\"
 @lcm
-
-所持している夢の種と、植えている花は、胃袋にドラッグすることで「食べる」ことができます。
+@img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100.png\"
+@text 0, \"所持している夢の種と、植えている花は、胃袋にドラッグすることで「食べる」ことができます。\"
 @lcm
-食べてから吐くことも出来ますが、「再度頭に植えたりバッグに戻したりはできません。」
+@text 0, \"食べてから吐くことも出来ますが、「再度頭に植えたりバッグに戻したりはできません。」\"
 @lcm
-胃袋で食べた夢の種は、「サブスキル」の効果を発揮します。
+@text 0, \"胃袋で食べた夢の種は、「サブスキル」の効果を発揮します。\"
 @lcm
-自分に合った使い方で、夢の種を有効活用しましょう。
+@text 0, \"自分に合った使い方で、夢の種を有効活用しましょう。\"
 @lcm",
-"res://resource/novel/tutorial/tutorial_400_100.txt": "ラーラとティーナの消化数はここで確認できます。
+"res://resource/novel/tutorial/tutorial_400_100.txt": "@textbox_set 0, 39, 69, 114, 183
+@img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_acid_count_100_100.png\"
+@text 0, \"ラーラとティーナの消化数はここで確認できます。\"
 @lcm"
 })

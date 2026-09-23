@@ -58,7 +58,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TextBoxLayer" type="Control" parent="Screen"]
+[node name="TextBoxLayer" type="Control" parent="Screen" unique_id=1474411637]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -154,12 +154,13 @@ vertical_alignment = 1
 
 [node name="DebugPanel" parent="Screen" unique_id=1782653974 instance=ExtResource("6_debug_panel")]
 
-[node name="DebugTextBoxOutline" type="Panel" parent="Screen"]
+[node name="DebugTextBoxOutline" type="Panel" parent="Screen" unique_id=1622884821]
 visible = false
 layout_mode = 0
 mouse_filter = 2
 
-[node name="ResizeHandle" type="ColorRect" parent="Screen/DebugTextBoxOutline"]
+[node name="ResizeHandle" type="ColorRect" parent="Screen/DebugTextBoxOutline" unique_id=1759727013]
+layout_mode = 0
 offset_left = -6.0
 offset_top = -6.0
 offset_right = 6.0
