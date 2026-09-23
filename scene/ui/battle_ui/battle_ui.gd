@@ -24,6 +24,7 @@ signal enemy_next_page_requested
 signal time_over_abandon_requested
 signal time_over_retry_requested
 signal acid_playback_requested(should_play: bool)
+signal owned_seed_panel_opened
 signal seed_drag_started(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_moved(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
 signal seed_drag_released(button: SeedButton, seed: SeedInfo, mouse_position: Vector2)
@@ -629,6 +630,7 @@ func _open_owned_seed_panel() -> void:
 	seed_button_list.visible = false
 	owned_seed_open_button.visible = false
 	owned_seed_panel.open_panel()
+	owned_seed_panel_opened.emit()
 
 
 # 所有種panel非表示

@@ -1,9 +1,9 @@
-extends SceneTree
+extends Node
 
 var _failures := 0
 
 
-func _initialize() -> void:
+func _ready() -> void:
 	call_deferred("_run")
 
 
@@ -11,19 +11,19 @@ func _run() -> void:
 	var main_scene := load("res://scene/main/main.tscn") as PackedScene
 	_expect(main_scene != null, "Main scene loads")
 	if main_scene == null:
-		quit(_failures)
+		get_tree().quit(_failures)
 		return
 
 	var main := main_scene.instantiate()
-	root.add_child(main)
-	await process_frame
+	get_tree().root.add_child(main)
+	await get_tree().process_frame
 
 	var stage := main.stage_select.call("get_stage_definition_by_id", 11) as StageInfo
 	_expect(stage != null, "Tutorial test stage loads")
 	if stage != null:
 		main.run_state.select_stage(stage)
 		main.show_game()
-		await process_frame
+		await get_tree().process_frame
 
 		var game: Node = main.get("game") as Node
 		var tutorial := game.get_node("TutorialNovel") as OpeningNovel
@@ -43,11 +43,11 @@ func _run() -> void:
 		)
 
 		tutorial.call("_finish")
-		await process_frame
+		await get_tree().process_frame
 		_expect(bool(game.get("battle_active")), "Battle input resumes after the initial tutorial")
 
 		game.show_tutorial()
-		await process_frame
+		await get_tree().process_frame
 		var tutorial_text := tutorial.get("_active_novel_text") as NovelTextInfo
 		_expect(tutorial.visible, "Tutorial overlay remains available in the game scene")
 		_expect(not bool(game.get("battle_active")), "Manual tutorial playback pauses battle input")
@@ -59,19 +59,36 @@ func _run() -> void:
 		)
 
 		tutorial.call("_finish")
-		await process_frame
+		await get_tree().process_frame
 		_expect(bool(game.get("battle_active")), "Battle input resumes after tutorial playback")
 
+		var battle_ui := game.get("ui") as BattleUI
+		battle_ui.call("_open_owned_seed_panel")
+		await get_tree().process_frame
+		var owned_seed_panel_tutorial := tutorial.get("_active_novel_text") as NovelTextInfo
+		_expect(tutorial.visible, "Opening the owned seed panel plays its first-use tutorial")
+		_expect(
+			owned_seed_panel_tutorial != null
+				and owned_seed_panel_tutorial.script_path == "res://resource/novel/tutorial/tutorial_300_200.txt",
+			"Owned seed panel tutorial uses tutorial_300_200.txt"
+		)
+		tutorial.call("_finish")
+		await get_tree().process_frame
+		battle_ui.call("_open_owned_seed_panel")
+		await get_tree().process_frame
+		_expect(not tutorial.visible, "Owned seed panel tutorial does not replay after first use")
+		battle_ui.call("_close_owned_seed_panel")
+
 		main.show_game(false)
-		await process_frame
+		await get_tree().process_frame
 		_expect(not tutorial.visible, "Tutorial is not auto-played when the game scene is shown again")
 		_expect(bool(game.get("battle_active")), "Battle input starts normally when re-entering the game scene")
 
-	root.remove_child(main)
+	get_tree().root.remove_child(main)
 	main.free()
-	await process_frame
+	await get_tree().process_frame
 	print("game_tutorial_novel_test: PASS")
-	quit(_failures)
+	get_tree().quit(_failures)
 
 
 func _expect(condition: bool, message: String) -> void:

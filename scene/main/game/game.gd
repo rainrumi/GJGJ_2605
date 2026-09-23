@@ -25,6 +25,7 @@ const START_MESSAGE: String = "６時までにすべての悪夢を消化しま�
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
 @export var tutorial_novel_text: NovelTextInfo
 @export var owned_seed_tutorial_text: NovelTextInfo
+@export var owned_seed_panel_tutorial_text: NovelTextInfo
 @export var all_nightmares_tutorial_text: NovelTextInfo
 @export var first_digestion_tutorial_text: NovelTextInfo
 @export var first_player_revive_tutorial_text: NovelTextInfo
@@ -93,6 +94,7 @@ var _all_nightmares_tutorial_played := false
 var _first_digestion_tutorial_played := false
 var _first_digestion_tutorial_pending := false
 var _first_player_revive_tutorial_played := false
+var _owned_seed_panel_tutorial_played := false
 var _initial_tutorial_enemy_preset: EnemyPresetInfo
 var _initial_tutorial_enemies: Array[Enemy] = []
 # 初期化
@@ -352,6 +354,7 @@ func _connect_ui() -> void:
 	ui.debug_next_enemy_requested.connect(_on_debug_next_enemy_requested)
 	ui.debug_instant_clear_requested.connect(_on_debug_instant_clear_requested)
 	ui.seed_drag_started.connect(_on_seed_drag_started)
+	ui.owned_seed_panel_opened.connect(_on_owned_seed_panel_opened)
 	ui.seed_drag_moved.connect(_on_seed_drag_moved)
 	ui.seed_drag_released.connect(_on_seed_drag_released)
 	ui.seed_equip_requested.connect(_on_seed_equip_requested)
@@ -360,6 +363,17 @@ func _connect_ui() -> void:
 	ui.debug_enemy_parameter_applied.connect(_on_debug_enemy_parameter_applied)
 	ui.debug_seed_acquisition_requested.connect(_on_debug_seed_acquisition_requested)
 	ui.debug_seed_removal_requested.connect(_on_debug_seed_removal_requested)
+
+
+func _on_owned_seed_panel_opened() -> void:
+	if _owned_seed_panel_tutorial_played or _tutorial_active or not battle_active:
+		return
+	_owned_seed_panel_tutorial_played = _start_tutorial(
+		owned_seed_panel_tutorial_text,
+		"owned_seed_panel_tutorial_text"
+	)
+
+
 # 入力接続
 func _connect_input() -> void:
 	input_controller.setup(enemies)

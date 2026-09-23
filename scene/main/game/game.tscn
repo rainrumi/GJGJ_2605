@@ -23,6 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://cw5upfry3m3nf" path="res://scene/main/opening_novel/opening_novel.tscn" id="47_tutorial_novel"]
 [ext_resource type="Resource" path="res://data/resources/novel/tutorial/tutorial_100.tres" id="48_tutorial_text"]
 [ext_resource type="Resource" path="res://data/resources/novel/tutorial/tutorial_300.tres" id="52_owned_seed_tutorial_text"]
+[ext_resource type="Resource" path="res://data/resources/novel/tutorial/tutorial_300_200.tres" id="53_owned_seed_panel_tutorial_text"]
 [ext_resource type="Resource" path="res://data/resources/novel/tutorial/tutorial_200.tres" id="49_all_nightmares_tutorial_text"]
 [ext_resource type="Resource" path="res://data/resources/novel/tutorial/tutorial_400.tres" id="50_first_digestion_tutorial_text"]
 [ext_resource type="Resource" path="res://data/resources/novel/tutorial/tutorial_200_100.tres" id="51_first_player_revive_tutorial_text"]
@@ -51,6 +52,7 @@ corner_radius_bottom_left = 4
 script = ExtResource("12_game_script")
 tutorial_novel_text = ExtResource("48_tutorial_text")
 owned_seed_tutorial_text = ExtResource("52_owned_seed_tutorial_text")
+owned_seed_panel_tutorial_text = ExtResource("53_owned_seed_panel_tutorial_text")
 all_nightmares_tutorial_text = ExtResource("49_all_nightmares_tutorial_text")
 first_digestion_tutorial_text = ExtResource("50_first_digestion_tutorial_text")
 first_player_revive_tutorial_text = ExtResource("51_first_player_revive_tutorial_text")

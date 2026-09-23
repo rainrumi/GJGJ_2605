@@ -1,11 +1,11 @@
-@textbox_set 0, 39, 69, 114, 183
+@textbox_set 0, 253.8, 120.6, 163.2, 91.8
 @img 0, 7, -22, "res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100.png"
 @text 0, "これは夢の種バッグです。"
 @lcm
 @img 0, 7, -22, "res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100_100.png"
 @text 0, "上が頭に植える花で、「メインスキル」の効果を常に発揮します。"
 @lcm
-@img 0, 7, -22, "res://resource/image/texture/tutorial/tex_tutorial_seed_panel_200.png"
+@img 0, 7, -22, "res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100_200.png"
 @text 0, "下は現在所持している夢の種です。この状態だと何も効果を発揮しません。"
 @lcm
 @img 0, 7, -22, "res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100.png"
