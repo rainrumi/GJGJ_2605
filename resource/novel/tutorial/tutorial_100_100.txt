@@ -1,4 +1,4 @@
-@textbox_set "0","100","200","320","80"
+@textbox_set 0, 100, 200, 320, 80
 @img 0, 100, 200, "res://resource/image/texture/tutorial/tex_tutorial_enemy_100_100.png"
 @text "0","テストテストテストテストテストテストテスト"
 @lcm
@@ -8,10 +8,11 @@
 @lcm
 @text "0","悪夢は「胃袋」の中で「消化」しなければなりません。"
 @lcm
-
-@text "0","これが「胃袋」です。"
+@textbox_set 0, 100, 200, 320, 80
+@img 0, 100, 200, "res://resource/image/texture/tutorial/tex_tutorial_stomach_100_100.png"
+@text "1","これが「胃袋」です。"
 @lcm
-@text "0","悪夢は胃袋の中で消化することができます。"
+@text "1","悪夢は胃袋の中で消化することができます。"
 @lcm
-@text "0","悪夢を胃袋へドラッグして食べてみましょう。"
+@text "1","悪夢を胃袋へドラッグして食べてみましょう。"
 @lcm

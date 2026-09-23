@@ -1,10 +1,13 @@
+@textbox_set 0, 100, 200, 320, 80
+@img 0, 100, 200, "res://resource/image/texture/tutorial/tex_tutorial_enemy_100_100.png"
 胃袋内にある「斜線」があるマスは「消化ライン」と言います。
 @lcm
 悪夢は「消化ラインに触れているマスの数」によって
 @r
 受けるダメージが変化します。
 @lcm
-
+@textbox_set 0, 100, 200, 320, 80
+@img 0, 100, 200, "res://resource/image/texture/tutorial/tex_tutorial_acid_damage_100_100.png"
 悪夢が受ける消化ダメージはここに表示されます。
 @lcm
 受けるダメージは「数値」×「触れているマス数」です。
@@ -13,6 +16,7 @@
 @r
 50×2=100ダメージ与えます。
 @lcm
-
+@textbox_set 0, 100, 200, 320, 80
+@img 0, 100, 200, "res://resource/image/texture/tutorial/tex_tutorial_acid_start_100_100.png"
 悪夢を食べた後はこのボタンを押して消化を開始しましょう。
 @lcm
