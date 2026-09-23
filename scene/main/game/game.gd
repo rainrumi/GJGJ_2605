@@ -25,6 +25,7 @@ const START_MESSAGE: String = "６時までにすべての悪夢を消化しま�
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
 @export var tutorial_novel_text: NovelTextInfo
 @export var all_nightmares_tutorial_text: NovelTextInfo
+@export var first_digestion_tutorial_text: NovelTextInfo
 @onready var ui: BattleUI = $UI
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
@@ -87,6 +88,8 @@ var _attack_se_requested_this_timing := false
 var _tutorial_active := false
 var _initial_tutorial_played := false
 var _all_nightmares_tutorial_played := false
+var _first_digestion_tutorial_played := false
+var _first_digestion_tutorial_pending := false
 var _initial_tutorial_enemy_preset: EnemyPresetInfo
 var _initial_tutorial_enemies: Array[Enemy] = []
 # 初期化
@@ -128,15 +131,16 @@ func show_tutorial() -> void:
 	_start_tutorial(tutorial_novel_text, "tutorial_novel_text")
 
 
-func _start_tutorial(novel_text: NovelTextInfo, property_name: String) -> void:
+func _start_tutorial(novel_text: NovelTextInfo, property_name: String) -> bool:
 	if novel_text == null:
 		push_error("Game requires %s to be assigned." % property_name)
-		return
+		return false
 	if not battle_active:
-		return
+		return false
 	_tutorial_active = true
 	_set_battle_flags(false)
 	tutorial_novel.start_with_text(novel_text)
+	return true
 
 
 func _on_tutorial_novel_finished() -> void:
@@ -147,6 +151,11 @@ func _on_tutorial_novel_finished() -> void:
 		return
 	_set_battle_flags(true)
 	_refresh_ui()
+	if _first_digestion_tutorial_pending:
+		_first_digestion_tutorial_pending = false
+		_first_digestion_tutorial_played = true
+		_on_Acidion_requested()
+		return
 	_try_play_all_nightmares_tutorial()
 
 
@@ -1019,8 +1028,15 @@ func _apply_progress_effect_result(result: BattleTurnResultData) -> void:
 func _finish_acid_turn() -> void:
 	_check_battle_end()
 	acid_turn_in_progress = false
-	_update_auto_acid_timer()
 	acid_controller.activate_deferred_nuisance_enemies(enemies)
+	if battle_active and not _first_digestion_tutorial_played:
+		_first_digestion_tutorial_pending = _start_tutorial(
+			first_digestion_tutorial_text,
+			"first_digestion_tutorial_text"
+		)
+		if _first_digestion_tutorial_pending:
+			return
+	_update_auto_acid_timer()
 
 
 # depleted夢種sources発火

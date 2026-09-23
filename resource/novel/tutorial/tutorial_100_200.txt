@@ -2,9 +2,7 @@
 @img 0, 7, -40, "res://resource/image/texture/tutorial/tex_tutorial_stomach_100_100.png"
 @text 0, "胃袋内にある「斜線」があるマスは「消化ライン」と言います。"
 @lcm
-@text 0, "悪夢は「消化ラインに触れているマスの数」によって"
-@r
-@text 0, "受けるダメージが変化します。"
+@text 0, "悪夢は「消化ラインに触れているマスの数」によって受けるダメージが変化します。"
 @lcm
 @textbox_set 0, 41, 100, 140, 120
 @img 0, 6.4, -12.4, "res://resource/image/texture/tutorial/tex_tutorial_acid_damage_100_100.png"
@@ -12,9 +10,7 @@
 @lcm
 @text 0, "受けるダメージは「数値」×「触れているマス数」です。"
 @lcm
-@text 0, "例えば数値が50で触れたマス数が2なら、"
-@r
-@text 0, "50×2=100ダメージ与えます。"
+@text 0, "例えば数値が50で触れたマス数が2なら、50×2=100ダメージ与えます。"
 @lcm
 @textbox_set 0, 277, 246, 177, 76
 @img 0, 55, -13, "res://resource/image/texture/tutorial/tex_tutorial_acid_start_100_100.png"
