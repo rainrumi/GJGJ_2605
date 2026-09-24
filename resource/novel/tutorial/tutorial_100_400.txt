@@ -1,0 +1,23 @@
+@textbox_set 0, 336, 91, 158, 78, 1, 1
+@img 0, -19, 8, "res://resource/image/texture/tutorial/tex_tutorial_time_100.png"
+@text 0, "これで消化を進めることができました。"
+@lcm
+@img 0, -19, 8, "res://resource/image/texture/tutorial/tex_tutorial_time_100_100.png"
+@text 0, "消化が一回進むたびに、ここに表示された時間が進みます。"
+@lcm
+@text 0, "例えば数値が30minなら、1回消化ダメージを与えるたびに30minの時間が進みます。"
+@lcm
+@textbox_set 0, 329, 75.5, 159, 83, 1, 1
+@img 0, -26, -4, "res://resource/image/texture/tutorial/tex_tutorial_time_100_200.png"
+@text 0, "進んだ時刻はここで確認できます。"
+@lcm
+@text 0, "時刻は22:00に始まり、6:00に終わります。"
+@lcm
+@text 0, "時刻が朝の6:00になると、朝になり消化に失敗してしまうので気をつけましょう。"
+@lcm
+@textbox_set 0, 336, 91, 158, 78, 1, 1
+@img 0, -19, 8, "res://resource/image/texture/tutorial/tex_tutorial_time_100.png"
+@text 0, "消化方法の説明はこれで終了です。"
+@lcm
+@text 0, "すべての悪夢を消化するとクリアになるので引き続き他の悪夢をすべて消化しましょう。"
+@lcm

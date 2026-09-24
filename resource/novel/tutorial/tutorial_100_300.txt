@@ -1,4 +1,4 @@
-@textbox_set 0, 100, 200, 320, 80
+@textbox_set 0, 100, 200, 320, 80, 1, 1
 @img 0, 100, 200, "res://resource/image/texture/tutorial/tex_tutorial_stomach_hp_100_100.png"
 @text 0, "消化が進行すると、悪夢は胃袋の中で暴れるため「胃袋HP」にダメージを与えます。"
 @lcm

@@ -1353,41 +1353,48 @@ Thank You for Playing!!
 アンタのこと一番知ってるのは私なんだから……。
 @lcm
 ",
-"res://resource/novel/tutorial/tutorial_100_100.txt": "@textbox_set 0, 96, 101, 241, 88
+"res://resource/novel/tutorial/tutorial_100_100.txt": "@textbox_set 0, 96, 101, 241, 88, 1, 1
+@img 0, -47, 6, \"res://resource/image/texture/tutorial/tex_tutorial_enemy_100.png\"
+@text \"0\",\"こんばんは。これから悪夢の消化方法を説明します。\"
+@lcm
 @img 0, -47, 6, \"res://resource/image/texture/tutorial/tex_tutorial_enemy_100_100.png\"
 @text \"0\",\"これは「悪夢」です。\"
 @lcm
-@text \"0\",\"悪夢はクリックで回転することができます。\"
+@text \"0\",\"悪夢はクリックで回転することができます。\"後で試してみてください。
 @lcm
 @text \"0\",\"悪夢は「胃袋」の中で「消化」しなければなりません。\"
 @lcm
-@textbox_set 0, 39, 69, 114, 183
+@textbox_set 0, 39, 69, 114, 183, 1, 1
 @img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_100_100.png\"
 @text \"0\",\"これが「胃袋」です。\"
 @lcm
-@text \"0\",\"悪夢は胃袋の中で消化することができます。\"
+@text \"0\",\"右に出現している悪夢は、胃袋の中で消化することができます。\"
 @lcm
-@text \"0\",\"悪夢を胃袋へドラッグして食べてみましょう。\"
-@lcm",
-"res://resource/novel/tutorial/tutorial_100_200.txt": "@textbox_set 0, 39, 53, 110, 181
+@text \"0\",\"さっそく悪夢を胃袋へドラッグして、実際に食べてみましょう。\"
+@lcm
+",
+"res://resource/novel/tutorial/tutorial_100_200.txt": "@textbox_set 0, 39, 53, 110, 181, 1, 1
 @img 0, 7, -40, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_100_100.png\"
-@text 0, \"胃袋内にある「斜線」があるマスは「消化ライン」と言います。\"
+@text 0, \"これで悪夢を食べることができました。\"
 @lcm
-@text 0, \"悪夢は「消化ラインに触れているマスの数」によって受けるダメージが変化します。\"
+@text 0, \"胃袋内にある「斜線」が出ているマスは、「消化ライン」と言います。\"
 @lcm
-@textbox_set 0, 41, 100, 140, 120
+@text 0, \"悪夢は、消化ラインに触れている「マスの数」によって、受けるダメージが変化します。\"
+@lcm
+@textbox_set 0, 41, 100, 140, 120, 1, 1
 @img 0, 6.4, -12.4, \"res://resource/image/texture/tutorial/tex_tutorial_acid_damage_100_100.png\"
-@text 0, \"悪夢が受ける消化ダメージはここに表示されます。\"
+@text 0, \"悪夢が1マスごとに受ける消化ダメージは、ここに表示されます。\"
 @lcm
-@text 0, \"受けるダメージは「数値」×「触れているマス数」です。\"
+@text 0, \"受けるダメージは「数値」×「斜線に触れているマス数」です。\"
 @lcm
-@text 0, \"例えば数値が50で触れたマス数が2なら、50×2=100ダメージ与えます。\"
+@text 0, \"例えば数値が50で、斜線に触れたマス数が2なら、50×2で100ダメージ与えます。\"
 @lcm
-@textbox_set 0, 277, 246, 177, 76
+@textbox_set 0, 275, 237.2, 167.4, 81.2, 1, 1
 @img 0, 55, -13, \"res://resource/image/texture/tutorial/tex_tutorial_acid_start_100_100.png\"
-@text 0, \"悪夢を食べた後はこのボタンを押して消化を開始しましょう。\"
-@lcm",
-"res://resource/novel/tutorial/tutorial_100_300.txt": "@textbox_set 0, 100, 200, 320, 80
+@text 0, \"悪夢を食べた後はこのボタンを押して、消化を開始しましょう。\"
+@lcm
+",
+"res://resource/novel/tutorial/tutorial_100_300.txt": "@textbox_set 0, 100, 200, 320, 80, 1, 1
 @img 0, 100, 200, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_hp_100_100.png\"
 @text 0, \"消化が進行すると、悪夢は胃袋の中で暴れるため「胃袋HP」にダメージを与えます。\"
 @lcm
@@ -1397,18 +1404,44 @@ Thank You for Playing!!
 @lcm
 @text 0, \"すべての悪夢を消化しきるとステージクリアになるので覚えておきましょう。\"
 @lcm
-## いらんきがする",
-"res://resource/novel/tutorial/tutorial_200_100.txt": "@textbox_set 0, 31.4, 135, 135.2, 81
+## いらんきがする
+",
+"res://resource/novel/tutorial/tutorial_100_400.txt": "@textbox_set 0, 336, 91, 158, 78, 1, 1
+@img 0, -19, 8, \"res://resource/image/texture/tutorial/tex_tutorial_time_100.png\"
+@text 0, \"これで消化を進めることができました。\"
+@lcm
+@img 0, -19, 8, \"res://resource/image/texture/tutorial/tex_tutorial_time_100_100.png\"
+@text 0, \"消化が一回進むたびに、ここに表示された時間が進みます。\"
+@lcm
+@text 0, \"例えば数値が30minなら、1回消化ダメージを与えるたびに30minの時間が進みます。\"
+@lcm
+@textbox_set 0, 329, 75.5, 159, 83, 1, 1
+@img 0, -26, -4, \"res://resource/image/texture/tutorial/tex_tutorial_time_100_200.png\"
+@text 0, \"進んだ時刻はここで確認できます。\"
+@lcm
+@text 0, \"時刻は22:00に始まり、6:00に終わります。\"
+@lcm
+@text 0, \"時刻が朝の6:00になると、朝になり消化に失敗してしまうので気をつけましょう。\"
+@lcm
+@textbox_set 0, 336, 91, 158, 78, 1, 1
+@img 0, -19, 8, \"res://resource/image/texture/tutorial/tex_tutorial_time_100.png\"
+@text 0, \"消化方法の説明はこれで終了です。\"
+@lcm
+@text 0, \"すべての悪夢を消化するとクリアになるので引き続き他の悪夢をすべて消化しましょう。\"
+@lcm",
+"res://resource/novel/tutorial/tutorial_200_100.txt": "@textbox_set 0, 31.4, 135, 135.2, 81, 1, 1
 @img 0, 1.8, -0.4, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_hp_100_100.png\"
 @text 0, \"胃袋HPが0になるとティーナは30分間休憩をして復活します。\"
 @lcm
 @text 0, \"復活時、時刻は強制的に30分進行するので気をつけましょう。\"
-@lcm",
-"res://resource/novel/tutorial/tutorial_300_100.txt": "@textbox_set 0, 213.4, 258.6, 142.8, 68.6
+@lcm
+",
+"res://resource/novel/tutorial/tutorial_300_100.txt": "@textbox_set 0, 213.4, 258.6, 142.8, 68.6, 1, 1
 @img 0, -1.8, -6.4, \"res://resource/image/texture/tutorial/tex_tutorial_seed_bag_100_100.png\"
 @text 0, \"取得した夢の種はここから植え替えることができます。\"
-@lcm",
-"res://resource/novel/tutorial/tutorial_300_200.txt": "@textbox_set 0, 253.8, 120.6, 163.2, 91.8
+@lcm
+",
+"res://resource/novel/tutorial/tutorial_300_200.txt": "@textbox_set 0, 253.8, 120.6, 163.2, 91.8, 1, 1
 @img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100.png\"
 @text 0, \"これは夢の種バッグです。\"
 @lcm
@@ -1416,21 +1449,26 @@ Thank You for Playing!!
 @text 0, \"上が頭に植える花で、「メインスキル」の効果を常に発揮します。\"
 @lcm
 @img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100_200.png\"
-@text 0, \"下は現在所持している夢の種です。この状態だと何も効果を発揮しません。\"
+@text 0, \"下は現在所持している夢の種です。ここの種は何も効果を発揮しません。\"
 @lcm
 @img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100.png\"
-@text 0, \"所持している夢の種と、植えている花は、胃袋にドラッグすることで「食べる」ことができます。\"
+@text 0, \"しかし所持している夢の種と、植えている花は、胃袋にドラッグすることで「食べる」ことができます。\"
 @lcm
-@text 0, \"食べてから吐くことも出来ますが、「再度頭に植えたりバッグに戻したりはできません。」\"
+@text 0, \"食べてから吐くことも出来ますが、「再度頭に植える」や「バッグに戻す」ことはできません。\"
 @lcm
-@text 0, \"胃袋で食べた夢の種は、「サブスキル」の効果を発揮します。\"
+@text 0, \"また、胃袋に入れて食べた夢の種は、「サブスキル」の効果を発揮します。\"
 @lcm
-@text 0, \"自分に合った使い方で、夢の種を有効活用しましょう。\"
-@lcm",
-"res://resource/novel/tutorial/tutorial_400_100.txt": "@textbox_set 0, 261, 94.6, 160, 81.8
+@text 0, \"基本的に食べた夢の種の効果は、そのステージでしか効果を発揮せず、更に手持ちから消滅します。\"
+@lcm
+@text 0, \"しかしサブスキルは効果が大きいものが多いです。
+@text 0, \"場合に応じて自分に合った使い方で、夢の種を有効活用しましょう。\"
+@lcm
+",
+"res://resource/novel/tutorial/tutorial_400_100.txt": "@textbox_set 0, 261, 94.6, 160, 81.8, 1, 1
 @img 0, -33.4, -1.6, \"res://resource/image/texture/tutorial/tex_tutorial_acid_count_100_100.png\"
 @text 0, \"ラーラとティーナの消化数はここで確認できます。\"
 @lcm
 @text 0, \"ラーラの消化数に負けないように消化数を増やしていきましょう。\"
-@lcm"
+@lcm
+"
 })

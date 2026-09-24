@@ -294,18 +294,22 @@ func _command_img_remove(argument: String) -> void:
 
 func _command_textbox_set(argument: String) -> void:
 	var arguments := _parse_comma_separated_arguments(argument)
-	if arguments.size() != 5:
+	if arguments.size() != 7:
 		push_error(
-			"OpeningNovel @textbox_set requires index, position_x, position_y, size_x, and size_y on scenario line %d."
+			"OpeningNovel @textbox_set requires index, position_x, position_y, size_x, size_y, horizontal_alignment, and vertical_alignment on scenario line %d."
 			% _line_index
 		)
 		return
 	if not arguments[0].is_valid_int():
 		push_error("OpeningNovel @textbox_set received an invalid index on scenario line %d." % _line_index)
 		return
-	for index in range(1, arguments.size()):
+	for index in range(1, 5):
 		if not arguments[index].is_valid_float():
 			push_error("OpeningNovel @textbox_set received an invalid coordinate or size on scenario line %d." % _line_index)
+			return
+	for index in range(5, 7):
+		if not arguments[index].is_valid_int() or arguments[index].to_int() < 0 or arguments[index].to_int() > 3:
+			push_error("OpeningNovel @textbox_set received an invalid alignment on scenario line %d." % _line_index)
 			return
 	var textbox_size := Vector2(arguments[3].to_float(), arguments[4].to_float())
 	if textbox_size.x < 0.0 or textbox_size.y < 0.0:
@@ -328,6 +332,8 @@ func _command_textbox_set(argument: String) -> void:
 	_textbox_source_lines[textbox_index] = _line_index - 1
 	textbox.position = Vector2(arguments[1].to_float(), arguments[2].to_float())
 	textbox.size = textbox_size
+	textbox.horizontal_alignment = arguments[5].to_int()
+	textbox.vertical_alignment = arguments[6].to_int()
 	_refresh_debug_targets()
 
 
@@ -505,7 +511,7 @@ func _save_textbox_geometry(textbox_index: int) -> void:
 	var arguments := _parse_comma_separated_arguments(String(command["argument"]))
 	if (
 		String(command["name"]) != "textbox_set"
-		or arguments.size() != 5
+		or arguments.size() != 7
 		or not arguments[0].is_valid_int()
 		or arguments[0].to_int() != textbox_index
 	):

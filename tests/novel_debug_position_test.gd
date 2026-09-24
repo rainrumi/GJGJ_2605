@@ -22,8 +22,8 @@ func _run() -> void:
 
 	var source_file := FileAccess.open(TEMP_SCRIPT_PATH, FileAccess.WRITE)
 	var test_script := "@img 2, 10, 20, \"%s\"\n" % IMAGE_PATH
-	test_script += "@textbox_set 0, 10, 20, 100, 50\n@l\n"
-	test_script += "@textbox_set 0, 110, 120, 200, 60\n"
+	test_script += "@textbox_set 0, 10, 20, 100, 50, 0, 0\n@l\n"
+	test_script += "@textbox_set 0, 110, 120, 200, 60, 1, 3\n"
 	test_script += "@img 2, 110, 120, \"%s\"\n@l" % IMAGE_PATH
 	source_file.store_string(test_script)
 	source_file = null
@@ -74,7 +74,7 @@ func _run() -> void:
 	_expect(textbox.size == Vector2(120.0, 50.0), "Numeric size updates textbox dimensions")
 
 	var saved_geometry := FileAccess.get_file_as_string(TEMP_SCRIPT_PATH)
-	_expect(saved_geometry.contains("@textbox_set 0, 25, 20, 120, 50"), "Numeric textbox changes save to the scenario")
+	_expect(saved_geometry.contains("@textbox_set 0, 25, 20, 120, 50, 0, 0"), "Numeric textbox changes preserve alignment arguments")
 	var textbox_drag_start := textbox.position + Vector2(10.0, 10.0)
 	novel.call("_on_screen_gui_input", _mouse_button(true, textbox_drag_start))
 	novel.call("_on_screen_gui_input", _mouse_motion(Vector2(5.0, -2.0)))
@@ -86,23 +86,28 @@ func _run() -> void:
 	novel.call("_on_screen_gui_input", _mouse_button(false, resize_start + Vector2(8.0, 6.0)))
 	_expect(textbox.size == Vector2(128.0, 56.0), "Dragging the resize handle changes textbox size")
 	_expect(
-		FileAccess.get_file_as_string(TEMP_SCRIPT_PATH).contains("@textbox_set 0, 30, 18, 128, 56"),
+		FileAccess.get_file_as_string(TEMP_SCRIPT_PATH).contains("@textbox_set 0, 30, 18, 128, 56, 0, 0"),
 		"Dragged textbox geometry saves to the scenario"
 	)
 	var saved_lines := FileAccess.get_file_as_string(TEMP_SCRIPT_PATH).split("\n")
-	_expect(saved_lines[3] == "@textbox_set 0, 110, 120, 200, 60", "Editing the first textbox command preserves the next command")
+	_expect(saved_lines[3] == "@textbox_set 0, 110, 120, 200, 60, 1, 3", "Editing the first textbox command preserves the next command")
 	_expect(saved_lines[4] == "@img 2, 110, 120, \"%s\"" % IMAGE_PATH, "Editing the first image command preserves the next image command")
 	panel.set_drag_mode(false)
 	novel.call("_on_screen_gui_input", _mouse_button(true))
 	await process_frame
 	_expect(textbox.position == Vector2(110.0, 120.0), "Playback applies the second textbox command")
 	_expect(textbox.size == Vector2(200.0, 60.0), "Second textbox command keeps its original size")
+	_expect(
+		textbox.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER
+		and textbox.vertical_alignment == VERTICAL_ALIGNMENT_FILL,
+		"Playback applies both alignment indexes"
+	)
 	_expect(image.position == Vector2(110.0, 120.0), "Playback applies the second image command")
 	panel.x_position.value = 210.0
 	panel.x_position.value_changed.emit(210.0)
 	var saved_second_command := FileAccess.get_file_as_string(TEMP_SCRIPT_PATH).split("\n")
-	_expect(saved_second_command[1] == "@textbox_set 0, 30, 18, 128, 56", "Editing the second command preserves the first command")
-	_expect(saved_second_command[3] == "@textbox_set 0, 210, 120, 200, 60", "Only the active textbox command's numeric value changes")
+	_expect(saved_second_command[1] == "@textbox_set 0, 30, 18, 128, 56, 0, 0", "Editing the second command preserves the first command")
+	_expect(saved_second_command[3] == "@textbox_set 0, 210, 120, 200, 60, 1, 3", "Only the active textbox command's geometry changes")
 	panel.image_selector.select(0)
 	panel.call("_on_image_selected", 0)
 	panel.x_position.value = 220.0

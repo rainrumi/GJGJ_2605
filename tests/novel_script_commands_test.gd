@@ -48,7 +48,8 @@ func _run() -> void:
 
 	var novel_text := NovelTextInfo.new()
 	novel_text.text = (
-		"@name \"主人公\"\n"
+		"@textbox_set 7, 11, 12, 130, 40, 2, 1\n"
+		+ "@name \"主人公\"\n"
 		+ "@bg \"%s\"\n" % BACKGROUND_PATH
 		+ "@img 0, 10, 20, \"%s\"\n" % BACKGROUND_PATH
 		+ "@img 1, 30, 40, \"%s\"\n" % BACKGROUND_PATH
@@ -69,6 +70,13 @@ func _run() -> void:
 	var next_label := opening_novel.get_node("Screen/TextBox/NextLabel") as Label
 	var background := opening_novel.get_node("Screen/OpeningStill") as TextureRect
 	var image_layer := opening_novel.get_node("Screen/ImageLayer") as Control
+	var aligned_textbox := opening_novel.get_node("Screen/TextBoxLayer/TextBox7") as Label
+	_expect(
+		aligned_textbox != null
+		and aligned_textbox.horizontal_alignment == HORIZONTAL_ALIGNMENT_RIGHT
+		and aligned_textbox.vertical_alignment == VERTICAL_ALIGNMENT_CENTER,
+		"@textbox_set applies horizontal and vertical alignment indexes"
+	)
 	_expect(name_label.text == "主人公" and name_label.visible, "@name updates the name label")
 	_expect(background.visible and background.texture != null, "@bg updates and shows the background")
 	_expect(image_layer.get_child_count() == 1, "@img_remove removes only the requested index")

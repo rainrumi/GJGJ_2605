@@ -1,4 +1,4 @@
-@textbox_set 0, 31.4, 135, 135.2, 81
+@textbox_set 0, 31.4, 135, 135.2, 81, 1, 1
 @img 0, 1.8, -0.4, "res://resource/image/texture/tutorial/tex_tutorial_stomach_hp_100_100.png"
 @text 0, "胃袋HPが0になるとティーナは30分間休憩をして復活します。"
 @lcm

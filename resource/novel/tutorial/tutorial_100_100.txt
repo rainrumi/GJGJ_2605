@@ -1,16 +1,19 @@
-@textbox_set 0, 96, 101, 241, 88
+@textbox_set 0, 96, 101, 241, 88, 1, 1
+@img 0, -47, 6, "res://resource/image/texture/tutorial/tex_tutorial_enemy_100.png"
+@text "0","こんばんは。これから悪夢の消化方法を説明します。"
+@lcm
 @img 0, -47, 6, "res://resource/image/texture/tutorial/tex_tutorial_enemy_100_100.png"
 @text "0","これは「悪夢」です。"
 @lcm
-@text "0","悪夢はクリックで回転することができます。"
+@text "0","悪夢はクリックで回転することができます。"後で試してみてください。
 @lcm
 @text "0","悪夢は「胃袋」の中で「消化」しなければなりません。"
 @lcm
-@textbox_set 0, 39, 69, 114, 183
+@textbox_set 0, 39, 69, 114, 183, 1, 1
 @img 0, 7, -22, "res://resource/image/texture/tutorial/tex_tutorial_stomach_100_100.png"
 @text "0","これが「胃袋」です。"
 @lcm
-@text "0","悪夢は胃袋の中で消化することができます。"
+@text "0","右に出現している悪夢は、胃袋の中で消化することができます。"
 @lcm
-@text "0","悪夢を胃袋へドラッグして食べてみましょう。"
+@text "0","さっそく悪夢を胃袋へドラッグして、実際に食べてみましょう。"
 @lcm
