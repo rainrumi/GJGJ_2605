@@ -1459,7 +1459,7 @@ Thank You for Playing!!
 @text 0, \"下は現在所持している夢の種です。ここの種は何も効果を発揮しません。\"
 @lcm
 @img 0, 7, -22, \"res://resource/image/texture/tutorial/tex_tutorial_seed_panel_100.png\"
-@text 0, \"しかし所持している夢の種と、植えている花は、胃袋にドラッグすることで「食べる」ことができます。\"
+@text 0, \"所持している夢の種と、植えている花は、胃袋にドラッグすることで「食べる」ことができます。\"
 @lcm
 @text 0, \"食べてから吐くことも出来ますが、「再度頭に植える」や「バッグに戻す」ことはできません。\"
 @lcm
@@ -1478,8 +1478,8 @@ Thank You for Playing!!
 @text 0, \"ラーラの消化数に負けないように消化数を増やしていきましょう。\"
 @lcm
 ",
-"res://resource/novel/tutorial/tutorial_500_100.txt": "@textbox_set 0, 253.8, 120.6, 163.2, 91.8, 1, 1
-@img 0, -103.4, -21.2, \"res://resource/image/texture/tutorial/tex_tutorial_enemy_hp_100_100.png\"
+"res://resource/novel/tutorial/tutorial_500_100.txt": "@textbox_set 0, 39.8, 31.4, 163.2, 91.8, 1, 1
+@img 0, 23, -102.8, \"res://resource/image/texture/tutorial/tex_tutorial_enemy_hp_100_100.png\"
 @text 0, \"悪夢をすべて消化すると、「夢の種」を抽出できます。\"
 @lcm
 @text 0, \"夢の種は、頭に植えたり、食べたりすることで様々な効果を発揮します。\"
