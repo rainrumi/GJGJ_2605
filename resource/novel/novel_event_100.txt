@@ -8,11 +8,8 @@
 @img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_3000.png"
 えっ、毎日1箇所しか回ってないの！？
 @lcm
-@img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
-私、毎日2箇所は回ってるわよ。
-@lcm
 @img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1000.png"
-アンタ、このままだとまずいんじゃない？
+アンタ、もう少しペース上げたほうが良いんじゃない？
 @lcm
 体調も大事だけど、このままだと試験に合格できないかもしれないじゃない。
 @lcm

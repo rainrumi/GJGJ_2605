@@ -25,14 +25,9 @@ end_hour = 0
 end_minute = 45
 area = 5
 
-[sub_resource type="Resource" id="Digestion_2_2"]
-script = ExtResource("3_digestion")
-end_minute = 25
-area = 4
-
 [sub_resource type="Resource" id="Day_2"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_2_1"), SubResource("Digestion_2_2")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_2_1")])
 fallback_area = 7
 
 [sub_resource type="Resource" id="Digestion_3_1"]
@@ -41,20 +36,9 @@ end_hour = 23
 end_minute = 55
 area = 3
 
-[sub_resource type="Resource" id="Digestion_3_2"]
-script = ExtResource("3_digestion")
-end_hour = 1
-end_minute = 55
-area = 9
-
-[sub_resource type="Resource" id="Digestion_3_3"]
-script = ExtResource("3_digestion")
-end_minute = 50
-area = 10
-
 [sub_resource type="Resource" id="Day_3"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_3_1"), SubResource("Digestion_3_2"), SubResource("Digestion_3_3")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_3_1")])
 fallback_area = 11
 
 [sub_resource type="Resource" id="Digestion_4_1"]
@@ -73,14 +57,9 @@ end_hour = 1
 end_minute = 20
 area = 3
 
-[sub_resource type="Resource" id="Digestion_5_2"]
-script = ExtResource("3_digestion")
-end_hour = 4
-end_minute = 40
-
 [sub_resource type="Resource" id="Day_5"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_5_1"), SubResource("Digestion_5_2")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_5_1")])
 fallback_area = 6
 
 [sub_resource type="Resource" id="Digestion_6_1"]
@@ -95,15 +74,9 @@ end_hour = 2
 end_minute = 45
 area = 8
 
-[sub_resource type="Resource" id="Digestion_6_3"]
-script = ExtResource("3_digestion")
-end_hour = 5
-end_minute = 5
-area = 9
-
 [sub_resource type="Resource" id="Day_6"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_6_1"), SubResource("Digestion_6_2"), SubResource("Digestion_6_3")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_6_1"), SubResource("Digestion_6_2")])
 fallback_area = 10
 
 [sub_resource type="Resource" id="Digestion_7_1"]
@@ -118,18 +91,9 @@ end_hour = 0
 end_minute = 30
 area = 11
 
-[sub_resource type="Resource" id="Digestion_7_3"]
-script = ExtResource("3_digestion")
-end_hour = 1
-end_minute = 45
-
-[sub_resource type="Resource" id="Digestion_7_4"]
-script = ExtResource("3_digestion")
-area = 8
-
 [sub_resource type="Resource" id="Day_7"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_7_1"), SubResource("Digestion_7_2"), SubResource("Digestion_7_3"), SubResource("Digestion_7_4")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_7_1"), SubResource("Digestion_7_2")])
 fallback_area = 4
 
 [sub_resource type="Resource" id="Digestion_8_1"]
@@ -148,14 +112,9 @@ end_hour = 0
 end_minute = 55
 area = 3
 
-[sub_resource type="Resource" id="Digestion_9_2"]
-script = ExtResource("3_digestion")
-end_minute = 50
-area = 7
-
 [sub_resource type="Resource" id="Day_9"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_9_1"), SubResource("Digestion_9_2")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_9_1")])
 fallback_area = 8
 
 [sub_resource type="Resource" id="Digestion_10_1"]
@@ -164,26 +123,9 @@ end_hour = 23
 end_minute = 35
 area = 5
 
-[sub_resource type="Resource" id="Digestion_10_2"]
-script = ExtResource("3_digestion")
-end_hour = 1
-end_minute = 10
-area = 10
-
-[sub_resource type="Resource" id="Digestion_10_3"]
-script = ExtResource("3_digestion")
-end_hour = 2
-end_minute = 40
-area = 11
-
-[sub_resource type="Resource" id="Digestion_10_4"]
-script = ExtResource("3_digestion")
-end_hour = 4
-end_minute = 15
-
 [sub_resource type="Resource" id="Day_10"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_10_1"), SubResource("Digestion_10_2"), SubResource("Digestion_10_3"), SubResource("Digestion_10_4")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_10_1")])
 fallback_area = 3
 
 [sub_resource type="Resource" id="Digestion_11_1"]
@@ -198,15 +140,9 @@ end_hour = 2
 end_minute = 25
 area = 3
 
-[sub_resource type="Resource" id="Digestion_11_3"]
-script = ExtResource("3_digestion")
-end_hour = 4
-end_minute = 40
-area = 4
-
 [sub_resource type="Resource" id="Day_11"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_11_1"), SubResource("Digestion_11_2"), SubResource("Digestion_11_3")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_11_1"), SubResource("Digestion_11_2")])
 fallback_area = 5
 
 [sub_resource type="Resource" id="Digestion_12_1"]
@@ -247,14 +183,9 @@ end_hour = 0
 end_minute = 45
 area = 11
 
-[sub_resource type="Resource" id="Digestion_14_2"]
-script = ExtResource("3_digestion")
-end_minute = 25
-area = 7
-
 [sub_resource type="Resource" id="Day_14"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_14_1"), SubResource("Digestion_14_2")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_14_1")])
 fallback_area = 3
 
 [sub_resource type="Resource" id="Digestion_15_1"]
@@ -290,15 +221,9 @@ end_hour = 1
 end_minute = 20
 area = 3
 
-[sub_resource type="Resource" id="Digestion_17_2"]
-script = ExtResource("3_digestion")
-end_hour = 4
-end_minute = 40
-area = 8
-
 [sub_resource type="Resource" id="Day_17"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_17_1"), SubResource("Digestion_17_2")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_17_1")])
 
 [sub_resource type="Resource" id="Digestion_18_1"]
 script = ExtResource("3_digestion")
@@ -312,15 +237,9 @@ end_hour = 2
 end_minute = 45
 area = 4
 
-[sub_resource type="Resource" id="Digestion_18_3"]
-script = ExtResource("3_digestion")
-end_hour = 5
-end_minute = 5
-area = 10
-
 [sub_resource type="Resource" id="Day_18"]
 script = ExtResource("2_day")
-digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_18_1"), SubResource("Digestion_18_2"), SubResource("Digestion_18_3")])
+digestions = Array[ExtResource("3_digestion")]([SubResource("Digestion_18_1"), SubResource("Digestion_18_2")])
 fallback_area = 6
 
 [sub_resource type="Resource" id="Digestion_19_1"]
