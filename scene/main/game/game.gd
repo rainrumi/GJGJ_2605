@@ -102,6 +102,8 @@ var _first_digestion_tutorial_played := false
 var _first_digestion_intro_tutorial_pending := false
 var _first_digestion_tutorial_pending := false
 var _first_player_revive_tutorial_played := false
+var _player_revive_in_progress := false
+var _player_revive_requested := false
 var _owned_seed_tutorial_played := false
 var _owned_seed_panel_tutorial_played := false
 var _initial_tutorial_enemy_preset: EnemyPresetInfo
@@ -248,6 +250,8 @@ func start_battle(context: BattleInfo = null) -> void:
 	character.show_normal_texture()
 	_battle_start_context = _copy_battle_context(battle_context)
 	_awaiting_time_over_decision = false
+	_player_revive_in_progress = false
+	_player_revive_requested = false
 	_pending_depleted_seed_sources.clear()
 	_pending_forced_returns.clear()
 	day_start_minutes = battle_context.day_start_minutes
@@ -1055,35 +1059,14 @@ func _finish_empty_acid_turn() -> void:
 	_refresh_after_battle_event()
 	acid_turn_in_progress = false
 # elapsed時間適用
-func _apply_elapsed_time(elapsed_minutes: int) -> Array[Enemy]:
+func _apply_elapsed_time(elapsed_minutes: int, explicit_recovered_hp: int = -1) -> Array[Enemy]:
 	var previous_minutes := minutes # 前時刻
 	day_elapsed_minutes += maxi(0, elapsed_minutes)
 	minutes = maxi(day_start_minutes, minutes + elapsed_minutes)
-	var effect_result: BattleTurnResultData
-	var first_revive_penalty_applied := false
-	if hp <= 0:
-		seed_effects.add_revive_event()
-		hp = seed_effects.get_revive_hp(effective_max_hp, REST_HP_RATE)
-		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp, enemies, stomach))
-		var revived_hp := hp
-		if not seed_controller.consume_rest_time_skip():
-			minutes += REST_MINUTES
-			day_elapsed_minutes += REST_MINUTES
-			elapsed_minutes += REST_MINUTES
-			first_revive_penalty_applied = true
-		effect_result = acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
-		_apply_progress_effect_result(effect_result)
-		_refresh_after_battle_event(revived_hp)
-	else:
-		effect_result = acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
-		_apply_progress_effect_result(effect_result)
-		_refresh_after_battle_event()
+	var effect_result := acid_controller.apply_progress_time(previous_minutes, minutes, enemies, stomach)
+	_apply_progress_effect_result(effect_result)
+	_refresh_after_battle_event(explicit_recovered_hp)
 	ui.show_time_elapsed(elapsed_minutes)
-	if first_revive_penalty_applied and not _first_player_revive_tutorial_played:
-		_first_player_revive_tutorial_played = _start_tutorial(
-			first_player_revive_tutorial_text,
-			"first_player_revive_tutorial_text"
-		)
 	return effect_result.Acided_enemies if effect_result != null else []
 
 
@@ -1430,6 +1413,40 @@ func _apply_player_damage(damage_values: Array[int]) -> void:
 	character.shake()
 	ui.shake_equipped_seeds()
 	_request_attack_se()
+	if hp <= 0:
+		if _player_revive_in_progress:
+			_player_revive_requested = true
+		else:
+			_revive_player()
+
+
+# player蘇生
+func _revive_player() -> void:
+	if _player_revive_in_progress:
+		_player_revive_requested = true
+		return
+	_player_revive_in_progress = true
+	_player_revive_requested = false
+	while hp <= 0 or _player_revive_requested:
+		_player_revive_requested = false
+		seed_effects.add_revive_event()
+		hp = seed_effects.get_revive_hp(effective_max_hp, REST_HP_RATE)
+		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp, enemies, stomach))
+		var revived_hp := hp
+		var skip_rest := seed_controller.consume_rest_time_skip()
+		if skip_rest:
+			_refresh_after_battle_event(revived_hp)
+		else:
+			_apply_elapsed_time(REST_MINUTES, revived_hp)
+		if not _first_player_revive_tutorial_played and not skip_rest:
+			_first_player_revive_tutorial_played = _start_tutorial(
+				first_player_revive_tutorial_text,
+				"first_player_revive_tutorial_text"
+			)
+		if minutes >= END_HOUR * 60:
+			_check_battle_end()
+			break
+	_player_revive_in_progress = false
 
 
 # effective最大HP更新

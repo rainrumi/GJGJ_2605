@@ -43,13 +43,12 @@ func _run() -> void:
 	await create_timer(HP_VALUE_POPUP_WAIT_SECONDS).timeout
 	await process_frame
 
-	var battle_ui := game.get_node("UI")
 	var hp_view := game.get_node("UI/HpView") as HpView
-	var damage_values: Array[int] = [20]
-	battle_ui.call("show_hp_damage_values", damage_values)
-	game.set("hp", 0)
+	game.set("hp", 20)
 	var minutes_before_revive := int(game.get("minutes"))
 	game.call("_apply_elapsed_time", 30)
+	var damage_values: Array[int] = [20]
+	game.call("_apply_player_damage", damage_values)
 	var revive_tutorial := game.get_node("TutorialNovel") as OpeningNovel
 	var revive_tutorial_text := revive_tutorial.get("_active_novel_text") as NovelTextInfo
 	_expect(int(game.get("minutes")) == minutes_before_revive + 60, "復活時に通常経過分と30分ペナルティを加算する")
@@ -87,18 +86,35 @@ func _run() -> void:
 	_expect(not is_instance_valid(recovery_popup), "既存テンポで復活時の回復UIを解放する")
 
 	game.call("cancel_battle")
+	game.call("start_battle", context)
+	await process_frame
+	var vomited_enemy := (game.get("enemies") as Array[Enemy])[0]
+	vomited_enemy.set_Aciding(true)
+	game.set("dragged_enemy_was_Aciding", true)
+	game.set("hp", 5)
+	game.set("minutes", 29 * 60 + 30)
+	game.call("_remove_enemy_from_stomach", vomited_enemy)
+	_expect(game.call("get_current_hp") == 10, "吐き戻しでHPが0になった直後に蘇生回復する")
+	_expect(int(game.get("minutes")) == 30 * 60, "吐き戻し後の蘇生で30分経過する")
+	_expect(
+		(game.get_node("UI/TimeOverDecision") as ColorRect).visible,
+		"吐き戻し後の蘇生で6:00に達したら時間切れ処理を始める"
+	)
+
+	game.call("cancel_battle")
 	var anemone := load("res://data/resources/seeds/skills/seed_100_104.tres") as SeedInfo
 	_expect(anemone != null, "アネモネを読み込める")
 	if anemone != null:
 		context.flowers = [anemone]
 		game.call("start_battle", context)
 		await process_frame
-		game.set("hp", 0)
-		game.call("_apply_elapsed_time", 30)
+		game.set("hp", 10)
+		var lethal_damage: Array[int] = [10]
+		game.call("_apply_player_damage", lethal_damage)
 		_expect(game.call("get_max_hp") == 100, "アネモネは蘇生時にHP上限を増やさない")
 		_expect(game.call("get_current_hp") == 30, "アネモネは蘇生回復量にHP上限の20%を加算する")
-		game.set("hp", 0)
-		game.call("_apply_elapsed_time", 30)
+		lethal_damage = [30]
+		game.call("_apply_player_damage", lethal_damage)
 		_expect(game.call("get_max_hp") == 100, "アネモネは複数回蘇生してもHP上限を増やさない")
 		_expect(game.call("get_current_hp") == 30, "アネモネの蘇生回復量は蘇生回数で累積しない")
 

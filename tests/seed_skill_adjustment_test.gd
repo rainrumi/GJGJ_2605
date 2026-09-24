@@ -280,8 +280,9 @@ func _test_digestion_batch(game: Node) -> void:
 	source.set_hp_values(1000, 1000)
 	source.take_acid_damage(10, false)
 	_expect(source.current_hp == 970, "100108 also triples damage from non-line effects")
-	game.hp = 0
+	game.hp = 10
 	var elapsed_before: int = game.day_elapsed_minutes
+	game._apply_player_damage([10] as Array[int])
 	game._apply_elapsed_time(30)
 	_expect(game.day_elapsed_minutes == elapsed_before + 60, "revive counts normal time and rest once each")
 	game.seed_effects.setup([_seed(125), _seed(126)])
