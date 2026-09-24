@@ -13,6 +13,7 @@ const DEFAULT_TEXT_INTERVAL := 0.04
 @onready var screen: Control = $Screen
 @onready var opening_still: TextureRect = $Screen/OpeningStill
 @onready var image_layer: Control = $Screen/ImageLayer
+@onready var text_box: Panel = $Screen/TextBox
 @onready var textbox_layer: Control = $Screen/TextBoxLayer
 @onready var name_label: Label = $Screen/TextBox/NameLabel
 @onready var text_label: Label = $Screen/TextBox/TextLabel
@@ -34,7 +35,9 @@ var _typing_request_id := 0
 var _script_request_id := 0
 var _default_background: Texture2D
 var _images: Dictionary[int, TextureRect] = {}
+var _saved_images: Dictionary[int, TextureRect] = {}
 var _textboxes: Dictionary[int, Label] = {}
+var _saved_textboxes: Dictionary[int, Label] = {}
 var _textbox_source_lines: Dictionary[int, int] = {}
 var _image_source_lines: Dictionary[int, int] = {}
 var _active_novel_text: NovelTextInfo
@@ -91,10 +94,13 @@ func _start_script(next_novel_text: NovelTextInfo, show_default_background: bool
 	_current_text_target = ""
 	_typing_request_id += 1
 	visible = true
+	text_box.visible = true
 	opening_still.texture = _default_background
 	opening_still.visible = show_default_background
 	_clear_images()
+	_image_source_lines.clear()
 	_clear_textboxes()
+	_textbox_source_lines.clear()
 	name_label.text = ""
 	name_label.visible = false
 	text_label.text = ""
@@ -183,15 +189,25 @@ func _execute_command(command_line: String, request_id: int) -> void:
 		"bg":
 			_command_bg(argument)
 		"img":
-			_command_img(argument)
+			_command_img(argument, false)
+		"img_save":
+			_command_img(argument, true)
 		"img_remove":
 			_command_img_remove(argument)
+		"img_save_reset":
+			_command_img_save_reset(argument)
 		"textbox_set":
-			_command_textbox_set(argument)
+			_command_textbox_set(argument, false)
+		"textbox_save_set":
+			_command_textbox_set(argument, true)
 		"textbox_clear":
-			_command_textbox_clear(argument)
+			_command_textbox_clear(argument, false)
+		"textbox_save_clear":
+			_command_textbox_clear(argument, true)
 		"text":
-			_command_text(argument)
+			_command_text(argument, false)
+		"text_save":
+			_command_text(argument, true)
 		"l":
 			await _command_l(request_id)
 		"r":
@@ -232,43 +248,46 @@ func _command_bg(background_path: String) -> void:
 
 
 # imgコマンド
-func _command_img(argument: String) -> void:
+func _command_img(argument: String, is_saved: bool) -> void:
+	var command_name := "img_save" if is_saved else "img"
 	var arguments := _parse_comma_separated_arguments(argument)
 	if arguments.size() != 4:
 		push_error(
-			"OpeningNovel @img requires index, position_x, position_y, and path on scenario line %d."
-			% _line_index
+			"OpeningNovel @%s requires index, position_x, position_y, and path on scenario line %d."
+			% [command_name, _line_index]
 		)
 		return
 	if not arguments[0].is_valid_int() or not arguments[1].is_valid_float() or not arguments[2].is_valid_float():
-		push_error("OpeningNovel @img received invalid index or position on scenario line %d." % _line_index)
+		push_error("OpeningNovel @%s received invalid index or position on scenario line %d." % [command_name, _line_index])
 		return
 	var image_index := arguments[0].to_int()
 	if image_index < 0:
-		push_error("OpeningNovel @img requires a non-negative index on scenario line %d." % _line_index)
+		push_error("OpeningNovel @%s requires a non-negative index on scenario line %d." % [command_name, _line_index])
 		return
 	var image_path := arguments[3]
 	if image_path.is_empty() or not ResourceLoader.exists(image_path, "Texture2D"):
-		push_error("OpeningNovel @img could not find a Texture2D: %s" % image_path)
+		push_error("OpeningNovel @%s could not find a Texture2D: %s" % [command_name, image_path])
 		return
 	var texture := load(image_path) as Texture2D
 	if texture == null:
-		push_error("OpeningNovel @img could not load a Texture2D: %s" % image_path)
+		push_error("OpeningNovel @%s could not load a Texture2D: %s" % [command_name, image_path])
 		return
-	var image := _images.get(image_index) as TextureRect
+	var image_collection := _saved_images if is_saved else _images
+	var debug_image_index := _debug_image_index(image_index, is_saved)
+	var image := image_collection.get(image_index) as TextureRect
 	if image == null:
 		image = TextureRect.new()
-		image.name = "Image%d" % image_index
+		image.name = ("SavedImage%d" if is_saved else "Image%d") % image_index
 		image.self_modulate = Color("#f0e0ff")
 		image.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		image.stretch_mode = TextureRect.STRETCH_KEEP
 		image_layer.add_child(image)
-		_images[image_index] = image
+		image_collection[image_index] = image
 	image.texture = texture
 	image.position = Vector2(arguments[1].to_float(), arguments[2].to_float())
 	image.size = texture.get_size()
-	_image_source_lines[image_index] = _line_index - 1
+	_image_source_lines[debug_image_index] = _line_index - 1
 	_refresh_debug_images()
 
 
@@ -292,34 +311,59 @@ func _command_img_remove(argument: String) -> void:
 	_refresh_debug_images()
 
 
-func _command_textbox_set(argument: String) -> void:
+func _command_img_save_reset(argument: String) -> void:
+	var image_index_text := argument.strip_edges()
+	if not image_index_text.is_valid_int():
+		push_error("OpeningNovel @img_save_reset requires an index on scenario line %d." % _line_index)
+		return
+	var image_index := image_index_text.to_int()
+	if image_index < 0:
+		push_error("OpeningNovel @img_save_reset requires a non-negative index on scenario line %d." % _line_index)
+		return
+	var image := _saved_images.get(image_index) as TextureRect
+	if image == null:
+		return
+	_saved_images.erase(image_index)
+	_image_source_lines.erase(_debug_image_index(image_index, true))
+	image_layer.remove_child(image)
+	image.queue_free()
+	_refresh_debug_images()
+
+
+func _command_textbox_set(argument: String, is_saved: bool) -> void:
+	var command_name := "textbox_save_set" if is_saved else "textbox_set"
 	var arguments := _parse_comma_separated_arguments(argument)
 	if arguments.size() != 7:
 		push_error(
-			"OpeningNovel @textbox_set requires index, position_x, position_y, size_x, size_y, horizontal_alignment, and vertical_alignment on scenario line %d."
-			% _line_index
+			"OpeningNovel @%s requires index, position_x, position_y, size_x, size_y, horizontal_alignment, and vertical_alignment on scenario line %d."
+			% [command_name, _line_index]
 		)
 		return
 	if not arguments[0].is_valid_int():
-		push_error("OpeningNovel @textbox_set received an invalid index on scenario line %d." % _line_index)
+		push_error("OpeningNovel @%s received an invalid index on scenario line %d." % [command_name, _line_index])
+		return
+	if arguments[0].to_int() < 0:
+		push_error("OpeningNovel @%s requires a non-negative index on scenario line %d." % [command_name, _line_index])
 		return
 	for index in range(1, 5):
 		if not arguments[index].is_valid_float():
-			push_error("OpeningNovel @textbox_set received an invalid coordinate or size on scenario line %d." % _line_index)
+			push_error("OpeningNovel @%s received an invalid coordinate or size on scenario line %d." % [command_name, _line_index])
 			return
 	for index in range(5, 7):
 		if not arguments[index].is_valid_int() or arguments[index].to_int() < 0 or arguments[index].to_int() > 3:
-			push_error("OpeningNovel @textbox_set received an invalid alignment on scenario line %d." % _line_index)
+			push_error("OpeningNovel @%s received an invalid alignment on scenario line %d." % [command_name, _line_index])
 			return
 	var textbox_size := Vector2(arguments[3].to_float(), arguments[4].to_float())
 	if textbox_size.x < 0.0 or textbox_size.y < 0.0:
-		push_error("OpeningNovel @textbox_set requires non-negative sizes on scenario line %d." % _line_index)
+		push_error("OpeningNovel @%s requires non-negative sizes on scenario line %d." % [command_name, _line_index])
 		return
 	var textbox_index := arguments[0].to_int()
-	var textbox := _textboxes.get(textbox_index) as Label
+	var textbox_collection := _saved_textboxes if is_saved else _textboxes
+	var debug_textbox_index := _debug_textbox_index(textbox_index, is_saved)
+	var textbox := textbox_collection.get(textbox_index) as Label
 	if textbox == null:
 		textbox = Label.new()
-		textbox.name = "TextBox%d" % textbox_index
+		textbox.name = ("SavedTextBox%d" if is_saved else "TextBox%d") % textbox_index
 		textbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		textbox.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		textbox.add_theme_font_override("font", text_label.get_theme_font("font"))
@@ -328,8 +372,8 @@ func _command_textbox_set(argument: String) -> void:
 		textbox.add_theme_color_override("font_outline_color", text_label.get_theme_color("font_outline_color"))
 		textbox.add_theme_constant_override("outline_size", text_label.get_theme_constant("outline_size"))
 		textbox_layer.add_child(textbox)
-		_textboxes[textbox_index] = textbox
-	_textbox_source_lines[textbox_index] = _line_index - 1
+		textbox_collection[textbox_index] = textbox
+	_textbox_source_lines[debug_textbox_index] = _line_index - 1
 	textbox.position = Vector2(arguments[1].to_float(), arguments[2].to_float())
 	textbox.size = textbox_size
 	textbox.horizontal_alignment = arguments[5].to_int()
@@ -337,28 +381,33 @@ func _command_textbox_set(argument: String) -> void:
 	_refresh_debug_targets()
 
 
-func _command_textbox_clear(argument: String) -> void:
+func _command_textbox_clear(argument: String, is_saved: bool) -> void:
+	var command_name := "textbox_save_clear" if is_saved else "textbox_clear"
 	var textbox_index_text := argument.strip_edges().trim_prefix("\"").trim_suffix("\"")
 	if not textbox_index_text.is_valid_int():
-		push_error("OpeningNovel @textbox_clear requires an index on scenario line %d." % _line_index)
+		push_error("OpeningNovel @%s requires an index on scenario line %d." % [command_name, _line_index])
 		return
 	var textbox_index := textbox_index_text.to_int()
-	var textbox := _textboxes.get(textbox_index) as Label
+	var textbox_collection := _saved_textboxes if is_saved else _textboxes
+	var debug_textbox_index := _debug_textbox_index(textbox_index, is_saved)
+	var textbox := textbox_collection.get(textbox_index) as Label
 	if textbox == null:
 		return
-	_textboxes.erase(textbox_index)
-	_textbox_source_lines.erase(textbox_index)
+	textbox_collection.erase(textbox_index)
+	_textbox_source_lines.erase(debug_textbox_index)
 	textbox_layer.remove_child(textbox)
 	textbox.queue_free()
 	_refresh_debug_targets()
 
 
-func _command_text(argument: String) -> void:
+func _command_text(argument: String, is_saved: bool) -> void:
+	var command_name := "text_save" if is_saved else "text"
 	var arguments := _parse_comma_separated_arguments(argument)
 	if arguments.size() != 2 or not arguments[0].is_valid_int():
-		push_error("OpeningNovel @text requires an index and text on scenario line %d." % _line_index)
+		push_error("OpeningNovel @%s requires an index and text on scenario line %d." % [command_name, _line_index])
 		return
-	var textbox := _textboxes.get(arguments[0].to_int()) as Label
+	var textbox_collection := _saved_textboxes if is_saved else _textboxes
+	var textbox := textbox_collection.get(arguments[0].to_int()) as Label
 	if textbox == null:
 		return
 	textbox.text = arguments[1]
@@ -397,7 +446,9 @@ func _clear_textboxes() -> void:
 		textbox_layer.remove_child(textbox)
 		textbox.queue_free()
 	_textboxes.clear()
-	_textbox_source_lines.clear()
+	for textbox_index: int in _textbox_source_lines.keys():
+		if textbox_index >= 0:
+			_textbox_source_lines.erase(textbox_index)
 	_refresh_debug_targets()
 
 
@@ -406,7 +457,9 @@ func _clear_images() -> void:
 		image_layer.remove_child(image)
 		image.queue_free()
 	_images.clear()
-	_image_source_lines.clear()
+	for image_index: int in _image_source_lines.keys():
+		if image_index >= 0:
+			_image_source_lines.erase(image_index)
 	_refresh_debug_images()
 
 
@@ -417,12 +470,12 @@ func _refresh_debug_images() -> void:
 func _refresh_debug_targets() -> void:
 	if not is_node_ready():
 		return
-	debug_panel.set_targets(_images, _textboxes)
+	debug_panel.set_targets(_get_debug_images(), _get_debug_textboxes())
 	_update_debug_textbox_outline()
 
 
 func _on_debug_image_position_changed(image_index: int, position: Vector2) -> void:
-	var image := _images.get(image_index) as TextureRect
+	var image := _get_debug_images().get(image_index) as TextureRect
 	if image == null:
 		_refresh_debug_images()
 		return
@@ -433,7 +486,7 @@ func _on_debug_image_position_changed(image_index: int, position: Vector2) -> vo
 
 
 func _on_debug_textbox_geometry_changed(textbox_index: int, position: Vector2, size: Vector2) -> void:
-	var textbox := _textboxes.get(textbox_index) as Label
+	var textbox := _get_debug_textboxes().get(textbox_index) as Label
 	if textbox == null:
 		_refresh_debug_targets()
 		return
@@ -447,7 +500,9 @@ func _on_debug_textbox_geometry_changed(textbox_index: int, position: Vector2, s
 func _update_debug_textbox_outline() -> void:
 	if not is_node_ready():
 		return
-	var textbox := _textboxes.get(debug_panel.get_selected_textbox_index()) as Label
+	var textbox: Label
+	if debug_panel.get_selected_kind() == "textbox":
+		textbox = _get_debug_textboxes().get(debug_panel.get_selected_textbox_index()) as Label
 	var debug_enabled := bool(get_node("/root/DebugState").get("debug_enabled"))
 	debug_textbox_outline.visible = debug_enabled and textbox != null
 	if textbox == null:
@@ -471,7 +526,7 @@ func _on_debug_drag_mode_changed(is_enabled: bool) -> void:
 
 
 func _save_image_position(image_index: int) -> void:
-	var image := _images.get(image_index) as TextureRect
+	var image := _get_debug_images().get(image_index) as TextureRect
 	var source_line_index := int(_image_source_lines.get(image_index, -1))
 	if image == null or source_line_index < 0 or source_line_index >= _script_lines.size():
 		return
@@ -479,15 +534,18 @@ func _save_image_position(image_index: int) -> void:
 		return
 	var command := _parse_command(_script_lines[source_line_index].strip_edges())
 	var arguments := _parse_comma_separated_arguments(String(command["argument"]))
+	var is_saved_image := image_index < 0
+	var expected_command_name := "img_save" if is_saved_image else "img"
+	var expected_index := _script_image_index(image_index)
 	if (
-		String(command["name"]) != "img"
+		String(command["name"]) != expected_command_name
 		or arguments.size() != 4
 		or not arguments[0].is_valid_int()
-		or arguments[0].to_int() != image_index
+		or arguments[0].to_int() != expected_index
 	):
 		push_error(
-			"OpeningNovel could not update @img coordinates on scenario line %d."
-			% (source_line_index + 1)
+			"OpeningNovel could not update @%s coordinates on scenario line %d."
+			% [expected_command_name, source_line_index + 1]
 		)
 		return
 	_script_lines[source_line_index] = _replace_command_arguments(
@@ -501,7 +559,7 @@ func _save_image_position(image_index: int) -> void:
 
 
 func _save_textbox_geometry(textbox_index: int) -> void:
-	var textbox := _textboxes.get(textbox_index) as Label
+	var textbox := _get_debug_textboxes().get(textbox_index) as Label
 	var source_line_index := int(_textbox_source_lines.get(textbox_index, -1))
 	if textbox == null or source_line_index < 0 or source_line_index >= _script_lines.size():
 		return
@@ -509,15 +567,18 @@ func _save_textbox_geometry(textbox_index: int) -> void:
 		return
 	var command := _parse_command(_script_lines[source_line_index].strip_edges())
 	var arguments := _parse_comma_separated_arguments(String(command["argument"]))
+	var is_saved_textbox := textbox_index < 0
+	var expected_command_name := "textbox_save_set" if is_saved_textbox else "textbox_set"
+	var expected_index := _script_textbox_index(textbox_index)
 	if (
-		String(command["name"]) != "textbox_set"
+		String(command["name"]) != expected_command_name
 		or arguments.size() != 7
 		or not arguments[0].is_valid_int()
-		or arguments[0].to_int() != textbox_index
+		or arguments[0].to_int() != expected_index
 	):
 		push_error(
-			"OpeningNovel could not update @textbox_set geometry on scenario line %d."
-			% (source_line_index + 1)
+			"OpeningNovel could not update @%s geometry on scenario line %d."
+			% [expected_command_name, source_line_index + 1]
 		)
 		return
 	_script_lines[source_line_index] = _replace_command_arguments(
@@ -611,9 +672,8 @@ func _write_debug_script_changes() -> void:
 
 
 func _save_active_debug_target() -> void:
-	var textbox_index := debug_panel.get_selected_textbox_index()
-	if textbox_index >= 0:
-		_save_textbox_geometry(textbox_index)
+	if debug_panel.get_selected_kind() == "textbox":
+		_save_textbox_geometry(debug_panel.get_selected_textbox_index())
 	else:
 		_save_image_position(debug_panel.get_selected_image_index())
 
@@ -706,6 +766,9 @@ func _finish() -> void:
 	opening_still.visible = false
 	_clear_images()
 	_clear_textboxes()
+	if not _saved_images.is_empty() or not _saved_textboxes.is_empty():
+		text_box.visible = false
+		visible = true
 	finished.emit()
 
 
@@ -730,8 +793,11 @@ func _handle_debug_drag_input(event: InputEvent) -> void:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			if mouse_event.pressed:
-				var textbox := _textboxes.get(debug_panel.get_selected_textbox_index()) as Label
-				if textbox != null:
+				if debug_panel.get_selected_kind() == "textbox":
+					var textbox := _get_debug_textboxes().get(debug_panel.get_selected_textbox_index()) as Label
+					if textbox == null:
+						_is_debug_dragging = false
+						return
 					var point := mouse_event.position
 					var resize_area := Rect2(
 						textbox.position + textbox.size - Vector2(18.0, 18.0), Vector2(36.0, 36.0)
@@ -748,9 +814,11 @@ func _handle_debug_drag_input(event: InputEvent) -> void:
 			screen.accept_event()
 		return
 	if event is InputEventMouseMotion and _is_debug_dragging:
-		var textbox_index := debug_panel.get_selected_textbox_index()
-		var textbox := _textboxes.get(textbox_index) as Label
-		if textbox != null:
+		if debug_panel.get_selected_kind() == "textbox":
+			var textbox_index := debug_panel.get_selected_textbox_index()
+			var textbox := _get_debug_textboxes().get(textbox_index) as Label
+			if textbox == null:
+				return
 			var delta := (event as InputEventMouseMotion).relative
 			if _is_debug_resizing_textbox:
 				textbox.size = Vector2(
@@ -764,7 +832,7 @@ func _handle_debug_drag_input(event: InputEvent) -> void:
 			screen.accept_event()
 			return
 		var image_index := debug_panel.get_selected_image_index()
-		var image := _images.get(image_index) as TextureRect
+		var image := _get_debug_images().get(image_index) as TextureRect
 		if image != null:
 			image.position = _round_debug_position(image.position + (event as InputEventMouseMotion).relative)
 			debug_panel.set_selected_position(image.position)
@@ -778,3 +846,37 @@ func _round_debug_position(position: Vector2) -> Vector2:
 
 func _round_debug_coordinate(value: float) -> float:
 	return roundf(value * 10.0) / 10.0
+
+
+func _get_debug_images() -> Dictionary[int, TextureRect]:
+	var images: Dictionary[int, TextureRect] = {}
+	for image_index: int in _images:
+		images[image_index] = _images[image_index]
+	for image_index: int in _saved_images:
+		images[_debug_image_index(image_index, true)] = _saved_images[image_index]
+	return images
+
+
+func _get_debug_textboxes() -> Dictionary[int, Label]:
+	var textboxes: Dictionary[int, Label] = {}
+	for textbox_index: int in _textboxes:
+		textboxes[textbox_index] = _textboxes[textbox_index]
+	for textbox_index: int in _saved_textboxes:
+		textboxes[_debug_textbox_index(textbox_index, true)] = _saved_textboxes[textbox_index]
+	return textboxes
+
+
+func _debug_image_index(image_index: int, is_saved: bool) -> int:
+	return -image_index - 1 if is_saved else image_index
+
+
+func _script_image_index(debug_image_index: int) -> int:
+	return -debug_image_index - 1 if debug_image_index < 0 else debug_image_index
+
+
+func _debug_textbox_index(textbox_index: int, is_saved: bool) -> int:
+	return -textbox_index - 1 if is_saved else textbox_index
+
+
+func _script_textbox_index(debug_textbox_index: int) -> int:
+	return -debug_textbox_index - 1 if debug_textbox_index < 0 else debug_textbox_index

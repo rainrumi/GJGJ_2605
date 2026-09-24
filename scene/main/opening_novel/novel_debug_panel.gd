@@ -69,11 +69,15 @@ func _set_targets(images: Dictionary, textboxes: Dictionary) -> void:
 	for image_index: int in image_indices:
 		var image := images[image_index] as TextureRect
 		var texture_name := image.texture.resource_path.get_file() if image.texture != null else "Texture2D"
-		_add_target("img %d: %s" % [image_index, texture_name], "image", image_index)
+		var command_name := "img_save" if image_index < 0 else "img"
+		var command_index := -image_index - 1 if image_index < 0 else image_index
+		_add_target("%s %d: %s" % [command_name, command_index, texture_name], "image", image_index)
 	var textbox_indices: Array = textboxes.keys()
 	textbox_indices.sort()
 	for textbox_index: int in textbox_indices:
-		_add_target("textbox %d" % textbox_index, "textbox", textbox_index)
+		var command_name := "textbox_save_set" if textbox_index < 0 else "textbox_set"
+		var command_index := -textbox_index - 1 if textbox_index < 0 else textbox_index
+		_add_target("%s %d" % [command_name, command_index], "textbox", textbox_index)
 	for item_index in _items.size():
 		if _items[item_index].kind == previous_kind and _items[item_index].index == previous_index:
 			image_selector.select(item_index)
@@ -108,7 +112,7 @@ func set_selected_position(position: Vector2) -> void:
 
 func set_selected_geometry(position: Vector2, size: Vector2) -> void:
 	var textbox_index := get_selected_textbox_index()
-	if textbox_index < 0:
+	if get_selected_kind() != "textbox":
 		return
 	_textbox_geometry[textbox_index] = {"position": position, "size": size}
 	_update_selected_fields()

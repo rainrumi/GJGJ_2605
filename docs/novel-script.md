@@ -12,9 +12,14 @@
 | `@bg "res://resource/image/...png"` | 指定した `Texture2D` を背景へ表示する。空文字列なら背景を隠す。 |
 | `@img 0, 100, 200, "res://resource/image/...png"` | index `0` 専用の画像を座標 `(100, 200)` に表示する。同じindexを再指定すると画像と座標を上書きする。 |
 | `@img_remove 0` | `@img` で作成したindex `0` の画像を削除する。存在しないindexなら何もしない。 |
+| `@img_save 0, 100, 200, "res://resource/image/...png"` | `@img` と同じ形式で保存画像専用index `0` の画像を表示する。`@img` とは別管理で、ノベル再生終了後や次のノベル開始後も残る。同じ保存indexを再指定すると画像と座標を上書きする。 |
+| `@img_save_reset 0` | 保存画像専用index `0` の画像を削除する。存在しないindexなら何もしない。 |
 | `@textbox_set 0, 100, 200, 320, 80, 0, 0` | 指定した位置 `(100, 200)` とサイズ `(320, 80)`、水平・垂直位置 `0`（左・上）で管理番号 `0` のテキストボックスを作成する。座標とサイズはピクセル単位。水平位置は `0=left, 1=center, 2=right, 3=fill`、垂直位置は `0=top, 1=center, 2=bottom, 3=fill`。同じ番号を再指定すると位置、サイズ、配置を更新し、表示中の文字列は維持する。 |
 | `@text "0","表示する文章"` | 管理番号 `0` のテキストボックスに文字列を表示する。文字列中のカンマも使用できる。該当するテキストボックスがない場合は何もしない。 |
 | `@textbox_clear "0"` | 管理番号 `0` のテキストボックスを削除する。該当するテキストボックスがない場合は何もしない。 |
+| `@textbox_save_set 0, 100, 200, 320, 80, 0, 0` | `@textbox_set` と同じ形式で保存テキストボックス専用index `0` を作成・更新する。`@textbox_set` とは別管理で、ノベル再生終了後や次のノベル開始後も残る。 |
+| `@text_save "0","表示する文章"` | 保存テキストボックス専用index `0` に文字列を表示・上書きする。対応する`@textbox_save_set`がない場合は何もしない。 |
+| `@textbox_save_clear "0"` | 保存テキストボックス専用index `0` を削除する。該当するテキストボックスがない場合は何もしない。 |
 | `@l` | 左クリックを待つ。タイプ表示中のクリックは全文表示だけを行い、次のクリックが待機を解除する。 |
 | `@r` | 現在のメッセージ末尾へ改行を追加する。 |
 | `@cm` | メッセージウィンドウ内の本文を消去する。 |
@@ -26,11 +31,19 @@
 @name "主人公"
 @bg "res://resource/image/texture/still/tex_still_1000.png"
 @img 0, 100, 80, "res://resource/image/texture/still/tex_still_1000.png"
+@img_save 0, 240, 80, "res://resource/image/texture/still/tex_still_1000.png"
+@textbox_set 0, 20, 230, 300, 60, 0, 0
+@text 0,"再生中だけ表示するテキスト"
+@textbox_save_set 0, 20, 160, 300, 60, 0, 0
+@text_save "0","再生終了後も残るテキスト"
 最初のメッセージです。
 @r
 改行後のメッセージです。
 @lcm
 @img_remove 0
+@img_save_reset 0
+@textbox_clear "0"
+@textbox_save_clear "0"
 次のメッセージです。
 @lcm
 ```

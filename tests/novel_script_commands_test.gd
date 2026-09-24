@@ -38,7 +38,7 @@ func _run() -> void:
 	root.add_child(opening_novel)
 	await process_frame
 	var initial_background := opening_novel.get_node("Screen/OpeningStill") as TextureRect
-	_expect(initial_background.texture == null, "Opening scene does not embed the opening still")
+	_expect(initial_background.texture != null, "Opening scene keeps its authored default still")
 
 	var game_settings := root.get_node_or_null("/root/GameSettings")
 	var original_text_speed := 1
@@ -49,11 +49,16 @@ func _run() -> void:
 	var novel_text := NovelTextInfo.new()
 	novel_text.text = (
 		"@textbox_set 7, 11, 12, 130, 40, 2, 1\n"
+		+ "@text 7,\"通常テキスト\"\n"
+		+ "@textbox_save_set 7, 51, 52, 100, 30, 0, 0\n"
+		+ "@text_save 7,\"保存テキスト\"\n"
+		+ "@text_save 7,\"上書き後の保存テキスト\"\n"
 		+ "@name \"主人公\"\n"
 		+ "@bg \"%s\"\n" % BACKGROUND_PATH
 		+ "@img 0, 10, 20, \"%s\"\n" % BACKGROUND_PATH
 		+ "@img 1, 30, 40, \"%s\"\n" % BACKGROUND_PATH
 		+ "@img 0, 50, 60, \"%s\"\n" % BACKGROUND_PATH
+		+ "@img_save 0, 70, 80, \"%s\"\n" % BACKGROUND_PATH
 		+ "@img_remove 1\n"
 		+ "一行目\n"
 		+ "@r\n"
@@ -71,19 +76,85 @@ func _run() -> void:
 	var background := opening_novel.get_node("Screen/OpeningStill") as TextureRect
 	var image_layer := opening_novel.get_node("Screen/ImageLayer") as Control
 	var aligned_textbox := opening_novel.get_node("Screen/TextBoxLayer/TextBox7") as Label
+	var saved_textbox := opening_novel.get_node("Screen/TextBoxLayer/SavedTextBox7") as Label
 	_expect(
 		aligned_textbox != null
 		and aligned_textbox.horizontal_alignment == HORIZONTAL_ALIGNMENT_RIGHT
 		and aligned_textbox.vertical_alignment == VERTICAL_ALIGNMENT_CENTER,
 		"@textbox_set applies horizontal and vertical alignment indexes"
 	)
+	_expect(
+		aligned_textbox != null and aligned_textbox.text == "通常テキスト",
+		"@text updates the regular textbox"
+	)
+	_expect(
+		saved_textbox != null
+		and saved_textbox.text == "上書き後の保存テキスト"
+		and saved_textbox.position == Vector2(51, 52),
+		"@text_save overwrites text in the matching saved textbox index"
+	)
 	_expect(name_label.text == "主人公" and name_label.visible, "@name updates the name label")
 	_expect(background.visible and background.texture != null, "@bg updates and shows the background")
-	_expect(image_layer.get_child_count() == 1, "@img_remove removes only the requested index")
+	_expect(image_layer.get_child_count() == 2, "@img_remove removes only the requested @img index")
 	var image := image_layer.get_node_or_null("Image0") as TextureRect
+	var saved_image := image_layer.get_node_or_null("SavedImage0") as TextureRect
 	_expect(image != null and image.texture != null, "@img creates a textured node for its index")
 	_expect(image != null and image.self_modulate == Color("#f0e0ff"), "@img applies the novel texture tint")
 	_expect(image != null and image.position == Vector2(50, 60), "Repeated @img updates the existing index")
+	_expect(
+		saved_image != null and saved_image.texture != null and saved_image.position == Vector2(70, 80),
+		"@img_save creates an independent image for the same index"
+	)
+	var debug_panel := opening_novel.get_node("Screen/DebugPanel") as NovelDebugPanel
+	var has_saved_debug_target := false
+	for item_index in debug_panel.image_selector.item_count:
+		if debug_panel.image_selector.get_item_text(item_index).begins_with("img_save 0:"):
+			has_saved_debug_target = true
+			debug_panel.image_selector.select(item_index)
+			break
+	_expect(has_saved_debug_target, "@img_save is listed as an image debug target")
+	var has_saved_textbox_debug_target := false
+	for item_index in debug_panel.image_selector.item_count:
+		if debug_panel.image_selector.get_item_text(item_index) == "textbox_save_set 7":
+			has_saved_textbox_debug_target = true
+			debug_panel.image_selector.select(item_index)
+			break
+	_expect(has_saved_textbox_debug_target, "@textbox_save_set is listed as a textbox debug target")
+	_expect(
+		debug_panel.get_selected_kind() == "textbox" and debug_panel.get_selected_textbox_index() == -8,
+		"The saved textbox debug target selection uses its separate index"
+	)
+	opening_novel.call("_on_debug_textbox_geometry_changed", -8, Vector2(61, 62), Vector2(110, 31))
+	_expect(
+		saved_textbox != null
+		and saved_textbox.position == Vector2(61, 62)
+		and saved_textbox.size == Vector2(110, 35),
+		"Debug geometry changes target the saved textbox with its separate index: %s %s"
+		% [str(saved_textbox.position) if saved_textbox != null else "null", str(saved_textbox.size) if saved_textbox != null else "null"]
+	)
+	_expect(
+		aligned_textbox != null and aligned_textbox.position == Vector2(11, 12),
+		"Saved textbox debug geometry does not affect the regular textbox with the same index"
+	)
+	for item_index in debug_panel.image_selector.item_count:
+		if debug_panel.image_selector.get_item_text(item_index).begins_with("img_save 0:"):
+			debug_panel.image_selector.select(item_index)
+			break
+	opening_novel.call("_on_debug_image_position_changed", -1, Vector2(90, 100))
+	_expect(
+		saved_image != null and saved_image.position == Vector2(90, 100),
+		"Debug image position changes target the saved image with its separate index"
+	)
+	var debug_press := _create_click()
+	opening_novel.call("_handle_debug_drag_input", debug_press)
+	opening_novel.call("_handle_debug_drag_input", _create_mouse_motion(Vector2(5, 7)))
+	var debug_release := _create_click()
+	debug_release.pressed = false
+	opening_novel.call("_handle_debug_drag_input", debug_release)
+	_expect(
+		saved_image != null and saved_image.position == Vector2(95, 107),
+		"Debug drag mode moves an @img_save image"
+	)
 	_expect(text_label.text == "一行目\n改行後", "@r inserts a line break before the following text")
 	_expect(next_label.visible, "@l inside @lcm waits for a click")
 
@@ -93,8 +164,56 @@ func _run() -> void:
 
 	opening_novel.call("_on_screen_gui_input", _create_click())
 	_expect(text_label.text.is_empty(), "@cm clears the message text")
-	_expect(not opening_novel.visible, "Scenario finishes after all commands")
-	_expect(image_layer.get_child_count() == 0, "Finishing a scenario clears its images")
+	_expect(image_layer.get_child_count() == 1, "Finishing a scenario preserves @img_save and clears @img")
+	_expect(
+		opening_novel.get_node("Screen/TextBoxLayer").get_child_count() == 1
+		and saved_textbox != null
+		and saved_textbox.text == "上書き後の保存テキスト",
+		"Finishing a scenario preserves saved textboxes and their text"
+	)
+	_expect(opening_novel.visible, "A saved image remains visible after scenario playback finishes")
+	_expect(not (opening_novel.get_node("Screen/TextBox") as Control).visible, "Finished playback hides the text box")
+
+	var reset_text := NovelTextInfo.new()
+	reset_text.text = (
+		"@l\n"
+		+ "@img 0, 1, 2, \"%s\"\n" % BACKGROUND_PATH
+		+ "@img_save_reset 0\n"
+		+ "@textbox_set 7, 1, 2, 30, 20, 0, 0\n"
+		+ "@textbox_clear \"7\"\n"
+		+ "@l\n"
+		+ "@textbox_save_clear 7\n"
+		+ "@l"
+	)
+	opening_novel.start_with_text(reset_text)
+	_expect(image_layer.get_child_count() == 1, "Saved images survive the next scenario start")
+	_expect(
+		opening_novel.get_node("Screen/TextBoxLayer").get_child_count() == 1,
+		"Saved textboxes survive the next scenario start"
+	)
+	opening_novel.call("_on_screen_gui_input", _create_click())
+	await process_frame
+	_expect(
+		image_layer.get_child_count() == 1
+		and image_layer.get_node_or_null("Image0") != null
+		and image_layer.get_node_or_null("SavedImage0") == null,
+		"@img_save_reset removes its image without touching the same @img index"
+	)
+	_expect(
+		opening_novel.get_node("Screen/TextBoxLayer").get_child_count() == 1
+		and opening_novel.get_node("Screen/TextBoxLayer/SavedTextBox7") != null,
+		"@textbox_clear leaves the saved textbox with the same index intact"
+	)
+	opening_novel.call("_on_screen_gui_input", _create_click())
+	await process_frame
+	_expect(
+		opening_novel.get_node("Screen/TextBoxLayer").get_child_count() == 0,
+		"@textbox_save_clear removes its saved textbox"
+	)
+	opening_novel.call("_on_screen_gui_input", _create_click())
+	await process_frame
+	_expect(image_layer.get_child_count() == 0, "Finishing the reset scenario clears its regular image")
+	_expect(not opening_novel.visible, "Resetting the final saved image hides the completed novel layer")
 
 	if game_settings != null:
 		game_settings.set("text_speed", original_text_speed)
@@ -147,6 +266,12 @@ func _create_click() -> InputEventMouseButton:
 	click.button_index = MOUSE_BUTTON_LEFT
 	click.pressed = true
 	return click
+
+
+func _create_mouse_motion(relative: Vector2) -> InputEventMouseMotion:
+	var motion := InputEventMouseMotion.new()
+	motion.relative = relative
+	return motion
 
 
 func _expect(condition: bool, message: String) -> void:
