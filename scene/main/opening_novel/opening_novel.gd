@@ -50,6 +50,7 @@ var _script_load_failed := false
 func _ready() -> void:
 	_default_background = opening_still.texture
 	visible = false
+	_set_input_blocked(false)
 	screen.gui_input.connect(_on_screen_gui_input)
 	debug_panel.image_position_changed.connect(_on_debug_image_position_changed)
 	debug_panel.textbox_geometry_changed.connect(_on_debug_textbox_geometry_changed)
@@ -78,6 +79,7 @@ func start_with_text(next_novel_text: NovelTextInfo) -> void:
 
 # ノベルスクリプト開始
 func _start_script(next_novel_text: NovelTextInfo, show_default_background: bool) -> void:
+	_set_input_blocked(true)
 	_script_request_id += 1
 	_active_novel_text = next_novel_text
 	_script_load_failed = false
@@ -769,7 +771,12 @@ func _finish() -> void:
 	if not _saved_images.is_empty() or not _saved_textboxes.is_empty():
 		text_box.visible = false
 		visible = true
+	_set_input_blocked(false)
 	finished.emit()
+
+
+func _set_input_blocked(is_blocked: bool) -> void:
+	screen.mouse_filter = Control.MOUSE_FILTER_STOP if is_blocked else Control.MOUSE_FILTER_IGNORE
 
 
 # イベント処理
