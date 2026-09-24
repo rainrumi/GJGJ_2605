@@ -53,6 +53,59 @@ func _run() -> void:
 			"Initial follow-up tutorial uses tutorial_100_110.txt"
 		)
 
+		var post_drag_tutorial_paths: Array[String] = []
+		var tutorial_finished_handler := Callable(game, "_on_tutorial_novel_finished")
+		tutorial.finished.disconnect(tutorial_finished_handler)
+		tutorial.finished.connect(
+			func() -> void:
+				var active_text := tutorial.get("_active_novel_text") as NovelTextInfo
+				if active_text != null:
+					post_drag_tutorial_paths.append(active_text.script_path)
+				game.call("_on_tutorial_novel_finished")
+		)
+		var initial_tutorial_enemies := game.get("_initial_tutorial_enemies") as Array[Enemy]
+		_expect(not initial_tutorial_enemies.is_empty(), "Initial tutorial tracks the first battle enemies")
+		if not initial_tutorial_enemies.is_empty():
+			initial_tutorial_enemies[0].Aciding = true
+			await get_tree().process_frame
+			await get_tree().process_frame
+			var post_drag_followup := tutorial.get("_active_novel_text") as NovelTextInfo
+			_expect(
+				post_drag_tutorial_paths.has("res://resource/novel/tutorial/tutorial_100_115.txt"),
+				"Completing the first stomach placement plays tutorial_100_115.txt"
+			)
+			_expect(
+				post_drag_followup != null
+					and post_drag_followup.script_path == "res://resource/novel/tutorial/tutorial_100_200.txt",
+				"The existing post-placement tutorial plays after tutorial_100_115.txt"
+			)
+			tutorial.call("_finish")
+			await get_tree().process_frame
+			var digestion_prompt := tutorial.get("_active_novel_text") as NovelTextInfo
+			_expect(
+				post_drag_tutorial_paths.has("res://resource/novel/tutorial/tutorial_100_210.txt")
+					and digestion_prompt != null
+					and digestion_prompt.script_path == "res://resource/novel/tutorial/tutorial_100_210.txt",
+				"tutorial_100_210.txt starts after tutorial_100_200.txt"
+			)
+
+			game.call("_finish_acid_turn")
+			await get_tree().process_frame
+			await get_tree().process_frame
+			var first_digestion_tutorial := tutorial.get("_active_novel_text") as NovelTextInfo
+			_expect(
+				post_drag_tutorial_paths.has("res://resource/novel/tutorial/tutorial_100_215.txt"),
+				"tutorial_100_215.txt starts before the first tutorial_100_400.txt"
+			)
+			_expect(
+				first_digestion_tutorial != null
+					and first_digestion_tutorial.script_path == "res://resource/novel/tutorial/tutorial_100_400.txt",
+				"tutorial_100_400.txt starts after tutorial_100_215.txt"
+			)
+			game.set("_first_digestion_tutorial_pending", false)
+			tutorial.call("_finish")
+			await get_tree().process_frame
+
 		game.show_tutorial()
 		await get_tree().process_frame
 		var tutorial_text := tutorial.get("_active_novel_text") as NovelTextInfo

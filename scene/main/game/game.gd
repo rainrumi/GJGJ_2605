@@ -25,9 +25,12 @@ const START_MESSAGE: String = "６時までにすべての悪夢を消化しま�
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
 @export var tutorial_novel_text: NovelTextInfo
 @export var initial_tutorial_followup_text: NovelTextInfo
+@export var post_drag_tutorial_text: NovelTextInfo
 @export var owned_seed_tutorial_text: NovelTextInfo
 @export var owned_seed_panel_tutorial_text: NovelTextInfo
 @export var all_nightmares_tutorial_text: NovelTextInfo
+@export var post_placement_tutorial_text: NovelTextInfo
+@export var first_digestion_intro_tutorial_text: NovelTextInfo
 @export var first_digestion_tutorial_text: NovelTextInfo
 @export var first_player_revive_tutorial_text: NovelTextInfo
 @onready var ui: BattleUI = $UI
@@ -92,8 +95,11 @@ var _attack_se_requested_this_timing := false
 var _tutorial_active := false
 var _initial_tutorial_played := false
 var _initial_tutorial_followup_pending := false
+var _post_drag_tutorial_pending := false
+var _post_placement_tutorial_pending := false
 var _all_nightmares_tutorial_played := false
 var _first_digestion_tutorial_played := false
+var _first_digestion_intro_tutorial_pending := false
 var _first_digestion_tutorial_pending := false
 var _first_player_revive_tutorial_played := false
 var _owned_seed_tutorial_played := false
@@ -173,6 +179,24 @@ func _on_tutorial_novel_finished() -> void:
 		_initial_tutorial_followup_pending = false
 		if _start_tutorial(initial_tutorial_followup_text, "initial_tutorial_followup_text"):
 			return
+	if _post_drag_tutorial_pending:
+		_post_drag_tutorial_pending = false
+		_post_placement_tutorial_pending = true
+		if _start_tutorial(all_nightmares_tutorial_text, "all_nightmares_tutorial_text"):
+			return
+		_post_placement_tutorial_pending = false
+	if _post_placement_tutorial_pending:
+		_post_placement_tutorial_pending = false
+		if _start_tutorial(post_placement_tutorial_text, "post_placement_tutorial_text"):
+			return
+	if _first_digestion_intro_tutorial_pending:
+		_first_digestion_intro_tutorial_pending = false
+		_first_digestion_tutorial_pending = _start_tutorial(
+			first_digestion_tutorial_text,
+			"first_digestion_tutorial_text"
+		)
+		if _first_digestion_tutorial_pending:
+			return
 	if _first_digestion_tutorial_pending:
 		_first_digestion_tutorial_pending = false
 		_first_digestion_tutorial_played = true
@@ -203,7 +227,10 @@ func _try_play_all_nightmares_tutorial() -> void:
 	if not has_enemy_in_stomach:
 		return
 	_all_nightmares_tutorial_played = true
-	_start_tutorial(all_nightmares_tutorial_text, "all_nightmares_tutorial_text")
+	_post_drag_tutorial_pending = true
+	if not _start_tutorial(post_drag_tutorial_text, "post_drag_tutorial_text"):
+		_all_nightmares_tutorial_played = false
+		_post_drag_tutorial_pending = false
 
 
 func _capture_initial_tutorial_enemies() -> void:
@@ -1078,6 +1105,13 @@ func _finish_acid_turn() -> void:
 	acid_turn_in_progress = false
 	acid_controller.activate_deferred_nuisance_enemies(enemies)
 	if battle_active and not _first_digestion_tutorial_played:
+		_first_digestion_intro_tutorial_pending = true
+		if _start_tutorial(
+			first_digestion_intro_tutorial_text,
+			"first_digestion_intro_tutorial_text"
+		):
+			return
+		_first_digestion_intro_tutorial_pending = false
 		_first_digestion_tutorial_pending = _start_tutorial(
 			first_digestion_tutorial_text,
 			"first_digestion_tutorial_text"
