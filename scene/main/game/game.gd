@@ -24,6 +24,7 @@ const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
 @export var tutorial_novel_text: NovelTextInfo
+@export var initial_tutorial_followup_text: NovelTextInfo
 @export var owned_seed_tutorial_text: NovelTextInfo
 @export var owned_seed_panel_tutorial_text: NovelTextInfo
 @export var all_nightmares_tutorial_text: NovelTextInfo
@@ -90,6 +91,7 @@ var _pending_depleted_seed_sources: Array[Resource] = []
 var _attack_se_requested_this_timing := false
 var _tutorial_active := false
 var _initial_tutorial_played := false
+var _initial_tutorial_followup_pending := false
 var _all_nightmares_tutorial_played := false
 var _first_digestion_tutorial_played := false
 var _first_digestion_tutorial_pending := false
@@ -167,6 +169,10 @@ func _on_tutorial_novel_finished() -> void:
 		return
 	_set_battle_flags(true)
 	_refresh_ui()
+	if _initial_tutorial_followup_pending:
+		_initial_tutorial_followup_pending = false
+		if _start_tutorial(initial_tutorial_followup_text, "initial_tutorial_followup_text"):
+			return
 	if _first_digestion_tutorial_pending:
 		_first_digestion_tutorial_pending = false
 		_first_digestion_tutorial_played = true
@@ -280,7 +286,7 @@ func start_battle(context: BattleInfo = null) -> void:
 			"owned_seed_tutorial_text"
 		)
 	elif is_first_battle_entry:
-		show_tutorial()
+		_initial_tutorial_followup_pending = _start_tutorial(tutorial_novel_text, "tutorial_novel_text")
 # HP取得
 func get_current_hp() -> int:
 	return hp

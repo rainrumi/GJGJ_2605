@@ -1370,7 +1370,11 @@ Thank You for Playing!!
 @text \"0\",\"さっそく悪夢を胃袋へドラッグして、実際に食べてみましょう。\"
 @lcm
 ",
-"res://resource/novel/tutorial/tutorial_100_110.txt": "",
+"res://resource/novel/tutorial/tutorial_100_110.txt": "@textbox_save_set 0, 373.2, 20.6, 138.2, 37.8, 1, 1
+@img_save 0, 3, -4, \"res://resource/image/texture/tutorial/tex_tutorial_popup_100.png\"
+@text_save \"0\",\"悪夢をドラッグして胃袋に入れよう。\"",
+"res://resource/novel/tutorial/tutorial_100_115.txt": "@img_save_reset 0
+@textbox_save_clear 0",
 "res://resource/novel/tutorial/tutorial_100_200.txt": "@textbox_set 0, 39, 53, 110, 181, 1, 1
 @img 0, 7, -40, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_100_100.png\"
 @text 0, \"これで悪夢を食べることができました。\"

@@ -44,7 +44,14 @@ func _run() -> void:
 
 		tutorial.call("_finish")
 		await get_tree().process_frame
-		_expect(bool(game.get("battle_active")), "Battle input resumes after the initial tutorial")
+		var followup_tutorial_text := tutorial.get("_active_novel_text") as NovelTextInfo
+		_expect(tutorial.visible, "Follow-up tutorial starts after the initial tutorial")
+		_expect(bool(game.get("battle_active")), "Battle input resumes after the follow-up tutorial finishes")
+		_expect(
+			followup_tutorial_text != null
+				and followup_tutorial_text.script_path == "res://resource/novel/tutorial/tutorial_100_110.txt",
+			"Initial follow-up tutorial uses tutorial_100_110.txt"
+		)
 
 		game.show_tutorial()
 		await get_tree().process_frame
@@ -76,12 +83,23 @@ func _run() -> void:
 		await get_tree().process_frame
 		battle_ui.call("_open_owned_seed_panel")
 		await get_tree().process_frame
-		_expect(not tutorial.visible, "Owned seed panel tutorial does not replay after first use")
+		var completed_owned_seed_panel_tutorial := tutorial.get("_active_novel_text") as NovelTextInfo
+		_expect(
+			completed_owned_seed_panel_tutorial != null
+				and completed_owned_seed_panel_tutorial.script_path
+				== "res://resource/novel/tutorial/tutorial_300_200.txt",
+			"Owned seed panel tutorial does not replay after first use"
+		)
 		battle_ui.call("_close_owned_seed_panel")
 
 		main.show_game(false)
 		await get_tree().process_frame
-		_expect(not tutorial.visible, "Tutorial is not auto-played when the game scene is shown again")
+		var tutorial_after_reentry := tutorial.get("_active_novel_text") as NovelTextInfo
+		_expect(
+			tutorial_after_reentry != null
+				and tutorial_after_reentry.script_path == "res://resource/novel/tutorial/tutorial_300_200.txt",
+			"Tutorial is not auto-played when the game scene is shown again"
+		)
 		_expect(bool(game.get("battle_active")), "Battle input starts normally when re-entering the game scene")
 
 		main.run_state.stored_seeds.append(load("res://data/resources/seeds/skills/seed_100_101.tres") as SeedInfo)
@@ -98,7 +116,12 @@ func _run() -> void:
 		await get_tree().process_frame
 		main.show_game(false)
 		await get_tree().process_frame
-		_expect(not tutorial.visible, "Owned-seed tutorial does not replay on later battles")
+		var later_battle_tutorial := tutorial.get("_active_novel_text") as NovelTextInfo
+		_expect(
+			later_battle_tutorial != null
+				and later_battle_tutorial.script_path == "res://resource/novel/tutorial/tutorial_300_100.txt",
+			"Owned-seed tutorial does not replay on later battles"
+		)
 
 	get_tree().root.remove_child(main)
 	main.free()
