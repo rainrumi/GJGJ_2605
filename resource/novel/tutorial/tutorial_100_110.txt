@@ -1,0 +1,3 @@
+@textbox_save_set 0, 96, 101, 241, 88, 1, 1
+@img_save 0, -47, 6, "res://resource/image/texture/tutorial/tex_tutorial_popup_100.png"
+@text_save "0","悪夢をドラッグして胃袋に入れよう。"

@@ -1,0 +1,2 @@
+@img_save_reset 0
+@textbox_save_clear 0
