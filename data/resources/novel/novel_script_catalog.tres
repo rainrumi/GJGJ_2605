@@ -571,7 +571,7 @@ by 試験官
 @lcm
 妖精には私たちも助けられてるのですが、『妖精が生まれない悪夢』を見てる妖精もいるみたいなんです。
 @lcm
-この悪夢が生まれたせいで増殖する悪夢が生まれたらしいです。
+因みに、この悪夢が生まれたせいで増殖する悪夢が生まれたらしいですよ。
 @lcm
 それでは、試験がんばってくださいね。
 @lcm",
@@ -1317,7 +1317,7 @@ Thank You for Playing!!
 @name \"\"
 機能開放！
 @r
-ラーラのいる場所と、悪夢を食べきった回数が分かるようになりました！
+ラーラのいる場所と、悪夢の消化数が分かるようになりました！
 @lcm
 機能開放2！
 @r
@@ -1428,13 +1428,13 @@ Thank You for Playing!!
 @lcm
 @text 0, \"時刻は22:00に始まり、6:00に終わります。\"
 @lcm
-@text 0, \"時刻が朝の6:00になると、朝になり消化に失敗してしまうので気をつけましょう。\"
+@text 0, \"時刻が6:00になると、目覚めの朝になってしまい消化に失敗するので気をつけましょう。\"
 @lcm
 @textbox_set 0, 336, 91, 158, 78, 1, 1
 @img 0, -19, 8, \"res://resource/image/texture/tutorial/tex_tutorial_time_100.png\"
 @text 0, \"消化方法の説明はこれで終了です。\"
 @lcm
-@text 0, \"すべての悪夢を消化するとクリアになるので引き続き他の悪夢をすべて消化しましょう。\"
+@text 0, \"すべての悪夢を消化するとクリアになるので、引き続き他の悪夢を消化しましょう。\"
 @lcm",
 "res://resource/novel/tutorial/tutorial_200_100.txt": "@textbox_set 0, 31.4, 135, 135.2, 81, 1, 1
 @img 0, 1.8, -0.4, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_hp_100_100.png\"
@@ -1471,7 +1471,7 @@ Thank You for Playing!!
 @text 0, \"場合に応じて自分に合った使い方で、夢の種を有効活用しましょう。\"
 @lcm
 ",
-"res://resource/novel/tutorial/tutorial_400_100.txt": "@textbox_set 0, 261, 94.6, 160, 81.8, 1, 1
+"res://resource/novel/tutorial/tutorial_400_100.txt": "@textbox_set 0, 257.8, 100.2, 160, 81.8, 1, 1
 @img 0, -33.4, -1.6, \"res://resource/image/texture/tutorial/tex_tutorial_acid_count_100_100.png\"
 @text 0, \"ラーラとティーナの消化数はここで確認できます。\"
 @lcm
@@ -1480,6 +1480,8 @@ Thank You for Playing!!
 ",
 "res://resource/novel/tutorial/tutorial_500_100.txt": "@textbox_set 0, 39.8, 31.4, 163.2, 91.8, 1, 1
 @img 0, 23, -102.8, \"res://resource/image/texture/tutorial/tex_tutorial_enemy_hp_100_100.png\"
+@text 0, \"すべての悪夢を消化できました。おめでとうございます。\"
+@lcm
 @text 0, \"悪夢をすべて消化すると、「夢の種」を抽出できます。\"
 @lcm
 @text 0, \"夢の種は、頭に植えたり、食べたりすることで様々な効果を発揮します。\"

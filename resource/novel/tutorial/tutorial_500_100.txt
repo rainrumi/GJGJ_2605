@@ -1,5 +1,7 @@
 @textbox_set 0, 39.8, 31.4, 163.2, 91.8, 1, 1
 @img 0, 23, -102.8, "res://resource/image/texture/tutorial/tex_tutorial_enemy_hp_100_100.png"
+@text 0, "すべての悪夢を消化できました。おめでとうございます。"
+@lcm
 @text 0, "悪夢をすべて消化すると、「夢の種」を抽出できます。"
 @lcm
 @text 0, "夢の種は、頭に植えたり、食べたりすることで様々な効果を発揮します。"
