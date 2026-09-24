@@ -1,7 +1,6 @@
 class_name StomachBoard
 extends Node2D
 
-const LINE_MESH_HEIGHT := 235.0
 const WAVE_BASE_OFFSET_Y := 5.0
 
 @export var columns := 4
@@ -19,7 +18,6 @@ var _grid_frame_area_position := Vector2.ZERO
 var _grid_frame_area_size := Vector2.ZERO
 var _frame_base_position := Vector2.ZERO
 var _frame_base_size := Vector2.ZERO
-var _line_base_position := Vector2.ZERO
 var _preview_sprite: Sprite2D
 var _acid_line_rows := 1 # 消化行数
 
@@ -294,7 +292,6 @@ func _capture_grid_frame_area() -> void:
 	_grid_frame_area_size = grid_frame.size
 	_frame_base_position = frame.position
 	_frame_base_size = frame.size
-	_line_base_position = line_mesh.position
 
 
 # activeグリッドareaサイズ取得
@@ -355,13 +352,12 @@ func _update_line_mesh() -> void:
 	# 消化列topy
 	var acid_line_top_y := _get_row_top_y(top_row)
 	# 列位置
-	var line_position := Vector2(frame.position.x, _line_base_position.y)
+	var line_position := frame.position
 	# 列サイズ
-	var line_size := Vector2(frame.size.x, LINE_MESH_HEIGHT)
+	var line_size := frame.size
 	line_mesh.set_line_rect(line_position, line_size)
-	line_mesh.set_wave_base_y(
-		acid_line_top_y - line_position.y + WAVE_BASE_OFFSET_Y
-	)
+	var wave_local_y := acid_line_top_y - line_position.y + WAVE_BASE_OFFSET_Y
+	line_mesh.set_wave_base_y(line_mesh.get_shader_y_for_local_y(wave_local_y))
 
 
 # 行topy取得

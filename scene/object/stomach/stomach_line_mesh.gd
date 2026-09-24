@@ -2,9 +2,9 @@
 class_name StomachLineMesh
 extends MeshInstance2D
 
-const FIXED_HEIGHT := 235.0
+const BASE_HEIGHT := 235.0
 
-@export var size := Vector2(153.0, FIXED_HEIGHT)
+@export var size := Vector2(153.0, BASE_HEIGHT)
 @export var texture_size := Vector2(156.0, 44.0)
 @export var patch_margin_left := 8.0
 @export var patch_margin_top := 4.0
@@ -102,9 +102,14 @@ func _rebuild_mesh() -> void:
 # 列rect設定
 func set_line_rect(line_position: Vector2, line_size: Vector2) -> void:
 	position = line_position.round()
-	size = Vector2(line_size.x, FIXED_HEIGHT).round()
+	size = line_size.round()
 	scale = Vector2.ONE
 	_rebuild_mesh()
+
+
+func get_shader_y_for_local_y(local_y: float) -> float:
+	# shaderの UV * mesh_size で使われるy座標へ変換する。
+	return _get_source_y(local_y) / texture_size.y * size.y
 
 
 func set_wave_base_y(value: float) -> void:
