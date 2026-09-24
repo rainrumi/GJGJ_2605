@@ -147,6 +147,10 @@ func get_revive_recovery_bonus_rate(_state: DreamSeedSkillState, _context: Dicti
 	return 0.0
 
 
+func get_revive_elapsed_minutes(_state: DreamSeedSkillState, _context: Dictionary) -> int:
+	return -1
+
+
 # 与消化回復率
 func get_acid_damage_heal_rate(_state: DreamSeedSkillState, _context: Dictionary) -> float:
 	return 0.0

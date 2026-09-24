@@ -1437,7 +1437,7 @@ func _revive_player() -> void:
 		if skip_rest:
 			_refresh_after_battle_event(revived_hp)
 		else:
-			_apply_elapsed_time(REST_MINUTES, revived_hp)
+			_apply_elapsed_time(seed_effects.get_revive_elapsed_minutes(REST_MINUTES), revived_hp)
 		if not _first_player_revive_tutorial_played and not skip_rest:
 			_first_player_revive_tutorial_played = _start_tutorial(
 				first_player_revive_tutorial_text,

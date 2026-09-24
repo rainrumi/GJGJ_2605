@@ -247,6 +247,15 @@ func get_revive_hp(max_hp: int, base_recovery_rate: float) -> int:
 
 
 # 休憩回復補正率取得
+func get_revive_elapsed_minutes(default_minutes: int) -> int:
+	var elapsed_minutes := default_minutes
+	for effect in _get_main_effects():
+		var override_minutes := effect.get_revive_elapsed_minutes(_state, {})
+		if override_minutes >= 0:
+			elapsed_minutes = override_minutes
+	return elapsed_minutes
+
+
 func get_rest_recovery_bonus_rate() -> float:
 	return _sum_float("get_rest_recovery_bonus_rate", {})
 
