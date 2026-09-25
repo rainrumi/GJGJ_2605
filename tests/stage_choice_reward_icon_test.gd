@@ -22,7 +22,7 @@ func _run() -> void:
 	choice.setup_choice(stage)
 	await process_frame
 
-	var reward_container := choice.get_node("RewardHBoxContainer") as HFlowContainer
+	var reward_container := choice.get_node("RewardCenterContainer/RewardHBoxContainer") as HFlowContainer
 	var template := reward_container.get_node("RewardIcon") as TextureRect
 	var visible_icons: Array[TextureRect] = []
 	for child in reward_container.get_children():

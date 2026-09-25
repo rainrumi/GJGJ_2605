@@ -41,7 +41,7 @@ text_overrun_behavior = 3
 layout_mode = 0
 offset_left = 6.0
 offset_top = 5.0
-offset_right = 54.0
+offset_right = 206.0
 offset_bottom = 48.0
 
 [node name="LocationLabel" type="Label" parent="VBoxContainer" unique_id=1473998700]
@@ -53,20 +53,20 @@ text = "場所"
 vertical_alignment = 1
 text_overrun_behavior = 3
 
-[node name="DifficultyLabel" type="Label" parent="VBoxContainer" unique_id=863256926]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 10
-text = "難易度"
-vertical_alignment = 1
-
 [node name="ExplorationLabel" type="Label" parent="VBoxContainer" unique_id=2041957300]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 10
 text = "探索率 0%"
+vertical_alignment = 1
+
+[node name="DifficultyLabel" type="Label" parent="VBoxContainer" unique_id=863256926]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 10
+text = "難易度"
 vertical_alignment = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="." unique_id=1265119550]
@@ -100,17 +100,21 @@ theme_override_font_sizes/font_size = 9
 text = "報酬"
 vertical_alignment = 1
 
-[node name="RewardHBoxContainer" type="HFlowContainer" parent="." unique_id=754154955]
+[node name="RewardCenterContainer" type="CenterContainer" parent="." unique_id=1367843502]
 layout_mode = 0
 offset_left = 174.0
 offset_top = 4.0
 offset_right = 264.0
 offset_bottom = 50.0
+
+[node name="RewardHBoxContainer" type="HFlowContainer" parent="RewardCenterContainer" unique_id=754154955]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
 theme_override_constants/h_separation = 2
 theme_override_constants/v_separation = 2
 alignment = 1
 
-[node name="RewardIcon" type="TextureRect" parent="RewardHBoxContainer" unique_id=1446009597]
+[node name="RewardIcon" type="TextureRect" parent="RewardCenterContainer/RewardHBoxContainer" unique_id=1446009597]
 visible = false
 self_modulate = Color(0.1254902, 0.1254902, 0.1254902, 1)
 layout_mode = 2

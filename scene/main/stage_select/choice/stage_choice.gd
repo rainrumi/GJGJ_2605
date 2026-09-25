@@ -9,11 +9,11 @@ const HIGH_DIFFICULTY_TEXT_COLOR := Color(1.0, 0.027451, 0.211765, 1.0)
 
 @onready var frame: NinePatchRect = $Frame
 @onready var name_label: Label = $NameLabel
-@onready var difficulty_label: Label = $HBoxContainer2/DifficultyLabel
-@onready var location_label: Label = $LocationLabel
-@onready var exploration_label: Label = $HBoxContainer2/ExplorationLabel
-@onready var reward_flow_container: HFlowContainer = $RewardHBoxContainer
-@onready var reward_icon: TextureRect = $RewardHBoxContainer/RewardIcon
+@onready var difficulty_label: Label = $VBoxContainer/DifficultyLabel
+@onready var location_label: Label = $VBoxContainer/LocationLabel
+@onready var exploration_label: Label = $VBoxContainer/ExplorationLabel
+@onready var reward_flow_container: HFlowContainer = $RewardCenterContainer/RewardHBoxContainer
+@onready var reward_icon: TextureRect = $RewardCenterContainer/RewardHBoxContainer/RewardIcon
 
 var _base_scale := Vector2.ONE
 var _hovered := false
