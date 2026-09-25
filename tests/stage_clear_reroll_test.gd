@@ -41,7 +41,7 @@ func _run() -> void:
 	_expect(not reroll_button.disabled, "残回数がある間はリロールできる")
 	reroll_button.pressed.emit()
 	_expect(reroll_button.text == "リロール(残り0回)", "使用後の残回数を表示する")
-	_expect(reroll_button.visible, "残回数0でもボス撃破済みならボタンを表示する")
+	_expect(not reroll_button.visible, "残回数0ではリロールボタンを非表示にする")
 	_expect(reroll_button.disabled, "残回数0ではリロールできない")
 	var debug_reroll_button := stage_clear.get_node("UI/DebugRerollButton") as Button
 	stage_clear.ui.set_debug_state(true, true)

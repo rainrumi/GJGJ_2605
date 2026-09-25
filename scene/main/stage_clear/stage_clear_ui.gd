@@ -377,7 +377,7 @@ func _apply_debug_button_state() -> void:
 # reroll状態更新
 func _update_reroll_button_state() -> void:
 	reroll_button.text = "リロール(残り%d回)" % _remaining_reroll_count
-	reroll_button.visible = _reroll_unlocked
+	reroll_button.visible = _reroll_unlocked and _remaining_reroll_count > 0
 	reroll_button.disabled = not _reroll_unlocked or _remaining_reroll_count <= 0 or not _seed_choice_active
 
 
