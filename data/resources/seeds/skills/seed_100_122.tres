@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://bgdjophgtc2ew"]
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_s658i"]
-[ext_resource type="Texture2D" uid="uid://cqmahjh3dgflv" path="res://resource/image/texture/seed/tex_seed_torikabuto_small.png" id="2_small_texture"]
 [ext_resource type="Texture2D" uid="uid://dup1uxsldytbc" path="res://resource/image/texture/seed/tex_seed_torikabuto_small_line.png" id="2_small_line_texture"]
+[ext_resource type="Texture2D" uid="uid://cqmahjh3dgflv" path="res://resource/image/texture/seed/tex_seed_torikabuto_small.png" id="2_small_texture"]
 [ext_resource type="Texture2D" uid="uid://d4batgq057qed" path="res://resource/image/texture/seed/tex_seed_torikabuto.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_85vbj"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_hh77o"]
