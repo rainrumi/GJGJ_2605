@@ -43,9 +43,9 @@ offset_bottom = 305.5
 
 [node name="StartButton" parent="Menu" unique_id=286137335 instance=ExtResource("4_button")]
 layout_mode = 0
-offset_top = 39.5
+offset_top = 108.5
 offset_right = 140.0
-offset_bottom = 68.5
+offset_bottom = 137.5
 theme_override_colors/font_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -54,9 +54,9 @@ text = "最初から"
 [node name="ContinueButton" parent="Menu" unique_id=1693844036 instance=ExtResource("4_button")]
 visible = false
 layout_mode = 0
-offset_top = 40.0
+offset_top = 67.5
 offset_right = 140.0
-offset_bottom = 69.0
+offset_bottom = 96.5
 theme_override_colors/font_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -64,19 +64,20 @@ text = "続きから"
 
 [node name="SettingsButton" parent="Menu" unique_id=922349689 instance=ExtResource("4_button")]
 layout_mode = 0
-offset_top = 80.0
+offset_top = 149.0
 offset_right = 140.0
-offset_bottom = 109.0
+offset_bottom = 178.0
 theme_override_colors/font_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
 text = "設定"
 
 [node name="QuitButton" parent="Menu" unique_id=1448078595 instance=ExtResource("4_button")]
+visible = false
 layout_mode = 0
-offset_top = 120.0
+offset_top = 147.5
 offset_right = 140.0
-offset_bottom = 149.0
+offset_bottom = 176.5
 theme_override_colors/font_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16

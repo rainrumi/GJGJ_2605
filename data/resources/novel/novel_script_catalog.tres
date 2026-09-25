@@ -1391,7 +1391,7 @@ Thank You for Playing!!
 @lcm
 @text 0, \"例えば数値が50で、斜線に触れたマス数が2なら、50×2で100ダメージ与えます。\"
 @lcm
-@textbox_set 0, 275, 237.2, 167.4, 81.2, 1, 1
+@textbox_set 0, 276.6, 232, 167.4, 92, 1, 1
 @img 0, 55, -13, \"res://resource/image/texture/tutorial/tex_tutorial_acid_start_100_100.png\"
 @text 0, \"悪夢を食べた後はこのボタンを押して、消化を開始しましょう。\"
 @lcm
