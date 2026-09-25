@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_cafjl"]
 [ext_resource type="Texture2D" uid="uid://cc0005ym885hv" path="res://resource/image/texture/seed/tex_seed_rupinasu_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" uid="uid://c3700tf2a5rbt" path="res://resource/image/texture/seed/tex_seed_rupinasu_small_line.png" id="2_small_line_texture"]
 [ext_resource type="Texture2D" uid="uid://bpgvpds1vioie" path="res://resource/image/texture/seed/tex_seed_rupinasu.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_2t6qm"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_62s2h"]
@@ -41,6 +42,7 @@ rarity = 1
 display_name = "ルピナス"
 texture = ExtResource("2_texture")
 small_texture = ExtResource("2_small_texture")
+small_line_texture = ExtResource("2_small_line_texture")
 main_skill = SubResource("Resource_2uu0s")
 sub_skill = SubResource("Resource_80jb5")
 acid_block = SubResource("Resource_2t6qm")

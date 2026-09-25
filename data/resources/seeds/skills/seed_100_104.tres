@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_3n8c3"]
 [ext_resource type="Texture2D" uid="uid://dsl67wxgbfk6l" path="res://resource/image/texture/seed/tex_seed_anemone_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" uid="uid://csd0tftohjnlc" path="res://resource/image/texture/seed/tex_seed_anemone_small_line.png" id="2_small_line_texture"]
 [ext_resource type="Texture2D" uid="uid://cio5tbbtpj4dl" path="res://resource/image/texture/seed/tex_seed_anemone.png" id="2_texture"]
 [ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_g5ndj"]
 [ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_vtci7"]
@@ -37,6 +38,7 @@ skill_id = 100104
 display_name = "アネモネ"
 texture = ExtResource("2_texture")
 small_texture = ExtResource("2_small_texture")
+small_line_texture = ExtResource("2_small_line_texture")
 main_skill = SubResource("Resource_43cjl")
 sub_skill = SubResource("Resource_42o3q")
 acid_block = SubResource("Resource_40tqx")
