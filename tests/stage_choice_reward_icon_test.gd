@@ -22,7 +22,7 @@ func _run() -> void:
 	choice.setup_choice(stage)
 	await process_frame
 
-	var reward_container := choice.get_node("RewardHBoxContainer") as HBoxContainer
+	var reward_container := choice.get_node("RewardHBoxContainer") as HFlowContainer
 	var template := reward_container.get_node("RewardIcon") as TextureRect
 	var visible_icons: Array[TextureRect] = []
 	for child in reward_container.get_children():
@@ -37,7 +37,7 @@ func _run() -> void:
 	_expect(visible_icons.size() == rare_seeds.size(), "エリアのレア夢の種だけアイコンを表示する")
 	for i in range(mini(visible_icons.size(), rare_seeds.size())):
 		_expect(
-			visible_icons[i].texture == rare_seeds[i].small_line_texture,
+			visible_icons[i].texture == rare_seeds[i].tiny_texture,
 			"レア夢の種のsmallテクスチャをアイコンへ設定する"
 		)
 

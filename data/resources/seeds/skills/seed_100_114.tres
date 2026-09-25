@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://blm8lnep51asi" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_damage_adjacent.gd" id="skill_adjacent_damage"]
 [ext_resource type="Script" uid="uid://dfy1oks3ymocm" path="res://scene/main/game/seed/skill/on_progress_time/seed_effect_on_progress_time_damage_line.gd" id="skill_progress_line"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Texture2D" uid="uid://4fr5noy0i7ip" path="res://resource/image/texture/seed/tex_seed_noibara_tiny.png" id="tiny_texture"]
 
 [sub_resource type="Resource" id="Resource_33b0n"]
 script = ExtResource("1_pckvp")
@@ -43,6 +44,7 @@ skill_id = 100114
 rarity = 1
 display_name = "ノイバラ"
 texture = ExtResource("2_texture")
+tiny_texture = ExtResource("tiny_texture")
 small_texture = ExtResource("2_small_texture")
 small_line_texture = ExtResource("2_small_line_texture")
 main_skill = SubResource("Resource_gtncw")

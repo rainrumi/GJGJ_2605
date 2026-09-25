@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 [ext_resource type="Script" uid="uid://cen3cbqyvb43t" path="res://scene/main/game/seed/skill/on_target_clock/seed_effect_clock_interval_minutes.gd" id="skill_time_before"]
+[ext_resource type="Texture2D" uid="uid://xm72dqboihvm" path="res://resource/image/texture/seed/tex_seed_hitujigusa_tiny.png" id="tiny_texture"]
 
 [sub_resource type="Resource" id="Resource_ock3h"]
 script = ExtResource("1_vf1xj")
@@ -40,6 +41,7 @@ skill_id = 100123
 rarity = 1
 display_name = "ヒツジグサ"
 texture = ExtResource("2_texture")
+tiny_texture = ExtResource("tiny_texture")
 small_texture = ExtResource("2_small_texture")
 small_line_texture = ExtResource("2_small_line_texture")
 main_skill = SubResource("Resource_qxbtq")

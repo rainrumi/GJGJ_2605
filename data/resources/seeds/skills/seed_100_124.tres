@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 [ext_resource type="Script" uid="uid://bc7tnfw70v1m2" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_time_reduction_rate.gd" id="skill_time_rate"]
+[ext_resource type="Texture2D" uid="uid://c3o1yt72sgp1d" path="res://resource/image/texture/seed/tex_seed_kurematis_tiny.png" id="tiny_texture"]
 
 [sub_resource type="Resource" id="Resource_iu3r8"]
 script = ExtResource("1_cno5e")
@@ -45,6 +46,7 @@ skill_id = 100124
 rarity = 1
 display_name = "クレマチス"
 texture = ExtResource("2_texture")
+tiny_texture = ExtResource("tiny_texture")
 small_texture = ExtResource("2_small_texture")
 small_line_texture = ExtResource("2_small_line_texture")
 main_skill = SubResource("Resource_e1bkn")

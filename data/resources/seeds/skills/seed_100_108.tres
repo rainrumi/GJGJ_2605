@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://com78clsyxuym" path="res://resource/image/texture/seed/tex_seed_huji.png" id="4_phtvx"]
 [ext_resource type="Script" uid="uid://crk0gr2g7eg4l" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_change_adjacent_hp_rate.gd" id="7_83chu"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Texture2D" uid="uid://dhte5rvloqin2" path="res://resource/image/texture/seed/tex_seed_huji_tiny.png" id="tiny_texture"]
 
 [sub_resource type="Resource" id="Resource_83chu"]
 script = ExtResource("1_kr1fv")
@@ -42,6 +43,7 @@ skill_id = 100108
 rarity = 1
 display_name = "フジ"
 texture = ExtResource("4_phtvx")
+tiny_texture = ExtResource("tiny_texture")
 small_texture = ExtResource("2_small_texture")
 small_line_texture = ExtResource("2_small_line_texture")
 main_skill = SubResource("Resource_8fnuu")

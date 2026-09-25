@@ -20,6 +20,7 @@ enum SubSkillMode {
 @export var display_name := ""
 # 花の画像
 @export var texture: Texture2D
+@export var tiny_texture: Texture2D
 # 取得後の小サイズ表示用画像。未設定の場合は通常画像を使用する。
 @export var small_texture: Texture2D
 @export var small_line_texture: Texture2D

@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://c7b8t2tue3r6i" path="res://scene/main/game/seed/skill/on_finish_acid_seed_block/seed_effect_on_finish_acid_seed_block_fixed_damage_line.gd" id="skill_line_damage"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 [ext_resource type="Script" uid="uid://7vu4k007mb2t" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_acid_damage_rate_of_stomach_grid.gd" id="skill_stomach_grid_rate"]
+[ext_resource type="Texture2D" uid="uid://utgd0540bwdw" path="res://resource/image/texture/seed/tex_seed_amaririsu_tiny.png" id="tiny_texture"]
 
 [sub_resource type="Resource" id="Resource_wcst2"]
 script = ExtResource("1_7ne22")
@@ -40,6 +41,7 @@ skill_id = 100113
 rarity = 1
 display_name = "アマリリス"
 texture = ExtResource("2_texture")
+tiny_texture = ExtResource("tiny_texture")
 small_texture = ExtResource("2_small_texture")
 small_line_texture = ExtResource("2_small_line_texture")
 main_skill = SubResource("Resource_hifjf")

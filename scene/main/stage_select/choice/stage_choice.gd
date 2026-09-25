@@ -12,7 +12,7 @@ const HIGH_DIFFICULTY_TEXT_COLOR := Color(1.0, 0.027451, 0.211765, 1.0)
 @onready var difficulty_label: Label = $HBoxContainer2/DifficultyLabel
 @onready var location_label: Label = $LocationLabel
 @onready var exploration_label: Label = $HBoxContainer2/ExplorationLabel
-@onready var reward_hbox_container: HBoxContainer = $RewardHBoxContainer
+@onready var reward_flow_container: HFlowContainer = $RewardHBoxContainer
 @onready var reward_icon: TextureRect = $RewardHBoxContainer/RewardIcon
 
 var _base_scale := Vector2.ONE
@@ -70,9 +70,9 @@ func _setup_reward_seed_icons(seed_pool: SeedPoolInfo) -> void:
 		if seed == null or seed.rarity != SeedInfo.Rarity.RARE:
 			continue
 		var icon := reward_icon.duplicate() as TextureRect
-		icon.texture = seed.small_line_texture
+		icon.texture = seed.tiny_texture
 		icon.visible = true
-		reward_hbox_container.add_child(icon)
+		reward_flow_container.add_child(icon)
 		_reward_seed_icons.append(icon)
 
 
@@ -80,7 +80,7 @@ func _clear_reward_seed_icons() -> void:
 	for icon in _reward_seed_icons:
 		if not is_instance_valid(icon):
 			continue
-		reward_hbox_container.remove_child(icon)
+		reward_flow_container.remove_child(icon)
 		icon.free()
 	_reward_seed_icons.clear()
 

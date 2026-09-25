@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://dukbi6dqbjodk" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_revive.gd" id="skill_revive"]
 [ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
 [ext_resource type="Script" uid="uid://rjot6psr2ija" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_skip_rest_time.gd" id="skill_skip_rest"]
+[ext_resource type="Texture2D" uid="uid://d3oe7lc5gnwq3" path="res://resource/image/texture/seed/tex_seed_anemone_tiny.png" id="tiny_texture"]
 
 [sub_resource type="Resource" id="Resource_40tqx"]
 script = ExtResource("1_3n8c3")
@@ -37,6 +38,7 @@ script = ExtResource("3_g5ndj")
 skill_id = 100104
 display_name = "アネモネ"
 texture = ExtResource("2_texture")
+tiny_texture = ExtResource("tiny_texture")
 small_texture = ExtResource("2_small_texture")
 small_line_texture = ExtResource("2_small_line_texture")
 main_skill = SubResource("Resource_43cjl")
