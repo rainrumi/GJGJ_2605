@@ -70,7 +70,7 @@ func _setup_reward_seed_icons(seed_pool: SeedPoolInfo) -> void:
 		if seed == null or seed.rarity != SeedInfo.Rarity.RARE:
 			continue
 		var icon := reward_icon.duplicate() as TextureRect
-		icon.texture = seed.get_small_texture()
+		icon.texture = seed.small_line_texture
 		icon.visible = true
 		reward_hbox_container.add_child(icon)
 		_reward_seed_icons.append(icon)

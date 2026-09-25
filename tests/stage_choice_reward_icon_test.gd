@@ -37,7 +37,7 @@ func _run() -> void:
 	_expect(visible_icons.size() == rare_seeds.size(), "エリアのレア夢の種だけアイコンを表示する")
 	for i in range(mini(visible_icons.size(), rare_seeds.size())):
 		_expect(
-			visible_icons[i].texture == rare_seeds[i].get_small_texture(),
+			visible_icons[i].texture == rare_seeds[i].small_line_texture,
 			"レア夢の種のsmallテクスチャをアイコンへ設定する"
 		)
 
