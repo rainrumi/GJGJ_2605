@@ -4,6 +4,7 @@
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="Texture2D" uid="uid://drk1rtl23138w" path="res://resource/image/texture/frame/tex_frame_100.png" id="3_frame"]
 [ext_resource type="Texture2D" uid="uid://utgd0540bwdw" path="res://resource/image/texture/seed/tex_seed_amaririsu_tiny.png" id="4_dj5lj"]
+[ext_resource type="Texture2D" uid="uid://dtqllre1cbdwq" path="res://resource/image/texture/seed/tex_seed_tiny_more.png" id="5_more_seed"]
 
 [node name="StageChoice" type="Button" unique_id=188156610]
 custom_minimum_size = Vector2(270, 54)
@@ -12,6 +13,7 @@ offset_bottom = 54.0
 size_flags_horizontal = 4
 flat = true
 script = ExtResource("1_script")
+reward_seed_more_texture = ExtResource("5_more_seed")
 
 [node name="Frame" type="NinePatchRect" parent="." unique_id=1879811788]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)

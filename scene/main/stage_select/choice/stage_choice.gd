@@ -6,6 +6,10 @@ const PRESSED_SCALE := 0.95
 const TWEEN_DURATION := 0.1
 const NORMAL_TEXT_COLOR := Color(0.0352941, 0.027451, 0.211765, 1.0)
 const HIGH_DIFFICULTY_TEXT_COLOR := Color(1.0, 0.027451, 0.211765, 1.0)
+const MAX_REWARD_SEED_ICONS := 8
+const REWARD_SEED_MORE_ICON_THRESHOLD := 9
+
+@export var reward_seed_more_texture: Texture2D
 
 @onready var frame: NinePatchRect = $Frame
 @onready var name_label: Label = $NameLabel
@@ -66,14 +70,30 @@ func _setup_reward_seed_icons(seed_pool: SeedPoolInfo) -> void:
 	if seed_pool == null:
 		return
 
+	var rare_seeds: Array[SeedInfo] = []
 	for seed in seed_pool.rare_skills:
 		if seed == null or seed.rarity != SeedInfo.Rarity.RARE:
 			continue
+		rare_seeds.append(seed)
+
+	var use_more_icon := rare_seeds.size() >= REWARD_SEED_MORE_ICON_THRESHOLD
+	var seed_icon_count := mini(
+		rare_seeds.size(), MAX_REWARD_SEED_ICONS - (1 if use_more_icon else 0)
+	)
+	for index in range(seed_icon_count):
+		var seed := rare_seeds[index]
 		var icon := reward_icon.duplicate() as TextureRect
 		icon.texture = seed.tiny_texture
 		icon.visible = true
 		reward_flow_container.add_child(icon)
 		_reward_seed_icons.append(icon)
+
+	if use_more_icon:
+		var more_icon := reward_icon.duplicate() as TextureRect
+		more_icon.texture = reward_seed_more_texture
+		more_icon.visible = true
+		reward_flow_container.add_child(more_icon)
+		_reward_seed_icons.append(more_icon)
 
 
 func _clear_reward_seed_icons() -> void:
