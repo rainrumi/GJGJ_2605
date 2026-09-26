@@ -77,6 +77,11 @@ enum NovelFlow {
 
 var run_state := RunState.new()
 var should_reset_player_state := true
+var _has_resumable_run := false
+var _resume_battle_on_continue := false
+var _resume_battle_context: BattleInfo
+var _resume_stage_clear_on_continue := false
+var _resume_stage_clear_stage_id := -1
 var active_novel_flow := NovelFlow.NONE
 var pending_stage_novel_texts: Array[NovelTextInfo] = []
 var pending_area_completion_novel_text: NovelTextInfo
@@ -209,6 +214,7 @@ func _start_bgm_from_web_input(event: InputEvent, is_web: bool) -> void:
 # title表示
 func show_title() -> void:
 	_hide_seed_reward()
+	title.set_continue_available(_has_resumable_run)
 	title.visible = true
 	opening_novel.visible = false
 	day_intro.visible = false
@@ -245,15 +251,23 @@ func show_stage_select() -> void:
 func _try_show_lara_digestion_count_tutorial() -> void:
 	if _lara_digestion_count_tutorial_played or not run_state.is_lara_unlocked:
 		return
-	_lara_digestion_count_tutorial_played = true
 	var tutorial_text := NovelTextInfo.new()
 	tutorial_text.script_path = "res://resource/novel/tutorial/tutorial_400_100.txt"
 	active_novel_flow = NovelFlow.LARA_DIGESTION_COUNT_TUTORIAL
 	opening_novel.start_with_text(tutorial_text)
 
 
+func _try_show_stage_clear_tutorial() -> void:
+	if _stage_clear_tutorial_played:
+		return
+	var tutorial_text := NovelTextInfo.new()
+	tutorial_text.script_path = "res://resource/novel/tutorial/tutorial_500_100.txt"
+	active_novel_flow = NovelFlow.STAGE_CLEAR_TUTORIAL
+	opening_novel.start_with_text(tutorial_text)
+
+
 # ゲーム表示
-func show_game(reset_player_state: bool = true) -> void:
+func show_game(reset_player_state: bool = true, battle_context: BattleInfo = null) -> void:
 	_hide_seed_reward()
 	title.visible = false
 	opening_novel.visible = false
@@ -263,7 +277,9 @@ func show_game(reset_player_state: bool = true) -> void:
 	game_ui.visible = true
 	stage_clear.visible = false
 	if game.has_method("start_battle"):
-		game.start_battle(_create_battle_start_context(reset_player_state))
+		var context := battle_context if battle_context != null else _create_battle_start_context(reset_player_state)
+		_resume_battle_context = _copy_battle_context(context)
+		game.start_battle(context)
 
 
 # ステージclear表示
@@ -297,24 +313,51 @@ func show_stage_clear() -> void:
 	elif stage_clear.has_method("setup_hp") and game.has_method("get_current_hp"):
 		stage_clear.setup_hp(game.get_current_hp())
 	stage_clear.visible = true
-	if not _stage_clear_tutorial_played:
-		_stage_clear_tutorial_played = true
-		var tutorial_text := NovelTextInfo.new()
-		tutorial_text.script_path = "res://resource/novel/tutorial/tutorial_500_100.txt"
-		active_novel_flow = NovelFlow.STAGE_CLEAR_TUTORIAL
-		opening_novel.start_with_text(tutorial_text)
+	_try_show_stage_clear_tutorial()
+
+
+func _resume_stage_clear_scene() -> void:
+	var resumed_stage: StageInfo
+	if stage_select.has_method("get_stage_definition_by_id"):
+		resumed_stage = stage_select.call(
+			"get_stage_definition_by_id",
+			_resume_stage_clear_stage_id
+		) as StageInfo
+	if resumed_stage == null:
+		push_error(
+			"Main: ステージクリア画面を再開できません。stage_id=%d のステージ定義を確認してください" % _resume_stage_clear_stage_id
+		)
+		show_stage_select()
+		return
+	run_state.select_stage(resumed_stage)
+	title.visible = false
+	opening_novel.visible = false
+	day_intro.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = true
+	_try_show_stage_clear_tutorial()
 
 
 # イベント処理
 func _on_title_start_game() -> void:
 	_screen_flow_id += 1
 	run_state.reset()
+	_has_resumable_run = true
+	_resume_battle_on_continue = false
+	_resume_battle_context = null
+	_resume_stage_clear_on_continue = false
+	_resume_stage_clear_stage_id = -1
 	_lara_judge_pending = false
 	_lara_digestion_count_tutorial_played = false
 	_stage_clear_tutorial_played = false
 	_day_change_time_recovery_pending = false
+	_last_battle_progress_snapshot.clear()
+	pending_stage_novel_texts.clear()
 	pending_area_completion_novel_text = null
 	pending_area_boss_reroll_novel_text = null
+	game.call("reset_tutorial_progress")
 	_setup_initial_stage_position()
 	should_reset_player_state = true
 	if stage_clear.has_method("reset_player_state"):
@@ -323,6 +366,31 @@ func _on_title_start_game() -> void:
 	title.visible = false
 	active_novel_flow = NovelFlow.OPENING
 	opening_novel.start()
+
+
+func _on_title_continue_game() -> void:
+	if not _has_resumable_run:
+		_on_title_start_game()
+		return
+	_screen_flow_id += 1
+	active_novel_flow = NovelFlow.NONE
+	title.visible = false
+	if _resume_stage_clear_on_continue:
+		_resume_stage_clear_on_continue = false
+		_resume_battle_on_continue = false
+		_resume_stage_clear_scene()
+		return
+	if _resume_battle_on_continue and run_state.selected_stage != null:
+		var battle_context := _copy_battle_context(_resume_battle_context)
+		_resume_battle_on_continue = false
+		_resume_stage_clear_on_continue = false
+		should_reset_player_state = false
+		show_game(false, battle_context)
+		return
+	_resume_battle_on_continue = false
+	_resume_stage_clear_on_continue = false
+	should_reset_player_state = false
+	show_day_intro()
 
 
 # 要求処理
@@ -351,7 +419,7 @@ func _open_settings_screen() -> void:
 		return
 	_settings_paused_tree = not get_tree().paused
 	get_tree().paused = true
-	settings_screen.open(game.visible)
+	settings_screen.open(game.visible, run_state.current_day)
 
 
 # イベント処理
@@ -391,6 +459,24 @@ func _return_to_title() -> void:
 	_screen_flow_id += 1
 	active_novel_flow = NovelFlow.NONE
 	_day_change_time_recovery_pending = false
+	if game.visible:
+		_resume_battle_on_continue = run_state.selected_stage != null and _resume_battle_context != null
+		_resume_stage_clear_on_continue = false
+		_resume_stage_clear_stage_id = -1
+		run_state.current_hp = game.get_current_hp()
+		run_state.current_minutes = game.get_clear_minutes()
+		run_state.day_elapsed_minutes = game.day_elapsed_minutes
+		_sync_player_stomach_size()
+		_sync_seed_inventory_from_game()
+	elif stage_clear.visible:
+		_resume_battle_on_continue = false
+		_resume_stage_clear_on_continue = run_state.selected_stage != null
+		_resume_stage_clear_stage_id = run_state.selected_stage.stage_id if _resume_stage_clear_on_continue else -1
+		_sync_run_state_from_stage_clear()
+	elif stage_select.visible or day_intro.visible:
+		_resume_battle_on_continue = false
+		_resume_stage_clear_on_continue = false
+		_resume_stage_clear_stage_id = -1
 	pending_stage_novel_texts.clear()
 	pending_area_boss_reroll_novel_text = null
 	if game.has_method("cancel_battle"):
@@ -473,8 +559,10 @@ func _on_opening_novel_finished() -> void:
 			_finish_current_day()
 		NovelFlow.LARA_DIGESTION_COUNT_TUTORIAL:
 			active_novel_flow = NovelFlow.NONE
+			_lara_digestion_count_tutorial_played = true
 		NovelFlow.STAGE_CLEAR_TUTORIAL:
 			active_novel_flow = NovelFlow.NONE
+			_stage_clear_tutorial_played = true
 		NovelFlow.DEBUG_PREVIEW:
 			active_novel_flow = NovelFlow.NONE
 			show_title()
@@ -1140,6 +1228,25 @@ func _create_battle_start_context(reset_player_state: bool) -> BattleInfo:
 	context.day_elapsed_minutes = run_state.day_elapsed_minutes
 	context.day_start_minutes = run_state.day_start_minutes
 	return context
+
+
+func _copy_battle_context(source: BattleInfo) -> BattleInfo:
+	var copy := BattleInfo.new()
+	copy.starting_hp = source.starting_hp
+	copy.starting_minutes = source.starting_minutes
+	copy.day = source.day
+	copy.stage_id = source.stage_id
+	copy.stage = source.stage
+	copy.enemy_preset = source.enemy_preset
+	copy.stomach_columns = source.stomach_columns
+	copy.stomach_rows = source.stomach_rows
+	copy.flowers = source.flowers.duplicate()
+	copy.stored_seeds = source.stored_seeds.duplicate()
+	copy.permanent_acid_damage_bonus_rate = source.permanent_acid_damage_bonus_rate
+	copy.day_seed_acid_bonus = source.day_seed_acid_bonus
+	copy.day_elapsed_minutes = source.day_elapsed_minutes
+	copy.day_start_minutes = source.day_start_minutes
+	return copy
 
 
 # player胃袋サイズ同期

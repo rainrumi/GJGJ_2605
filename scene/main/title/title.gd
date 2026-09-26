@@ -1,6 +1,7 @@
 extends Node2D
 
 signal start_game
+signal continue_game
 signal settings_requested
 signal quit_requested
 signal debug_novel_requested(novel_text: NovelTextInfo)
@@ -18,6 +19,7 @@ const DEBUG_NOVEL_AREA_DIRECTORIES := [
 ]
 
 @onready var debug_button: Button = $DebugButton
+@onready var continue_button: Button = $VBoxContainer/ContinueButton
 @onready var novel_debug_panel: PanelContainer = $NovelDebugPanel
 @onready var novel_button_list: VBoxContainer = $NovelDebugPanel/Margin/Scroll/NovelButtonList
 @onready var effect_field_settings_button: Button = $EffectFieldSettingsButton
@@ -137,7 +139,11 @@ func _on_start_button_pressed() -> void:
 
 # 押下処理
 func _on_continue_button_pressed() -> void:
-	start_game.emit()
+	continue_game.emit()
+
+
+func set_continue_available(is_available: bool) -> void:
+	continue_button.visible = is_available
 
 
 # 押下処理

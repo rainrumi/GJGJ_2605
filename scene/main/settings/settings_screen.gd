@@ -39,9 +39,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 # 表示処理
-func open(show_battle_button: bool = false) -> void:
+func open(show_battle_button: bool = false, current_day: int = 1) -> void:
 	_refresh_values()
-	battle_button.visible = show_battle_button
+	battle_button.visible = show_battle_button and current_day != 1
 	visible = true
 
 

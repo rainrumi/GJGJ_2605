@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://dbl62dou6wdl6"]
 
-[ext_resource type="FontFile" path="res://fonts/BestTen-CRT.otf" id="1_qdxw8"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="1_qdxw8"]
 
 [node name="BattleButton" type="Button" unique_id=564553469]
-offset_right = 116
-offset_bottom = 52
+custom_minimum_size = Vector2(0, 30)
+offset_right = 116.0
+offset_bottom = 52.0
 theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2

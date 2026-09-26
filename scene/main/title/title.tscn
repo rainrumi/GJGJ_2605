@@ -33,51 +33,39 @@ mouse_filter = 2
 texture = ExtResource("1_title")
 script = ExtResource("5_title_character")
 
-[node name="Menu" type="Control" parent="." unique_id=1268464866]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 13.0
-offset_top = 153.5
-offset_right = 153.0
-offset_bottom = 305.5
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1649300125]
+offset_left = 14.0
+offset_top = 149.0
+offset_right = 144.0
+offset_bottom = 349.0
+theme_override_constants/separation = 15
+alignment = 2
 
-[node name="StartButton" parent="Menu" unique_id=286137335 instance=ExtResource("4_button")]
-layout_mode = 0
-offset_top = 108.5
-offset_right = 140.0
-offset_bottom = 137.5
+[node name="StartButton" parent="VBoxContainer" unique_id=286137335 instance=ExtResource("4_button")]
+layout_mode = 2
 theme_override_colors/font_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
 text = "最初から"
 
-[node name="ContinueButton" parent="Menu" unique_id=1693844036 instance=ExtResource("4_button")]
+[node name="ContinueButton" parent="VBoxContainer" unique_id=1693844036 instance=ExtResource("4_button")]
 visible = false
-layout_mode = 0
-offset_top = 67.5
-offset_right = 140.0
-offset_bottom = 96.5
+layout_mode = 2
 theme_override_colors/font_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
 text = "続きから"
 
-[node name="SettingsButton" parent="Menu" unique_id=922349689 instance=ExtResource("4_button")]
-layout_mode = 0
-offset_top = 149.0
-offset_right = 140.0
-offset_bottom = 178.0
+[node name="SettingsButton" parent="VBoxContainer" unique_id=922349689 instance=ExtResource("4_button")]
+layout_mode = 2
 theme_override_colors/font_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
 text = "設定"
 
-[node name="QuitButton" parent="Menu" unique_id=1448078595 instance=ExtResource("4_button")]
+[node name="QuitButton" parent="VBoxContainer" unique_id=1448078595 instance=ExtResource("4_button")]
 visible = false
-layout_mode = 0
-offset_top = 147.5
-offset_right = 140.0
-offset_bottom = 176.5
+layout_mode = 2
 theme_override_colors/font_color = Color(0.9411765, 0.8784314, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -127,7 +115,7 @@ text = "効果量・確率の対象設定"
 
 [node name="EffectFieldSettingsPanel" parent="." unique_id=279586925 instance=ExtResource("6_effect_fields")]
 
-[connection signal="pressed" from="Menu/StartButton" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="Menu/ContinueButton" to="." method="_on_continue_button_pressed"]
-[connection signal="pressed" from="Menu/SettingsButton" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="Menu/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -8,6 +8,15 @@ enum DragMode {
 	ENEMY,
 	seed,
 }
+
+enum TutorialProgressFlag {
+	INITIAL,
+	ALL_NIGHTMARES,
+	FIRST_DIGESTION,
+	PLAYER_REVIVE,
+	OWNED_SEED,
+	OWNED_SEED_PANEL,
+}
 const START_HOUR: int = 22
 const END_HOUR: int = 30
 const RECOVERY_END_HOUR: int = 27
@@ -93,6 +102,8 @@ var _awaiting_time_over_decision := false
 var _pending_depleted_seed_sources: Array[Resource] = []
 var _attack_se_requested_this_timing := false
 var _tutorial_active := false
+var _active_tutorial_property_name := ""
+var _active_tutorial_completion_flags: Array[int] = []
 var _initial_tutorial_played := false
 var _initial_tutorial_followup_pending := false
 var _post_drag_tutorial_pending := false
@@ -147,6 +158,26 @@ func show_tutorial() -> void:
 	_start_tutorial(tutorial_novel_text, "tutorial_novel_text")
 
 
+func reset_tutorial_progress() -> void:
+	_tutorial_active = false
+	_active_tutorial_property_name = ""
+	_active_tutorial_completion_flags.clear()
+	_initial_tutorial_played = false
+	_initial_tutorial_followup_pending = false
+	_post_drag_tutorial_pending = false
+	_post_placement_tutorial_pending = false
+	_all_nightmares_tutorial_played = false
+	_first_digestion_tutorial_played = false
+	_first_digestion_intro_tutorial_pending = false
+	_first_digestion_tutorial_pending = false
+	_first_player_revive_tutorial_played = false
+	_owned_seed_tutorial_played = false
+	_owned_seed_panel_tutorial_played = false
+	_initial_tutorial_enemy_preset = null
+	_initial_tutorial_enemies.clear()
+	tutorial_novel.visible = false
+
+
 func _has_owned_seed(flowers: Array[SeedInfo], stored_seeds: Array[SeedInfo]) -> bool:
 	for seed in flowers:
 		if seed != null:
@@ -157,13 +188,19 @@ func _has_owned_seed(flowers: Array[SeedInfo], stored_seeds: Array[SeedInfo]) ->
 	return false
 
 
-func _start_tutorial(novel_text: NovelTextInfo, property_name: String) -> bool:
+func _start_tutorial(
+	novel_text: NovelTextInfo,
+	property_name: String,
+	completion_flags: Array[int] = []
+) -> bool:
 	if novel_text == null:
 		push_error("Game requires %s to be assigned." % property_name)
 		return false
 	if not battle_active:
 		return false
 	_tutorial_active = true
+	_active_tutorial_property_name = property_name
+	_active_tutorial_completion_flags = completion_flags.duplicate()
 	_set_battle_flags(false)
 	tutorial_novel.start_with_text(novel_text)
 	return true
@@ -173,38 +210,75 @@ func _on_tutorial_novel_finished() -> void:
 	if not _tutorial_active:
 		return
 	_tutorial_active = false
+	var completed_tutorial_property_name := _active_tutorial_property_name
+	_active_tutorial_property_name = ""
+	for completion_flag in _active_tutorial_completion_flags:
+		_match_tutorial_completion_flag(completion_flag)
+	_active_tutorial_completion_flags.clear()
 	if not is_inside_tree() or not visible:
 		return
 	_set_battle_flags(true)
 	_refresh_ui()
-	if _initial_tutorial_followup_pending:
+	if (
+		_initial_tutorial_followup_pending
+		and completed_tutorial_property_name == "tutorial_novel_text"
+	):
 		_initial_tutorial_followup_pending = false
 		if _start_tutorial(initial_tutorial_followup_text, "initial_tutorial_followup_text"):
 			return
-	if _post_drag_tutorial_pending:
+	if _post_drag_tutorial_pending and completed_tutorial_property_name == "post_drag_tutorial_text":
 		_post_drag_tutorial_pending = false
 		_post_placement_tutorial_pending = true
-		if _start_tutorial(all_nightmares_tutorial_text, "all_nightmares_tutorial_text"):
+		if _start_tutorial(
+			all_nightmares_tutorial_text,
+			"all_nightmares_tutorial_text",
+			[TutorialProgressFlag.ALL_NIGHTMARES]
+		):
 			return
 		_post_placement_tutorial_pending = false
-	if _post_placement_tutorial_pending:
+	if (
+		_post_placement_tutorial_pending
+		and completed_tutorial_property_name == "all_nightmares_tutorial_text"
+	):
 		_post_placement_tutorial_pending = false
 		if _start_tutorial(post_placement_tutorial_text, "post_placement_tutorial_text"):
 			return
-	if _first_digestion_intro_tutorial_pending:
+	if (
+		_first_digestion_intro_tutorial_pending
+		and completed_tutorial_property_name == "first_digestion_intro_tutorial_text"
+	):
 		_first_digestion_intro_tutorial_pending = false
 		_first_digestion_tutorial_pending = _start_tutorial(
 			first_digestion_tutorial_text,
-			"first_digestion_tutorial_text"
+			"first_digestion_tutorial_text",
+			[TutorialProgressFlag.FIRST_DIGESTION]
 		)
 		if _first_digestion_tutorial_pending:
 			return
-	if _first_digestion_tutorial_pending:
+	if (
+		_first_digestion_tutorial_pending
+		and completed_tutorial_property_name == "first_digestion_tutorial_text"
+	):
 		_first_digestion_tutorial_pending = false
-		_first_digestion_tutorial_played = true
 		_on_Acidion_requested()
 		return
 	_try_play_all_nightmares_tutorial()
+
+
+func _match_tutorial_completion_flag(completion_flag: int) -> void:
+	match completion_flag:
+		TutorialProgressFlag.INITIAL:
+			_initial_tutorial_played = true
+		TutorialProgressFlag.ALL_NIGHTMARES:
+			_all_nightmares_tutorial_played = true
+		TutorialProgressFlag.FIRST_DIGESTION:
+			_first_digestion_tutorial_played = true
+		TutorialProgressFlag.PLAYER_REVIVE:
+			_first_player_revive_tutorial_played = true
+		TutorialProgressFlag.OWNED_SEED:
+			_owned_seed_tutorial_played = true
+		TutorialProgressFlag.OWNED_SEED_PANEL:
+			_owned_seed_panel_tutorial_played = true
 
 
 func _on_enemy_placement_changed(_is_placed: bool) -> void:
@@ -228,10 +302,8 @@ func _try_play_all_nightmares_tutorial() -> void:
 			break
 	if not has_enemy_in_stomach:
 		return
-	_all_nightmares_tutorial_played = true
 	_post_drag_tutorial_pending = true
 	if not _start_tutorial(post_drag_tutorial_text, "post_drag_tutorial_text"):
-		_all_nightmares_tutorial_played = false
 		_post_drag_tutorial_pending = false
 
 
@@ -246,6 +318,10 @@ func _capture_initial_tutorial_enemies() -> void:
 # 戦闘開始
 func start_battle(context: BattleInfo = null) -> void:
 	# 戦闘文脈
+	_tutorial_active = false
+	_active_tutorial_property_name = ""
+	_active_tutorial_completion_flags.clear()
+	tutorial_novel.visible = false
 	var battle_context := context if context != null else BattleInfo.new()
 	character.show_normal_texture()
 	_battle_start_context = _copy_battle_context(battle_context)
@@ -309,15 +385,22 @@ func start_battle(context: BattleInfo = null) -> void:
 	_refresh_ui()
 	var is_first_battle_entry := not _initial_tutorial_played
 	if is_first_battle_entry:
-		_initial_tutorial_played = true
 		_capture_initial_tutorial_enemies()
 	if not _owned_seed_tutorial_played and _has_owned_seed(battle_context.flowers, battle_context.stored_seeds):
-		_owned_seed_tutorial_played = _start_tutorial(
+		var completion_flags: Array[int] = [TutorialProgressFlag.OWNED_SEED]
+		if is_first_battle_entry:
+			completion_flags.append(TutorialProgressFlag.INITIAL)
+		_start_tutorial(
 			owned_seed_tutorial_text,
-			"owned_seed_tutorial_text"
+			"owned_seed_tutorial_text",
+			completion_flags
 		)
 	elif is_first_battle_entry:
-		_initial_tutorial_followup_pending = _start_tutorial(tutorial_novel_text, "tutorial_novel_text")
+		_initial_tutorial_followup_pending = _start_tutorial(
+			tutorial_novel_text,
+			"tutorial_novel_text",
+			[TutorialProgressFlag.INITIAL]
+		)
 # HP取得
 func get_current_hp() -> int:
 	return hp
@@ -335,6 +418,8 @@ func get_last_time_over_recovery_percent() -> int:
 # 戦闘取消
 func cancel_battle() -> void:
 	_tutorial_active = false
+	_active_tutorial_property_name = ""
+	_active_tutorial_completion_flags.clear()
 	tutorial_novel.visible = false
 	_awaiting_time_over_decision = false
 	_pending_depleted_seed_sources.clear()
@@ -409,9 +494,10 @@ func _connect_ui() -> void:
 func _on_owned_seed_panel_opened() -> void:
 	if _owned_seed_panel_tutorial_played or _tutorial_active or not battle_active:
 		return
-	_owned_seed_panel_tutorial_played = _start_tutorial(
+	_start_tutorial(
 		owned_seed_panel_tutorial_text,
-		"owned_seed_panel_tutorial_text"
+		"owned_seed_panel_tutorial_text",
+		[TutorialProgressFlag.OWNED_SEED_PANEL]
 	)
 
 
@@ -1107,7 +1193,8 @@ func _finish_acid_turn() -> void:
 		_first_digestion_intro_tutorial_pending = false
 		_first_digestion_tutorial_pending = _start_tutorial(
 			first_digestion_tutorial_text,
-			"first_digestion_tutorial_text"
+			"first_digestion_tutorial_text",
+			[TutorialProgressFlag.FIRST_DIGESTION]
 		)
 		if _first_digestion_tutorial_pending:
 			return
@@ -1449,9 +1536,10 @@ func _revive_player() -> void:
 		else:
 			_apply_elapsed_time(seed_effects.get_revive_elapsed_minutes(REST_MINUTES), revived_hp)
 		if not _first_player_revive_tutorial_played and not skip_rest:
-			_first_player_revive_tutorial_played = _start_tutorial(
+			_start_tutorial(
 				first_player_revive_tutorial_text,
-				"first_player_revive_tutorial_text"
+				"first_player_revive_tutorial_text",
+				[TutorialProgressFlag.PLAYER_REVIVE]
 			)
 		if minutes >= END_HOUR * 60:
 			_check_battle_end()
