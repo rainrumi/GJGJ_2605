@@ -47,6 +47,8 @@ offset_bottom = 48.0
 [node name="LocationLabel" type="Label" parent="VBoxContainer" unique_id=1473998700]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 text = "場所"
@@ -56,6 +58,8 @@ text_overrun_behavior = 3
 [node name="ExplorationLabel" type="Label" parent="VBoxContainer" unique_id=2041957300]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 10
 text = "探索率 0%"
@@ -64,6 +68,8 @@ vertical_alignment = 1
 [node name="DifficultyLabel" type="Label" parent="VBoxContainer" unique_id=863256926]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.0352941, 0.027451, 0.211765, 1)
+theme_override_colors/font_outline_color = Color(0.9411765, 0.8784314, 1, 1)
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 10
 text = "難易度"
