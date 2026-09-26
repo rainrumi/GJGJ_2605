@@ -3,8 +3,10 @@ extends CanvasLayer
 
 signal closed
 signal title_requested
+signal map_requested
 
 @onready var se_player: AudioStreamPlayer = $SePlayer
+@onready var battle_button: Button = $Screen/Panel/BattleButtons
 @onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 @onready var setting_rows: Array[Node] = [
 	$Screen/Panel/Rows/MasterVolume,
@@ -36,8 +38,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 # 表示処理
-func open() -> void:
+func open(show_battle_button: bool = false) -> void:
 	_refresh_values()
+	battle_button.visible = show_battle_button
 	visible = true
 
 
@@ -81,6 +84,11 @@ func _on_back_button_action_requested() -> void:
 func _on_title_button_action_requested() -> void:
 	_play_se()
 	title_requested.emit()
+
+
+func _on_battle_button_action_requested() -> void:
+	_play_se()
+	map_requested.emit()
 
 
 # 変更通知

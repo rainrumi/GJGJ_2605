@@ -105,6 +105,7 @@ func _ready() -> void:
 	_connect_ui_buttons(self)
 	settings_screen.closed.connect(_on_settings_screen_closed)
 	settings_screen.title_requested.connect(_on_settings_title_requested)
+	settings_screen.map_requested.connect(_on_settings_map_requested)
 	# 戦闘finishedコール
 	var battle_finished_callback := Callable(self, "_on_game_battle_finished")
 	if game.has_signal("battle_finished") and not game.is_connected("battle_finished", battle_finished_callback):
@@ -349,7 +350,7 @@ func _open_settings_screen() -> void:
 		return
 	_settings_paused_tree = not get_tree().paused
 	get_tree().paused = true
-	settings_screen.open()
+	settings_screen.open(game.visible)
 
 
 # イベント処理
@@ -362,6 +363,20 @@ func _on_settings_screen_closed() -> void:
 # 要求処理
 func _on_settings_title_requested() -> void:
 	_return_to_title()
+
+
+func _on_settings_map_requested() -> void:
+	if not game.visible:
+		return
+	run_state.current_hp = game.get_current_hp()
+	run_state.current_minutes = game.get_clear_minutes()
+	run_state.day_elapsed_minutes = game.day_elapsed_minutes
+	_sync_player_stomach_size()
+	_sync_seed_inventory_from_game()
+	game.cancel_battle()
+	should_reset_player_state = false
+	settings_screen.close()
+	show_stage_select()
 
 
 # totitle返却
