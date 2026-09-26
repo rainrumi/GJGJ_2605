@@ -95,7 +95,6 @@ theme_override_font_sizes/font_size = 12
 text = "→"
 
 [node name="CloseButton" type="TextureButton" parent="." unique_id=1035241186]
-self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 z_index = 1
 layout_mode = 0
 offset_left = 29.0
@@ -106,7 +105,7 @@ focus_mode = 0
 texture_normal = ExtResource("6_close_texture")
 script = ExtResource("7_hover_scale")
 
-[node name="PanelLockToggle" type="CheckBox" parent="."]
+[node name="PanelLockToggle" type="CheckBox" parent="." unique_id=1197012487]
 layout_mode = 0
 offset_left = 21.0
 offset_top = 326.0
@@ -118,17 +117,17 @@ theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 9
 button_pressed = true
 text = "種パネルロック"
-alignment = 0
 
 [node name="HeadingTooltip" parent="." unique_id=119193676 instance=ExtResource("5_seed_tooltip")]
 
-[node name="DragPreview" type="TextureRect" parent="."]
+[node name="DragPreview" type="TextureRect" parent="." unique_id=970743551]
 visible = false
 z_index = 100
+texture_filter = 1
 custom_minimum_size = Vector2(30, 30)
+layout_mode = 0
 offset_right = 30.0
 offset_bottom = 30.0
 mouse_filter = 2
-texture_filter = 1
 expand_mode = 1
 stretch_mode = 5
