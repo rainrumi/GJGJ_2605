@@ -1,0 +1,79 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scene/ui/dialog/confirmation_dialog.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scene/ui/button/button.tscn" id="2_button"]
+[ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="3_font"]
+
+[node name="ConfirmationDialog" type="CanvasLayer"]
+layer = 210
+visible = false
+script = ExtResource("1_script")
+
+[node name="Screen" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Dim" type="ColorRect" parent="Screen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.0352941, 0.027451, 0.0431373, 0.78)
+
+[node name="Center" type="CenterContainer" parent="Screen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Panel" type="PanelContainer" parent="Screen/Center"]
+custom_minimum_size = Vector2(440, 170)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Screen/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="Content" type="VBoxContainer" parent="Screen/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Message" type="Label" parent="Screen/Center/Panel/Margin/Content"]
+custom_minimum_size = Vector2(400, 65)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.88, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 14
+text = "確認してください"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Screen/Center/Panel/Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ConfirmButton" parent="Screen/Center/Panel/Margin/Content/Buttons" instance=ExtResource("2_button")]
+layout_mode = 2
+text = "はい"
+
+[node name="CancelButton" parent="Screen/Center/Panel/Margin/Content/Buttons" instance=ExtResource("2_button")]
+layout_mode = 2
+text = "いいえ"

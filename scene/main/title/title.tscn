@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dbl62dou6wdl6" path="res://scene/ui/button/button.tscn" id="4_button"]
 [ext_resource type="Script" uid="uid://bg0cexfvy68ed" path="res://scene/main/title/title_character.gd" id="5_title_character"]
 [ext_resource type="PackedScene" path="res://scene/main/title/effect_field_settings_panel.tscn" id="6_effect_fields"]
+[ext_resource type="PackedScene" path="res://scene/ui/dialog/confirmation_dialog.tscn" id="7_confirmation_dialog"]
 
 [node name="Title" type="Node2D" unique_id=2003881678]
 script = ExtResource("3_script")
@@ -114,6 +115,8 @@ theme_override_font_sizes/font_size = 11
 text = "効果量・確率の対象設定"
 
 [node name="EffectFieldSettingsPanel" parent="." unique_id=279586925 instance=ExtResource("6_effect_fields")]
+
+[node name="ConfirmationDialog" parent="." instance=ExtResource("7_confirmation_dialog")]
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]

@@ -8,6 +8,7 @@ signal debug_novel_requested(novel_text: NovelTextInfo)
 
 const NOVEL_DIRECTORY := "res://resource/novel"
 const NOVEL_BUTTON_FONT_SIZE := 8
+const SAVED_PROGRESS_CONFIRMATION := "保存されたデータが存在します。\n本当に最初からプレイしますか？"
 const DEBUG_NOVEL_AREA_DIRECTORIES := [
 	"area_eramia",
 	"area_gonsal",
@@ -24,6 +25,9 @@ const DEBUG_NOVEL_AREA_DIRECTORIES := [
 @onready var novel_button_list: VBoxContainer = $NovelDebugPanel/Margin/Scroll/NovelButtonList
 @onready var effect_field_settings_button: Button = $EffectFieldSettingsButton
 @onready var effect_field_settings_panel: EffectFieldSettingsPanel = $EffectFieldSettingsPanel
+@onready var confirmation_dialog: GameConfirmationDialog = $ConfirmationDialog
+
+var _has_saved_progress := false
 
 
 # 初期化
@@ -31,6 +35,7 @@ func _ready() -> void:
 	debug_button.pressed.connect(_on_debug_button_pressed)
 	effect_field_settings_button.pressed.connect(_on_effect_field_settings_pressed)
 	effect_field_settings_panel.closed.connect(_on_effect_field_settings_closed)
+	confirmation_dialog.confirmed.connect(_on_start_from_beginning_confirmed)
 	if not DebugState.debug_enabled_changed.is_connected(_on_debug_enabled_changed):
 		DebugState.debug_enabled_changed.connect(_on_debug_enabled_changed)
 	_build_novel_buttons()
@@ -134,6 +139,13 @@ func _on_novel_button_pressed(script_path: String) -> void:
 
 # 押下処理
 func _on_start_button_pressed() -> void:
+	if _has_saved_progress:
+		confirmation_dialog.open_dialog(SAVED_PROGRESS_CONFIRMATION)
+		return
+	start_game.emit()
+
+
+func _on_start_from_beginning_confirmed() -> void:
 	start_game.emit()
 
 
@@ -143,6 +155,7 @@ func _on_continue_button_pressed() -> void:
 
 
 func set_continue_available(is_available: bool) -> void:
+	_has_saved_progress = is_available
 	continue_button.visible = is_available
 
 
