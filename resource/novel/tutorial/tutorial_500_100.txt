@@ -1,7 +1,8 @@
-@textbox_set 0, 39.8, 31.4, 163.2, 91.8, 1, 1
-@img 0, 23, -102.8, "res://resource/image/texture/tutorial/tex_tutorial_enemy_hp_100.png"
+@textbox_set 0, 227.4, 108.6, 163.2, 91.8, 1, 1
+@img 0, 209.8, -26.8, "res://resource/image/texture/tutorial/tex_tutorial_enemy_hp_100.png"
 @text 0, "すべての悪夢を消化できました。おめでとうございます。"
 @lcm
+@textbox_set 0, 37.4, 31.4, 163.2, 91.8, 1, 1
 @img 0, 23, -102.8, "res://resource/image/texture/tutorial/tex_tutorial_enemy_hp_100_100.png"
 @text 0, "悪夢をすべて消化すると、「夢の種」を抽出できます。"
 @lcm

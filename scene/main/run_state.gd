@@ -354,6 +354,20 @@ func has_pending_strengthened_enemy(stage: StageInfo) -> bool:
 	return defeated_count < unlocked_count
 
 
+func is_waiting_for_strengthened_enemy_clear(stage: StageInfo) -> bool:
+	if stage == null or stage.is_high_difficulty or stage.enemy_data == null:
+		return false
+	if stage.enemy_data.endless_enemy_presets.is_empty():
+		return false
+	var key := _get_stage_progress_key(stage)
+	var normal_preset_index := int(normal_enemy_preset_indices.get(key, 0))
+	if normal_preset_index < stage.enemy_data.normal_enemy_presets.size():
+		return false
+	var strengthened_preset_count := stage.enemy_data.strengthened_enemy_presets.size()
+	var defeated_count := int(strengthened_enemy_defeat_counts.get(key, 0))
+	return defeated_count < strengthened_preset_count
+
+
 # ステージノベル解放数取得
 func get_stage_novel_unlock_count(stage: StageInfo) -> int:
 	if stage == null:

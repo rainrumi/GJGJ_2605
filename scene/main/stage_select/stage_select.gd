@@ -125,6 +125,7 @@ func setup_stage_choices(
 		_displayed_stage_definitions,
 		_get_exploration_percents(_displayed_stage_definitions),
 		_get_current_location_flags(_displayed_stage_definitions),
+		_get_strengthened_clear_waiting_flags(_displayed_stage_definitions),
 		stage_choice_scene
 	)
 	stage_choices_scroll.call("reset_to_top")
@@ -365,6 +366,16 @@ func _get_current_location_flags(stage_definitions: Array[StageInfo]) -> Array[b
 	var flags: Array[bool] = []
 	for stage_definition in stage_definitions:
 		flags.append(_is_current_location(stage_definition))
+	return flags
+
+
+func _get_strengthened_clear_waiting_flags(stage_definitions: Array[StageInfo]) -> Array[bool]:
+	var flags: Array[bool] = []
+	for stage_definition in stage_definitions:
+		flags.append(
+			_run_state != null
+			and _run_state.is_waiting_for_strengthened_enemy_clear(stage_definition)
+		)
 	return flags
 
 

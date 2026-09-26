@@ -1,16 +1,16 @@
-[gd_resource type="Resource" script_class="EnemyInfo" format=3 uid="uid://daffhviyu3nw3"]
+[gd_resource type="Resource" script_class="EnemyInfo" format=3]
 
-[ext_resource type="Script" uid="uid://uwuaqnofrhfp" path="res://data/info/enemy/enemy_info.gd" id="1_script"]
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_block"]
-[ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="2_i362g"]
-[ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="3_p2vfp"]
+[ext_resource type="Script" path="res://data/info/enemy/enemy_info.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="2_block"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="2_i362g"]
+[ext_resource type="Script" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="3_p2vfp"]
 
-[sub_resource type="Resource" id="Resource_block"]
+[sub_resource type="Resource" id="Resource_i362g"]
 script = ExtResource("2_block")
-max_hp = 2000
+max_hp = 600
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1, 1), PackedInt32Array(0, 1, 0)])
 
-[sub_resource type="Resource" id="Resource_mmll2"]
+[sub_resource type="Resource" id="Resource_p2vfp"]
 script = ExtResource("3_p2vfp")
 metadata/_custom_type_script = "uid://baxftffqfh10a"
 
@@ -18,6 +18,6 @@ metadata/_custom_type_script = "uid://baxftffqfh10a"
 script = ExtResource("1_script")
 skill_id = 15020001002
 display_name = "試験用悪夢2"
-acid_block = SubResource("Resource_block")
+acid_block = SubResource("Resource_i362g")
 description = "アナタの試験合格を見守っている。"
-main_skill = SubResource("Resource_mmll2")
+main_skill = SubResource("Resource_p2vfp")
