@@ -90,8 +90,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		var key_event := event as InputEventKey
 		if not key_event.pressed or key_event.echo:
 			return
-		if key_event.keycode == KEY_D:
-			debug_panel.toggle_debug_message()
+		#if key_event.keycode == KEY_D:
+			#debug_panel.toggle_debug_message()
 		if key_event.keycode == KEY_R:
 			debug_panel.request_debug_reroll()
 

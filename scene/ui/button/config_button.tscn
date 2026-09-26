@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" uid="uid://dnjydrp72jckr" path="res://resource/image/ui/button/ui_button_config.png" id="1_config_texture"]
+
+[node name="ConfigButton" type="TextureButton"]
+offset_left = 11.0
+offset_top = 44.0
+offset_right = 31.0
+offset_bottom = 64.0
+texture_normal = ExtResource("1_config_texture")

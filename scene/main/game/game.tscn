@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://ccviuxg26h24f" path="res://scene/main/game/game.gd" id="12_game_script"]
 [ext_resource type="AudioStream" uid="uid://sq1bd2eoi1fx" path="res://resource/sound/se/se_attack.mp3" id="22_attack_se"]
 [ext_resource type="Script" uid="uid://dqfh2rsac6b2h" path="res://scene/main/game/controller/input/game_input_controller.gd" id="27_game_input_controller"]
-[ext_resource type="Texture2D" uid="uid://dnjydrp72jckr" path="res://resource/image/ui/button/ui_button_config.png" id="28_ncq2q"]
+[ext_resource type="PackedScene" path="res://scene/ui/button/config_button.tscn" id="28_config_button_scene"]
 [ext_resource type="PackedScene" uid="uid://cfjja3p43w2i0" path="res://scene/ui/hp/hp.tscn" id="31_hp_scene"]
 [ext_resource type="PackedScene" uid="uid://bk0m5bk7vnrh8" path="res://scene/ui/view/time_view.tscn" id="32_time_view_scene"]
 [ext_resource type="PackedScene" uid="uid://dmb2qmc7m87fa" path="res://scene/ui/battle_ui/button/acid/acid_button.tscn" id="33_acid_button_scene"]
@@ -98,10 +98,10 @@ stream = ExtResource("22_attack_se")
 script = ExtResource("3_battle_ui_script")
 
 [node name="StageInfo" type="VBoxContainer" parent="UI" unique_id=992397045]
-offset_left = 12.0
-offset_top = 8.0
-offset_right = 147.0
-offset_bottom = 52.0
+offset_left = 5.0
+offset_top = 27.0
+offset_right = 140.0
+offset_bottom = 58.0
 mouse_filter = 2
 theme_override_constants/separation = 1
 
@@ -180,12 +180,11 @@ script = ExtResource("46_hover_scale")
 [node name="OwnedSeedPanel" parent="UI" unique_id=1394077475 instance=ExtResource("44_owned_seed_panel")]
 visible = false
 
-[node name="ConfigButton" type="TextureButton" parent="UI" unique_id=1690585276]
-offset_left = 11.0
-offset_top = 44.0
-offset_right = 31.0
-offset_bottom = 64.0
-texture_normal = ExtResource("28_ncq2q")
+[node name="ConfigButton" parent="UI" unique_id=1690585276 instance=ExtResource("28_config_button_scene")]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 24.0
+offset_bottom = 24.0
 
 [node name="AcidButton" parent="UI" unique_id=75896202 instance=ExtResource("33_acid_button_scene")]
 offset_left = 490.5
@@ -264,6 +263,7 @@ theme_override_font_sizes/font_size = 14
 text = "0"
 
 [node name="DebugPanel" parent="UI" unique_id=1605446388 instance=ExtResource("34_status_panel_scene")]
+visible = false
 
 [node name="TimeOverDecision" type="ColorRect" parent="UI" unique_id=360704359]
 visible = false

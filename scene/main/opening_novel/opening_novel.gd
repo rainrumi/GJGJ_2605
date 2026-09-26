@@ -4,6 +4,7 @@ extends CanvasLayer
 signal finished
 signal advanced
 signal click_wait_completed
+signal settings_requested
 
 const DEFAULT_TEXT_INTERVAL := 0.04
 
@@ -20,6 +21,7 @@ const DEFAULT_TEXT_INTERVAL := 0.04
 @onready var text_layer: NovelTextLayer = $Screen/TextBox/TextLayer
 @onready var next_label: Label = $Screen/TextBox/NextLabel
 @onready var character_se: AudioStreamPlayer = $CharacterSe
+@onready var config_button: TextureButton = $ConfigButton
 @onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 @onready var debug_panel: NovelDebugPanel = $Screen/DebugPanel
 @onready var debug_textbox_outline: Panel = $Screen/DebugTextBoxOutline
@@ -51,6 +53,7 @@ func _ready() -> void:
 	_default_background = opening_still.texture
 	visible = false
 	_set_input_blocked(false)
+	config_button.pressed.connect(_on_config_button_pressed)
 	screen.gui_input.connect(_on_screen_gui_input)
 	debug_panel.image_position_changed.connect(_on_debug_image_position_changed)
 	debug_panel.textbox_geometry_changed.connect(_on_debug_textbox_geometry_changed)
@@ -65,6 +68,10 @@ func _ready() -> void:
 	debug_textbox_outline.add_theme_stylebox_override("panel", outline_style)
 	_refresh_debug_targets()
 	debug_textbox_outline.visible = false
+
+
+func _on_config_button_pressed() -> void:
+	settings_requested.emit()
 
 
 # 対象開始

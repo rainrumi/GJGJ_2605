@@ -64,6 +64,7 @@ enum NovelFlow {
 @onready var day_intro: DayIntro = $DayIntro
 @onready var stage_select: Node = $StageSelect
 @onready var game: Node = $Game
+@onready var config_button: TextureButton = $Game/UI/ConfigButton
 @onready var game_ui: CanvasLayer = $Game/UI
 @onready var stage_clear: Node = $StageClear
 @onready var bgm: BeatConductor = $BGM
@@ -108,6 +109,9 @@ func _ready() -> void:
 	assert(lara_schedule.validate().is_empty(), "Main: lara_scheduleの時刻・エリア・消化数が不正です")
 	get_tree().node_added.connect(_on_node_added)
 	_connect_ui_buttons(self)
+	_connect_opening_novel_settings(self)
+	if not config_button.pressed.is_connected(_on_settings_requested):
+		config_button.pressed.connect(_on_settings_requested)
 	settings_screen.closed.connect(_on_settings_screen_closed)
 	settings_screen.title_requested.connect(_on_settings_title_requested)
 	settings_screen.map_requested.connect(_on_settings_map_requested)
@@ -145,6 +149,17 @@ func _connect_ui_button(button: BaseButton) -> void:
 func _on_node_added(node: Node) -> void:
 	if node is BaseButton and is_ancestor_of(node):
 		_connect_ui_button(node as BaseButton)
+	if node is OpeningNovel and is_ancestor_of(node):
+		_connect_opening_novel_settings(node)
+
+
+func _connect_opening_novel_settings(node: Node) -> void:
+	if node is OpeningNovel:
+		var novel := node as OpeningNovel
+		if not novel.settings_requested.is_connected(_on_settings_requested):
+			novel.settings_requested.connect(_on_settings_requested)
+	for child in node.get_children():
+		_connect_opening_novel_settings(child)
 
 
 func _on_ui_button_pressed(button: BaseButton) -> void:
