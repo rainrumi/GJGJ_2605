@@ -236,9 +236,11 @@ by 試験官
 ",
 "res://resource/novel/area/area_huwahuwa/novel_area_huwahuwa_event_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
 @name \"試験官\"
-ふわふわ学校の試験会場にようこそ。
+あら、他の場所で試験を受けないんですか？
 @lcm
-悪夢を6時までに消化できれば合格になります。
+ここでは他のエリアで試験を受けれない人向けに試験を提供してるんですよ。
+@lcm
+いつも通り、悪夢を6時までに消化できれば合格なので頑張ってください。
 @lcm
 ",
 "res://resource/novel/area/area_iriyu/novel_area_iriyu_event_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
