@@ -4,9 +4,10 @@ extends CanvasLayer
 signal closed
 signal title_requested
 signal map_requested
+signal retry_requested
 
 @onready var se_player: AudioStreamPlayer = $SePlayer
-@onready var battle_button: Button = $Screen/Panel/BattleButtons
+@onready var battle_button: HBoxContainer = $Screen/Panel/ActionButtons/BattleButtons
 @onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 @onready var setting_rows: Array[Node] = [
 	$Screen/Panel/Rows/MasterVolume,
@@ -89,6 +90,11 @@ func _on_title_button_action_requested() -> void:
 func _on_battle_button_action_requested() -> void:
 	_play_se()
 	map_requested.emit()
+
+
+func _on_retry_button_action_requested() -> void:
+	_play_se()
+	retry_requested.emit()
 
 
 # 変更通知

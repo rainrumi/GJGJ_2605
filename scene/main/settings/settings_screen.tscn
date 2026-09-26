@@ -12,6 +12,7 @@
 
 [node name="SettingsScreen" type="CanvasLayer" unique_id=1429017954]
 layer = 200
+visible = false
 script = ExtResource("1_script")
 
 [node name="SePlayer" type="AudioStreamPlayer" parent="." unique_id=1559835908 groups=["se_audio_players"]]
@@ -276,28 +277,16 @@ size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 
-[node name="BattleButtons" type="HBoxContainer" parent="Screen/Panel" unique_id=1216312249]
+[node name="TitleButton" type="Button" parent="Screen/Panel" unique_id=718059657]
+custom_minimum_size = Vector2(100, 30)
 layout_mode = 0
-offset_left = 12.0
-offset_top = 239.0
-offset_right = 460.0
-offset_bottom = 269.0
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="RetryButton" type="Button" parent="Screen/Panel/BattleButtons" unique_id=1846597486]
-custom_minimum_size = Vector2(100, 30)
-layout_mode = 2
+offset_left = 344.0
+offset_top = 10.0
+offset_right = 444.0
+offset_bottom = 40.0
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
-text = "マップに戻る"
-
-[node name="MapButton" type="Button" parent="Screen/Panel/BattleButtons" unique_id=1568821144]
-custom_minimum_size = Vector2(100, 30)
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
-text = "マップに戻る"
+text = "タイトルに戻る"
 script = ExtResource("9_yi1nd")
 
 [node name="ActionButtons" type="HBoxContainer" parent="Screen/Panel" unique_id=2114470378]
@@ -307,22 +296,35 @@ offset_top = 270.0
 offset_right = 460.0
 offset_bottom = 300.0
 theme_override_constants/separation = 8
-alignment = 1
+alignment = 2
+
+[node name="BattleButtons" type="HBoxContainer" parent="Screen/Panel/ActionButtons" unique_id=1216312249]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RetryButton" type="Button" parent="Screen/Panel/ActionButtons/BattleButtons" unique_id=1846597486]
+custom_minimum_size = Vector2(100, 30)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "再挑戦"
+script = ExtResource("9_yi1nd")
+
+[node name="MapButton" type="Button" parent="Screen/Panel/ActionButtons/BattleButtons" unique_id=1568821144]
+custom_minimum_size = Vector2(100, 30)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 12
+text = "マップに戻る"
+script = ExtResource("9_yi1nd")
 
 [node name="ResetButton" type="Button" parent="Screen/Panel/ActionButtons" unique_id=1569492301]
 custom_minimum_size = Vector2(100, 30)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
-text = "初期化"
-script = ExtResource("9_yi1nd")
-
-[node name="TitleButton" type="Button" parent="Screen/Panel/ActionButtons" unique_id=718059657]
-custom_minimum_size = Vector2(100, 30)
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
-text = "タイトル"
+text = "設定を初期化"
 script = ExtResource("9_yi1nd")
 
 [node name="BackButton" type="Button" parent="Screen/Panel/ActionButtons" unique_id=1221405624]
@@ -330,7 +332,7 @@ custom_minimum_size = Vector2(100, 30)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
-text = "戻る"
+text = "とじる"
 script = ExtResource("9_yi1nd")
 
 [connection signal="value_changed" from="Screen/Panel/Rows/MasterVolume/Value" to="Screen/Panel/Rows/MasterVolume" method="_on_value_changed"]
@@ -344,11 +346,13 @@ script = ExtResource("9_yi1nd")
 [connection signal="toggled" from="Screen/Panel/Rows/Fullscreen/Value" to="Screen/Panel/Rows/Fullscreen" method="_on_toggled"]
 [connection signal="feedback_requested" from="Screen/Panel/Rows/Difficulty" to="." method="_on_setting_feedback_requested"]
 [connection signal="item_selected" from="Screen/Panel/Rows/Difficulty/Value" to="Screen/Panel/Rows/Difficulty" method="_on_item_selected"]
-[connection signal="pressed" from="Screen/Panel/BattleButtons/RetryButton" to="Screen/Panel/BattleButtons/RetryButton" method="_on_pressed"]
-[connection signal="pressed" from="Screen/Panel/BattleButtons/MapButton" to="Screen/Panel/BattleButtons/MapButton" method="_on_pressed"]
+[connection signal="action_requested" from="Screen/Panel/TitleButton" to="." method="_on_title_button_action_requested"]
+[connection signal="pressed" from="Screen/Panel/TitleButton" to="Screen/Panel/TitleButton" method="_on_pressed"]
+[connection signal="action_requested" from="Screen/Panel/ActionButtons/BattleButtons/RetryButton" to="." method="_on_retry_button_action_requested"]
+[connection signal="pressed" from="Screen/Panel/ActionButtons/BattleButtons/RetryButton" to="Screen/Panel/ActionButtons/BattleButtons/RetryButton" method="_on_pressed"]
+[connection signal="action_requested" from="Screen/Panel/ActionButtons/BattleButtons/MapButton" to="." method="_on_battle_button_action_requested"]
+[connection signal="pressed" from="Screen/Panel/ActionButtons/BattleButtons/MapButton" to="Screen/Panel/ActionButtons/BattleButtons/MapButton" method="_on_pressed"]
 [connection signal="action_requested" from="Screen/Panel/ActionButtons/ResetButton" to="." method="_on_reset_button_action_requested"]
 [connection signal="pressed" from="Screen/Panel/ActionButtons/ResetButton" to="Screen/Panel/ActionButtons/ResetButton" method="_on_pressed"]
-[connection signal="action_requested" from="Screen/Panel/ActionButtons/TitleButton" to="." method="_on_title_button_action_requested"]
-[connection signal="pressed" from="Screen/Panel/ActionButtons/TitleButton" to="Screen/Panel/ActionButtons/TitleButton" method="_on_pressed"]
 [connection signal="action_requested" from="Screen/Panel/ActionButtons/BackButton" to="." method="_on_back_button_action_requested"]
 [connection signal="pressed" from="Screen/Panel/ActionButtons/BackButton" to="Screen/Panel/ActionButtons/BackButton" method="_on_pressed"]

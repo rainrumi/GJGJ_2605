@@ -691,6 +691,16 @@ func _on_debug_instant_clear_requested() -> void:
 func retry_last_battle() -> bool:
 	if not DebugState.debug_enabled or _battle_start_context == null:
 		return false
+	return _retry_battle_from_start_context()
+
+
+func retry_current_battle() -> bool:
+	return _retry_battle_from_start_context()
+
+
+func _retry_battle_from_start_context() -> bool:
+	if _battle_start_context == null:
+		return false
 	start_battle(_battle_start_context)
 	return true
 
@@ -1135,7 +1145,7 @@ func _begin_time_over_decision() -> void:
 func _on_time_over_retry_requested() -> void:
 	if not _awaiting_time_over_decision or _battle_start_context == null:
 		return
-	start_battle(_battle_start_context)
+	_retry_battle_from_start_context()
 
 
 # 諦める要求処理

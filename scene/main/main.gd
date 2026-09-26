@@ -106,6 +106,7 @@ func _ready() -> void:
 	settings_screen.closed.connect(_on_settings_screen_closed)
 	settings_screen.title_requested.connect(_on_settings_title_requested)
 	settings_screen.map_requested.connect(_on_settings_map_requested)
+	settings_screen.retry_requested.connect(_on_settings_retry_requested)
 	# 戦闘finishedコール
 	var battle_finished_callback := Callable(self, "_on_game_battle_finished")
 	if game.has_signal("battle_finished") and not game.is_connected("battle_finished", battle_finished_callback):
@@ -377,6 +378,12 @@ func _on_settings_map_requested() -> void:
 	should_reset_player_state = false
 	settings_screen.close()
 	show_stage_select()
+
+
+func _on_settings_retry_requested() -> void:
+	if not game.visible or not bool(game.call("retry_current_battle")):
+		return
+	settings_screen.close()
 
 
 # totitle返却
