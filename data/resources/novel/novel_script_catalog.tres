@@ -1440,9 +1440,19 @@ Thank You for Playing!!
 @lcm",
 "res://resource/novel/tutorial/tutorial_200_100.txt": "@textbox_set 0, 31.4, 135, 135.2, 81, 1, 1
 @img 0, 1.8, -0.4, \"res://resource/image/texture/tutorial/tex_tutorial_stomach_hp_100_100.png\"
-@text 0, \"胃袋HPが0になるとティーナは30分間休憩をして復活します。\"
+@text 0, \"おや、ティーナさんのお腹が苦しそうですよ。\"
 @lcm
-@text 0, \"復活時、時刻は強制的に30分進行するので気をつけましょう。\"
+@text 0, \"胃袋HPが0になって30分休んだようです。\"
+@lcm
+@text 0, \"ティーナさんはおなかが弱いので、悪夢によって胃袋HPがよく削られます。\"
+@lcm
+@text 0, \"胃袋HPが0になっても消化失敗にはならないのでご安心を。\"
+@lcm
+@text 0, \"ティーナは30分間休憩をして復活します。\"
+@lcm
+@text 0, \"復活時に、休憩に使った30分だけ時刻が進行します。\"
+@lcm
+@text 0, \"朝の6:00もならないようにだけ気をつけて、消化を続けましょう。\"
 @lcm
 ",
 "res://resource/novel/tutorial/tutorial_300_100.txt": "@textbox_set 0, 213.4, 258.6, 142.8, 68.6, 1, 1
