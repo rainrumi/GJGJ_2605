@@ -1,5 +1,6 @@
 extends Node2D
 signal battle_finished(won: bool)
+signal player_revived
 signal seed_depleted(source: Resource)
 signal seed_inventory_changed(equipped_seeds: Array[SeedInfo], stored_seeds: Array[SeedInfo])
 
@@ -122,6 +123,7 @@ var _initial_tutorial_enemies: Array[Enemy] = []
 # 初期化
 func _ready() -> void:
 	randomize()
+	player_revived.connect(_on_player_revived)
 	character.show_normal_texture()
 	enemy_effects.setup(
 		player_health,
@@ -1055,6 +1057,7 @@ func _try_start_Aciding(enemy: Enemy, _mouse_position: Vector2) -> void:
 		return
 	enemy.set_Aciding(true)
 	stomach.place_enemy(enemy, top_left)
+	character.show_eat_texture()
 	_refresh_after_battle_event()
 # dragged敵返却
 func _return_dragged_enemy(enemy: Enemy) -> void:
@@ -1068,6 +1071,12 @@ func _return_dragged_enemy(enemy: Enemy) -> void:
 func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	if not dragged_enemy_was_Aciding:
 		enemy.return_to_origin()
+		return
+	_remove_enemy_from_stomach_with_damage(enemy)
+
+
+func _remove_enemy_from_stomach_with_damage(enemy: Enemy) -> void:
+	if enemy == null or not enemy.is_active_in_stomach():
 		return
 	seed_effects.set_damaged_object_count(0)
 	enemy.set_Aciding(false)
@@ -1084,6 +1093,25 @@ func _remove_enemy_from_stomach(enemy: Enemy) -> void:
 	_refresh_after_battle_event()
 	if was_digested:
 		_check_battle_end()
+
+
+func _on_player_revived() -> void:
+	if not battle_active:
+		return
+	var candidates: Array[Enemy] = []
+	for enemy in EnemyEffectTargetQuery.get_active_objects(enemies):
+		for cell in enemy.get_occupied_cells(enemy.stomach_cell):
+			if cell.y == 0:
+				candidates.append(enemy)
+				break
+	for enemy in candidates:
+		if not enemy.is_active_in_stomach():
+			continue
+		if randf() >= 0.8:
+			continue
+		_remove_enemy_from_stomach_with_damage(enemy)
+
+
 # advance消化turn処理
 func _advance_acid_turn() -> void:
 	if not _begin_acid_turn():
@@ -1529,6 +1557,7 @@ func _revive_player() -> void:
 		seed_effects.add_revive_event()
 		hp = seed_effects.get_revive_hp(effective_max_hp, REST_HP_RATE)
 		hp = mini(effective_max_hp, hp + seed_effects.add_heal_event(hp, enemies, stomach))
+		player_revived.emit()
 		var revived_hp := hp
 		var skip_rest := seed_controller.consume_rest_time_skip()
 		if skip_rest:

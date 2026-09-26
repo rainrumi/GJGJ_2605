@@ -14,6 +14,7 @@ const SPECIAL_FACE_CHANGE_COUNT := 50
 @export var battle_clear_texture: Texture2D
 @export var face_clicked_texture: Texture2D
 @export var special_face_clicked_texture: Texture2D
+@export var eat_texture: Texture2D
 
 var _shake_tween: Tween
 var _sprite_base_position := Vector2.ZERO
@@ -51,6 +52,10 @@ func show_normal_texture() -> void:
 
 func show_battle_clear_texture() -> void:
 	sprite.texture = battle_clear_texture
+
+
+func show_eat_texture() -> void:
+	sprite.texture = eat_texture
 
 
 func set_face_button_enabled(is_enabled: bool) -> void:

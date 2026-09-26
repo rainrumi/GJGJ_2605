@@ -32,6 +32,9 @@ func set_hp_info(
 		},
 	])
 	set_note(
-		"ティーナのHPが0になるとペナルティとして%d分経過し、HPを%d%%回復します。" % [rest_minutes, total_rest_recovery_percent],
+		(
+			"ティーナのHPが0になるとペナルティとして%d分経過し、HPを%d%%回復します。"
+			% [rest_minutes, total_rest_recovery_percent]
+		) + "\n更に消化マス最上部に存在するモノをかなりの確率で吐き戻します。",
 		true
 	)

@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dhwgdpf5cxe5l" path="res://resource/image/texture/character/tex_character_200_portrate_3000.png" id="4_battle_clear"]
 [ext_resource type="Texture2D" uid="uid://bj7d5xu8w3mwp" path="res://resource/image/texture/character/tex_character_200_portrate_4000.png" id="5_face_clicked"]
 [ext_resource type="Texture2D" uid="uid://c1q22fxj54nev" path="res://resource/image/texture/character/tex_character_200_portrate_5000.png" id="6_special_face_clicked"]
+[ext_resource type="Texture2D" uid="uid://itfk46rql6xk" path="res://resource/image/texture/character/tex_character_200_portrate_6000.png" id="7_7vopm"]
 
 [node name="Character" type="Node2D" unique_id=1173042167]
 script = ExtResource("2_character_script")
@@ -14,6 +15,7 @@ damage_texture = ExtResource("3_damage")
 battle_clear_texture = ExtResource("4_battle_clear")
 face_clicked_texture = ExtResource("5_face_clicked")
 special_face_clicked_texture = ExtResource("6_special_face_clicked")
+eat_texture = ExtResource("7_7vopm")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1226085197]
 self_modulate = Color(0.9411765, 0.8784314, 1, 1)
