@@ -37,6 +37,7 @@ mouse_filter = 2
 color = Color(0.03529412, 0.02745098, 0.04313726, 0.78)
 
 [node name="AccentTexture" type="TextureRect" parent="Screen" unique_id=1927717156]
+visible = false
 self_modulate = Color(0.94, 0.88, 1, 0.16)
 layout_mode = 0
 offset_left = 410.0
@@ -69,6 +70,7 @@ theme_override_font_sizes/font_size = 20
 text = "設定"
 
 [node name="Rows" type="VBoxContainer" parent="Screen/Panel" unique_id=666271636]
+modulate = Color(0.9411765, 0.8784314, 1, 1)
 layout_mode = 0
 offset_left = 28.0
 offset_top = 54.0
@@ -278,6 +280,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
 
 [node name="TitleButton" type="Button" parent="Screen/Panel" unique_id=718059657]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 custom_minimum_size = Vector2(100, 30)
 layout_mode = 0
 offset_left = 344.0
@@ -304,14 +307,16 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="RetryButton" type="Button" parent="Screen/Panel/ActionButtons/BattleButtons" unique_id=1846597486]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 custom_minimum_size = Vector2(100, 30)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 12
-text = "再挑戦"
+text = "ステージ再挑戦"
 script = ExtResource("9_yi1nd")
 
 [node name="MapButton" type="Button" parent="Screen/Panel/ActionButtons/BattleButtons" unique_id=1568821144]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 custom_minimum_size = Vector2(100, 30)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")
@@ -320,6 +325,7 @@ text = "マップに戻る"
 script = ExtResource("9_yi1nd")
 
 [node name="ResetButton" type="Button" parent="Screen/Panel/ActionButtons" unique_id=1569492301]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 custom_minimum_size = Vector2(100, 30)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")
@@ -328,6 +334,7 @@ text = "設定を初期化"
 script = ExtResource("9_yi1nd")
 
 [node name="BackButton" type="Button" parent="Screen/Panel/ActionButtons" unique_id=1221405624]
+self_modulate = Color(0.9411765, 0.8784314, 1, 1)
 custom_minimum_size = Vector2(100, 30)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")

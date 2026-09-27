@@ -49,6 +49,7 @@ enum NovelFlow {
 	STAGE_CLEAR_TUTORIAL,
 	DEBUG_PREVIEW,
 	AREA_BOSS_REROLL,
+	AUTO_SLEEP,
 }
 
 @export var end_gameover_novel_text: NovelTextInfo
@@ -260,7 +261,21 @@ func show_stage_select() -> void:
 			run_state,
 			run_state.current_minutes
 		)
+	if _try_show_auto_sleep_novel():
+		return
 	_try_show_lara_digestion_count_tutorial()
+
+
+func _try_show_auto_sleep_novel() -> bool:
+	if active_novel_flow != NovelFlow.NONE:
+		return false
+	if not RunState.has_reached_morning(run_state.current_minutes):
+		return false
+	var novel_text := NovelTextInfo.new()
+	novel_text.script_path = "res://resource/novel/event/novel_event_auto_sleep.txt"
+	active_novel_flow = NovelFlow.AUTO_SLEEP
+	opening_novel.start_with_text(novel_text)
+	return true
 
 
 func _try_show_lara_digestion_count_tutorial() -> void:
@@ -581,6 +596,9 @@ func _on_opening_novel_finished() -> void:
 		NovelFlow.DEBUG_PREVIEW:
 			active_novel_flow = NovelFlow.NONE
 			show_title()
+		NovelFlow.AUTO_SLEEP:
+			active_novel_flow = NovelFlow.NONE
+			_process_today_rest()
 		_:
 			active_novel_flow = NovelFlow.NONE
 			show_day_intro()
@@ -830,6 +848,10 @@ func _on_stage_select_today_rest_requested() -> void:
 	var can_rest_on_first_day := run_state.current_day == 1 and run_state.current_hp < 100
 	if not run_state.is_continuous_play_unlocked and not can_rest_on_first_day:
 		return
+	_process_today_rest()
+
+
+func _process_today_rest() -> void:
 	_day_change_time_recovery_pending = true
 	_finish_current_day()
 

@@ -9,6 +9,8 @@ const MAX_HUWAHUWA_SCHOOL_STRENGTHENED_ENEMY_INDEX := 5
 const STAGE_NOVEL_UNLOCK_DEFEAT_INTERVAL := 3
 const MAX_STAGE_NOVEL_INDEX := 3
 const BATTLE_START_MINUTES := 22 * 60
+const MORNING_HOUR := 30
+const MORNING_MINUTES := MORNING_HOUR * 60
 const FIRST_BOSS_REROLL_COUNT := 1
 const SECOND_BOSS_REROLL_COUNT := 2
 const THIRD_BOSS_REROLL_COUNT := 5
@@ -63,6 +65,10 @@ var lara_area_visit_record_day := 1
 var lara_area_visit_record_minutes := BATTLE_START_MINUTES
 var lara_digestion_count := 0
 var last_lara_judge_day := 0
+
+
+static func has_reached_morning(current_minutes: int) -> bool:
+	return current_minutes >= MORNING_MINUTES
 
 
 # 対象初期化

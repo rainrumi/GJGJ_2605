@@ -19,7 +19,7 @@ enum TutorialProgressFlag {
 	OWNED_SEED_PANEL,
 }
 const START_HOUR: int = 22
-const END_HOUR: int = 30
+const END_HOUR: int = RunState.MORNING_HOUR
 const RECOVERY_END_HOUR: int = 27
 const REST_MINUTES: int = 30
 const MAX_HP: int = 100
@@ -1241,7 +1241,7 @@ func _check_battle_end() -> void:
 	if _all_enemys_Acided():
 		_finish_battle(true, "すべての悪夢を消化しました")
 		return
-	if minutes >= END_HOUR * 60:
+	if RunState.has_reached_morning(minutes):
 		_begin_time_over_decision()
 
 
@@ -1570,7 +1570,7 @@ func _revive_player() -> void:
 				"first_player_revive_tutorial_text",
 				[TutorialProgressFlag.PLAYER_REVIVE]
 			)
-		if minutes >= END_HOUR * 60:
+		if RunState.has_reached_morning(minutes):
 			_check_battle_end()
 			break
 	_player_revive_in_progress = false

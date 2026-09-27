@@ -27,5 +27,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010004001
 display_name = "E1"
 acid_block = SubResource("Resource_k0gco")
-description = "胃袋の中で時間が経過するたびに、胃袋マスに存在するモノひとつに攻撃力+5&攻撃時に追加で攻撃を1回行う効果[災禍]を付与する。災禍は他のモノ優先で付与される。"
+description = "胃袋の中で時間が経過するたびに、胃袋マスに存在するモノひとつに攻撃力＋5。さらに攻撃時に追加で攻撃を1回行う効果[災禍]を付与する。災禍は他のモノ優先で付与される。"
 main_skill = SubResource("Resource_lftff")
