@@ -107,7 +107,18 @@ func _check_game_integration() -> void:
 	DebugState.set_debug_enabled(true)
 	await get_tree().process_frame
 	var selected_seed := all_seed_panel.seed_catalog.rare_skills[0]
-	all_seed_panel.seed_acquisition_requested.emit(selected_seed)
+	all_seed_panel.open_panel()
+	await get_tree().process_frame
+	var selected_button: SeedButton
+	for child in all_seed_panel.seed_list.get_children():
+		var candidate := child as SeedButton
+		if candidate.seed == selected_seed:
+			selected_button = candidate
+			break
+	_expect(selected_button != null, "一覧内で取得対象の夢の種を選べる")
+	if selected_button != null:
+		selected_button.call("_handle_press", selected_button.global_position)
+		selected_button.call("_handle_release", selected_button.global_position)
 	_expect((game.call("get_equipped_seeds") as Array).has(selected_seed), "一覧の取得要求を戦闘inventoryへ反映する")
 	var owned_panel := game.get_node("UI/OwnedSeedPanel") as OwnedSeedPanel
 	owned_panel.open_panel()

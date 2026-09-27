@@ -23,7 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://b6e4f8ur53n17" path="res://resource/image/ui/icon/select/ui_icon_select_beacon_06.png" id="21_beacon_06"]
 [ext_resource type="Texture2D" uid="uid://n6dm8iyo40gq" path="res://resource/image/ui/icon/select/ui_icon_select_beacon_07.png" id="22_beacon_07"]
 [ext_resource type="Texture2D" uid="uid://dcd8yq83338gd" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_01.png" id="24_rara_beacon_01"]
-[ext_resource type="PackedScene" path="res://scene/ui/button/config_button.tscn" id="29_ryrse"]
+[ext_resource type="PackedScene" uid="uid://c2cu6ixnn411o" path="res://scene/ui/button/config_button.tscn" id="29_ryrse"]
 [ext_resource type="Texture2D" uid="uid://d22qdpiumncpn" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_02.png" id="31_rara_beacon_02"]
 [ext_resource type="Texture2D" uid="uid://djdaob1d0pe2k" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_03.png" id="32_rara_beacon_03"]
 [ext_resource type="Texture2D" uid="uid://coydnp7lterue" path="res://resource/image/ui/icon/rara/ui_icon_rara_beacon_04.png" id="33_rara_beacon_04"]
@@ -201,7 +201,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="DebugButton" type="Button" parent="UI" unique_id=673340750]
-visible = false
 layout_mode = 0
 offset_left = 560.0
 offset_top = 44.0

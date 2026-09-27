@@ -1,8 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://b6fh1poo6sv5f"]
+[gd_scene format=3 uid="uid://b6fh1poo6sv5f"]
 
 [ext_resource type="Script" uid="uid://wiaj3pchfaj2" path="res://scene/ui/battle_ui/debug/debug_panel.gd" id="1_status_panel_script"]
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
-[ext_resource type="PackedScene" path="res://scene/ui/battle_ui/debug/debug_seed_parameter_panel.tscn" id="3_parameter_panel"]
+[ext_resource type="PackedScene" uid="uid://uxfjdua4y5mc" path="res://scene/ui/battle_ui/debug/debug_seed_parameter_panel.tscn" id="3_parameter_panel"]
 [ext_resource type="PackedScene" path="res://scene/ui/battle_ui/debug/debug_enemy_parameter_panel.tscn" id="4_enemy_parameter_panel"]
 [ext_resource type="PackedScene" path="res://scene/ui/battle_ui/debug/debug_all_seed_panel.tscn" id="5_all_seed_panel"]
 
@@ -100,7 +100,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
 text = "Debug"
 
-[node name="DebugSeedParameterButton" type="Button" parent="."]
+[node name="DebugSeedParameterButton" type="Button" parent="." unique_id=382951074]
 layout_mode = 0
 offset_left = 91.0
 offset_top = 339.0
@@ -110,7 +110,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 8
 text = "種パラメータ"
 
-[node name="DebugEnemyParameterButton" type="Button" parent="."]
+[node name="DebugEnemyParameterButton" type="Button" parent="." unique_id=533552599]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 339.0
@@ -120,7 +120,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 8
 text = "悪夢パラメータ"
 
-[node name="DebugRetryButton" type="Button" parent="."]
+[node name="DebugRetryButton" type="Button" parent="." unique_id=287297312]
 layout_mode = 0
 offset_left = 434.0
 offset_top = 317.0
@@ -130,7 +130,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
 text = "リトライ"
 
-[node name="DebugNextEnemyButton" type="Button" parent="."]
+[node name="DebugNextEnemyButton" type="Button" parent="." unique_id=86065478]
 layout_mode = 0
 offset_left = 263.0
 offset_top = 317.0
@@ -140,7 +140,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
 text = "次の敵"
 
-[node name="DebugAllSeedButton" type="Button" parent="."]
+[node name="DebugAllSeedButton" type="Button" parent="." unique_id=203426444]
 layout_mode = 0
 offset_left = 377.0
 offset_top = 317.0
@@ -150,7 +150,7 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
 text = "種一覧"
 
-[node name="DebugInstantClearButton" type="Button" parent="."]
+[node name="DebugInstantClearButton" type="Button" parent="." unique_id=1686784099]
 layout_mode = 0
 offset_left = 320.0
 offset_top = 317.0
@@ -160,8 +160,9 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 9
 text = "即クリア"
 
-[node name="DebugSeedParameterPanel" parent="." instance=ExtResource("3_parameter_panel")]
+[node name="DebugSeedParameterPanel" parent="." unique_id=489307559 instance=ExtResource("3_parameter_panel")]
+visible = false
 
-[node name="DebugEnemyParameterPanel" parent="." instance=ExtResource("4_enemy_parameter_panel")]
+[node name="DebugEnemyParameterPanel" parent="." unique_id=971651416 instance=ExtResource("4_enemy_parameter_panel")]
 
-[node name="DebugAllSeedPanel" parent="." instance=ExtResource("5_all_seed_panel")]
+[node name="DebugAllSeedPanel" parent="." unique_id=186143265 instance=ExtResource("5_all_seed_panel")]

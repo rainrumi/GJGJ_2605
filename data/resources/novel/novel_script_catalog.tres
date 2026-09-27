@@ -1270,6 +1270,10 @@ Thank You for Playing!!
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
 はい。おつかれさま。
 @lcm",
+"res://resource/novel/event/novel_event_auto_sleep.txt": "朝になってしまった。
+@lcm
+夜にまた起きよう……。
+@lcm",
 "res://resource/novel/novel_ending_gameclear.txt": "ゲームクリア！7
 @lcm
 ",
@@ -1507,6 +1511,5 @@ Thank You for Playing!!
 @text 0, \"……普通は頭に植えれないんですけどね。\"
 @lcm
 @text 0, \"ティーナさんの特性を生かして合格できるように頑張ってください。\"
-@lcm",
-"res://resource/novel/event/novel_event_auto_sleep.txt": "朝になってしまった。\n@lcm\n夜にまた起きよう……。\n@lcm"
+@lcm"
 })

@@ -68,10 +68,27 @@ func _run() -> void:
 		_expect(all_seed_button.visible, "Debug 有効時だけ種一覧ボタンを表示する")
 		seed_parameter_button.pressed.emit()
 		_expect(seed_parameter_panel.visible, "種パラメーターボタンで調整画面を開ける")
+		_expect(
+			seed_parameter_panel.get_global_rect().size.x > 0.0
+			and seed_parameter_panel.get_global_rect().size.y > 0.0,
+			"種パラメーターパネルに表示領域がある"
+		)
 		enemy_parameter_button.pressed.emit()
 		_expect(enemy_parameter_panel.visible, "悪夢パラメーターボタンで調整画面を開ける")
+		_expect(
+			enemy_parameter_panel.get_global_rect().size.x > 0.0
+			and enemy_parameter_panel.get_global_rect().size.y > 0.0,
+			"悪夢パラメーターパネルに表示領域がある"
+		)
 		all_seed_button.pressed.emit()
 		_expect(all_seed_panel.visible, "種一覧ボタンで全種画面を開ける")
+		_expect(
+			all_seed_panel.get_global_rect().size.x > 0.0
+			and all_seed_panel.get_global_rect().size.y > 0.0,
+			"夢の種一覧パネルに表示領域がある"
+		)
+		var seed_list := game.get_node("UI/DebugPanel/DebugAllSeedPanel/Scroll/Center/SeedList") as SeedButtonList
+		_expect(seed_list != null and seed_list.get_child_count() > 0, "夢の種一覧に取得可能な種がある")
 		debug_button.pressed.emit()
 		_expect(not bool(debug_panel.get("debug_button_active")), "デバッグボタンで機能を無効化できる")
 		_expect(not retry_button.visible, "Debug 無効時はリトライボタンを隠す")
