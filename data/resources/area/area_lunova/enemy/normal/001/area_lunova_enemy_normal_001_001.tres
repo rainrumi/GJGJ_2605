@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="2_acid_block"]
 [ext_resource type="Script" uid="uid://botvrlrhix8f4" path="res://scene/main/game/enemy/skill/enemy_effect.gd" id="3_enemy_effect"]
 [ext_resource type="Script" uid="uid://baxftffqfh10a" path="res://scene/main/game/enemy/skill/enemy_skill.gd" id="4_enemy_skill"]
-[ext_resource type="Script" uid="uid://bswydbym0cspy" path="res://scene/main/game/enemy/skill/damage/enemy_effect_on_acid_damage_count_take_acid_damage.gd" id="effect_5"]
+[ext_resource type="Script" uid="uid://88p8x80823ap" path="res://scene/main/game/enemy/skill/damage/enemy_effect_on_acid_damage_at_most_take_scaled_acid_damage.gd" id="effect_5"]
 
 [sub_resource type="Resource" id="Resource_7po27"]
 script = ExtResource("2_acid_block")
@@ -14,8 +14,7 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1, 1, 1, 1), PackedInt
 
 [sub_resource type="Resource" id="Resource_jgnh5"]
 script = ExtResource("effect_5")
-required_count = 1000
-damage = 3000
+activates_outside_stomach = true
 effect_amount_configured = true
 
 [sub_resource type="Resource" id="Resource_1iqj8"]
@@ -27,5 +26,5 @@ script = ExtResource("1_enemy_info")
 skill_id = 17010001001
 display_name = "E1"
 acid_block = SubResource("Resource_7po27")
-description = "消化ダメージを1000回受けるたびに追加で3000消化ダメージを受ける。"
+description = "10以下の消化ダメージを受けるとき、追加でその1000倍の消化ダメージを受ける。"
 main_skill = SubResource("Resource_1iqj8")
