@@ -191,10 +191,14 @@ func _test_game() -> void:
 	for index in range(3):
 		nightmare.set_Aciding(true)
 		game._remove_enemy_from_stomach(nightmare)
-	_expect(game.hp == 70 and nightmare.current_hp == 9700, "three returns: player takes 10 each, nightmare takes 100 each")
+	_expect(game.hp == 10 and nightmare.current_hp == 9850, "three returns: player pays the 50% HP cost and nightmares take equal digestion damage")
+	_expect(game.seed_effects.is_remove_from_stomach_disabled(), "100126 main disables dragging return")
+	_expect(game._get_remove_from_stomach_damage() == 50, "100125 return damage before consuming 100126")
+	_expect(is_equal_approx(game.seed_effects.get_remove_from_stomach_acid_damage_rate(), 1.0), "100126 deals return damage amount to vomited nightmares")
+	game.seed_effects.setup([_seed(125)])
 	game.seed_effects.add_Acided_seed_effect(_seed(126))
-	_expect(game.seed_effects.is_remove_from_stomach_disabled(), "100126 sub disables dragging return")
-	_expect(game._get_remove_from_stomach_damage() == 20, "100126 doubles final 100125 return damage")
+	_expect(not game.seed_effects.is_remove_from_stomach_disabled(), "100126 sub does not disable dragging return")
+	_expect(game._get_remove_from_stomach_damage() == 100, "100126 sub doubles damage taken when the flower is vomited")
 	game.seed_effects.setup([_seed(120), _seed(120)])
 	nightmare.set_Acided(true)
 	game.hp = 50
@@ -208,7 +212,7 @@ func _test_game() -> void:
 	DebugState.set_debug_enabled(false)
 	game.start_battle(context)
 	_expect(game.stomach.columns == 5 and game.stomach.get_acid_line_rows() == 2, "next stage clears sub size and line buffs")
-	_expect(game.effective_max_hp == 100 and not game.seed_effects.is_remove_from_stomach_disabled(), "next stage clears HP and return buffs")
+	_expect(game.effective_max_hp == 100 and game.seed_effects.is_remove_from_stomach_disabled(), "next stage clears consumed buffs and keeps 100126 main return restriction")
 	game.seed_effects.setup([_seed(118)])
 	for enemy in [moon, lotus, yugao]:
 		game.seed_effects.record_damaged_object(10, enemy)
@@ -267,13 +271,14 @@ func _test_digestion_batch(game: Node) -> void:
 	_expect(game.hp == 40, "100118 actual digestion sub heals twice 10 HP")
 	game.seed_effects.setup([_seed(125), _seed(126)])
 	game.seed_effects.add_Acided_seed_effect(_seed(126))
+	game.hp = 200
 	var before_hp: int = game.hp
 	var before_enemy_hp := targets[0].current_hp
 	targets[0].set_Aciding(false)
 	targets[0].forcibly_returned.emit()
 	game._apply_forced_returns()
-	_expect(game.hp == before_hp - 20, "forced return also applies final doubled player cost")
-	_expect(targets[0].current_hp == before_enemy_hp - 200, "forced return deals 10 times actual doubled cost")
+	_expect(game.hp == before_hp - 100, "forced return also applies final doubled player cost")
+	_expect(targets[0].current_hp == before_enemy_hp - 100, "forced return deals the doubled player cost as digestion damage")
 	game.seed_effects.setup([_seed(108)])
 	game.acid_controller.refresh_enemy_effects(game.enemies, game.stomach)
 	source.set_Acided(false)
@@ -295,7 +300,7 @@ func _test_digestion_batch(game: Node) -> void:
 	var hp_on_clear: Array[int] = []
 	game.battle_finished.connect(func(_won: bool) -> void: hp_on_clear.append(game.hp), CONNECT_ONE_SHOT)
 	game._remove_enemy_from_stomach(targets[0])
-	_expect(hp_on_clear == [90], "lethal return pays player cost before stage-clear notification")
+	_expect(hp_on_clear == [50], "lethal return pays the 100125 HP cost before stage-clear notification")
 	game.enemies = all_enemies
 	await get_tree().process_frame
 

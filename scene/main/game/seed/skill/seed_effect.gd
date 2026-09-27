@@ -206,6 +206,10 @@ func get_remove_from_stomach_acid_damage_rate(_state: DreamSeedSkillState, _cont
 	return 0.0
 
 
+func disables_remove_from_stomach() -> bool:
+	return false
+
+
 # 種ブロック率
 func get_seed_block_acid_damage_rate(_context: Dictionary) -> float:
 	return 0.0

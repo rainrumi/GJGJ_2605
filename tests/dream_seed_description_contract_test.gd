@@ -185,7 +185,7 @@ func _test_fuji_and_tokon() -> void:
 	for flowers in [[_seed(125), _seed(126)], [_seed(126), _seed(125)]]:
 		effects.setup(flowers)
 		_expect(effects.get_remove_from_stomach_damage_rate(0.05) == 0.1, "装備順によらずトコンでHP上限10%のダメージ")
-		_expect(is_equal_approx(effects.get_remove_from_stomach_acid_damage_rate(), 10.0), "ドクダミの悪夢への消化ダメージは維持")
+		_expect(is_equal_approx(effects.get_remove_from_stomach_acid_damage_rate(), 1.0), "ドクダミの悪夢への消化ダメージは吐き戻しダメージと同等")
 	var source := _enemy(Vector2i.ZERO, _seed(108))
 	var flower := _enemy(Vector2i.RIGHT, _seed(101))
 	var enemy := _enemy(Vector2i.DOWN)

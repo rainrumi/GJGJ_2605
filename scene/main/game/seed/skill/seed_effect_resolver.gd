@@ -392,7 +392,12 @@ func get_remove_from_stomach_acid_damage_rate() -> float:
 
 # removefrom胃袋disable判定
 func is_remove_from_stomach_disabled() -> bool:
-	return _state.remove_from_stomach_disabled
+	if _state.remove_from_stomach_disabled:
+		return true
+	for effect in _get_main_effects():
+		if effect.disables_remove_from_stomach():
+			return true
+	return false
 
 
 # 最大HP補正率追加

@@ -9,5 +9,4 @@ offset_top = 44.0
 offset_right = 31.0
 offset_bottom = 64.0
 texture_normal = ExtResource("1_config_texture")
-texture_pressed = ExtResource("1_config_texture")
-texture_hover = ExtResource("2_0m0iy")
+texture_pressed = ExtResource("2_0m0iy")
