@@ -4,7 +4,7 @@
 [ext_resource type="FontFile" uid="uid://c14qmyqxx3lm0" path="res://fonts/BestTen-CRT.otf" id="2_font"]
 [ext_resource type="PackedScene" uid="uid://uxfjdua4y5mc" path="res://scene/ui/battle_ui/debug/debug_seed_parameter_panel.tscn" id="3_parameter_panel"]
 [ext_resource type="PackedScene" path="res://scene/ui/battle_ui/debug/debug_enemy_parameter_panel.tscn" id="4_enemy_parameter_panel"]
-[ext_resource type="PackedScene" path="res://scene/ui/battle_ui/debug/debug_all_seed_panel.tscn" id="5_all_seed_panel"]
+[ext_resource type="PackedScene" uid="uid://x6f3bbfkp8ro" path="res://scene/ui/battle_ui/debug/debug_all_seed_panel.tscn" id="5_all_seed_panel"]
 
 [node name="DebugPanel" type="Control" unique_id=1605446388]
 layout_mode = 3
@@ -162,7 +162,25 @@ text = "即クリア"
 
 [node name="DebugSeedParameterPanel" parent="." unique_id=489307559 instance=ExtResource("3_parameter_panel")]
 visible = false
+layout_mode = 0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_top = 0.0
+anchor_bottom = 1.0
 
 [node name="DebugEnemyParameterPanel" parent="." unique_id=971651416 instance=ExtResource("4_enemy_parameter_panel")]
+layout_mode = 0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_top = 0.0
+anchor_bottom = 1.0
 
 [node name="DebugAllSeedPanel" parent="." unique_id=186143265 instance=ExtResource("5_all_seed_panel")]
+layout_mode = 0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_top = 0.0
+anchor_bottom = 1.0
