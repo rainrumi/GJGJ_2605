@@ -19,7 +19,7 @@ chance = 0.5
 effect_amount_configured = true
 effect_amount_fields = PackedStringArray("attack_multiplier")
 probability_configured = true
-probability_fields = PackedStringArray()
+probability_fields = PackedStringArray("chance")
 
 [sub_resource type="Resource" id="Resource_sratj"]
 script = ExtResource("4_enemy_skill")
