@@ -181,19 +181,13 @@ func _on_ui_button_mouse_entered(button: BaseButton) -> void:
 func _play_se_click() -> void:
 	if se_click.stream == null:
 		return
-	if _web_audio.play_se(se_click.stream, &"main_click"):
-		return
-	se_click.stop()
-	se_click.play()
+	GameSettings.play_se(se_click, &"main_click")
 
 
 func _play_se_select() -> void:
 	if se_select.stream == null:
 		return
-	if _web_audio.play_se(se_select.stream, &"main_select"):
-		return
-	se_select.stop()
-	se_select.play()
+	GameSettings.play_se(se_select, &"main_select")
 
 
 # 未処理入力

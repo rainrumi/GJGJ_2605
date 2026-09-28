@@ -5,6 +5,8 @@ signal settings_changed
 const SETTINGS_PATH := "user://settings.cfg"
 const BGM_PLAYER_GROUP := &"bgm_audio_players"
 const SE_PLAYER_GROUP := &"se_audio_players"
+const SE_DUCK_BGM_FACTOR := 0.1
+const SE_DUCK_FADE_DURATION := 0.2
 
 const DEFAULT_MASTER_VOLUME := 80.0
 const DEFAULT_BGM_VOLUME := 70.0
@@ -35,6 +37,11 @@ var text_speed := DEFAULT_TEXT_SPEED
 var window_size := DEFAULT_WINDOW_SIZE
 var fullscreen := DEFAULT_FULLSCREEN
 var difficulty := DEFAULT_DIFFICULTY
+var _active_native_se_players: Dictionary = {}
+var _active_external_se_channels: Dictionary = {}
+var _bgm_duck_factor := 1.0
+var _bgm_duck_tween: Tween
+var _bgm_duck_transition_id := 0
 
 
 # 初期化
@@ -78,10 +85,87 @@ func save_settings() -> void:
 # 設定適用
 func apply_settings() -> void:
 	_set_bus_volume("Master", master_volume)
-	_apply_group_volume(BGM_PLAYER_GROUP, bgm_volume)
+	_apply_group_volume(BGM_PLAYER_GROUP, bgm_volume * _bgm_duck_factor)
 	_apply_group_volume(SE_PLAYER_GROUP, se_volume)
 	_apply_window_settings()
+	var web_audio := get_node_or_null("/root/WebAudioFallback")
+	if web_audio != null and web_audio.has_method("set_bgm_duck_factor"):
+		web_audio.call("set_bgm_duck_factor", _bgm_duck_factor)
+	_update_bgm_ducking()
 	settings_changed.emit()
+
+
+func play_se(player: AudioStreamPlayer, channel: StringName) -> void:
+	_play_se(player, channel, false)
+
+
+func play_se_with_bgm_ducking(player: AudioStreamPlayer, channel: StringName) -> void:
+	_play_se(player, channel, true)
+
+
+func _play_se(player: AudioStreamPlayer, channel: StringName, duck_bgm: bool) -> void:
+	if player == null or player.stream == null:
+		return
+	var web_audio := get_node_or_null("/root/WebAudioFallback") as WebAudioFallbackService
+	if web_audio != null and web_audio.play_se(player.stream, channel, duck_bgm):
+		return
+	var player_id := player.get_instance_id()
+	var finished_callback := Callable(self, "_on_native_se_finished").bind(player_id)
+	if not player.finished.is_connected(finished_callback):
+		player.finished.connect(finished_callback)
+	_active_native_se_players[player_id] = duck_bgm
+	player.stop()
+	player.play()
+	_update_bgm_ducking()
+
+
+func set_external_se_active(channel: StringName, active: bool, duck_bgm := false) -> void:
+	if active:
+		_active_external_se_channels[channel] = duck_bgm
+	else:
+		_active_external_se_channels.erase(channel)
+	_update_bgm_ducking()
+
+
+func _on_native_se_finished(player_id: int) -> void:
+	_active_native_se_players.erase(player_id)
+	_update_bgm_ducking()
+
+
+func _update_bgm_ducking() -> void:
+	var target_factor := SE_DUCK_BGM_FACTOR if _has_bgm_ducking_se() else 1.0
+	if is_equal_approx(_bgm_duck_factor, target_factor):
+		return
+	_bgm_duck_transition_id += 1
+	if _bgm_duck_tween != null and _bgm_duck_tween.is_valid():
+		_bgm_duck_tween.kill()
+	_bgm_duck_tween = create_tween()
+	_bgm_duck_tween.tween_method(
+		_set_bgm_duck_factor.bind(_bgm_duck_transition_id),
+		_bgm_duck_factor,
+		target_factor,
+		SE_DUCK_FADE_DURATION,
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+
+
+func _has_bgm_ducking_se() -> bool:
+	for should_duck in _active_native_se_players.values():
+		if bool(should_duck):
+			return true
+	for should_duck in _active_external_se_channels.values():
+		if bool(should_duck):
+			return true
+	return false
+
+
+func _set_bgm_duck_factor(value: float, transition_id: int) -> void:
+	if transition_id != _bgm_duck_transition_id:
+		return
+	_bgm_duck_factor = value
+	_apply_group_volume(BGM_PLAYER_GROUP, bgm_volume * _bgm_duck_factor)
+	var web_audio := get_node_or_null("/root/WebAudioFallback")
+	if web_audio != null and web_audio.has_method("set_bgm_duck_factor"):
+		web_audio.call("set_bgm_duck_factor", _bgm_duck_factor)
 
 
 # todefaults初期化
@@ -179,7 +263,7 @@ func _on_node_added(node: Node) -> void:
 		return
 	var player := node as AudioStreamPlayer
 	if player.is_in_group(BGM_PLAYER_GROUP):
-		_set_player_volume(player, bgm_volume)
+		_set_player_volume(player, bgm_volume * _bgm_duck_factor)
 	elif player.is_in_group(SE_PLAYER_GROUP):
 		_set_player_volume(player, se_volume)
 

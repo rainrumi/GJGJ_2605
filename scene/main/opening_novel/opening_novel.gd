@@ -23,7 +23,6 @@ const FAST_FORWARD_LINE_INTERVAL := 0.1
 @onready var next_label: Label = $Screen/TextBox/NextLabel
 @onready var character_se: AudioStreamPlayer = $CharacterSe
 @onready var config_button: TextureButton = $ConfigButton
-@onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 @onready var debug_panel: NovelDebugPanel = $Screen/DebugPanel
 @onready var debug_textbox_outline: Panel = $Screen/DebugTextBoxOutline
 @onready var debug_textbox_resize_handle: ColorRect = $Screen/DebugTextBoxOutline/ResizeHandle
@@ -760,10 +759,7 @@ func _parse_command(command_line: String) -> Dictionary:
 func _play_character_se() -> void:
 	if character_se.stream == null:
 		return
-	if _web_audio.play_se(character_se.stream, &"opening_character"):
-		return
-	character_se.stop()
-	character_se.play()
+	GameSettings.play_se(character_se, &"opening_character")
 
 
 func _get_text_interval() -> float:

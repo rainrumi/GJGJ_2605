@@ -48,7 +48,6 @@ const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転で
 @onready var input_controller: GameInputController = $GameInputController
 @onready var attack_se: AudioStreamPlayer = $AttackSe
 @onready var tutorial_novel: OpeningNovel = $TutorialNovel
-@onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 @onready var character: Character = $Character
 @onready var enemies: Array[Enemy] = [$EnemyLeft as Enemy, $EnemyCenter as Enemy, $EnemyRight as Enemy, $EnemyUpperRight as Enemy]
 var minutes := START_HOUR * 60
@@ -1819,10 +1818,7 @@ func _request_attack_se() -> void:
 	_attack_se_requested_this_timing = true
 	call_deferred("_reset_attack_se_timing")
 	if attack_se.stream != null:
-		if _web_audio.play_se(attack_se.stream, &"game_attack"):
-			return
-		attack_se.stop()
-		attack_se.play()
+		GameSettings.play_se(attack_se, &"game_attack")
 
 
 func _reset_attack_se_timing() -> void:

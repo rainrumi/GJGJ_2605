@@ -11,11 +11,15 @@ var _data_uri_by_stream: Dictionary = {}
 var _master_volume := 1.0
 var _bgm_volume := 1.0
 var _se_volume := 1.0
+var _bgm_duck_factor := 1.0
 var _play_resolved_callback: Variant
 var _play_rejected_callback: Variant
+var _active_se_channels: Dictionary = {}
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	set_process(false)
 	_enabled = OS.has_feature("web")
 	if not _enabled:
 		return
@@ -86,7 +90,13 @@ func get_bgm_position() -> float:
 	return float(_bgm_audio.currentTime)
 
 
-func play_se(stream: AudioStream, channel: StringName) -> bool:
+func set_bgm_duck_factor(value: float) -> void:
+	_bgm_duck_factor = clampf(value, 0.0, 1.0)
+	if _bgm_audio != null:
+		_bgm_audio.volume = _get_effective_bgm_volume()
+
+
+func play_se(stream: AudioStream, channel: StringName, duck_bgm := false) -> bool:
 	if not _enabled:
 		return false
 	var stream_key := _get_stream_key(stream)
@@ -108,6 +118,11 @@ func play_se(stream: AudioStream, channel: StringName) -> bool:
 	audio.pause()
 	audio.currentTime = 0.0
 	_play_audio(audio)
+	_active_se_channels[channel_key] = duck_bgm
+	var game_settings := get_node_or_null("/root/GameSettings")
+	if game_settings != null and game_settings.has_method("set_external_se_active"):
+		game_settings.call("set_external_se_active", channel, true, duck_bgm)
+	set_process(true)
 	return true
 
 
@@ -132,6 +147,18 @@ func _create_audio(stream: AudioStream, loop: bool, volume: float) -> Variant:
 	audio.volume = volume
 	audio.src = data_uri
 	return audio
+
+
+func _process(_delta: float) -> void:
+	for channel_key in _active_se_channels.keys():
+		var entry: Dictionary = _se_audio_by_channel.get(channel_key, {})
+		var audio: Variant = entry.get("audio")
+		if audio == null or bool(audio.ended) or bool(audio.paused):
+			_active_se_channels.erase(channel_key)
+			var game_settings := get_node_or_null("/root/GameSettings")
+			if game_settings != null and game_settings.has_method("set_external_se_active"):
+				game_settings.call("set_external_se_active", StringName(channel_key), false)
+		set_process(not _active_se_channels.is_empty())
 
 
 func _get_data_uri(stream: AudioStream) -> String:
@@ -191,7 +218,7 @@ func _on_settings_changed() -> void:
 
 
 func _get_effective_bgm_volume() -> float:
-	return _master_volume * _bgm_volume
+	return _master_volume * _bgm_volume * _bgm_duck_factor
 
 
 func _get_effective_se_volume() -> float:
