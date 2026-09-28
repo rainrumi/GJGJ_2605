@@ -38,6 +38,7 @@ func _run() -> void:
 	var opening_novel := main.get_node("OpeningNovel") as OpeningNovel
 	var active_novel_text := opening_novel.get("_active_novel_text") as NovelTextInfo
 	_expect(opening_novel.visible, "朝6:00を過ぎてステージ選択に入るとノベルを表示する")
+	_expect(not main.stage_select.visible, "自動就寝ノベルの再生前にステージ選択を非表示にする")
 	_expect(
 		active_novel_text != null
 		and active_novel_text.script_path == "res://resource/novel/event/novel_event_auto_sleep.txt",

@@ -274,6 +274,7 @@ func _try_show_auto_sleep_novel() -> bool:
 	var novel_text := NovelTextInfo.new()
 	novel_text.script_path = "res://resource/novel/event/novel_event_auto_sleep.txt"
 	active_novel_flow = NovelFlow.AUTO_SLEEP
+	stage_select.visible = false
 	opening_novel.start_with_text(novel_text)
 	return true
 
