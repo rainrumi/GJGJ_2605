@@ -32,7 +32,7 @@ effects = Array[ExtResource("3_q1ii8")]([SubResource("Resource_1tlwo")])
 script = ExtResource("skill_line_damage")
 damage_per_stomach_cell = 5
 effect_amount_configured = true
-effect_amount_fields = PackedStringArray()
+effect_amount_fields = PackedStringArray("damage_per_stomach_cell")
 probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_1p5w3"]
