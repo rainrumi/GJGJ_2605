@@ -7,6 +7,7 @@ signal click_wait_completed
 signal settings_requested
 
 const DEFAULT_TEXT_INTERVAL := 0.04
+const FAST_FORWARD_LINE_INTERVAL := 0.1
 
 @export var novel_text: NovelTextInfo
 @export var novel_layer := 100
@@ -168,8 +169,14 @@ func _type_text(source_text: String, request_id: int) -> void:
 	if type_interval <= 0.0:
 		_complete_typing()
 		return
+	if _is_fast_forward_pressed():
+		_complete_typing()
+		return
 	for character in source_text:
 		if request_id != _script_request_id or typing_request_id != _typing_request_id:
+			return
+		if _is_fast_forward_pressed():
+			_complete_typing()
 			return
 		text_layer.set_visible_characters(text_layer.get_visible_characters() + 1)
 		_play_character_se()
@@ -700,7 +707,11 @@ func _command_l(request_id: int) -> void:
 		return
 	_is_waiting_for_click = true
 	next_label.visible = true
-	await click_wait_completed
+	while request_id == _script_request_id and _is_waiting_for_click:
+		if _is_fast_forward_pressed():
+			await get_tree().create_timer(FAST_FORWARD_LINE_INTERVAL).timeout
+			break
+		await get_tree().process_frame
 	if request_id != _script_request_id:
 		return
 	_is_waiting_for_click = false
@@ -763,6 +774,10 @@ func _get_text_interval() -> float:
 	return DEFAULT_TEXT_INTERVAL
 
 
+func _is_fast_forward_pressed() -> bool:
+	return Input.is_key_pressed(KEY_CTRL)
+
+
 # 対象終了
 func _finish() -> void:
 	_script_request_id += 1
@@ -798,6 +813,7 @@ func _on_screen_gui_input(event: InputEvent) -> void:
 			if _is_typing:
 				_complete_typing()
 			elif _is_waiting_for_click:
+				_is_waiting_for_click = false
 				click_wait_completed.emit()
 			advanced.emit()
 
