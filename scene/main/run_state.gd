@@ -197,6 +197,9 @@ func update_area_reroll_counts() -> void:
 		if not areas.has(area):
 			areas.append(area)
 	for area in areas:
+		if area == StageInfo.StageArea.huwahuwaSchool:
+			area_reroll_counts.erase(area)
+			continue
 		area_reroll_counts[area] = _get_reroll_count_for_boss_defeats(
 			get_area_boss_defeat_count(area as StageInfo.StageArea)
 		)
@@ -204,6 +207,8 @@ func update_area_reroll_counts() -> void:
 
 # エリア別リロール回数取得
 func get_area_reroll_count(area: StageInfo.StageArea) -> int:
+	if area == StageInfo.StageArea.huwahuwaSchool:
+		return 0
 	return int(area_reroll_counts.get(area, 0))
 
 
