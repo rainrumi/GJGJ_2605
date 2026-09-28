@@ -2,6 +2,10 @@ class_name StomachBoard
 extends Node2D
 
 const WAVE_BASE_OFFSET_Y := 5.0
+const GRID_EDGE_LEFT := 1
+const GRID_EDGE_RIGHT := 2
+const GRID_EDGE_TOP := 4
+const GRID_EDGE_BOTTOM := 8
 
 @export var columns := 4
 @export var rows := 5
@@ -18,12 +22,15 @@ var _grid_frame_area_position := Vector2.ZERO
 var _grid_frame_area_size := Vector2.ZERO
 var _frame_base_position := Vector2.ZERO
 var _frame_base_size := Vector2.ZERO
+var _grid_frame_base_texture: Texture2D
+var _grid_frame_texture_cache: Dictionary = {}
 var _preview_sprite: Sprite2D
 var _acid_line_rows := 1 # 消化行数
 
 
 # 初期化
 func _ready() -> void:
+	_grid_frame_base_texture = grid_frame.texture
 	_capture_grid_frame_area()
 	_configure_grid()
 	_create_preview()
@@ -281,9 +288,48 @@ func _configure_grid() -> void:
 				cell = grid_frame.duplicate() as NinePatchRect
 				cell.name = "grid_frame_%d_%d" % [column, row]
 				add_child(cell)
+			cell.texture = _get_grid_frame_texture(column, row)
 			cell.position = (_grid_origin + Vector2(column, row) * _grid_step).round()
 			cell.size = Vector2(_cell_size, _cell_size)
 	frame.z_index = 10
+
+
+func _get_grid_frame_texture(column: int, row: int) -> Texture2D:
+	var edge_mask := 0
+	if column == 0:
+		edge_mask |= GRID_EDGE_LEFT
+	if column == columns - 1:
+		edge_mask |= GRID_EDGE_RIGHT
+	if row == 0:
+		edge_mask |= GRID_EDGE_TOP
+	if row == rows - 1:
+		edge_mask |= GRID_EDGE_BOTTOM
+	if edge_mask == 0:
+		return _grid_frame_base_texture
+	if _grid_frame_texture_cache.has(edge_mask):
+		return _grid_frame_texture_cache[edge_mask] as Texture2D
+
+	var image := _grid_frame_base_texture.get_image()
+	var region := grid_frame.region_rect
+	var left := int(region.position.x)
+	var top := int(region.position.y)
+	var right := mini(image.get_width(), left + int(region.size.x)) - 1
+	var bottom := mini(image.get_height(), top + int(region.size.y)) - 1
+	# The atlas tile draws its grid marks on the source image edges.
+	for y in range(top, bottom + 1):
+		if (edge_mask & GRID_EDGE_LEFT) != 0:
+			image.set_pixel(left, y, Color.TRANSPARENT)
+		if (edge_mask & GRID_EDGE_RIGHT) != 0:
+			image.set_pixel(right, y, Color.TRANSPARENT)
+	for x in range(left, right + 1):
+		if (edge_mask & GRID_EDGE_TOP) != 0:
+			image.set_pixel(x, top, Color.TRANSPARENT)
+		if (edge_mask & GRID_EDGE_BOTTOM) != 0:
+			image.set_pixel(x, bottom, Color.TRANSPARENT)
+
+	var edge_texture := ImageTexture.create_from_image(image)
+	_grid_frame_texture_cache[edge_mask] = edge_texture
+	return edge_texture
 
 
 # グリッドframearea記録

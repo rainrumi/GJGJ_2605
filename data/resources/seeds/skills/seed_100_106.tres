@@ -1,16 +1,16 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://pcorwwtaagk5"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_c2jy8"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_n5a61"]
-[ext_resource type="Texture2D" uid="uid://cy240aw2etki7" path="res://resource/image/texture/seed/tex_seed_gekabijin_small_line.png" id="2_small_line_texture"]
-[ext_resource type="Texture2D" uid="uid://xk4mxhn1rowc" path="res://resource/image/texture/seed/tex_seed_gekabijin_small.png" id="2_small_texture"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_ikiiu"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_ohkbt"]
-[ext_resource type="Texture2D" uid="uid://d3hbi37nl1lfb" path="res://resource/image/texture/seed/tex_seed_gekabijin.png" id="4_mmdek"]
-[ext_resource type="Script" uid="uid://u6wijeke81l5" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_day_finished_change_acid_damage.gd" id="skill_clear_recovery"]
-[ext_resource type="Script" uid="uid://d3irfgtfv5r6h" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_rewind_clock.gd" id="skill_pending_time"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Texture2D" uid="uid://ccn344ctlnvfu" path="res://resource/image/texture/seed/tex_seed_gekabijin_tiny.png" id="tiny_texture"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_c2jy8"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="2_n5a61"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_gekabijin_small_line.png" id="2_small_line_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_gekabijin_small.png" id="2_small_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_ikiiu"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_ohkbt"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_gekabijin.png" id="4_mmdek"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_day_finished_change_acid_damage.gd" id="skill_clear_recovery"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_rewind_clock.gd" id="skill_pending_time"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_gekabijin_tiny.png" id="tiny_texture"]
 
 [sub_resource type="Resource" id="Resource_ikiiu"]
 script = ExtResource("1_c2jy8")
@@ -21,6 +21,8 @@ stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 script = ExtResource("skill_clear_recovery")
 rate = 1.1000000000003638
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("rate")
+probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_08k1e"]
 script = ExtResource("skill_seed_skill")
@@ -29,6 +31,8 @@ effects = Array[ExtResource("3_ikiiu")]([SubResource("Resource_7d4ve")])
 [sub_resource type="Resource" id="Resource_kkpi7"]
 script = ExtResource("skill_pending_time")
 effect_amount_configured = true
+effect_amount_fields = PackedStringArray("rewind_minutes")
+probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_w2eup"]
 script = ExtResource("skill_seed_skill")

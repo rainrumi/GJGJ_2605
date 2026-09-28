@@ -1,37 +1,41 @@
-[gd_resource type="Resource" script_class="SeedInfo" format=3 uid="uid://ditxncam826tj"]
+[gd_resource type="Resource" script_class="SeedInfo" format=3]
 
-[ext_resource type="Script" uid="uid://b5wugtj6ua7hh" path="res://data/info/block/acid_block_info.gd" id="1_3n8c3"]
-[ext_resource type="Texture2D" uid="uid://csd0tftohjnlc" path="res://resource/image/texture/seed/tex_seed_anemone_small_line.png" id="2_small_line_texture"]
-[ext_resource type="Texture2D" uid="uid://dsl67wxgbfk6l" path="res://resource/image/texture/seed/tex_seed_anemone_small.png" id="2_small_texture"]
-[ext_resource type="Texture2D" uid="uid://cio5tbbtpj4dl" path="res://resource/image/texture/seed/tex_seed_anemone.png" id="2_texture"]
-[ext_resource type="Script" uid="uid://dh42rwpqd84d4" path="res://data/info/seed/seed_info.gd" id="3_g5ndj"]
-[ext_resource type="Script" uid="uid://c0mofk3fxqtdd" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_vtci7"]
-[ext_resource type="Texture2D" uid="uid://bmplsw60uxyg6" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
-[ext_resource type="Script" uid="uid://dukbi6dqbjodk" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_revive.gd" id="skill_revive"]
-[ext_resource type="Script" uid="uid://dfsaehj3jvf3y" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
-[ext_resource type="Script" uid="uid://rjot6psr2ija" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_skip_rest_time.gd" id="skill_skip_rest"]
-[ext_resource type="Texture2D" uid="uid://d3oe7lc5gnwq3" path="res://resource/image/texture/seed/tex_seed_anemone_tiny.png" id="tiny_texture"]
+[ext_resource type="Script" path="res://data/info/block/acid_block_info.gd" id="1_3n8c3"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_anemone_small_line.png" id="2_small_line_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_anemone_small.png" id="2_small_texture"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_anemone.png" id="2_texture"]
+[ext_resource type="Script" path="res://data/info/seed/seed_info.gd" id="3_g5ndj"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_effect.gd" id="3_vtci7"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/frame/tex_seed_frame_1000.png" id="4_block_texture"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_battle/seed_effect_on_battle_change_revive.gd" id="skill_revive"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/seed_skill.gd" id="skill_seed_skill"]
+[ext_resource type="Script" path="res://scene/main/game/seed/skill/on_finish_acid_seed/seed_effect_on_finish_acid_seed_skip_rest_time.gd" id="skill_skip_rest"]
+[ext_resource type="Texture2D" path="res://resource/image/texture/seed/tex_seed_anemone_tiny.png" id="tiny_texture"]
 
-[sub_resource type="Resource" id="Resource_40tqx"]
+[sub_resource type="Resource" id="Resource_43cjl"]
 script = ExtResource("1_3n8c3")
 texture = ExtResource("4_block_texture")
 stomach_shape = Array[PackedInt32Array]([PackedInt32Array(1)])
 
-[sub_resource type="Resource" id="Resource_bubci"]
-script = ExtResource("skill_revive")
-recovery_bonus_rate = 1.2
-effect_amount_configured = true
-
-[sub_resource type="Resource" id="Resource_43cjl"]
-script = ExtResource("skill_seed_skill")
-effects = Array[ExtResource("3_vtci7")]([SubResource("Resource_bubci")])
-
 [sub_resource type="Resource" id="Resource_8xglp"]
-script = ExtResource("skill_skip_rest")
+script = ExtResource("skill_revive")
+recovery_bonus_rate = 1.2000000000007276
+effect_amount_configured = true
+effect_amount_fields = PackedStringArray("recovery_bonus_rate")
+probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_42o3q"]
 script = ExtResource("skill_seed_skill")
 effects = Array[ExtResource("3_vtci7")]([SubResource("Resource_8xglp")])
+
+[sub_resource type="Resource" id="Resource_1jdun"]
+script = ExtResource("skill_skip_rest")
+effect_amount_fields = PackedStringArray()
+probability_fields = PackedStringArray()
+
+[sub_resource type="Resource" id="Resource_rksno"]
+script = ExtResource("skill_seed_skill")
+effects = Array[ExtResource("3_vtci7")]([SubResource("Resource_1jdun")])
 
 [resource]
 script = ExtResource("3_g5ndj")
@@ -41,8 +45,8 @@ texture = ExtResource("2_texture")
 tiny_texture = ExtResource("tiny_texture")
 small_texture = ExtResource("2_small_texture")
 small_line_texture = ExtResource("2_small_line_texture")
-main_skill = SubResource("Resource_43cjl")
-sub_skill = SubResource("Resource_42o3q")
-acid_block = SubResource("Resource_40tqx")
+main_skill = SubResource("Resource_42o3q")
+sub_skill = SubResource("Resource_rksno")
+acid_block = SubResource("Resource_43cjl")
 main_description = "蘇生時の回復量がHP上限+20%増加。"
 sub_description = "この花を消化すると蘇生時の時間経過が発生しなくなる。"
