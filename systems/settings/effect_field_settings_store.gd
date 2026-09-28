@@ -1,7 +1,7 @@
 class_name EffectFieldSettingsStore
 extends Node
 
-const SETTINGS_PATH := "user://effect_field_targets.cfg"
+const SETTINGS_PATH := "res://data/resources/state/effect_field_targets.cfg"
 
 var settings_path := SETTINGS_PATH
 var _config := ConfigFile.new()
@@ -68,6 +68,11 @@ func save_definitions(definitions: Dictionary) -> Error:
 				_config.set_value(section, "amount_fields", effect.effect_amount_fields)
 				_config.set_value(section, "probability_configured", effect.probability_configured)
 				_config.set_value(section, "probability_fields", effect.probability_fields)
+	var directory_error := DirAccess.make_dir_recursive_absolute(
+		ProjectSettings.globalize_path(settings_path.get_base_dir())
+	)
+	if directory_error != OK:
+		return directory_error
 	var error := _config.save(settings_path)
 	if error != OK:
 		return error

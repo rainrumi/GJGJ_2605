@@ -222,6 +222,7 @@ func _save_tab(tab_index: int) -> void:
 	var saved_count := 0
 	var saved_definitions: Dictionary = {}
 	var saved_choices: Array[Dictionary] = []
+	var previous_values_by_path: Dictionary = {}
 	for path in choices_by_path:
 		var definition := _resources.get(path) as Resource
 		if definition == null:
@@ -257,34 +258,18 @@ func _save_tab(tab_index: int) -> void:
 			else:
 				effect.probability_fields = fields
 				effect.probability_configured = true
-		var error := ResourceSaver.save(definition, path)
-		if error != OK:
-			failed.append("%s: %s" % [path, error_string(error)])
-			_restore_fields(previous_values, tab_index)
-			continue
-		var reloaded := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as Resource
-		for choice in choices:
-			var effect := _effect_for_choice(reloaded, choice)
-			if effect == null:
-				invalid = true
-				break
-			var fields: PackedStringArray = effect.effect_amount_fields if tab_index == 0 else effect.probability_fields
-			var configured: bool = effect.effect_amount_configured if tab_index == 0 else effect.probability_configured
-			if not configured or fields.has(choice.field) != bool(choice.selected):
-				invalid = true
-				break
-		if invalid:
-			failed.append("%s: 保存後の再読込で選択が一致しません" % path)
-			_restore_fields(previous_values, tab_index)
-			continue
 		saved_definitions[path] = definition
+		previous_values_by_path[path] = previous_values
 		for choice in choices:
 			saved_choices.append(choice)
 		saved_count += 1
 	if not saved_definitions.is_empty():
-		var settings_error := (get_node("/root/EffectFieldSettings") as EffectFieldSettingsStore).save_definitions(saved_definitions)
+		var settings_store := get_node("/root/EffectFieldSettings") as EffectFieldSettingsStore
+		var settings_error := settings_store.save_definitions(saved_definitions)
 		if settings_error != OK:
-			failed.append("user://effect_field_targets.cfg: %s" % error_string(settings_error))
+			failed.append("%s: %s" % [settings_store.settings_path, error_string(settings_error)])
+			for path in previous_values_by_path:
+				_restore_fields(previous_values_by_path[path], tab_index)
 		else:
 			for choice in saved_choices:
 				_drafts[tab_index].erase(_draft_key(choice.path, choice.slot, choice.index, choice.field))

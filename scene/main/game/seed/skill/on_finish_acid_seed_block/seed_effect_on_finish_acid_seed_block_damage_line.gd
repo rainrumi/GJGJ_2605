@@ -2,6 +2,8 @@ class_name SeedEffectOnFinishAcidSeedBlockDamageLine
 extends SeedEffect
 
 @export var split := false # 分割有無
+@export var acid_damage_multiplier := 1.0
+@export var acid_interval_minutes_multiplier := 1.0
 
 
 # 種ブロック完了
@@ -31,4 +33,6 @@ func on_finish_acid_seed_block(context: Dictionary) -> void:
 func _get_total_damage(context: Dictionary) -> int:
 	var acid_damage := int(context.get("acid_damage", 0)) # 消化ダメ
 	var interval := int(context.get("acid_interval_minutes", 0)) # 消化間隔
-	return maxi(0, acid_damage * interval)
+	var adjusted_acid_damage := float(acid_damage) * acid_damage_multiplier
+	var adjusted_interval := float(interval) * acid_interval_minutes_multiplier
+	return maxi(0, roundi(adjusted_acid_damage * adjusted_interval))

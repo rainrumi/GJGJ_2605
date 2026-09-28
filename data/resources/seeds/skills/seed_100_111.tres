@@ -30,7 +30,8 @@ effects = Array[ExtResource("3_2uhbw")]([SubResource("Resource_gsd33")])
 [sub_resource type="Resource" id="Resource_tpkeu"]
 script = ExtResource("skill_line_damage")
 split = true
-effect_amount_fields = PackedStringArray()
+effect_amount_configured = true
+effect_amount_fields = PackedStringArray("acid_damage_multiplier", "acid_interval_minutes_multiplier")
 probability_fields = PackedStringArray()
 
 [sub_resource type="Resource" id="Resource_j612k"]
