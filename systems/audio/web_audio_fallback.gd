@@ -12,6 +12,7 @@ var _master_volume := 1.0
 var _bgm_volume := 1.0
 var _se_volume := 1.0
 var _bgm_duck_factor := 1.0
+var _bgm_transition_factor := 1.0
 var _play_resolved_callback: Variant
 var _play_rejected_callback: Variant
 var _active_se_channels: Dictionary = {}
@@ -92,6 +93,12 @@ func get_bgm_position() -> float:
 
 func set_bgm_duck_factor(value: float) -> void:
 	_bgm_duck_factor = clampf(value, 0.0, 1.0)
+	if _bgm_audio != null:
+		_bgm_audio.volume = _get_effective_bgm_volume()
+
+
+func set_bgm_transition_factor(value: float) -> void:
+	_bgm_transition_factor = clampf(value, 0.0, 1.0)
 	if _bgm_audio != null:
 		_bgm_audio.volume = _get_effective_bgm_volume()
 
@@ -218,7 +225,7 @@ func _on_settings_changed() -> void:
 
 
 func _get_effective_bgm_volume() -> float:
-	return _master_volume * _bgm_volume * _bgm_duck_factor
+	return _master_volume * _bgm_volume * _bgm_duck_factor * _bgm_transition_factor
 
 
 func _get_effective_se_volume() -> float:

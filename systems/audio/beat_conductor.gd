@@ -15,6 +15,9 @@ signal playback_stopped()
 @export var bgm_stream: AudioStream
 @export var debug_print_beats: bool = false
 
+const BGM_FADE_OUT_DURATION := 0.6
+const BGM_FADE_IN_DURATION := 3.0
+
 @onready var audio_player: AudioStreamPlayer = $AudioStreamPlayer
 @onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
 
@@ -25,6 +28,9 @@ var _last_subdivision_index := -1
 var _event_id_counter := 0
 var _scheduled_events: Array[Dictionary] = []
 var _cached_output_latency := 0.0
+var _bgm_transition_id := 0
+var _bgm_transition_factor := 1.0
+var _current_bgm_path := ""
 
 
 # 初期化
@@ -35,6 +41,7 @@ func _ready() -> void:
 		return
 	if bgm_stream != null:
 		audio_player.stream = bgm_stream
+		_current_bgm_path = bgm_stream.resource_path
 	_cached_output_latency = AudioServer.get_output_latency()
 	if auto_play and audio_player.stream != null:
 		play()
@@ -56,11 +63,59 @@ func _process(_delta: float) -> void:
 func play(from_position: float = 0.0) -> void:
 	if audio_player == null:
 		return
+	if bgm_stream != null:
+		_current_bgm_path = bgm_stream.resource_path
 	_last_beat_index = -1
 	_last_subdivision_index = -1
 	if not _web_audio.play_bgm(bgm_stream, from_position):
 		audio_player.play(from_position)
 	playback_started.emit()
+
+
+func change_bgm(audio_path: String) -> void:
+	if audio_path == _current_bgm_path and is_playing():
+		return
+	var next_stream := ResourceLoader.load(audio_path) as AudioStream
+	if next_stream == null:
+		push_error("BeatConductor could not load BGM AudioStream: %s" % audio_path)
+		return
+
+	_bgm_transition_id += 1
+	var transition_id := _bgm_transition_id
+	var fade_out_completed: bool = await _tween_bgm_transition_factor(
+		0.0,
+		BGM_FADE_OUT_DURATION,
+		transition_id,
+	)
+	if not fade_out_completed:
+		return
+
+	bgm_stream = next_stream
+	audio_player.stream = next_stream
+	play()
+	await _tween_bgm_transition_factor(1.0, BGM_FADE_IN_DURATION, transition_id)
+
+
+func _tween_bgm_transition_factor(target: float, duration: float, transition_id: int) -> bool:
+	var start_factor := _bgm_transition_factor
+	var tween := create_tween()
+	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	tween.tween_method(
+		_set_bgm_transition_factor.bind(transition_id),
+		start_factor,
+		target,
+		duration,
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	await tween.finished
+	return transition_id == _bgm_transition_id
+
+
+func _set_bgm_transition_factor(value: float, transition_id: int) -> void:
+	if transition_id != _bgm_transition_id:
+		return
+	_bgm_transition_factor = value
+	var game_settings := get_node("/root/GameSettings")
+	game_settings.call("set_bgm_transition_factor", value)
 
 
 # 対象停止

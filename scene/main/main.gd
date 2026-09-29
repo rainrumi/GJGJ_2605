@@ -16,6 +16,7 @@ const CLEAR_RECOVERY_BASE_RATE := 1.0
 const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
 const CLEAR_RECOVERY_MINIMUM_RATE := 0.5
 const SEED_REWARD_FADE_IN_DURATION := 0.6
+const LUNOVA_BGM_PATH := "res://resource/sound/bgm/bgm_lunova_100.mp3"
 const LARA_AREA_NOVEL_NAMES := {
 	StageInfo.StageArea.COROTTA_STREET: "corotta",
 	StageInfo.StageArea.ERAMIA_DISTRICT: "eramia",
@@ -661,8 +662,18 @@ func _select_stage(stage: StageInfo) -> void:
 
 func _start_selected_battle() -> void:
 	active_novel_flow = NovelFlow.NONE
+	if _is_entering_lunova_old_city():
+		bgm.change_bgm(LUNOVA_BGM_PATH)
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
+
+
+func _is_entering_lunova_old_city() -> bool:
+	var selected_stage := run_state.selected_stage
+	if selected_stage == null or selected_stage.stage_area != StageInfo.StageArea.LUNOVA_OLD_CITY:
+		return false
+	var previous_area_stage := run_state.previous_area_stage
+	return previous_area_stage == null or previous_area_stage.stage_area != StageInfo.StageArea.LUNOVA_OLD_CITY
 
 
 func _start_selected_stage_with_lara() -> void:

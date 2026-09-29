@@ -4,6 +4,7 @@ const NOVEL_PATH := "res://resource/novel/novel_opening.txt"
 const DYNAMIC_NOVEL_PATH := "res://resource/novel/event/judge/novel_event_rara_judge_setup_001.txt"
 const AUDIO_PATHS: Array[String] = [
 	"res://resource/sound/bgm/Night_Dance.mp3",
+	"res://resource/sound/bgm/bgm_lunova_100.mp3",
 	"res://resource/sound/se/se_attack.mp3",
 	"res://resource/sound/se/se_click.mp3",
 	"res://resource/sound/se/se_popopo.mp3",
