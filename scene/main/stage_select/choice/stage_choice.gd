@@ -13,9 +13,9 @@ const REWARD_SEED_MORE_ICON_THRESHOLD := 9
 
 @onready var frame: NinePatchRect = $Frame
 @onready var name_label: Label = $NameLabel
-@onready var difficulty_label: Label = $VBoxContainer/DifficultyLabel
-@onready var location_label: Label = $VBoxContainer/LocationLabel
-@onready var exploration_label: Label = $VBoxContainer/ExplorationLabel
+@onready var difficulty_label: RichTextLabel = $VBoxContainer/DifficultyLabel
+@onready var location_label: RichTextLabel = $VBoxContainer/LocationLabel
+@onready var exploration_label: RichTextLabel = $VBoxContainer/ExplorationLabel
 @onready var reward_flow_container: HFlowContainer = $RewardCenterContainer/RewardHBoxContainer
 @onready var reward_icon: TextureRect = $RewardCenterContainer/RewardHBoxContainer/RewardIcon
 
@@ -155,7 +155,7 @@ func _update_scale() -> void:
 func _apply_stage_text_color(stage_definition: StageInfo) -> void:
 	# フォントcolor
 	var font_color := HIGH_DIFFICULTY_TEXT_COLOR if stage_definition.is_high_difficulty else NORMAL_TEXT_COLOR
-	difficulty_label.add_theme_color_override("font_color", font_color)
+	difficulty_label.add_theme_color_override("default_color", font_color)
 	name_label.add_theme_color_override("font_color", font_color)
-	location_label.add_theme_color_override("font_color", font_color)
-	exploration_label.add_theme_color_override("font_color", font_color)
+	location_label.add_theme_color_override("default_color", font_color)
+	exploration_label.add_theme_color_override("default_color", font_color)
