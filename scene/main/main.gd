@@ -711,17 +711,19 @@ func _is_entering_night_dance_area() -> bool:
 
 func _start_selected_stage_with_lara() -> void:
 	_pending_lara_area_novel_area = -1
-	if _is_entering_lunova_old_city() and not run_state.has_played_lunova_first_entry_novel:
-		bgm.change_bgm(LUNOVA_BGM_PATH)
-		title.visible = false
-		day_intro.visible = false
-		stage_select.visible = false
-		game.visible = false
-		game_ui.visible = false
-		stage_clear.visible = false
-		active_novel_flow = NovelFlow.LUNOVA_FIRST_ENTRY
-		opening_novel.start_with_text(lunova_first_entry_novel_text)
-		return
+	if run_state.selected_stage != null \
+		and run_state.selected_stage.stage_area == StageInfo.StageArea.LUNOVA_OLD_CITY:
+		if not run_state.has_played_lunova_first_entry_novel:
+			bgm.change_bgm(LUNOVA_BGM_PATH)
+			title.visible = false
+			day_intro.visible = false
+			stage_select.visible = false
+			game.visible = false
+			game_ui.visible = false
+			stage_clear.visible = false
+			active_novel_flow = NovelFlow.LUNOVA_FIRST_ENTRY
+			opening_novel.start_with_text(lunova_first_entry_novel_text)
+			return
 	var location := run_state.lara_current_location
 	if not run_state.is_lara_unlocked or location == null \
 		or run_state.selected_stage.stage_area != location.stage_area:
