@@ -6,6 +6,7 @@ const ENEMY_RIGHT_X := 575.0
 const ENEMY_TOP_Y := 140.0
 const ENEMY_BOTTOM_Y := 252.5
 const ENEMY_SINGLE_POSITION := Vector2(480.0, 190.0)
+const STAGE_CLEAR_COOLDOWN := 0.8
 
 var _failures := 0 # 失敗数
 
@@ -191,9 +192,10 @@ func _check_time_effect_damage_visuals(game: Node) -> void:
 	_expect(target.is_Acided(), "11010001001の時間効果で対象が消化される")
 	_expect(_has_visible_damage_popup_text(target, "-999"), "時間効果で受けた999消化ダメージを表示する")
 	_expect(battle_results.is_empty(), "999消化ダメージの表示中はステージクリアを通知しない")
-	await create_timer(EnemyDamagePopup.TOTAL_DURATION + 0.1).timeout
-	_expect(not _has_visible_damage_popup(target), "999消化ダメージの表示完了後に演出待機を終える")
-	_expect(battle_results == [true], "999消化ダメージの表示完了後にステージクリアを通知する")
+	await create_timer(STAGE_CLEAR_COOLDOWN * 0.5).timeout
+	_expect(battle_results.is_empty(), "全消化後も0.8秒の待機中はクリア通知しない")
+	await create_timer(STAGE_CLEAR_COOLDOWN * 0.6).timeout
+	_expect(battle_results == [true], "最後の悪夢消化後に0.8秒の待機を終えてクリア通知する")
 
 
 # 表示中ダメージポップアップ有無

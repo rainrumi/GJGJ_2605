@@ -30,6 +30,7 @@ const RECOVERY_MINIMUM_RATE: float = 0.5
 const acid_AUTO_INTERVAL: float = 0.65
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const DRAG_CENTER_TWEEN_DURATION := 0.3
+const STAGE_CLEAR_COOLDOWN := 0.8
 const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
@@ -62,6 +63,8 @@ var day_seed_acid_bonus := 0.0
 var _pending_forced_returns: Array[Enemy] = []
 var current_enemy_preset: EnemyPresetInfo
 var battle_active := false
+var _battle_finish_pending := false
+var _battle_finish_generation := 0
 var auto_acid_enabled := false
 var auto_acid_paused_for_drag := false
 var auto_acid_paused_by_user := false
@@ -319,6 +322,8 @@ func _capture_initial_tutorial_enemies() -> void:
 		_initial_tutorial_enemies.append(enemies[index])
 # 戦闘開始
 func start_battle(context: BattleInfo = null) -> void:
+	_battle_finish_generation += 1
+	_battle_finish_pending = false
 	# 戦闘文脈
 	_tutorial_active = false
 	_active_tutorial_property_name = ""
@@ -419,6 +424,8 @@ func get_last_time_over_recovery_percent() -> int:
 
 # 戦闘取消
 func cancel_battle() -> void:
+	_battle_finish_generation += 1
+	_battle_finish_pending = false
 	_tutorial_active = false
 	_active_tutorial_property_name = ""
 	_active_tutorial_completion_flags.clear()
@@ -1302,6 +1309,10 @@ func _commit_depleted_seed_sources() -> void:
 	_pending_depleted_seed_sources.clear()
 # 戦闘終了
 func _finish_battle(won: bool, _message: String) -> void:
+	if _battle_finish_pending:
+		return
+	_battle_finish_pending = true
+	var finish_generation := _battle_finish_generation
 	_awaiting_time_over_decision = false
 	battle_active = false
 	if won:
@@ -1314,6 +1325,10 @@ func _finish_battle(won: bool, _message: String) -> void:
 	_refresh_after_battle_event()
 	ui.hide_time_over_decision()
 	_commit_depleted_seed_sources()
+	if won:
+		await get_tree().create_timer(STAGE_CLEAR_COOLDOWN).timeout
+		if finish_generation != _battle_finish_generation:
+			return
 	battle_finished.emit(won)
 # 時間over回復適用
 func _apply_time_over_recovery() -> void:
@@ -1807,8 +1822,9 @@ func _shift_stomach_object_rows(row_delta: int) -> void:
 func _resolve_post_acid_visuals(Acided_enemies: Array[Enemy]) -> void:
 	if Acided_enemies.is_empty():
 		return
-	var visual_duration := maxf(Enemy.AcidED_TWEEN_DURATION, EnemyDamagePopup.TOTAL_DURATION)
-	await get_tree().create_timer(visual_duration).timeout
+	if not _all_enemys_Acided():
+		var visual_duration := maxf(Enemy.AcidED_TWEEN_DURATION, EnemyDamagePopup.TOTAL_DURATION)
+		await get_tree().create_timer(visual_duration).timeout
 	acid_controller.unlock_deferred_nuisance_gravity(enemies)
 	stomach.apply_gravity(enemies)
 
