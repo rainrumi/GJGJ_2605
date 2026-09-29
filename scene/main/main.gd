@@ -246,7 +246,7 @@ func _start_bgm_from_web_input(event: InputEvent, is_web: bool) -> void:
 # title表示
 func show_title() -> void:
 	_hide_seed_reward()
-	bgm.change_bgm(NIGHT_DANCE_BGM_PATH)
+	bgm.play_bgm_immediately(NIGHT_DANCE_BGM_PATH)
 	title.set_continue_available(_has_resumable_run)
 	title.visible = true
 	opening_novel.visible = false

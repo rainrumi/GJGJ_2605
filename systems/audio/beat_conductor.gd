@@ -96,6 +96,23 @@ func change_bgm(audio_path: String) -> void:
 	await _tween_bgm_transition_factor(1.0, BGM_FADE_IN_DURATION, transition_id)
 
 
+func play_bgm_immediately(audio_path: String) -> void:
+	if audio_path == _current_bgm_path and is_playing():
+		_bgm_transition_id += 1
+		_set_bgm_transition_factor(1.0, _bgm_transition_id)
+		return
+	var next_stream := ResourceLoader.load(audio_path) as AudioStream
+	if next_stream == null:
+		push_error("BeatConductor could not load BGM AudioStream: %s" % audio_path)
+		return
+
+	_bgm_transition_id += 1
+	_set_bgm_transition_factor(1.0, _bgm_transition_id)
+	bgm_stream = next_stream
+	audio_player.stream = next_stream
+	play()
+
+
 func _tween_bgm_transition_factor(target: float, duration: float, transition_id: int) -> bool:
 	var start_factor := _bgm_transition_factor
 	var tween := create_tween()
