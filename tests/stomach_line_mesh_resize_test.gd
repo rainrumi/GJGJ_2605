@@ -19,6 +19,13 @@ func _run() -> void:
 
 	for row_count in range(1, 6):
 		board.set_grid_size(4, row_count)
+		var expected_frame_height := board.get_span_size(row_count) + (
+			board._frame_base_size.y - board._grid_frame_area_size.y
+		)
+		_expect(
+			is_equal_approx(board.frame.size.y, expected_frame_height),
+			"胃袋の高さが消化マス%d行分と外枠の余白に一致" % row_count
+		)
 		for acid_rows in range(1, row_count + 1):
 			board.set_acid_line_rows(acid_rows)
 			var expected_wave_local_y := (

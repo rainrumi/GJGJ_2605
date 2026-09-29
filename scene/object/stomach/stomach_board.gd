@@ -346,7 +346,7 @@ func _get_active_grid_area_size(grid_size: Vector2, is_horizontal_limited: bool)
 	var active_size := _grid_frame_area_size
 	if columns < 4 or (rows > 5 and not is_horizontal_limited):
 		active_size.x = grid_size.x
-	if rows < 4 or (columns > 4 and is_horizontal_limited):
+	if rows < 4 or (columns >= 4 and is_horizontal_limited):
 		active_size.y = grid_size.y
 	return active_size.round()
 

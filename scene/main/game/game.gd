@@ -32,6 +32,8 @@ const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const DRAG_CENTER_TWEEN_DURATION := 0.3
 const STAGE_CLEAR_COOLDOWN := 0.8
 const FACE_BUTTON_BLOCKING_FLOWER_COUNT := 4
+const YUGAO_SKILL_ID := 100115
+const RUPINASU_SKILL_ID := 100116
 const START_MESSAGE: String = "６時までにすべての悪夢を消化しましょう"
 const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転できません"
 @export var tutorial_novel_text: NovelTextInfo
@@ -98,6 +100,7 @@ var _drag_center_tween: Tween
 var dragged_enemy_was_Aciding := false
 var dragged_enemy_original_cell := Vector2i.ZERO
 var dragged_enemy_original_global_position := Vector2.ZERO
+var _dragged_seed_skill_id := 0
 var hovered_enemy: Enemy
 var last_time_over_recovery_percent := 0
 var effective_max_hp := MAX_HP
@@ -528,6 +531,7 @@ func _set_battle_flags(is_active: bool) -> void:
 	_acid_pause_ready_for_interaction = false
 	acid_turn_in_progress = false
 	drag_mode = DragMode.NONE
+	_dragged_seed_skill_id = 0
 	seed_controller.cancel_drag()
 	if Acidion_timer != null and not Acidion_timer.is_stopped():
 		Acidion_timer.stop()
@@ -856,6 +860,8 @@ func _on_seed_drag_started(
 	if not result.started:
 		return
 	drag_mode = DragMode.seed
+	_dragged_seed_skill_id = seed.skill_id if seed != null else 0
+	_refresh_seed_structural_effects()
 	auto_acid_paused_for_drag = auto_acid_enabled
 	_update_auto_acid_timer()
 
@@ -938,6 +944,8 @@ func _finish_drag_operation() -> void:
 	if auto_acid_enabled:
 		auto_acid_paused_for_drag = false
 	drag_mode = DragMode.NONE
+	_dragged_seed_skill_id = 0
+	_refresh_seed_structural_effects()
 	_update_auto_acid_timer()
 
 
@@ -1761,12 +1769,19 @@ func _apply_seed_stomach_size_effects() -> void:
 
 # 種胃袋列補正取得
 func _get_seed_stomach_column_bonus() -> int:
-	return SeedEffectResolver.get_stomach_size_bonus(seed_controller.get_flowers()).x
+	return _get_active_seed_stomach_size_bonus().x
 
 
 # 種胃袋行補正取得
 func _get_seed_stomach_row_bonus() -> int:
-	return SeedEffectResolver.get_stomach_size_bonus(seed_controller.get_flowers()).y
+	return _get_active_seed_stomach_size_bonus().y
+
+
+func _get_active_seed_stomach_size_bonus() -> Vector2i:
+	var disabled_skill_ids: Array[int] = []
+	if drag_mode == DragMode.seed and _dragged_seed_skill_id in [YUGAO_SKILL_ID, RUPINASU_SKILL_ID]:
+		disabled_skill_ids.append(_dragged_seed_skill_id)
+	return SeedEffectResolver.get_stomach_size_bonus(seed_controller.get_flowers(), disabled_skill_ids)
 
 
 # 種消化行effects適用
@@ -1788,7 +1803,7 @@ func _refresh_seed_structural_effects() -> void:
 	if _battle_start_context == null:
 		return
 	var flowers := seed_controller.get_flowers()
-	var size_bonus := SeedEffectResolver.get_stomach_size_bonus(flowers)
+	var size_bonus := _get_active_seed_stomach_size_bonus()
 	var acid_line_rows := 1 + seed_effects.get_persistent_acid_line_bonus()
 	for flower in flowers:
 		if flower == null or flower.get_main_skill() == null:

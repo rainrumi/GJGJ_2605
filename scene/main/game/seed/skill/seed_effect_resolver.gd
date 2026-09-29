@@ -15,7 +15,10 @@ var _activated_non_stacking_sub_effects: Dictionary = {}
 
 
 # 装備中の同種数条件を反映した胃袋サイズ補正
-static func get_stomach_size_bonus(flowers: Array[SeedInfo]) -> Vector2i:
+static func get_stomach_size_bonus(
+	flowers: Array[SeedInfo],
+	disabled_skill_ids: Array[int] = []
+) -> Vector2i:
 	var seed_counts: Dictionary = {}
 	for flower in flowers:
 		if flower != null:
@@ -23,7 +26,11 @@ static func get_stomach_size_bonus(flowers: Array[SeedInfo]) -> Vector2i:
 	var column_bonus := 0
 	var row_bonus := 0
 	for flower in flowers:
-		if flower == null or flower.get_main_skill() == null:
+		if (
+			flower == null
+			or flower.skill_id in disabled_skill_ids
+			or flower.get_main_skill() == null
+		):
 			continue
 		var same_seed_count := int(seed_counts.get(flower.skill_id, 0))
 		var skill := flower.get_main_skill()
