@@ -5,6 +5,7 @@ const STORY_CLEAR_DAY := 20
 const INITIAL_STAGE_ID := 11
 const HIGH_DIFFICULTY_DAY_INTERVAL := 4
 const ELMENA_UNLOCK_EVENT_DAY := 1
+const RIRAN_UNLOCK_EVENT_DAY := 1
 const FIRST_NIGHTMARE_EVENT_DAY := 4
 const RECURRING_STAGE_NOVEL_STAGE_ID := 0
 const RECURRING_STAGE_NOVEL_SCENARIO_INDEX := 1
@@ -587,6 +588,8 @@ func _on_opening_novel_finished() -> void:
 			_finish_current_day()
 		NovelFlow.ELMENA_UNLOCK_EVENT:
 			active_novel_flow = NovelFlow.NONE
+			if run_state.current_day == RIRAN_UNLOCK_EVENT_DAY:
+				run_state.unlock_riran()
 			_advance_to_next_day()
 		NovelFlow.LARA_DIGESTION_COUNT_TUTORIAL:
 			active_novel_flow = NovelFlow.NONE

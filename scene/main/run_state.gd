@@ -56,6 +56,7 @@ var area_reroll_counts: Dictionary[int, int] = {}
 var played_stage_novel_indices := {}
 var is_lara_unlocked := false
 var is_continuous_play_unlocked := false
+var is_riran_unlocked := false
 var has_challenged_area_today := false
 var lara_current_location: StageInfo
 var previous_area_stage: StageInfo
@@ -97,6 +98,7 @@ func reset() -> void:
 	played_stage_novel_indices.clear()
 	is_lara_unlocked = false
 	is_continuous_play_unlocked = false
+	is_riran_unlocked = false
 	has_challenged_area_today = false
 	lara_current_location = null
 	previous_area_stage = null
@@ -115,6 +117,10 @@ func unlock_lara() -> void:
 
 func unlock_continuous_play() -> void:
 	is_continuous_play_unlocked = true
+
+
+func unlock_riran() -> void:
+	is_riran_unlocked = true
 
 
 func mark_area_challenged_today() -> void:

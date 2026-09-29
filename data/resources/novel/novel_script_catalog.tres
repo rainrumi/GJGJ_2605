@@ -1358,9 +1358,9 @@ Thank You for Playing!!
 @lcm",
 "res://resource/novel/process/novel_process_event_200.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
 @name \"試験官\"
-ティーナさん、悪夢食べは問題なさそうですか？
+ティーナさん、初日の悪夢食べはどうでしたか？
 @lcm
-……何とか食べれるみたいですね。よかったです。
+……何とか食べれたみたいですね。よかったです。
 @lcm
 あ、私はティーナさんを担当する試験官です。
 @lcm
@@ -1370,7 +1370,9 @@ Thank You for Playing!!
 @lcm
 イリユ洞窟の悪夢が大丈夫そうなら、明日からほかの場所の悪夢を消化してみてはどうでしょうか？
 @lcm
-近くの場所だとエルメナ大学とかいいと思います。とりあえずガイドを渡しておきますね。
+近くの場所だとエルメナ大学とか大樹リラン駐屯地がいいと思います。
+@lcm
+とりあえずガイドを渡しておきますね。
 @lcm
 私はたまたま臨時収入が入ったので、これから遊びに行きます。
 @lcm
@@ -1379,7 +1381,7 @@ Thank You for Playing!!
 @name \"\"
 エリア開放！
 @r
-エルメナ大学に行けるようになりました。
+ほかのエリアに行けるようになりました。
 @lcm
 ",
 "res://resource/novel/tutorial/tutorial_100_100.txt": "@textbox_set 0, 96, 101, 241, 88, 1, 1

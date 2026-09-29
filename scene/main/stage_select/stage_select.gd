@@ -280,7 +280,15 @@ func _get_ordered_stage_definitions() -> Array[StageInfo]:
 		if _current_day <= 1:
 			for index in range(definitions.size() - 1, -1, -1):
 				var stage := definitions[index]
-				if stage.stage_area == StageInfo.StageArea.ELMENA_UNIVERSITY:
+				if (
+					stage.stage_area == StageInfo.StageArea.ELMENA_UNIVERSITY
+					or stage.stage_area == StageInfo.StageArea.RIRAN_TREE_GARRISON
+				):
+					definitions.remove_at(index)
+		elif _run_state == null or not _run_state.is_riran_unlocked:
+			for index in range(definitions.size() - 1, -1, -1):
+				var stage := definitions[index]
+				if stage.stage_area == StageInfo.StageArea.RIRAN_TREE_GARRISON:
 					definitions.remove_at(index)
 	definitions.sort_custom(_is_stage_before)
 	return definitions
