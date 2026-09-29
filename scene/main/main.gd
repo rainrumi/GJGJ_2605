@@ -107,6 +107,7 @@ var _settings_paused_tree := false
 var _screen_flow_id := 0
 var _last_battle_progress_snapshot: Dictionary = {}
 var _lara_first_interaction := false
+var _pending_lara_area_novel_area := -1
 var _lara_judge_pending := false
 var _lara_digestion_count_tutorial_played := false
 var _stage_clear_tutorial_played := false
@@ -549,6 +550,9 @@ func _on_opening_novel_finished() -> void:
 			if not _play_next_stage_unlock_novel():
 				_start_selected_stage_with_lara()
 		NovelFlow.LARA_INTERACTION:
+			if _pending_lara_area_novel_area >= 0:
+				run_state.mark_lara_area_novel_played(_pending_lara_area_novel_area)
+				_pending_lara_area_novel_area = -1
 			if _lara_first_interaction:
 				active_novel_flow = NovelFlow.LARA_INTERACTION_REWARD
 				var reward_text := NovelTextInfo.new()
@@ -706,6 +710,7 @@ func _is_entering_night_dance_area() -> bool:
 
 
 func _start_selected_stage_with_lara() -> void:
+	_pending_lara_area_novel_area = -1
 	if _is_entering_lunova_old_city() and not run_state.has_played_lunova_first_entry_novel:
 		active_novel_flow = NovelFlow.LUNOVA_FIRST_ENTRY
 		opening_novel.start_with_text(lunova_first_entry_novel_text)
@@ -724,7 +729,7 @@ func _start_selected_stage_with_lara() -> void:
 		if not area_candidates.is_empty():
 			var area: int = area_candidates.pick_random()
 			scenario = "area/novel_event_rara_%s_001" % LARA_AREA_NOVEL_NAMES[area]
-			run_state.mark_lara_area_novel_played(area)
+			_pending_lara_area_novel_area = area
 	title.visible = false
 	stage_select.visible = false
 	game.visible = false
