@@ -47,6 +47,7 @@ const STOMACH_ROTATION_BLOCKED_MESSAGE: String = "胃袋内のモノは回転で
 @onready var stomach: StomachBoard = $Stomach
 @onready var input_controller: GameInputController = $GameInputController
 @onready var attack_se: AudioStreamPlayer = $AttackSe
+@onready var enemy_rotate_se: AudioStreamPlayer = $EnemyRotateSe
 @onready var tutorial_novel: OpeningNovel = $TutorialNovel
 @onready var character: Character = $Character
 @onready var enemies: Array[Enemy] = [$EnemyLeft as Enemy, $EnemyCenter as Enemy, $EnemyRight as Enemy, $EnemyUpperRight as Enemy]
@@ -665,6 +666,7 @@ func _on_enemy_rotation_requested(enemy: Enemy) -> void:
 		return
 	if not stomach.try_rotate_enemy_clockwise(enemy, enemies):
 		return
+	GameSettings.play_se(enemy_rotate_se, &"game_enemy_rotate")
 	_refresh_after_battle_event()
 
 
