@@ -328,9 +328,9 @@ by 試験官
 @lcm",
 "res://resource/novel/area/area_lunova/novel_area_lunova_event_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_lunova_100.png\"
 @name \"\"
-そこは色を失った場所のようで、どこか幻想的だった。
+色を失った場所をうろつく悪夢は、どこか幻想的だった。
 @lcm
-悪夢がぽつりぽつりと闊歩していて、ふと私の目に留まる。
+ぽつりぽつりと闊歩している姿が、ふと私の目に留まる。
 @lcm
 悪夢はのそのそと他の悪夢へ近づき、抱きかかえ、泣きつくように他の悪夢を飲み込んだ。
 @lcm
@@ -466,6 +466,34 @@ by 試験官
 ルノヴァ旧市街の悪夢を消化したおかげでティーナは成長した。
 @lcm
 ルノヴァ旧市街で夢の種を抽出するときにリロールが5回できるようになった！
+@lcm",
+"res://resource/novel/area/area_lunova/novel_area_lunova_process_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_lunova_100.png\"
+@name \"\"
+……歩いていたら、変なところに来てしまった。
+@lcm
+あたりは閑散としていて、地面には特徴的な星芒形の模様がこびりついている。
+@lcm
+空は水で薄めた灰色の絵の具のように滲んでいて、木々は日を浴びれずに枯れていた。
+@lcm
+そんな薄暗い世界に、私はなぜか安心感を覚えた。
+@lcm
+きっとラーラがいたら私を止める気がしたけど、私は怖くは思わなかった。
+@lcm
+だって、ラーラは私より怖がりなだけだから。
+@lcm
+危機感が足りないともいえると思う。
+@lcm
+…………。
+@lcm
+悪夢を探したら、すぐに出会えた。
+@lcm
+でも、なにかおかしい。
+@lcm
+ほかの場所と違ってとても手ごわそうに見える。
+@lcm
+私は、大きな悪夢に「おいしそう」と思って手を伸ばした。
+@lcm
+しっかり準備をしてから消化しよう。
 @lcm",
 "res://resource/novel/area/area_mirune/novel_area_mirune_event_001.txt": "すぐにものを壊す悪夢
 @lcm
@@ -1541,6 +1569,5 @@ Thank You for Playing!!
 @text 0, \"……普通は頭に植えれないんですけどね。\"
 @lcm
 @text 0, \"ティーナさんの特性を生かして合格できるように頑張ってください。\"
-@lcm",
-"res://resource/novel/area/area_lunova/novel_area_lunova_process_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_lunova_100.png\"\n@name \"\"\n……歩いていたら、変なところに来てしまった。\n@lcm\nあたりは閑散としていて、地面には特徴的な星芒形の模様がこびりついている。\n@lcm\n空は水で薄めた灰色の絵の具のように滲んでいて、木々は日を浴びれずに枯れていた。\n@lcm\nそんな薄暗い世界に、私はなぜか安心感を覚えた。\n@lcm\nきっとラーラがいたら私を止める気がしたけど、私は怖くは思わなかった。\n@lcm\nだって、ラーラは私より怖がりなだけだから。\n@lcm\n危機感が足りないともいえると思う。\n@lcm\n…………。\n@lcm\n悪夢を探したら、すぐに出会えた。\n@lcm\nでも、なにかおかしい。\n@lcm\nほかの場所と違ってとても手ごわそうに見える。\n@lcm\n私は、大きな悪夢に「おいしそう」と思って手を伸ばした。\n@lcm\nしっかり準備をしてから消化しよう。\n@lcm"
+@lcm"
 })
