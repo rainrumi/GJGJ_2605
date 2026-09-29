@@ -41,6 +41,7 @@ var _saved_images: Dictionary[int, TextureRect] = {}
 var _textboxes: Dictionary[int, Label] = {}
 var _saved_textboxes: Dictionary[int, Label] = {}
 var _textbox_source_lines: Dictionary[int, int] = {}
+var _textbox_source_paths: Dictionary[int, String] = {}
 var _image_source_lines: Dictionary[int, int] = {}
 var _active_novel_text: NovelTextInfo
 var _novel_variable_list: Dictionary = {}
@@ -112,7 +113,6 @@ func _start_script(next_novel_text: NovelTextInfo, show_default_background: bool
 	_clear_images()
 	_image_source_lines.clear()
 	_clear_textboxes()
-	_textbox_source_lines.clear()
 	name_label.text = ""
 	name_label.visible = false
 	text_label.text = ""
@@ -394,6 +394,7 @@ func _command_textbox_set(argument: String, is_saved: bool) -> void:
 		textbox_layer.add_child(textbox)
 		textbox_collection[textbox_index] = textbox
 	_textbox_source_lines[debug_textbox_index] = _line_index - 1
+	_textbox_source_paths[debug_textbox_index] = _active_novel_text.script_path
 	textbox.position = Vector2(arguments[1].to_float(), arguments[2].to_float())
 	textbox.size = textbox_size
 	textbox.horizontal_alignment = arguments[5].to_int()
@@ -415,6 +416,7 @@ func _command_textbox_clear(argument: String, is_saved: bool) -> void:
 		return
 	textbox_collection.erase(textbox_index)
 	_textbox_source_lines.erase(debug_textbox_index)
+	_textbox_source_paths.erase(debug_textbox_index)
 	textbox_layer.remove_child(textbox)
 	textbox.queue_free()
 	_refresh_debug_targets()
@@ -515,6 +517,7 @@ func _clear_textboxes() -> void:
 	for textbox_index: int in _textbox_source_lines.keys():
 		if textbox_index >= 0:
 			_textbox_source_lines.erase(textbox_index)
+			_textbox_source_paths.erase(textbox_index)
 	_refresh_debug_targets()
 
 
@@ -627,11 +630,13 @@ func _save_image_position(image_index: int) -> void:
 func _save_textbox_geometry(textbox_index: int) -> void:
 	var textbox := _get_debug_textboxes().get(textbox_index) as Label
 	var source_line_index := int(_textbox_source_lines.get(textbox_index, -1))
-	if textbox == null or source_line_index < 0 or source_line_index >= _script_lines.size():
+	var source_path := String(_textbox_source_paths.get(textbox_index, ""))
+	if textbox == null or source_line_index < 0 or source_path.is_empty():
 		return
-	if _active_novel_text == null or _active_novel_text.script_path.is_empty():
+	var source_lines := _get_textbox_source_lines(source_path, source_line_index)
+	if source_lines.is_empty():
 		return
-	var command := _parse_command(_script_lines[source_line_index].strip_edges())
+	var command := _parse_command(source_lines[source_line_index].strip_edges())
 	var arguments := _parse_comma_separated_arguments(String(command["argument"]))
 	var is_saved_textbox := textbox_index < 0
 	var expected_command_name := "textbox_save_set" if is_saved_textbox else "textbox_set"
@@ -647,8 +652,8 @@ func _save_textbox_geometry(textbox_index: int) -> void:
 			% [expected_command_name, source_line_index + 1]
 		)
 		return
-	_script_lines[source_line_index] = _replace_command_arguments(
-		_script_lines[source_line_index],
+	source_lines[source_line_index] = _replace_command_arguments(
+		source_lines[source_line_index],
 		{
 			1: _format_coordinate(textbox.position.x),
 			2: _format_coordinate(textbox.position.y),
@@ -656,7 +661,30 @@ func _save_textbox_geometry(textbox_index: int) -> void:
 			4: _format_coordinate(textbox.size.y),
 		}
 	)
-	_write_debug_script_changes()
+	_write_debug_script_changes(source_path, source_lines)
+	if _active_novel_text != null and source_path == _active_novel_text.script_path:
+		_script_lines = source_lines
+
+
+func _get_textbox_source_lines(source_path: String, source_line_index: int) -> Array[String]:
+	if _active_novel_text != null and source_path == _active_novel_text.script_path:
+		if source_line_index >= _script_lines.size():
+			return []
+		return _script_lines.duplicate()
+	var file := FileAccess.open(source_path, FileAccess.READ)
+	if file == null:
+		push_error(
+			"OpeningNovel could not read saved textbox source: %s (error %d)"
+			% [source_path, FileAccess.get_open_error()]
+		)
+		return []
+	var source_lines: Array[String] = []
+	for line in file.get_as_text().replace("\r\n", "\n").replace("\r", "\n").split("\n", true):
+		source_lines.append(line)
+	if source_line_index >= source_lines.size():
+		push_error("OpeningNovel saved textbox source line %d is missing: %s" % [source_line_index + 1, source_path])
+		return []
+	return source_lines
 
 
 func _replace_command_arguments(source_line: String, replacements: Dictionary) -> String:
@@ -726,15 +754,22 @@ func _replace_command_arguments(source_line: String, replacements: Dictionary) -
 	return updated_line
 
 
-func _write_debug_script_changes() -> void:
-	var file := FileAccess.open(_active_novel_text.script_path, FileAccess.WRITE)
+func _write_debug_script_changes(source_path: String = "", source_lines: Array[String] = []) -> void:
+	var target_path := source_path
+	var lines_to_write := source_lines
+	if target_path.is_empty():
+		if _active_novel_text == null:
+			return
+		target_path = _active_novel_text.script_path
+		lines_to_write = _script_lines
+	var file := FileAccess.open(target_path, FileAccess.WRITE)
 	if file == null:
 		push_error(
 			"OpeningNovel could not write debug geometry to scenario text: %s (error %d)"
-			% [_active_novel_text.script_path, FileAccess.get_open_error()]
+			% [target_path, FileAccess.get_open_error()]
 		)
 		return
-	file.store_string("\n".join(_script_lines))
+	file.store_string("\n".join(lines_to_write))
 
 
 func _save_active_debug_target() -> void:

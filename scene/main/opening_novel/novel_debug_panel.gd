@@ -186,21 +186,22 @@ func _on_image_selected(_item_index: int) -> void:
 func _on_position_value_changed(_value: float) -> void:
 	if _is_updating_position:
 		return
+	var target_kind := get_selected_kind()
 	var target_index := get_selected_target_index()
-	if target_index < 0:
+	if target_kind.is_empty():
 		return
 	var position := Vector2(x_position.value, y_position.value)
-	if get_selected_kind() == "image":
+	if target_kind == "image":
 		_image_positions[target_index] = position
 		image_position_changed.emit(target_index, position)
-	else:
+	elif target_kind == "textbox":
 		var geometry: Dictionary = _textbox_geometry[target_index]
 		geometry.position = position
 		textbox_geometry_changed.emit(target_index, position, geometry.size)
 
 
 func _on_geometry_value_changed(_value: float) -> void:
-	if _is_updating_position or get_selected_textbox_index() < 0:
+	if _is_updating_position or get_selected_kind() != "textbox":
 		return
 	var textbox_index := get_selected_textbox_index()
 	var position := Vector2(x_position.value, y_position.value)
