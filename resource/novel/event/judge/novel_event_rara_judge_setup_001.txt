@@ -4,7 +4,7 @@
 @lcm
 悪夢の消化数は……
 @lcm
-@textbox_save_set 0, -50, 40, 320, 80, 1, 1
+@textbox_save_set 0, 20, 40, 200, 60, 1, 1
 @textbox_save_data 0, "ティーナの消化数:%d", acid_count_tina
-@textbox_save_set 1, 320, 40, 320, 80, 1, 1
+@textbox_save_set 1, 400, 40, 200, 60, 1, 1
 @textbox_save_data 1, "ラーラの消化数:%d", acid_count_lara
