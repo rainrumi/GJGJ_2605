@@ -373,6 +373,18 @@ func has_pending_strengthened_enemy(stage: StageInfo) -> bool:
 	return defeated_count < unlocked_count
 
 
+func has_passed_strengthened_enemy_exam(stage: StageInfo) -> bool:
+	if (
+		stage == null
+		or stage.is_high_difficulty
+		or not stage.has_normal_stage
+		or stage.enemy_data == null
+		or stage.enemy_data.strengthened_enemy_presets.is_empty()
+	):
+		return false
+	return has_pending_strengthened_enemy(stage)
+
+
 func is_waiting_for_strengthened_enemy_clear(stage: StageInfo) -> bool:
 	if stage == null or stage.is_high_difficulty or stage.enemy_data == null:
 		return false

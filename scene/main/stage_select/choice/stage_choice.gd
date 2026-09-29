@@ -41,7 +41,8 @@ func setup_choice(
 	stage_definition: StageInfo,
 	exploration_percent: int = 0,
 	is_current_location: bool = false,
-	is_waiting_for_strengthened_clear: bool = false
+	is_waiting_for_strengthened_clear: bool = false,
+	is_strengthened_exam_passed: bool = false
 ) -> void:
 	if stage_definition == null:
 		visible = false
@@ -62,7 +63,9 @@ func setup_choice(
 	location_label.text = "%s%s" % [stage_definition.location, "（現在地）" if is_current_location else ""]
 	var exploration_text := "探索率 %d%%" % exploration_percent
 	if is_waiting_for_strengthened_clear:
-		exploration_text += "（能力試験クリア待ち）"
+		exploration_text += "（定期試験クリア待ち）"
+	elif is_strengthened_exam_passed:
+		exploration_text += "（定期試験基準通過済み）"
 	exploration_label.text = exploration_text
 	reward_icon.texture = stage_definition.reward_icon
 	_setup_reward_seed_icons(stage_definition.drop_seed_pool)

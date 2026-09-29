@@ -22,6 +22,7 @@ func setup_choices(
 	exploration_percents: Array[int],
 	current_location_flags: Array[bool],
 	strengthened_clear_waiting_flags: Array[bool],
+	strengthened_exam_passed_flags: Array[bool],
 	stage_choice_scene: PackedScene
 ) -> void:
 	if _stage_choices.is_empty():
@@ -35,7 +36,8 @@ func setup_choices(
 			stage_definitions[i],
 			_get_exploration_percent(exploration_percents, i),
 			_is_current_location(current_location_flags, i),
-			_is_strengthened_clear_waiting(strengthened_clear_waiting_flags, i)
+			_is_strengthened_clear_waiting(strengthened_clear_waiting_flags, i),
+			_is_strengthened_exam_passed(strengthened_exam_passed_flags, i)
 		)
 
 
@@ -86,6 +88,12 @@ func _is_current_location(current_location_flags: Array[bool], choice_index: int
 
 
 func _is_strengthened_clear_waiting(flags: Array[bool], choice_index: int) -> bool:
+	if choice_index >= flags.size():
+		return false
+	return flags[choice_index]
+
+
+func _is_strengthened_exam_passed(flags: Array[bool], choice_index: int) -> bool:
 	if choice_index >= flags.size():
 		return false
 	return flags[choice_index]
