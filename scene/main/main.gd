@@ -33,6 +33,12 @@ const AREA_BOSS_REROLL_NOVEL_NAMES := {
 	StageInfo.StageArea.IRIYU_CAVE: "iriyu",
 }
 const AREA_BOSS_REROLL_NOVEL_MAX_DEFEAT_COUNT := 3
+const NIGHT_DANCE_BGM_PATH := "res://resource/sound/bgm/Night_Dance.mp3"
+const NIGHT_DANCE_STAGE_AREAS := [
+	StageInfo.StageArea.IRIYU_CAVE,
+	StageInfo.StageArea.RIRAN_TREE_GARRISON,
+	StageInfo.StageArea.ELMENA_UNIVERSITY,
+]
 
 enum NovelFlow {
 	NONE,
@@ -71,8 +77,10 @@ enum NovelFlow {
 @onready var stage_select: Node = $StageSelect
 @onready var game: Node = $Game
 @onready var config_button: TextureButton = $Game/UI/ConfigButton
+@onready var stage_select_config_button: TextureButton = $StageSelect/UI/ConfigButton
 @onready var game_ui: CanvasLayer = $Game/UI
 @onready var stage_clear: Node = $StageClear
+@onready var stage_clear_config_button: TextureButton = $StageClear/UI/ConfigButton
 @onready var bgm: BeatConductor = $BGM
 @onready var se_click: AudioStreamPlayer = $SeClick
 @onready var se_select: AudioStreamPlayer = $SeSelect
@@ -116,8 +124,9 @@ func _ready() -> void:
 	get_tree().node_added.connect(_on_node_added)
 	_connect_ui_buttons(self)
 	_connect_opening_novel_settings(self)
-	if not config_button.pressed.is_connected(_on_settings_requested):
-		config_button.pressed.connect(_on_settings_requested)
+	_connect_settings_button(config_button)
+	_connect_settings_button(stage_select_config_button)
+	_connect_settings_button(stage_clear_config_button)
 	settings_screen.closed.connect(_on_settings_screen_closed)
 	settings_screen.title_requested.connect(_on_settings_title_requested)
 	settings_screen.map_requested.connect(_on_settings_map_requested)
@@ -141,6 +150,11 @@ func _connect_ui_buttons(node: Node) -> void:
 		_connect_ui_button(node as BaseButton)
 	for child in node.get_children():
 		_connect_ui_buttons(child)
+
+
+func _connect_settings_button(button: TextureButton) -> void:
+	if not button.pressed.is_connected(_on_settings_requested):
+		button.pressed.connect(_on_settings_requested)
 
 
 func _connect_ui_button(button: BaseButton) -> void:
@@ -664,6 +678,8 @@ func _start_selected_battle() -> void:
 	active_novel_flow = NovelFlow.NONE
 	if _is_entering_lunova_old_city():
 		bgm.change_bgm(LUNOVA_BGM_PATH)
+	elif _is_entering_night_dance_area():
+		bgm.change_bgm(NIGHT_DANCE_BGM_PATH)
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
 
@@ -674,6 +690,14 @@ func _is_entering_lunova_old_city() -> bool:
 		return false
 	var previous_area_stage := run_state.previous_area_stage
 	return previous_area_stage == null or previous_area_stage.stage_area != StageInfo.StageArea.LUNOVA_OLD_CITY
+
+
+func _is_entering_night_dance_area() -> bool:
+	var selected_stage := run_state.selected_stage
+	if selected_stage == null or not NIGHT_DANCE_STAGE_AREAS.has(selected_stage.stage_area):
+		return false
+	var previous_area_stage := run_state.previous_area_stage
+	return previous_area_stage == null or previous_area_stage.stage_area != selected_stage.stage_area
 
 
 func _start_selected_stage_with_lara() -> void:

@@ -16,7 +16,7 @@ signal playback_stopped()
 @export var debug_print_beats: bool = false
 
 const BGM_FADE_OUT_DURATION := 0.6
-const BGM_FADE_IN_DURATION := 3.0
+const BGM_FADE_IN_DURATION := 10.0
 
 @onready var audio_player: AudioStreamPlayer = $AudioStreamPlayer
 @onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
