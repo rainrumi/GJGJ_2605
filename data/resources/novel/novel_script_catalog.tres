@@ -1218,7 +1218,9 @@ Thank You for Playing!!
 @name \"ラーラ\"
 ここの悪夢を消化するの？ 今日はもう何もあげれないけど、頑張りなさい。
 @lcm",
-"res://resource/novel/event/judge/novel_event_rara_judge_after.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"",
+"res://resource/novel/event/judge/novel_event_rara_judge_after.txt": "@textbox_save_clear 0
+@textbox_save_clear 1
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"",
 "res://resource/novel/event/judge/novel_event_rara_judge_draw_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 あいこね。
@@ -1268,7 +1270,11 @@ Thank You for Playing!!
 さて、勝負と行こうじゃないの。
 @lcm
 悪夢の消化数は……
-@lcm",
+@lcm
+@textbox_save_set 0, -50, 40, 320, 80, 1, 1
+@textbox_save_data 0, \"ティーナの消化数:%d\", acid_count_tina
+@textbox_save_set 1, 320, 40, 320, 80, 1, 1
+@textbox_save_data 1, \"ラーラの消化数:%d\", acid_count_lara",
 "res://resource/novel/event/judge/novel_event_rara_judge_win_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 私の負けじゃないの……。

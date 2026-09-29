@@ -292,7 +292,7 @@ func _try_show_auto_sleep_novel() -> bool:
 	novel_text.script_path = "res://resource/novel/event/novel_event_auto_sleep.txt"
 	active_novel_flow = NovelFlow.AUTO_SLEEP
 	stage_select.visible = false
-	opening_novel.start_with_text(novel_text)
+	_start_novel_with_data(novel_text)
 	return true
 
 
@@ -302,7 +302,7 @@ func _try_show_lara_digestion_count_tutorial() -> void:
 	var tutorial_text := NovelTextInfo.new()
 	tutorial_text.script_path = "res://resource/novel/tutorial/tutorial_400_100.txt"
 	active_novel_flow = NovelFlow.LARA_DIGESTION_COUNT_TUTORIAL
-	opening_novel.start_with_text(tutorial_text)
+	_start_novel_with_data(tutorial_text)
 
 
 func _try_show_stage_clear_tutorial() -> void:
@@ -311,7 +311,7 @@ func _try_show_stage_clear_tutorial() -> void:
 	var tutorial_text := NovelTextInfo.new()
 	tutorial_text.script_path = "res://resource/novel/tutorial/tutorial_500_100.txt"
 	active_novel_flow = NovelFlow.STAGE_CLEAR_TUTORIAL
-	opening_novel.start_with_text(tutorial_text)
+	_start_novel_with_data(tutorial_text)
 
 
 # ゲーム表示
@@ -413,7 +413,7 @@ func _on_title_start_game() -> void:
 	_sync_run_state_from_stage_clear()
 	title.visible = false
 	active_novel_flow = NovelFlow.OPENING
-	opening_novel.start()
+	opening_novel.start(_get_novel_variable_list())
 
 
 func _on_title_continue_game() -> void:
@@ -458,7 +458,18 @@ func _on_title_debug_novel_requested(novel_text: NovelTextInfo) -> void:
 	_screen_flow_id += 1
 	title.visible = false
 	active_novel_flow = NovelFlow.DEBUG_PREVIEW
-	opening_novel.start_with_text(novel_text)
+	_start_novel_with_data(novel_text)
+
+
+func _start_novel_with_data(novel_text: NovelTextInfo) -> void:
+	opening_novel.start_with_text(novel_text, _get_novel_variable_list())
+
+
+func _get_novel_variable_list() -> Dictionary:
+	return {
+		"acid_count_tina": run_state.get_player_digestion_count(),
+		"acid_count_lara": run_state.lara_digestion_count,
+	}
 
 
 # open設定画面処理
@@ -558,7 +569,7 @@ func _on_opening_novel_finished() -> void:
 				active_novel_flow = NovelFlow.LARA_INTERACTION_REWARD
 				var reward_text := NovelTextInfo.new()
 				reward_text.text = _grant_lara_interaction_reward() + "\n@lcm"
-				opening_novel.start_with_text(reward_text)
+				_start_novel_with_data(reward_text)
 			else:
 				_start_selected_battle()
 		NovelFlow.LARA_INTERACTION_REWARD:
@@ -570,7 +581,7 @@ func _on_opening_novel_finished() -> void:
 			if run_state.current_day >= STORY_CLEAR_DAY:
 				_hide_seed_reward()
 				active_novel_flow = NovelFlow.LARA_JUDGE_AFTER
-				opening_novel.start_with_text(_get_lara_judge_after_text(
+				_start_novel_with_data(_get_lara_judge_after_text(
 					"@name \"ラーラ\"\n"
 					+ "……今日が最後ね。あとは合格を祈りましょう……。\n@lcm"
 				))
@@ -579,7 +590,7 @@ func _on_opening_novel_finished() -> void:
 				active_novel_flow = NovelFlow.LARA_JUDGE_REWARD
 				var reward_text := NovelTextInfo.new()
 				reward_text.text = _lara_judge_reward_message + "\n@lcm"
-				opening_novel.start_with_text(reward_text)
+				_start_novel_with_data(reward_text)
 			return
 		NovelFlow.LARA_JUDGE_REWARD:
 			_hide_seed_reward()
@@ -588,7 +599,7 @@ func _on_opening_novel_finished() -> void:
 				"次は%d日目が終わったときよ！"
 				% (run_state.current_day + HIGH_DIFFICULTY_DAY_INTERVAL)
 			)
-			opening_novel.start_with_text(_get_lara_judge_after_text(
+			_start_novel_with_data(_get_lara_judge_after_text(
 				"@name \"ラーラ\"\n%s\n@lcm" % next_judge_text
 			))
 		NovelFlow.LARA_JUDGE_AFTER:
@@ -723,7 +734,7 @@ func _start_selected_stage_with_lara() -> void:
 			game_ui.visible = false
 			stage_clear.visible = false
 			active_novel_flow = NovelFlow.LUNOVA_FIRST_ENTRY
-			opening_novel.start_with_text(lunova_first_entry_novel_text)
+			_start_novel_with_data(lunova_first_entry_novel_text)
 			return
 	var location := run_state.lara_current_location
 	if not run_state.is_lara_unlocked or location == null \
@@ -748,7 +759,7 @@ func _start_selected_stage_with_lara() -> void:
 	active_novel_flow = NovelFlow.LARA_INTERACTION
 	var novel_text := NovelTextInfo.new()
 	novel_text.script_path = "res://resource/novel/event/" + scenario + ".txt"
-	opening_novel.start_with_text(novel_text)
+	_start_novel_with_data(novel_text)
 
 
 func _get_lara_reward_candidates(rarity: int = -1) -> Array[SeedInfo]:
@@ -859,7 +870,7 @@ func show_end_gameover_novel() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	active_novel_flow = NovelFlow.END_GAMEOVER
-	opening_novel.start_with_text(_get_end_gameover_novel_text())
+	_start_novel_with_data(_get_end_gameover_novel_text())
 
 
 # endgameoverノベル終了
@@ -945,7 +956,7 @@ func show_elmena_unlock_novel() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	active_novel_flow = NovelFlow.ELMENA_UNLOCK_EVENT
-	opening_novel.start_with_text(elmena_unlock_novel_text)
+	_start_novel_with_data(elmena_unlock_novel_text)
 
 
 func _advance_to_next_day() -> void:
@@ -1003,7 +1014,7 @@ func _show_lara_judge_setup() -> void:
 	active_novel_flow = NovelFlow.LARA_JUDGE_SETUP
 	var text := NovelTextInfo.new()
 	text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_setup_001.txt"
-	opening_novel.start_with_text(text)
+	_start_novel_with_data(text)
 
 
 func _show_lara_judge_result() -> void:
@@ -1015,7 +1026,7 @@ func _show_lara_judge_result() -> void:
 	var text := NovelTextInfo.new()
 	text.script_path = "res://resource/novel/event/judge/novel_event_rara_judge_%s_%03d.txt" % [result_name, randi_range(1, 3)]
 	active_novel_flow = NovelFlow.LARA_JUDGE_RESULT
-	opening_novel.start_with_text(text)
+	_start_novel_with_data(text)
 
 
 func _grant_lara_judge_reward() -> String:
@@ -1113,7 +1124,7 @@ func show_area_completion_novel() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	active_novel_flow = NovelFlow.AREA_COMPLETION
-	opening_novel.start_with_text(pending_area_completion_novel_text)
+	_start_novel_with_data(pending_area_completion_novel_text)
 
 
 func show_area_boss_reroll_novel() -> void:
@@ -1125,7 +1136,7 @@ func show_area_boss_reroll_novel() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	active_novel_flow = NovelFlow.AREA_BOSS_REROLL
-	opening_novel.start_with_text(pending_area_boss_reroll_novel_text)
+	_start_novel_with_data(pending_area_boss_reroll_novel_text)
 
 
 func _get_lara_location_candidates() -> Array[StageInfo]:
@@ -1144,7 +1155,7 @@ func show_first_nightmare_event_novel() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	active_novel_flow = NovelFlow.FIRST_NIGHTMARE_EVENT
-	opening_novel.start_with_text(first_nightmare_event_novel_text)
+	_start_novel_with_data(first_nightmare_event_novel_text)
 
 
 # setupinitialステージ位置処理
@@ -1179,7 +1190,7 @@ func show_game_clear_novel() -> void:
 	game_ui.visible = false
 	stage_clear.visible = false
 	active_novel_flow = NovelFlow.GAME_CLEAR
-	opening_novel.start_with_text(_get_game_clear_novel_text())
+	_start_novel_with_data(_get_game_clear_novel_text())
 
 
 # ゲームclearノベル文言取得
@@ -1216,7 +1227,7 @@ func _play_next_stage_unlock_novel() -> bool:
 		return false
 	# ノベル文言
 	var novel_text := pending_stage_novel_texts.pop_front() as NovelTextInfo
-	opening_novel.start_with_text(novel_text)
+	_start_novel_with_data(novel_text)
 	return true
 
 

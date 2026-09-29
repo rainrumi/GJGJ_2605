@@ -43,6 +43,7 @@ var _saved_textboxes: Dictionary[int, Label] = {}
 var _textbox_source_lines: Dictionary[int, int] = {}
 var _image_source_lines: Dictionary[int, int] = {}
 var _active_novel_text: NovelTextInfo
+var _novel_variable_list: Dictionary = {}
 var _is_debug_dragging := false
 var _is_debug_resizing_textbox := false
 var _script_load_failed := false
@@ -75,12 +76,14 @@ func _on_config_button_pressed() -> void:
 
 
 # 対象開始
-func start() -> void:
+func start(variable_list: Dictionary = {}) -> void:
+	_novel_variable_list = variable_list.duplicate()
 	_start_script(novel_text, true)
 
 
 # with文言開始
-func start_with_text(next_novel_text: NovelTextInfo) -> void:
+func start_with_text(next_novel_text: NovelTextInfo, variable_list: Dictionary = {}) -> void:
+	_novel_variable_list = variable_list.duplicate()
 	_start_script(next_novel_text, false)
 
 
@@ -222,7 +225,9 @@ func _execute_command(command_line: String, request_id: int) -> void:
 		"text":
 			_command_text(argument, false)
 		"text_save":
-			_command_text(argument, true)
+			_command_text(argument, true, false)
+		"textbox_save_data":
+			_command_text(argument, true, true)
 		"l":
 			await _command_l(request_id)
 		"r":
@@ -415,17 +420,63 @@ func _command_textbox_clear(argument: String, is_saved: bool) -> void:
 	_refresh_debug_targets()
 
 
-func _command_text(argument: String, is_saved: bool) -> void:
-	var command_name := "text_save" if is_saved else "text"
+func _command_text(argument: String, is_saved: bool, uses_variable_list: bool = false) -> void:
+	var command_name := "textbox_save_data" if uses_variable_list else ("text_save" if is_saved else "text")
 	var arguments := _parse_comma_separated_arguments(argument)
-	if arguments.size() != 2 or not arguments[0].is_valid_int():
-		push_error("OpeningNovel @%s requires an index and text on scenario line %d." % [command_name, _line_index])
+	var has_variable_list := uses_variable_list or (is_saved and arguments.size() > 2)
+	var minimum_argument_count := 3 if has_variable_list else 2
+	if arguments.size() < minimum_argument_count or (not has_variable_list and arguments.size() != 2) or not arguments[0].is_valid_int():
+		var expected_arguments := "an index, text, and variable names" if has_variable_list else "an index and text"
+		push_error("OpeningNovel @%s requires %s on scenario line %d." % [command_name, expected_arguments, _line_index])
 		return
 	var textbox_collection := _saved_textboxes if is_saved else _textboxes
 	var textbox := textbox_collection.get(arguments[0].to_int()) as Label
 	if textbox == null:
 		return
-	textbox.text = arguments[1]
+	if has_variable_list:
+		var variable_values: Array = []
+		for variable_name in arguments.slice(2):
+			if not _novel_variable_list.has(variable_name):
+				push_error(
+					"OpeningNovel @%s references an unknown variable '%s' on scenario line %d."
+					% [command_name, variable_name, _line_index]
+				)
+				return
+			variable_values.append(_novel_variable_list[variable_name])
+		var formatted_text: Variant = _format_text_with_variables(arguments[1], variable_values, command_name)
+		if formatted_text == null:
+			return
+		textbox.text = formatted_text
+	else:
+		textbox.text = arguments[1]
+
+
+func _format_text_with_variables(template: String, values: Array, command_name: String) -> Variant:
+	var placeholder_regex := RegEx.new()
+	placeholder_regex.compile("%f[0-9]+|%[0-9]*\\.?[0-9]*[df]")
+	var placeholders := placeholder_regex.search_all(template)
+	if placeholders.size() != values.size():
+		push_error(
+			"OpeningNovel @%s has %d format placeholders but %d variable names on scenario line %d."
+			% [command_name, placeholders.size(), values.size(), _line_index]
+		)
+		return null
+	var formatted_text := template
+	for index in range(placeholders.size() - 1, -1, -1):
+		var placeholder := placeholders[index].get_string()
+		var format_specifier := "%" + "." + placeholder.trim_prefix("%f") + "f" if placeholder.begins_with("%f") else placeholder
+		var value: Variant = values[index]
+		if not (value is int or value is float):
+			push_error("OpeningNovel @%s only supports numeric variables on scenario line %d." % [command_name, _line_index])
+			return null
+		var is_float_format := format_specifier.ends_with("f")
+		var replacement := format_specifier % (float(value) if is_float_format else int(value))
+		formatted_text = (
+			formatted_text.substr(0, placeholders[index].get_start())
+			+ replacement
+			+ formatted_text.substr(placeholders[index].get_end())
+		)
+	return formatted_text
 
 
 func _parse_comma_separated_arguments(argument: String) -> Array[String]:
