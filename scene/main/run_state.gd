@@ -57,6 +57,7 @@ var played_stage_novel_indices := {}
 var is_lara_unlocked := false
 var is_continuous_play_unlocked := false
 var is_riran_unlocked := false
+var has_played_lunova_first_entry_novel := false
 var has_challenged_area_today := false
 var lara_current_location: StageInfo
 var previous_area_stage: StageInfo
@@ -99,6 +100,7 @@ func reset() -> void:
 	is_lara_unlocked = false
 	is_continuous_play_unlocked = false
 	is_riran_unlocked = false
+	has_played_lunova_first_entry_novel = false
 	has_challenged_area_today = false
 	lara_current_location = null
 	previous_area_stage = null

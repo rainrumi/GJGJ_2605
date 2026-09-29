@@ -1541,5 +1541,6 @@ Thank You for Playing!!
 @text 0, \"……普通は頭に植えれないんですけどね。\"
 @lcm
 @text 0, \"ティーナさんの特性を生かして合格できるように頑張ってください。\"
-@lcm"
+@lcm",
+"res://resource/novel/area/area_lunova/novel_area_lunova_process_001.txt": "@bg \"res://resource/image/texture/still/tex_still_area_lunova_100.png\"\n@name \"\"\n……歩いていたら、変なところに来てしまった。\n@lcm\nあたりは閑散としていて、地面には特徴的な星芒形の模様がこびりついている。\n@lcm\n空は水で薄めた灰色の絵の具のように滲んでいて、木々は日を浴びれずに枯れていた。\n@lcm\nそんな薄暗い世界に、私はなぜか安心感を覚えた。\n@lcm\nきっとラーラがいたら私を止める気がしたけど、私は怖くは思わなかった。\n@lcm\nだって、ラーラは私より怖がりなだけだから。\n@lcm\n危機感が足りないともいえると思う。\n@lcm\n…………。\n@lcm\n悪夢を探したら、すぐに出会えた。\n@lcm\nでも、なにかおかしい。\n@lcm\nほかの場所と違ってとても手ごわそうに見える。\n@lcm\n私は、大きな悪夢に「おいしそう」と思って手を伸ばした。\n@lcm\nしっかり準備をしてから消化しよう。\n@lcm"
 })

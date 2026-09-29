@@ -60,6 +60,7 @@ enum NovelFlow {
 	DEBUG_PREVIEW,
 	AREA_BOSS_REROLL,
 	AUTO_SLEEP,
+	LUNOVA_FIRST_ENTRY,
 }
 
 @export var end_gameover_novel_text: NovelTextInfo
@@ -68,6 +69,7 @@ enum NovelFlow {
 @export var bad_ending_novel_text: NovelTextInfo
 @export var first_nightmare_event_novel_text: NovelTextInfo
 @export var elmena_unlock_novel_text: NovelTextInfo
+@export var lunova_first_entry_novel_text: NovelTextInfo
 @export var lara_location_catalog: StageCatalogInfo
 @export var lara_schedule: LaraScheduleInfo
 
@@ -618,6 +620,9 @@ func _on_opening_novel_finished() -> void:
 		NovelFlow.AUTO_SLEEP:
 			active_novel_flow = NovelFlow.NONE
 			_process_today_rest()
+		NovelFlow.LUNOVA_FIRST_ENTRY:
+			run_state.has_played_lunova_first_entry_novel = true
+			_start_selected_stage_with_lara()
 		_:
 			active_novel_flow = NovelFlow.NONE
 			show_day_intro()
@@ -701,6 +706,10 @@ func _is_entering_night_dance_area() -> bool:
 
 
 func _start_selected_stage_with_lara() -> void:
+	if _is_entering_lunova_old_city() and not run_state.has_played_lunova_first_entry_novel:
+		active_novel_flow = NovelFlow.LUNOVA_FIRST_ENTRY
+		opening_novel.start_with_text(lunova_first_entry_novel_text)
+		return
 	var location := run_state.lara_current_location
 	if not run_state.is_lara_unlocked or location == null \
 		or run_state.selected_stage.stage_area != location.stage_area:
