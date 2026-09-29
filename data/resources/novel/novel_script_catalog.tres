@@ -1282,6 +1282,33 @@ Thank You for Playing!!
 今日の夜に備えてしっかり休もう…
 @lcm
 ",
+"res://resource/novel/novel_opening.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+みなさん、ふわふわ学校へ受験いただきありがとうございます。
+@lcm
+早速ですが、あなたたちはこれから１か月間悪夢を食べる練習をしていただきます。
+@lcm
+自身の体力と能力を考えて20日間悪夢を食べましょう。
+@lcm
+4日に1回能力試験を行いますのでぜひ奮ってご参加ください。
+@lcm
+@bg \"\"
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+@name \"ラーラ\"
+今日から試験だけど、アンタ大丈夫なの？
+@lcm
+今回の試験、悪夢を毎日食べるのよ。
+@lcm
+アンタ、生まれつきおなか壊しやすいじゃない。
+@lcm
+……。
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
+な、何かあったら私を頼りなさいよ！
+@lcm
+@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
+アンタのこと一番知ってるのは私なんだから……。
+@lcm
+",
 "res://resource/novel/process/novel_process_event_100.txt": "@bg \"\"
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
@@ -1331,51 +1358,28 @@ Thank You for Playing!!
 @lcm",
 "res://resource/novel/process/novel_process_event_200.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
 @name \"試験官\"
-ティーナさん、初日の悪夢食べはどうでしたか？
+ティーナさん、悪夢食べは問題なさそうですか？
 @lcm
-……何とか食べれたみたいですね。よかったです。
+……何とか食べれるみたいですね。よかったです。
 @lcm
-私はティーナさんを担当する試験官です。
+あ、私はティーナさんを担当する試験官です。
 @lcm
-普段はこういう手間を生徒にかけることは無いのですが…
+普段は生徒にこういう手間をかけることは無いのですが…
 @lcm
-ティーナさんは金づr……おなかが弱いから予備テストをするように、と上の方から言われたので特別です。
+ティーナさんは金づr……おなかが弱いから気に掛けるように上の方から言われたので特別に気に掛けてます。
 @lcm
 イリユ洞窟の悪夢が大丈夫そうなら、明日からほかの場所の悪夢を消化してみてはどうでしょうか？
 @lcm
-近くの場所だとエルメナ大学とかいいんじゃないでしょうか。とりあえずガイドを渡しておきますね。
+近くの場所だとエルメナ大学とかいいと思います。とりあえずガイドを渡しておきますね。
 @lcm
-私はこれから遊びに行くのでいい感じに頑張ってください。では～
+私はたまたま臨時収入が入ったので、これから遊びに行きます。
+@lcm
+あとはいい感じに頑張ってくださいね。では～
 @lcm
 @name \"\"
-エリア開放！\\n
+エリア開放！
+@r
 エルメナ大学に行けるようになりました。
-@lcm",
-"res://resource/novel/novel_opening.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
-みなさん、ふわふわ学校へ受験いただきありがとうございます。
-@lcm
-早速ですが、あなたたちはこれから１か月間悪夢を食べる練習をしていただきます。
-@lcm
-自身の体力と能力を考えて20日間悪夢を食べましょう。
-@lcm
-4日に1回能力試験を行いますのでぜひ奮ってご参加ください。
-@lcm
-@bg \"\"
-@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
-@name \"ラーラ\"
-今日から試験だけど、アンタ大丈夫なの？
-@lcm
-今回の試験、悪夢を毎日食べるのよ。
-@lcm
-アンタ、生まれつきおなか壊しやすいじゃない。
-@lcm
-……。
-@lcm
-@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
-な、何かあったら私を頼りなさいよ！
-@lcm
-@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
-アンタのこと一番知ってるのは私なんだから……。
 @lcm
 ",
 "res://resource/novel/tutorial/tutorial_100_100.txt": "@textbox_set 0, 96, 101, 241, 88, 1, 1
