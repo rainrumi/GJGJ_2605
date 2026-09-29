@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
-script_path = "res://resource/novel/novel_event_100.txt"
+script_path = "res://resource/novel/process/novel_process_event_100.txt"

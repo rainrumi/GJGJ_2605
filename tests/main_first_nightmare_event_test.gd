@@ -26,8 +26,8 @@ func _run() -> void:
 	_expect(event_text != null, "4日目終了後ノベルのResourceが設定されている")
 	_expect(
 		event_text != null
-		and event_text.script_path == "res://resource/novel/novel_event_100.txt",
-		"novel_event_100.txtを再生対象にする"
+		and event_text.script_path == "res://resource/novel/process/novel_process_event_100.txt",
+		"novel_process_event_100.txtを再生対象にする"
 	)
 	_expect(opening_novel.visible, "4日目終了後にノベル画面を表示する")
 	_expect(main.run_state.current_day == 4, "ノベル終了までは4日目を維持する")

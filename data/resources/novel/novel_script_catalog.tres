@@ -1282,7 +1282,7 @@ Thank You for Playing!!
 今日の夜に備えてしっかり休もう…
 @lcm
 ",
-"res://resource/novel/novel_event_100.txt": "@bg \"\"
+"res://resource/novel/process/novel_process_event_100.txt": "@bg \"\"
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 どう？ 順調？
