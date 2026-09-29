@@ -1329,6 +1329,28 @@ Thank You for Playing!!
 @r
 毎日複数のエリアを回れるようになりました！
 @lcm",
+"res://resource/novel/process/novel_process_event_200.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
+@name \"試験官\"
+ティーナさん、初日の悪夢食べはどうでしたか？
+@lcm
+……何とか食べれたみたいですね。よかったです。
+@lcm
+私はティーナさんを担当する試験官です。
+@lcm
+普段はこういう手間を生徒にかけることは無いのですが…
+@lcm
+ティーナさんは金づr……おなかが弱いから予備テストをするように、と上の方から言われたので特別です。
+@lcm
+イリユ洞窟の悪夢が大丈夫そうなら、明日からほかの場所の悪夢を消化してみてはどうでしょうか？
+@lcm
+近くの場所だとエルメナ大学とかいいんじゃないでしょうか。とりあえずガイドを渡しておきますね。
+@lcm
+私はこれから遊びに行くのでいい感じに頑張ってください。では～
+@lcm
+@name \"\"
+エリア開放！\\n
+エルメナ大学に行けるようになりました。
+@lcm",
 "res://resource/novel/novel_opening.txt": "@bg \"res://resource/image/texture/still/tex_still_area_huwa_100.png\"
 みなさん、ふわふわ学校へ受験いただきありがとうございます。
 @lcm

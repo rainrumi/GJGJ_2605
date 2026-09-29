@@ -277,6 +277,11 @@ func _get_ordered_stage_definitions() -> Array[StageInfo]:
 			_current_day,
 			_unlocked_high_difficulty_stage_ids
 		)
+		if _current_day <= 1:
+			for index in range(definitions.size() - 1, -1, -1):
+				var stage := definitions[index]
+				if stage.stage_area == StageInfo.StageArea.ELMENA_UNIVERSITY:
+					definitions.remove_at(index)
 	definitions.sort_custom(_is_stage_before)
 	return definitions
 

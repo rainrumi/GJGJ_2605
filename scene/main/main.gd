@@ -4,6 +4,7 @@ const STAGE_CLEAR_RETURN_DELAY := 1.0
 const STORY_CLEAR_DAY := 20
 const INITIAL_STAGE_ID := 11
 const HIGH_DIFFICULTY_DAY_INTERVAL := 4
+const FIRST_DAY_EVENT_DAY := 1
 const FIRST_NIGHTMARE_EVENT_DAY := 4
 const RECURRING_STAGE_NOVEL_STAGE_ID := 0
 const RECURRING_STAGE_NOVEL_SCENARIO_INDEX := 1
@@ -47,6 +48,7 @@ enum NovelFlow {
 	LARA_JUDGE_AFTER,
 	LARA_DIGESTION_COUNT_TUTORIAL,
 	STAGE_CLEAR_TUTORIAL,
+	FIRST_DAY_EVENT,
 	DEBUG_PREVIEW,
 	AREA_BOSS_REROLL,
 	AUTO_SLEEP,
@@ -57,6 +59,7 @@ enum NovelFlow {
 @export var normal_ending_novel_text: NovelTextInfo
 @export var bad_ending_novel_text: NovelTextInfo
 @export var first_nightmare_event_novel_text: NovelTextInfo
+@export var first_day_event_novel_text: NovelTextInfo
 @export var lara_location_catalog: StageCatalogInfo
 @export var lara_schedule: LaraScheduleInfo
 
@@ -582,6 +585,9 @@ func _on_opening_novel_finished() -> void:
 			run_state.unlock_lara()
 			run_state.unlock_continuous_play()
 			_finish_current_day()
+		NovelFlow.FIRST_DAY_EVENT:
+			active_novel_flow = NovelFlow.NONE
+			_advance_to_next_day()
 		NovelFlow.LARA_DIGESTION_COUNT_TUTORIAL:
 			active_novel_flow = NovelFlow.NONE
 			_lara_digestion_count_tutorial_played = true
@@ -856,6 +862,9 @@ func _finish_current_day() -> void:
 	if pending_area_completion_novel_text != null:
 		show_area_completion_novel()
 		return
+	if run_state.current_day == FIRST_DAY_EVENT_DAY:
+		show_first_day_event_novel()
+		return
 	if run_state.current_day == FIRST_NIGHTMARE_EVENT_DAY and not run_state.is_lara_unlocked:
 		show_first_nightmare_event_novel()
 		return
@@ -863,6 +872,18 @@ func _finish_current_day() -> void:
 		_show_lara_judge_setup()
 		return
 	_advance_to_next_day()
+
+
+func show_first_day_event_novel() -> void:
+	title.visible = false
+	opening_novel.visible = false
+	day_intro.visible = false
+	stage_select.visible = false
+	game.visible = false
+	game_ui.visible = false
+	stage_clear.visible = false
+	active_novel_flow = NovelFlow.FIRST_DAY_EVENT
+	opening_novel.start_with_text(first_day_event_novel_text)
 
 
 func _advance_to_next_day() -> void:

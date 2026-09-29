@@ -17,6 +17,7 @@
 [ext_resource type="AudioStream" uid="uid://dktrcxwr6dg1f" path="res://resource/sound/se/se_click.mp3" id="14_se_click"]
 [ext_resource type="AudioStream" uid="uid://lhn1aubvc0wx" path="res://resource/sound/se/se_select.mp3" id="15_se_select"]
 [ext_resource type="Resource" path="res://data/resources/novel/novel_process_event_100.tres" id="17_event_100_text"]
+[ext_resource type="Resource" path="res://data/resources/novel/novel_process_event_200.tres" id="21_event_200_text"]
 [ext_resource type="Resource" path="res://data/resources/area/lara_location_catalog.tres" id="18_lara_location_catalog"]
 [ext_resource type="Resource" uid="uid://7xohkl7dv8hm" path="res://data/resources/rara/lara_schedule.tres" id="19_lara_schedule"]
 [ext_resource type="PackedScene" uid="uid://cdxfuey83p5f0" path="res://scene/main/stage_clear/seed_choice/seed_choice.tscn" id="20_seed_reward_choice"]
@@ -28,6 +29,7 @@ true_ending_novel_text = ExtResource("12_true_ending")
 normal_ending_novel_text = ExtResource("12_normal_ending")
 bad_ending_novel_text = ExtResource("12_bad_ending")
 first_nightmare_event_novel_text = ExtResource("17_event_100_text")
+first_day_event_novel_text = ExtResource("21_event_200_text")
 lara_location_catalog = ExtResource("18_lara_location_catalog")
 lara_schedule = ExtResource("19_lara_schedule")
 
