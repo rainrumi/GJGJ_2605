@@ -124,6 +124,7 @@ func _ready() -> void:
 	assert(lara_schedule != null, "Main: lara_scheduleを設定してください")
 	assert(lara_schedule.days.size() >= STORY_CLEAR_DAY, "Main: ラーラの予定は20日分必要です")
 	assert(lara_schedule.validate().is_empty(), "Main: lara_scheduleの時刻・エリア・消化数が不正です")
+	game.call("set_bgm_conductor", bgm)
 	get_tree().node_added.connect(_on_node_added)
 	_connect_ui_buttons(self)
 	_connect_opening_novel_settings(self)
