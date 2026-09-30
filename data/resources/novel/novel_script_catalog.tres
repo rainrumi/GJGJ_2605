@@ -926,7 +926,7 @@ Thank You for Playing!!
 ……信じらんない。幼馴染なのに初めて聞いたわ。
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1100.png\"
-これあげるからもうちょっと考えなさい。
+アンタがどう思ってるかは知らないけど、もうちょっと考えたほうがいいと思うわよ。
 @lcm
 @img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_6000.png\"
 今じゃなくていいから、卒業するまでには、絶対よ？
@@ -1274,7 +1274,9 @@ Thank You for Playing!!
 @textbox_save_set 0, 20, 40, 200, 60, 1, 1
 @textbox_save_data 0, \"ティーナの消化数:%d\", acid_count_tina
 @textbox_save_set 1, 400, 40, 200, 60, 1, 1
-@textbox_save_data 1, \"ラーラの消化数:%d\", acid_count_lara",
+@textbox_save_data 1, \"ラーラの消化数:%d\", acid_count_lara
+どん！
+@lcm",
 "res://resource/novel/event/judge/novel_event_rara_judge_win_001.txt": "@img 1, 225, 70, \"res://resource/image/texture/character/tex_character_300_portrate_1000.png\"
 @name \"ラーラ\"
 私の負けじゃないの……。
@@ -1528,7 +1530,7 @@ Thank You for Playing!!
 @lcm
 @text 0, \"悪夢が胃袋内に多くいるときはドラッグで自ら「吐く」と効率良く消化できるかもしれません。\"
 @lcm
-@text 0, \"朝の6:00もならないようにだけ気をつけて、消化を続けましょう。\"
+@text 0, \"朝の6:00にならないようにだけ気をつけて、消化を続けましょう。\"
 @lcm
 ",
 "res://resource/novel/tutorial/tutorial_300_100.txt": "@textbox_set 0, 213.4, 258.6, 142.8, 68.6, 1, 1

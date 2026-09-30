@@ -50,7 +50,7 @@
 ……信じらんない。幼馴染なのに初めて聞いたわ。
 @lcm
 @img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_1100.png"
-これあげるからもうちょっと考えなさい。
+アンタがどう思ってるかは知らないけど、もうちょっと考えたほうがいいと思うわよ。
 @lcm
 @img 1, 225, 70, "res://resource/image/texture/character/tex_character_300_portrate_6000.png"
 今じゃなくていいから、卒業するまでには、絶対よ？
