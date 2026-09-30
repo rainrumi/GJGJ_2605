@@ -696,28 +696,41 @@ func _select_stage(stage: StageInfo) -> void:
 
 func _start_selected_battle() -> void:
 	active_novel_flow = NovelFlow.NONE
-	if _is_entering_lunova_old_city():
-		bgm.change_bgm(BeatConductor.BGM_KIND.LUNOVA_0)
-	elif _is_entering_night_dance_area():
-		bgm.change_bgm(BeatConductor.BGM_KIND.NORMAL_0)
+	if run_state.selected_stage != null:
+		_change_bgm_for_stage_entry(run_state.selected_stage.stage_area)
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
 
 
-func _is_entering_lunova_old_city() -> bool:
-	var selected_stage := run_state.selected_stage
-	if selected_stage == null or selected_stage.stage_area != StageInfo.StageArea.LUNOVA_OLD_CITY:
+func _is_entering_lunova_old_city(stage_area: StageInfo.StageArea) -> bool:
+	if stage_area != StageInfo.StageArea.LUNOVA_OLD_CITY:
 		return false
 	var previous_area_stage := run_state.previous_area_stage
-	return previous_area_stage == null or previous_area_stage.stage_area != StageInfo.StageArea.LUNOVA_OLD_CITY
+	return previous_area_stage == null or previous_area_stage.stage_area != stage_area
 
 
-func _is_entering_night_dance_area() -> bool:
-	var selected_stage := run_state.selected_stage
-	if selected_stage == null or not NIGHT_DANCE_STAGE_AREAS.has(selected_stage.stage_area):
+func _is_entering_night_dance_area(stage_area: StageInfo.StageArea) -> bool:
+	if not NIGHT_DANCE_STAGE_AREAS.has(stage_area):
 		return false
 	var previous_area_stage := run_state.previous_area_stage
-	return previous_area_stage == null or previous_area_stage.stage_area != selected_stage.stage_area
+	return previous_area_stage == null or previous_area_stage.stage_area != stage_area
+
+
+func _get_bgm_kind_for_stage_area(stage_area: StageInfo.StageArea) -> BeatConductor.BGM_KIND:
+	if stage_area == StageInfo.StageArea.LUNOVA_OLD_CITY:
+		return BeatConductor.BGM_KIND.LUNOVA_0
+	return BeatConductor.BGM_KIND.NORMAL_0
+
+
+func _change_bgm_for_stage_entry(stage_area: StageInfo.StageArea) -> void:
+	if _is_entering_lunova_old_city(stage_area):
+		await bgm.change_bgm(_get_bgm_kind_for_stage_area(stage_area))
+	elif _is_entering_night_dance_area(stage_area):
+		await bgm.change_bgm(_get_bgm_kind_for_stage_area(stage_area))
+
+
+func _change_bgm_for_lara_area_novel(stage_area: StageInfo.StageArea) -> void:
+	bgm.change_bgm(_get_bgm_kind_for_stage_area(stage_area))
 
 
 func _start_selected_stage_with_lara() -> void:
@@ -750,7 +763,10 @@ func _start_selected_stage_with_lara() -> void:
 			var area: int = area_candidates.pick_random()
 			scenario = "area/novel_event_rara_%s_001" % LARA_AREA_NOVEL_NAMES[area]
 			_pending_lara_area_novel_area = area
+	if _pending_lara_area_novel_area >= 0:
+		_change_bgm_for_lara_area_novel(run_state.selected_stage.stage_area)
 	title.visible = false
+	day_intro.visible = false
 	stage_select.visible = false
 	game.visible = false
 	game_ui.visible = false
