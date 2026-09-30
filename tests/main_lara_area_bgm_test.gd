@@ -62,7 +62,28 @@ func _run() -> void:
 		"Conversation uses the visited area scenario",
 	)
 
+	# Revisit the same Lara area on the same day. The repeat novel must still request its area BGM.
+	novel._script_request_id += 1
+	novel.visible = false
+	main.show_stage_select()
+	main.run_state.lara_current_location = corotta
+	bgm.play_bgm_immediately(BeatConductor.BGM_KIND.LUNOVA_0)
+	main._on_stage_select_stage_selected(corotta)
+	_expect(
+		novel._active_novel_text.script_path.ends_with("novel_event_rara_false_001.txt"),
+		"Same-day revisit uses the repeat conversation",
+	)
+	_expect(novel.visible, "Repeat conversation starts without waiting for the BGM fade")
+	await bgm.bgm_changed
+	_expect(bgm.bgm == BeatConductor.BGM_KIND.NORMAL_0, "Repeat conversation requests the area BGM")
+	_expect(novel.visible, "Repeat conversation remains visible during the BGM fade")
+	for _frame in range(180):
+		if is_equal_approx(bgm._bgm_transition_factor, 1.0):
+			break
+		await get_tree().process_frame
+
 	Engine.time_scale = 1.0
+	novel._script_request_id += 1
 	bgm.stop()
 	bgm.audio_player.stream = null
 	bgm.bgm_stream = null

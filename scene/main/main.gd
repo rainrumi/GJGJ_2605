@@ -763,8 +763,7 @@ func _start_selected_stage_with_lara() -> void:
 			var area: int = area_candidates.pick_random()
 			scenario = "area/novel_event_rara_%s_001" % LARA_AREA_NOVEL_NAMES[area]
 			_pending_lara_area_novel_area = area
-	if _pending_lara_area_novel_area >= 0:
-		_change_bgm_for_lara_area_novel(run_state.selected_stage.stage_area)
+	_change_bgm_for_lara_area_novel(run_state.selected_stage.stage_area)
 	title.visible = false
 	day_intro.visible = false
 	stage_select.visible = false
