@@ -1,11 +1,14 @@
 class_name BeatConductor
 extends Node
 
+enum BGM_KIND { NORMAL_0, LUNOVA_0 }
+
 signal beat(beat_index: int, song_time: float)
 signal subdivision(subdivision_index: int, song_time: float)
 signal scheduled_event_executed(event_id: int, song_time: float)
 signal playback_started()
 signal playback_stopped()
+signal bgm_changed(kind: BGM_KIND)
 
 @export var bpm: float = 108.0
 @export var beat_offset: float = 0.0
@@ -14,9 +17,12 @@ signal playback_stopped()
 @export var use_output_latency_compensation: bool = true
 @export var bgm_stream: AudioStream
 @export var debug_print_beats: bool = false
+var bgm: BGM_KIND = BGM_KIND.NORMAL_0
 
 const BGM_FADE_OUT_DURATION := 0.6
 const BGM_FADE_IN_DURATION := 10.0
+const NORMAL_0_PATH := "res://resource/sound/bgm/Night_Dance.mp3"
+const LUNOVA_0_PATH := "res://resource/sound/bgm/bgm_lunova_100.mp3"
 
 @onready var audio_player: AudioStreamPlayer = $AudioStreamPlayer
 @onready var _web_audio: WebAudioFallbackService = get_node("/root/WebAudioFallback") as WebAudioFallbackService
@@ -30,7 +36,6 @@ var _scheduled_events: Array[Dictionary] = []
 var _cached_output_latency := 0.0
 var _bgm_transition_id := 0
 var _bgm_transition_factor := 1.0
-var _current_bgm_path := ""
 
 
 # 初期化
@@ -41,7 +46,7 @@ func _ready() -> void:
 		return
 	if bgm_stream != null:
 		audio_player.stream = bgm_stream
-		_current_bgm_path = bgm_stream.resource_path
+		_update_bgm_kind_from_stream()
 	_cached_output_latency = AudioServer.get_output_latency()
 	if auto_play and audio_player.stream != null:
 		play()
@@ -64,7 +69,7 @@ func play(from_position: float = 0.0) -> void:
 	if audio_player == null:
 		return
 	if bgm_stream != null:
-		_current_bgm_path = bgm_stream.resource_path
+		_update_bgm_kind_from_stream()
 	_last_beat_index = -1
 	_last_subdivision_index = -1
 	if not _web_audio.play_bgm(bgm_stream, from_position):
@@ -72,9 +77,10 @@ func play(from_position: float = 0.0) -> void:
 	playback_started.emit()
 
 
-func change_bgm(audio_path: String) -> void:
-	if audio_path == _current_bgm_path and is_playing():
+func change_bgm(kind: BGM_KIND) -> void:
+	if kind == bgm and is_playing():
 		return
+	var audio_path := _get_bgm_path(kind)
 	var next_stream := ResourceLoader.load(audio_path) as AudioStream
 	if next_stream == null:
 		push_error("BeatConductor could not load BGM AudioStream: %s" % audio_path)
@@ -91,16 +97,18 @@ func change_bgm(audio_path: String) -> void:
 		return
 
 	bgm_stream = next_stream
+	_set_bgm_kind(kind)
 	audio_player.stream = next_stream
 	play()
 	await _tween_bgm_transition_factor(1.0, BGM_FADE_IN_DURATION, transition_id)
 
 
-func play_bgm_immediately(audio_path: String) -> void:
-	if audio_path == _current_bgm_path and is_playing():
+func play_bgm_immediately(kind: BGM_KIND) -> void:
+	if kind == bgm and is_playing():
 		_bgm_transition_id += 1
 		_set_bgm_transition_factor(1.0, _bgm_transition_id)
 		return
+	var audio_path := _get_bgm_path(kind)
 	var next_stream := ResourceLoader.load(audio_path) as AudioStream
 	if next_stream == null:
 		push_error("BeatConductor could not load BGM AudioStream: %s" % audio_path)
@@ -109,8 +117,36 @@ func play_bgm_immediately(audio_path: String) -> void:
 	_bgm_transition_id += 1
 	_set_bgm_transition_factor(1.0, _bgm_transition_id)
 	bgm_stream = next_stream
+	_set_bgm_kind(kind)
 	audio_player.stream = next_stream
 	play()
+
+
+func _get_bgm_path(kind: BGM_KIND) -> String:
+	match kind:
+		BGM_KIND.NORMAL_0:
+			return NORMAL_0_PATH
+		BGM_KIND.LUNOVA_0:
+			return LUNOVA_0_PATH
+	push_error("BeatConductor received an unknown BGM_KIND: %s" % kind)
+	return ""
+
+
+func _update_bgm_kind_from_stream() -> void:
+	if bgm_stream == null:
+		return
+	match bgm_stream.resource_path:
+		NORMAL_0_PATH:
+			_set_bgm_kind(BGM_KIND.NORMAL_0)
+		LUNOVA_0_PATH:
+			_set_bgm_kind(BGM_KIND.LUNOVA_0)
+
+
+func _set_bgm_kind(kind: BGM_KIND) -> void:
+	if bgm == kind:
+		return
+	bgm = kind
+	bgm_changed.emit(bgm)
 
 
 func _tween_bgm_transition_factor(target: float, duration: float, transition_id: int) -> bool:

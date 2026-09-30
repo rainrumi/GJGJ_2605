@@ -28,8 +28,7 @@ const RECOVERY_BASE_RATE: float = 1.0
 const RECOVERY_HOURLY_LOSS_RATE: float = 0.1
 const RECOVERY_MINIMUM_RATE: float = 0.5
 const acid_AUTO_INTERVAL_NORMAL: float = 0.65
-const acid_AUTO_INTERVAL_LUNOVA: float = 0.97
-const LUNOVA_BGM_PATH := "res://resource/sound/bgm/bgm_lunova_100.mp3"
+const acid_AUTO_INTERVAL_LUNOVA: float = 0.5
 const REMOVE_FROM_STOMACH_DAMAGE_RATE: float = 0.05
 const DRAG_CENTER_TWEEN_DURATION := 0.3
 const STAGE_CLEAR_COOLDOWN := 0.8
@@ -327,7 +326,34 @@ func _capture_initial_tutorial_enemies() -> void:
 	for index in range(enemy_count):
 		_initial_tutorial_enemies.append(enemies[index])
 func set_bgm_conductor(conductor: BeatConductor) -> void:
+	if _bgm_conductor != null and _bgm_conductor.bgm_changed.is_connected(_on_bgm_changed):
+		_bgm_conductor.bgm_changed.disconnect(_on_bgm_changed)
 	_bgm_conductor = conductor
+	if _bgm_conductor != null:
+		_bgm_conductor.bgm_changed.connect(_on_bgm_changed)
+	_update_auto_acid_interval()
+
+
+func _on_bgm_changed(_kind: BeatConductor.BGM_KIND) -> void:
+	_update_auto_acid_interval(true)
+
+
+func _update_auto_acid_interval(restart_running_timer := false) -> void:
+	if Acidion_timer == null:
+		return
+	var interval := acid_AUTO_INTERVAL_NORMAL
+	if _bgm_conductor != null and _bgm_conductor.bgm == BeatConductor.BGM_KIND.LUNOVA_0:
+		interval = acid_AUTO_INTERVAL_LUNOVA
+	var should_restart := (
+		restart_running_timer
+		and not Acidion_timer.is_stopped()
+		and not is_equal_approx(Acidion_timer.wait_time, interval)
+	)
+	if should_restart:
+		Acidion_timer.stop()
+	Acidion_timer.wait_time = interval
+	if should_restart:
+		Acidion_timer.start()
 
 
 # 戦闘開始
@@ -1362,15 +1388,7 @@ func _apply_time_over_recovery() -> void:
 	last_time_over_recovery_percent = roundi(float(hp - previous_hp) / float(effective_max_hp) * 100.0)
 # auto消化timer更新
 func _update_auto_acid_timer() -> void:
-	Acidion_timer.wait_time = (
-		acid_AUTO_INTERVAL_LUNOVA
-		if (
-			_bgm_conductor != null
-			and _bgm_conductor.bgm_stream != null
-			and _bgm_conductor.bgm_stream.resource_path == LUNOVA_BGM_PATH
-		)
-		else acid_AUTO_INTERVAL_NORMAL
-	)
+	_update_auto_acid_interval()
 	# active消化数
 	var active_acid_count := _active_acid_count()
 	if auto_acid_enabled and active_acid_count == 0:

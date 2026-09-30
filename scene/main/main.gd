@@ -16,7 +16,6 @@ const CLEAR_RECOVERY_BASE_RATE := 1.0
 const CLEAR_RECOVERY_HOURLY_LOSS_RATE := 0.1
 const CLEAR_RECOVERY_MINIMUM_RATE := 0.5
 const SEED_REWARD_FADE_IN_DURATION := 0.6
-const LUNOVA_BGM_PATH := "res://resource/sound/bgm/bgm_lunova_100.mp3"
 const LARA_AREA_NOVEL_NAMES := {
 	StageInfo.StageArea.COROTTA_STREET: "corotta",
 	StageInfo.StageArea.ERAMIA_DISTRICT: "eramia",
@@ -33,7 +32,6 @@ const AREA_BOSS_REROLL_NOVEL_NAMES := {
 	StageInfo.StageArea.IRIYU_CAVE: "iriyu",
 }
 const AREA_BOSS_REROLL_NOVEL_MAX_DEFEAT_COUNT := 3
-const NIGHT_DANCE_BGM_PATH := "res://resource/sound/bgm/Night_Dance.mp3"
 const NIGHT_DANCE_STAGE_AREAS := [
 	StageInfo.StageArea.IRIYU_CAVE,
 	StageInfo.StageArea.RIRAN_TREE_GARRISON,
@@ -247,7 +245,7 @@ func _start_bgm_from_web_input(event: InputEvent, is_web: bool) -> void:
 # title表示
 func show_title() -> void:
 	_hide_seed_reward()
-	bgm.play_bgm_immediately(NIGHT_DANCE_BGM_PATH)
+	bgm.play_bgm_immediately(BeatConductor.BGM_KIND.NORMAL_0)
 	title.set_continue_available(_has_resumable_run)
 	title.visible = true
 	opening_novel.visible = false
@@ -699,9 +697,9 @@ func _select_stage(stage: StageInfo) -> void:
 func _start_selected_battle() -> void:
 	active_novel_flow = NovelFlow.NONE
 	if _is_entering_lunova_old_city():
-		bgm.change_bgm(LUNOVA_BGM_PATH)
+		bgm.change_bgm(BeatConductor.BGM_KIND.LUNOVA_0)
 	elif _is_entering_night_dance_area():
-		bgm.change_bgm(NIGHT_DANCE_BGM_PATH)
+		bgm.change_bgm(BeatConductor.BGM_KIND.NORMAL_0)
 	show_game(should_reset_player_state)
 	should_reset_player_state = false
 
@@ -727,7 +725,7 @@ func _start_selected_stage_with_lara() -> void:
 	if run_state.selected_stage != null \
 		and run_state.selected_stage.stage_area == StageInfo.StageArea.LUNOVA_OLD_CITY:
 		if not run_state.has_played_lunova_first_entry_novel:
-			bgm.change_bgm(LUNOVA_BGM_PATH)
+			bgm.change_bgm(BeatConductor.BGM_KIND.LUNOVA_0)
 			title.visible = false
 			day_intro.visible = false
 			stage_select.visible = false
