@@ -1,6 +1,13 @@
 class_name DreamSeedBlockAcidResolver
 extends RefCounted
 
+var _optional_enemy_effects: EnemyEffectSystem
+
+
+# 単独の種効果計算では省略可能。戦闘では被弾前後の効果を解決する窓口を渡す。
+func _init(enemy_effects: EnemyEffectSystem = null) -> void:
+	_optional_enemy_effects = enemy_effects
+
 
 # 再評価時補正適用
 func apply_refresh_modifiers(enemies: Array[Enemy]) -> void:
@@ -45,6 +52,8 @@ func append_Acided_by_seed_block_effects(
 ) -> void:
 	if seed_block == null or not seed_block.has_seed():
 		return
+	if _optional_enemy_effects != null:
+		_optional_enemy_effects.prepare(enemies, stomach)
 	var context := {
 		"seed_block": seed_block,
 		"enemies": enemies,
@@ -57,6 +66,7 @@ func append_Acided_by_seed_block_effects(
 		"player_hp": player_hp,
 		"player_max_hp": player_max_hp,
 		"day_elapsed_minutes": day_elapsed_minutes,
+		"enemy_effects": _optional_enemy_effects,
 	}
 	for definition in _get_seed_block_effects(seed_block):
 		var effect := definition.adjusted_for_seed_block(seed_block)

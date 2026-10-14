@@ -145,7 +145,7 @@ func _ready() -> void:
 		effect_installer,
 		turn_processor
 	)
-	digestion_resolver.setup(seed_effects, DreamSeedBlockAcidResolver.new(), acid_modifiers, digestion_state)
+	digestion_resolver.setup(seed_effects, DreamSeedBlockAcidResolver.new(enemy_effects), acid_modifiers, digestion_state)
 	attack_resolver.setup(seed_effects, enemy_effects, EnemyController.ACID_DAMAGE)
 	turn_processor.setup(seed_effects, enemy_effects, digestion_interval, battle_clock, digestion_state, EnemyController.STEP_MINUTES)
 	enemy_presenter.setup(attack_resolver)
@@ -759,7 +759,7 @@ func _on_debug_stomach_size_requested(delta_columns: int, delta_rows: int) -> vo
 	_prepare_debug_battle_change()
 	stomach.set_grid_size(stomach.columns + delta_columns, stomach.rows + delta_rows)
 	_refresh_enemy_stomach_display_sizes()
-	_refresh_ui()
+	_refresh_after_battle_event()
 
 
 # 要求処理
@@ -1491,6 +1491,7 @@ func _refresh_hover_tooltip() -> void:
 		ui.show_enemy_tooltip(hovered_enemy, _get_tooltip_debug_number_text(hovered_enemy), debug_numbers_visible)
 # after戦闘イベント更新
 func _refresh_after_battle_event(explicit_recovered_hp: int = -1) -> void:
+	_return_out_of_bounds_stomach_objects()
 	_apply_acid_damage_seed_heal()
 	acid_controller.refresh_enemy_effects(enemies, stomach)
 	enemy_setup.refresh_enemy_page_visibility(enemies)
@@ -1768,7 +1769,7 @@ func _resolve_extra_seed_digestions(initial: Array[Enemy] = []) -> Array[Enemy]:
 	var queue: Array[Enemy] = initial.duplicate()
 	queue.append_array(seed_effects.consume_digested_enemies())
 	var processed: Array[Enemy] = []
-	var block_resolver := DreamSeedBlockAcidResolver.new()
+	var block_resolver := DreamSeedBlockAcidResolver.new(enemy_effects)
 	var index := 0
 	while index < queue.size():
 		var enemy := queue[index]
@@ -1856,6 +1857,27 @@ func _refresh_seed_structural_effects() -> void:
 		if not enemies.is_empty():
 			_refresh_enemy_stomach_display_sizes()
 	stomach.set_acid_line_rows(maxi(1, acid_line_rows))
+	if _return_out_of_bounds_stomach_objects():
+		_refresh_after_battle_event()
+
+
+# 配置が確定した現在の胃袋サイズで、占有マスが収まらないモノだけを嘔吐する。
+func _return_out_of_bounds_stomach_objects() -> bool:
+	if not battle_active or drag_mode == DragMode.seed:
+		return false
+	var returned: Array[Enemy] = []
+	for enemy in enemies:
+		if enemy.is_active_in_stomach() and not stomach.is_within_bounds(enemy, enemy.stomach_cell):
+			returned.append(enemy)
+	if returned.is_empty():
+		return false
+	# 嘔吐によるHP消費・復活の前に全対象を胃袋外にし、再評価の重複処理を防ぐ。
+	for enemy in returned:
+		enemy.set_Aciding(false)
+		enemy.return_to_origin()
+		enemy.forcibly_returned.emit()
+	_apply_forced_returns()
+	return true
 
 
 # 胃袋の下端を基準に、サイズ変更後も配置済みオブジェクトの位置を保つ

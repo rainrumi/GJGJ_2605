@@ -220,7 +220,7 @@ func show_preview(enemy: Enemy, display_position: Vector2, active_enemies: Array
 		return
 	# topleft
 	var top_left: Vector2i = get_drop_cell(enemy, display_position, active_enemies)
-	if not _is_within_bounds(enemy, top_left):
+	if not is_within_bounds(enemy, top_left):
 		hide_preview()
 		return
 	_preview_sprite.texture = enemy.get_preview_texture()
@@ -436,7 +436,7 @@ func _get_nearest_top_left_column(enemy: Enemy, display_position: Vector2) -> in
 
 
 # withinbounds判定
-func _is_within_bounds(enemy: Enemy, top_left: Vector2i) -> bool:
+func is_within_bounds(enemy: Enemy, top_left: Vector2i) -> bool:
 	for cell: Vector2i in enemy.get_occupied_cells(top_left):
 		if cell.x < 0 or cell.x >= columns or cell.y < 0 or cell.y >= rows:
 			return false

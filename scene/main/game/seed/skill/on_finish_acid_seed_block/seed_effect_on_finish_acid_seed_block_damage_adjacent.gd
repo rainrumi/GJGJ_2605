@@ -17,6 +17,7 @@ func on_finish_acid_seed_block(context: Dictionary) -> void:
 	var seed_block := context.get("seed_block") as Enemy # 種ブロック
 	var enemies: Array = context.get("enemies", []) # 敵一覧
 	var acided_enemies: Array = context.get("acided_enemies", []) # 酸化敵
+	var optional_enemy_effects := context.get("enemy_effects") as EnemyEffectSystem
 	var received_acid_damage: Dictionary = context.get("received_acid_damage", {}) # 受酸量
 	var total_damage := damage + floori(float(maxi(seed_block.received_acid_damage_total if seed_block != null else 0, int(received_acid_damage.get(seed_block, 0)))) * received_damage_rate) # 総ダメ
 	total_damage += floori(float(int(context.get("player_hp", 0))) * player_hp_rate)
@@ -45,6 +46,11 @@ func on_finish_acid_seed_block(context: Dictionary) -> void:
 	for target in targets:
 		if target == seed_block or target.is_Acided():
 			continue
-		target.show_acid_damage_values([target_damage])
-		if target.take_acid_damage(target_damage, false) and not acided_enemies.has(target):
+		var request := target.data.hp.request_damage(target_damage, target.data)
+		if optional_enemy_effects != null:
+			optional_enemy_effects.execute()
+		target.show_acid_damage_values([request.amount])
+		if target.take_acid_damage(request.amount, false) and not acided_enemies.has(target):
 			acided_enemies.append(target)
+		if optional_enemy_effects != null:
+			optional_enemy_effects.execute()
