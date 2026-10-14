@@ -13,7 +13,7 @@ theme_override_colors/font_hover_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_colors/font_disabled_color = Color(0.0352941, 0.027451, 0.211765, 1)
 theme_override_fonts/font = ExtResource("1_56af3")
 theme_override_font_sizes/font_size = 13
-text = "リロール(残り0回)"
+text = "再抽出(残り0回)"
 flat = true
 script = ExtResource("2_n11xy")
 

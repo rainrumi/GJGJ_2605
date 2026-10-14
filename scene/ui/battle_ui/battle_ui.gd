@@ -547,7 +547,7 @@ func _on_debug_message_requested(is_active: bool) -> void:
 	debug_message_requested.emit(is_active)
 
 
-# デバッグリロール要求
+# デバッグ再抽出要求
 func _on_debug_reroll_requested() -> void:
 	debug_reroll_requested.emit()
 

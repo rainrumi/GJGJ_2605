@@ -25,7 +25,7 @@ func _run() -> void:
 	run_state.update_area_reroll_counts()
 	_expect(
 		run_state.get_area_reroll_count(StageInfo.StageArea.LUNOVA_OLD_CITY) == 5,
-		"ボス撃破数からエリア別リロール回数を判定する"
+		"ボス撃破数からエリア別再抽出回数を判定する"
 	)
 
 	var stage_clear := STAGE_CLEAR_SCENE.instantiate()
@@ -33,27 +33,27 @@ func _run() -> void:
 	await get_tree().process_frame
 	var reroll_button := stage_clear.get_node("UI/RerollButton") as Button
 	stage_clear.setup_clear_result(100, RunState.BATTLE_START_MINUTES, null, 4, 5, 0)
-	_expect(not reroll_button.visible, "ボス未撃破ではリロールボタンを非表示にする")
+	_expect(not reroll_button.visible, "ボス未撃破では再抽出ボタンを非表示にする")
 
 	stage_clear.setup_clear_result(100, RunState.BATTLE_START_MINUTES, null, 4, 5, 1)
-	_expect(reroll_button.visible, "ボスを1回倒すとリロールボタンを表示する")
-	_expect(reroll_button.text == "リロール(残り1回)", "1回撃破時の残回数を表示する")
-	_expect(not reroll_button.disabled, "残回数がある間はリロールできる")
+	_expect(reroll_button.visible, "ボスを1回倒すと再抽出ボタンを表示する")
+	_expect(reroll_button.text == "再抽出(残り1回)", "1回撃破時の残回数を表示する")
+	_expect(not reroll_button.disabled, "残回数がある間は再抽出できる")
 	reroll_button.pressed.emit()
-	_expect(reroll_button.text == "リロール(残り0回)", "使用後の残回数を表示する")
-	_expect(not reroll_button.visible, "残回数0ではリロールボタンを非表示にする")
-	_expect(reroll_button.disabled, "残回数0ではリロールできない")
+	_expect(reroll_button.text == "再抽出(残り0回)", "使用後の残回数を表示する")
+	_expect(not reroll_button.visible, "残回数0では再抽出ボタンを非表示にする")
+	_expect(reroll_button.disabled, "残回数0では再抽出できない")
 	var debug_reroll_button := stage_clear.get_node("UI/DebugRerollButton") as Button
 	stage_clear.ui.set_debug_state(true, true)
-	_expect(debug_reroll_button.visible, "デバッグ用リロールボタンを維持する")
+	_expect(debug_reroll_button.visible, "デバッグ用再抽出ボタンを維持する")
 	debug_reroll_button.pressed.emit()
-	_expect(reroll_button.text == "リロール(残り0回)", "デバッグ用リロールは通常回数を消費しない")
+	_expect(reroll_button.text == "再抽出(残り0回)", "デバッグ用再抽出は通常回数を消費しない")
 
 	stage_clear.setup_clear_result(100, RunState.BATTLE_START_MINUTES, null, 4, 5, 2)
-	_expect(reroll_button.text == "リロール(残り2回)", "2回撃破時は画面表示ごとに2回へリセットする")
-	_expect(not reroll_button.disabled, "画面再表示後はリロールを再び使用できる")
+	_expect(reroll_button.text == "再抽出(残り2回)", "2回撃破時は画面表示ごとに2回へリセットする")
+	_expect(not reroll_button.disabled, "画面再表示後は再抽出を再び使用できる")
 	stage_clear.setup_clear_result(100, RunState.BATTLE_START_MINUTES, null, 4, 5, 5)
-	_expect(reroll_button.text == "リロール(残り5回)", "3回以上撃破時は5回へ上書きする")
+	_expect(reroll_button.text == "再抽出(残り5回)", "3回以上撃破時は5回へ上書きする")
 
 	remove_child(stage_clear)
 	stage_clear.free()
@@ -69,7 +69,7 @@ func _run() -> void:
 	main.run_state.strengthened_enemy_defeat_counts["1:%d" % cleared_stage.stage_area] = 2
 	main.call("show_stage_clear")
 	var main_reroll_button := main.stage_clear.get_node("UI/RerollButton") as Button
-	_expect(main_reroll_button.text == "リロール(残り2回)", "Mainはステージクリア入場時に現在エリアのリロール回数を更新して渡す")
+	_expect(main_reroll_button.text == "再抽出(残り2回)", "Mainはステージクリア入場時に現在エリアの再抽出回数を更新して渡す")
 	var bgm := main.get_node("BGM") as BeatConductor
 	bgm.stop()
 	bgm.audio_player.stream = null

@@ -135,7 +135,7 @@ theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 10
-text = "Reroll"
+text = "再抽出"
 
 [node name="DebugButton" type="Button" parent="UI" unique_id=424038670]
 visible = false
@@ -194,7 +194,7 @@ offset_left = 379.0
 offset_top = 314.0
 offset_right = 499.0
 offset_bottom = 340.0
-text = "リロール"
+text = "再抽出"
 
 [node name="AbandonButton" parent="UI" unique_id=1850666034 instance=ExtResource("16_abandon_button")]
 layout_mode = 0

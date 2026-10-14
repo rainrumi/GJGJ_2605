@@ -197,7 +197,7 @@ func get_area_boss_defeat_count(area: StageInfo.StageArea) -> int:
 	return count
 
 
-# エリア別リロール回数更新
+# エリア別再抽出回数更新
 func update_area_reroll_counts() -> void:
 	var areas: Array[int] = []
 	for key: String in strengthened_enemy_defeat_counts:
@@ -213,7 +213,7 @@ func update_area_reroll_counts() -> void:
 		)
 
 
-# エリア別リロール回数取得
+# エリア別再抽出回数取得
 func get_area_reroll_count(area: StageInfo.StageArea) -> int:
 	if area == StageInfo.StageArea.huwahuwaSchool:
 		return 0
